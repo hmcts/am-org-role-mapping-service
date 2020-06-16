@@ -1,0 +1,29 @@
+#!groovy
+
+properties([
+  // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
+  pipelineTriggers([cron('21 01 * * *')])
+])
+
+@Library("Infrastructure")
+
+def type = "java"
+def product = "am"
+def component = "org-role-mapping-service"
+
+def vaultOverrides = [
+  'preview' : 'aat',
+  'spreview': 'saat'
+]
+
+withNightlyPipeline(type, product, component) {
+  /*enableSlackNotifications('#am-org-role-mapping-service-builds')*/
+
+  env.TEST_URL = "http://am-org-role-mapping-service-aat.service.core-compute-aat.internal"
+  env.IDAM_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
+  env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
+
+  overrideVaultEnvironments(vaultOverrides)
+
+  enableMutationTest()
+}

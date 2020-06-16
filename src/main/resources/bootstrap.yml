@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    propertiesvolume:
+      paths: /mnt/secrets/s2s,/mnt/secrets/am
+      prefixed: false
+      aliases:
+        s2s-secret: idam.s2s-auth.totp_secret
+        AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
+        org-role-mapping-POSTGRES-PASS: ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS
+        am-org-role-mapping-service-s2s-secret: AM_ORG_ROLE_MAPPING_SERVICE_SECRET

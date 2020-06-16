@@ -1,0 +1,8 @@
+apiVersion: v1
+appVersion: "1.0"
+description: A Helm chart for AM Organisation Role Mapping Service
+name: am-org-role-mapping-service
+home: https://github.com/hmcts/am-org-role-mapping-service
+version: 0.0.1
+maintainers:
+  - name: Access Management Team
