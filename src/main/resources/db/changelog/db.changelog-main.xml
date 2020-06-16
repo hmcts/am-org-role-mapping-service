@@ -1,0 +1,159 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet id="1" author="nitin.sahu@hmcts.net">
+    <createTable tableName="role_assignment_request">
+      <column name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="correlation_id" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="client_id" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="authenticated_user_id" type="uuid">
+        <constraints nullable="false"/>
+      </column>
+      <column name="requester_id" type="uuid">
+        <constraints nullable="false"/>
+      </column>
+      <column name="request_type" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="process" type="text">
+        <constraints nullable="true"/>
+      </column>
+      <column name="reference" type="text">
+        <constraints nullable="true"/>
+      </column>
+      <column name="replace_existing" type="boolean">
+        <constraints nullable="true"/>
+      </column>
+      <column name="log" type="text">
+        <constraints nullable="true"/>
+      </column>
+      <column name="status_sequence" type="integer">
+        <constraints nullable="true"/>
+      </column>
+      <column name="role_assignment_id" type="uuid">
+        <constraints nullable="true"/>
+      </column>
+      <column name="last_updated" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2" author="conor.halpin@hmcts.net">
+    <createTable tableName="role_assignment_history">
+      <column name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_role_assignment_history"/>
+      </column>
+      <column name="request_id" type="uuid">
+        <constraints nullable="false" foreignKeyName="fk_role_assignment_history_role_assignment_request" references="role_assignment_request(id)"/>
+      </column>
+      <column name="actor_id_type" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="actor_id" type="uuid">
+        <constraints nullable="false"/>
+      </column>
+      <column name="role_type" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="role_name" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="classification" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="grant_type" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="read_only" type="boolean">
+        <constraints nullable="true"/>
+      </column>
+      <column name="begin_time" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="end_time" type="timestamp">
+        <constraints nullable="true"/>
+      </column>
+      <column name="status" type="text">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_role_assignment_history"/>
+      </column>
+      <column name="reference" type="text">
+        <constraints nullable="true"/>
+      </column>
+      <column name="process" type="text">
+        <constraints nullable="true"/>
+      </column>
+      <column name="attributes" type="jsonb">
+        <constraints nullable="false"/>
+      </column>
+      <column name="log" type="text">
+        <constraints nullable="true"/>
+      </column>
+      <column name="status_sequence" type="integer">
+        <constraints nullable="true"/>
+      </column>
+      <column name="last_updated" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created" type="timestamp">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="3" author="conor.halpin@hmcts.net">
+    <createTable tableName="role_assignment">
+      <column name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="actor_id_type" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="actor_id" type="uuid">
+        <constraints nullable="false"/>
+      </column>
+      <column name="role_type" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="role_name" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="classification" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="grant_type" type="text">
+        <constraints nullable="false"/>
+      </column>
+      <column name="read_only" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="begin_type" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="end_time" type="timestamp">
+        <constraints nullable="true"/>
+      </column>
+      <column name="attributes" type="jsonb">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created" type="timestamp">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+
+</databaseChangeLog>

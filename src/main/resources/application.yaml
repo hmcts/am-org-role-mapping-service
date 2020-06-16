@@ -1,0 +1,101 @@
+server:
+  port: ${PORT:4098}
+
+management:
+  health:
+    db:
+      enabled: true
+    defaults:
+      enabled: true
+    diskspace:
+      enabled: true
+  endpoint:
+    health:
+      enabled: true
+      cache:
+        time-to-live: 5s
+      show-details: "always"
+  security:
+    enabled: false
+  endpoints:
+    health:
+      sensitive: false
+    web:
+      base-path: /
+      exposure:
+        include: 'health'
+
+#If you use a database then uncomment below lines and update db properties accordingly
+
+security:
+  anonymousPaths:
+    - "/"
+    - "/health"
+    - "/health/liveness"
+    - "/actuator/**"
+    - "/loggers/**"
+    - "/swagger-ui.html"
+    - "/swagger-resources/**"
+    - "/v2/api-docs"
+    - "/webjars/springfox-swagger-ui/**"
+    - "/search/**"
+    - "/csrf"
+    - "/error"
+    - "/favicon.ico"
+  authorisedRoles:
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org-role-mapping_service}
+
+spring:
+  application:
+    name: Organisation Role Mapping Service
+  jackson:
+    default-property-inclusion: NON_NULL
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    log_statement: all
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  liquibase:
+    enabled: ${ENABLE_DB_MIGRATE:true}
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${ORG_ROLE_MAPPING_SERVICE_POSTGRES_HOST:localhost}:${ORG_ROLE_MAPPING_SERVICE_POSTGRES_PORT:5456}/${ORG_ROLE_MAPPING_SERVICE_POSTGRES_DATABASE:org_role_mapping}${ORG_ROLE_MAPPING_SERVICE_DB_OPTIONS:}
+    username: ${ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER:orm}
+    password: ${ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS:orm}
+    properties:
+      charSet: UTF-8
+
+### dependency configuration
+auth.provider.service.client.baseUrl: ${IDAM_S2S_URL:http://localhost:4502}
+idam:
+  s2s-auth:
+    # AAAAAAAAAAAAAAAA
+    totp_secret: ${ORG_ROLE_MAPPING_SERVICE_SECRET:AAAAAAAAAAAAAAAA}
+    microservice: am_org-role-mapping_service
+    url: ${IDAM_S2S_URL:http://localhost:4502}
+
+auth.idam.client.baseUrl: ${IDAM_USER_URL:http://localhost:5000}
+testS2S:
+  api:
+    url: "/testS2SAuthorization"
+integrationTest:
+  api:
+    url: "/"
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+      datastoreclient:
+        url: ${CCD_DATA_STORE_URL:http://localhost:4452}
+
+swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
+OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}

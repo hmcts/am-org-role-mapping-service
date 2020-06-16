@@ -1,0 +1,9 @@
+{
+  "_guid_": "F-000_Test_Data_Base",
+
+  "productName": "Organisation Role Mapping API",
+  "operationName": "Access Organisation Role Mapping API",
+
+  "method": "GET",
+  "uri": "/"
+}

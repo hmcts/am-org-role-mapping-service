@@ -1,0 +1,70 @@
+{
+  "_guid_": "S-000",
+  "title": "must access Organisation Role Mapping API",
+  "_extends_": "F-000_Test_Data_Base",
+  "specs": [
+    "an active caseworker profile",
+    "is to be made on behalf of Organisation Role Mapping API"
+  ],
+  "request": {
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "expectedResponse": {
+    "responseCode": 200,
+    "responseMessage": "OK",
+    "headers": {
+      "Content-Language": "[[ANYTHING_PRESENT]]",
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "[[ANYTHING_PRESENT]]",
+      "Date": "[[ANYTHING_PRESENT]]"
+    },
+    "body": {
+      "status": "UP",
+      "components": {
+        "db": {
+          "status": "UP",
+          "details": {
+            "database": "PostgreSQL",
+            "result": 1,
+            "validationQuery": "SELECT 1"
+          }
+        },
+        "discoveryComposite": {
+          "description": "Discovery Client not initialized",
+          "status": "UNKNOWN",
+          "components": {
+            "discoveryClient": {
+              "description": "Discovery Client not initialized",
+              "status": "UNKNOWN"
+            }
+          }
+        },
+        "diskSpace": {
+          "status": "UP",
+          "details": {
+            "total": "[[ANYTHING_PRESENT]]",
+            "free": "[[ANYTHING_PRESENT]]",
+            "threshold": "[[ANYTHING_PRESENT]]"
+          }
+        },
+        "hystrix": {
+          "status": "UP"
+        },
+        "liveness": {
+          "status": "UP"
+        },
+        "ping": {
+          "status": "UP"
+        },
+        "refreshScope": {
+          "status": "UP"
+        },
+        "serviceAuth": {
+          "status": "UP"
+        }
+      }
+    }
+  }
+}
