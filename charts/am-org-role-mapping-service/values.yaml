@@ -14,6 +14,5 @@ java:
   keyVaults:
     am:
       secrets:
-        - am-org-role-mapping-service-s2s-secret
         - org-role-mapping-service-POSTGRES-PASS
         - AppInsightsInstrumentationKey

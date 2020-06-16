@@ -182,8 +182,8 @@ pitest {
 
 sonarqube {
   properties {
-    property "sonar.projectName", "tempered:am-org-role-mapping-service"
-    property "sonar.projectKey", "tempered:am-org-role-mapping-service"
+    property "sonar.projectName", "am-org-role-mapping-service"
+    property "sonar.projectKey", "am-org-role-mapping-service"
     property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     property "sonar.pitest.mode", "reuseReport"
     property "sonar.pitest.reportsDirectory", "build/reports/pitest"

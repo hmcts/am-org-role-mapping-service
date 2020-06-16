@@ -4,7 +4,6 @@ java:
   keyVaults:
     am:
       secrets:
-        - am-org-role-mapping-service-s2s-secret
         - AppInsightsInstrumentationKey
   environment:
     ORG_ROLE_MAPPING_SERVICE_POSTGRES_HOST: "{{ .Release.Name }}-postgresql"
