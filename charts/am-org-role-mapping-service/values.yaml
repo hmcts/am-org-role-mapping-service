@@ -6,7 +6,7 @@ java:
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
-    AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES: ccd_gw,am_org-role-mapping_service
+    AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES: ccd_gw,am_org_role_mapping_service
     ORG_ROLE_MAPPING_SERVICE_POSTGRES_PORT: 5432
     ORG_ROLE_MAPPING_SERVICE_POSTGRES_HOST: am-org-role-mapping-service-postgres-db-{{ .Values.global.environment }}.postgres.database.azure.com
     ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER: orm@am-org-role-mapping-service-postgres-db-{{ .Values.global.environment }}
