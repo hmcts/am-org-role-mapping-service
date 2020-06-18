@@ -43,7 +43,7 @@ security:
     - "/error"
     - "/favicon.ico"
   authorisedRoles:
-  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org-role-mapping_service}
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org_role_mapping_service}
 
 spring:
   application:
