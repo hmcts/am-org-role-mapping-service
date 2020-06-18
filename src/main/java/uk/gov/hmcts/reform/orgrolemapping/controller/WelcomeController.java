@@ -34,6 +34,6 @@ public class WelcomeController {
 
     @GetMapping(value = "/welcome")
     public String welcome() {
-        return "Welcome to Organisation Role Mapping Service";
+        return " Welcome to Organisation Role Mapping Service";
     }
 }
