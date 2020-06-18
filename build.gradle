@@ -261,7 +261,7 @@ dependencies {
   compile group: 'org.drools', name: 'drools-compiler', version: '7.38.0.Final'
   compile group: 'org.drools', name: 'drools-decisiontables', version: '7.38.0.Final'
   compile group: 'org.kie', name: 'kie-ci', version: '7.38.0.Final'
-
+  compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
 
   //Added for Spring Security Implementation
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot
