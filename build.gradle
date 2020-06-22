@@ -61,8 +61,8 @@ group = 'uk.gov.hmcts.reform.orgrolemapping'
 version = '0.0.1'
 
 allprojects {
-  sourceCompatibility = '1.8'
-  targetCompatibility = '1.8'
+  sourceCompatibility = '11'
+  targetCompatibility = '11'
 }
 
 jacocoTestCoverageVerification {
@@ -165,7 +165,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-  toolVersion = "0.8.2"
+  toolVersion = "0.8.5"
 }
 
 pitest {
