@@ -43,7 +43,7 @@ security:
     - "/error"
     - "/favicon.ico"
   authorisedRoles:
-  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org-role-mapping_service}
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org_role_mapping_service}
 
 spring:
   application:
@@ -75,7 +75,7 @@ auth.provider.service.client.baseUrl: ${IDAM_S2S_URL:http://localhost:4502}
 idam:
   s2s-auth:
     # AAAAAAAAAAAAAAAA
-    totp_secret: ${ORG_ROLE_MAPPING_SERVICE_SECRET:AAAAAAAAAAAAAAAA}
+    totp_secret: ${AM_ORG_ROLE_MAPPING_SERVICE_SECRET:AAAAAAAAAAAAAAAA}
     microservice: am_org_role_mapping_service
     url: ${IDAM_S2S_URL:http://localhost:4502}
 
