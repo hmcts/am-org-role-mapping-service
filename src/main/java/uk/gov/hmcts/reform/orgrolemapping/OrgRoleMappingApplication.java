@@ -2,8 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping;
 
 import feign.Feign;
 import feign.jackson.JacksonEncoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -25,7 +23,6 @@ public class OrgRoleMappingApplication {
 
     @Autowired
     private Environment env;
-    private static final Logger logger = LoggerFactory.getLogger(OrgRoleMappingApplication.class);
 
     public static void main(final String[] args) {
         SpringApplication.run(OrgRoleMappingApplication.class);
