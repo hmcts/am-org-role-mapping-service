@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.orgrolemapping.controller.endpoints;
+package uk.gov.hmcts.reform.orgrolemapping;
 
 import org.junit.jupiter.api.Test;
 
