@@ -5,5 +5,5 @@ spring:
       prefixed: false
       aliases:
         AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
-        org-role-mapping-POSTGRES-PASS: ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS
+        org-role-mapping-service-POSTGRES-PASS: ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS
         am-org-role-mapping-service-s2s-secret: AM_ORG_ROLE_MAPPING_SERVICE_SECRET
