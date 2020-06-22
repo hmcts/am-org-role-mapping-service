@@ -41,6 +41,7 @@ services:
     environment:
       - ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER=orm
       - ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS=orm
+      - ORG_ROLE_MAPPING_SERVICE_POSTGRES_DATABASE=org_role_mapping
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - 5456:5432
