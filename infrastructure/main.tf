@@ -48,7 +48,7 @@ resource "azurerm_key_vault_secret" "am_org-role-mapping_service_s2s_secret" {
 }
 
 
-module "org-role-mapping-service-database" {
+module "org-role-mapping-service-db" {
   source = "git@github.com:hmcts/cnp-module-postgres?ref=master"
   product = "${local.app_full_name}-postgres-db"
   location = var.location
