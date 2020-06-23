@@ -248,7 +248,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot
-
+    compile group: 'org.liquibase', name: 'liquibase-core', version: '3.10.0'
     compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
     compile group: 'org.json', name: 'json', version: '20200518'
 
