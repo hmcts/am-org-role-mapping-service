@@ -16,7 +16,7 @@ java:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   postgresql:
     enabled: true
-    postgresqlUsername: orm
-    postgresqlPassword: orm
+    postgresqlUsername: am
+    postgresqlPassword: am
     postgresqlDatabase: org_role_mapping
     postgresqlPort: 5432

@@ -65,8 +65,8 @@ spring:
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://${ORG_ROLE_MAPPING_SERVICE_POSTGRES_HOST:localhost}:${ORG_ROLE_MAPPING_SERVICE_POSTGRES_PORT:5456}/${ORG_ROLE_MAPPING_SERVICE_POSTGRES_DATABASE:org_role_mapping}${ORG_ROLE_MAPPING_SERVICE_DB_OPTIONS:}
-    username: ${ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER:orm}
-    password: ${ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS:orm}
+    username: ${ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER:am}
+    password: ${ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS:am}
     properties:
       charSet: UTF-8
 
