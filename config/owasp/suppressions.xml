@@ -1,31 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?><suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-<suppress until="2030-01-01">
-<notes><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress until="2030-01-01">
+        <notes><![CDATA[
      Suppressing as it's a false positive (see: https://pivotal.io/security/cve-2018-1258)
    ]]></notes>
-<gav regex="true">^org.springframework.security:spring-security-crypto:5.2.[0-1].RELEASE</gav>
-<cpe>cpe:/a:pivotal_software:spring_security</cpe>
-<cve>CVE-2018-1258</cve>
-</suppress>
-<suppress>
-<notes><![CDATA[
+        <gav regex="true">^org.springframework.security:spring-security-crypto:5.2.[0-1].RELEASE</gav>
+        <cpe>cpe:/a:pivotal_software:spring_security</cpe>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
    relates to spring_framework spring-contex
    ]]></notes>
-<cpe>cpe:2.3:a:pivotal_software:spring_framework:5.2.2:*:*:*:*:*:*:*</cpe>
-<cve>CVE-2020-13692</cve>
-</suppress>
-<suppress>
-<notes><![CDATA[
+        <cpe>cpe:2.3:a:pivotal_software:spring_framework:5.2.2:*:*:*:*:*:*:*</cpe>
+        <cve>CVE-2020-13692</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
    relates to pivotal_software:spring_security
    ]]></notes>
-<cpe>cpe:2.3:a:pivotal_software:spring_security:5.2.1:*:*:*:*:*:*:*</cpe>
-<cve>CVE-2018-1258</cve>
-</suppress>
-<suppress>
-<notes><![CDATA[
+        <cpe>cpe:2.3:a:pivotal_software:spring_security:5.2.1:*:*:*:*:*:*:*</cpe>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
    relates to openhtmltopdf-jsoup-dom-converter-0.0.1-RC13.jar
    ]]></notes>
-<cpe>cpe:2.3:a:jsoup:jsoup:0.0.1.rc13:*:*:*:*:*:*:*</cpe>
-<cve>CVE-2015-6748</cve>
-</suppress>
+        <cpe>cpe:2.3:a:jsoup:jsoup:0.0.1.rc13:*:*:*:*:*:*:*</cpe>
+        <cve>CVE-2015-6748</cve>
+    </suppress>
 </suppressions>
