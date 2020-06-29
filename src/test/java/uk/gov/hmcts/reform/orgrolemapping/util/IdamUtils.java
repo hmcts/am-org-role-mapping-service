@@ -5,11 +5,11 @@ import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Base64;
-
 import uk.gov.hmcts.befta.BeftaMain;
 import uk.gov.hmcts.befta.auth.AuthApi;
 import uk.gov.hmcts.befta.auth.OAuth2;
+
+import java.util.Base64;
 
 @Service
 public class IdamUtils {
@@ -22,7 +22,8 @@ public class IdamUtils {
 
     @Autowired
     public IdamUtils() {
-        idamApi = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder()).target(AuthApi.class, BeftaMain.getConfig().getIdamURL());
+        idamApi = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
+                .target(AuthApi.class, BeftaMain.getConfig().getIdamURL());
 
     }
 
@@ -35,7 +36,8 @@ public class IdamUtils {
             .authenticateUser(BASIC + base64Authorisation, CODE, oauth2.getClientId(), oauth2.getRedirectUri());
 
         AuthApi.TokenExchangeResponse tokenExchangeResponse = idamApi.exchangeCode(authenticateUserResponse.getCode(),
-                                                        AUTHORIZATION_CODE, oauth2.getClientId(), oauth2.getClientSecret(), oauth2.getRedirectUri());
+                AUTHORIZATION_CODE, oauth2.getClientId(),
+                oauth2.getClientSecret(), oauth2.getRedirectUri());
 
         return tokenExchangeResponse.getAccessToken();
     }
