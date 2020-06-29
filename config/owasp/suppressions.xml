@@ -29,4 +29,10 @@
         <cpe>cpe:2.3:a:jsoup:jsoup:0.0.1.rc13:*:*:*:*:*:*:*</cpe>
         <cve>CVE-2015-6748</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   relates to cpe:2.3:a:apache:ant:1.8.4:*:*:*:*:*:*:*
+   ]]></notes>
+        <cve>CVE-2020-1945</cve>
+    </suppress>
 </suppressions>
