@@ -261,7 +261,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
 
     //JMS dependency
-    compile group: 'org.springframework', name: 'spring-jms'
     compile group: 'org.amqphub.spring', name: 'amqp-10-jms-spring-boot-starter', version: '2.3.5'
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.5.RELEASE'
     compile group: 'org.springframework', name: 'spring-aspects', version: '5.2.8.RELEASE'
