@@ -1,0 +1,21 @@
+{
+  "id": "0192",
+  "case_ref": "1541582204480587",
+  "po_box": "BULKSCAN PO BOX",
+  "jurisdiction": "PROBATE",
+  "container": "PROBATE",
+  "classification": "SUPPLEMENTARY_EVIDENCE",
+  "zip_file_name": "zip-file-test.zip",
+  "delivery_date": "2018-01-01T12:34:56.123Z",
+  "opening_date": "2018-01-01T12:34:56.123Z",
+  "documents": [
+    {
+      "file_name": "testfilename",
+      "control_number": "1234",
+      "type": "other",
+      "subtype": "will",
+      "scanned_at": "2018-01-01T12:34:56.123Z",
+      "url": "http://dm-store:8080/documents/ec3cc59a-bd14-4129-a3c6-1484f3af12db"
+    }
+  ]
+}
