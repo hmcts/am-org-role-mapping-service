@@ -28,7 +28,7 @@ apply plugin: 'net.serenity-bdd.aggregator'
 apply plugin: 'project-report'
 apply plugin: 'idea'
 apply plugin: 'io.spring.dependency-management'
-apply from: 'liquibase.gradle'
+
 
 def versions = [
         junit          : '5.5.0',
@@ -236,11 +236,7 @@ dependencies {
         exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-websocket"
         exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-core"
     }
-    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot) {
-        exclude group: 'org.hibernate', module: 'hibernate-core'
-        exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-websocket"
-        exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-core"
-    }
+
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot) {
         exclude group: 'org.hibernate', module: 'hibernate-core'
         exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-websocket"
@@ -256,11 +252,20 @@ dependencies {
         exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-websocket"
         exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-core"
     }
-    compile group: 'org.liquibase', name: 'liquibase-core', version: '3.10.0'
+
+
+
     compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
     compile group: 'org.json', name: 'json', version: '20200518'
 
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+
+    //JMS dependency
+    compile group: 'org.amqphub.spring', name: 'amqp-10-jms-spring-boot-starter', version: '2.3.5'
+    compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.5.RELEASE'
+    compile group: 'org.springframework', name: 'spring-aspects', version: '5.2.8.RELEASE'
+
+
 
     // drools engine dependency
     compile(group: 'org.drools', name: 'drools-core', version: versions.drools) {
@@ -309,7 +314,7 @@ dependencies {
     }
     compile group: 'org.springframework', name: 'spring-tx', version: '5.2.6.RELEASE'
 
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
+
     testCompile('com.opentable.components:otj-pg-embedded:0.12.0')
     testCompile('com.github.tomakehurst:wiremock-jre8:2.25.1')
     testCompile('org.springframework.cloud:spring-cloud-contract-wiremock:2.2.1.RELEASE')

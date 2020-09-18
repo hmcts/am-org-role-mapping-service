@@ -3,8 +3,7 @@ server:
 
 management:
   health:
-    db:
-      enabled: true
+
     defaults:
       enabled: true
     diskspace:
@@ -50,25 +49,7 @@ spring:
     name: Organisation Role Mapping Service
   jackson:
     default-property-inclusion: NON_NULL
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-    log_statement: all
-    properties:
-      hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true
-  liquibase:
-    enabled: ${ENABLE_DB_MIGRATE:true}
-    change-log: classpath:/db/changelog/db.changelog-master.xml
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${ORG_ROLE_MAPPING_SERVICE_POSTGRES_HOST:localhost}:${ORG_ROLE_MAPPING_SERVICE_POSTGRES_PORT:5456}/${ORG_ROLE_MAPPING_SERVICE_POSTGRES_DATABASE:org_role_mapping}${ORG_ROLE_MAPPING_SERVICE_DB_OPTIONS:}
-    username: ${ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER:am}
-    password: ${ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS:am}
-    properties:
-      charSet: UTF-8
+
 
 ### dependency configuration
 auth.provider.service.client.baseUrl: ${IDAM_S2S_URL:http://localhost:4502}
@@ -99,3 +80,18 @@ feign:
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
+
+amqp:
+  host: ${AMQP_HOST:rd-servicebus-sandbox.servicebus.windows.net}
+  username: ${AMQP_USERNAME:SendAndListenSharedAccessKey}
+  password: ${AMQP_PASSWORD:3maz+bmY5f0evUn3XmTg6xZR7dkcWF10MDgsoilqXag=}
+  topic: ${TOPIC_NAME:rd-caseworker-topic-sandbox}
+  subscription: ${SUBSCRIPTION_NAME:rd-caseworker-subscription-sandbox}
+  # DO NOT SET THIS 'true' IN PRODUCTION!
+  trustAllCerts: ${TRUST_ALL_CERTS:true}
+
+
+send-letter:
+  url: ${SEND_LETTER_SERVICE_BASEURL:http://localhost:4021}
+  enabled: ${SEND_LETTER_SERVICE_ENABLED:true}
+  maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
