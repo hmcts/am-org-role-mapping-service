@@ -11,7 +11,6 @@ bin/main/application.yaml
 .project
 .settings
 .springBeans
-.gradle
 ### IntelliJ IDEA ###
 .idea
 /out
@@ -21,3 +20,5 @@ bin/main/application.yaml
 
 .DS_Store
 target/
+.idea
+.gradle

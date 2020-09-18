@@ -18,7 +18,8 @@
       "Content-Language": "[[ANYTHING_PRESENT]]",
       "Content-Length": "[[ANYTHING_PRESENT]]",
       "Content-Type": "[[ANYTHING_PRESENT]]",
-      "Date": "[[ANYTHING_PRESENT]]"
+      "Date": "[[ANYTHING_PRESENT]]",
+      "Request-Context": "[[ANYTHING_PRESENT]]"
     },
     "body": {
       "status": "UP",
@@ -27,8 +28,7 @@
           "status": "UP",
           "details": {
             "database": "PostgreSQL",
-            "result": 1,
-            "validationQuery": "SELECT 1"
+            "validationQuery": "isValid()"
           }
         },
         "discoveryComposite": {
@@ -46,16 +46,20 @@
           "details": {
             "total": "[[ANYTHING_PRESENT]]",
             "free": "[[ANYTHING_PRESENT]]",
-            "threshold": "[[ANYTHING_PRESENT]]"
+            "threshold": "[[ANYTHING_PRESENT]]",
+            "exists": true
           }
         },
         "hystrix": {
           "status": "UP"
         },
-        "liveness": {
+        "livenessState": {
           "status": "UP"
         },
         "ping": {
+          "status": "UP"
+        },
+        "readinessState": {
           "status": "UP"
         },
         "refreshScope": {
@@ -64,7 +68,11 @@
         "serviceAuth": {
           "status": "UP"
         }
-      }
+      },
+      "groups": [
+        "liveness",
+        "readiness"
+      ]
     }
   }
-}
+},

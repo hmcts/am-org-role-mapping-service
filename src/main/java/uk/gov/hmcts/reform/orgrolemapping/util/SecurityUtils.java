@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,6 +8,8 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.auth.checker.spring.serviceanduser.ServiceAndUserDetails;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+
+import java.util.stream.Collectors;
 
 @Service
 public class SecurityUtils {
@@ -31,8 +31,8 @@ public class SecurityUtils {
     public String getUserAuthorizationHeaders() {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             final ServiceAndUserDetails serviceAndUser = (ServiceAndUserDetails) SecurityContextHolder.getContext()
-                                                                                                      .getAuthentication()
-                                                                                                      .getPrincipal();
+                    .getAuthentication()
+                    .getPrincipal();
             if (serviceAndUser.getPassword() != null) {
                 return serviceAndUser.getPassword();
             }
@@ -46,33 +46,33 @@ public class SecurityUtils {
 
     public String getUserId() {
         final ServiceAndUserDetails serviceAndUser = (ServiceAndUserDetails) SecurityContextHolder.getContext()
-                                                                                                  .getAuthentication()
-                                                                                                  .getPrincipal();
+                .getAuthentication()
+                .getPrincipal();
         return serviceAndUser.getUsername();
     }
 
     public String getUserToken() {
         final ServiceAndUserDetails serviceAndUser = (ServiceAndUserDetails) SecurityContextHolder.getContext()
-                                                                                                  .getAuthentication()
-                                                                                                  .getPrincipal();
+                .getAuthentication()
+                .getPrincipal();
         return serviceAndUser.getPassword();
     }
 
     public String getServiceId() {
         final ServiceAndUserDetails serviceAndUser = (ServiceAndUserDetails) SecurityContextHolder.getContext()
-                                                                                                  .getAuthentication()
-                                                                                                  .getPrincipal();
+                .getAuthentication()
+                .getPrincipal();
         return serviceAndUser.getServicename();
     }
 
     public String getUserRolesHeader() {
         final ServiceAndUserDetails serviceAndUser = (ServiceAndUserDetails) SecurityContextHolder.getContext()
-                                                                                                  .getAuthentication()
-                                                                                                  .getPrincipal();
+                .getAuthentication()
+                .getPrincipal();
         return serviceAndUser.getAuthorities()
-                             .stream()
-                             .map(GrantedAuthority::getAuthority)
-                             .collect(Collectors.joining(","));
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
     }
 
 
