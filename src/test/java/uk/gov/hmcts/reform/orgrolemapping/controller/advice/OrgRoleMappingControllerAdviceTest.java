@@ -11,13 +11,13 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 class OrgRoleMappingControllerAdviceTest {
 
@@ -39,7 +39,8 @@ class OrgRoleMappingControllerAdviceTest {
     @Test
     void handleMethodArgumentNotValidException() {
         MethodArgumentNotValidException methodArgumentNotValidException = mock(MethodArgumentNotValidException.class);
-        ResponseEntity<Object> responseEntity = csda.handleMethodArgumentNotValidException(servletRequestMock, methodArgumentNotValidException);
+        ResponseEntity<Object> responseEntity = csda.handleMethodArgumentNotValidException(
+                servletRequestMock, methodArgumentNotValidException);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
     }
@@ -47,7 +48,8 @@ class OrgRoleMappingControllerAdviceTest {
     @Test
     void handleResourceNotFoundException() {
         ResourceNotFoundException resourceNotFoundException = mock(ResourceNotFoundException.class);
-        ResponseEntity<Object> responseEntity = csda.handleResourceNotFoundException(servletRequestMock,resourceNotFoundException);
+        ResponseEntity<Object> responseEntity = csda.handleResourceNotFoundException(
+                servletRequestMock, resourceNotFoundException);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
     }
@@ -55,7 +57,8 @@ class OrgRoleMappingControllerAdviceTest {
     @Test
     void handleHttpMessageConversionException() {
         HttpMessageConversionException httpMessageConversionException = mock(HttpMessageConversionException.class);
-        ResponseEntity<Object> responseEntity = csda.handleHttpMessageConversionException(servletRequestMock, httpMessageConversionException);
+        ResponseEntity<Object> responseEntity = csda.handleHttpMessageConversionException(
+                servletRequestMock, httpMessageConversionException);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
     }
@@ -72,7 +75,8 @@ class OrgRoleMappingControllerAdviceTest {
     @Test
     void getTimeStamp() {
         String time = csda.getTimeStamp();
-        assertEquals(time.substring(0,16), new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH).format(new Date()));
+        assertEquals(time.substring(0, 16), new SimpleDateFormat("dd-MM-yyyy HH:mm",
+                Locale.ENGLISH).format(new Date()));
     }
 
     @Test

@@ -5,6 +5,7 @@ java:
     am:
       secrets:
         - AppInsightsInstrumentationKey
+        - am-org-role-mapping-service-s2s-secret
   environment:
     ORG_ROLE_MAPPING_SERVICE_POSTGRES_HOST: "{{ .Release.Name }}-postgresql"
     ORG_ROLE_MAPPING_SERVICE_POSTGRES_DATABASE: "{{ .Values.postgresql.postgresqlDatabase}}"
@@ -15,7 +16,7 @@ java:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   postgresql:
     enabled: true
-    postgresqlUsername: orm
-    postgresqlPassword: orm
+    postgresqlUsername: am
+    postgresqlPassword: am
     postgresqlDatabase: org_role_mapping
     postgresqlPort: 5432

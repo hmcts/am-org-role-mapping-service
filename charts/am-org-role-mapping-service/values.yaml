@@ -9,10 +9,11 @@ java:
     AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES: ccd_gw,am_org_role_mapping_service
     ORG_ROLE_MAPPING_SERVICE_POSTGRES_PORT: 5432
     ORG_ROLE_MAPPING_SERVICE_POSTGRES_HOST: am-org-role-mapping-service-postgres-db-{{ .Values.global.environment }}.postgres.database.azure.com
-    ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER: orm@am-org-role-mapping-service-postgres-db-{{ .Values.global.environment }}
+    ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER: am@am-org-role-mapping-service-postgres-db-{{ .Values.global.environment }}
     CCD_DATA_STORE_URL: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   keyVaults:
     am:
       secrets:
         - org-role-mapping-service-POSTGRES-PASS
         - AppInsightsInstrumentationKey
+        - am-org-role-mapping-service-s2s-secret
