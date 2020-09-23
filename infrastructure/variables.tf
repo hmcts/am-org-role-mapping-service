@@ -3,6 +3,7 @@ variable "product" {
 }
 
 variable "raw_product" {
+  type = string
   default = "am"
   // jenkins-library overrides product for PRs and adds e.g. pr-123-ia
 }
@@ -31,34 +32,33 @@ variable "common_tags" {
 }
 
 variable "appinsights_instrumentation_key" {
+  type = string
   default = ""
 }
 
 variable "root_logging_level" {
+  type = string
   default = "INFO"
 }
 
 variable "log_level_spring_web" {
+  type = string
   default = "INFO"
 }
 
 variable "team_name" {
+  type = string
   default = "AM"
 }
 
 variable "managed_identity_object_id" {
+  type = string
   default = ""
 }
 
 variable "enable_ase" {
   default = false
 }
-
-variable "authorised-services" {
-  type = string
-  default = "ccd_gw,am_org-role-mapping_service"
-}
-
 
 variable "deployment_namespace" {}
 
@@ -67,10 +67,12 @@ variable "deployment_namespace" {}
 ////////////////////////////////
 
 variable "postgresql_user" {
+  type = string
   default = "am"
 }
 
 variable "database_name" {
+  type = string
   default = "org_role_mapping"
 }
 
