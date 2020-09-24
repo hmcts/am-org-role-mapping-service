@@ -1,5 +1,4 @@
 variable "product" {
-  type = string
 }
 
 variable "raw_product" {
@@ -8,26 +7,22 @@ variable "raw_product" {
 }
 
 variable "component" {
-  type = string
 }
 
 variable "location" {
-  type = string
   default = "UK South"
 }
 
 variable "env" {
-  type = string
 }
 
 variable "subscription" {
-  type = string
 }
 
 variable "ilbIp" {}
 
 variable "common_tags" {
-  type = map
+  type =  map(string)
 }
 
 variable "appinsights_instrumentation_key" {
@@ -53,12 +48,6 @@ variable "managed_identity_object_id" {
 variable "enable_ase" {
   default = false
 }
-
-variable "authorised-services" {
-  type = string
-  default = "ccd_gw,am_org-role-mapping_service"
-}
-
 
 variable "deployment_namespace" {}
 
