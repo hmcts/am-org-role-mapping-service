@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
 import feign.Feign;
@@ -42,3 +43,4 @@ public class IdamUtils {
         return tokenExchangeResponse.getAccessToken();
     }
 }
+*/
