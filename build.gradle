@@ -389,11 +389,15 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-tx', version: '5.2.9.RELEASE'
 
     compile(group: 'org.springframework', name: 'spring-jdbc', version: '5.2.9.RELEASE')
+    compile(group: 'org.springframework', name: 'spring-jms', version: '5.2.9.RELEASE')
     compile(group: 'org.springframework', name: 'spring-beans', version: '5.2.9.RELEASE')
     compile(group: 'org.springframework', name: 'spring-context', version: '5.2.9.RELEASE')
     compile(group: 'org.springframework', name: 'spring-core', version: '5.2.9.RELEASE')
     compile(group: 'org.springframework', name: 'spring-test', version: '5.2.9.RELEASE')
     compile(group: 'org.springframework', name: 'spring-tx', version: '5.2.9.RELEASE')
+    compile(group: 'org.springframework', name: 'spring-aspects', version: '5.2.9.RELEASE')
+    compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.0'
+    compile group: 'org.amqphub.spring', name: 'amqp-10-jms-spring-boot-starter', version: '2.3.5'
 
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
