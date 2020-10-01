@@ -3,7 +3,6 @@ server:
 
 management:
   health:
-
     defaults:
       enabled: true
     diskspace:
@@ -23,8 +22,6 @@ management:
       base-path: /
       exposure:
         include: 'health'
-
-#If you use a database then uncomment below lines and update db properties accordingly
 
 security:
   anonymousPaths:

@@ -66,37 +66,3 @@ variable "enable_ase" {
 variable "deployment_namespace" {
   type = string
 }
-
-////////////////////////////////
-// Database
-////////////////////////////////
-
-variable "postgresql_user" {
-  type    = string
-  default = "am"
-}
-
-variable "database_name" {
-  type    = string
-  default = "org_role_mapping"
-}
-
-variable "data_store_max_pool_size" {
-  type    = string
-  default = "16"
-}
-
-variable "database_sku_name" {
-  type    = string
-  default = "GP_Gen5_2"
-}
-
-variable "database_sku_capacity" {
-  type    = string
-  default = "2"
-}
-
-variable "database_storage_mb" {
-  type    = string
-  default = "51200"
-}

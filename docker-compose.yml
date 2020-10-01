@@ -7,11 +7,6 @@ services:
     image: hmcts/am-org-role-mapping-service
     container_name: am-org-role-mapping-service
     environment:
-      - ORG_ROLE_MAPPING_SERVICE_POSTGRES_HOST=am-org-role-mapping-database
-      - ORG_ROLE_MAPPING_SERVICE_POSTGRES_DATABASE=org_role_mapping
-      - ORG_ROLE_MAPPING_SERVICE_POSTGRES_PORT=5432
-      - ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER=am
-      - ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS=am
       - AM_ORG_ROLE_MAPPING_DB_OPTIONS
       - AM_ORG_ROLE_MAPPING_SERVICE_SECRET
       - AM_ORG_ROLE_MAPPING_IDAM_KEY
@@ -25,27 +20,4 @@ services:
       - REFORM_ENVIRONMENT=local
     ports:
       - ${SERVER_PORT:-4098}:${SERVER_PORT:-4098}
-    depends_on:
-      - am-org-role-mapping-database
-    links:
-      - am-org-role-mapping-database
 
-  am-org-role-mapping-database:
-    build:
-      context: docker/database
-    container_name: am-org-role-mapping-database
-    healthcheck:
-      interval: 10s
-      timeout: 10s
-      retries: 10
-    environment:
-      - ORG_ROLE_MAPPING_SERVICE_POSTGRES_USER=am
-      - ORG_ROLE_MAPPING_SERVICE_POSTGRES_PASS=am
-      - ORG_ROLE_MAPPING_SERVICE_POSTGRES_DATABASE=org_role_mapping
-      - POSTGRES_HOST_AUTH_METHOD=trust
-    ports:
-      - 5456:5432
-    volumes:
-      - am-org-role-mapping-database-data:/var/lib/postgresql/am-org-role-mapping/data
-volumes:
-  am-org-role-mapping-database-data:
