@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,7 +39,6 @@ public class RoleAssignment {
     private String process; //need to map from request
     private String reference; //need to map from request
     private Integer statusSequence; //this will be populated from status entity. Need to extend status entity.
-    private Status status; //this will be set by app default = created
     private LocalDateTime created; //this will be set by app
     private String log; //this will be set app based on drool validation rule name on individual assignments.
     private Map<String, JsonNode> attributes;

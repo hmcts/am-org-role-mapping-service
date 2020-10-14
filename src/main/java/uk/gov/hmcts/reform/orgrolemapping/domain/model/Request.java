@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,7 +25,6 @@ public class Request {
     private String reference;
     private boolean replaceExisting;
     private UUID roleAssignmentId;
-    private Status status; //this will be set by app default = created
     private LocalDateTime created; //this will be set by app
     private String log; //this will be set app based on drool validation rule name on individual assignments.
 
