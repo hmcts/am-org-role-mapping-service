@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 @Service
-public class DatastoreFeignClientInterceptor {
+public class FeignClientInterceptor {
 
     @Autowired
     SecurityUtils securityUtils;
