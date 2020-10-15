@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 
 @Builder

@@ -6,9 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 @Builder
 @Data
 @AllArgsConstructor

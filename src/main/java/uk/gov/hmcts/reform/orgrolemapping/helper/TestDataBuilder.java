@@ -58,7 +58,6 @@ public class TestDataBuilder {
                 .grantType(GrantType.SPECIFIC)
                 .roleCategory(RoleCategory.JUDICIAL)
                 .readOnly(false)
-                .statusSequence(10)
                 .attributes(JacksonUtils.convertValue(buildAttributesFromFile()))
                 .build();
     }
