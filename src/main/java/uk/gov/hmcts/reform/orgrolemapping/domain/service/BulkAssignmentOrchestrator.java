@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.orgrolemapping.service;
+package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.HttpClients;
@@ -24,9 +24,16 @@ import java.io.IOException;
 
 @Slf4j
 @Service
-public class CreateOrgRoleMappingOrchestrator {
+public class BulkAssignmentOrchestrator {
+    //1. Call parse request service to extract userId List and validations.
+    //2. Call retrieveDataService to fetch the single or multiple user profiles and validate the data.
+    //   This might require a stub
+    //3. Call request mapping service to apply the mapping rules and
+    //   a) prepare role assignment requests
+    //   b)Invoke RoleAssignmentService and audit the response.
 
-    private static final Logger logger = LoggerFactory.getLogger(CreateOrgRoleMappingOrchestrator.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(BulkAssignmentOrchestrator.class);
 
     @Value("${roleAssignmentAppUrl}")
     String roleAssignmentAmUrl;

@@ -23,7 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.service.CreateOrgRoleMappingOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
@@ -36,16 +36,16 @@ public class WelcomeController {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeController.class);
 
-    private CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator;
+    private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     TopicPublisher topicPublisher;
 
     @Autowired
     public WelcomeController(final TopicPublisher topicPublisher,
-                             CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator) {
+                             BulkAssignmentOrchestrator bulkAssignmentOrchestrator) {
 
         this.topicPublisher = topicPublisher;
-        this.createOrgRoleMappingOrchestrator = createOrgRoleMappingOrchestrator;
+        this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
 
     }
 
@@ -100,7 +100,7 @@ public class WelcomeController {
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest)
             throws IOException {
         logger.debug("createOrgMapping");
-        return createOrgRoleMappingOrchestrator.createOrgRoleMapping(userRequest);
+        return bulkAssignmentOrchestrator.createOrgRoleMapping(userRequest);
     }
 
 
