@@ -1,18 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.INPUT_CASE_ID_PATTERN;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Named
 @Singleton

@@ -72,8 +72,10 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: basic
-      datastoreclient:
-        url: ${CCD_DATA_STORE_URL:http://localhost:4452}
+      crdclient:
+        url: ${CCD_DATA_STORE_URL:http://localhost:5001}
+      roleassignmentclient:
+        url: ${CCD_DATA_STORE_URL:http://localhost:4096}
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}

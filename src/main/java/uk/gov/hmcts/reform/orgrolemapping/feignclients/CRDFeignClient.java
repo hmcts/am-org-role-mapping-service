@@ -16,7 +16,7 @@ public interface CRDFeignClient {
     public String getServiceStatus();
 
 
-//    @PostMapping (value = "/refdata/case-worker/users/fetchUsersById")
-//    public ResponseEntity<Object> createRoleAssignment(@PathVariable("caseId") String caseId AssignmentRequest);
+    //@PostMapping (value = "/refdata/case-worker/users/fetchUsersById")
+    //  public ResponseEntity<Object> createRoleAssignment(@PathVariable("caseId") String caseId AssignmentRequest);
 
 }
