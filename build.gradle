@@ -133,9 +133,10 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
-    serenity.outputDirectory = file("${projectDir}/integrationTest/site/reports")
+    mustRunAfter test
     finalizedBy aggregate
 }
+check.dependsOn integration
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
     testClassesDirs = sourceSets.smokeTest.output.classesDirs
