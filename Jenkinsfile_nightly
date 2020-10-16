@@ -25,5 +25,5 @@ withNightlyPipeline(type, product, component) {
 
   overrideVaultEnvironments(vaultOverrides)
 
-  enableMutationTest()
+  /*enableMutationTest()*/
 }
