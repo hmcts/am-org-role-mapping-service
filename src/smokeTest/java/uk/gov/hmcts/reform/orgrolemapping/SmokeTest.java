@@ -65,7 +65,7 @@ public class SmokeTest extends BaseTest {
                 .when()
                 .get("http://localhost:4096/")
                 .andReturn();
-        response.then().assertThat().statusCode( HttpStatus.OK.value());
+        response.then().assertThat().statusCode(HttpStatus.OK.value());
     }
 
 
