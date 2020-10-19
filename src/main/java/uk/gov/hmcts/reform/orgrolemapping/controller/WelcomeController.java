@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureToggleEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.service.CreateOrgRoleMappingOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
@@ -39,13 +40,17 @@ public class WelcomeController {
     private CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator;
 
     TopicPublisher topicPublisher;
+    FeatureToggleEvaluator featureToggleEvaluator;
+
 
     @Autowired
     public WelcomeController(final TopicPublisher topicPublisher,
-                             CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator) {
+                             CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator,
+                             @Autowired FeatureToggleEvaluator featureToggleEvaluator) {
 
         this.topicPublisher = topicPublisher;
         this.createOrgRoleMappingOrchestrator = createOrgRoleMappingOrchestrator;
+        this.featureToggleEvaluator = featureToggleEvaluator;
 
     }
 
@@ -71,9 +76,10 @@ public class WelcomeController {
 
     @GetMapping(value = "/welcome")
     public String welcome() {
+        //Use the below statement for any given API to implement Launch Darkly.
+        //featureToggleEvaluator.validateLdFlag("am-org-role-mapping-service", "orm-base-flag");
         return "Welcome to Organisation Role Mapping Service";
     }
-
 
     @PostMapping(
             path = "/am/role-mapping/staff/users",
