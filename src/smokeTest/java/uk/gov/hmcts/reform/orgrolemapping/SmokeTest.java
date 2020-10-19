@@ -1,13 +1,18 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import lombok.NoArgsConstructor;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 
 
 @RunWith(SpringIntegrationSerenityRunner.class)
@@ -39,7 +44,6 @@ public class SmokeTest extends BaseTest {
     @Before
     public void setUp() {
         config = new UserTokenProviderConfig();
-        accessToken = searchUserByUserId(config);
         serviceAuth = authTokenGenerator(
                 config.getSecret(),
                 config.getMicroService(),
@@ -49,6 +53,21 @@ public class SmokeTest extends BaseTest {
 
     @Rule
     public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator(this);
+
+    @Test
+    public void should_receive_response() {
+
+        String targetInstance = config.getRoleAssignmentUrl() + "/";
+        RestAssured.useRelaxedHTTPSValidation();
+
+        Response response = SerenityRest
+                .given()
+                .relaxedHTTPSValidation()
+                .when()
+                .get("http://localhost:4096/")
+                .andReturn();
+        response.then().assertThat().statusCode( HttpStatus.OK.value());
+    }
 
 
     public String getEnvironment() {
