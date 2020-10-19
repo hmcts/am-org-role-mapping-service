@@ -57,7 +57,6 @@ public class SmokeTest extends BaseTest {
     @Test
     public void should_receive_response() {
 
-        String targetInstance = config.getRoleAssignmentUrl() + "/";
         RestAssured.useRelaxedHTTPSValidation();
 
         Response response = SerenityRest
