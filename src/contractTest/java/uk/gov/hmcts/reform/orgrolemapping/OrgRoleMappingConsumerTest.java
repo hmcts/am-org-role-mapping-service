@@ -52,7 +52,7 @@ public class OrgRoleMappingConsumerTest {
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "am_role_assignment_service", consumer = "org_role_mapping")
+    @Pact(provider = "am_role_assignment_service", consumer = "am_org_role_mapping")
     public RequestResponsePact executeGetListOfRolesAndGet200(PactDslWithProvider builder) {
 
         return builder

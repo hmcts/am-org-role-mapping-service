@@ -3,7 +3,7 @@
     "name": "am_role_assignment_service"
   },
   "consumer": {
-    "name": "org_role_mapping"
+    "name": "am_org_role_mapping"
   },
   "interactions": [
     {
