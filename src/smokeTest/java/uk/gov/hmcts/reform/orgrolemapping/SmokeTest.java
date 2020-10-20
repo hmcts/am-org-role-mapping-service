@@ -55,7 +55,7 @@ public class SmokeTest {
                 .when()
                 .get(targetInstance)
                 .andReturn();
-        response.then().assertThat().statusCode( HttpStatus.OK.value());
+        response.then().assertThat().statusCode(HttpStatus.OK.value());
     }
 
     public String getEnvironment() {
