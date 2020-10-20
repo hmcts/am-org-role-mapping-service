@@ -27,12 +27,13 @@ public class RoleAssignment {
     private RoleType roleType; // will be set to ORGANISATIONAL for case-worker
     private String roleName; // will be set as per mapping rule
     private Classification classification; // will be set to PUBLIC for case-worker
-    private GrantType grantType; // will be set to ORGANISATION for case-worker
+    private GrantType grantType; // will be set to STANDARD for case-worker
     private RoleCategory roleCategory; // will be set to STAFF for case-worker
     private boolean readOnly; // will be set to false for case-worker
     private LocalDateTime beginTime; // will be set to null for case-worker
     private LocalDateTime endTime; // will be set to null for case-worker
-    // there are only 2 attributes identified 1)jurisdiction=IA and primaryLocation=<Extract from Staff user>
+    // there are only 2 attributes identified 1)jurisdiction=IA(set by mapping rule)
+    // and primaryLocation=<Extract from Staff user>
     private Map<String, JsonNode> attributes;
     private JsonNode notes; //this would be empty for case-worker and reserved for future requirements.
     private List<String> authorisations; // this is not applicable for case-worker
