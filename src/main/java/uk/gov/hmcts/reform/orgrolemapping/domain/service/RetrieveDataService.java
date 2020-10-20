@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
 @Service
@@ -25,4 +26,6 @@ public class RetrieveDataService {
     }
 
 
+    public void retrieveCaseWorkerProfiles(UserRequest userRequest) {
+    }
 }

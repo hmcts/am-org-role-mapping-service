@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
@@ -100,7 +99,7 @@ public class WelcomeController {
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest)
             throws IOException {
         logger.debug("createOrgMapping");
-        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createOrgRoleMapping(userRequest);
+        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
