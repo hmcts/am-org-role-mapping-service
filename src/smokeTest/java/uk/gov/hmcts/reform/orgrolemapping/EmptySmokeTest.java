@@ -1,15 +1,15 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
 import lombok.NoArgsConstructor;
+import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Tag;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
+@RunWith(SpringIntegrationSerenityRunner.class)
 @NoArgsConstructor
 //@WithTags({@WithTag("testType:Smoke")})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
