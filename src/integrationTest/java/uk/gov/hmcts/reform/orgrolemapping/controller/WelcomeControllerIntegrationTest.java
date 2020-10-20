@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
-    /*
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
 
     private transient MockMvc mockMvc;
@@ -148,6 +147,5 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         headers.set("ServiceAuthorization", "Bearer " + serviceAuthorisation);
         return headers;
     }
-     */
 }
 
