@@ -11,6 +11,8 @@ properties(
 
 @Library("Infrastructure")
 
+import uk.gov.hmcts.contino.AppPipelineDsl
+
 def type = "java"
 def product = "am"
 def component = "org-role-mapping-service"
