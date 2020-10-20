@@ -77,7 +77,7 @@ public class WelcomeController {
     @GetMapping(value = "/welcome")
     public String welcome() {
         //Use the below statement for any given API to implement Launch Darkly.
-        //featureToggleEvaluator.validateLdFlag("am-org-role-mapping-service", "orm-base-flag");
+        featureToggleEvaluator.validateLdFlag("am-org-role-mapping-service", "orm-base-flag");
         return "Welcome to Organisation Role Mapping Service";
     }
 
