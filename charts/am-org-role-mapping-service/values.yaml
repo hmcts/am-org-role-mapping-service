@@ -8,8 +8,11 @@ java:
     IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
     AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES: ccd_gw,am_org_role_mapping_service
     CCD_DATA_STORE_URL: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
+    MICROSERVICE_NAME: am_org_role_mapping_service
   keyVaults:
     am:
       secrets:
         - AppInsightsInstrumentationKey
         - am-org-role-mapping-service-s2s-secret
+        - role-assignment-service-LD-SDK-KEY
