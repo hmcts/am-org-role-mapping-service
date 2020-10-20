@@ -9,7 +9,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RASFeignClientFallback;
 
-@FeignClient(value = "roleassignmentclient", url = "${feign.client.config.roleassignmentclient.url}",
+@FeignClient(value = "roleassignmentclient", url = "${feign.client.config.roleAssignmentApp.url}",
              configuration = FeignClientConfiguration.class,
              fallback = RASFeignClientFallback.class)
 
