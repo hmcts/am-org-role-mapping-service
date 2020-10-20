@@ -19,9 +19,9 @@ public class FeatureFlagToggleEvaluator implements TestRule {
     public static final String SERVICENAME = "servicename";
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
 
-    private final EmptySmokeTest smokeTest;
+    private final SmokeTest smokeTest;
 
-    public FeatureFlagToggleEvaluator(EmptySmokeTest smokeTest) {
+    public FeatureFlagToggleEvaluator(SmokeTest smokeTest) {
         this.smokeTest = smokeTest;
     }
 
