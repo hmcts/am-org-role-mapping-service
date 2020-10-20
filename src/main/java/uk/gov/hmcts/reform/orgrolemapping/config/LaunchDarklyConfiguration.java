@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Slf4j
 public class LaunchDarklyConfiguration {
+    @Value("${launchdarkly.sdk.key}")
+    String sdkKey;
 
     @Bean
-    public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
+    public LDClient ldClient() {
         log.error("sdkKey is :" + sdkKey);
         log.error("env variable " + System.getenv("LD_SDK_KEY"));
         return new LDClient(sdkKey);
