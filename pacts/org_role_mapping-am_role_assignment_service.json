@@ -20,15 +20,21 @@
         "body": [
           {
             "name": "judge",
-            "label": "Judge",
+            "label": "Judge - Sample role (Only for Testing)",
             "description": "Judicial office holder able to do judicial case work",
             "category": "JUDICIAL"
           },
           {
-            "name": "judicial_management",
-            "label": "Judicial Management",
-            "description": "This role is required to manage other judicial roles.",
-            "category": "JUDICIAL"
+            "name": "tribunal-caseworker",
+            "label": "Tribunal Caseworker",
+            "description": "Tribunal caseworker",
+            "category": "STAFF"
+          },
+          {
+            "name": "senior-tribunal-caseworker",
+            "label": "Senior Tribunal Caseworker",
+            "description": "Senior Tribunal caseworker",
+            "category": "STAFF"
           }
         ]
       },

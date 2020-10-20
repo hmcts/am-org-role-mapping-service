@@ -91,26 +91,32 @@ public class OrgRoleMappingConsumerTest {
         JSONObject role = jsonArray.getJSONObject(0);
         assertThat(role.get("name"), equalTo("judge"));
         assertThat(role.get("description"), equalTo("Judicial office holder able to do judicial case work"));
-        assertThat(role.get("label"), equalTo("Judge"));
+        assertThat(role.get("label"), equalTo("Judge - Sample role (Only for Testing)"));
         assertThat(role.get("category"), equalTo("JUDICIAL"));
     }
 
     private String createResponse() {
         String response = "";
         response = "[\n"
-                + "          {\n"
-                + "            \"name\": \"judge\",\n"
-                + "            \"label\": \"Judge\",\n"
-                + "            \"description\": \"Judicial office holder able to do judicial case work\",\n"
-                + "            \"category\": \"JUDICIAL\"\n"
-                + "          },\n"
-                + "          {\n"
-                + "            \"name\": \"judicial_management\",\n"
-                + "            \"label\": \"Judicial Management\",\n"
-                + "            \"description\": \"This role is required to manage other judicial roles.\",\n"
-                + "            \"category\": \"JUDICIAL\"\n"
-                + "          }\n"
-                + "        ]";
+                + "  {\n"
+                + "    \"name\": \"judge\",\n"
+                + "    \"label\": \"Judge - Sample role (Only for Testing)\",\n"
+                + "    \"description\": \"Judicial office holder able to do judicial case work\",\n"
+                + "    \"category\": \"JUDICIAL\"\n"
+                + "  },\n"
+                + "  {\n"
+                + "    \"name\": \"tribunal-caseworker\",\n"
+                + "    \"label\": \"Tribunal Caseworker\",\n"
+                + "    \"description\": \"Tribunal caseworker\",\n"
+                + "    \"category\": \"STAFF\"\n"
+                + "  },\n"
+                + "  {\n"
+                + "    \"name\": \"senior-tribunal-caseworker\",\n"
+                + "    \"label\": \"Senior Tribunal Caseworker\",\n"
+                + "    \"description\": \"Senior Tribunal caseworker\",\n"
+                + "    \"category\": \"STAFF\"\n"
+                + "  }\n"
+                + "]";
         return response;
     }
 
