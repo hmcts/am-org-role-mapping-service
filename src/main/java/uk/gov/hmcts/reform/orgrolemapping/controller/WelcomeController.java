@@ -40,18 +40,16 @@ public class WelcomeController {
     private CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator;
 
     TopicPublisher topicPublisher;
+    @Autowired
     FeatureToggleEvaluator featureToggleEvaluator;
 
 
     @Autowired
     public WelcomeController(final TopicPublisher topicPublisher,
-                             CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator,
-                             @Autowired FeatureToggleEvaluator featureToggleEvaluator) {
+                             CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator) {
 
         this.topicPublisher = topicPublisher;
         this.createOrgRoleMappingOrchestrator = createOrgRoleMappingOrchestrator;
-        this.featureToggleEvaluator = featureToggleEvaluator;
-
     }
 
     @GetMapping(value = "/swagger")
