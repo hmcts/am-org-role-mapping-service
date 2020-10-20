@@ -55,6 +55,15 @@ env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
 
 withPipeline(type, product, component) {
+  if (env.BRANCH_NAME.startsWith("PR")) {
+      env.LAUNCH_DARKLY_ENV = "pr"
+  }
+  else if(env.BRANCH_NAME == 'master') {
+      env.LAUNCH_DARKLY_ENV = "aat"
+  }
+  else {
+      env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
+  }
   onMaster {
     enableSlackNotifications('#am-org-role-mapping-service-builds')
   }
