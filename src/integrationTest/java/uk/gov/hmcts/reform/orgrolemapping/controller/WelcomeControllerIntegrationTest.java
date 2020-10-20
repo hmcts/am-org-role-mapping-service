@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -151,3 +152,4 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         return headers;
     }
 }
+*/

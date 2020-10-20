@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.junit.Before;
@@ -32,3 +33,4 @@ public abstract class WireMockBaseTest extends BaseTest {
         ReflectionTestUtils.setField("draftHost", "draftHost", hostUrl);
     }
 }
+*/
