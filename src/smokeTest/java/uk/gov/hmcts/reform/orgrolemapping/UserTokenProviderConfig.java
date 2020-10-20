@@ -7,7 +7,7 @@ import uk.gov.hmcts.befta.util.EnvironmentVariableUtils;
 public class UserTokenProviderConfig {
 
 //    private final String idamURL;
-    private final String roleAssignmentUrl;
+    private final String orgRoleMappingUrl;
 //    private final String secret;
 //    private final String microService;
 //    private final String s2sUrl;
@@ -17,13 +17,13 @@ public class UserTokenProviderConfig {
 //    private final String username;
 //    private final String password;
 //    private final String scope;
-    private static final String MICRO_SERVICE_NAME = "am_role_assignment_service";
+    private static final String MICRO_SERVICE_NAME = "am_org_role_mapping_service";
     private static final String USER_NAME = "befta.caseworker.2.solicitor.2@gmail.com";
 
     public UserTokenProviderConfig() {
 
 //        idamURL = EnvironmentVariableUtils.getRequiredVariable("IDAM_URL");
-        roleAssignmentUrl = EnvironmentVariableUtils.getRequiredVariable("TEST_URL");
+        orgRoleMappingUrl = EnvironmentVariableUtils.getRequiredVariable("TEST_URL");
 //        secret = EnvironmentVariableUtils.getRequiredVariable("AM_ROLE_ASSIGNMENT_SERVICE_SECRET");
 //        microService = MICRO_SERVICE_NAME;
 //        s2sUrl = EnvironmentVariableUtils.getRequiredVariable("IDAM_S2S_URL");
