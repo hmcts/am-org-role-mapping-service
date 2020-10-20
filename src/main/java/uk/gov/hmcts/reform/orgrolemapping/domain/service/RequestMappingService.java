@@ -4,8 +4,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RequestMappingService {
-    //1. This service will apply all the mapping rules - either by some config file or drools.
-    //2. If mapping rule is matched then prepare the role assignment requests.
-    //3. Send the role assignment request to RAS service.
-    //4. Log the response.
+    //1. This will receive the single/multiple user profile from Orchestrator.
+    //2. For Each User:
+        //a. Check if the delete flag set to true, if yes then prepare AssignmentRequest with Empty requestedRole List and skip drools.
+        //b. Else Check if there is multiple roles and service codes in User object
+            //  If yes prepare more user instances(same userId) but with unique combinations of roleId and serviceCodeId
+            //  Else simply prepare single user instance
+        //c. Prepare the pre-filled requestedRole(leaving its roleName and JID) object for each user instance.
+        //d. Add both user and corresponding requestedRole objects in Drools.
+        //e. Invoke Drool execution.
+            //a. Validate each service specific rules one by one and set RoleName in requestedRole object.
+        //f. Check if requestedRole.roleName is not null then prepare AssignmentRequest with requestedRole object
+            //a. Else ignore the requestedRole Object and user object with some logging and 422.
+        //g. For valid AssignmentRequest, invoke createRequest API of RoleAssignmentService through RAS Feign client.
+        //h. Log returned response and send the responseEntity to Orchestrator.
 }
