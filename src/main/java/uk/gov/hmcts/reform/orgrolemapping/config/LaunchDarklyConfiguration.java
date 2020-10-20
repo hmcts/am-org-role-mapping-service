@@ -13,6 +13,7 @@ public class LaunchDarklyConfiguration {
     @Bean
     public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
         log.error("sdkKey is :" + sdkKey);
+        log.error("env variable " + System.getenv("LD_SDK_KEY"));
         return new LDClient(sdkKey);
     }
 
