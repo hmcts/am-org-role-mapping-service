@@ -53,6 +53,7 @@ env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities"
 env.IDAM_CLIENT_ID="am_role_assignment"
 env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
+env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
 
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
