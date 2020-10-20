@@ -1,10 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
 @Service
+@Slf4j
 public class RetrieveDataService {
     //1. Fetching multiple case-worker user details from CRD
         //a. Create a new class UserProfile - similar to expected response from CRD(refer LLD)

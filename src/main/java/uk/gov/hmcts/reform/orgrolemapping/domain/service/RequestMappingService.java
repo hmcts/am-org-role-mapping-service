@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class RequestMappingService {
     //1. This will receive the single/multiple userAccessProfile from Orchestrator.
     //2. For Each UserAccessProfile:

@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public class BulkAssignmentOrchestrator {
 
     public ResponseEntity<Object> createOrgRoleMapping(UserRequest userRequest) throws IOException {
 
-        AssignmentRequest assignmentRequest = TestDataBuilder
+        AssignmentRequest assignmentRequest = AssignmentRequestBuilder
                 .buildAssignmentRequest(false);
         ResponseEntity<Object> response = null;
         response = roleAssignmentService.createRoleAssignment(assignmentRequest);
