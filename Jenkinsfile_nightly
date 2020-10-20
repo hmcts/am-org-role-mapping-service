@@ -31,6 +31,7 @@ withNightlyPipeline(type, product, component) {
   env.IDAM_CLIENT_ID="am_role_assignment"
   env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
   env.MICROSERVICE_NAME = "am_org_role_mapping_service"
+  env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
 
   overrideVaultEnvironments(vaultOverrides)
 
