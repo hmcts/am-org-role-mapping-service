@@ -1,0 +1,50 @@
+{
+  "provider": {
+    "name": "am_role_assignment_service"
+  },
+  "consumer": {
+    "name": "org_role_mapping"
+  },
+  "interactions": [
+    {
+      "description": "RAS takes s2s/auth token and returns list of roles",
+      "request": {
+        "method": "GET",
+        "path": "/am/role-assignments/roles"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.get-roles+json;charset=UTF-8;version=1.0"
+        },
+        "body": [
+          {
+            "name": "judge",
+            "label": "Judge",
+            "description": "Judicial office holder able to do judicial case work",
+            "category": "JUDICIAL"
+          },
+          {
+            "name": "judicial_management",
+            "label": "Judicial Management",
+            "description": "This role is required to manage other judicial roles.",
+            "category": "JUDICIAL"
+          }
+        ]
+      },
+      "providerStates": [
+        {
+          "name": "A list of roles are available in role assignment service"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}
