@@ -30,6 +30,7 @@ public class EmptySmokeTest {
     @Test
     @FeatureFlagToggle("orm-base-flag")
     public void shouldRetrieveWhenExists() {
+
     }
 
     public String getEnvironment() {
