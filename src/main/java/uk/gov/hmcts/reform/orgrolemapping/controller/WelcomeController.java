@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
 import java.io.IOException;
@@ -39,6 +41,8 @@ public class WelcomeController {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     TopicPublisher topicPublisher;
+    @Autowired
+    SecurityUtils securityUtils;
 
     @Autowired
     public WelcomeController(final TopicPublisher topicPublisher,
@@ -77,7 +81,7 @@ public class WelcomeController {
 
     @PostMapping(
             path = "/am/role-mapping/staff/users",
-            produces = V1.MediaType.CREATE_ASSIGNMENTS,
+            //produces = V1.MediaType.MAP_ASSIGNMENTS,
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -90,17 +94,14 @@ public class WelcomeController {
             ),
             @ApiResponse(
                     code = 400,
-                    message = V1.Error.INVALID_ROLE_NAME
-            ),
-            @ApiResponse(
-                    code = 400,
                     message = V1.Error.INVALID_REQUEST
             )
     })
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest)
             throws IOException {
         logger.debug("createOrgMapping");
-        return bulkAssignmentOrchestrator.createOrgRoleMapping(userRequest);
+        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createOrgRoleMapping(userRequest);
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
 
