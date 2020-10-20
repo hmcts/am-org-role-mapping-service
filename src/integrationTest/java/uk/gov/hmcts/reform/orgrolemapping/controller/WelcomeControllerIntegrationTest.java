@@ -1,4 +1,3 @@
-/*
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -32,9 +31,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
-    private static final String COUNT_RECORDS = "SELECT count(1) as n FROM role_assignment_request";
-    private static final String GET_STATUS = "SELECT status FROM role_assignment_request where id = ?";
-    private static final String REQUEST_ID = "21334a2b-79ce-44eb-9168-2d49a744be9c";
 
     private transient MockMvc mockMvc;
 
@@ -152,4 +148,4 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         return headers;
     }
 }
-*/
+
