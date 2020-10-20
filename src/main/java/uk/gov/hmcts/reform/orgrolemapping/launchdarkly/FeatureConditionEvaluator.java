@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
-import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,9 +17,6 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
 
     @Autowired
     private final FeatureToggleService featureToggleService;
-
-    @Autowired
-    private final SecurityUtils securityUtils;
 
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request,
