@@ -31,23 +31,40 @@ def vaultOverrides = [
 
 def secrets = [
     's2s-${env}': [
-        secret('microservicekey-ccd-gw', 'BEFTA_S2S_CLIENT_SECRET'),
+        secret('microservicekey-am-org-role-mapping-service', 'BEFTA_S2S_CLIENT_SECRET'),
         secret('microservicekey-am-org-role-mapping-service', 'AM_ORG_ROLE_MAPPING_SERVICE_SECRET')
-    ]
+    ],
+    'am-${env}': [
+           secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY'),
+           secret('role-assignment-service-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET')
+       ]
 ]
 
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
 env.IDAM_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-env.OAUTH2_REDIRECT_URI = "https://www-ccd.aat.platform.hmcts.net/oauth2redirect"
-env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
-env.CCD_DATA_STORE_URL = "http://ccd-data-store-api-pr-922.service.core-compute-preview.internal"
-env.BEFTA_S2S_CLIENT_ID = "ccd_gw"
-env.OAUTH2_CLIENT_ID = "ccd_gateway"
+env.BEFTA_S2S_CLIENT_ID = "am_org_role_mapping_service"
+env.OAUTH2_REDIRECT_URI = "http://am-role-assignment-service-aat.service.core-compute-aat.internal/oauth2redirect"
+env.OAUTH2_CLIENT_ID = "am_role_assignment"
+env.OAUTH2_ACCESS_TOKEN_TYPE = "OIDC"
 env.BEFTA_RESPONSE_HEADER_CHECK_POLICY = "JUST_WARN"
 env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
+env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities"
+env.IDAM_CLIENT_ID="am_role_assignment"
+env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
+env.MICROSERVICE_NAME = "am_org_role_mapping_service"
+env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
 
 withPipeline(type, product, component) {
+  if (env.BRANCH_NAME.startsWith("PR")) {
+      env.LAUNCH_DARKLY_ENV = "pr"
+  }
+  else if(env.BRANCH_NAME == 'master') {
+      env.LAUNCH_DARKLY_ENV = "aat"
+  }
+  else {
+      env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
+  }
   onMaster {
     enableSlackNotifications('#am-org-role-mapping-service-builds')
   }
