@@ -24,7 +24,7 @@ public class FeatureToggleService {
     public static final String LD_FLAG_GET_ASSIGNMENTS_BY_QUERY_PARAMS = "get-assignments-by-query-params";
 
     @Autowired
-    private final LDClient ldClient;
+    private LDClient ldClient;
 
     @Value("${launchdarkly.sdk.environment}")
     private String environment;
@@ -41,8 +41,7 @@ public class FeatureToggleService {
     }
 
     @Autowired
-    public FeatureToggleService(LDClient ldClient, @Value("${launchdarkly.sdk.user}") String userName) {
-        this.ldClient = ldClient;
+    public FeatureToggleService(@Value("${launchdarkly.sdk.user}") String userName) {
         this.userName = userName;
     }
 
