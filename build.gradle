@@ -504,13 +504,20 @@ task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test 
 
 runAndPublishConsumerPactTests.finalizedBy pactPublish
 
+
+project.ext {
+    pactVersion = getCheckedOutGitCommitHash()
+}
+
+def getCheckedOutGitCommitHash() {
+    'git rev-parse --verify --short HEAD'.execute().text.trim()
+}
+
 pact {
     publish {
         pactDirectory = 'pacts'
-        //pactBrokerUrl = 'http://localhost:9292'
-        pactBrokerUrl = 'https://pact-broker.platform.hmcts.net'
-        tags = ['Dev']
-        version = "1.0"
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
+        version = project.pactVersion
     }
 }
 
