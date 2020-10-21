@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -30,7 +32,6 @@ public class BulkAssignmentOrchestrator {
     private RoleAssignmentService roleAssignmentService;
 
 
-
     public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) throws IOException {
         //1.
         //parseRequestService.validateUserRequest(userRequest);
@@ -38,7 +39,7 @@ public class BulkAssignmentOrchestrator {
         //List<UserAccessProfiles> userAccessProfiles =  retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
         //3.
         //requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
-        retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
+        List<UserAccessProfile> userAccessProfiles = retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
         AssignmentRequest assignmentRequest = AssignmentRequestBuilder
                 .buildAssignmentRequest(false);
         ResponseEntity<Object> response = null;

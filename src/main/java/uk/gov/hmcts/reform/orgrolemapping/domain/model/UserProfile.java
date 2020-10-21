@@ -27,14 +27,14 @@ public class UserProfile {
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
     private LocalDateTime lastUpdateTime;
     private List<Role> role;
-    private List<BaseLocation> baseLocation;
+    public List<BaseLocation> baseLocation;
     private List<WorkArea> workArea;
 
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    static class Role {
+    public static class Role {
         private int roleId;
         private String roleName;
         private boolean primary;
@@ -48,7 +48,7 @@ public class UserProfile {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    static class BaseLocation {
+    public static class BaseLocation {
         private int locationId;
         private String location;
         private boolean primary;
@@ -62,7 +62,7 @@ public class UserProfile {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    static class WorkArea {
+    public static class WorkArea {
         private int areaOfWork;
         private String serviceCode;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")

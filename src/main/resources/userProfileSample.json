@@ -13,8 +13,15 @@
   "role": [
     {
       "roleId": 1,
-      "roleName": "tribunal-caseworker",
+      "roleName": "senior-tribunal-caseworker",
       "primary": true,
+      "createdTime": "2020-04-28T16:00:49",
+      "lastUpdateTime": "2021-04-28T16:00:49"
+    },
+    {
+      "roleId": 2,
+      "roleName": "tribunal-caseworker",
+      "primary": false,
       "createdTime": "2020-04-28T16:00:49",
       "lastUpdateTime": "2021-04-28T16:00:49"
     }
@@ -26,12 +33,25 @@
       "primary": true,
       "createdTime": "2020-04-28T16:00:49",
       "lastUpdateTime": "2021-04-28T16:00:49"
+    },
+    {
+      "locationId": 11111,
+      "location": "Non Primary Location",
+      "primary": false,
+      "createdTime": "2020-04-28T16:00:49",
+      "lastUpdateTime": "2021-04-28T16:00:49"
     }
   ],
   "workArea": [
     {
       "areaOfWork": "1",
       "serviceCode": "BAA1",
+      "createdTime": "2020-04-28T16:00:49",
+      "lastUpdateTime": "2021-04-28T16:00:49"
+    },
+    {
+      "areaOfWork": "2",
+      "serviceCode": "BAA2",
       "createdTime": "2020-04-28T16:00:49",
       "lastUpdateTime": "2021-04-28T16:00:49"
     }
