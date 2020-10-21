@@ -1,16 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 
-import java.io.InputStream;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -33,18 +31,8 @@ public class RetrieveDataService {
 
 
     public void retrieveCaseWorkerProfiles(UserRequest userRequest) {
-        try (InputStream inputStream =
-                     AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
-            assert inputStream != null;
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            UserProfile userProfile = objectMapper.readValue(inputStream, UserProfile.class);
-
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        //JsonNode jsonNode = AssignmentRequestBuilder.buildAttributesFromFile("userProfileSample.json");
-
+        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
+        List<UserProfile> profileList = responseEntity.getBody();
+        System.out.println(profileList);
     }
 }
