@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureToggleService;
 import uk.gov.hmcts.reform.orgrolemapping.service.CreateOrgRoleMappingOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
@@ -41,12 +42,14 @@ public class WelcomeController {
     TopicPublisher topicPublisher;
 
     @Autowired
+    FeatureToggleService featureToggleService;
+
+    @Autowired
     public WelcomeController(final TopicPublisher topicPublisher,
                              CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator) {
 
         this.topicPublisher = topicPublisher;
         this.createOrgRoleMappingOrchestrator = createOrgRoleMappingOrchestrator;
-
     }
 
     @GetMapping(value = "/swagger")
@@ -71,9 +74,9 @@ public class WelcomeController {
 
     @GetMapping(value = "/welcome")
     public String welcome() {
+        //Use the below statement for any given API to implement Launch Darkly.
         return "Welcome to Organisation Role Mapping Service";
     }
-
 
     @PostMapping(
             path = "/am/role-mapping/staff/users",
