@@ -83,7 +83,6 @@ public class OrgRoleMappingConsumerTest {
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
-                        .contentType(ContentType.URLENC)
                         .get(mockServer.getUrl() + RAS_GET_LIST_ROLES_URL)
                         .then()
                         .log().all().extract().asString();
