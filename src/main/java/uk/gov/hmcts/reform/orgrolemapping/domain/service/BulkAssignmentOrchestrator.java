@@ -38,7 +38,7 @@ public class BulkAssignmentOrchestrator {
         //List<UserAccessProfiles> userAccessProfiles =  retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
         //3.
         //requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
-
+        retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
         AssignmentRequest assignmentRequest = AssignmentRequestBuilder
                 .buildAssignmentRequest(false);
         ResponseEntity<Object> response = null;

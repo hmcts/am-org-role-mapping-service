@@ -63,13 +63,13 @@ public class AssignmentRequestBuilder {
                 .grantType(GrantType.STANDARD)
                 .roleCategory(RoleCategory.STAFF)
                 .readOnly(false)
-                .attributes(JacksonUtils.convertValue(buildAttributesFromFile()))
+                .attributes(JacksonUtils.convertValue(buildAttributesFromFile("attributes.json")))
                 .build();
     }
 
-    private static JsonNode buildAttributesFromFile() {
+    public static JsonNode buildAttributesFromFile(String fileName) {
         try (InputStream inputStream =
-                     AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream("attributes.json")) {
+                     AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream(fileName)) {
             assert inputStream != null;
             JsonNode result = new ObjectMapper().readValue(inputStream, new TypeReference<>() {
             });

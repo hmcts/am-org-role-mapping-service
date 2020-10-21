@@ -1,0 +1,39 @@
+{
+  "id": "21334a2b-79ce-44eb-9168-2d49a744be9c",
+  "firstName": "Sam",
+  "lastName": "Manuel",
+  "emailId": "sam.manuel@gmail.com",
+  "regionId": 1,
+  "region": "National",
+  "userTypeId": 1,
+  "userType": "user-type",
+  "deleteFlag": false,
+  "createdTime": "2020-04-28T16:00:49",
+  "lastUpdateTime": "2021-04-28T16:00:49",
+  "role": [
+    {
+      "roleId": 1,
+      "roleName": "tribunal-caseworker",
+      "primary": true,
+      "createdTime": "2020-04-28T16:00:49",
+      "lastUpdateTime": "2021-04-28T16:00:49"
+    }
+  ],
+  "baseLocation": [
+    {
+      "locationId": 219164,
+      "location": "Aberdeen Tribunal Hearing Centre",
+      "primary": true,
+      "createdTime": "2020-04-28T16:00:49",
+      "lastUpdateTime": "2021-04-28T16:00:49"
+    }
+  ],
+  "workArea": [
+    {
+      "areaOfWork": "1",
+      "serviceCode": "BAA1",
+      "createdTime": "2020-04-28T16:00:49",
+      "lastUpdateTime": "2021-04-28T16:00:49"
+    }
+  ]
+}
