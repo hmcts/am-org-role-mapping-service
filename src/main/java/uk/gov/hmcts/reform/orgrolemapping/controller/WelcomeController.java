@@ -40,8 +40,6 @@ public class WelcomeController {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     TopicPublisher topicPublisher;
-    @Autowired
-    SecurityUtils securityUtils;
 
     @Autowired
     public WelcomeController(final TopicPublisher topicPublisher,
