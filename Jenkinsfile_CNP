@@ -36,9 +36,6 @@ def secrets = [
     ],
     'am-${env}': [
             secret('role-assignment-service-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
-            secret('ccd-befta-caseworker-2-solicitor-1-pwd', 'CCD_BEFTA_CASEWORKER_2_SOLICITOR_1_PWD'),
-            secret('ccd-befta-caseworker-2-solicitor-2-pwd', 'CCD_BEFTA_CASEWORKER_2_SOLICITOR_2_PWD'),
-            secret('ccd-befta-caseworker-2-solicitor-3-pwd', 'CCD_BEFTA_CASEWORKER_2_SOLICITOR_3_PWD'),
             secret('role-assignment-service-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
             secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY')
     ]
