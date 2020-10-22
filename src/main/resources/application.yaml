@@ -5,8 +5,6 @@ management:
   health:
     defaults:
       enabled: true
-    diskspace:
-      enabled: true
   endpoint:
     health:
       enabled: true
@@ -36,6 +34,8 @@ security:
     - "/csrf"
     - "/error"
     - "/favicon.ico"
+  authorisedRoles:
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org_role_mapping_service,am_role_assignment_service}
 
 spring:
   application:
@@ -114,3 +114,9 @@ send-letter:
   url: ${SEND_LETTER_SERVICE_BASEURL:http://localhost:4021}
   enabled: ${SEND_LETTER_SERVICE_ENABLED:true}
   maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
+
+launchdarkly:
+  sdk:
+    key: ${LD_SDK_KEY:}
+    environment: ${LAUNCH_DARKLY_ENV:pr}
+    user: am-${LAUNCH_DARKLY_ENV:local}

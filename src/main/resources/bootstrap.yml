@@ -6,5 +6,6 @@ spring:
       aliases:
         AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
         am-org-role-mapping-service-s2s-secret: AM_ORG_ROLE_MAPPING_SERVICE_SECRET
+        role-assignment-service-LD-SDK-KEY: LD_SDK_KEY
         org-role-mapping-service-IDAM-CLIENT-SECRET: ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET
         org-role-mapping-service-IDAM-ADMIN-SECRET: ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD

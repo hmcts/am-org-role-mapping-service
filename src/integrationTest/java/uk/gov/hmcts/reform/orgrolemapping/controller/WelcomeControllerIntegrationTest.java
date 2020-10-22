@@ -147,3 +147,4 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         return headers;
     }
 }
+
