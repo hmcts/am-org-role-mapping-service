@@ -6,8 +6,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class ValidationUtilTest {
 
 
