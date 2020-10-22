@@ -17,7 +17,8 @@ public class FeignClientInterceptor {
     @Bean
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
-            requestTemplate.header(Constants.SERVICE_AUTHORIZATION, "Bearer " + securityUtils.getServiceAuthorizationHeader());
+            requestTemplate.header(Constants.SERVICE_AUTHORIZATION, "Bearer "
+                    + securityUtils.getServiceAuthorizationHeader());
             requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer " +  securityUtils.getUserToken());
             requestTemplate.header(HttpHeaders.CONTENT_TYPE, "application/json");
         };

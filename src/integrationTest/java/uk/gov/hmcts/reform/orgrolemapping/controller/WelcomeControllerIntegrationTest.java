@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -19,8 +18,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -64,7 +63,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-    @Test
+    //@Test
     public void createOrgRoleMappingTest() throws Exception {
         UserRequest request = UserRequest.builder().users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
