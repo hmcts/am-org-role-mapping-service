@@ -17,6 +17,7 @@ public final class V1 {
     public static final class Error {
         private Error() {
         }
+
         public static final String INVALID_REQUEST = "Request is not valid as per validation rule";
         public static final String INVALID_ROLE_NAME = "Invalid role name in the request";
         public static final String BAD_REQUEST_INVALID_PARAMETER = "Invalid Parameter";
