@@ -44,6 +44,7 @@ public class UserProfile {
         private LocalDateTime lastUpdateTime;
 
     }
+
     @Data
     @Builder
     @AllArgsConstructor
@@ -58,6 +59,7 @@ public class UserProfile {
         private LocalDateTime lastUpdateTime;
 
     }
+
     @Data
     @Builder
     @AllArgsConstructor

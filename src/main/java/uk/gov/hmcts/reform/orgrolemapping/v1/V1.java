@@ -17,6 +17,7 @@ public final class V1 {
     public static final class Error {
         private Error() {
         }
+
         public static final String INVALID_REQUEST = "Request is not valid as per validation rule";
         public static final String INVALID_ROLE_NAME = "Invalid role name in the request";
         public static final String BAD_REQUEST_INVALID_PARAMETER = "Invalid Parameter";
@@ -28,7 +29,7 @@ public final class V1 {
         public static final String INVALID_CASE_ID = "The Case id is invalid ";
         public static final String ASSIGNMENT_RECORDS_NOT_FOUND = "No Assignment records found for given criteria";
         public static final String UNPROCESSABLE_ENTITY_REQUEST_REJECTED =
-            "Unprocessable entity as request has been rejected";
+                "Unprocessable entity as request has been rejected";
 
     }
 

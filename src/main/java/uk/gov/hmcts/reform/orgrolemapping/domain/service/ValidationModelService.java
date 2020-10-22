@@ -13,6 +13,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class ValidationModelService {
+    private ValidationModelService() {
+    }
+
     //1. receive single UserAccessProfile for caseworker
     //2. receive initial requestedRole corresponding to above userAccessProfile
     //3. Run the rules for preparing the final requestedRole.
@@ -35,7 +38,8 @@ public class ValidationModelService {
                     .filter(UserProfile.BaseLocation::isPrimary)
                     .count();
             if (primaryLocation != 1) {
-                throw new BadRequestException("The user doesn't has single primary location");
+                throw new BadRequestException(String.format("The user has %s primary location(s), only 1 is allowed",
+                        primaryLocation));
             }
 
         });
