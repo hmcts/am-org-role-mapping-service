@@ -1,14 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,10 +20,6 @@ import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
-import uk.gov.hmcts.reform.auth.checker.core.RequestAuthorizer;
-import uk.gov.hmcts.reform.auth.checker.core.service.Service;
-import uk.gov.hmcts.reform.auth.checker.core.user.User;
-import uk.gov.hmcts.reform.auth.checker.spring.serviceanduser.AuthCheckerServiceAndUserFilter;
 import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
@@ -64,16 +57,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private static final String[] AUTH_WHITELIST = {
-            "/swagger-ui.html",
-            "/webjars/springfox-swagger-ui/**",
-            "/swagger-resources/**",
-            "/v2/**",
-            "/status/health",
-            "/welcome",
-            "/health/**",
-            "/health/liveness",
-            "/loggers/**",
-            "/"
+        "/swagger-ui.html",
+        "/webjars/springfox-swagger-ui/**",
+        "/swagger-resources/**",
+        "/v2/**",
+        "/status/health",
+        "/welcome",
+        "/health/**",
+        "/health/liveness",
+        "/loggers/**",
+        "/"
     };
 
 

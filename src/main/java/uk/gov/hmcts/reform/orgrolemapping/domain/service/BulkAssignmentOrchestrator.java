@@ -6,12 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +42,8 @@ public class BulkAssignmentOrchestrator {
         //2.
         //List<UserAccessProfiles> userAccessProfiles =  retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
         //3.
-        // build user access Profiles
+        //requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
+        List<UserAccessProfile> userAccessProfiles = retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
         Map<String,List<UserAccessProfile>> userAccessProfiles = UserAccessProfileBuilder.buildUserAccessProfiles();
 
         ResponseEntity<Object> response = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);

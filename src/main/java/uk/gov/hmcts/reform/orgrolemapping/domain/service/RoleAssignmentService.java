@@ -14,7 +14,7 @@ public class RoleAssignmentService {
         this.rasFeignClient = rasFeignClient;
     }
 
-    public ResponseEntity<Object> createRoleAssignment (AssignmentRequest assignmentRequest) {
+    public ResponseEntity<Object> createRoleAssignment(AssignmentRequest assignmentRequest) {
         return rasFeignClient.createRoleAssignment(assignmentRequest);
     }
 }

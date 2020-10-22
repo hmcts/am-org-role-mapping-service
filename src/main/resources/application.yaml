@@ -44,6 +44,8 @@ spring:
     allow-bean-definition-overriding: true
   jackson:
     default-property-inclusion: NON_NULL
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
   security:
     oauth2:
       client:
@@ -84,6 +86,8 @@ integrationTest:
     url: "/"
 
 feign:
+  hystrix:
+    enabled: true
   client:
     config:
       default:
