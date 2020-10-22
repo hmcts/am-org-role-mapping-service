@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -15,11 +16,16 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import uk.gov.hmcts.reform.auth.checker.spring.serviceanduser.ServiceAndUserDetails;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
 class SecurityUtilsTest {
 
+    @Mock
+    private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
+            mock(JwtGrantedAuthoritiesConverter.class);
+
     private final AuthTokenGenerator authTokenGenerator = mock(AuthTokenGenerator.class);
-    private final SecurityUtils securityUtils = new SecurityUtils(authTokenGenerator);
+    private final SecurityUtils securityUtils = new SecurityUtils(authTokenGenerator,jwtGrantedAuthoritiesConverter);
     private final String serviceAuthorization = "auth";
     private static final String USER_ID = "userId";
 
@@ -68,7 +74,7 @@ class SecurityUtilsTest {
     @Test
     void getServiceId() {
         mockSecurityContextData();
-        assertEquals("servicename", securityUtils.getServiceId());
+        assertEquals("servicename", securityUtils.getServiceName());
     }
 
 }

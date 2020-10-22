@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 @Setter
 public class AssignmentRequestBuilder {
@@ -40,7 +41,6 @@ public class AssignmentRequestBuilder {
 
         return Request.builder()
                 .assignerId(ASSIGNER_ID)
-                .reference(ACTOR_ID)
                 .process((PROCESS_ID))
                 .replaceExisting(replaceExisting)
                 .build();
@@ -78,5 +78,20 @@ public class AssignmentRequestBuilder {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static RoleAssignment buildRoleAssignmentForStaff() {
+        LocalDateTime timeStamp = LocalDateTime.now();
+        return RoleAssignment.builder()
+                .actorId("")
+                .actorIdType(ActorIdType.IDAM)
+                .roleType(RoleType.ORGANISATION)
+                .roleName("")
+                .classification(Classification.PUBLIC)
+                .grantType(GrantType.STANDARD)
+                .roleCategory(RoleCategory.STAFF)
+                .readOnly(false)
+                .attributes(new HashMap<>())
+                .build();
     }
 }

@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
+
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
 
 @Service
 @Slf4j
@@ -14,6 +18,8 @@ public class ParseRequestService {
 
     public void validateUserRequest(UserRequest userRequest){
         //parse the user List and validate each user Id to be valid string
+        userRequest.getUsers().forEach(user->
+                ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, user));
     }
 
     public void validateUserProfile(UserRequest userRequest){
