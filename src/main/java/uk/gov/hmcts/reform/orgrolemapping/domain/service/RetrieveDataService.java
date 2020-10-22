@@ -35,7 +35,7 @@ public class RetrieveDataService {
     public List<UserAccessProfile> retrieveCaseWorkerProfiles(UserRequest userRequest) {
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
         List<UserProfile> userProfileList = responseEntity.getBody();
-        ValidationModelService.validateUserProfiles(userProfileList);
+        ValidationModelService.validateUserProfiles(userProfileList, userRequest);
         return AssignmentRequestBuilder.convertUserProfileToUserAccessProfile(userProfileList);
 
     }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.util.List;
 
@@ -19,9 +20,12 @@ public class ValidationModelService {
     //1. receive single UserAccessProfile for caseworker
     //2. receive initial requestedRole corresponding to above userAccessProfile
     //3. Run the rules for preparing the final requestedRole.
-    public static void validateUserProfiles(List<UserProfile> userProfileList) {
+    public static void validateUserProfiles(List<UserProfile> userProfileList, UserRequest userRequest) {
         if (Collections.isEmpty(userProfileList)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
+        }
+        if (userRequest.getUsers().size() != userProfileList.size()) {
+            throw new ResourceNotFoundException("Some of the user profiles couldn't be found");
         }
 
         userProfileList.forEach(userProfile -> {
