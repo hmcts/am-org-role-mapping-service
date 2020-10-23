@@ -10,7 +10,7 @@ services:
       - AM_ORG_ROLE_MAPPING_SERVICE_SECRET
       - AM_ORG_ROLE_MAPPING_IDAM_KEY
       - AM_ORG_ROLE_MAPPING_TOKEN_SECRET
-      - AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES=ccd_gw,am_org_role_mapping_service
+      - AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES=ccd_gw,am_org_role_mapping_service,am_role_assignment_service
       - IDAM_USER_URL
       - IDAM_S2S_URL
       - ORG_ROLE_MAPPING_IDAM_CLIENT_ID=am_docker
