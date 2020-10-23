@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
+import com.launchdarkly.sdk.server.LDClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -44,6 +45,12 @@ public class ApplicationConfiguration {
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(getHttpClient()));
         return restTemplate;
     }
+
+    @Bean
+    public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
+        return new LDClient(sdkKey);
+    }
+
 
     private CloseableHttpClient getHttpClient() {
         int timeout = 10000;
