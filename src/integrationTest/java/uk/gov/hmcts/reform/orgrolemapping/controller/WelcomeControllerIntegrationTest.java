@@ -16,10 +16,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.util.Collections;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -66,7 +66,8 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @Test
     public void createOrgRoleMappingTest() throws Exception {
-        UserRequest request = UserRequest.builder().users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+        UserRequest request = UserRequest.builder()
+                .users(Collections.singletonList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
