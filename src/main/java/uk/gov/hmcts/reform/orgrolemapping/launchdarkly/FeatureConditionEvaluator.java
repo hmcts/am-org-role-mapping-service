@@ -24,17 +24,15 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     public static final String GET = "GET";
     public static final String POST = "POST";
     public static final String DELETE = "DELETE";
-    public static final String URI_GET_ASSIGNMENTS_BY_ACTOR_ID = "/am/role-assignments/actors/";
-    public static final String LD_FLAG_GET_ROLE_ASSIGNMENTS_BY_ACTOR_ID = "get-role-assignments-by-actor-id";
-    public static final String URI_DELETE_ASSIGNMENTS_BY_ID = "/am/role-assignments/";
-    public static final String LD_FLAG_DELETE_ROLE_ASSIGNMENTS_BY_ID = "delete-role-assignments-by-id";
-    public static final String LD_FLAG_GET_ASSIGNMENTS_BY_QUERY_PARAMS = "get-assignments-by-query-params";
 
     @Autowired
-    private final LDClient ldClient;
+    private LDClient ldClient;
 
     @Value("${launchdarkly.sdk.environment}")
     private final String environment;
+
+    @Value("${launchdarkly.sdk.user}")
+    private final String userName;
 
     private static final HashMap<String, String> getRequestMap = new HashMap<>();
     private static final HashMap<String, String> postRequestMap = new HashMap<>();
@@ -44,9 +42,6 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
         //Get Map
         getRequestMap.put("/welcome", "orm-base-flag");
     }
-
-    @Value("${launchdarkly.sdk.user}")
-    String userName;
 
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request,
