@@ -4,20 +4,37 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
+import java.util.UUID;
+
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Validated
-@Slf4j
 public class RoleAssignmentResource extends RepresentationModel<RoleAssignmentResource> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoleAssignmentResource.class);
+
     @JsonProperty("roleAssignmentResponse")
-    private List<RoleAssignment> roleAssignmentResponse;
+    private AssignmentRequest roleAssignmentRequest;
+
+
+    public RoleAssignmentResource(@NonNull AssignmentRequest roleAssignmentRequest) {
+        this.roleAssignmentRequest = roleAssignmentRequest;
+
+        //add(linkTo(methodOn(CreateAssignmentController.class).getRoleAssignmentByActorId("")).withRel("binary"))
+    }
+
+    public void addLinks(UUID documentId) {
+        LOGGER.info(" add links for document...{}", documentId);
+    }
+
 
 }
+

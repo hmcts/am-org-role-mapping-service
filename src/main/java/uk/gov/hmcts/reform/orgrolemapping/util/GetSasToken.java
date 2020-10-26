@@ -6,6 +6,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class GetSasToken {
+    //Todo : This class is reserved for local testing with Azure service bus to publish a message. Need to remove later.
 
     private GetSasToken() {
         //not called

@@ -52,7 +52,6 @@ public class AuthCheckerConfiguration {
 
     @Bean
     public Function<HttpServletRequest, Collection<String>> authorizedServicesExtractor() {
-        //log.info(String.format("Configured authorised services: %s", String.join(", ", authorisedServices)));
         return any -> ImmutableSet.copyOf(authorisedServices);
     }
 
@@ -63,32 +62,31 @@ public class AuthCheckerConfiguration {
 
     @Bean
     public Function<HttpServletRequest, Optional<String>> userIdExtractor() {
-
         return any -> Optional.empty();
     }
 
     @Bean(name = {"serviceTokenParserHttpClient", "userTokenParserHttpClient"})
     @ConditionalOnProperty(
-        value = "ssl.verification.enable",
-        havingValue = "false",
-        matchIfMissing = true)
+            value = "ssl.verification.enable",
+            havingValue = "false",
+            matchIfMissing = true)
     public HttpClient userTokenParserHttpClient()
-        throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+            throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         HttpClientBuilder httpClientBuilder = HttpClients.custom()
-            .disableCookieManagement()
-            .disableAuthCaching()
-            .useSystemProperties();
+                .disableCookieManagement()
+                .disableAuthCaching()
+                .useSystemProperties();
 
         TrustStrategy acceptingTrustStrategy = (chain, authType) -> true;
         // ignore Sonar's weak hostname verifier as we are deliberately disabling SSL verification
         HostnameVerifier allowAllHostnameVerifier = (hostName, session) -> true; // NOSONAR
         SSLContext sslContextWithoutValidation = SSLContexts.custom()
-            .loadTrustMaterial(null, acceptingTrustStrategy)
-            .build();
+                .loadTrustMaterial(null, acceptingTrustStrategy)
+                .build();
 
         SSLConnectionSocketFactory allowAllSslSocketFactory = new SSLConnectionSocketFactory(
-            sslContextWithoutValidation,
-            allowAllHostnameVerifier);
+                sslContextWithoutValidation,
+                allowAllHostnameVerifier);
 
         httpClientBuilder.setSSLSocketFactory(allowAllSslSocketFactory);
 

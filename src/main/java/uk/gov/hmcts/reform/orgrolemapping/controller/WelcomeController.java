@@ -23,7 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.service.CreateOrgRoleMappingOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
@@ -36,16 +36,17 @@ public class WelcomeController {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeController.class);
 
-    private CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator;
+    private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     TopicPublisher topicPublisher;
 
     @Autowired
     public WelcomeController(final TopicPublisher topicPublisher,
-                             CreateOrgRoleMappingOrchestrator createOrgRoleMappingOrchestrator) {
+                             BulkAssignmentOrchestrator bulkAssignmentOrchestrator) {
 
         this.topicPublisher = topicPublisher;
-        this.createOrgRoleMappingOrchestrator = createOrgRoleMappingOrchestrator;
+        this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
+
     }
 
     @GetMapping(value = "/swagger")
@@ -76,7 +77,7 @@ public class WelcomeController {
 
     @PostMapping(
             path = "/am/role-mapping/staff/users",
-            produces = V1.MediaType.CREATE_ASSIGNMENTS,
+            //produces = V1.MediaType.MAP_ASSIGNMENTS,
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -89,17 +90,14 @@ public class WelcomeController {
             ),
             @ApiResponse(
                     code = 400,
-                    message = V1.Error.INVALID_ROLE_NAME
-            ),
-            @ApiResponse(
-                    code = 400,
                     message = V1.Error.INVALID_REQUEST
             )
     })
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest)
             throws IOException {
         logger.debug("createOrgMapping");
-        return createOrgRoleMappingOrchestrator.createOrgRoleMapping(userRequest);
+        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
 

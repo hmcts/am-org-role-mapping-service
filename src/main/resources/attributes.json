@@ -1,6 +1,4 @@
 {
-  "jurisdiction": "divorce",
-  "region": "north-east",
-  "contractType": "SALARIED",
-  "caseId": "1234567890123456"
+  "jurisdiction": "IA",
+  "primaryLocation": "123456"
 }
