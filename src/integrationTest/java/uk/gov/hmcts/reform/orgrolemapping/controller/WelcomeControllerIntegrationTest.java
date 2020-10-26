@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Before;
@@ -21,13 +24,16 @@ import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
-import java.nio.charset.Charset;
-import java.util.Collections;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -61,14 +67,16 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Inject
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 
-
     @ClassRule
     public static WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(4096));
+
+    @ClassRule
+    public static final WireMockRule crdClient = new WireMockRule(wireMockConfig().port(4099));
 
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
-            Charset.forName("utf8")
+            StandardCharsets.UTF_8
     );
 
     @Autowired
@@ -90,7 +98,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         );
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
-        doReturn(true).when(featureConditionEvaluator).preHandle(any(),any(),any());
+        doReturn(true).when(featureConditionEvaluator).preHandle(any(), any(), any());
     }
 
     @Test
@@ -108,7 +116,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Test
     public void createOrgRoleMappingTest() throws Exception {
         UserRequest request = UserRequest.builder()
-                .users(Collections.singletonList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -122,7 +130,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     }
 
 
-    public void setRoleAssignmentWireMock(HttpStatus status) {
+    public void setRoleAssignmentWireMock(HttpStatus status) throws JsonProcessingException {
         String body = null;
         int returnHttpStaus = status.value();
         if (status.is2xxSuccessful()) {
@@ -176,6 +184,19 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(body)
+                        .withStatus(returnHttpStaus)
+                ));
+
+        List<String> userRequestList = Arrays.asList(
+                UUID.randomUUID().toString(), UUID.randomUUID().toString()
+        );
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        crdClient.stubFor(WireMock.post(urlEqualTo("/refdata/case-worker/users/fetchUsersById"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(mapper.writeValueAsString(new CRDFeignClientFallback()
+                                .createRoleAssignment(new UserRequest(userRequestList)).getBody()))
                         .withStatus(returnHttpStaus)
                 ));
     }
