@@ -7,13 +7,16 @@ services:
     image: hmcts/am-org-role-mapping-service
     container_name: am-org-role-mapping-service
     environment:
-      - AM_ORG_ROLE_MAPPING_DB_OPTIONS
       - AM_ORG_ROLE_MAPPING_SERVICE_SECRET
       - AM_ORG_ROLE_MAPPING_IDAM_KEY
       - AM_ORG_ROLE_MAPPING_TOKEN_SECRET
-      - AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES=ccd_gw,am_org_role_mapping_service
+      - AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES=ccd_gw,am_org_role_mapping_service,am_role_assignment_service
       - IDAM_USER_URL
       - IDAM_S2S_URL
+      - ORG_ROLE_MAPPING_IDAM_CLIENT_ID=am_docker
+      - ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET= am_docker_secret
+      - ORG_ROLE_MAPPING_IDAM_ADMIN_USERID=befta.caseworker.2.solicitor.2@gmail.com
+      - ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD=Pa55word11
       - AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
       - REFORM_SERVICE_NAME=am-org-role-mapping-service
       - REFORM_TEAM=am

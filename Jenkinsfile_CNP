@@ -37,9 +37,10 @@ def secrets = [
         secret('microservicekey-am-org-role-mapping-service', 'AM_ORG_ROLE_MAPPING_SERVICE_SECRET')
     ],
     'am-${env}': [
-           secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY'),
-           secret('role-assignment-service-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET')
-       ]
+            secret('role-assignment-service-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
+            secret('role-assignment-service-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
+            secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY')
+    ]
 ]
 
 // Vars needed for functional and smoke tests run against AKS

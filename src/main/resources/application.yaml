@@ -42,20 +42,42 @@ security:
 spring:
   application:
     name: Organisation Role Mapping Service
+  main:
+    allow-bean-definition-overriding: true
   jackson:
     default-property-inclusion: NON_NULL
+  security:
+    oauth2:
+      client:
+        provider:
+          oidc:
+            issuer-uri: ${OPEN_ID_API_BASE_URI:https://idam-web-public.aat.platform.hmcts.net/o}
+        registration:
+          oidc:
+            client-id: microservicekey-am-role-assignment-service
+            client-secret: ${AM_ROLE_ASSIGNMENT_SERVICE_SECRET:AAAAAAAAAAAAAAAA}
 
+oidc.issuer: ${OIDC_ISSUER_URL:https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts}
 
 ### dependency configuration
-auth.provider.service.client.baseUrl: ${IDAM_S2S_URL:http://localhost:4502}
 idam:
   s2s-auth:
     # AAAAAAAAAAAAAAAA
     totp_secret: ${AM_ORG_ROLE_MAPPING_SERVICE_SECRET:AAAAAAAAAAAAAAAA}
     microservice: am_org_role_mapping_service
     url: ${IDAM_S2S_URL:http://localhost:4502}
+  s2s-authorised:
+    services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:ccd_gw,am_role_assignment_service,am_org_role_mapping_service}
+  api.url: ${IDAM_USER_URL:http://localhost:5000}
+  client:
+    id: ${ORG_ROLE_MAPPING_IDAM_CLIENT_ID:am_docker}
+    secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:am_docker_secret}
+    redirect_uri: ${ORG_ROLE_MAPPING_IDAM_REDIRECT_URI:http://localhost:4096/oauth2redirect}
+    admin:
+      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:befta.caseworker.2.solicitor.2@gmail.com}
+      secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:Pa55word11}
+      scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:search-user}
 
-auth.idam.client.baseUrl: ${IDAM_USER_URL:http://localhost:5000}
 testS2S:
   api:
     url: "/testS2SAuthorization"
@@ -69,9 +91,12 @@ feign:
       default:
         connectTimeout: 5000
         readTimeout: 5000
-        loggerLevel: basic
-      datastoreclient:
-        url: ${CCD_DATA_STORE_URL:http://localhost:4452}
+        loggerLevel: FULL
+      crdclient:
+        url: ${CASE_WORKER_REF_APP_URL:http://localhost:4099}
+      roleAssignmentApp:
+        url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
+logging.level.uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient: DEBUG
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}

@@ -18,6 +18,7 @@ import javax.jms.Session;
 @Service
 @Slf4j
 public class TopicPublisher {
+    //this going to be a temporary service required for local testing to simulate CRD side messages.
     private final JmsTemplate jmsTemplate;
 
     private final String destination;

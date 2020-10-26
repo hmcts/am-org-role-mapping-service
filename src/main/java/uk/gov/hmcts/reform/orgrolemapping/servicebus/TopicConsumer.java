@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 import static java.lang.String.format;
@@ -19,12 +18,13 @@ public class TopicConsumer {
         this.maxRetryAttempts = maxRetryAttempts;
 
     }
-
+    /*
     @JmsListener(
             destination = "${amqp.topic}",
             containerFactory = "topicJmsListenerContainerFactory",
             subscription = "${amqp.subscription}"
-    )
+    ) */
+
     public void onMessage(String message) {
         processMessageWithRetry(message, 1);
     }

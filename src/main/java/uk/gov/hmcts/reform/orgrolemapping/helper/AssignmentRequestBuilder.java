@@ -20,9 +20,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Setter
-public class TestDataBuilder {
+public class AssignmentRequestBuilder {
 
-    private TestDataBuilder() {
+    public static final String ASSIGNER_ID = "123e4567-e89b-42d3-a456-556642445678";
+    public static final String ACTOR_ID = "123e4567-e89b-42d3-a456-556642445612";
+    public static final String PROCESS_ID = "staff-organisational-role-mapping";
+    public static final String ROLE_NAME_TCW = "tribunal-caseworker";
+
+    private AssignmentRequestBuilder() {
         //not meant to be instantiated.
     }
 
@@ -34,9 +39,9 @@ public class TestDataBuilder {
     public static Request buildRequest(Boolean replaceExisting) {
 
         return Request.builder()
-                .assignerId("123e4567-e89b-42d3-a456-556642445678")
-                .reference("p2")
-                .process(("p2"))
+                .assignerId(ASSIGNER_ID)
+                .reference(ACTOR_ID)
+                .process((PROCESS_ID))
                 .replaceExisting(replaceExisting)
                 .build();
     }
@@ -50,13 +55,13 @@ public class TestDataBuilder {
     public static RoleAssignment buildRoleAssignment() {
         LocalDateTime timeStamp = LocalDateTime.now();
         return RoleAssignment.builder()
-                .actorId("123e4567-e89b-42d3-a456-556642445612")
+                .actorId(ACTOR_ID)
                 .actorIdType(ActorIdType.IDAM)
-                .roleType(RoleType.CASE)
-                .roleName("judge")
+                .roleType(RoleType.ORGANISATION)
+                .roleName(ROLE_NAME_TCW)
                 .classification(Classification.PUBLIC)
-                .grantType(GrantType.SPECIFIC)
-                .roleCategory(RoleCategory.JUDICIAL)
+                .grantType(GrantType.STANDARD)
+                .roleCategory(RoleCategory.STAFF)
                 .readOnly(false)
                 .attributes(JacksonUtils.convertValue(buildAttributesFromFile()))
                 .build();
@@ -64,20 +69,7 @@ public class TestDataBuilder {
 
     private static JsonNode buildAttributesFromFile() {
         try (InputStream inputStream =
-                     TestDataBuilder.class.getClassLoader().getResourceAsStream("attributes.json")) {
-            assert inputStream != null;
-            JsonNode result = new ObjectMapper().readValue(inputStream, new TypeReference<>() {
-            });
-            inputStream.close();
-            return result;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static JsonNode buildNotesFromFile() {
-        try (InputStream inputStream =
-                     TestDataBuilder.class.getClassLoader().getResourceAsStream("notes.json")) {
+                     AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream("attributes.json")) {
             assert inputStream != null;
             JsonNode result = new ObjectMapper().readValue(inputStream, new TypeReference<>() {
             });

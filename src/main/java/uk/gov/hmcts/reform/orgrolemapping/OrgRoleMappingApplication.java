@@ -12,12 +12,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.retry.annotation.EnableRetry;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.reform.authorisation.generators.ServiceAuthTokenGenerator;
+import uk.gov.hmcts.reform.idam.client.IdamApi;
 
 
 @SpringBootApplication
 @EnableCircuitBreaker
-@EnableFeignClients
 @EnableRetry
+@EnableFeignClients(basePackages = {
+        "uk.gov.hmcts.reform.orgrolemapping"}, basePackageClasses = {IdamApi.class, ServiceAuthorisationApi.class})
 public class OrgRoleMappingApplication {
 
     public static void main(final String[] args) {
