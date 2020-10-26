@@ -49,7 +49,7 @@ public class RetrieveDataService {
 
 
     public Map<String,Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
-     //   ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
+        //ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
 
         List<UserProfile> userProfiles = responseEntity.getBody();
