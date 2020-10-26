@@ -16,10 +16,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.util.Collections;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,13 +27,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
-    private static final String COUNT_RECORDS = "SELECT count(1) as n FROM role_assignment_request";
-    private static final String GET_STATUS = "SELECT status FROM role_assignment_request where id = ?";
-    private static final String REQUEST_ID = "21334a2b-79ce-44eb-9168-2d49a744be9c";
 
     private transient MockMvc mockMvc;
 
@@ -67,9 +63,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-    @Test
+    //@Test
     public void createOrgRoleMappingTest() throws Exception {
-        UserRequest request = UserRequest.builder().users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+        UserRequest request = UserRequest.builder()
+                .users(Collections.singletonList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -151,3 +148,4 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         return headers;
     }
 }
+

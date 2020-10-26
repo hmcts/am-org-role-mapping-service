@@ -25,6 +25,7 @@ public class TopicConsumer {
             containerFactory = "topicJmsListenerContainerFactory",
             subscription = "${amqp.subscription}"
     ) */
+
     public void onMessage(String message) {
         processMessageWithRetry(message, 1);
     }

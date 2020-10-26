@@ -11,21 +11,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
 import java.io.IOException;
@@ -40,8 +39,6 @@ public class WelcomeController {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     TopicPublisher topicPublisher;
-    @Autowired
-    SecurityUtils securityUtils;
 
     @Autowired
     public WelcomeController(final TopicPublisher topicPublisher,
@@ -74,9 +71,9 @@ public class WelcomeController {
 
     @GetMapping(value = "/welcome")
     public String welcome() {
+        //Use the below statement for any given API to implement Launch Darkly.
         return "Welcome to Organisation Role Mapping Service";
     }
-
 
     @PostMapping(
             path = "/am/role-mapping/staff/users",
