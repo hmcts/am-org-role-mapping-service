@@ -29,14 +29,12 @@ public class BulkAssignmentOrchestrator {
 
 
     public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
-        //1.
+        //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
-
-
+        //Create userAccessProfiles based upon roleId and service codes
         Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                 .retrieveCaseWorkerProfiles(userRequest);
-        //Map<String,Set<UserAccessProfile>> userAccessProfiles = UserAccessProfileBuilder.buildUserAccessProfiles();
-
+        //call the requestMapping service to determine role name and create role assignment requests
         ResponseEntity<Object> response = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
         return response;
     }

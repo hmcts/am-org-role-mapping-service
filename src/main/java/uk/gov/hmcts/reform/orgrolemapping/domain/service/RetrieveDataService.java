@@ -2,14 +2,12 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,30 +35,24 @@ public class RetrieveDataService {
      */
 
     private final CRDFeignClient crdFeignClient;
-    private final CRDFeignClientFallback crdFeignClientFallback;
     private final ParseRequestService parseRequestService;
 
-    public RetrieveDataService(CRDFeignClient crdFeignClient, CRDFeignClientFallback crdFeignClientFallback,
-                               @Autowired ParseRequestService parseRequestService) {
+    public RetrieveDataService(CRDFeignClient crdFeignClient,
+                                ParseRequestService parseRequestService) {
         this.crdFeignClient = crdFeignClient;
-        this.crdFeignClientFallback = crdFeignClientFallback;
         this.parseRequestService = parseRequestService;
     }
 
 
     public Map<String,Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
-        //ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
-        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
+        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
 
-        List<UserProfile> userProfileList = responseEntity.getBody();
-        parseRequestService.validateUserProfiles(userProfileList, userRequest);
+        List<UserProfile> userProfiles = responseEntity.getBody();
+        parseRequestService.validateUserProfiles(userProfiles, userRequest);
 
-        Map<String, Set<UserAccessProfile>> map = new HashMap<>();
-        userProfileList.stream().forEach(userProfile -> map.put(userProfile.getId(),
+        Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
+        userProfiles.stream().forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                 convertUserProfileToUserAccessProfile(userProfile)));
-        return map;
-
-        //return convertUserProfileToUserAccessProfile(userProfileList);
-
+        return usersAccessProfiles;
     }
 }

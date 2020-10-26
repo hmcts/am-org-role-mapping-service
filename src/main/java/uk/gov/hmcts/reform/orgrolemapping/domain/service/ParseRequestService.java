@@ -26,20 +26,15 @@ public class ParseRequestService {
                 ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, user));
     }
 
-    public void validateUserProfile(UserRequest userRequest) {
-        // parse the list of userProfiles received from CRD
-        // and validate all important fields.
-    }
-
-    public void validateUserProfiles(List<UserProfile> userProfileList, UserRequest userRequest) {
-        if (Collections.isEmpty(userProfileList)) {
+    public void validateUserProfiles(List<UserProfile> userProfiles, UserRequest userRequest) {
+        if (Collections.isEmpty(userProfiles)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
-        if (userRequest.getUsers().size() != userProfileList.size()) {
+        if (userRequest.getUsers().size() != userProfiles.size()) {
             throw new ResourceNotFoundException("Some of the user profiles couldn't be found");
         }
 
-        userProfileList.forEach(userProfile -> {
+        userProfiles.forEach(userProfile -> {
             if (CollectionUtils.isEmpty(userProfile.getBaseLocation())) {
                 throw new BadRequestException("The base location is not available");
             }
