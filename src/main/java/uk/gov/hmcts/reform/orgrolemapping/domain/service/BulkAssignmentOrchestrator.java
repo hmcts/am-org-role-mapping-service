@@ -4,17 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -34,20 +28,16 @@ public class BulkAssignmentOrchestrator {
     private RequestMappingService requestMappingService;
 
 
-
-
-    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) throws IOException {
+    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
         //1.
         parseRequestService.validateUserRequest(userRequest);
-        //2.
-        //List<UserAccessProfiles> userAccessProfiles =  retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
-        //3.
-        //requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
-        List<UserAccessProfile> userAccessProfiles = retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
-        Map<String,List<UserAccessProfile>> userAccessProfiles = UserAccessProfileBuilder.buildUserAccessProfiles();
+
+
+        Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
+                .retrieveCaseWorkerProfiles(userRequest);
+        //Map<String,Set<UserAccessProfile>> userAccessProfiles = UserAccessProfileBuilder.buildUserAccessProfiles();
 
         ResponseEntity<Object> response = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
-
         return response;
     }
 

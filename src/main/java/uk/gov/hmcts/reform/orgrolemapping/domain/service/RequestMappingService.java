@@ -6,7 +6,6 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -29,7 +28,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertObject
 public class RequestMappingService {
     //1. This will receive the single/multiple userAccessProfile from Orchestrator.
     //2. For Each UserAccessProfile:
-    //a. Check if the delete flag set to true, if yes then prepare AssignmentRequest with Empty requestedRole List and skip drools.
+    //a. Check if the delete flag set to true, if yes then prepare AssignmentRequest with Empty r
+    // equestedRole List and skip drools.
     //b. Else Check if there is multiple roles and service codes in User object --> Shifted to retrieveDataService
     //  If yes prepare more user instances(same userId) but with unique combinations of roleId and serviceCodeId
     //  Else simply prepare single user instance
@@ -51,7 +51,7 @@ public class RequestMappingService {
     }
 
 
-    public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, List<UserAccessProfile>> userAccessProfiles) {
+    public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, Set<UserAccessProfile>> userAccessProfiles) {
         //Receive List<UserAccessProfiles> userAccessProfiles
         //Create List<UserAccessProfile> based on  the list based on user id
         return checkUserProfiles(userAccessProfiles);
@@ -71,7 +71,7 @@ public class RequestMappingService {
 
 
     // We are process List<UserAccessProfile> having same UserId
-    private ResponseEntity<Object> checkUserProfiles(Map<String, List<UserAccessProfile>> userAccessProfiles) {
+    private ResponseEntity<Object> checkUserProfiles(Map<String, Set<UserAccessProfile>> userAccessProfiles) {
 
         List<RoleAssignment> roleAssignments = new ArrayList<>();
 
@@ -83,22 +83,22 @@ public class RequestMappingService {
         userAccessProfiles.entrySet().stream().forEach(entry -> {
             AssignmentRequest assignmentRequest = createAssignmentRequest(true);
             assignmentRequest.getRequest().setReference(entry.getKey());
-            deleteFlag.set(entry.getValue().get(0).isDeleteFlag());
+            deleteFlag.set(entry.getValue().stream().findFirst().get().isDeleteFlag());
             if (!deleteFlag.get()) {
                 entry.getValue().stream().forEach(userAccessProfile -> {
 
                     RoleAssignment roleAssignment = AssignmentRequestBuilder.buildRoleAssignmentForStaff();
                     roleAssignment.setActorId(userAccessProfile.getId());
-                    roleAssignment.getAttributes().put("primaryLocation"
-                            , convertObjectIntoJsonNode(userAccessProfile.getPrimaryLocationId()));
+                    roleAssignment.getAttributes().put("primaryLocation",
+                            convertObjectIntoJsonNode(userAccessProfile.getPrimaryLocationId()));
 
                     droolValidation(userAccessProfile, roleAssignment);
                     if (StringUtils.isNotEmpty(roleAssignment.getRoleName())) {
                         roleAssignments.add(roleAssignment);
                     } else {
                         // logging for fail validation roleID and service Code
-                        log.error("User Access profiles {} has not been validated by drool for the service code {} : "
-                                , userAccessProfile.getId(), userAccessProfile.getServiceCode());
+                        log.error("User Access profiles {} has not been validated by drool for the service code {} : ",
+                                userAccessProfile.getId(), userAccessProfile.getServiceCode());
                     }
                 });
                 assignmentRequest.setRequestedRoles(roleAssignments);
@@ -118,11 +118,13 @@ public class RequestMappingService {
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
     }
 
-    private ResponseEntity<Object> validatePreparedAssignmentRequest(boolean deleteFlag, AssignmentRequest assignmentRequest) {
+    private ResponseEntity<Object> validatePreparedAssignmentRequest(boolean deleteFlag,
+                                                                     AssignmentRequest assignmentRequest) {
 
 
         if (Objects.equals(deleteFlag, false) && assignmentRequest.getRequestedRoles().size() == 0) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("UserAccess Profile could not be mapped");
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                    .body("UserAccess Profile could not be mapped");
             //throw new UnprocessableEntityException("UserAccessProfiles is not validated by drool");
         } else {
             //feign client call

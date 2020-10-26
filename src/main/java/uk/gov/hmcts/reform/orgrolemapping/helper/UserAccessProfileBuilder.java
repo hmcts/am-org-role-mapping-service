@@ -5,22 +5,32 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Setter
 public class UserAccessProfileBuilder {
     public static final String ID1 = "123e4567-e89b-42d3-a456-556642445678";
     public static final String ID2 = "123e4567-e89b-42d3-a456-556642445699";
 
-    public static Map<String,List<UserAccessProfile>> buildUserAccessProfiles(){
+    private UserAccessProfileBuilder() {
 
-        Map<String,List<UserAccessProfile>> userProfileMapping = new HashMap<>();
+    }
 
-        List<UserAccessProfile> userAccessProfiles1 = Arrays.asList(buildUserAccessProfileForRoleId1(),buildUserAccessProfileForRoleId2());
-        List<UserAccessProfile> userAccessProfiles2 = Arrays.asList(buildUserAccessProfileForRoleId3(),buildUserAccessProfileForRoleId4());
-        userProfileMapping.put(userAccessProfiles1.get(0).getId(),userAccessProfiles1);
-        userProfileMapping.put(userAccessProfiles2.get(0).getId(),userAccessProfiles2);
+    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfiles() {
+
+        Map<String, Set<UserAccessProfile>> userProfileMapping = new HashMap<>();
+
+        List<UserAccessProfile> userAccessProfiles1 = Arrays.asList(buildUserAccessProfileForRoleId1(),
+                buildUserAccessProfileForRoleId2());
+        List<UserAccessProfile> userAccessProfiles2 = Arrays.asList(buildUserAccessProfileForRoleId3(),
+                buildUserAccessProfileForRoleId4());
+        userProfileMapping.put(userAccessProfiles1.get(0).getId(),
+                new HashSet<UserAccessProfile>(userAccessProfiles1));
+        userProfileMapping.put(userAccessProfiles2.get(0).getId(),
+                new HashSet<UserAccessProfile>(userAccessProfiles1));
 
         return userProfileMapping;
     }

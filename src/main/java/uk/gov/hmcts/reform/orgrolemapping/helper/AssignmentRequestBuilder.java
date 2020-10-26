@@ -20,7 +20,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 public class AssignmentRequestBuilder {
@@ -81,6 +82,7 @@ public class AssignmentRequestBuilder {
             throw new RuntimeException(e);
         }
     }
+
     public static JsonNode buildAttributesFromFile(String fileName) {
         try (InputStream inputStream =
                      AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream(fileName)) {
@@ -92,8 +94,9 @@ public class AssignmentRequestBuilder {
             throw new RuntimeException(e);
         }
     }
+
     public static RoleAssignment buildRoleAssignmentForStaff() {
-        LocalDateTime timeStamp = LocalDateTime.now();
+        //LocalDateTime timeStamp = LocalDateTime.now();
         return RoleAssignment.builder()
                 .actorId("")
                 .actorIdType(ActorIdType.IDAM)
@@ -107,31 +110,31 @@ public class AssignmentRequestBuilder {
                 .build();
     }
 
-    public static List<UserAccessProfile> convertUserProfileToUserAccessProfile(List<UserProfile> userProfiles) {
+    public static Set<UserAccessProfile> convertUserProfileToUserAccessProfile(UserProfile userProfile) {
         //roleId X serviceCode
-        List<UserAccessProfile> userAccessProfiles = new ArrayList<>();
-        for (UserProfile userProfile : userProfiles) {
-            userProfile.getRole().forEach(role -> {
-                userProfile.getWorkArea().forEach(workArea -> {
-                    UserAccessProfile userAccessProfile = new UserAccessProfile();
-                    userAccessProfile.setId(userProfile.getId());
-                    userAccessProfile.setDeleteFlag(userProfile.isDeleteFlag());
-                    userProfile.getBaseLocation().forEach(baseLocation -> {
-                        if (baseLocation.isPrimary()) {
-                            userAccessProfile.setPrimaryLocationId(baseLocation.getLocationId());
-                            userAccessProfile.setPrimaryLocationName(baseLocation.getLocation());
-                        }
-                    });
-                    userAccessProfile.setAreaOfWorkId(workArea.getAreaOfWork());
-                    userAccessProfile.setServiceCode(workArea.getServiceCode());
-                    userAccessProfile.setRoleId(role.getRoleId());
-                    userAccessProfile.setRoleName(role.getRoleName());
+        Set<UserAccessProfile> userAccessProfiles = new HashSet<>();
 
-                    userAccessProfiles.add(userAccessProfile);
+        userProfile.getRole().forEach(role -> {
+            userProfile.getWorkArea().forEach(workArea -> {
+                UserAccessProfile userAccessProfile = new UserAccessProfile();
+                userAccessProfile.setId(userProfile.getId());
+                userAccessProfile.setDeleteFlag(userProfile.isDeleteFlag());
+                userProfile.getBaseLocation().forEach(baseLocation -> {
+                    if (baseLocation.isPrimary()) {
+                        userAccessProfile.setPrimaryLocationId(baseLocation.getLocationId());
+                        userAccessProfile.setPrimaryLocationName(baseLocation.getLocation());
+                    }
                 });
-            });
+                userAccessProfile.setAreaOfWorkId(workArea.getAreaOfWork());
+                userAccessProfile.setServiceCode(workArea.getServiceCode());
+                userAccessProfile.setRoleId(role.getRoleId());
+                userAccessProfile.setRoleName(role.getRoleName());
 
-        }
+                userAccessProfiles.add(userAccessProfile);
+            });
+        });
+
+
         return userAccessProfiles;
     }
 }

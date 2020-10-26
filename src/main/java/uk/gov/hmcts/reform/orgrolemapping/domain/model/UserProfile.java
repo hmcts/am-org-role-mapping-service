@@ -35,7 +35,7 @@ public class UserProfile {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Role {
-        private int roleId;
+        private String roleId;
         private String roleName;
         private boolean primary;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
@@ -50,7 +50,7 @@ public class UserProfile {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class BaseLocation {
-        private int locationId;
+        private String locationId;
         private String location;
         private boolean primary;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
@@ -65,7 +65,7 @@ public class UserProfile {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class WorkArea {
-        private int areaOfWork;
+        private String areaOfWork;
         private String serviceCode;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;

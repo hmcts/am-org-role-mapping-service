@@ -9,8 +9,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class CRDFeignClientFallback implements CRDFeignClient {
@@ -24,18 +26,27 @@ public class CRDFeignClientFallback implements CRDFeignClient {
 
     @Override
     public ResponseEntity<List<UserProfile>> createRoleAssignment(UserRequest userRequest) {
-        try (InputStream inputStream =
-                     CRDFeignClientFallback.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
-            assert inputStream != null;
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            List<UserProfile> userProfiles = Arrays.asList(objectMapper.readValue(inputStream, UserProfile[].class));
-            return ResponseEntity.ok(userProfiles);
+        Set<UserProfile> userProfiles = new HashSet<>();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
+        userRequest.getUsers().forEach(userId -> {
+            try (InputStream inputStream =
+                         CRDFeignClientFallback.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
+                assert inputStream != null;
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new JavaTimeModule());
+                UserProfile userProfile = objectMapper.readValue(inputStream, UserProfile.class);
+                userProfile.setId(userId);
+                userProfiles.add(userProfile);
+
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+
+        });
+        return ResponseEntity.ok(new ArrayList<>(userProfiles));
     }
 
 }

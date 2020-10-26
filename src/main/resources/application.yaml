@@ -86,8 +86,7 @@ integrationTest:
     url: "/"
 
 feign:
-  hystrix:
-    enabled: true
+
   client:
     config:
       default:
