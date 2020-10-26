@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.kie.api.runtime.StatelessKieSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

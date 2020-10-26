@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -37,10 +38,13 @@ public class RetrieveDataService {
 
     private final CRDFeignClient crdFeignClient;
     private final CRDFeignClientFallback crdFeignClientFallback;
+    private final ParseRequestService parseRequestService;
 
-    public RetrieveDataService(CRDFeignClient crdFeignClient, CRDFeignClientFallback crdFeignClientFallback) {
+    public RetrieveDataService(CRDFeignClient crdFeignClient, CRDFeignClientFallback crdFeignClientFallback,
+                               @Autowired ParseRequestService parseRequestService) {
         this.crdFeignClient = crdFeignClient;
         this.crdFeignClientFallback = crdFeignClientFallback;
+        this.parseRequestService = parseRequestService;
     }
 
 
@@ -49,7 +53,7 @@ public class RetrieveDataService {
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
 
         List<UserProfile> userProfileList = responseEntity.getBody();
-        ValidationModelService.validateUserProfiles(userProfileList, userRequest);
+        parseRequestService.validateUserProfiles(userProfileList, userRequest);
 
         Map<String, Set<UserAccessProfile>> map = new HashMap<>();
         userProfileList.stream().forEach(userProfile -> map.put(userProfile.getId(),
