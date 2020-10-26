@@ -11,6 +11,8 @@ properties(
 
 @Library("Infrastructure")
 
+import uk.gov.hmcts.contino.AppPipelineDsl
+
 def type = "java"
 def product = "am"
 def component = "org-role-mapping-service"
@@ -56,6 +58,9 @@ env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
 env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
 
+// Vars for Kubernetes PACT
+env.PACT_BROKER_FULL_URL = 'https://pact-broker.platform.hmcts.net'
+
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
       env.LAUNCH_DARKLY_ENV = "pr"
@@ -94,4 +99,8 @@ withPipeline(type, product, component) {
   after('smoketest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/site/serenity/**'
   }
+
+  enablePactAs([
+          AppPipelineDsl.PactRoles.CONSUMER
+  ])
 }
