@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -32,6 +33,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -53,6 +55,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Mock
     private SecurityUtils securityUtils;
 
+    @Mock
+    private FeatureConditionEvaluator featureConditionEvaluator;
+
     @Inject
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 
@@ -70,7 +75,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private transient WelcomeController welcomeController;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         this.mockMvc = standaloneSetup(this.welcomeController).build();
 
         doReturn(authentication).when(securityContext).getAuthentication();
@@ -85,6 +90,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         );
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
+        doReturn(true).when(featureConditionEvaluator).preHandle(any(),any(),any());
     }
 
     @Test
