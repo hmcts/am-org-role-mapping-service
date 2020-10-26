@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -201,13 +202,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 ));
     }
 
+    @NotNull
     private HttpHeaders getHttpHeaders() {
-        String authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
-        String serviceAuthorisation = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjY2RfZ3ciLCJleHAiOjE2MDI2ODAwNjJ9.eTrBOVMQI4L";
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        String authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
         headers.set("Authorization", "Bearer " + authorisation);
-        headers.set("ServiceAuthorization", "Bearer " + serviceAuthorisation);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String s2SToken = MockUtils.generateDummyS2SToken("am_org_role_mapping_service");
+        headers.add("ServiceAuthorization", "Bearer " + s2SToken);
         return headers;
     }
 }
