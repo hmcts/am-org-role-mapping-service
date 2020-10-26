@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
@@ -22,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Setter
 public class AssignmentRequestBuilder {
@@ -43,8 +45,10 @@ public class AssignmentRequestBuilder {
     public static Request buildRequest(Boolean replaceExisting) {
 
         return Request.builder()
-                .assignerId(ASSIGNER_ID)
+                .assignerId(ASSIGNER_ID) // This won't be set for the requests.
                 .process((PROCESS_ID))
+                .requestType(RequestType.CREATE)
+                .correlationId(UUID.randomUUID().toString())
                 .replaceExisting(replaceExisting)
                 .build();
     }
@@ -95,14 +99,11 @@ public class AssignmentRequestBuilder {
         }
     }
 
-    public static RoleAssignment buildRoleAssignmentForStaff() {
-        //LocalDateTime timeStamp = LocalDateTime.now();
+    public static RoleAssignment buildRequestedRoleForStaff() {
         return RoleAssignment.builder()
-                .actorId("")
                 .actorIdType(ActorIdType.IDAM)
                 .roleType(RoleType.ORGANISATION)
-                .roleName("")
-                .classification(Classification.PUBLIC)
+                .classification(Classification.PUBLIC) //default is public
                 .grantType(GrantType.STANDARD)
                 .roleCategory(RoleCategory.STAFF)
                 .readOnly(false)
