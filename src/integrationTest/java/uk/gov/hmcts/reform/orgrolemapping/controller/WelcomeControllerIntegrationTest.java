@@ -5,16 +5,26 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
+import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import javax.inject.Inject;
 import java.nio.charset.Charset;
 import java.util.Collections;
 
@@ -22,6 +32,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +43,19 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
 
     private transient MockMvc mockMvc;
+
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
+
+    @Mock
+    private SecurityUtils securityUtils;
+
+    @Inject
+    private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
+
 
     @ClassRule
     public static WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(4096));
@@ -49,6 +73,18 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     public void setUp() {
         this.mockMvc = standaloneSetup(this.welcomeController).build();
 
+        doReturn(authentication).when(securityContext).getAuthentication();
+        SecurityContextHolder.setContext(securityContext);
+        UserInfo userInfo = UserInfo.builder()
+                .uid("6b36bfc6-bb21-11ea-b3de-0242ac130006")
+                .sub("emailId@a.com")
+                .build();
+        ReflectionTestUtils.setField(
+                jwtGrantedAuthoritiesConverter,
+                "userInfo", userInfo
+
+        );
+        MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
     }
 
     @Test
@@ -63,7 +99,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-    //@Test
+    @Test
     public void createOrgRoleMappingTest() throws Exception {
         UserRequest request = UserRequest.builder()
                 .users(Collections.singletonList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -76,7 +112,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
                 .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(201)).andReturn();
+        ).andExpect(status().is(200)).andReturn();
     }
 
 
