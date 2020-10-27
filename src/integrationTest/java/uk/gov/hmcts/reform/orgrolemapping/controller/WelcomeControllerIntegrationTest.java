@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -62,7 +63,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Mock
     private SecurityUtils securityUtils;
 
-    @Mock
+    @MockBean
     private FeatureConditionEvaluator featureConditionEvaluator;
 
     @Inject
