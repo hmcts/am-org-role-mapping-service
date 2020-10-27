@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
@@ -62,8 +64,11 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Mock
     private SecurityUtils securityUtils;
 
-    @Mock
+    @MockBean
     private FeatureConditionEvaluator featureConditionEvaluator;
+
+    @MockBean
+    private FeignClientInterceptor feignClientInterceptor;
 
     @Inject
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
