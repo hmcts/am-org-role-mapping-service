@@ -8,6 +8,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,16 +37,20 @@ public class RetrieveDataService {
 
     private final CRDFeignClient crdFeignClient;
     private final ParseRequestService parseRequestService;
+    private final CRDFeignClientFallback crdFeignClientFallback;
 
     public RetrieveDataService(CRDFeignClient crdFeignClient,
-                                ParseRequestService parseRequestService) {
+                               ParseRequestService parseRequestService,
+                               CRDFeignClientFallback crdFeignClientFallback) {
         this.crdFeignClient = crdFeignClient;
         this.parseRequestService = parseRequestService;
+        this.crdFeignClientFallback = crdFeignClientFallback;
     }
 
 
     public Map<String,Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
-        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
+        //ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
+        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
 
         List<UserProfile> userProfiles = responseEntity.getBody();
         parseRequestService.validateUserProfiles(userProfiles, userRequest);

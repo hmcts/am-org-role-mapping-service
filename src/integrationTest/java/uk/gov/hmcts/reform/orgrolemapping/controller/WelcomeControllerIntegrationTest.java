@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -22,6 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -45,7 +46,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
@@ -68,6 +68,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Inject
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 
+    @Inject
+    private WebApplicationContext wac;
+
     @ClassRule
     public static WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(4096));
 
@@ -85,7 +88,8 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @Before
     public void setUp() throws Exception {
-        this.mockMvc = standaloneSetup(this.welcomeController).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        //this.mockMvc = standaloneSetup(this.welcomeController).build()
 
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
@@ -202,7 +206,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 ));
     }
 
-    @NotNull
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         String authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
