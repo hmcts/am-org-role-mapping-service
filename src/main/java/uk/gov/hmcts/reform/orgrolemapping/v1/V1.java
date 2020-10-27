@@ -29,7 +29,7 @@ public final class V1 {
         public static final String INVALID_CASE_ID = "The Case id is invalid ";
         public static final String ASSIGNMENT_RECORDS_NOT_FOUND = "No Assignment records found for given criteria";
         public static final String UNPROCESSABLE_ENTITY_REQUEST_REJECTED =
-            "Unprocessable entity as request has been rejected";
+                "Unprocessable entity as request has been rejected";
 
     }
 

@@ -36,7 +36,7 @@ public class JacksonUtils {
         });
     }
 
-    public static JsonNode convertValueJsonNode(Object from) {
+    public static JsonNode convertObjectIntoJsonNode(Object from) {
         return MAPPER.convertValue(from, JsonNode.class);
     }
 

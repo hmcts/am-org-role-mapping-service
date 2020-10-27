@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller.advice;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants.UNPROCESSABLE_ENTITY;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
 @Slf4j
 @ControllerAdvice(basePackages = "uk.gov.hmcts.reform.orgrolemapping")
@@ -87,6 +89,18 @@ public class OrgRoleMappingControllerAdvice {
             HttpStatus.INTERNAL_SERVER_ERROR,
             ErrorConstants.UNKNOWN_EXCEPTION.getErrorCode(),
             ErrorConstants.UNKNOWN_EXCEPTION.getErrorMessage());
+    }
+
+    @ExceptionHandler(UnprocessableEntityException.class)
+    protected ResponseEntity<Object> handleUnProcessableEntityExcepton(
+            HttpServletRequest request,
+            Exception exeception) {
+        return errorDetailsResponseEntity(
+                exeception,
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                UNPROCESSABLE_ENTITY.getErrorCode(),
+                UNPROCESSABLE_ENTITY.getErrorMessage()
+        );
     }
 
     public String getTimeStamp() {

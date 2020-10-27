@@ -31,6 +31,7 @@ public enum ErrorConstants {
     BAD_GATEWAY(502, "Bad Gateway"),
     SERVICE_UNAVAILABLE(503, "Service Unavailable"),
     GATEWAY_TIMEOUT(504, "Gateway Timeout"),
+    UNPROCESSABLE_ENTITY(422, "Unprocessable Entity"),
         ;
 
     private final int errorCode;

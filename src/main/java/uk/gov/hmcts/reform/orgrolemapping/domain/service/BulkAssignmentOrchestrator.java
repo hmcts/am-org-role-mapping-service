@@ -4,11 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 
-import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -26,23 +26,16 @@ public class BulkAssignmentOrchestrator {
     private RetrieveDataService retrieveDataService;
     @Autowired
     private RequestMappingService requestMappingService;
-    @Autowired
-    private RoleAssignmentService roleAssignmentService;
 
 
-
-    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) throws IOException {
-        //1.
-        //parseRequestService.validateUserRequest(userRequest);
-        //2.
-        //List<UserAccessProfiles> userAccessProfiles =  retrieveDataService.retrieveCaseWorkerProfiles(userRequest);
-        //3.
-        //requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
-
-        AssignmentRequest assignmentRequest = AssignmentRequestBuilder
-                .buildAssignmentRequest(false);
-        ResponseEntity<Object> response = null;
-        response = roleAssignmentService.createRoleAssignment(assignmentRequest);
+    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
+        //Extract and Validate received users List
+        parseRequestService.validateUserRequest(userRequest);
+        //Create userAccessProfiles based upon roleId and service codes
+        Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
+                .retrieveCaseWorkerProfiles(userRequest);
+        //call the requestMapping service to determine role name and create role assignment requests
+        ResponseEntity<Object> response = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
         return response;
     }
 
