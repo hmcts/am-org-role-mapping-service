@@ -32,7 +32,7 @@ public class ValidationUtil {
                 throw new BadRequestException("The input parameter is Null/Empty");
             } else if (!Pattern.matches(pattern, input)) {
                 throw new BadRequestException("The input parameter: \"" + input + "\", does not comply with the "
-                                              + "required pattern");
+                        + "required pattern");
             }
         }
     }

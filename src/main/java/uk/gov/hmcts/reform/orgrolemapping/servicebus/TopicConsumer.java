@@ -18,8 +18,9 @@ public class TopicConsumer {
         this.maxRetryAttempts = maxRetryAttempts;
 
     }
-    /*
-    @JmsListener(
+
+
+    /*@JmsListener(
             destination = "${amqp.topic}",
             containerFactory = "topicJmsListenerContainerFactory",
             subscription = "${amqp.subscription}"

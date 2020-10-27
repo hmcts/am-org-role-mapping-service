@@ -1,27 +1,47 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
+import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
+import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import java.nio.charset.Charset;
-import java.util.Collections;
+import javax.inject.Inject;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,22 +53,53 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private transient MockMvc mockMvc;
 
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
+
+    @Mock
+    private SecurityUtils securityUtils;
+
+    @Mock
+    private FeatureConditionEvaluator featureConditionEvaluator;
+
+    @Inject
+    private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
+
     @ClassRule
     public static WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(4096));
+
+    @ClassRule
+    public static final WireMockRule crdClient = new WireMockRule(wireMockConfig().port(4099));
 
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
-            Charset.forName("utf8")
+            StandardCharsets.UTF_8
     );
 
     @Autowired
     private transient WelcomeController welcomeController;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         this.mockMvc = standaloneSetup(this.welcomeController).build();
 
+        doReturn(authentication).when(securityContext).getAuthentication();
+        SecurityContextHolder.setContext(securityContext);
+        UserInfo userInfo = UserInfo.builder()
+                .uid("6b36bfc6-bb21-11ea-b3de-0242ac130006")
+                .sub("emailId@a.com")
+                .build();
+        ReflectionTestUtils.setField(
+                jwtGrantedAuthoritiesConverter,
+                "userInfo", userInfo
+
+        );
+        MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
+        doReturn(true).when(featureConditionEvaluator).preHandle(any(), any(), any());
     }
 
     @Test
@@ -63,10 +114,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-    //@Test
+    @Test
     public void createOrgRoleMappingTest() throws Exception {
         UserRequest request = UserRequest.builder()
-                .users(Collections.singletonList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -76,11 +127,11 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
                 .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(201)).andReturn();
+        ).andExpect(status().is(200)).andReturn();
     }
 
 
-    public void setRoleAssignmentWireMock(HttpStatus status) {
+    public void setRoleAssignmentWireMock(HttpStatus status) throws JsonProcessingException {
         String body = null;
         int returnHttpStaus = status.value();
         if (status.is2xxSuccessful()) {
@@ -136,15 +187,29 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         .withBody(body)
                         .withStatus(returnHttpStaus)
                 ));
+
+        List<String> userRequestList = Arrays.asList(
+                UUID.randomUUID().toString(), UUID.randomUUID().toString()
+        );
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        crdClient.stubFor(WireMock.post(urlEqualTo("/refdata/case-worker/users/fetchUsersById"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(mapper.writeValueAsString(new CRDFeignClientFallback()
+                                .createRoleAssignment(new UserRequest(userRequestList)).getBody()))
+                        .withStatus(returnHttpStaus)
+                ));
     }
 
+    @NotNull
     private HttpHeaders getHttpHeaders() {
-        String authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
-        String serviceAuthorisation = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjY2RfZ3ciLCJleHAiOjE2MDI2ODAwNjJ9.eTrBOVMQI4L";
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        String authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
         headers.set("Authorization", "Bearer " + authorisation);
-        headers.set("ServiceAuthorization", "Bearer " + serviceAuthorisation);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String s2SToken = MockUtils.generateDummyS2SToken("am_org_role_mapping_service");
+        headers.add("ServiceAuthorization", "Bearer " + s2SToken);
         return headers;
     }
 }

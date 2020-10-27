@@ -1,8 +1,28 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.kie.api.runtime.StatelessKieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertObjectIntoJsonNode;
 
 @Service
 @Slf4j
@@ -29,42 +49,99 @@ public class RequestMappingService {
     */
     @Autowired
     private RoleAssignmentService roleAssignmentService;
-    
-    @Autowired
-    private ValidationModelService validationModelService;
+    private StatelessKieSession kieSession;
 
-
-    public void createCaseWorkerAssignments() {
-        //Receive List<UserAccessProfiles> userAccessProfiles
-        checkDeleteRequest();
-        createInitialRequestedRole();
-        //call validation model service
-        isOrgRoleMapped();
-        createAssignmentRequest();
-        ignoreUserAccessProfile();
-        postAssignmentRequest();
-        logReturnedResponse();
-                
+    public RequestMappingService(RoleAssignmentService roleAssignmentService, StatelessKieSession kieSession) {
+        this.roleAssignmentService = roleAssignmentService;
+        this.kieSession = kieSession;
     }
 
-    private void logReturnedResponse() {
+
+    public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+
+        AtomicBoolean deleteFlag = new AtomicBoolean(false);
+        //prepare an empty list of responses
+        List<Object> finalResponse = new ArrayList<>();
+
+
+        usersAccessProfiles.entrySet().stream().forEach(entry -> {
+            AssignmentRequest assignmentRequest = createAssignmentRequest();
+            // set the request reference as per user IDAM Id
+            assignmentRequest.getRequest().setReference(entry.getKey());
+            // the delete flag would be set for an user profile and it would be same for all its userAccessProfile
+            deleteFlag.set(entry.getValue().stream().findFirst().get().isDeleteFlag());
+            // Create a role assignment record if delete flag = false
+            if (!deleteFlag.get()) {
+                //add all identified requestedRoles to the request
+                assignmentRequest.setRequestedRoles(mapUserAccessProfiles(entry.getValue()));
+            }
+            // to validate prepared assignment request
+            ResponseEntity<Object> response = sendAssignmentRequestToRAS(deleteFlag.get(), assignmentRequest);
+            // Prepare final response for all entry
+
+            finalResponse.add(response.getBody());
+        });
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
     }
 
-    private void postAssignmentRequest() {
+
+    private List<RoleAssignment> mapUserAccessProfiles(Set<UserAccessProfile> userAccessProfiles) {
+        //prepare an empty list of role assignments
+        List<RoleAssignment> requestedRoles = new ArrayList<>();
+
+        userAccessProfiles.stream().forEach(userAccessProfile -> {
+            //prepare an envelop requestedRole corresponding to an userAccessProfile
+            RoleAssignment requestedRole = AssignmentRequestBuilder.buildRequestedRoleForStaff();
+            //Copy necessary fields from the userAccessProfile
+            requestedRole.setActorId(userAccessProfile.getId());
+            requestedRole.getAttributes().put("primaryLocation",
+                    convertObjectIntoJsonNode(userAccessProfile.getPrimaryLocationId()));
+
+            //call the drool rules for determining the role name
+            droolValidation(userAccessProfile, requestedRole);
+            // add requestedRole to the list if role name is found as per mapping rules.
+            if (StringUtils.isNotEmpty(requestedRole.getRoleName())) {
+                requestedRoles.add(requestedRole);
+            } else {
+                // logging for fail validation roleID and service Code
+                log.error("User Access profiles {} has not been validated by drool for the service code {} : ",
+                        userAccessProfile.getId(), userAccessProfile.getServiceCode());
+            }
+        });
+        return requestedRoles;
     }
 
-    private void ignoreUserAccessProfile() {
+    private AssignmentRequest createAssignmentRequest() {
+        AssignmentRequest assignmentRequest = AssignmentRequest.builder().build();
+        //prepare an envelop request with default values
+        Request request = AssignmentRequestBuilder.buildRequest(true);
+        assignmentRequest.setRequest(request);
+        assignmentRequest.setRequestedRoles(Collections.emptyList());
+        return assignmentRequest;
+
     }
 
-    private void createAssignmentRequest() {
+
+    private ResponseEntity<Object> sendAssignmentRequestToRAS(boolean deleteFlag,
+                                                              AssignmentRequest assignmentRequest) {
+        if (Objects.equals(deleteFlag, false) && assignmentRequest.getRequestedRoles().size() == 0) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                    .body("Users AccessProfile could not be mapped");
+        } else {
+            //feign client call
+            return roleAssignmentService.createRoleAssignment(assignmentRequest);
+        }
     }
 
-    private void isOrgRoleMapped() {
+    private void droolValidation(UserAccessProfile userAccessProfile, RoleAssignment requestRole) {
+        Set<Object> facts = new HashSet<>();
+        facts.add(userAccessProfile);
+        facts.add(requestRole);
+        // Run the rules
+        kieSession.execute(facts);
     }
 
-    private void createInitialRequestedRole() {
-    }
 
-    private void checkDeleteRequest() {
-    }
 }

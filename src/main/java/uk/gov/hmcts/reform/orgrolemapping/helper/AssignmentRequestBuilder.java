@@ -7,17 +7,23 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @Setter
 public class AssignmentRequestBuilder {
@@ -39,9 +45,10 @@ public class AssignmentRequestBuilder {
     public static Request buildRequest(Boolean replaceExisting) {
 
         return Request.builder()
-                .assignerId(ASSIGNER_ID)
-                .reference(ACTOR_ID)
+                .assignerId(ASSIGNER_ID) // This won't be set for the requests.
                 .process((PROCESS_ID))
+                .requestType(RequestType.CREATE)
+                .correlationId(UUID.randomUUID().toString())
                 .replaceExisting(replaceExisting)
                 .build();
     }
@@ -53,7 +60,7 @@ public class AssignmentRequestBuilder {
     }
 
     public static RoleAssignment buildRoleAssignment() {
-        LocalDateTime timeStamp = LocalDateTime.now();
+        //LocalDateTime timeStamp = LocalDateTime.now()
         return RoleAssignment.builder()
                 .actorId(ACTOR_ID)
                 .actorIdType(ActorIdType.IDAM)
@@ -78,5 +85,57 @@ public class AssignmentRequestBuilder {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static JsonNode buildAttributesFromFile(String fileName) {
+        try (InputStream inputStream =
+                     AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream(fileName)) {
+            assert inputStream != null;
+            return new ObjectMapper().readValue(inputStream, new TypeReference<>() {
+            });
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static RoleAssignment buildRequestedRoleForStaff() {
+        return RoleAssignment.builder()
+                .actorIdType(ActorIdType.IDAM)
+                .roleType(RoleType.ORGANISATION)
+                .classification(Classification.PUBLIC) //default is public
+                .grantType(GrantType.STANDARD)
+                .roleCategory(RoleCategory.STAFF)
+                .readOnly(false)
+                .attributes(new HashMap<>())
+                .build();
+    }
+
+    public static Set<UserAccessProfile> convertUserProfileToUserAccessProfile(UserProfile userProfile) {
+        //roleId X serviceCode
+        Set<UserAccessProfile> userAccessProfiles = new HashSet<>();
+
+        userProfile.getRole().forEach(role -> {
+            userProfile.getWorkArea().forEach(workArea -> {
+                UserAccessProfile userAccessProfile = new UserAccessProfile();
+                userAccessProfile.setId(userProfile.getId());
+                userAccessProfile.setDeleteFlag(userProfile.isDeleteFlag());
+                userProfile.getBaseLocation().forEach(baseLocation -> {
+                    if (baseLocation.isPrimary()) {
+                        userAccessProfile.setPrimaryLocationId(baseLocation.getLocationId());
+                        userAccessProfile.setPrimaryLocationName(baseLocation.getLocation());
+                    }
+                });
+                userAccessProfile.setAreaOfWorkId(workArea.getAreaOfWork());
+                userAccessProfile.setServiceCode(workArea.getServiceCode());
+                userAccessProfile.setRoleId(role.getRoleId());
+                userAccessProfile.setRoleName(role.getRoleName());
+
+                userAccessProfiles.add(userAccessProfile);
+            });
+        });
+
+
+        return userAccessProfiles;
     }
 }

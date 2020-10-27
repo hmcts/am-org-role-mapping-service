@@ -19,6 +19,6 @@ public class RASFeignClientFallback implements RASFeignClient {
 
     @Override
     public ResponseEntity<Object> createRoleAssignment(@RequestBody AssignmentRequest assignmentRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(AssignmentRequest.builder());
+        return ResponseEntity.status(HttpStatus.CREATED).build()/*.body(AssignmentRequest.builder())*/;
     }
 }
