@@ -28,6 +28,7 @@ import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
@@ -65,6 +66,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluator;
+
+    @MockBean
+    private FeignClientInterceptor feignClientInterceptor;
 
     @Inject
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
