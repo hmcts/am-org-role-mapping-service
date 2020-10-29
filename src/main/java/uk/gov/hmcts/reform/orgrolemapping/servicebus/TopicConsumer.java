@@ -3,7 +3,12 @@ package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmCallbackDeserializer;
 
 import static java.lang.String.format;
 
@@ -14,17 +19,24 @@ public class TopicConsumer {
 
     private final Integer maxRetryAttempts;
 
-    public TopicConsumer(@Value("${send-letter.maxRetryAttempts}") Integer maxRetryAttempts) {
+    private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
+
+    private final OrmCallbackDeserializer deserializer;
+
+    public TopicConsumer(@Value("${send-letter.maxRetryAttempts}") Integer maxRetryAttempts,
+                         BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
+                         OrmCallbackDeserializer deserializer) {
         this.maxRetryAttempts = maxRetryAttempts;
+        this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
+        this.deserializer = deserializer;
 
     }
 
-
-    /*@JmsListener(
+    @JmsListener(
             destination = "${amqp.topic}",
             containerFactory = "topicJmsListenerContainerFactory",
             subscription = "${amqp.subscription}"
-    ) */
+    )
 
     public void onMessage(String message) {
         processMessageWithRetry(message, 1);
@@ -32,7 +44,7 @@ public class TopicConsumer {
 
     private void processMessageWithRetry(String message, int retry) {
         try {
-            log.info("Message received from the service bus by ORM service");
+            log.info("TopicConsumer - Message received from the service bus by ORM service {}", message);
             processMessage(message);
         } catch (Exception e) {
             if (retry > maxRetryAttempts) {
@@ -46,7 +58,13 @@ public class TopicConsumer {
     }
 
     private void processMessage(String message) {
-        log.info("We received message from queue :: " + message);
+        UserRequest userRequest = deserializer.deserialize(message);
+        log.info("TopicConsumer - Deserializer userRequest received from the service bus by ORM service {}",
+                userRequest);
+        if (userRequest != null) {
+            ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
+            log.info("API Response {}", response.getStatusCode());
+        }
 
     }
 }

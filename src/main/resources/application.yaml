@@ -78,7 +78,7 @@ idam:
     admin:
       userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:befta.caseworker.2.solicitor.2@gmail.com}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:Pa55word11}
-      scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:search-user}
+      scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
 
 testS2S:
   api:
@@ -108,7 +108,7 @@ roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 amqp:
   host: ${AMQP_HOST:rd-servicebus-sandbox.servicebus.windows.net}
   username: ${AMQP_USERNAME:SendAndListenSharedAccessKey}
-  password: ${AMQP_PASSWORD:3maz+bmY5f0evUn3XmTg6xZR7dkcWF10MDgsoilqXag=}
+  password: ${AMQP_PASSWORD:5ZXxCOCaJsvA/8uojXxqPfk6oJZr/xkyJe47vevc48s=}
   topic: ${TOPIC_NAME:rd-caseworker-topic-sandbox}
   subscription: ${SUBSCRIPTION_NAME:rd-caseworker-subscription-sandbox}
   # DO NOT SET THIS 'true' IN PRODUCTION!
