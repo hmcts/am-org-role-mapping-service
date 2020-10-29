@@ -10,12 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class WelcomeControllerTest {
 
@@ -26,7 +24,7 @@ class WelcomeControllerTest {
     private TopicPublisher topicPublisher;
 
     @InjectMocks
-    private final WelcomeController sut = new WelcomeController();
+    private final WelcomeController sut = new WelcomeController(topicPublisher, bulkAssignmentOrchestrator);
 
     @BeforeEach
     public void setUp() {
@@ -45,9 +43,7 @@ class WelcomeControllerTest {
 
     @Test
     void createOrgMapping() {
-        ArrayList<String> users = new ArrayList<>();
-        users.add("user");
-        UserRequest userRequest = UserRequest.builder().users(users).build();
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
         ResponseEntity<Object> response =
                 ResponseEntity.status(HttpStatus.CREATED).body(userRequest);

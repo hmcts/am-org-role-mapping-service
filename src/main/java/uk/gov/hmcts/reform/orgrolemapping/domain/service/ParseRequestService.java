@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.util.List;
 
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.UUID_PATTERN;
 
 @Service
 @Slf4j
@@ -23,7 +23,7 @@ public class ParseRequestService {
     public void validateUserRequest(UserRequest userRequest) {
         //parse the user List and validate each user Id to be valid string
         userRequest.getUsers().forEach(user ->
-                ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, user));
+                ValidationUtil.validateId(UUID_PATTERN, user));
     }
 
     public void validateUserProfiles(List<UserProfile> userProfiles, UserRequest userRequest) {
