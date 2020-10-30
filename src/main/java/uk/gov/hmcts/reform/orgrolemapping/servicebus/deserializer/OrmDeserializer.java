@@ -8,23 +8,23 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import java.io.IOException;
 
 @Component
-public class OrmCallbackDeserializer implements Deserializer<UserRequest> {
+public class OrmDeserializer implements Deserializer<UserRequest> {
 
     private final ObjectMapper mapper;
 
-    public OrmCallbackDeserializer(ObjectMapper mapper) {
+    public OrmDeserializer(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
-    public UserRequest deserialize(String source) {
+    public UserRequest deserialize(String userIds) {
         try {
             return mapper.readValue(
-                    source,
+                    userIds,
                     new TypeReference<UserRequest>() {
                     }
             );
         } catch (IOException e) {
-            throw new IllegalArgumentException("Could not deserialize callback", e);
+            throw new IllegalArgumentException("Could not deserialize the received message", e);
         }
     }
 }

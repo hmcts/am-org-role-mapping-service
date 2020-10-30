@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmCallbackDeserializer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import static java.lang.String.format;
 
@@ -20,14 +20,14 @@ public class TopicConsumer {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
-    private final OrmCallbackDeserializer deserializer;
+    private final OrmDeserializer ormDeserializer;
 
     public TopicConsumer(@Value("${send-letter.maxRetryAttempts}") Integer maxRetryAttempts,
                          BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                         OrmCallbackDeserializer deserializer) {
+                         OrmDeserializer ormDeserializer) {
         this.maxRetryAttempts = maxRetryAttempts;
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
-        this.deserializer = deserializer;
+        this.ormDeserializer = ormDeserializer;
 
     }
 
@@ -43,7 +43,7 @@ public class TopicConsumer {
 
     private void processMessageWithRetry(String message, int retry) {
         try {
-            log.info("TopicConsumer - Message received from the service bus by ORM service {}", message);
+            log.info("CRDTopicConsumer - Message received from the CRD subscription : {}", message);
             processMessage(message);
         } catch (Exception e) {
             if (retry > maxRetryAttempts) {
@@ -57,12 +57,13 @@ public class TopicConsumer {
     }
 
     private void processMessage(String message) {
-        UserRequest userRequest = deserializer.deserialize(message);
-        log.info("TopicConsumer - Deserializer userRequest received from the service bus by ORM service {}",
+        UserRequest userRequest = ormDeserializer.deserialize(message);
+        log.info("CRDTopicConsumer:Deserializer - userRequest received from from the CRD subscription : {}",
                 userRequest);
         if (userRequest != null) {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
-            log.info("API Response {}", response.getStatusCode());
+            log.info("The Organisation roles for received users: {} are updated with consolidated response : {}",
+                    userRequest,response.getStatusCode());
         }
 
     }
