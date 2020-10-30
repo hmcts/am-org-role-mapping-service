@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 class BulkAssignmentOrchestratorTest {
@@ -33,10 +34,11 @@ class BulkAssignmentOrchestratorTest {
     void createBulkAssignmentsRequestTest() {
 
         Mockito.when(retrieveDataService.retrieveCaseWorkerProfiles(Mockito.any(UserRequest.class)))
-                .thenReturn(TestDataBuilder.buildUserAccessProfileMap());
+                .thenReturn(TestDataBuilder.buildUserAccessProfileMap(false, false));
 
         Mockito.when(requestMappingService.createCaseWorkerAssignments(Mockito.any()))
-                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"));
+                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(AssignmentRequestBuilder
+                        .buildAssignmentRequest(false)));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest());
 

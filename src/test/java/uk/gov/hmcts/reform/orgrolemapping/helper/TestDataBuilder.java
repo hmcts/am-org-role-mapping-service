@@ -111,16 +111,17 @@ public class TestDataBuilder {
                 .serviceCode("ServiceCode").roleName("SecretAgent").build();
     }
 
-    public static Set<UserAccessProfile> buildUserAccessProfileSet() {
+    public static Set<UserAccessProfile> buildUserAccessProfileSet(boolean deleteFlag1, boolean deleteFlag2) {
         Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(buildUserAccessProfile(false));
+        userAccessProfileSet.add(buildUserAccessProfile(deleteFlag1));
+        userAccessProfileSet.add(buildUserAccessProfile(deleteFlag2));
         return userAccessProfileSet;
     }
 
-    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfileMap() {
+    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfileMap(boolean deleteFlag1, boolean deleteFlag2) {
 
         HashMap<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
-        userAccessProfiles.put(id_1, buildUserAccessProfileSet());
+        userAccessProfiles.put(id_1, buildUserAccessProfileSet(deleteFlag1, deleteFlag2));
         return userAccessProfiles;
     }
 
