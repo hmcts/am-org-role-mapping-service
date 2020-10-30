@@ -81,7 +81,7 @@ public class IdamRepository {
     }
 
     @Cacheable(value = "token")
-    public String getManageUserToken() {
+    public String getUserToken() {
         TokenRequest tokenRequest = new TokenRequest(
                 oauth2Configuration.getClientId(),
                 oauth2Configuration.getClientSecret(),
