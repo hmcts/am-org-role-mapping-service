@@ -19,7 +19,7 @@ class RoleAssignmentServiceTest {
     RoleAssignmentService sut = new RoleAssignmentService(rasFeignClient);
 
     @Test
-    void testRASFeignClient() {
+    void testRASFeignClientTest() {
         Mockito.when(rasFeignClient.createRoleAssignment(ArgumentMatchers.any(AssignmentRequest.class)))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"));
         ResponseEntity<Object> responseEntity = sut.createRoleAssignment(AssignmentRequest.builder().build());

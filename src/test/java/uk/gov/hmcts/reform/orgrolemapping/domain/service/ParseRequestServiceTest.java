@@ -17,12 +17,12 @@ class ParseRequestServiceTest {
     ParseRequestService sut = new ParseRequestService();
 
     @Test
-    void validateUserRequest() {
+    void validateUserRequestTest() {
         sut.validateUserRequest(TestDataBuilder.buildUserRequest());
     }
 
     @Test
-    void validateUserRequest_throwsBadRequest() {
+    void validateUserRequest_throwsBadRequestTest() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         userRequest.getUsers().add("bleep-bloop-bleep");
         assertThrows(BadRequestException.class, () ->
@@ -31,12 +31,12 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateUserProfiles() {
+    void validateUserProfilesTest() {
         sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(), TestDataBuilder.buildUserRequest());
     }
 
     @Test
-    void validateUserProfiles_throwsBadRequest_noBaseLocation() {
+    void validateUserProfiles_throwsBadRequest_noBaseLocationTest() {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
         userProfiles.get(0).setBaseLocation(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
@@ -46,7 +46,7 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateUserProfiles_throwsBadRequest_noWorkArea() {
+    void validateUserProfiles_throwsBadRequest_noWorkAreaTest() {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
         userProfiles.get(0).setWorkArea(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
@@ -57,7 +57,7 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateUserProfiles_throwsBadRequest_noRoles() {
+    void validateUserProfiles_throwsBadRequest_noRolesTest() {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
         userProfiles.get(0).setRole(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
@@ -68,7 +68,7 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateUserProfiles_throwsBadRequest_tooManyPrimary() {
+    void validateUserProfiles_throwsBadRequest_tooManyPrimaryTest() {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
         userProfiles.get(0).getBaseLocation().add(TestDataBuilder.buildBaseLocation(true));
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
@@ -79,7 +79,7 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateUserProfiles_throwsResourceNotFound_noProfiles() {
+    void validateUserProfiles_throwsResourceNotFound_noProfilesTest() {
         List<UserProfile> userProfiles = new ArrayList<>();
         TestDataBuilder.buildUserProfile(TestDataBuilder.generateUniqueId());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
@@ -90,7 +90,7 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateUserProfiles_throwsResourceNotFound_someProfilesNotFound() {
+    void validateUserProfiles_throwsResourceNotFound_someProfilesNotFoundTest() {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
         userProfiles.remove(0);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();

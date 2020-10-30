@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -42,7 +43,7 @@ class WelcomeControllerTest {
     }
 
     @Test
-    void createOrgMapping() {
+    void createOrgMappingTest() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
         ResponseEntity<Object> response =
@@ -52,5 +53,11 @@ class WelcomeControllerTest {
                 .thenReturn(response);
 
         assertEquals(response, sut.createOrgMapping(userRequest));
+    }
+
+    @Test
+    void errorConstantTest() {
+        assertEquals(202, ErrorConstants.ACCEPTED.getErrorCode());
+        assertEquals("Accepted", ErrorConstants.ACCEPTED.getErrorMessage());
     }
 }

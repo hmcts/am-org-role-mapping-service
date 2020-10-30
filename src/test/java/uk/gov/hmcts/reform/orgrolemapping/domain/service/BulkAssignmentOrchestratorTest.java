@@ -30,7 +30,7 @@ class BulkAssignmentOrchestratorTest {
     }
 
     @Test
-    void createBulkAssignmentsRequest() {
+    void createBulkAssignmentsRequestTest() {
 
         Mockito.when(retrieveDataService.retrieveCaseWorkerProfiles(Mockito.any(UserRequest.class)))
                 .thenReturn(TestDataBuilder.buildUserAccessProfileMap());

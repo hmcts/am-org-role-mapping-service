@@ -25,7 +25,7 @@ class RetrieveDataServiceTest {
     RetrieveDataService sut = new RetrieveDataService(crdFeignClient,parseRequestService,crdFeignClientFallback);
 
     @Test
-    void retrieveCaseWorkerProfiles() {
+    void retrieveCaseWorkerProfilesTest() {
 
         when(crdFeignClientFallback.createRoleAssignment(TestDataBuilder.buildUserRequest()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder.buildListOfUserProfiles()));

@@ -29,7 +29,7 @@ class RequestMappingServiceTest {
     }
 
     @Test
-    void createCaseWorkerAssignments() {
+    void createCaseWorkerAssignmentsTest() {
         Mockito.when(roleAssignmentService.createRoleAssignment(Mockito.any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"));
         ResponseEntity<Object> responseEntity =
