@@ -118,7 +118,8 @@ public class TestDataBuilder {
         return userAccessProfileSet;
     }
 
-    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfileMap(boolean deleteFlag1, boolean deleteFlag2) {
+    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfileMap(boolean deleteFlag1,
+                                                                                boolean deleteFlag2) {
 
         HashMap<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
         userAccessProfiles.put(id_1, buildUserAccessProfileSet(deleteFlag1, deleteFlag2));
