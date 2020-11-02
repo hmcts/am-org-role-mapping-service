@@ -96,7 +96,7 @@ class IdamRepositoryTest {
                 TokenResponse("a", "1", "1", "a", "v", "v");
         when(idamApi.generateOpenIdToken(any())).thenReturn(tokenResponse);
 
-        String result = idamRepository.getManageUserToken();
+        String result = idamRepository.getUserToken();
 
         assertNotNull(result);
         assertFalse(result.isBlank());
@@ -144,7 +144,7 @@ class IdamRepositoryTest {
 
         ResponseEntity<List<Object>> actualResponse = idamRepository.searchUserByUserId(token, userId);
         assertNotNull(actualResponse);
-        assertEquals(actualResponse.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
 
 
     }
