@@ -8,7 +8,6 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.google.common.collect.Maps;
-import groovy.util.logging.Slf4j;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +29,6 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Slf4j
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

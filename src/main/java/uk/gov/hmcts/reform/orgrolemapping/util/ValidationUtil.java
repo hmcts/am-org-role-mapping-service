@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import java.util.regex.Pattern;
 
 @Named
 @Singleton
-@Slf4j
 public class ValidationUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(ValidationUtil.class);

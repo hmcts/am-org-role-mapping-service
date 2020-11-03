@@ -29,6 +29,7 @@ class AssignmentRequestBuilderTest {
     @Test
     void buildRoleAssignment() {
         assertNotNull(AssignmentRequestBuilder.buildRoleAssignment());
+        assertNotNull(AssignmentRequestBuilder.buildRoleAssignment().getAttributes());
     }
 
     @Test

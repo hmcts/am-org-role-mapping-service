@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +31,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @ConfigurationProperties(prefix = "security")
 @EnableWebSecurity
-@Slf4j
 @SuppressWarnings("unchecked")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 

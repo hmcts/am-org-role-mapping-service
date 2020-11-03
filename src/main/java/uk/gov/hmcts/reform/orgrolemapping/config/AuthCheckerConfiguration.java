@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import com.google.common.collect.ImmutableSet;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -27,7 +26,6 @@ import java.util.function.Function;
 
 @Configuration
 @ConfigurationProperties(prefix = "security")
-@Slf4j
 public class AuthCheckerConfiguration {
 
     List<String> authorisedServices;

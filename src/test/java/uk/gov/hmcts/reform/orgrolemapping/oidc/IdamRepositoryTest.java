@@ -143,7 +143,9 @@ class IdamRepositoryTest {
 
         ResponseEntity<List<Object>> actualResponse = idamRepository.searchUserByUserId(token, userId);
         assertNotNull(actualResponse);
+        assertNotNull(actualResponse.getHeaders());
         assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+
 
 
     }
