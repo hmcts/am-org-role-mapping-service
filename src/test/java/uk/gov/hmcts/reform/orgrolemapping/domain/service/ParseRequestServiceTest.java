@@ -24,7 +24,7 @@ class ParseRequestServiceTest {
     @Test
     void validateUserRequest_throwsBadRequestTest() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        userRequest.getUsers().add("bleep-bloop-bleep");
+        userRequest.getUsers().add("User-@007");
         assertThrows(BadRequestException.class, () ->
                 sut.validateUserRequest(userRequest)
         );
