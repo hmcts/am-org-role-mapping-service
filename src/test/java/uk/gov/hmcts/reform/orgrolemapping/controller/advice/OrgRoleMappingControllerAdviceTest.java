@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.WelcomeController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -75,6 +76,15 @@ class OrgRoleMappingControllerAdviceTest {
         String time = csda.getTimeStamp();
         assertEquals(time.substring(0, 16), new SimpleDateFormat("dd-MM-yyyy HH:mm",
                 Locale.ENGLISH).format(new Date()));
+    }
+
+    @Test
+    void handleUnProcessableEntityExcepton() {
+        UnprocessableEntityException unprocessableEntityException = mock(UnprocessableEntityException.class);
+        ResponseEntity<Object> responseEntity = csda.handleUnProcessableEntityExcepton(
+                servletRequestMock, unprocessableEntityException);
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), responseEntity.getStatusCodeValue());
     }
 
 
