@@ -203,7 +203,8 @@ sonarqube {
         property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.pitest.mode", "reuseReport"
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
-        property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/orgrolemapping/*Application.java," +
+        property "sonar.exclusions", "src/**," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/*Application.java," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/*Swagger2SpringBoot.java," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/feignclients/configuration/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/model/**," +
