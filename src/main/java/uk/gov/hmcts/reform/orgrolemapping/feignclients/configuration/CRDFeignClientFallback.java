@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
+
 @Component
 public class CRDFeignClientFallback implements CRDFeignClient {
 
@@ -26,27 +28,7 @@ public class CRDFeignClientFallback implements CRDFeignClient {
 
     @Override
     public ResponseEntity<List<UserProfile>> createRoleAssignment(UserRequest userRequest) {
-        Set<UserProfile> userProfiles = new HashSet<>();
-
-
-        userRequest.getUsers().forEach(userId -> {
-            try (InputStream inputStream =
-                         CRDFeignClientFallback.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
-                assert inputStream != null;
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.registerModule(new JavaTimeModule());
-                UserProfile userProfile = objectMapper.readValue(inputStream, UserProfile.class);
-                userProfile.setId(userId);
-                userProfiles.add(userProfile);
-
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-
-        });
-        return ResponseEntity.ok(new ArrayList<>(userProfiles));
+        return ResponseEntity.ok(new ArrayList<>(buildUserProfile(userRequest)));
     }
 
 }

@@ -1,8 +1,15 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Setter;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,5 +84,37 @@ public class UserAccessProfileBuilder {
                 .roleId("2")
                 .deleteFlag(true)
                 .build();
+    }
+
+    public static UserRequest buildUserRequest(){
+       return UserRequest.builder()
+                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445678","123e4567-e89b-42d3-a456-556642445698"))
+                .build();
+    }
+
+
+    public  static List<UserProfile>  buildUserProfile(UserRequest userRequest){
+
+        Set<UserProfile> userProfiles = new HashSet<>();
+
+
+        userRequest.getUsers().forEach(userId -> {
+            try (InputStream inputStream =
+                         CRDFeignClientFallback.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
+                assert inputStream != null;
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new JavaTimeModule());
+                UserProfile userProfile = objectMapper.readValue(inputStream, UserProfile.class);
+                userProfile.setId(userId);
+                userProfiles.add(userProfile);
+
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+
+        });
+        return new ArrayList<>(userProfiles);
     }
 }
