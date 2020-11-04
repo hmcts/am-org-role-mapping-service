@@ -15,8 +15,7 @@ public class FeignClientInterceptor {
     @Autowired
     SecurityUtils securityUtils;
 
-    @Autowired
-    private IdamRepository idamRepository;
+
 
     @Bean
     public RequestInterceptor requestInterceptor() {
@@ -24,13 +23,11 @@ public class FeignClientInterceptor {
             if (!requestTemplate.url().contains("health")) {
                 requestTemplate.header(Constants.SERVICE_AUTHORIZATION, "Bearer "
                         + securityUtils.getServiceAuthorizationHeader());
-                requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer " + getUserToken());
+                requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer " + securityUtils.getUserToken());
                 requestTemplate.header(HttpHeaders.CONTENT_TYPE, "application/json");
             }
         };
     }
 
-    private String getUserToken() {
-        return idamRepository.getUserToken();
-    }
+
 }
