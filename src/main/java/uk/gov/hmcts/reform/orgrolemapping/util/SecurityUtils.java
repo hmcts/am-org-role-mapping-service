@@ -32,7 +32,6 @@ public class SecurityUtils {
     private final IdamRepository idamRepository;
 
 
-
     @Autowired
     public SecurityUtils(final AuthTokenGenerator authTokenGenerator,
                          JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter,
@@ -74,12 +73,12 @@ public class SecurityUtils {
 
 
     public String getUserToken() {
-        if(SecurityContextHolder.getContext() != null &&
-                SecurityContextHolder.getContext().getAuthentication() !=null) {
+        if (SecurityContextHolder.getContext() != null
+                && SecurityContextHolder.getContext().getAuthentication() != null) {
             Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             return jwt.getTokenValue();
         } else {
-           return idamRepository.getUserToken();
+            return idamRepository.getUserToken();
         }
     }
 

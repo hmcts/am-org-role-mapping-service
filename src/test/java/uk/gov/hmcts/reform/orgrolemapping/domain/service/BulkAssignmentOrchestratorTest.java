@@ -41,7 +41,9 @@ class BulkAssignmentOrchestratorTest {
     private final RequestMappingService requestMappingService = mock(RequestMappingService.class);
 
     @InjectMocks
-    private BulkAssignmentOrchestrator sut = new BulkAssignmentOrchestrator(parseRequestService, retrieveDataService, requestMappingService);
+    private BulkAssignmentOrchestrator sut = new BulkAssignmentOrchestrator(parseRequestService,
+            retrieveDataService,
+            requestMappingService);
 
 
     @Test

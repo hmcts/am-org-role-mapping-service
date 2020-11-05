@@ -86,14 +86,14 @@ public class UserAccessProfileBuilder {
                 .build();
     }
 
-    public static UserRequest buildUserRequest(){
-       return UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445678","123e4567-e89b-42d3-a456-556642445698"))
+    public static UserRequest buildUserRequest() {
+        return UserRequest.builder()
+                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445678", "123e4567-e89b-42d3-a456-556642445698"))
                 .build();
     }
 
 
-    public  static List<UserProfile>  buildUserProfile(UserRequest userRequest){
+    public static List<UserProfile> buildUserProfile(UserRequest userRequest) {
 
         Set<UserProfile> userProfiles = new HashSet<>();
 
