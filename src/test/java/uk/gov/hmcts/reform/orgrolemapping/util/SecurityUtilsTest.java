@@ -18,6 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.gov.hmcts.reform.auth.checker.spring.serviceanduser.ServiceAndUserDetails;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
 import java.io.IOException;
@@ -49,11 +50,14 @@ class SecurityUtilsTest {
 
     @Mock
     SecurityContext securityContext = mock(SecurityContext.class);
+    @Mock
+    IdamRepository idamRepository = mock(IdamRepository.class);
 
     @InjectMocks
     private final SecurityUtils securityUtils = new SecurityUtils(
             authTokenGenerator,
-            jwtGrantedAuthoritiesConverter
+            jwtGrantedAuthoritiesConverter,
+            idamRepository
     );
 
     private final String serviceAuthorization = "Bearer eyJhbGciOiJIUzUxMiJ9"
