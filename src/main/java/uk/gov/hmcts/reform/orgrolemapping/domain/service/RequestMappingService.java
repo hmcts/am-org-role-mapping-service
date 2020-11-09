@@ -1,9 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.kie.api.runtime.StatelessKieSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertObject
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class RequestMappingService {
     /*
     //1. This will receive the single/multiple userAccessProfile from Orchestrator.
@@ -47,14 +48,11 @@ public class RequestMappingService {
         //g. For valid AssignmentRequest, invoke createRequest API of RoleAssignmentService through RAS Feign client.
         //h. Log returned response and send the responseEntity to Orchestrator.
     */
-    @Autowired
+
     private RoleAssignmentService roleAssignmentService;
     private StatelessKieSession kieSession;
 
-    public RequestMappingService(RoleAssignmentService roleAssignmentService, StatelessKieSession kieSession) {
-        this.roleAssignmentService = roleAssignmentService;
-        this.kieSession = kieSession;
-    }
+
 
 
     public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {

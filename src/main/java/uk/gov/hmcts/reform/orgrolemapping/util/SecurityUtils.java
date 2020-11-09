@@ -13,6 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRoles;
+import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
 import java.util.Collection;
@@ -28,14 +29,17 @@ public class SecurityUtils {
     private final AuthTokenGenerator authTokenGenerator;
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 
+    private final IdamRepository idamRepository;
+
 
     @Autowired
     public SecurityUtils(final AuthTokenGenerator authTokenGenerator,
-                         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter
-    ) {
+                         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter,
+                         IdamRepository idamRepository) {
         this.authTokenGenerator = authTokenGenerator;
         this.jwtGrantedAuthoritiesConverter = jwtGrantedAuthoritiesConverter;
 
+        this.idamRepository = idamRepository;
     }
 
     public HttpHeaders authorizationHeaders() {
@@ -69,8 +73,13 @@ public class SecurityUtils {
 
 
     public String getUserToken() {
-        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return jwt.getTokenValue();
+        if (SecurityContextHolder.getContext() != null
+                && SecurityContextHolder.getContext().getAuthentication() != null) {
+            Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return jwt.getTokenValue();
+        } else {
+            return idamRepository.getUserToken();
+        }
     }
 
     public String getUserRolesHeader() {
