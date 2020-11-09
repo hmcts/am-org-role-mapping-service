@@ -100,7 +100,7 @@ public class SmokeTest {
         String targetInstance = config.getOrgRoleMappingUrl() + "/am/role-mapping/staff/users";
         RestAssured.useRelaxedHTTPSValidation();
 
-        String requestBody = "{\"users\" : \"123e4567-e89b-42d3-a456-55664200020a\"] }";
+        String requestBody = "{\"users\" : [\"123e4567-e89b-42d3-a456-55664200020a\"] }";
 
         Response response = SerenityRest
                 .given()
