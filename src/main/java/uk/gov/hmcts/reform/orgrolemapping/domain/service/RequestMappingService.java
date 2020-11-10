@@ -33,6 +33,10 @@ import java.util.UUID;
 public class RequestMappingService {
 
 
+    public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
+    public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
+    public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
+    public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
     private RoleAssignmentService roleAssignmentService;
     private StatelessKieSession kieSession;
     private SecurityUtils securityUtils;
@@ -44,7 +48,7 @@ public class RequestMappingService {
      */
     public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
         // Get the role assignments for each caseworker in the input profiles.
-        Map<String, List<RoleAssignment>> usersRoleAssignments = calculateCaseworkerRoleAssignments(usersAccessProfiles);
+        Map<String, List<RoleAssignment>> usersRoleAssignments = getCaseworkerRoleAssignments(usersAccessProfiles);
         // The response body is a list of ....???....
         return updateCaseworkersRoleAssignments(usersRoleAssignments);
 
@@ -54,7 +58,8 @@ public class RequestMappingService {
      * Apply the role assignment mapping rules to determine what the role assignments should be
      * for each caseworker represented in the map.
      */
-    private Map<String, List<RoleAssignment>> calculateCaseworkerRoleAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+    private Map<String, List<RoleAssignment>> getCaseworkerRoleAssignments(Map<String,
+            Set<UserAccessProfile>> usersAccessProfiles) {
         // Create a map to hold the role assignments for each user.
         Map<String, List<RoleAssignment>> usersRoleAssignments = new HashMap<>();
         // Make sure every user in the input collection has a list in the map.  This includes users
@@ -71,8 +76,6 @@ public class RequestMappingService {
      * Run the mapping rules to generate all the role assignments each caseworker represented in the map.
      */
     private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
-        final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
-        final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
 
         // Combine all the user profiles into a single collection for the rules engine.
         Set<UserAccessProfile> allProfiles = new HashSet<>();
@@ -110,7 +113,8 @@ public class RequestMappingService {
         List<Object> finalResponse = new ArrayList<>();
 
         usersRoleAssignments.entrySet().stream()
-                .forEach(entry -> finalResponse.add(updateCaseworkerRoleAssignments(entry.getKey(), entry.getValue()).getBody()));
+                .forEach(entry -> finalResponse.add(updateCaseworkerRoleAssignments(entry.getKey(),
+                        entry.getValue()).getBody()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
     }
 
@@ -119,7 +123,7 @@ public class RequestMappingService {
      * and the user's ID as the process and reference values.
      */
     ResponseEntity<Object> updateCaseworkerRoleAssignments(String userId, Collection<RoleAssignment> roleAssignments) {
-        String process = "staff-organisational-role-mapping";
+        String process = STAFF_ORGANISATIONAL_ROLE_MAPPING;
         String reference = userId;
         return updateRoleAssignments(process, reference, roleAssignments);
     }
@@ -127,7 +131,8 @@ public class RequestMappingService {
     /**
      * Send an update of role assignments to the role assignment service for a process/reference pair.
      */
-    ResponseEntity<Object> updateRoleAssignments(String process, String reference, Collection<RoleAssignment> roleAssignments) {
+    ResponseEntity<Object> updateRoleAssignments(String process, String reference,
+                                                 Collection<RoleAssignment> roleAssignments) {
         AssignmentRequest assignmentRequest =
                 AssignmentRequest.builder()
                         .request(
@@ -137,7 +142,7 @@ public class RequestMappingService {
                                         .process(process)
                                         .reference(reference)
                                         .assignerId(securityUtils.getUserId())
-                                        .clientId("am_org_role_mapping_service")
+                                        .clientId(AM_ORG_ROLE_MAPPING_SERVICE)
                                         .correlationId(UUID.randomUUID().toString())
                                         .build())
                         .requestedRoles(roleAssignments)
