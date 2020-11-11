@@ -1,0 +1,9 @@
+package validationrules.core;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+
+/*
+ * Query which returns all role assignments currently in working memory.
+ */
+query getRoleAssignments ()
+    $roleAssignment: RoleAssignment()
+end;
