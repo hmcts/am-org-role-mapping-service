@@ -5,6 +5,7 @@ import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ public class TestDataBuilder {
 
     private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     private static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
+
+    private static final String PROCESS_ID = "staff-organisational-role-mapping";
+    private static final String ROLE_NAME_TCW = "tribunal-caseworker";
 
     private TestDataBuilder() {
     }
@@ -48,7 +52,7 @@ public class TestDataBuilder {
                 .build();
     }
 
-    public static List<UserProfile.BaseLocation> builListOfBaseLocations() {
+    public static List<UserProfile.BaseLocation> buildListOfBaseLocations() {
         List<UserProfile.BaseLocation> baseLocationList = new ArrayList<>();
         baseLocationList.add(buildBaseLocation(true));
         baseLocationList.add(buildBaseLocation(false));
@@ -61,7 +65,7 @@ public class TestDataBuilder {
                 .build();
     }
 
-    public static List<UserProfile.WorkArea> builListOfWorkAreas() {
+    public static List<UserProfile.WorkArea> buildListOfWorkAreas() {
         List<UserProfile.WorkArea> workAreaList = new ArrayList<>();
         workAreaList.add(buildWorkArea());
         workAreaList.add(buildWorkArea());
@@ -69,7 +73,8 @@ public class TestDataBuilder {
     }
 
     public static UserProfile.Role buildRole(boolean primaryRole) {
-        return UserProfile.Role.builder().roleId("Secret Agent").primary(primaryRole).roleName("007")
+        return UserProfile.Role.builder().roleId(RoleType.ORGANISATION.toString()).primary(primaryRole)
+                .roleName(ROLE_NAME_TCW)
                 .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
@@ -82,12 +87,11 @@ public class TestDataBuilder {
     }
 
     public static UserProfile buildUserProfile(String id) {
-        List<UserProfile.BaseLocation> baseLocations = new ArrayList<>();
         return UserProfile.builder()
                 .id(id)
                 .firstName("James").lastName("Bond").emailId("007@MI6.gov")
-                .baseLocation(builListOfBaseLocations())
-                .workArea(builListOfWorkAreas())
+                .baseLocation(buildListOfBaseLocations())
+                .workArea(buildListOfWorkAreas())
                 .createdTime(LocalDateTime.now())
                 .lastUpdateTime(LocalDateTime.now().minusDays(1L))
                 .region("London").regionId(1234L)
@@ -107,8 +111,8 @@ public class TestDataBuilder {
 
     public static UserAccessProfile buildUserAccessProfile(boolean deleteFlag) {
         return UserAccessProfile.builder().id(id_1).deleteFlag(deleteFlag).areaOfWorkId("London")
-                .primaryLocationId("LDN").primaryLocationName("London").roleId("007")
-                .serviceCode("ServiceCode").roleName("SecretAgent").build();
+                .primaryLocationId("LDN").primaryLocationName("London").roleId(RoleType.ORGANISATION.toString())
+                .serviceCode("ServiceCode").roleName(ROLE_NAME_TCW).build();
     }
 
     public static Set<UserAccessProfile> buildUserAccessProfileSet(boolean deleteFlag1, boolean deleteFlag2) {
