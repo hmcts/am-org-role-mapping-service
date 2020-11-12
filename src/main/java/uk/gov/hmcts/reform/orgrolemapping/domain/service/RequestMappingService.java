@@ -150,5 +150,4 @@ public class RequestMappingService {
         return roleAssignmentService.createRoleAssignment(assignmentRequest);
     }
 
-
 }
