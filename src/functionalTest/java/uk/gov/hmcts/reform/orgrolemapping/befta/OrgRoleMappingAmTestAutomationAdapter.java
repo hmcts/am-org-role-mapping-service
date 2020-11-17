@@ -6,7 +6,6 @@ import uk.gov.hmcts.befta.DefaultTestAutomationAdapter;
 import uk.gov.hmcts.befta.dse.ccd.TestDataLoaderToDefinitionStore;
 import uk.gov.hmcts.befta.player.BackEndFunctionalTestScenarioContext;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomationAdapter {
