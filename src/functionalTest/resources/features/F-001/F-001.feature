@@ -13,7 +13,7 @@ Feature: Create Role Assignments for Users
     And it is submitted to call the [Create Role Assignments] operation of [Organisation Role Mapping Service],
     Then a positive response is received,
     And the response has all other details as expected,
-#    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [S-001_DeleteDataForRoleAssignments].
 
   @S-002
   Scenario: must successfully generate duplicate records message
