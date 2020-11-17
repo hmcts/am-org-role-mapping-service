@@ -39,7 +39,8 @@ def secrets = [
     'am-${env}': [
             secret('role-assignment-service-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
             secret('role-assignment-service-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
-            secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY')
+            secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY'),
+            secret('test-am-user2-befta-pwd', 'TEST_AM_USER2_BEFTA_PWD')
     ]
 ]
 
