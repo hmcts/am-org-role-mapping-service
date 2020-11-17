@@ -8,7 +8,9 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +32,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
+import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
@@ -44,6 +48,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,6 +68,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @Mock
     private SecurityUtils securityUtils;
+
+    @MockBean
+    private CRDFeignClientFallback crdFeignClientFallback;
 
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluator;
@@ -89,7 +97,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     );
 
     @Autowired
-    private transient WelcomeController welcomeController;
+    private WelcomeController welcomeController;
 
     @Before
     public void setUp() throws Exception {
@@ -123,8 +131,75 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-    @Test
+    //@Test
     public void createOrgRoleMappingTest() throws Exception {
+        doCallRealMethod().when(crdFeignClientFallback.createRoleAssignment(any()));
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED);
+
+        mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request))
+        ).andExpect(status().is(200)).andReturn();
+    }
+
+    @Test
+    @DisplayName("must successfully create org role mapping for single user with one role assignment")
+    public void createOrgRoleMappingForSingleUserWithOneRoleAssignment() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED);
+
+        mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request))
+        ).andExpect(status().is(200)).andReturn();
+    }
+
+    @Test
+    @DisplayName("must successfully create org role mapping for single user with multiple role assignments")
+    public void createOrgRoleMappingForSingleUserWithMultipleRoleAssignment() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, true), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED);
+
+        mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request))
+        ).andExpect(status().is(200)).andReturn();
+    }
+
+    @Test
+    @DisplayName("must successfully create org role mapping for multiple users each has single role assignment")
+    public void createOrgRoleMappingForMultipleUsersWithOneRoleAssignment() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(true, false), HttpStatus.OK));
+
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
                 .build();
