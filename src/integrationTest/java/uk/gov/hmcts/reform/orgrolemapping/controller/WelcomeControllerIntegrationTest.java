@@ -48,7 +48,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -133,7 +132,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     //@Test
     public void createOrgRoleMappingTest() throws Exception {
-        doCallRealMethod().when(crdFeignClientFallback.createRoleAssignment(any()));
+
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
                 .build();
