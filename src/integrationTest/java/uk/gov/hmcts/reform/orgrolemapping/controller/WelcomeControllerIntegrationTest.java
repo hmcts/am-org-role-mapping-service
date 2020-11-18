@@ -77,7 +77,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private WebApplicationContext wac;
 
     @ClassRule
-    public static WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(5096));
+    public static WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(4096));
 
     @ClassRule
     public static final WireMockRule crdClient = new WireMockRule(wireMockConfig().port(4099));
