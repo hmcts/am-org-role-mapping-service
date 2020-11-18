@@ -46,6 +46,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class WelcomeControllerIntegrationTest extends BaseTest {
@@ -122,7 +123,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-    /*
+
     @Test
      public void createOrgRoleMappingTest() throws Exception {
         UserRequest request = UserRequest.builder()
@@ -138,7 +139,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .content(mapper.writeValueAsBytes(request))
         ).andExpect(status().is(200)).andReturn();
     }
-    */
+
 
     public void setRoleAssignmentWireMock(HttpStatus status) throws JsonProcessingException {
         String body = null;
