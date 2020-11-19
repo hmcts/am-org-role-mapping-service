@@ -3,7 +3,7 @@
   "productName": "Role Assignment Service",
   "operationName": "Delete Role Assignments by Process",
   "method": "DELETE",
-  "uri": "{{ROLE_ASSIGNMENT_APP_URL}}/am/role-assignments?process={process}&reference={reference}",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments?process={process}&reference={reference}",
   "specs": [
     "to delete role assignments just created above"
   ],
