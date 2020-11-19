@@ -50,10 +50,11 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static List<UserProfile.BaseLocation> buildListOfBaseLocations() {
+    public static List<UserProfile.BaseLocation> buildListOfBaseLocations(boolean primaryLocation1,
+                                                                          boolean primaryLocation2) {
         List<UserProfile.BaseLocation> baseLocationList = new ArrayList<>();
-        baseLocationList.add(buildBaseLocation(true));
-        baseLocationList.add(buildBaseLocation(false));
+        baseLocationList.add(buildBaseLocation(primaryLocation1));
+        baseLocationList.add(buildBaseLocation(primaryLocation2));
         return baseLocationList;
     }
 
@@ -86,27 +87,34 @@ public class IntTestDataBuilder {
         return roles;
     }
 
-    public static UserProfile buildUserProfile(String id, boolean multiRole) {
+    public static UserProfile buildUserProfile(String id, boolean multiRole,
+                                               boolean primaryLocation1,
+                                               boolean primaryLocation2,
+                                               boolean deleteFlag) {
         return UserProfile.builder()
                 .id(id)
                 .firstName("James").lastName("Bond").emailId("007@MI6.gov")
-                .baseLocation(buildListOfBaseLocations())
+                .baseLocation(buildListOfBaseLocations(primaryLocation1, primaryLocation2))
                 .workArea(buildListOfWorkAreas())
                 .createdTime(LocalDateTime.now())
                 .lastUpdateTime(LocalDateTime.now().minusDays(1L))
                 .region("London").regionId(1234L)
                 .userType("Secret Agent")
                 .userTypeId("007")
-                .deleteFlag(false)
+                .deleteFlag(deleteFlag)
                 .role(buildListOfRoles(multiRole))
                 .build();
     }
 
-    public static List<UserProfile> buildListOfUserProfiles(boolean multiProfiles, boolean multiRole) {
+    public static List<UserProfile> buildListOfUserProfiles(boolean multiProfiles,
+                                                            boolean multiRole,
+                                                            boolean primaryLocation1,
+                                                            boolean primaryLocation2,
+                                                            boolean deleteFlag) {
         List<UserProfile> userProfiles = new ArrayList<>();
-        userProfiles.add(buildUserProfile(id_1, multiRole));
+        userProfiles.add(buildUserProfile(id_1, multiRole, primaryLocation1, primaryLocation2, deleteFlag));
         if(multiProfiles) {
-            userProfiles.add(buildUserProfile(id_2, multiRole));
+            userProfiles.add(buildUserProfile(id_2, multiRole, primaryLocation1, primaryLocation2, deleteFlag));
         }
         return userProfiles;
     }

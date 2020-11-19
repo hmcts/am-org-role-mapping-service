@@ -130,8 +130,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-    //@Test
+    @Test
     public void createOrgRoleMappingTest() throws Exception {
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                true, false,
+                                false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
@@ -148,12 +153,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("must successfully create org role mapping for single user with one role assignment")
+    @DisplayName("S1: must successfully create org role mapping for single user with one role assignment")
     public void createOrgRoleMappingForSingleUserWithOneRoleAssignment() throws Exception {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false), HttpStatus.OK));
+                        .buildListOfUserProfiles(false, false,
+                                true, false,
+                                false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -170,12 +177,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("must successfully create org role mapping for single user with multiple role assignments")
+    @DisplayName("S2: must successfully create org role mapping for single user with multiple role assignments")
     public void createOrgRoleMappingForSingleUserWithMultipleRoleAssignment() throws Exception {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, true), HttpStatus.OK));
+                        .buildListOfUserProfiles(false, true,
+                                true, false,
+                                false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -192,12 +201,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("must successfully create org role mapping for multiple users each has single role assignment")
+    @DisplayName("S3: must successfully create org role mapping for multiple users each has single role assignment")
     public void createOrgRoleMappingForMultipleUsersWithOneRoleAssignment() throws Exception {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(true, false), HttpStatus.OK));
+                        .buildListOfUserProfiles(true, false,
+                                true, false,
+                                false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
@@ -211,6 +222,102 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .headers(getHttpHeaders())
                 .content(mapper.writeValueAsBytes(request))
         ).andExpect(status().is(200)).andReturn();
+    }
+
+    @Test
+    @DisplayName("S6: must successfully delete org role mapping when delete flag is true")
+    public void createOrgRoleMappingDeleteOrgRoleMappingTrue() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                true, false,
+                                true), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED);
+
+        mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request))
+        ).andExpect(status().is(200)).andReturn();
+    }
+
+    @Test //TODO
+    @DisplayName("S8: must receive an error message when drool rules fail")
+    public void createOrgRoleMappingErrorWhenDroolsFail() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(true, false,
+                                true, false,
+                                false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED);
+
+        mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request))
+        ).andExpect(status().is(200)).andReturn();
+    }
+
+    @Test
+    @DisplayName("must receive an error message when base location has more than one primary")
+    public void createOrgRoleMappingErrorWhenMultiPrimaryLocation() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                true, true,
+                                false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED);
+
+        mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request))
+        ).andExpect(status().is(400)).andReturn();
+    }
+
+    @Test
+    @DisplayName("must receive an error message when there is no primary location")
+    public void createOrgRoleMappingErrorWhenNoPrimaryLocation() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                false, false,
+                                false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED);
+
+        mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request))
+        ).andExpect(status().is(400)).andReturn();
     }
 
 
@@ -276,6 +383,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         );
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
+        //this stub is overruled by the mocking of its bean at the top of this test class
         crdClient.stubFor(WireMock.post(urlEqualTo("/refdata/case-worker/users/fetchUsersById"))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
