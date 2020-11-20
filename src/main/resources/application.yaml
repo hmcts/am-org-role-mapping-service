@@ -76,7 +76,7 @@ idam:
     secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:am_docker_secret}
     redirect_uri: ${ORG_ROLE_MAPPING_IDAM_REDIRECT_URI:http://localhost:4096/oauth2redirect}
     admin:
-      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:orm.admin@hmcts.NET}
+      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:TEST_AM_USER1_BEFTA@test.local}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:Pa55word11}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
 
@@ -103,14 +103,14 @@ logging.level.uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient: DE
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
-
+roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 
 amqp:
-  host: ${AMQP_HOST:rd-servicebus-sandbox.servicebus.windows.net}
-  username: ${AMQP_USERNAME:SendAndListenSharedAccessKey}
-  password: ${AMQP_PASSWORD:5ZXxCOCaJsvA/8uojXxqPfk6oJZr/xkyJe47vevc48s=}
-  topic: ${TOPIC_NAME:rd-caseworker-topic-sandbox}
-  subscription: ${SUBSCRIPTION_NAME:rd-caseworker-subscription-sandbox}
+  host: ${AMQP_HOST:sb://rd-servicebus-sandbox.servicebus.windows.net}
+  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:dummyKey}
+  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:dummyValue}
+  topic: ${AMQP_TOPIC_NAME:topicName}
+  subscription: ${AMQP_SUBSCRIPTION_NAME:subscriptionName}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
 

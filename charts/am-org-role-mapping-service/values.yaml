@@ -23,3 +23,5 @@ java:
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
     ORG_ROLE_MAPPING_IDAM_CLIENT_ID: am_role_assignment
     MICROSERVICE_NAME: am_role_assignment_service
+    AMQP_HOST: sb://rd-servicebus-sandbox.servicebus.windows.net
+    TRUST_ALL_CERTS: false
