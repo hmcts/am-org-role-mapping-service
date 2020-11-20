@@ -103,7 +103,7 @@ logging.level.uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient: DE
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
-roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
+
 
 amqp:
   host: ${AMQP_HOST:rd-servicebus-sandbox.servicebus.windows.net}
