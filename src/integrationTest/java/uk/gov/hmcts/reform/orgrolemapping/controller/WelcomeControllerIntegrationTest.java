@@ -448,7 +448,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andReturn();
 
         String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("The work are is not available"));
+        assertTrue(contentAsString.contains("The work area is not available"));
     }
 
     @Test
