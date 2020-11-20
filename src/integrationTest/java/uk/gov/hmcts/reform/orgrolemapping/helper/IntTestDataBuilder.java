@@ -50,11 +50,14 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static List<UserProfile.BaseLocation> buildListOfBaseLocations(boolean primaryLocation1,
+    public static List<UserProfile.BaseLocation> buildListOfBaseLocations(boolean enableLocationList,
+                                                                          boolean primaryLocation1,
                                                                           boolean primaryLocation2) {
         List<UserProfile.BaseLocation> baseLocationList = new ArrayList<>();
-        baseLocationList.add(buildBaseLocation(primaryLocation1));
-        baseLocationList.add(buildBaseLocation(primaryLocation2));
+        if(enableLocationList) {
+            baseLocationList.add(buildBaseLocation(primaryLocation1));
+            baseLocationList.add(buildBaseLocation(primaryLocation2));
+        }
         return baseLocationList;
     }
 
@@ -88,13 +91,14 @@ public class IntTestDataBuilder {
     }
 
     public static UserProfile buildUserProfile(String id, boolean multiRole,
+                                               boolean enableLocationList,
                                                boolean primaryLocation1,
                                                boolean primaryLocation2,
                                                boolean deleteFlag) {
         return UserProfile.builder()
                 .id(id)
                 .firstName("James").lastName("Bond").emailId("007@MI6.gov")
-                .baseLocation(buildListOfBaseLocations(primaryLocation1, primaryLocation2))
+                .baseLocation(buildListOfBaseLocations(enableLocationList, primaryLocation1, primaryLocation2))
                 .workArea(buildListOfWorkAreas())
                 .createdTime(LocalDateTime.now())
                 .lastUpdateTime(LocalDateTime.now().minusDays(1L))
@@ -108,13 +112,16 @@ public class IntTestDataBuilder {
 
     public static List<UserProfile> buildListOfUserProfiles(boolean multiProfiles,
                                                             boolean multiRole,
+                                                            boolean enableLocationList,
                                                             boolean primaryLocation1,
                                                             boolean primaryLocation2,
                                                             boolean deleteFlag) {
         List<UserProfile> userProfiles = new ArrayList<>();
-        userProfiles.add(buildUserProfile(id_1, multiRole, primaryLocation1, primaryLocation2, deleteFlag));
+        userProfiles.add(buildUserProfile(id_1, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
+                deleteFlag));
         if(multiProfiles) {
-            userProfiles.add(buildUserProfile(id_2, multiRole, primaryLocation1, primaryLocation2, deleteFlag));
+            userProfiles.add(buildUserProfile(id_2, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
+                    deleteFlag));
         }
         return userProfiles;
     }

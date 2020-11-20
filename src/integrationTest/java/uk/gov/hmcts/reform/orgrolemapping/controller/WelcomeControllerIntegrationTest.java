@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -38,6 +37,8 @@ import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +48,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -98,6 +100,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Autowired
     private WelcomeController welcomeController;
 
+    private static final String SAMPLE_RAS_RESPONSE = "RASSampleResponse";
+    private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
+    private static final String RAS_ONE_USER_MULTI_ROLE = "RASOneUserMultiRole";
+    private static final String RAS_MULTI_USER_ONE_ROLE = "RASMultiUserOneRole";
+    private static final String RAS_DELETE_FLAG_TRUE = "RASDeleteFlagTrue";
+    private static final String RAS_DROOL_RULE_FAIL = "RASDroolRuleFail";
+    private static final String RAS_UPDATE_ROLE_TCW_STCW = "RASUpdateRoleTcwStcw";
+
     @Before
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
@@ -134,22 +144,23 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     public void createOrgRoleMappingTest() throws Exception {
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false,
-                                true, false,
+                        .buildListOfUserProfiles(true, false,
+                                true, true, false,
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9z", "21334a2b-79ce-44eb-9168-2d49a744be9x"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED);
+        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
 
         mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(200)).andReturn();
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(200))
+                .andReturn();
     }
 
     @Test
@@ -159,21 +170,26 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
-                                true, false,
+                                true, true, false,
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED);
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_ONE_ROLE);
 
-        mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(200)).andReturn();
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("123e4567-e89b-42d3-a456-556642445674"));
+        assertTrue(contentAsString.contains("APPROVED"));
     }
 
     @Test
@@ -183,21 +199,26 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, true,
-                                true, false,
+                                true, true, false,
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445676"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED);
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_MULTI_ROLE);
 
-        mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(200)).andReturn();
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("123e4567-e89b-42d3-a456-556642445676"));
+        assertTrue(contentAsString.contains("APPROVED"));
     }
 
     @Test
@@ -207,21 +228,29 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(true, false,
-                                true, false,
+                                true, true, false,
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
+                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445000", "123e4567-e89b-42d3-a456-556642445111"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED);
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_MULTI_USER_ONE_ROLE);
 
-        mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(200)).andReturn();
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("APPROVED"));
+        assertTrue(contentAsString.contains("123e4567-e89b-42d3-a456-556642445000"));
+        assertTrue(contentAsString.contains("tribunal-caseworker"));
+        assertTrue(contentAsString.contains("123e4567-e89b-42d3-a456-556642445111"));
+        assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
     }
 
     @Test
@@ -231,31 +260,63 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
-                                true, false,
+                                true, true, false,
                                 true), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9v"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED);
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DELETE_FLAG_TRUE);
 
-        mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(200)).andReturn();
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("APPROVED"));
     }
 
-    @Test //TODO
-    @DisplayName("S8: must receive an error message when drool rules fail")
+    @Test
+    @DisplayName("S8: must receive a rejected response when drool rules fail in RAS")
     public void createOrgRoleMappingErrorWhenDroolsFail() throws Exception {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                true, true, false,
+                                false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DROOL_RULE_FAIL);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("REJECTED"));
+    }
+
+    @Test
+    @DisplayName("S9: must successfully create org role mapping for an update of role TCW to STCW")
+    public void createOrgRoleMappingUpdateRole() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(true, false,
-                                true, false,
+                                true, true, false,
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
@@ -263,47 +324,27 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED);
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_UPDATE_ROLE_TCW_STCW);
 
-        mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(200)).andReturn();
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
     }
 
     @Test
-    @DisplayName("must receive an error message when base location has more than one primary")
-    public void createOrgRoleMappingErrorWhenMultiPrimaryLocation() throws Exception {
-
-        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false,
-                                true, true,
-                                false), HttpStatus.OK));
-
-        UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
-                .build();
-        logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED);
-
-        mockMvc.perform(post(uri)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(400)).andReturn();
-    }
-
-    @Test
-    @DisplayName("must receive an error message when there is no primary location")
+    @DisplayName("S11: must receive an error message when there is no primary location")
     public void createOrgRoleMappingErrorWhenNoPrimaryLocation() throws Exception {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
-                                false, false,
+                                true, false, false,
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
@@ -311,71 +352,88 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED);
+        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
 
-        mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request))
-        ).andExpect(status().is(400)).andReturn();
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(400))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("The user has 0 primary location(s), only 1 is allowed"));
     }
 
+    @Test
+    @DisplayName("S12: must receive an error message when no base location list is provided")
+    public void createOrgRoleMappingErrorWhenNoLocationList() throws Exception {
 
-    public void setRoleAssignmentWireMock(HttpStatus status) throws JsonProcessingException {
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                false, true, true,
+                                false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(400))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("The base location is not available"));
+    }
+
+    @Test
+    @DisplayName("S13: must receive an error message when base location has more than one primary")
+    public void createOrgRoleMappingErrorWhenMultiPrimaryLocation() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                true, true, true,
+                                false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(400))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("The user has 2 primary location(s), only 1 is allowed"));
+    }
+
+    public void setRoleAssignmentWireMock(HttpStatus status, String fileName) throws IOException {
         String body = null;
-        int returnHttpStaus = status.value();
+        int returnHttpStatus = status.value();
         if (status.is2xxSuccessful()) {
-            body = "{\n"
-                    + "    \"links\": [],\n"
-                    + "    \"roleAssignmentResponse\": {\n"
-                    + "    \"roleRequest\": {\n"
-                    + "    \"id\": \"9bba5a4b-dbbc-4a47-bc8e-3eb75aa195b6\",\n"
-                    + "    \"authenticatedUserId\": \"6eb64a6f-8273-4cdf-9b72-0a0ae4f9444f\",\n"
-                    + "    \"correlationId\": \"4abf3f30-b033-47f8-9af3-ccaa61e77c72\",\n"
-                    + "    \"assignerId\": \"123e4567-e89b-42d3-a456-556642445678\",\n"
-                    + "    \"requestType\": \"CREATE\",\n"
-                    + "    \"process\": \"p2\",\n"
-                    + "    \"reference\": \"p2\",\n"
-                    + "          \"replaceExisting\": false,\n"
-                    + "            \"status\": \"APPROVED\",\n"
-                    + "            \"created\": \"2020-10-13T15:18:45.263721\",\n"
-                    + "            \"log\": \"Request has been approved by rule : R12_role_validation\"\n"
-                    + "        },\n"
-                    + "        \"requestedRoles\": [\n"
-                    + "            {\n"
-                    + "                \"id\": \"ab26d584-e37b-4db9-98fa-ce5e2e7a7653\",\n"
-                    + "                \"actorIdType\": \"IDAM\",\n"
-                    + "                \"actorId\": \"123e4567-e89b-42d3-a456-556642445612\",\n"
-                    + "                \"roleType\": \"CASE\",\n"
-                    + "                \"roleName\": \"judge\",\n"
-                    + "                \"classification\": \"PUBLIC\",\n"
-                    + "                \"grantType\": \"SPECIFIC\",\n"
-                    + "                \"roleCategory\": \"JUDICIAL\",\n"
-                    + "                \"readOnly\": false,\n"
-                    + "                \"process\": \"p2\",\n"
-                    + "                \"reference\": \"p2\",\n"
-                    + "                \"statusSequence\": 10,\n"
-                    + "                \"status\": \"LIVE\",\n"
-                    + "                \"created\": \"2020-10-13T15:18:45.263789\",\n"
-                    + "                \"log\": \"Requested Role has been approved by rule : R12_role_validation \",\n"
-                    + "                \"attributes\": {\n"
-                    + "                    \"contractType\": \"SALARIED\",\n"
-                    + "                    \"jurisdiction\": \"divorce\",\n"
-                    + "                    \"caseId\": \"1234567890123456\",\n"
-                    + "                    \"region\": \"north-east\"\n"
-                    + "                }\n"
-                    + "            }\n"
-                    + "        ]\n"
-                    + "    }\n"
-                    + "}";
-            returnHttpStaus = 201;
+            body = readJsonFromFile(fileName);
+            returnHttpStatus = 201;
         }
 
         roleAssignmentService.stubFor(WireMock.post(urlEqualTo("/am/role-assignments"))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(body)
-                        .withStatus(returnHttpStaus)
+                        .withStatus(returnHttpStatus)
                 ));
 
         List<String> userRequestList = Arrays.asList(
@@ -389,8 +447,16 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(mapper.writeValueAsString(new CRDFeignClientFallback()
                                 .createRoleAssignment(new UserRequest(userRequestList)).getBody()))
-                        .withStatus(returnHttpStaus)
+                        .withStatus(returnHttpStatus)
                 ));
+    }
+
+    private String readJsonFromFile(String fileName) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        InputStream is = WelcomeControllerIntegrationTest.class
+                .getResourceAsStream(String.format("/%s.json", fileName));
+        Object json = mapper.readValue(is, Object.class);
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
     }
 
     private HttpHeaders getHttpHeaders() {
