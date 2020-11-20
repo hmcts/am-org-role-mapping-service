@@ -70,18 +70,50 @@ public class OrgRoleMappingConsumerTest {
     }
 
     @Pact(provider = "am_role_assignment_service", consumer = "am_org_role_mapping")
-    public RequestResponsePact executeCreateRoleAssignmentAndGet201(PactDslWithProvider builder) {
+    public RequestResponsePact executeCreateRoleAssignmentReplacingExistingFalseAndGet201(PactDslWithProvider builder) {
 
         return builder
-                .given("The assignment request is valid")
-                .uponReceiving("RAS creates role assignments")
+                .given("The assignment request is valid with replaceExisting flag as false")
+                .uponReceiving("role assignment service takes s2s/auth token and create a role assignment")
                 .path(RAS_CREATE_ROLE_ASSIGNMENT_URL)
                 .method(HttpMethod.POST.toString())
-                .body(createRoleAssignmentRequest(), String.valueOf(ContentType.JSON))
+                .body(createRoleAssignmentRequestReplaceExistingFalse(), String.valueOf(ContentType.JSON))
                 .willRespondWith()
                 .status(HttpStatus.CREATED.value())
                 .headers(getRoleAssignmentResponseHeaders())
-                .body(createRoleAssignmentResponse())
+                .body(createRoleAssignmentResponseReplaceExistingFalse())
+                .toPact();
+    }
+
+    @Pact(provider = "am_role_assignment_service", consumer = "am_org_role_mapping")
+    public RequestResponsePact executeCreateRoleAssignmentOneRoleAndGet201(PactDslWithProvider builder) {
+
+        return builder
+                .given("The assignment request is valid with one requested role")
+                .uponReceiving("role assignment service takes s2s/auth token and create or update a role assignment")
+                .path(RAS_CREATE_ROLE_ASSIGNMENT_URL)
+                .method(HttpMethod.POST.toString())
+                .body(createRoleAssignmentRequestOneRole(), String.valueOf(ContentType.JSON))
+                .willRespondWith()
+                .status(HttpStatus.CREATED.value())
+                .headers(getRoleAssignmentResponseHeaders())
+                .body(createRoleAssignmentResponseOneRole())
+                .toPact();
+    }
+
+    @Pact(provider = "am_role_assignment_service", consumer = "am_org_role_mapping")
+    public RequestResponsePact executeCreateRoleAssignmentZeroRoleAndGet201(PactDslWithProvider builder) {
+
+        return builder
+                .given("The assignment request is valid with zero requested role")
+                .uponReceiving("role assignment service takes s2s/auth token and create zero role assignment")
+                .path(RAS_CREATE_ROLE_ASSIGNMENT_URL)
+                .method(HttpMethod.POST.toString())
+                .body(createRoleAssignmentRequestZeroRole(), String.valueOf(ContentType.JSON))
+                .willRespondWith()
+                .status(HttpStatus.CREATED.value())
+                .headers(getRoleAssignmentResponseHeaders())
+                .body(createRoleAssignmentResponseZeroRole())
                 .toPact();
     }
 
@@ -120,14 +152,15 @@ public class OrgRoleMappingConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeCreateRoleAssignmentAndGet201")
-    void createRoleAssignmentAndGet201Test(MockServer mockServer)
+    @PactTestFor(pactMethod = "executeCreateRoleAssignmentReplacingExistingFalseAndGet201")
+    void createRoleAssignmentReplaceExistingFalseAndGet201Test(MockServer mockServer)
             throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()
+                        .headers(getHttpHeaders())
                         .contentType(ContentType.JSON)
-                        .body(createRoleAssignmentRequest())
+                        .body(createRoleAssignmentRequestReplaceExistingFalse())
                         .post(mockServer.getUrl() + RAS_CREATE_ROLE_ASSIGNMENT_URL)
                         .then()
                         .log().all().extract().asString();
@@ -138,22 +171,74 @@ public class OrgRoleMappingConsumerTest {
         JSONObject roleRequest = response.getJSONObject("roleAssignmentResponse").getJSONObject("roleRequest");
         JSONArray requestedRoles = response.getJSONObject("roleAssignmentResponse").getJSONArray("requestedRoles");
         JSONObject role1 = requestedRoles.getJSONObject(0);
-        JSONObject role2 = requestedRoles.getJSONObject(1);
+        assertThat(roleRequest.get("status"), equalTo("APPROVED"));
+        assertThat(roleRequest.get("requestType"), equalTo("CREATE"));
+        assertThat(roleRequest.get("process"), equalTo(roleRequest.get("reference")));
+        assertThat(roleRequest.get("replaceExisting"), equalTo(false));
+        assertThat(role1.get("classification"), equalTo("PUBLIC"));
+        assertThat(role1.get("roleType"), equalTo("ORGANISATION"));
+        assertThat(role1.get("roleName"), equalTo("judge"));
+        assertThat(role1.get("grantType"), equalTo("STANDARD"));
+        assertThat(role1.get("roleCategory"), equalTo("JUDICIAL"));
+
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "executeCreateRoleAssignmentOneRoleAndGet201")
+    void createRoleAssignmentOneRoleAndGet201Test(MockServer mockServer)
+            throws JSONException {
+        String actualResponseBody =
+                SerenityRest
+                        .given()
+                        .headers(getHttpHeaders())
+                        .contentType(ContentType.JSON)
+                        .body(createRoleAssignmentRequestOneRole())
+                        .post(mockServer.getUrl() + RAS_CREATE_ROLE_ASSIGNMENT_URL)
+                        .then()
+                        .log().all().extract().asString();
+
+        JSONObject response =  new JSONObject(actualResponseBody);
+        Assertions.assertThat(response).isNotNull();
+        JSONObject roleRequest = response.getJSONObject("roleAssignmentResponse").getJSONObject("roleRequest");
+        JSONArray requestedRoles = response.getJSONObject("roleAssignmentResponse").getJSONArray("requestedRoles");
+        JSONObject role1 = requestedRoles.getJSONObject(0);
+        assertThat(roleRequest.get("status"), equalTo("APPROVED"));
+        assertThat(roleRequest.get("requestType"), equalTo("CREATE"));
+        assertThat(roleRequest.get("process"), equalTo(roleRequest.get("reference")));
+        assertThat(roleRequest.get("replaceExisting"), equalTo(true));
+        assertThat(role1.get("classification"), equalTo("PUBLIC"));
+        assertThat(role1.get("roleType"), equalTo("ORGANISATION"));
+        assertThat(role1.get("roleName"), equalTo("judge"));
+        assertThat(role1.get("grantType"), equalTo("STANDARD"));
+        assertThat(role1.get("roleCategory"), equalTo("JUDICIAL"));
+
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "executeCreateRoleAssignmentZeroRoleAndGet201")
+    void createRoleAssignmentZeroRoleAndGet201Test(MockServer mockServer)
+            throws JSONException {
+        String actualResponseBody =
+                SerenityRest
+                        .given()
+                        .headers(getHttpHeaders())
+                        .contentType(ContentType.JSON)
+                        .body(createRoleAssignmentRequestZeroRole())
+                        .post(mockServer.getUrl() + RAS_CREATE_ROLE_ASSIGNMENT_URL)
+                        .then()
+                        .log().all().extract().asString();
+
+        JSONObject response =  new JSONObject(actualResponseBody);
+        Assertions.assertThat(response).isNotNull();
+        JSONObject roleRequest = response.getJSONObject("roleAssignmentResponse").getJSONObject("roleRequest");
+        JSONArray requestedRoles = response.getJSONObject("roleAssignmentResponse").getJSONArray("requestedRoles");
 
         assertThat(roleRequest.get("status"), equalTo("APPROVED"));
         assertThat(roleRequest.get("requestType"), equalTo("CREATE"));
-        assertThat(roleRequest.get("assignerId"), equalTo(roleRequest.get("authenticatedUserId")));
-        assertThat(roleRequest.get("replaceExisting"), equalTo(false));
-        assertThat(role1.get("classification"), equalTo("PUBLIC"));
-        assertThat(role1.get("roleType"), equalTo("CASE"));
-        assertThat(role1.get("roleName"), equalTo("judge"));
-        assertThat(role1.get("grantType"), equalTo("SPECIFIC"));
-        assertThat(role1.get("roleCategory"), equalTo("JUDICIAL"));
-        assertThat(role2.get("classification"), equalTo("PRIVATE"));
-        assertThat(role2.get("roleType"), equalTo("CASE"));
-        assertThat(role2.get("roleName"), equalTo("judge1"));
-        assertThat(role2.get("grantType"), equalTo("CHALLENGED"));
-        assertThat(role2.get("roleCategory"), equalTo("JUDICIAL"));
+        assertThat(roleRequest.get("process"), equalTo(roleRequest.get("reference")));
+        assertThat(roleRequest.get("replaceExisting"), equalTo(true));
+        assertThat(requestedRoles.isEmpty(),equalTo(true));
+
     }
 
     private String createResponse() {
@@ -181,180 +266,206 @@ public class OrgRoleMappingConsumerTest {
         return response;
     }
 
-    private String createRoleAssignmentRequest() {
+    private String createRoleAssignmentRequestReplaceExistingFalse() {
         String request = "";
         request = "{\n" +
-                "  \"roleRequest\":\n" +
-                "  {\n" +
-                "    \"assignerId\": \"52aa3810-af1f-11ea-b3de-0242ac130004\",\n" +
-                "    \"process\": \"Process1\",\n" +
-                "    \"reference\": \"03352d0-e699-48bc-b6f5-5810411e60ad\",\n" +
-                "    \"replaceExisting\": false\n" +
-                "  },\n" +
-                "  \"requestedRoles\":\n" +
-                "  [\n" +
-                "    {\n" +
-                "      \"actorIdType\": \"IDAM\",\n" +
-                "      \"actorId\": \"003352d0-e699-48bc-b6f5-5810411e60af\",\n" +
-                "      \"roleType\": \"CASE\",\n" +
-                "      \"roleName\": \"JUDGE\",\n" +
-                "      \"roleCategory\": \"JUDICIAL\",\n" +
-                "      \"classification\": \"PUBLIC\",\n" +
-                "      \"grantType\": \"SPECIFIC\",\n" +
-                "      \"readOnly\": false,\n" +
-                "      \"beginTime\": \"2020-01-01T00:00\",\n" +
-                "      \"endTime\": \"2020-12-01T00:00\",\n" +
-                "      \"attributes\":\n" +
-                "      {\n" +
-                "        \"jurisdiction\": \"divorce\",\n" +
-                "        \"region\": \"north-east\",\n" +
-                "        \"contractType\": \"SALARIED\",\n" +
-                "        \"caseId\": \"1234567890123456\"\n" +
-                "      },\n" +
-                "      \"notes\":\n" +
-                "      [\n" +
-                "        {\n" +
-                "          \"userId\": \"003352d0-e699-48bc-b6f5-5810411e60af\",\n" +
-                "          \"time\": \"2020-01-01T00:00\",\n" +
-                "          \"comment\": \"Need Access to case number 1234567890123456 for a year\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "          \"userId\": \"52aa3810-af1f-11ea-b3de-0242ac130004\",\n" +
-                "          \"time\": \"2020-01-02T00:00\",\n" +
-                "          \"comment\": \"Access granted for 3 months\"\n" +
-                "        }\n" +
-                "      ]\n" +
+                "    \"roleRequest\": {\n" +
+                "        \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
+                "        \"process\": \"S-028\",\n" +
+                "        \"reference\": \"S-028\",\n" +
+                "        \"replaceExisting\": false\n" +
                 "    },\n" +
-                "    {\n" +
-                "      \"actorIdType\": \"IDAM\",\n" +
-                "      \"actorId\": \"85378679-286a-4385-a6ae-442588e9789323\",\n" +
-                "      \"roleType\": \"CASE\",\n" +
-                "      \"roleName\": \"JUDGE\",\n" +
-                "      \"roleCategory\": \"JUDICIAL\",\n" +
-                "      \"classification\": \"PUBLIC\",\n" +
-                "      \"grantType\": \"CHALLENGED\",\n" +
-                "      \"readOnly\": true,\n" +
-                "      \"endTime\": \"2050-01-01T00:00\",\n" +
-                "      \"attributes\":\n" +
-                "      {\n" +
-                "        \"jurisdiction\": \"divorce\",\n" +
-                "        \"region\": \"north-east\",\n" +
-                "        \"contractType\": \"FEEPAY\",\n" +
-                "        \"caseId\": \"1234567890123457\"\n" +
-                "      },\n" +
-                "      \"notes\":\n" +
-                "      [\n" +
+                "    \"requestedRoles\": [\n" +
                 "        {\n" +
-                "          \"userId\": \"85378679-286a-4385-a6ae-442588e9789323\",\n" +
-                "          \"time\": \"2020-01-01T00:00\",\n" +
-                "          \"comment\": \"Need Access to case number 1234567890123457 for a year\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "          \"userId\": \"52aa3810-af1f-11ea-b3de-0242ac130004\",\n" +
-                "          \"time\": \"2020-01-02T00:00\",\n" +
-                "          \"comment\": \"Access granted\"\n" +
+                "        \"actorIdType\": \"IDAM\",\n" +
+                "        \"actorId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
+                "        \"roleType\": \"ORGANISATION\",\n" +
+                "        \"roleName\": \"judge\",\n" +
+                "        \"roleCategory\": \"JUDICIAL\",\n" +
+                "        \"classification\": \"PUBLIC\",\n" +
+                "        \"grantType\": \"STANDARD\",\n" +
+                "        \"readOnly\": false,\n" +
+                "        \"beginTime\": \"2021-01-01T00:00\",\n" +
+                "        \"endTime\": \"2023-01-01T00:00\",\n" +
+                "        \"attributes\": {\n" +
+                "            \"jurisdiction\": \"divorce\",\n" +
+                "            \"region\": \"south-east\",\n" +
+                "            \"contractType\": \"SALARIED\",\n" +
+                "            \"caseId\": \"1234567890123456\"\n" +
                 "        }\n" +
-                "\n" +
-                "      ]\n" +
                 "    }\n" +
-                "  ]\n" +
+                "    ]\n" +
                 "}";
         return request;
     }
 
-    private String createRoleAssignmentResponse() {
+    private String createRoleAssignmentResponseReplaceExistingFalse() {
         String response = "";
         response = "{\n" +
+                "    \"links\": [],\n" +
                 "    \"roleAssignmentResponse\": {\n" +
                 "        \"roleRequest\": {\n" +
-                "            \"id\": \"bb955236-944b-47ed-ba48-b692d95b45af\",\n" +
-                "            \"correlationId\": \"21334a2b-79ce-44eb-9168-2d49a744be9d\",\n" +
-                "            \"assignerId\": \"21334a2b-79ce-44eb-9168-2d49a744be9c\",\n" +
-                "            \"authenticatedUserId\": \"21334a2b-79ce-44eb-9168-2d49a744be9c\",\n" +
+                "            \"id\": \"c3552563-80e1-49a1-9dc9-b2625e7c44dc\",\n" +
+                "            \"authenticatedUserId\": \"96983ff2-844a-4938-9905-10ac4a9bddff\",\n" +
+                "            \"correlationId\": \"01f6e7e2-c66c-44a0-a7e4-73c1507c92b7\",\n" +
+                "            \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
                 "            \"requestType\": \"CREATE\",\n" +
-                "            \"status\": \"APPROVED\",\n" +
-                "            \"process\": \"businessProcess1\",\n" +
-                "            \"reference\": \"03352d0-e699-48bc-b6f5-5810411e60ad\",\n" +
+                "            \"process\": \"S-028\",\n" +
+                "            \"reference\": \"S-028\",\n" +
                 "            \"replaceExisting\": false,\n" +
-                "            \"created\": \"2020-01-01T00:00:00\",\n" +
-                "            \"log\": \"All assignments approved\"\n" +
+                "            \"status\": \"APPROVED\",\n" +
+                "            \"created\": \"2020-11-19T18:42:45.138597\",\n" +
+                "            \"log\": \"Request has been Approved\"\n" +
                 "        },\n" +
                 "        \"requestedRoles\": [\n" +
                 "            {\n" +
-                "                \"id\": \"083715f6-c315-4e20-846e-4958a90c2224\",\n" +
+                "                \"id\": \"14a21569-eb80-4681-b62c-6ae2ed069e7f\",\n" +
                 "                \"actorIdType\": \"IDAM\",\n" +
-                "                \"actorId\": \"21334a2b-79ce-44eb-9168-2d49a744be9c\",\n" +
-                "                \"roleType\": \"CASE\",\n" +
+                "                \"actorId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
+                "                \"roleType\": \"ORGANISATION\",\n" +
                 "                \"roleName\": \"judge\",\n" +
                 "                \"classification\": \"PUBLIC\",\n" +
-                "                \"grantType\": \"SPECIFIC\",\n" +
+                "                \"grantType\": \"STANDARD\",\n" +
                 "                \"roleCategory\": \"JUDICIAL\",\n" +
-                "                \"status\": \"LIVE\",\n" +
                 "                \"readOnly\": false,\n" +
-                "                \"beginTime\": \"2020-07-01T00:00:00\",\n" +
-                "                \"endTime\": \"2020-09-01T00:00:00\",\n" +
-                "                \"created\": \"2020-06-01T00:00:00\",\n" +
-                "                \"process\": \"businessProcess1\",\n" +
-                "                \"reference\": \"03352d0-e699-48bc-b6f5-5810411e60ad\",\n" +
-                "                \"statusSequence\": 10,\n" +
-                "                \"log\": \"All assignments approved\",\n" +
+                "                \"beginTime\": \"2021-01-01T00:00:00\",\n" +
+                "                \"endTime\": \"2023-01-01T00:00:00\",\n" +
+                "                \"process\": \"S-028\",\n" +
+                "                \"reference\": \"S-028\",\n" +
+                "                \"status\": \"LIVE\",\n" +
+                "                \"created\": \"2020-11-19T18:42:45.138666\",\n" +
+                "                \"log\": \"Create approved : judicial_organisational_role_mapping_service_create\\nApproved : validate_role_assignment_against_patterns\",\n" +
                 "                \"attributes\": {\n" +
                 "                    \"jurisdiction\": \"divorce\",\n" +
-                "                    \"region\": \"north-east\",\n" +
+                "                    \"region\": \"south-east\",\n" +
                 "                    \"contractType\": \"SALARIED\",\n" +
                 "                    \"caseId\": \"1234567890123456\"\n" +
                 "                },\n" +
-                "                \"notes\": [\n" +
-                "                    {\n" +
-                "                        \"userId\": \"003352d0-e699-48bc-b6f5-5810411e60af\",\n" +
-                "                        \"time\": \"2020-01-01T00:00\",\n" +
-                "                        \"comment\": \"Need Access to case number 1234567890123456 for a year\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"userId\": \"52aa3810-af1f-11ea-b3de-0242ac130004\",\n" +
-                "                        \"time\": \"2020-01-02T00:00\",\n" +
-                "                        \"comment\": \"Access granted for 3 months\"\n" +
-                "                    }\n" +
-                "                ]\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": \"083715f6-c315-4e20-846e-4958a90c2225\",\n" +
-                "                \"actorIdType\": \"IDAM\",\n" +
-                "                \"actorId\": \"21334a2b-79ce-44eb-9168-2d49a744be9d\",\n" +
-                "                \"roleType\": \"CASE\",\n" +
-                "                \"roleName\": \"judge1\",\n" +
-                "                \"classification\": \"PRIVATE\",\n" +
-                "                \"grantType\": \"CHALLENGED\",\n" +
-                "                \"roleCategory\": \"JUDICIAL\",\n" +
-                "                \"status\": \"LIVE\",\n" +
-                "                \"readOnly\": true,\n" +
-                "                \"beginTime\": \"2020-07-01T00:00:00\",\n" +
-                "                \"endTime\": \"2020-09-01T00:00:00\",\n" +
-                "                \"created\": \"2020-06-01T00:00:00\",\n" +
-                "                \"process\": \"businessProcess1\",\n" +
-                "                \"reference\": \"03352d0-e699-48bc-b6f5-5810411e60ad\",\n" +
-                "                \"statusSequence\": 10,\n" +
-                "                \"log\": \"All assignments approved\",\n" +
-                "                \"attributes\": {\n" +
-                "                    \"jurisdiction\": \"divorce\",\n" +
-                "                    \"region\": \"north-east\",\n" +
-                "                    \"contractType\": \"FEEPAY\",\n" +
-                "                    \"caseId\": \"1234567890123457\"\n" +
-                "                },\n" +
-                "                \"notes\": [\n" +
-                "                    {\n" +
-                "                        \"userId\": \"21334a2b-79ce-44eb-9168-2d49a744be9d\",\n" +
-                "                        \"time\": \"2020-01-01T00:00\",\n" +
-                "                        \"comment\": \"Need Access to case number 1234567890123457 for 9 months\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"userId\": \"52aa3810-af1f-11ea-b3de-0242ac130004\",\n" +
-                "                        \"time\": \"2020-01-02T00:00\",\n" +
-                "                        \"comment\": \"Access granted\"\n" +
-                "                    }\n" +
-                "                ]\n" +
+                "                \"notes\": null\n" +
                 "            }\n" +
                 "        ]\n" +
+                "    }\n" +
+                "}\n";
+        return response;
+    }
+
+    private String createRoleAssignmentRequestOneRole() {
+        String request = "";
+        request = "{\n" +
+                "    \"roleRequest\": {\n" +
+                "        \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
+                "        \"process\": \"S-028\",\n" +
+                "        \"reference\": \"S-028\",\n" +
+                "        \"replaceExisting\": true\n" +
+                "    },\n" +
+                "    \"requestedRoles\": [\n" +
+                "        {\n" +
+                "        \"actorIdType\": \"IDAM\",\n" +
+                "        \"actorId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
+                "        \"roleType\": \"ORGANISATION\",\n" +
+                "        \"roleName\": \"judge\",\n" +
+                "        \"roleCategory\": \"JUDICIAL\",\n" +
+                "        \"classification\": \"PUBLIC\",\n" +
+                "        \"grantType\": \"STANDARD\",\n" +
+                "        \"readOnly\": false,\n" +
+                "        \"beginTime\": \"2021-01-01T00:00\",\n" +
+                "        \"endTime\": \"2023-01-01T00:00\",\n" +
+                "        \"attributes\": {\n" +
+                "            \"jurisdiction\": \"divorce\",\n" +
+                "            \"region\": \"south-east\",\n" +
+                "            \"contractType\": \"SALARIED\",\n" +
+                "            \"caseId\": \"1234567890123456\"\n" +
+                "        }\n" +
+                "    }\n" +
+                "    ]\n" +
+                "}\n";
+        return request;
+    }
+
+    private String createRoleAssignmentResponseOneRole() {
+        String response = "";
+        response = "{\n" +
+                "    \"links\": [],\n" +
+                "    \"roleAssignmentResponse\": {\n" +
+                "        \"roleRequest\": {\n" +
+                "            \"id\": \"2b8128bc-379e-4d71-97e2-45b568a3b281\",\n" +
+                "            \"authenticatedUserId\": \"96983ff2-844a-4938-9905-10ac4a9bddff\",\n" +
+                "            \"correlationId\": \"01f6e7e2-c66c-44a0-a7e4-73c1507c92b7\",\n" +
+                "            \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
+                "            \"requestType\": \"CREATE\",\n" +
+                "            \"process\": \"S-028\",\n" +
+                "            \"reference\": \"S-028\",\n" +
+                "            \"replaceExisting\": true,\n" +
+                "            \"status\": \"APPROVED\",\n" +
+                "            \"created\": \"2020-11-19T18:43:55.60211\",\n" +
+                "            \"log\": \"Duplicate Request: Requested Assignments are already live.\"\n" +
+                "        },\n" +
+                "        \"requestedRoles\": [\n" +
+                "            {\n" +
+                "                \"id\": \"14a21569-eb80-4681-b62c-6ae2ed069e7f\",\n" +
+                "                \"actorIdType\": \"IDAM\",\n" +
+                "                \"actorId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
+                "                \"roleType\": \"ORGANISATION\",\n" +
+                "                \"roleName\": \"judge\",\n" +
+                "                \"classification\": \"PUBLIC\",\n" +
+                "                \"grantType\": \"STANDARD\",\n" +
+                "                \"roleCategory\": \"JUDICIAL\",\n" +
+                "                \"readOnly\": false,\n" +
+                "                \"beginTime\": \"2021-01-01T00:00:00\",\n" +
+                "                \"endTime\": \"2023-01-01T00:00:00\",\n" +
+                "                \"process\": \"S-028\",\n" +
+                "                \"reference\": \"S-028\",\n" +
+                "                \"status\": \"LIVE\",\n" +
+                "                \"created\": \"2020-11-19T18:42:45.20874\",\n" +
+                "                \"log\": \"Create approved : judicial_organisational_role_mapping_service_create\\nApproved : validate_role_assignment_against_patterns\",\n" +
+                "                \"attributes\": {\n" +
+                "                    \"contractType\": \"SALARIED\",\n" +
+                "                    \"caseId\": \"1234567890123456\",\n" +
+                "                    \"jurisdiction\": \"divorce\",\n" +
+                "                    \"region\": \"south-east\"\n" +
+                "                },\n" +
+                "                \"notes\": null,\n" +
+                "                \"authorisations\": []\n" +
+                "            }\n" +
+                "        ]\n" +
+                "    }\n" +
+                "}";
+        return response;
+    }
+
+    private String createRoleAssignmentRequestZeroRole() {
+        String request = "";
+        request = "{\n" +
+                "    \"roleRequest\": {\n" +
+                "        \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
+                "        \"process\": \"S-028\",\n" +
+                "        \"reference\": \"S-028\",\n" +
+                "        \"replaceExisting\": true\n" +
+                "    },\n" +
+                "    \"requestedRoles\": []\n" +
+                "}";
+        return request;
+    }
+
+    private String createRoleAssignmentResponseZeroRole() {
+        String response = "";
+        response = "{\n" +
+                "    \"links\": [],\n" +
+                "    \"roleAssignmentResponse\": {\n" +
+                "        \"roleRequest\": {\n" +
+                "            \"id\": \"1d1b56da-6cd3-416e-a52e-ddc713e44c67\",\n" +
+                "            \"authenticatedUserId\": \"96983ff2-844a-4938-9905-10ac4a9bddff\",\n" +
+                "            \"correlationId\": \"01f6e7e2-c66c-44a0-a7e4-73c1507c92b7\",\n" +
+                "            \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n" +
+                "            \"requestType\": \"CREATE\",\n" +
+                "            \"process\": \"S-028\",\n" +
+                "            \"reference\": \"S-028\",\n" +
+                "            \"replaceExisting\": true,\n" +
+                "            \"status\": \"APPROVED\",\n" +
+                "            \"created\": \"2020-11-19T18:44:52.954524\",\n" +
+                "            \"log\": \"Request has been Approved\"\n" +
+                "        },\n" +
+                "        \"requestedRoles\": []\n" +
                 "    }\n" +
                 "}";
         return response;
