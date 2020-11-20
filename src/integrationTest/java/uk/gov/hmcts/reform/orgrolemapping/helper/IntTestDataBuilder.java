@@ -54,7 +54,7 @@ public class IntTestDataBuilder {
                                                                           boolean primaryLocation1,
                                                                           boolean primaryLocation2) {
         List<UserProfile.BaseLocation> baseLocationList = new ArrayList<>();
-        if(enableLocationList) {
+        if (enableLocationList) {
             baseLocationList.add(buildBaseLocation(primaryLocation1));
             baseLocationList.add(buildBaseLocation(primaryLocation2));
         }
@@ -84,7 +84,7 @@ public class IntTestDataBuilder {
     public static List<UserProfile.Role> buildListOfRoles(boolean multiRole) {
         List<UserProfile.Role> roles = new ArrayList<>();
         roles.add(buildRole("1",true));
-        if(multiRole) {
+        if (multiRole) {
             roles.add(buildRole("2", false));
         }
         return roles;
@@ -119,7 +119,7 @@ public class IntTestDataBuilder {
         List<UserProfile> userProfiles = new ArrayList<>();
         userProfiles.add(buildUserProfile(id_1, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
                 deleteFlag));
-        if(multiProfiles) {
+        if (multiProfiles) {
             userProfiles.add(buildUserProfile(id_2, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
                     deleteFlag));
         }
