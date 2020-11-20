@@ -1,0 +1,23 @@
+{
+  "_guid_": "F-001-Base-Root",
+  "users": {
+      "invokingUser": {
+        "username": "TEST_AM_USER2_BEFTA@test.local",
+        "password": "[[$TEST_AM_USER2_BEFTA_PWD]]"
+      }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    }
+  },
+  "expectedResponse": {
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    }
+  }
+}
+

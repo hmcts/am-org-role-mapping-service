@@ -1,0 +1,15 @@
+{
+  "_guid_": "ResponseRoleRequest",
+
+    "id": "[[ANYTHING_PRESENT]]",
+    "authenticatedUserId": "[[ANYTHING_PRESENT]]",
+    "assignerId" :  "[[ANYTHING_PRESENT]]",
+    "correlationId" : "[[ANYTHING_PRESENT]]",
+    "requestType": "CREATE",
+    "status": "APPROVED",
+    "process": "staff-organisational-role-mapping",
+    "reference": "${}${[scenarioContext][testData][request][body][roleRequest][reference]}",
+    "replaceExisting": true,
+    "created": "[[ANYTHING_PRESENT]]",
+    "log": "[[ANYTHING_PRESENT]]"
+}

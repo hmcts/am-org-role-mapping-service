@@ -140,6 +140,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
+
     @Test
     public void createOrgRoleMappingTest() throws Exception {
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))

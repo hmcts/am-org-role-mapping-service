@@ -39,7 +39,8 @@ def secrets = [
     'am-${env}': [
             secret('role-assignment-service-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
             secret('role-assignment-service-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
-            secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY')
+            secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY'),
+            secret('test-am-user2-befta-pwd', 'TEST_AM_USER2_BEFTA_PWD')
     ]
 ]
 
@@ -57,6 +58,7 @@ env.IDAM_CLIENT_ID="am_role_assignment"
 env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
 env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
+env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
 
 // Vars for Kubernetes PACT
 env.PACT_BROKER_FULL_URL = 'https://pact-broker.platform.hmcts.net'
