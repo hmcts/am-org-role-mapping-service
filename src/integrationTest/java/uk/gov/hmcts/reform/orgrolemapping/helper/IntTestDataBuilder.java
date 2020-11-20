@@ -67,10 +67,12 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static List<UserProfile.WorkArea> buildListOfWorkAreas() {
+    public static List<UserProfile.WorkArea> buildListOfWorkAreas(boolean enableWorkAreaList) {
         List<UserProfile.WorkArea> workAreaList = new ArrayList<>();
-        workAreaList.add(buildWorkArea("1","BFA1"));
-        workAreaList.add(buildWorkArea("2", "BFA2"));
+        if (enableWorkAreaList) {
+            workAreaList.add(buildWorkArea("1", "BFA1"));
+            workAreaList.add(buildWorkArea("2", "BFA2"));
+        }
         return workAreaList;
     }
 
@@ -94,12 +96,13 @@ public class IntTestDataBuilder {
                                                boolean enableLocationList,
                                                boolean primaryLocation1,
                                                boolean primaryLocation2,
+                                               boolean enableWorkAreaList,
                                                boolean deleteFlag) {
         return UserProfile.builder()
                 .id(id)
                 .firstName("James").lastName("Bond").emailId("007@MI6.gov")
                 .baseLocation(buildListOfBaseLocations(enableLocationList, primaryLocation1, primaryLocation2))
-                .workArea(buildListOfWorkAreas())
+                .workArea(buildListOfWorkAreas(enableWorkAreaList))
                 .createdTime(LocalDateTime.now())
                 .lastUpdateTime(LocalDateTime.now().minusDays(1L))
                 .region("London").regionId(1234L)
@@ -115,13 +118,14 @@ public class IntTestDataBuilder {
                                                             boolean enableLocationList,
                                                             boolean primaryLocation1,
                                                             boolean primaryLocation2,
+                                                            boolean enableWorkAreaList,
                                                             boolean deleteFlag) {
         List<UserProfile> userProfiles = new ArrayList<>();
         userProfiles.add(buildUserProfile(id_1, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
-                deleteFlag));
+                enableWorkAreaList, deleteFlag));
         if (multiProfiles) {
             userProfiles.add(buildUserProfile(id_2, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
-                    deleteFlag));
+                    enableWorkAreaList, deleteFlag));
         }
         return userProfiles;
     }

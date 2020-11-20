@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -147,7 +148,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(true, false,
                                 true, true, false,
-                                false), HttpStatus.OK));
+                                true,false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9z", "21334a2b-79ce-44eb-9168-2d49a744be9x"))
@@ -172,7 +173,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
                                 true, true, false,
-                                false), HttpStatus.OK));
+                                true,false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
@@ -201,7 +202,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, true,
                                 true, true, false,
-                                false), HttpStatus.OK));
+                                true,false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445676"))
@@ -230,7 +231,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(true, false,
                                 true, true, false,
-                                false), HttpStatus.OK));
+                                true,false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445000", "123e4567-e89b-42d3-a456-556642445111"))
@@ -262,7 +263,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
                                 true, true, false,
-                                true), HttpStatus.OK));
+                                true,true), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9v"))
@@ -290,7 +291,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
                                 true, true, false,
-                                false), HttpStatus.OK));
+                                true,false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
@@ -318,7 +319,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(true, false,
                                 true, true, false,
-                                false), HttpStatus.OK));
+                                true,false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
@@ -346,7 +347,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
                                 true, false, false,
-                                false), HttpStatus.OK));
+                                true,false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -374,7 +375,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
                                 false, true, true,
-                                false), HttpStatus.OK));
+                                true,false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -402,7 +403,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
                                 true, true, true,
-                                false), HttpStatus.OK));
+                                true,false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -420,6 +421,62 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         String contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("The user has 2 primary location(s), only 1 is allowed"));
+    }
+
+    @Test
+    @DisplayName("S16: must receive an error message when no work area list is provided")
+    public void createOrgRoleMappingErrorWhenNoWorkArea() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                true, true, true,
+                                false,false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(400))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("The work are is not available"));
+    }
+
+    @Test
+    @DisplayName("S17: must receive an error message when no users provided")
+    public void createOrgRoleMappingErrorWhenNoUsers() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                true, true, true,
+                                false,false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(new ArrayList<>())
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(404))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("Resource not found Some of the user profiles couldn't be found"));
     }
 
     public void setRoleAssignmentWireMock(HttpStatus status, String fileName) throws IOException {
