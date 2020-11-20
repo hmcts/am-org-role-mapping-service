@@ -17,15 +17,15 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Validated
-public class RoleAssignmentResource extends RepresentationModel<RoleAssignmentResource> {
+public class RoleAssignmentRequestResource extends RepresentationModel<RoleAssignmentRequestResource> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RoleAssignmentResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoleAssignmentRequestResource.class);
 
     @JsonProperty("roleAssignmentResponse")
     private AssignmentRequest roleAssignmentRequest;
 
 
-    public RoleAssignmentResource(@NonNull AssignmentRequest roleAssignmentRequest) {
+    public RoleAssignmentRequestResource(@NonNull AssignmentRequest roleAssignmentRequest) {
         this.roleAssignmentRequest = roleAssignmentRequest;
 
         //add(linkTo(methodOn(CreateAssignmentController.class).getRoleAssignmentByActorId("")).withRel("binary"))

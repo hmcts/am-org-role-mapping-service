@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
@@ -46,7 +47,8 @@ public class RequestMappingService {
      * For each caseworker represented in the map, determine what the role assignments should be,
      * and update them in the role assignment service.
      */
-    public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+    public ResponseEntity<List<AssignmentRequest>> createCaseWorkerAssignments(Map<String,
+            Set<UserAccessProfile>> usersAccessProfiles) {
         // Get the role assignments for each caseworker in the input profiles.
         Map<String, List<RoleAssignment>> usersRoleAssignments = getCaseworkerRoleAssignments(usersAccessProfiles);
         // The response body is a list of ....???....
@@ -108,9 +110,10 @@ public class RequestMappingService {
      * Note that some caseworker IDs may have empty role assignment collections.
      * This is OK - these caseworkers have been deleted (or just don't have any appointments which map to roles).
      */
-    ResponseEntity<Object> updateCaseworkersRoleAssignments(Map<String, List<RoleAssignment>> usersRoleAssignments) {
+    ResponseEntity<List<AssignmentRequest>> updateCaseworkersRoleAssignments(Map<String,
+            List<RoleAssignment>> usersRoleAssignments) {
         //prepare an empty list of responses
-        List<Object> finalResponse = new ArrayList<>();
+        List<AssignmentRequest> finalResponse = new ArrayList<>();
 
         usersRoleAssignments.entrySet().stream()
                 .forEach(entry -> finalResponse.add(updateCaseworkerRoleAssignments(entry.getKey(),
@@ -122,7 +125,8 @@ public class RequestMappingService {
      * Update a single caseworker's role assignments, using the staff organisational role mapping process ID
      * and the user's ID as the process and reference values.
      */
-    ResponseEntity<Object> updateCaseworkerRoleAssignments(String userId, Collection<RoleAssignment> roleAssignments) {
+    ResponseEntity<AssignmentRequest> updateCaseworkerRoleAssignments(String userId,
+                                                                      Collection<RoleAssignment> roleAssignments) {
         String process = STAFF_ORGANISATIONAL_ROLE_MAPPING;
         String reference = userId;
         return updateRoleAssignments(process, reference, roleAssignments);
@@ -131,7 +135,7 @@ public class RequestMappingService {
     /**
      * Send an update of role assignments to the role assignment service for a process/reference pair.
      */
-    ResponseEntity<Object> updateRoleAssignments(String process, String reference,
+    ResponseEntity<AssignmentRequest> updateRoleAssignments(String process, String reference,
                                                  Collection<RoleAssignment> roleAssignments) {
         AssignmentRequest assignmentRequest =
                 AssignmentRequest.builder()
@@ -147,7 +151,17 @@ public class RequestMappingService {
                                         .build())
                         .requestedRoles(roleAssignments)
                         .build();
-        return roleAssignmentService.createRoleAssignment(assignmentRequest);
+        ResponseEntity<Object> response =   roleAssignmentService.createRoleAssignment(assignmentRequest);
+        if (response.getBody() instanceof RoleAssignmentRequestResource) {
+            return ResponseEntity.status(response.getStatusCode())
+                    .body(((RoleAssignmentRequestResource)response.getBody())
+                    .getRoleAssignmentRequest());
+        } else if (response.getBody() instanceof AssignmentRequest) {
+            return ResponseEntity.status(response.getStatusCode()).body((AssignmentRequest)response.getBody());
+
+        }
+        //returning the same assignment request object if no response from RAS service
+        return ResponseEntity.status(response.getStatusCode()).body(assignmentRequest);
     }
 
 

@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
+
+import java.util.List;
 
 import static java.lang.String.format;
 
@@ -61,7 +64,8 @@ public class TopicConsumer {
         log.info("CRDTopicConsumer:Deserializer - userRequest received from from the CRD subscription : {}",
                 userRequest);
         if (userRequest != null) {
-            ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
+            ResponseEntity<List<AssignmentRequest>> response = bulkAssignmentOrchestrator
+                    .createBulkAssignmentsRequest(userRequest);
             log.info("The Organisation roles for received users: {} are updated with consolidated response : {}",
                     userRequest,response.getStatusCode());
         }

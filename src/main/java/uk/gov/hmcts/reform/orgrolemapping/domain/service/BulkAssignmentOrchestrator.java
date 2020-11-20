@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,14 +31,15 @@ public class BulkAssignmentOrchestrator {
     private final RequestMappingService requestMappingService;
 
 
-    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
+    public ResponseEntity<List<AssignmentRequest>> createBulkAssignmentsRequest(UserRequest userRequest) {
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
         //Create userAccessProfiles based upon roleId and service codes
         Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                 .retrieveCaseWorkerProfiles(userRequest);
         //call the requestMapping service to determine role name and create role assignment requests
-        ResponseEntity<Object> response = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
+        ResponseEntity<List<AssignmentRequest>> response = requestMappingService
+                .createCaseWorkerAssignments(userAccessProfiles);
         return response;
     }
 

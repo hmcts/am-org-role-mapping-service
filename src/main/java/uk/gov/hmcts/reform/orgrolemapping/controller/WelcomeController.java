@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -69,7 +72,8 @@ public class WelcomeController {
     })
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest) {
         log.debug("createOrgMapping");
-        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
+        ResponseEntity<List<AssignmentRequest>> response = bulkAssignmentOrchestrator
+                .createBulkAssignmentsRequest(userRequest);
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 

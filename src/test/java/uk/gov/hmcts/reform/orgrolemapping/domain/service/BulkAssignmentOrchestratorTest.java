@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,8 +51,8 @@ class BulkAssignmentOrchestratorTest {
     void shouldReturn200Response() {
 
 
-        ResponseEntity<Object> entity = ResponseEntity.status(HttpStatus.OK)
-                .body(buildAssignmentRequest(true));
+        ResponseEntity<List<AssignmentRequest>> entity = ResponseEntity.status(HttpStatus.OK)
+                .body(Arrays.asList(buildAssignmentRequest(true)));
 
         Map<String, Set<UserAccessProfile>> userAccessProfiles = buildUserAccessProfiles();
 
@@ -59,14 +60,16 @@ class BulkAssignmentOrchestratorTest {
         when(retrieveDataService.retrieveCaseWorkerProfiles(any())).thenReturn(userAccessProfiles);
         when(requestMappingService.createCaseWorkerAssignments(userAccessProfiles)).thenReturn(entity);
 
-        ResponseEntity<Object> actualResponse = sut.createBulkAssignmentsRequest(buildUserRequest());
-        AssignmentRequest assignmentRequest = (AssignmentRequest) actualResponse.getBody();
-        RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
-        assertNotNull(actualResponse);
-        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
-        assertEquals(ROLE_NAME_TCW, roleAssignment.getRoleName());
-        assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType());
-        assertEquals(RoleCategory.STAFF, roleAssignment.getRoleCategory());
+        ResponseEntity<List<AssignmentRequest>> actualResponse = sut.createBulkAssignmentsRequest(buildUserRequest());
+        List<AssignmentRequest> assignmentRequests = (List<AssignmentRequest>) actualResponse.getBody();
+        assignmentRequests.forEach(assignmentRequest -> {
+            RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
+            assertNotNull(actualResponse);
+            assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+            assertEquals(ROLE_NAME_TCW, roleAssignment.getRoleName());
+            assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType());
+            assertEquals(RoleCategory.STAFF, roleAssignment.getRoleCategory());
+        });
 
     }
 
