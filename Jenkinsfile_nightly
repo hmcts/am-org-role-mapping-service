@@ -11,6 +11,15 @@ def type = "java"
 def product = "am"
 def component = "org-role-mapping-service"
 
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [$class     : 'AzureKeyVaultSecret',
+   secretType : 'Secret',
+   name       : secretName,
+   version    : '',
+   envVariable: envVar
+  ]
+}
+
 def vaultOverrides = [
   'preview' : 'aat',
   'spreview': 'saat'
