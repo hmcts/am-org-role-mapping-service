@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,8 +58,10 @@ public class RetrieveDeadLetterTopic {
                     throw e;
                 }
                 System.out.printf(
-                        "\n\t\t\t\t%s Message received: \n\t\t\t\t\t\tMessageId = %s, \n\t\t\t\t\t\tSequenceNumber = %s, \n\t\t\t\t\t\tEnqueuedTimeUtc = %s," +
-                                "\n\t\t\t\t\t\tExpiresAtUtc = %s, \n\t\t\t\t\t\tContentType = \"%s\",  \n\t\t\t\t\t\tContent: [ User Id = %s]\n",
+                        "\n\t\t\t\t%s Message received: \n\t\t\t\t\t\tMessageId = %s,
+                        \n\t\t\t\t\t\tSequenceNumber = %s, \n\t\t\t\t\t\tEnqueuedTimeUtc = %s," +
+                                "\n\t\t\t\t\t\tExpiresAtUtc = %s, \n\t\t\t\t\t\tContentType = \"%s\",
+                                \n\t\t\t\t\t\tContent: [ User Id = %s]\n",
                         receiveClient.getEntityPath(),
                         message.getMessageId(),
                         message.getSequenceNumber(),
@@ -97,10 +100,13 @@ public class RetrieveDeadLetterTopic {
             IMessage message = messageReceiver.receive();
             log.info("received first message from DLQ: " + message.getMessageBody().toString());
             while (message != null) {
-                /*if (canBeCompleted(message)) {
-                    logMessage(message);*/
+                */
+/*if (canBeCompleted(message)) {
+                    logMessage(message);*//*
+
                 //DO not log user ID's
-                log.info("Message is : " + mapper.readValue(message.getMessageBody().getBinaryData().get(0), String.class));
+                log.info("Message is : " + mapper.readValue(message.getMessageBody().getBinaryData().get(0),
+                String.class));
                 log.info("Message logging complete");
                 messageReceiver.complete(message.getLockToken());
                 completedCount++;
@@ -109,10 +115,12 @@ public class RetrieveDeadLetterTopic {
                         message.getMessageId(),
                         Instant.now()
                 );
-               /* } else {
+               */
+/* } else {
                     // just continue, lock on the current msg will expire automatically
                     log.info("Leaving message on dlq, ttl has not passed yet. Message id: {}", message.getMessageId());
-                }*/
+                }*//*
+
                 message = messageReceiver.receive();
                 //temporary break
                 break;
@@ -137,11 +145,13 @@ public class RetrieveDeadLetterTopic {
 
 
     public static IMessageReceiver getMessageReceiver() throws InterruptedException, ServiceBusException {
-        String connectionString = "Endpoint=sb://rd-servicebus-sandbox.servicebus.windows.net/;SharedAccessKeyName=SendAndListenSharedAccessKey;SharedAccessKey=97E6uvE6xHcqHAVlxufN1PH75tMHoZUe78FhsCbLLLQ=";
+        String connectionString = "Endpoint=sb://rd-servicebus-sandbox.servicebus.windows.net/;
+        SharedAccessKeyName=SendAndListenSharedAccessKey;SharedAccessKey=97E6uvE6xHcqHAVlxufN1PH75tMHoZUe78FhsCbLLLQ=";
 
         try {
             return ClientFactory.createMessageReceiverFromConnectionStringBuilder(new ConnectionStringBuilder
-                    (connectionString, "rd-caseworker-topic-sandbox/subscriptions/temporary/$deadletterqueue"), ReceiveMode.PEEKLOCK);
+                    (connectionString, "rd-caseworker-topic-sandbox/subscriptions/temporary/$deadletterqueue"),
+                    ReceiveMode.PEEKLOCK);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             log.info("Interrupted");
@@ -153,3 +163,4 @@ public class RetrieveDeadLetterTopic {
     }
 
 }
+*/

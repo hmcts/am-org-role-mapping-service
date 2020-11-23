@@ -48,8 +48,6 @@ public class TopicConsumer {
 
     private OrmDeserializer deserializer;
 
-    final int MAX_RETRIES = 1;
-
     @Autowired
     private RoleAssignmentService roleAssignmentService;
 
@@ -122,7 +120,6 @@ public class TopicConsumer {
     }
 
     private boolean processMessage(List<byte[]> body) {
-        String users;
         log.info("    Parsing the message");
         UserRequest request = deserializer.deserialize(body);
         try {
@@ -130,7 +127,7 @@ public class TopicConsumer {
             log.info("----Role Assignment Service Response {}", response.getStatusCode());
             return true;
         } catch (Exception e) {
-            log.error("Exception from ORM service {}", e);
+            log.error("Exception from RAS service : {}", e.getMessage());
             throw e;
         }
     }
