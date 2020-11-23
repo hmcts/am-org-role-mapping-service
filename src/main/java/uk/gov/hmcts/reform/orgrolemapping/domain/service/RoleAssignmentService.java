@@ -18,7 +18,7 @@ public class RoleAssignmentService {
         return rasFeignClient.createRoleAssignment(assignmentRequest);
     }
 
-    public String getServiceStatus(){
+    public String getServiceStatus() {
         return rasFeignClient.getServiceStatus();
     }
 }

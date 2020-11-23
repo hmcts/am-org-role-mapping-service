@@ -54,14 +54,15 @@ public class TopicConsumer {
     private RoleAssignmentService roleAssignmentService;
 
     public TopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                             OrmDeserializer deserializer) {
+                         OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
 
     }
 
     @Bean
-    public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException, InterruptedException {
+    public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
+            InterruptedException {
         URI endpoint = new URI(host);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
@@ -75,7 +76,8 @@ public class TopicConsumer {
     }
 
     @Bean
-    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient) throws Exception {
+    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
+            throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         log.info("    Calling registerMessageHandlerOnClient ");
@@ -90,8 +92,9 @@ public class TopicConsumer {
                     log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
                     log.info("    Delivery Count is : {}", message.getDeliveryCount());
                     if (roleAssignmentHealthCheck()) {
-                        if (processMessage(body))
+                        if (processMessage(body)) {
                             return receiveClient.completeAsync(message.getLockToken());
+                        }
                     }
                     log.info("    getLockToken......{}", message.getLockToken());
 
@@ -118,7 +121,7 @@ public class TopicConsumer {
 
     }
 
-    private boolean processMessage( List<byte[]> body) {
+    private boolean processMessage(List<byte[]> body) {
         String users;
         log.info("    Parsing the message");
         UserRequest request = deserializer.deserialize(body);
@@ -126,8 +129,7 @@ public class TopicConsumer {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);
             log.info("----Role Assignment Service Response {}", response.getStatusCode());
             return true;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             log.error("Exception from ORM service {}", e);
             throw e;
         }
