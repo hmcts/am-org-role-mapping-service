@@ -67,11 +67,13 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static List<UserProfile.WorkArea> buildListOfWorkAreas(boolean enableWorkAreaList) {
+    public static List<UserProfile.WorkArea> buildListOfWorkAreas(boolean enableWorkAreaList,
+                                                                  String workArea1,
+                                                                  String workArea2) {
         List<UserProfile.WorkArea> workAreaList = new ArrayList<>();
         if (enableWorkAreaList) {
-            workAreaList.add(buildWorkArea("1", "BFA1"));
-            workAreaList.add(buildWorkArea("2", "BFA2"));
+            workAreaList.add(buildWorkArea("1", workArea1));
+            workAreaList.add(buildWorkArea("2", workArea2));
         }
         return workAreaList;
     }
@@ -97,12 +99,14 @@ public class IntTestDataBuilder {
                                                boolean primaryLocation1,
                                                boolean primaryLocation2,
                                                boolean enableWorkAreaList,
+                                               String workArea1,
+                                               String workArea2,
                                                boolean deleteFlag) {
         return UserProfile.builder()
                 .id(id)
                 .firstName("James").lastName("Bond").emailId("007@MI6.gov")
                 .baseLocation(buildListOfBaseLocations(enableLocationList, primaryLocation1, primaryLocation2))
-                .workArea(buildListOfWorkAreas(enableWorkAreaList))
+                .workArea(buildListOfWorkAreas(enableWorkAreaList, workArea1, workArea2))
                 .createdTime(LocalDateTime.now())
                 .lastUpdateTime(LocalDateTime.now().minusDays(1L))
                 .region("London").regionId(1234L)
@@ -119,13 +123,15 @@ public class IntTestDataBuilder {
                                                             boolean primaryLocation1,
                                                             boolean primaryLocation2,
                                                             boolean enableWorkAreaList,
+                                                            String workArea1,
+                                                            String workArea2,
                                                             boolean deleteFlag) {
         List<UserProfile> userProfiles = new ArrayList<>();
         userProfiles.add(buildUserProfile(id_1, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
-                enableWorkAreaList, deleteFlag));
+                enableWorkAreaList, workArea1, workArea2, deleteFlag));
         if (multiProfiles) {
             userProfiles.add(buildUserProfile(id_2, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
-                    enableWorkAreaList, deleteFlag));
+                    enableWorkAreaList, workArea1, workArea2, deleteFlag));
         }
         return userProfiles;
     }
