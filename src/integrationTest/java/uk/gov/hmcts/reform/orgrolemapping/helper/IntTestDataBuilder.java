@@ -78,23 +78,24 @@ public class IntTestDataBuilder {
         return workAreaList;
     }
 
-    public static UserProfile.Role buildRole(String id, boolean primaryRole) {
+    public static UserProfile.Role buildRole(String id, boolean primaryRole, String roleName) {
         return UserProfile.Role.builder().roleId(id).primary(primaryRole)
-                .roleName(ROLE_NAME_TCW)
+                .roleName(roleName)
                 .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
-    public static List<UserProfile.Role> buildListOfRoles(boolean multiRole) {
+    public static List<UserProfile.Role> buildListOfRoles(boolean multiRole, String roleName) {
         List<UserProfile.Role> roles = new ArrayList<>();
-        roles.add(buildRole("1",true));
+        roles.add(buildRole("1",true, roleName));
         if (multiRole) {
-            roles.add(buildRole("2", false));
+            roles.add(buildRole("2", false, roleName));
         }
         return roles;
     }
 
     public static UserProfile buildUserProfile(String id, boolean multiRole,
+                                               String roleName,
                                                boolean enableLocationList,
                                                boolean primaryLocation1,
                                                boolean primaryLocation2,
@@ -113,12 +114,13 @@ public class IntTestDataBuilder {
                 .userType("Secret Agent")
                 .userTypeId("007")
                 .deleteFlag(deleteFlag)
-                .role(buildListOfRoles(multiRole))
+                .role(buildListOfRoles(multiRole, roleName))
                 .build();
     }
 
     public static List<UserProfile> buildListOfUserProfiles(boolean multiProfiles,
                                                             boolean multiRole,
+                                                            String roleName,
                                                             boolean enableLocationList,
                                                             boolean primaryLocation1,
                                                             boolean primaryLocation2,
@@ -127,11 +129,11 @@ public class IntTestDataBuilder {
                                                             String workArea2,
                                                             boolean deleteFlag) {
         List<UserProfile> userProfiles = new ArrayList<>();
-        userProfiles.add(buildUserProfile(id_1, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
-                enableWorkAreaList, workArea1, workArea2, deleteFlag));
+        userProfiles.add(buildUserProfile(id_1, multiRole, roleName, enableLocationList, primaryLocation1,
+                primaryLocation2, enableWorkAreaList, workArea1, workArea2, deleteFlag));
         if (multiProfiles) {
-            userProfiles.add(buildUserProfile(id_2, multiRole, enableLocationList, primaryLocation1, primaryLocation2,
-                    enableWorkAreaList, workArea1, workArea2, deleteFlag));
+            userProfiles.add(buildUserProfile(id_2, multiRole, roleName, enableLocationList, primaryLocation1,
+                    primaryLocation2, enableWorkAreaList, workArea1, workArea2, deleteFlag));
         }
         return userProfiles;
     }
