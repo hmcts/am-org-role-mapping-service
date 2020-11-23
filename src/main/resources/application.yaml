@@ -107,9 +107,9 @@ roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 
 amqp:
   host: ${AMQP_HOST:sb://rd-servicebus-sandbox.servicebus.windows.net}
-  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:dummyKey}
-  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:dummyValue}
-  topic: ${AMQP_TOPIC_NAME:topicName}
+  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:SendAndListenSharedAccessKey}
+  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:97E6uvE6xHcqHAVlxufN1PH75tMHoZUe78FhsCbLLLQ=}
+  topic: ${AMQP_TOPIC_NAME:rd-caseworker-topic-sandbox/subscriptions/temporary}
   subscription: ${AMQP_SUBSCRIPTION_NAME:subscriptionName}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
