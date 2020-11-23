@@ -73,7 +73,7 @@ public class OrgRoleMappingConsumerTest {
     public RequestResponsePact executeCreateRoleAssignmentReplacingExistingFalseAndGet201(PactDslWithProvider builder) {
 
         return builder
-                .given("The assignment request is valid with replaceExisting flag as false")
+                .given("The assignment request is valid with one requested role and replaceExisting flag as false")
                 .uponReceiving("role assignment service takes s2s/auth token and create a role assignment")
                 .path(RAS_CREATE_ROLE_ASSIGNMENT_URL)
                 .method(HttpMethod.POST.toString())
@@ -89,7 +89,7 @@ public class OrgRoleMappingConsumerTest {
     public RequestResponsePact executeCreateRoleAssignmentOneRoleAndGet201(PactDslWithProvider builder) {
 
         return builder
-                .given("The assignment request is valid with one requested role")
+                .given("The assignment request is valid with one requested role and replaceExisting flag as true")
                 .uponReceiving("role assignment service takes s2s/auth token and create or update a role assignment")
                 .path(RAS_CREATE_ROLE_ASSIGNMENT_URL)
                 .method(HttpMethod.POST.toString())
@@ -105,7 +105,7 @@ public class OrgRoleMappingConsumerTest {
     public RequestResponsePact executeCreateRoleAssignmentZeroRoleAndGet201(PactDslWithProvider builder) {
 
         return builder
-                .given("The assignment request is valid with zero requested role")
+                .given("The assignment request is valid with zero requested role and replaceExisting flag as true")
                 .uponReceiving("role assignment service takes s2s/auth token and create zero role assignment")
                 .path(RAS_CREATE_ROLE_ASSIGNMENT_URL)
                 .method(HttpMethod.POST.toString())
@@ -170,7 +170,8 @@ public class OrgRoleMappingConsumerTest {
         JSONObject roleRequest = response.getJSONObject("roleAssignmentResponse").getJSONObject("roleRequest");
         assertThat(roleRequest.get("status"), equalTo("APPROVED"));
         assertThat(roleRequest.get("requestType"), equalTo("CREATE"));
-        assertThat(roleRequest.get("process"), equalTo(roleRequest.get("reference")));
+        assertThat(roleRequest.get("process"), equalTo("S-028"));
+        assertThat(roleRequest.get("reference"), equalTo("S-028"));
         assertThat(roleRequest.get("replaceExisting"), equalTo(false));
 
         JSONArray requestedRoles = response.getJSONObject("roleAssignmentResponse").getJSONArray("requestedRoles");
@@ -202,7 +203,8 @@ public class OrgRoleMappingConsumerTest {
         JSONObject roleRequest = response.getJSONObject("roleAssignmentResponse").getJSONObject("roleRequest");
         assertThat(roleRequest.get("status"), equalTo("APPROVED"));
         assertThat(roleRequest.get("requestType"), equalTo("CREATE"));
-        assertThat(roleRequest.get("process"), equalTo(roleRequest.get("reference")));
+        assertThat(roleRequest.get("process"), equalTo("S-028"));
+        assertThat(roleRequest.get("reference"), equalTo("S-028"));
         assertThat(roleRequest.get("replaceExisting"), equalTo(true));
 
         JSONArray requestedRoles = response.getJSONObject("roleAssignmentResponse").getJSONArray("requestedRoles");
@@ -234,7 +236,8 @@ public class OrgRoleMappingConsumerTest {
         JSONObject roleRequest = response.getJSONObject("roleAssignmentResponse").getJSONObject("roleRequest");
         assertThat(roleRequest.get("status"), equalTo("APPROVED"));
         assertThat(roleRequest.get("requestType"), equalTo("CREATE"));
-        assertThat(roleRequest.get("process"), equalTo(roleRequest.get("reference")));
+        assertThat(roleRequest.get("process"), equalTo("S-028"));
+        assertThat(roleRequest.get("reference"), equalTo("S-028"));
         assertThat(roleRequest.get("replaceExisting"), equalTo(true));
 
         JSONArray requestedRoles = response.getJSONObject("roleAssignmentResponse").getJSONArray("requestedRoles");
