@@ -123,8 +123,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
+
     @Test
-    public void createOrgRoleMappingTest() throws Exception {
+     public void createOrgRoleMappingTest() throws Exception {
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
                 .build();

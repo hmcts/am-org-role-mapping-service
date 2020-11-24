@@ -12,10 +12,10 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-
 import java.util.Map;
 import java.util.Set;
 
+@RunWith(MockitoJUnitRunner.class)
 class RetrieveDataServiceTest {
 
     private final CRDFeignClient crdFeignClient = Mockito.mock(CRDFeignClient.class);
@@ -39,4 +39,27 @@ class RetrieveDataServiceTest {
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(Mockito.any(), Mockito.any());
     }
+
+    @Test
+    void shouldReturnCaseWorkerProfile() {
+
+        when(crdFeignClientFallback.createRoleAssignment(any())).thenReturn(ResponseEntity
+                .ok(buildUserProfile(buildUserRequest())));
+        doNothing().when(parseRequestService).validateUserProfiles(any(), any());
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
+        assertNotNull(response);
+        response.entrySet().stream().forEach(entry -> {
+            assertNotNull(entry.getKey());
+            assertNotNull(entry.getValue());
+            entry.getValue().stream().forEach(userAccessProfile -> {
+                assertEquals(entry.getKey(), userAccessProfile.getId());
+                assertEquals(false, userAccessProfile.isDeleteFlag());
+                assertEquals("219164", userAccessProfile.getPrimaryLocationId());
+            });
+
+            }
+        );
+
+    }
+
 }

@@ -1,0 +1,21 @@
+{
+  "_guid_": "ResponseRequestedRole",
+  "id" : "[[ANYTHING_PRESENT]]",
+  "actorIdType" : "IDAM",
+  "actorId": "${}${[scenarioContext][testData][request][body][roleRequest][reference]}",
+  "roleType": "ORGANISATION",
+  "roleName" : "tribunal-caseworker",
+  "classification" : "PUBLIC",
+  "grantType": "STANDARD",
+  "roleCategory":"STAFF",
+  "readOnly" : false,
+  "process" : "staff-organisational-role-mapping",
+  "reference": "${}${[scenarioContext][testData][request][body][roleRequest][reference]}",
+  "status":"LIVE",
+  "created":"[[ANYTHING_PRESENT]]",
+  "log":"[[ANYTHING_PRESENT]]",
+  "attributes" : {
+    "primaryLocation" : "219164",
+    "jurisdiction" : "IA"
+  }
+}

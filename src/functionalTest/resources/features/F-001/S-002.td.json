@@ -1,0 +1,54 @@
+{
+  "_guid_": "S-002",
+  "title": "must successfully generate duplicate records message",
+  "_extends_": "F-001_Test_Data_Base",
+  "specs": [
+    "prepared to submit second time with no changes"
+  ],
+  "request": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "users": [
+        "${[scenarioContext][customValues][generateUUID]}"
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "arrayInMap": [
+        {
+          "links": [],
+          "roleAssignmentResponse": {
+            "roleRequest": {
+              "_extends_": "ResponseRoleRequest",
+              "reference": "${}${[scenarioContext][testData][request][body][users][0]}",
+              "log" : "Duplicate Request: Requested Assignments are already live."
+            },
+            "requestedRoles": [
+              {
+                "_extends_": "ResponseRequestedRole",
+                "roleName": "senior-tribunal-caseworker",
+                "actorId": "${}${[scenarioContext][testData][request][body][users][0]}",
+                "reference": "${}${[scenarioContext][testData][request][body][users][0]}",
+                "authorisations" : [ ]
+              },
+              {
+                "_extends_": "ResponseRequestedRole",
+                "actorId": "${}${[scenarioContext][testData][request][body][users][0]}",
+                "reference": "${}${[scenarioContext][testData][request][body][users][0]}",
+                "authorisations" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

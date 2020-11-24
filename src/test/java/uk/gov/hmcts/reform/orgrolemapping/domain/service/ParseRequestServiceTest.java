@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@RunWith(MockitoJUnitRunner.class)
 class ParseRequestServiceTest {
 
     ParseRequestService sut = new ParseRequestService();
