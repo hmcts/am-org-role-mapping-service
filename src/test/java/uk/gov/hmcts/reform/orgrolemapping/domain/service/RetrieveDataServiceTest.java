@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -11,7 +13,13 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignCli
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserRequest;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +30,7 @@ class RetrieveDataServiceTest {
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
     private final CRDFeignClientFallback crdFeignClientFallback = Mockito.mock(CRDFeignClientFallback.class);
 
-    RetrieveDataService sut = new RetrieveDataService(crdFeignClient,parseRequestService,crdFeignClientFallback);
+    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdFeignClientFallback);
 
     @Test
     void retrieveCaseWorkerProfilesTest() {
@@ -35,9 +43,9 @@ class RetrieveDataServiceTest {
         assertEquals(2, result.size());
 
         Mockito.verify(crdFeignClientFallback, Mockito.times(1))
-                .createRoleAssignment(Mockito.any(UserRequest.class));
+                .createRoleAssignment(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserProfiles(Mockito.any(), Mockito.any());
+                .validateUserProfiles(any(), any());
     }
 
     @Test

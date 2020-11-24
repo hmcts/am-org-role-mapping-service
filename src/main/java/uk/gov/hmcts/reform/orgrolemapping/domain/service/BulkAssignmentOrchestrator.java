@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 @Service
+@AllArgsConstructor
 public class BulkAssignmentOrchestrator {
     //0. Orchestrator would receive list of userIds from ASB/API.
     //1. Call parse request service to extract userId List and their validations.
