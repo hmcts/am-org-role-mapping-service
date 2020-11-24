@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 //TODO improve this test class
+@RunWith(MockitoJUnitRunner.class)
 class RequestMappingServiceTest {
 
     @Mock

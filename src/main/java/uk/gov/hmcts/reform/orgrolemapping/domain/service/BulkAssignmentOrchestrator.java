@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -18,12 +20,12 @@ public class BulkAssignmentOrchestrator {
     //3. Call request mapping service to apply the mapping rules for each user
     //   a) prepare role assignment requests
     //   b)Invoke RoleAssignmentService and audit the response.
-    @Autowired
-    private ParseRequestService parseRequestService;
-    @Autowired
-    private RetrieveDataService retrieveDataService;
-    @Autowired
-    private RequestMappingService requestMappingService;
+
+    private final ParseRequestService parseRequestService;
+
+    private final RetrieveDataService retrieveDataService;
+
+    private final RequestMappingService requestMappingService;
 
 
     public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
