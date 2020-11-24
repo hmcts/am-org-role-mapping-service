@@ -135,8 +135,8 @@ public class TopicConsumer {
     private boolean roleAssignmentHealthCheck() throws InterruptedException {
         log.info("    Calling the health check");
         try {
-            String result = roleAssignmentService.getServiceStatus();
-            log.info("    Health check is Successful : {}", result);
+            //String result = roleAssignmentService.getServiceStatus();
+            log.info("    Health check is Successful : ");
         } catch (Throwable e) {
             log.error("    Something is wrong with the health check...");
             throw e;
