@@ -428,35 +428,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         assertTrue(contentAsString.contains("The user has 2 primary location(s), only 1 is allowed"));
     }
 
-    //@Test
-    @DisplayName("S14: must receive an error message when work area is set to 2 for both entries")
-    public void createOrgRoleMappingErrorWhenWorkArea2() throws Exception {
-
-        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, ROLE_NAME_TCW,
-                                true, true, false,
-                                true,"BFA2", "BFA2",false), HttpStatus.OK));
-
-        UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
-                .build();
-        logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
-
-        MvcResult result = mockMvc.perform(post(uri)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request)))
-                .andExpect(status().is(400))
-                .andReturn();
-
-        String contentAsString = result.getResponse().getContentAsString();
-        //TODO this scenario doesn't seem to fail
-        assertTrue(contentAsString.contains("?"));
-    }
-
     @Test
     @DisplayName("S16: must receive an error message when no work area list is provided")
     public void createOrgRoleMappingErrorWhenNoWorkArea() throws Exception {
@@ -511,35 +482,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         String contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("Resource not found Some of the user profiles couldn't be found"));
-    }
-
-    //@Test
-    //TODO doesn't seem to fail
-    @DisplayName("S18: must receive an error message when invalid role")
-    public void createOrgRoleMappingErrorWhenInvalidRole() throws Exception {
-
-        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "ROLE_NAME_TCW",
-                                true, true, false,
-                                true,"BFA1", "BFA2",false), HttpStatus.OK));
-
-        UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
-                .build();
-        logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
-
-        MvcResult result = mockMvc.perform(post(uri)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request)))
-                .andExpect(status().is(400))
-                .andReturn();
-
-        String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("Invalid role name"));
     }
 
     public void setRoleAssignmentWireMock(HttpStatus status, String fileName) throws IOException {
