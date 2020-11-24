@@ -20,7 +20,7 @@
                 "actorIdType": "IDAM",
                 "actorId": "123e4567-e89b-42d3-a456-556642445674",
                 "roleType": "ORGANISATION",
-                "roleName": "tribunal-caseworker",
+                "roleName": "senior-tribunal-caseworker",
                 "classification": "PUBLIC",
                 "grantType": "STANDARD",
                 "roleCategory": "STAFF",

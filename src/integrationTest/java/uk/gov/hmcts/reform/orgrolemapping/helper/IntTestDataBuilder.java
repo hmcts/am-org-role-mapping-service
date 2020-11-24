@@ -72,8 +72,8 @@ public class IntTestDataBuilder {
                                                                   String workArea2) {
         List<UserProfile.WorkArea> workAreaList = new ArrayList<>();
         if (enableWorkAreaList) {
-            workAreaList.add(buildWorkArea("1", workArea1));
-            workAreaList.add(buildWorkArea("2", workArea2));
+            workAreaList.add(buildWorkArea(workArea1, "BFA1"));
+            workAreaList.add(buildWorkArea(workArea2, "BFA2"));
         }
         return workAreaList;
     }
@@ -85,17 +85,21 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static List<UserProfile.Role> buildListOfRoles(boolean multiRole, String roleName) {
+    public static List<UserProfile.Role> buildListOfRoles(boolean multiRole, String roleId1,
+                                                          String roleId2, String roleName1, String roleName2) {
         List<UserProfile.Role> roles = new ArrayList<>();
-        roles.add(buildRole("1",true, roleName));
+        roles.add(buildRole(roleId1,true, roleName1));
         if (multiRole) {
-            roles.add(buildRole("2", false, roleName));
+            roles.add(buildRole(roleId2, false, roleName2));
         }
         return roles;
     }
 
     public static UserProfile buildUserProfile(String id, boolean multiRole,
-                                               String roleName,
+                                               String roleId1,
+                                               String roleId2,
+                                               String roleName1,
+                                               String roleName2,
                                                boolean enableLocationList,
                                                boolean primaryLocation1,
                                                boolean primaryLocation2,
@@ -114,13 +118,16 @@ public class IntTestDataBuilder {
                 .userType("Secret Agent")
                 .userTypeId("007")
                 .deleteFlag(deleteFlag)
-                .role(buildListOfRoles(multiRole, roleName))
+                .role(buildListOfRoles(multiRole, roleId1, roleId2, roleName1, roleName2))
                 .build();
     }
 
     public static List<UserProfile> buildListOfUserProfiles(boolean multiProfiles,
                                                             boolean multiRole,
-                                                            String roleName,
+                                                            String roleId1,
+                                                            String roleId2,
+                                                            String roleName1,
+                                                            String roleName2,
                                                             boolean enableLocationList,
                                                             boolean primaryLocation1,
                                                             boolean primaryLocation2,
@@ -129,11 +136,13 @@ public class IntTestDataBuilder {
                                                             String workArea2,
                                                             boolean deleteFlag) {
         List<UserProfile> userProfiles = new ArrayList<>();
-        userProfiles.add(buildUserProfile(id_1, multiRole, roleName, enableLocationList, primaryLocation1,
-                primaryLocation2, enableWorkAreaList, workArea1, workArea2, deleteFlag));
+        userProfiles.add(buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
+                enableLocationList, primaryLocation1, primaryLocation2,
+                enableWorkAreaList, workArea1, workArea2, deleteFlag));
         if (multiProfiles) {
-            userProfiles.add(buildUserProfile(id_2, multiRole, roleName, enableLocationList, primaryLocation1,
-                    primaryLocation2, enableWorkAreaList, workArea1, workArea2, deleteFlag));
+            userProfiles.add(buildUserProfile(id_2, multiRole, roleId1, roleId2, roleName1, roleName2,
+                    enableLocationList, primaryLocation1, primaryLocation2,
+                    enableWorkAreaList, workArea1, workArea2, deleteFlag));
         }
         return userProfiles;
     }

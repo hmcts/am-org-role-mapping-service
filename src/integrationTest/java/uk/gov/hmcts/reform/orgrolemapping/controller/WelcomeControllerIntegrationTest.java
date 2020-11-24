@@ -109,6 +109,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private static final String RAS_DROOL_RULE_FAIL = "RASDroolRuleFail";
     private static final String RAS_UPDATE_ROLE_TCW_STCW = "RASUpdateRoleTcwStcw";
 
+    private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
 
     @Before
@@ -148,7 +149,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     public void createOrgRoleMappingTest() throws Exception {
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(true, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(true, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
                                 true,"BFA1", "BFA2",false), HttpStatus.OK));
 
@@ -173,7 +174,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
                                 true,"BFA1", "BFA2",
                                 false), HttpStatus.OK));
@@ -203,7 +204,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, true, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, true,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
                                 true,"BFA1", "BFA2",
                                 false), HttpStatus.OK));
@@ -233,7 +234,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(true, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(true, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
                                 true,"BFA1", "BFA2",
                                 false), HttpStatus.OK));
@@ -266,7 +267,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
                                 true,"BFA1", "BFA2",true), HttpStatus.OK));
 
@@ -294,7 +295,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
                                 true,"BFA1", "BFA2",false), HttpStatus.OK));
 
@@ -322,7 +323,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(true, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(true, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
                                 true,"BFA1", "BFA2",false), HttpStatus.OK));
 
@@ -350,7 +351,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, false, false,
                                 true,"BFA1", "BFA2",false), HttpStatus.OK));
 
@@ -378,7 +379,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 false, true, true,
                                 true,"BFA1", "BFA2",false), HttpStatus.OK));
 
@@ -406,7 +407,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, true,
                                 true,"BFA1", "BFA2",false), HttpStatus.OK));
 
@@ -434,7 +435,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, true,
                                 false,"BFA1", "BFA2",false), HttpStatus.OK));
 
@@ -462,9 +463,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,
+                                "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
-                                true,"BFA1", "BFA2",false), HttpStatus.OK));
+                                true,"1", "2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(new ArrayList<>())
@@ -482,6 +484,61 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         String contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("Resource not found Some of the user profiles couldn't be found"));
+    }
+
+    @Test
+    @DisplayName("S18: must return empty list of requestedRoles when invalid roleId provided")
+    public void createOrgRoleMappingErrorWhenInvalidRole() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                "3", "2", "Invalid Role Name", ROLE_NAME_TCW,
+                                true, true, false,
+                                true,"BFA1", "BFA2",false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DELETE_FLAG_TRUE);
+
+        mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(200))
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("S19: drools must map correct role name based on roleId")
+    public void createOrgRoleMappingDroolsMustMapCorrectRoleName() throws Exception {
+
+        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
+                        .buildListOfUserProfiles(false, false,
+                                "1", "2","ROLE_NAME_TCW", ROLE_NAME_TCW,
+                                true, true, false,
+                                true,"BFA1", "BFA2",false), HttpStatus.OK));
+
+        UserRequest request = UserRequest.builder()
+                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .build();
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_ONE_ROLE);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
     }
 
     public void setRoleAssignmentWireMock(HttpStatus status, String fileName) throws IOException {
