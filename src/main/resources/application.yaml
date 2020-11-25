@@ -106,7 +106,7 @@ OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
 roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 
 amqp:
-  host: ${AMQP_HOST:sb://rd-servicebus-sandbox.servicebus.windows.net}
+  host: ${AMQP_HOST:rd-servicebus-sandbox.servicebus.windows.net}
   sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:SendAndListenSharedAccessKey}
   sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:97E6uvE6xHcqHAVlxufN1PH75tMHoZUe78FhsCbLLLQ=}
   topic: ${AMQP_TOPIC_NAME:rd-caseworker-topic-sandbox/subscriptions/temporary}

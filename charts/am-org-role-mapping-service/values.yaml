@@ -22,6 +22,5 @@ java:
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
     ORG_ROLE_MAPPING_IDAM_CLIENT_ID: am_role_assignment
-    MICROSERVICE_NAME: am_role_assignment_service
-    AMQP_HOST: sb://rd-servicebus-sandbox.servicebus.windows.net
+    AMQP_HOST: rd-servicebus-sandbox.servicebus.windows.net
     TRUST_ALL_CERTS: false
