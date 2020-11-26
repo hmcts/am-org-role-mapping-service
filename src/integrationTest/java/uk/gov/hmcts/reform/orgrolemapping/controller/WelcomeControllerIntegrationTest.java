@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -29,6 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
@@ -39,6 +42,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,7 +105,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Autowired
     private WelcomeController welcomeController;
 
-    private static final String SAMPLE_RAS_RESPONSE = "RASSampleResponse";
     private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
     private static final String RAS_ONE_USER_MULTI_ROLE = "RASOneUserMultiRole";
     private static final String RAS_MULTI_USER_ONE_ROLE = "RASMultiUserOneRole";
@@ -144,37 +147,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-
-    @Test
-    public void createOrgRoleMappingTest() throws Exception {
-        Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(true, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, false,
-                                true,"BFA1", "BFA2",false), HttpStatus.OK));
-
-        UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9z", "21334a2b-79ce-44eb-9168-2d49a744be9x"))
-                .build();
-        logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
-
-        mockMvc.perform(post(uri)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(request)))
-                .andExpect(status().is(200))
-                .andReturn();
-    }
-
     @Test
     @DisplayName("S1: must successfully create org role mapping for single user with one role assignment")
     public void createOrgRoleMappingForSingleUserWithOneRoleAssignment() throws Exception {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2",
+                                ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
                                 true,"BFA1", "BFA2",
                                 false), HttpStatus.OK));
@@ -193,9 +173,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("123e4567-e89b-42d3-a456-556642445674"));
-        assertTrue(contentAsString.contains("APPROVED"));
+        assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUsers());
     }
 
     @Test
@@ -223,9 +201,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("123e4567-e89b-42d3-a456-556642445676"));
-        assertTrue(contentAsString.contains("APPROVED"));
+        assertResponse(result, Status.APPROVED, 2, Status.LIVE, request.getUsers());
     }
 
     @Test
@@ -253,12 +229,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("APPROVED"));
-        assertTrue(contentAsString.contains("123e4567-e89b-42d3-a456-556642445000"));
-        assertTrue(contentAsString.contains("tribunal-caseworker"));
-        assertTrue(contentAsString.contains("123e4567-e89b-42d3-a456-556642445111"));
-        assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
+        assertResponse(result, Status.APPROVED, 2, Status.LIVE, request.getUsers());
     }
 
     @Test
@@ -285,8 +256,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("APPROVED"));
+        assertResponse(result, Status.APPROVED, 0, Status.LIVE, request.getUsers());
     }
 
     @Test
@@ -313,8 +283,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("REJECTED"));
+        assertResponse(result, Status.REJECTED, 1, Status.CREATE_APPROVED, request.getUsers());
     }
 
     @Test
@@ -323,12 +292,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(true, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
                                 true,"BFA1", "BFA2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c", "21334a2b-79ce-44eb-9168-2d49a744be9d"))
+                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445000"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -342,7 +311,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andReturn();
 
         String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
+        assertTrue(contentAsString.contains(ROLE_NAME_STCW));
+
+        assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUsers());
     }
 
     @Test
@@ -360,7 +331,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -388,7 +358,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -416,7 +385,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -444,7 +412,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -473,7 +440,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        setRoleAssignmentWireMock(HttpStatus.CREATED, SAMPLE_RAS_RESPONSE);
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -504,12 +470,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         String uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DELETE_FLAG_TRUE);
 
-        mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
+
+        assertResponse(result, Status.APPROVED, 0, Status.LIVE, request.getUsers());
     }
 
     @Test
@@ -539,6 +507,8 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         String contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
+
+        assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUsers());
     }
 
     public void setRoleAssignmentWireMock(HttpStatus status, String fileName) throws IOException {
@@ -577,6 +547,32 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .getResourceAsStream(String.format("/%s.json", fileName));
         Object json = mapper.readValue(is, Object.class);
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+    }
+
+    private void assertResponse(MvcResult result, Status requestStatus, int roleAssignmentCount,
+                                Status roleAssingmentStatus, List<String> userIds)
+            throws UnsupportedEncodingException, JsonProcessingException {
+
+        List<String> actorIds = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String contentAsString = result.getResponse().getContentAsString();
+
+        JsonNode responseJsonNode = objectMapper.readValue(contentAsString,
+                JsonNode.class);
+        JsonNode responseNode = responseJsonNode.get(0).get("roleAssignmentResponse");
+
+        assertEquals(requestStatus.toString(), responseNode.get("roleRequest").get("status").asText());
+        assertEquals(roleAssignmentCount, responseNode.get("requestedRoles").size());
+        if(roleAssignmentCount > 0) {
+            responseNode.get("requestedRoles").forEach(requestedRole -> {
+                assertEquals(roleAssingmentStatus.toString(), requestedRole.get("status").asText());
+                if (!actorIds.contains(requestedRole.get("actorId").asText())) {
+                    actorIds.add(requestedRole.get("actorId").asText());
+                }
+            });
+            assertEquals(userIds, actorIds);
+        }
     }
 
     private HttpHeaders getHttpHeaders() {
