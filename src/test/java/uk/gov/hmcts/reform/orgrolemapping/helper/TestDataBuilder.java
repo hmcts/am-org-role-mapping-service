@@ -23,7 +23,7 @@ public class TestDataBuilder {
     private static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
 
     private static final String PROCESS_ID = "staff-organisational-role-mapping";
-    private static final String ROLE_NAME_TCW = "tribunal-caseworker";
+    private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
 
     private TestDataBuilder() {
     }
@@ -74,7 +74,7 @@ public class TestDataBuilder {
 
     public static UserProfile.Role buildRole(boolean primaryRole) {
         return UserProfile.Role.builder().roleId(RoleType.ORGANISATION.toString()).primary(primaryRole)
-                .roleName(ROLE_NAME_TCW)
+                .roleName(ROLE_NAME_STCW)
                 .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
@@ -111,8 +111,8 @@ public class TestDataBuilder {
 
     public static UserAccessProfile buildUserAccessProfile(boolean deleteFlag) {
         return UserAccessProfile.builder().id(id_1).deleteFlag(deleteFlag).areaOfWorkId("London")
-                .primaryLocationId("LDN").primaryLocationName("London").roleId(RoleType.ORGANISATION.toString())
-                .serviceCode("ServiceCode").roleName(ROLE_NAME_TCW).build();
+                .primaryLocationId("123456").primaryLocationName("ssouth-east").roleId("1")
+                .serviceCode("BFA1").roleName(ROLE_NAME_STCW).build();
     }
 
     public static Set<UserAccessProfile> buildUserAccessProfileSet(boolean deleteFlag1, boolean deleteFlag2) {
