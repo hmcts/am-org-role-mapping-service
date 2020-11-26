@@ -564,7 +564,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         assertEquals(requestStatus.toString(), responseNode.get("roleRequest").get("status").asText());
         assertEquals(roleAssignmentCount, responseNode.get("requestedRoles").size());
-        if(roleAssignmentCount > 0) {
+        if (roleAssignmentCount > 0) {
             responseNode.get("requestedRoles").forEach(requestedRole -> {
                 assertEquals(roleAssingmentStatus.toString(), requestedRole.get("status").asText());
                 if (!actorIds.contains(requestedRole.get("actorId").asText())) {
