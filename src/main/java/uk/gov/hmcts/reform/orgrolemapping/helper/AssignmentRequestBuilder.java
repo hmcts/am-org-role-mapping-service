@@ -61,7 +61,6 @@ public class AssignmentRequestBuilder {
     }
 
     public static RoleAssignment buildRoleAssignment() {
-        //LocalDateTime timeStamp = LocalDateTime.now()
         return RoleAssignment.builder()
                 .actorId(ACTOR_ID)
                 .actorIdType(ActorIdType.IDAM)
@@ -71,21 +70,8 @@ public class AssignmentRequestBuilder {
                 .grantType(GrantType.STANDARD)
                 .roleCategory(RoleCategory.STAFF)
                 .readOnly(false)
-                .attributes(JacksonUtils.convertValue(buildAttributesFromFile()))
+                .attributes(JacksonUtils.convertValue(buildAttributesFromFile("attributes.json")))
                 .build();
-    }
-
-    private static JsonNode buildAttributesFromFile() {
-        try (InputStream inputStream =
-                     AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream("attributes.json")) {
-            assert inputStream != null;
-            JsonNode result = new ObjectMapper().readValue(inputStream, new TypeReference<>() {
-            });
-            inputStream.close();
-            return result;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static JsonNode buildAttributesFromFile(String fileName) {
