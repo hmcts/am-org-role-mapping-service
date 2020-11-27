@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserRequest;
 
@@ -36,11 +38,12 @@ class RetrieveDataServiceTest {
     void retrieveCaseWorkerProfilesTest() {
 
         when(crdFeignClientFallback.createRoleAssignment(TestDataBuilder.buildUserRequest()))
-                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder.buildListOfUserProfiles()));
+                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder.buildListOfUserProfiles(false, false,"1", "2",
+                        ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)));
 
         Map<String, Set<UserAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
 
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
 
         Mockito.verify(crdFeignClientFallback, Mockito.times(1))
                 .createRoleAssignment(any(UserRequest.class));

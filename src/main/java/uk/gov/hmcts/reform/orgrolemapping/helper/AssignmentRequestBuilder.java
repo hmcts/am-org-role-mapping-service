@@ -32,6 +32,7 @@ public class AssignmentRequestBuilder {
     public static final String ACTOR_ID = "123e4567-e89b-42d3-a456-556642445612";
     public static final String PROCESS_ID = "staff-organisational-role-mapping";
     public static final String ROLE_NAME_TCW = "tribunal-caseworker";
+    public static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
 
     private AssignmentRequestBuilder() {
         //not meant to be instantiated.

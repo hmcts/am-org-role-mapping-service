@@ -10,6 +10,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +38,15 @@ class ParseRequestServiceTest {
 
     @Test
     void validateUserProfilesTest() {
-        sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(), TestDataBuilder.buildUserRequest());
+        sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false),
+                TestDataBuilder.buildUserRequest());
     }
 
     @Test
     void validateUserProfiles_throwsBadRequest_noBaseLocationTest() {
-        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
-        userProfiles.get(0).setBaseLocation(new ArrayList<>());
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, false, true, false, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         assertThrows(BadRequestException.class, () ->
                 sut.validateUserProfiles(userProfiles, userRequest)
@@ -51,8 +55,8 @@ class ParseRequestServiceTest {
 
     @Test
     void validateUserProfiles_throwsBadRequest_noWorkAreaTest() {
-        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
-        userProfiles.get(0).setWorkArea(new ArrayList<>());
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, false, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
         assertThrows(BadRequestException.class, () ->
@@ -62,7 +66,8 @@ class ParseRequestServiceTest {
 
     @Test
     void validateUserProfiles_throwsBadRequest_noRolesTest() {
-        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false);
         userProfiles.get(0).setRole(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
@@ -73,8 +78,8 @@ class ParseRequestServiceTest {
 
     @Test
     void validateUserProfiles_throwsBadRequest_tooManyPrimaryTest() {
-        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
-        userProfiles.get(0).getBaseLocation().add(TestDataBuilder.buildBaseLocation(true));
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
         assertThrows(BadRequestException.class, () ->
@@ -85,7 +90,6 @@ class ParseRequestServiceTest {
     @Test
     void validateUserProfiles_throwsResourceNotFound_noProfilesTest() {
         List<UserProfile> userProfiles = new ArrayList<>();
-        TestDataBuilder.buildUserProfile(TestDataBuilder.generateUniqueId());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
         assertThrows(ResourceNotFoundException.class, () ->
@@ -95,8 +99,7 @@ class ParseRequestServiceTest {
 
     @Test
     void validateUserProfiles_throwsResourceNotFound_someProfilesNotFoundTest() {
-        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles();
-        userProfiles.remove(0);
+        List<UserProfile> userProfiles = new ArrayList<>();
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
         assertThrows(ResourceNotFoundException.class, () ->
