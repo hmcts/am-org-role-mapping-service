@@ -3,10 +3,9 @@ package uk.gov.hmcts.reform.orgrolemapping.util;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
 class JacksonUtilsTest {

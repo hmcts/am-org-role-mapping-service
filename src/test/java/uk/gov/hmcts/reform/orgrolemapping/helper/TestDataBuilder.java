@@ -8,7 +8,6 @@ import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -48,33 +47,6 @@ public class TestDataBuilder {
         users.add(id_1);
         users.add(id_2);
         return UserRequest.builder().users(users).build();
-    }
-
-    public static UserProfile.WorkArea buildWorkArea() {
-        return UserProfile.WorkArea.builder().areaOfWork("London").serviceCode("LDN")
-                .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
-                .build();
-    }
-
-    public static List<UserProfile.WorkArea> buildListOfWorkAreas() {
-        List<UserProfile.WorkArea> workAreaList = new ArrayList<>();
-        workAreaList.add(buildWorkArea());
-        workAreaList.add(buildWorkArea());
-        return workAreaList;
-    }
-
-    public static UserProfile.Role buildRole(boolean primaryRole) {
-        return UserProfile.Role.builder().roleId(RoleType.ORGANISATION.toString()).primary(primaryRole)
-                .roleName(ROLE_NAME_STCW)
-                .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
-                .build();
-    }
-
-    public static List<UserProfile.Role> buildListOfRoles() {
-        List<UserProfile.Role> roles = new ArrayList<>();
-        roles.add(buildRole(true));
-        roles.add(buildRole(false));
-        return roles;
     }
 
     public static UserAccessProfile buildUserAccessProfile(boolean deleteFlag) {

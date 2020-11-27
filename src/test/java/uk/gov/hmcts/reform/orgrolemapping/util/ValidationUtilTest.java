@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;

@@ -38,7 +38,8 @@ class RetrieveDataServiceTest {
     void retrieveCaseWorkerProfilesTest() {
 
         when(crdFeignClientFallback.createRoleAssignment(TestDataBuilder.buildUserRequest()))
-                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder.buildListOfUserProfiles(false, false,"1", "2",
+                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder
+                        .buildListOfUserProfiles(false, false,"1", "2",
                         ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)));
 
         Map<String, Set<UserAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
