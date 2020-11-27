@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 
