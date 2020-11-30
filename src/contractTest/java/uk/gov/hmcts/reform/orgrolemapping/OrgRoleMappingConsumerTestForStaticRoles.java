@@ -25,19 +25,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import static org.hamcrest.CoreMatchers.equalTo;
+
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service")
+@PactTestFor(providerName = "am_role_assignment_service_roles")
 @PactFolder("pacts")
 @SpringBootTest
-public class OrgRoleMappingConsumerTest {
+public class OrgRoleMappingConsumerTestForStaticRoles {
 
     private static final String RAS_GET_LIST_ROLES_URL = "/am/role-assignments/roles";
 
@@ -51,7 +52,7 @@ public class OrgRoleMappingConsumerTest {
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "am_role_assignment_service", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_role_assignment_service_roles", consumer = "am_org_role_mapping")
     public RequestResponsePact executeGetListOfRolesAndGet200(PactDslWithProvider builder) {
 
         return builder
@@ -66,11 +67,20 @@ public class OrgRoleMappingConsumerTest {
                 .toPact();
     }
 
+
     @NotNull
     private Map<String, String> getResponseHeaders() {
         Map<String, String> responseHeaders = Maps.newHashMap();
         responseHeaders.put("Content-Type",
                 "application/vnd.uk.gov.hmcts.role-assignment-service.get-roles+json;charset=UTF-8;version=1.0");
+        return responseHeaders;
+    }
+
+    @NotNull
+    private Map<String, String> getRoleAssignmentResponseHeaders() {
+        Map<String, String> responseHeaders = Maps.newHashMap();
+        responseHeaders.put("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments"
+                + "+json");
         return responseHeaders;
     }
 
