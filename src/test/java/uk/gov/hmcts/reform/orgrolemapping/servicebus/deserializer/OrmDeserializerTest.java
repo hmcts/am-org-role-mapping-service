@@ -22,7 +22,7 @@ class OrmDeserializerTest {
     @Test
     void deserialize() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            sut.deserialize("21334a2b-79ce-44eb-9168-2d49a744be9c");
+            sut.deserialize("4dc7dd3c-3fb5-4611-bbde-5101a97681e0");
         });
     }
 }

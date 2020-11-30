@@ -49,16 +49,22 @@ public class TestDataBuilder {
         return UserRequest.builder().users(users).build();
     }
 
-    public static UserAccessProfile buildUserAccessProfile(boolean deleteFlag) {
+    public static UserAccessProfile buildUserAccessProfile1(boolean deleteFlag) {
         return UserAccessProfile.builder().id(id_1).deleteFlag(deleteFlag).areaOfWorkId("London")
-                .primaryLocationId("123456").primaryLocationName("ssouth-east").roleId("1")
+                .primaryLocationId("123456").primaryLocationName("south-east").roleId("1")
                 .serviceCode("BFA1").roleName(ROLE_NAME_STCW).build();
+    }
+
+    public static UserAccessProfile buildUserAccessProfile2(boolean deleteFlag) {
+        return UserAccessProfile.builder().id(id_2).deleteFlag(deleteFlag).areaOfWorkId("London")
+                .primaryLocationId("123457").primaryLocationName("south-east").roleId("2")
+                .serviceCode("BFA2").roleName(ROLE_NAME_TCW).build();
     }
 
     public static Set<UserAccessProfile> buildUserAccessProfileSet(boolean deleteFlag1, boolean deleteFlag2) {
         Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(buildUserAccessProfile(deleteFlag1));
-        userAccessProfileSet.add(buildUserAccessProfile(deleteFlag2));
+        userAccessProfileSet.add(buildUserAccessProfile1(deleteFlag1));
+        userAccessProfileSet.add(buildUserAccessProfile2(deleteFlag2));
         return userAccessProfileSet;
     }
 
@@ -67,6 +73,7 @@ public class TestDataBuilder {
 
         HashMap<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
         userAccessProfiles.put(id_1, buildUserAccessProfileSet(deleteFlag1, deleteFlag2));
+        userAccessProfiles.put(id_2, buildUserAccessProfileSet(deleteFlag1, deleteFlag2));
         return userAccessProfiles;
     }
 
