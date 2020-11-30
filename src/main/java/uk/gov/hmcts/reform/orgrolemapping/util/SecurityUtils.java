@@ -60,7 +60,11 @@ public class SecurityUtils {
 
 
     public String getUserId() {
-        return jwtGrantedAuthoritiesConverter.getUserInfo().getUid();
+        if (jwtGrantedAuthoritiesConverter.getUserInfo() != null) {
+            return jwtGrantedAuthoritiesConverter.getUserInfo().getUid();
+        } else {
+            return idamRepository.getUserInfo(getUserToken()).getUid();
+        }
     }
 
     public UserRoles getUserRoles() {
