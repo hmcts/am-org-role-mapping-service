@@ -6,6 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 class OrmDeserializerTest {
 
@@ -19,10 +23,25 @@ class OrmDeserializerTest {
         sut = new OrmDeserializer(mapper);
     }
 
-    @Test
+    //@Test
     void deserialize() {
+        String deserializeMe = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
+        byte[] byteArray = deserializeMe.getBytes();
+        List<byte[]> list = new ArrayList<>();
+        list.add(byteArray);
+
+        sut.deserialize(Collections.singletonList(byteArray));
+    }
+
+    @Test
+    void deserialize_throws() {
+        String deserializeMe = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
+        byte[] byteArray = deserializeMe.getBytes();
+        List<byte[]> list = new ArrayList<>();
+        list.add(byteArray);
+
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            sut.deserialize("4dc7dd3c-3fb5-4611-bbde-5101a97681e0");
+            sut.deserialize(list);
         });
     }
 }
