@@ -17,6 +17,9 @@ services:
       - ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET= am_docker_secret
       - ORG_ROLE_MAPPING_IDAM_ADMIN_USERID=orm.admin@hmcts.NET
       - ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD=Pa55word11
+      - CASE_WORKER_REF_APP_URL=http://localhost:4099
+      - ROLE_ASSIGNMENT_APP_URL=http://localhost:4096
+      - ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE=openid profile roles authorities
       - AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
       - REFORM_SERVICE_NAME=am-org-role-mapping-service
       - REFORM_TEAM=am

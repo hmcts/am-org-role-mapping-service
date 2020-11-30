@@ -17,4 +17,8 @@ public class RoleAssignmentService {
     public ResponseEntity<Object> createRoleAssignment(AssignmentRequest assignmentRequest) {
         return rasFeignClient.createRoleAssignment(assignmentRequest);
     }
+
+    public String getServiceStatus() {
+        return rasFeignClient.getServiceStatus();
+    }
 }

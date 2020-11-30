@@ -1,0 +1,19 @@
+{
+    "links": [],
+    "roleAssignmentResponse": {
+        "roleRequest": {
+            "id": "8373d1ff-53d6-4f43-8977-48c9278f13c8",
+            "authenticatedUserId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b9",
+            "correlationId": "01f6e7e2-c66c-44a0-a7e4-73c1507c92b7",
+            "assignerId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b7",
+            "requestType": "CREATE",
+            "process": "businessProcess1",
+            "reference": "50b143cb-5644-4103-b37f-ee7005ca24d6",
+            "replaceExisting": true,
+            "status": "APPROVED",
+            "created": "2020-11-19T14:16:14.677362",
+            "log": "Request has been Approved"
+        },
+        "requestedRoles": []
+    }
+}
