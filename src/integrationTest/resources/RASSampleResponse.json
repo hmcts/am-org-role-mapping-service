@@ -1,0 +1,41 @@
+{
+  "links": [],
+  "roleAssignmentResponse": {
+    "roleRequest": {
+      "id": "3887879e-1067-406e-8e18-d59cb7693516",
+      "authenticatedUserId": "f00267c7-b8e1-4ee1-9bae-b93dd0510c91",
+      "correlationId": "cbc6f992-4861-42d6-871b-29ae58bfcc34",
+      "assignerId": "123e4567-e89b-42d3-a456-556642445678",
+      "requestType": "CREATE",
+      "process": "staff-organisational-role-mapping",
+      "reference": "123e4567-e89b-42d3-a456-556642000101",
+      "replaceExisting": true,
+      "status": "APPROVED",
+      "created": "2020-11-06T08:20:58.486362",
+      "log": "Request has been approved by the rule : R03_stcw_rule_for_org "
+    },
+    "requestedRoles": [
+      {
+        "id": "8deb40f6-156b-4c2f-9a7a-20a383a6e205",
+        "actorIdType": "IDAM",
+        "actorId": "123e4567-e89b-42d3-a456-556642000101",
+        "roleType": "ORGANISATION",
+        "roleName": "senior-tribunal-caseworker",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "STAFF",
+        "readOnly": false,
+        "process": "staff-organisational-role-mapping",
+        "reference": "123e4567-e89b-42d3-a456-556642000101",
+        "statusSequence": 10,
+        "status": "LIVE",
+        "created": "2020-11-06T08:20:58.48669",
+        "log": "Requested role has been approved by the rule : R03_stcw_rule_for_org ",
+        "attributes": {
+          "primaryLocation": "219164",
+          "jurisdiction": "IA"
+        }
+      }
+    ]
+  }
+}

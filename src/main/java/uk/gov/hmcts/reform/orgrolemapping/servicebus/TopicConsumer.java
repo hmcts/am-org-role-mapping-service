@@ -1,70 +1,149 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.microsoft.azure.servicebus.ExceptionPhase;
+import com.microsoft.azure.servicebus.IMessage;
+import com.microsoft.azure.servicebus.IMessageHandler;
+import com.microsoft.azure.servicebus.MessageHandlerOptions;
+import com.microsoft.azure.servicebus.ReceiveMode;
+import com.microsoft.azure.servicebus.SubscriptionClient;
+import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
+import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
-import static java.lang.String.format;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
-@Lazy(false)
 public class TopicConsumer {
 
-    private final Integer maxRetryAttempts;
+    @Value("${amqp.host}")
+    String host;
+    @Value("${amqp.topic}")
+    String topic;
+    @Value("${amqp.sharedAccessKeyName}")
+    String sharedAccessKeyName;
+    @Value("${amqp.sharedAccessKeyValue}")
+    String sharedAccessKeyValue;
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
-    private final OrmDeserializer ormDeserializer;
+    private OrmDeserializer deserializer;
 
-    public TopicConsumer(@Value("${send-letter.maxRetryAttempts}") Integer maxRetryAttempts,
-                         BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                         OrmDeserializer ormDeserializer) {
-        this.maxRetryAttempts = maxRetryAttempts;
+    @Autowired
+    private RoleAssignmentService roleAssignmentService;
+
+    public TopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
+                         OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
-        this.ormDeserializer = ormDeserializer;
+        this.deserializer = deserializer;
 
     }
 
-    /*@JmsListener(
-            destination = "${amqp.topic}",
-            containerFactory = "topicJmsListenerContainerFactory",
-            subscription = "${amqp.subscription}"
-    )*/
+    @Bean
+    public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
+            InterruptedException {
+        URI endpoint = new URI(host);
 
-    public void onMessage(String message) {
-        processMessageWithRetry(message, 1);
+        ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
+                endpoint,
+                topic,
+                sharedAccessKeyName,
+                sharedAccessKeyValue);
+
+        connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
+        return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
 
-    private void processMessageWithRetry(String message, int retry) {
-        try {
-            log.info("CRDTopicConsumer - Message received from the CRD subscription : {}", message);
-            processMessage(message);
-        } catch (Exception e) {
-            if (retry > maxRetryAttempts) {
-                log.error(format("Caught unknown unrecoverable error %s", e.getMessage()), e);
-            } else {
-                log.info(String.format("Caught recoverable error %s, retrying %s out of %s",
-                        e.getMessage(), retry, maxRetryAttempts));
-                processMessageWithRetry(message, retry + 1);
+    @Bean
+    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
+            throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        log.info("    Calling registerMessageHandlerOnClient ");
+
+        IMessageHandler messageHandler = new IMessageHandler() {
+            // callback invoked when the message handler loop has obtained a message
+            @SneakyThrows
+            public CompletableFuture<Void> onMessageAsync(IMessage message) {
+                log.info("    Calling onMessageAsync.....{}", message);
+                List<byte[]> body = message.getMessageBody().getBinaryData();
+                try {
+                    log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
+                    log.info("    Delivery Count is : {}", message.getDeliveryCount());
+                    if (roleAssignmentHealthCheck()) {
+                        if (processMessage(body)) {
+                            return receiveClient.completeAsync(message.getLockToken());
+                        }
+                    }
+                    log.info("    getLockToken......{}", message.getLockToken());
+
+                } catch (Throwable e) { // java.lang.Throwable introduces the Sonar issues
+                    throw e;
+                }
+                log.info("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
+                return null;
+
             }
+
+            public void notifyException(Throwable throwable, ExceptionPhase exceptionPhase) {
+                log.error("Exception occurred.");
+                log.error(exceptionPhase + "-" + throwable.getMessage());
+            }
+        };
+
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        receiveClient.registerMessageHandler(
+                messageHandler, new MessageHandlerOptions(1,
+                        false, Duration.ofHours(1), Duration.ofMinutes(5)),
+                executorService);
+        return null;
+
+    }
+
+    private boolean processMessage(List<byte[]> body) {
+        log.info("    Parsing the message");
+        UserRequest request = deserializer.deserialize(body);
+        try {
+            ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);
+            log.info("----Role Assignment Service Response {}", response.getStatusCode());
+            return true;
+        } catch (Exception e) {
+            log.error("Exception from RAS service : {}", e.getMessage());
+            throw e;
         }
     }
 
-    private void processMessage(String message) {
-        UserRequest userRequest = ormDeserializer.deserialize(message);
-        log.info("CRDTopicConsumer:Deserializer - userRequest received from from the CRD subscription : {}",
-                userRequest);
-        if (userRequest != null) {
-            ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
-            log.info("The Organisation roles for received users: {} are updated with consolidated response : {}",
-                    userRequest,response.getStatusCode());
+    private boolean roleAssignmentHealthCheck() throws InterruptedException {
+        log.info("    Calling the health check");
+        try {
+            //String result = roleAssignmentService.getServiceStatus();
+            log.info("    Health check is Successful : ");
+        } catch (Throwable e) {
+            log.error("    Something is wrong with the health check...");
+            throw e;
         }
-
+        return true;
     }
 }
+
+*/

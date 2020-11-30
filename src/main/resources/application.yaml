@@ -103,14 +103,14 @@ logging.level.uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient: DE
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
-
+roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 
 amqp:
   host: ${AMQP_HOST:rd-servicebus-sandbox.servicebus.windows.net}
-  username: ${AMQP_USERNAME:SendAndListenSharedAccessKey}
-  password: ${AMQP_PASSWORD:5ZXxCOCaJsvA/8uojXxqPfk6oJZr/xkyJe47vevc48s=}
-  topic: ${TOPIC_NAME:rd-caseworker-topic-sandbox}
-  subscription: ${SUBSCRIPTION_NAME:rd-caseworker-subscription-sandbox}
+  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:SendAndListenSharedAccessKey}
+  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:97E6uvE6xHcqHAVlxufN1PH75tMHoZUe78FhsCbLLLQ=}
+  topic: ${AMQP_TOPIC_NAME:rd-caseworker-topic-sandbox/subscriptions/temporary}
+  subscription: ${AMQP_SUBSCRIPTION_NAME:subscriptionName}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
 
@@ -125,3 +125,8 @@ launchdarkly:
     key: ${LD_SDK_KEY:}
     environment: ${LAUNCH_DARKLY_ENV:pr}
     user: am-${LAUNCH_DARKLY_ENV:local}
+
+token:
+  cache:
+    ttl:
+      ms: 150000

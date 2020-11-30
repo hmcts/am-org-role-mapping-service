@@ -18,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
@@ -76,6 +77,17 @@ public class OrgRoleMappingControllerAdvice {
             ErrorConstants.INVALID_REQUEST.getErrorCode(),
             ErrorConstants.INVALID_REQUEST.getErrorMessage()
                                          );
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> handleBadRequestError(
+            BadRequestException ex) {
+        return errorDetailsResponseEntity(
+                ex,
+                HttpStatus.BAD_REQUEST,
+                ErrorConstants.BAD_REQUEST.getErrorCode(),
+                ErrorConstants.BAD_REQUEST.getErrorMessage()
+        );
     }
 
     @ExceptionHandler(Exception.class)

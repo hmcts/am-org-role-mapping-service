@@ -1,0 +1,68 @@
+{
+  "links": [],
+  "roleAssignmentResponse": {
+    "roleRequest": {
+      "id": "c5a8c7ab-d36a-490f-b101-650c434ca4e2",
+      "authenticatedUserId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b9",
+      "correlationId": "01f6e7e2-c66c-44a0-a7e4-73c1507c92b7",
+      "assignerId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b7",
+      "requestType": "CREATE",
+      "process": "businessProcess1",
+      "reference": "TEST ORM Multiple Actors",
+      "replaceExisting": true,
+      "status": "APPROVED",
+      "created": "2020-11-19T17:10:39.524004",
+      "log": "Request has been Approved"
+    },
+    "requestedRoles": [
+      {
+        "id": "d0cbadda-4184-47c2-8ff2-0de0b97344e9",
+        "actorIdType": "IDAM",
+        "actorId": "123e4567-e89b-42d3-a456-556642445000",
+        "roleType": "ORGANISATION",
+        "roleName": "tribunal-caseworker",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "STAFF",
+        "readOnly": false,
+        "beginTime": "2000-01-01T00:00:00",
+        "endTime": "2023-01-01T00:00:00",
+        "process": "businessProcess1",
+        "reference": "TEST ORM Multiple Actors",
+        "status": "LIVE",
+        "created": "2020-11-19T17:10:39.52717",
+        "log": "Create approved : staff_organisational_role_mapping_service_create\nApproved : validate_role_assignment_against_patterns",
+        "attributes": {
+          "region": "south-east",
+          "primaryLocation": "219164",
+          "jurisdiction": "IA"
+        },
+        "notes": null
+      },
+      {
+        "id": "26179507-075c-4ef0-ac17-a6bb59f49c88",
+        "actorIdType": "IDAM",
+        "actorId": "123e4567-e89b-42d3-a456-556642445111",
+        "roleType": "ORGANISATION",
+        "roleName": "senior-tribunal-caseworker",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "STAFF",
+        "readOnly": false,
+        "beginTime": "2000-01-01T00:00:00",
+        "endTime": "2023-01-01T00:00:00",
+        "process": "businessProcess1",
+        "reference": "TEST ORM Multiple Actors",
+        "status": "LIVE",
+        "created": "2020-11-19T17:10:39.527176",
+        "log": "Create approved : staff_organisational_role_mapping_service_create\nApproved : validate_role_assignment_against_patterns",
+        "attributes": {
+          "region": "south-east",
+          "primaryLocation": "219164",
+          "jurisdiction": "IA"
+        },
+        "notes": null
+      }
+    ]
+  }
+}
