@@ -1,0 +1,44 @@
+{
+    "links": [],
+    "roleAssignmentResponse": {
+        "roleRequest": {
+            "id": "6ad28cdf-d063-4757-b970-3f624a52e282",
+            "authenticatedUserId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b9",
+            "correlationId": "01f6e7e2-c66c-44a0-a7e4-73c1507c92b7",
+            "assignerId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b7",
+            "requestType": "CREATE",
+            "process": "businessProcess1",
+            "reference": "50b143cb-5644-4103-b37f-ee7005ca24d6",
+            "replaceExisting": true,
+            "status": "APPROVED",
+            "created": "2020-11-19T14:28:06.915043",
+            "log": "Request has been Approved"
+        },
+        "requestedRoles": [
+            {
+                "id": "08c57b80-a4f0-4743-a60b-00abe2ba16d0",
+                "actorIdType": "IDAM",
+                "actorId": "123e4567-e89b-42d3-a456-556642445000",
+                "roleType": "ORGANISATION",
+                "roleName": "senior-tribunal-caseworker",
+                "classification": "PUBLIC",
+                "grantType": "STANDARD",
+                "roleCategory": "STAFF",
+                "readOnly": false,
+                "beginTime": "2000-01-01T00:00:00",
+                "endTime": "2023-01-01T00:00:00",
+                "process": "businessProcess1",
+                "reference": "50b143cb-5644-4103-b37f-ee7005ca24d6",
+                "status": "LIVE",
+                "created": "2020-11-19T14:28:06.915267",
+                "log": "Create approved : staff_organisational_role_mapping_service_create\nApproved : validate_role_assignment_against_patterns",
+                "attributes": {
+                    "region": "south-east",
+                    "primaryLocation": "219164",
+                    "jurisdiction": "IA"
+                },
+                "notes": null
+            }
+        ]
+    }
+}
