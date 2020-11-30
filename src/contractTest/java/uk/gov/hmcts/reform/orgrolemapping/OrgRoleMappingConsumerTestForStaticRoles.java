@@ -80,7 +80,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
     private Map<String, String> getRoleAssignmentResponseHeaders() {
         Map<String, String> responseHeaders = Maps.newHashMap();
         responseHeaders.put("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments"
-                + "+json");
+               + "+json");
         return responseHeaders;
     }
 
