@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import io.jsonwebtoken.lang.Collections;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
@@ -15,7 +14,6 @@ import java.util.List;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
 
 @Service
-@Slf4j
 public class ParseRequestService {
     //1. This will parse the list of userIds and validate them.
     //2. This will parse and validate the user details received from CRD

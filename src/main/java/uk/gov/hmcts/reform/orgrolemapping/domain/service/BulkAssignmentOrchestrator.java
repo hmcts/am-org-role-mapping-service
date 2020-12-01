@@ -36,8 +36,7 @@ public class BulkAssignmentOrchestrator {
         Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                 .retrieveCaseWorkerProfiles(userRequest);
         //call the requestMapping service to determine role name and create role assignment requests
-        ResponseEntity<Object> response = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
-        return response;
+        return requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
     }
 
 }

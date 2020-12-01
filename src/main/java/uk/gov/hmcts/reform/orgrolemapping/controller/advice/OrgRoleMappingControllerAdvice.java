@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
-@Slf4j
 @ControllerAdvice(basePackages = "uk.gov.hmcts.reform.orgrolemapping")
 @RequestMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 public class OrgRoleMappingControllerAdvice {

@@ -184,7 +184,11 @@ pitest {
     pitestVersion = "1.5.2"
     testPlugin = "junit5"
     targetClasses = ['uk.gov.hmcts.reform.*']
-    excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication', 'uk.gov.hmcts.reform.orgrolemapping.util.Swagger2SpringBoot', 'uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants', 'uk.gov.hmcts.reform.orgrolemapping.configuration.*', 'uk.gov.hmcts.reform.orgrolemapping.apihelper.*', 'uk.gov.hmcts.reform.orgrolemapping.model.*', 'uk.gov.hmcts.reform.orgrolemapping.controller.endpoints.S2SAuthentication']
+    excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication',
+                       'uk.gov.hmcts.reform.orgrolemapping.util.Swagger2SpringBoot',
+                       'uk.gov.hmcts.reform.orgrolemapping.config.*',
+                       'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
+                       'uk.gov.hmcts.reform.orgrolemapping.domain.model.*']
     threads = 15
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
@@ -199,14 +203,18 @@ sonarqube {
         property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.pitest.mode", "reuseReport"
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
-        property "sonar.exclusions", "src/main/java/**"
-        //property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/orgrolemapping/*Application.java," + "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/*Swagger2SpringBoot.java," + "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/advice/*ErrorConstants.java," + "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/advice/exception/**," + "src/main/java/uk/gov/hmcts/reform/orgrolemapping/configuration/**," + "src/main/java/uk/gov/hmcts/reform/orgrolemapping/model/enums/**," + "src/main/java/uk/gov/hmcts/reform/orgrolemapping/apihelper/**"
-        //property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
+        property "sonar.exclusions", "src/**," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/*Application.java," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/*Swagger2SpringBoot.java," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/feignclients/configuration/**," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/model/**," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**"
+        property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
 }
 
-/*project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
-project.tasks['sonarqube'].group = "Verification"*/
+project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
+project.tasks['sonarqube'].group = "Verification"
 
 dependencyUpdates.resolutionStrategy {
     componentSelection { rules ->

@@ -1,49 +1,109 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.util.Arrays;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 
-import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserRequest;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RunWith(MockitoJUnitRunner.class)
 class ParseRequestServiceTest {
 
-
-    @InjectMocks
-    private ParseRequestService sut = new ParseRequestService();
+    ParseRequestService sut = new ParseRequestService();
 
     @Test
-    void shouldValidateUserRequest() {
-
-        sut.validateUserRequest(buildUserRequest());
-
+    void validateUserRequestTest() {
+        sut.validateUserRequest(TestDataBuilder.buildUserRequest());
     }
 
     @Test
-    void shouldThrowTheBadRequest() {
-
-        UserRequest userRequest = UserRequest.builder()
-                .users(Arrays.asList("1234567-89b-423-456-556642445678@"))
-                .build();
-        Assertions.assertThrows(BadRequestException.class, () ->
+    void validateUserRequest_throwsBadRequestTest() {
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        userRequest.getUsers().add("User-@007");
+        assertThrows(BadRequestException.class, () ->
                 sut.validateUserRequest(userRequest)
         );
-
     }
 
+    @Test
+    void validateUserProfilesTest() {
+        sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false),
+                TestDataBuilder.buildUserRequest());
+    }
 
     @Test
-    void shouldValidateUserProfile() {
+    void validateUserProfiles_throwsBadRequest_noBaseLocationTest() {
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, false, true, false, true, "1", "2", false);
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        assertThrows(BadRequestException.class, () ->
+                sut.validateUserProfiles(userProfiles, userRequest)
+        );
+    }
 
-        sut.validateUserProfiles(buildUserProfile(buildUserRequest()), buildUserRequest());
+    @Test
+    void validateUserProfiles_throwsBadRequest_noWorkAreaTest() {
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, false, "1", "2", false);
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
+        assertThrows(BadRequestException.class, () ->
+                sut.validateUserProfiles(userProfiles, userRequest)
+        );
+    }
+
+    @Test
+    void validateUserProfiles_throwsBadRequest_noRolesTest() {
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false);
+        userProfiles.get(0).setRole(new ArrayList<>());
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+
+        assertThrows(BadRequestException.class, () ->
+                sut.validateUserProfiles(userProfiles, userRequest)
+        );
+    }
+
+    @Test
+    void validateUserProfiles_throwsBadRequest_tooManyPrimaryTest() {
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true, true, "1", "2", false);
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+
+        assertThrows(BadRequestException.class, () ->
+                sut.validateUserProfiles(userProfiles, userRequest)
+        );
+    }
+
+    @Test
+    void validateUserProfiles_throwsResourceNotFound_noProfilesTest() {
+        List<UserProfile> userProfiles = new ArrayList<>();
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                sut.validateUserProfiles(userProfiles, userRequest)
+        );
+    }
+
+    @Test
+    void validateUserProfiles_throwsResourceNotFound_someProfilesNotFoundTest() {
+        List<UserProfile> userProfiles = new ArrayList<>();
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                sut.validateUserProfiles(userProfiles, userRequest)
+        );
     }
 }
