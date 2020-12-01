@@ -6,8 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -23,14 +24,14 @@ class OrmDeserializerTest {
         sut = new OrmDeserializer(mapper);
     }
 
-    //@Test
+    @Test
     void deserialize() {
-        String deserializeMe = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
+        String deserializeMe = "4567";
         byte[] byteArray = deserializeMe.getBytes();
         List<byte[]> list = new ArrayList<>();
         list.add(byteArray);
 
-        sut.deserialize(Collections.singletonList(byteArray));
+        assertNotNull(sut.deserialize(list));
     }
 
     @Test
