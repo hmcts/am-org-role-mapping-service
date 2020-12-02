@@ -27,22 +27,25 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 def vaultOverrides = [
-    'preview' : 'aat',
-    'spreview': 'saat'
+  'preview' : 'aat',
+  'spreview': 'saat'
 ]
 
 def secrets = [
     's2s-${env}': [
-        secret('microservicekey-am-org-role-mapping-service', 'BEFTA_S2S_CLIENT_SECRET'),
-        secret('microservicekey-am-org-role-mapping-service', 'AM_ORG_ROLE_MAPPING_SERVICE_SECRET')
+      secret('microservicekey-am-org-role-mapping-service', 'BEFTA_S2S_CLIENT_SECRET'),
+      secret('microservicekey-am-org-role-mapping-service', 'AM_ORG_ROLE_MAPPING_SERVICE_SECRET')
     ],
     'am-${env}': [
-            secret('role-assignment-service-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
-            secret('role-assignment-service-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
-            secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY'),
-            secret('test-am-user2-befta-pwd', 'TEST_AM_USER2_BEFTA_PWD')
+      secret('role-assignment-service-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
+      secret('role-assignment-service-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
+      secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY'),
+      secret('test-am-user2-befta-pwd', 'TEST_AM_USER2_BEFTA_PWD')
     ]
 ]
+
+// Configure branches to sync with master branch
+def branchesToSync = ['demo', 'perftest']
 
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
@@ -65,13 +68,13 @@ env.PACT_BROKER_FULL_URL = 'https://pact-broker.platform.hmcts.net'
 
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
-      env.LAUNCH_DARKLY_ENV = "pr"
+    env.LAUNCH_DARKLY_ENV = "pr"
   }
   else if(env.BRANCH_NAME == 'master') {
-      env.LAUNCH_DARKLY_ENV = "aat"
+    env.LAUNCH_DARKLY_ENV = "aat"
   }
   else {
-      env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
+    env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
   }
   onMaster {
     enableSlackNotifications('#am-org-role-mapping-service-builds')
@@ -85,6 +88,9 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   disableLegacyDeploymentOnAAT()
   disableLegacyDeployment()
+
+  // Sync environment specific branches with master branch
+  syncBranchesWithMaster(branchesToSync)
 
   after('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
@@ -103,6 +109,6 @@ withPipeline(type, product, component) {
   }
 
   enablePactAs([
-          AppPipelineDsl.PactRoles.CONSUMER
+    AppPipelineDsl.PactRoles.CONSUMER
   ])
 }
