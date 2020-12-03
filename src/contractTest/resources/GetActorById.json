@@ -1,0 +1,28 @@
+{
+  "links": [
+    {
+      "rel": "binary",
+      "href": "http://localhost:4096/am/role-assignments/actors/23486"
+    }
+  ],
+  "roleAssignmentResponse": [
+    {
+      "id": "3ed4f960-e50b-4127-af30-47821d5799f7",
+      "actorIdType": "IDAM",
+      "actorId": "23486",
+      "roleType": "ORGANISATION",
+      "roleName": "senior-tribunal-caseworker",
+      "classification": "PRIVATE",
+      "grantType": "STANDARD",
+      "roleCategory": "STAFF",
+      "readOnly": false,
+      "endTime": "2020-09-01T00:00:00",
+      "created": "2020-12-03T13:19:05.042675",
+      "attributes": {
+        "primaryLocation": "219VSA",
+        "jurisdiction": "IA"
+      },
+      "authorisations": []
+    }
+  ]
+}
