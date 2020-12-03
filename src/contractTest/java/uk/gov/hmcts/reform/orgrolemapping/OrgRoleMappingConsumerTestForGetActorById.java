@@ -54,8 +54,6 @@ public class OrgRoleMappingConsumerTestForGetActorById {
         Executor.closeIdleConnections();
     }
 
-
-
     @Pact(provider = "am_role_assignment_service_get_actor_by_id", consumer = "am_org_role_mapping")
     public RequestResponsePact executeGetActorByIdAndGet200(PactDslWithProvider builder) throws IOException {
 
