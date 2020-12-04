@@ -553,6 +553,10 @@ bootJar {
     }
 }
 
+configurations {
+    runtime.exclude group: "com.thoughtworks.xstream", module: "xstream"
+}
+
 cucumberReports {
     outputDir = file("${projectDir}/target/cucumber")
     reports = files("${projectDir}/target/cucumber.json")
