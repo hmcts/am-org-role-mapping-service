@@ -85,8 +85,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
 
     private DslPart createResponse() {
         return newJsonBody(o -> o
-                .minArrayLike("links", 1, 1,
-                        link -> link.stringType("rel", "binary")
+                .minArrayLike("links", 1, 1, link -> link.stringType("rel", "binary")
                                 .stringType("href", "http://localhost:4096/am/role-assignments/actors/23486"))
                 .minArrayLike("roleAssignmentResponse", 1, 1,
                         roleAssignmentResponse -> roleAssignmentResponse
@@ -100,8 +99,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
                                 .stringValue("roleCategory", "STAFF")
                                 .booleanValue("readOnly", false)
                                 .object("attributes", attribute -> attribute
-                                        .stringType("jurisdiction", "IA")
-                                        .stringType("primaryLocation", "219VSA"))
+                                        .stringType("jurisdiction", "IA"))
                 )).build();
     }
 

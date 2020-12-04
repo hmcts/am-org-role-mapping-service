@@ -25,7 +25,6 @@
               "roleCategory": "STAFF",
               "readOnly": false,
               "attributes": {
-                "primaryLocation": "219VSA",
                 "jurisdiction": "IA"
               },
               "id": "14a21569-eb80-4681-b62c-6ae2ed069e6f",
@@ -87,14 +86,6 @@
               "combine": "AND"
             },
             "$.roleAssignmentResponse[*].attributes.jurisdiction": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.roleAssignmentResponse[*].attributes.primaryLocation": {
               "matchers": [
                 {
                   "match": "type"
