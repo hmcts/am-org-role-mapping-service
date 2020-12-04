@@ -1,13 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
 import au.com.dius.pact.consumer.MockServer;
+import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
@@ -26,11 +26,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
@@ -55,7 +55,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
     }
 
     @Pact(provider = "am_role_assignment_service_get_actor_by_id", consumer = "am_org_role_mapping")
-    public RequestResponsePact executeGetActorByIdAndGet200(PactDslWithProvider builder) throws IOException {
+    public RequestResponsePact executeGetActorByIdAndGet200(PactDslWithProvider builder) {
 
         return builder
                 .given("An actor with provided id is available in role assignment service")
@@ -71,8 +71,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
 
     @Test
     @PactTestFor(pactMethod = "executeGetActorByIdAndGet200")
-    void getActorByIdAndGet200Test(MockServer mockServer)
-            throws JSONException {
+    void getActorByIdAndGet200Test(MockServer mockServer) {
         String actualResponseBody =
                 SerenityRest
                         .given()
@@ -86,8 +85,26 @@ public class OrgRoleMappingConsumerTestForGetActorById {
         assertThat(first.get("actorId"), equalTo(ACTOR_ID));
     }
 
-    private String createResponse() throws IOException {
-        return readJsonFromFile("GetActorById");
+    private DslPart createResponse() {
+        return newJsonBody(o -> o
+                .minArrayLike("links", 1, 1,
+                        link -> link.stringType("rel", "binary")
+                                .stringType("href", "http://localhost:4096/am/role-assignments/actors/23486"))
+                    .minArrayLike("roleAssignmentResponse", 1, 1,
+                            roleAssignmentResponse -> roleAssignmentResponse
+                                    .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                                    .stringValue("actorIdType", "IDAM")
+                                    .stringValue("actorId", ACTOR_ID)
+                                    .stringValue("roleType", "ORGANISATION")
+                                    .stringValue("roleName", "senior-tribunal-caseworker")
+                                    .stringValue("classification", "PRIVATE")
+                                    .stringValue("grantType", "STANDARD")
+                                    .stringValue("roleCategory", "STAFF")
+                                    .booleanValue("readOnly", false)
+                                    .object("attributes", attribute -> attribute
+                                            .stringType("jurisdiction", "IA")
+                                            .stringType("primaryLocation", "219VSA"))
+                    )).build();
     }
 
     @NotNull
@@ -103,14 +120,6 @@ public class OrgRoleMappingConsumerTestForGetActorById {
         headers.add("ServiceAuthorization", "Bearer " + "1234");
         headers.add("Authorization", "Bearer " + "2345");
         return headers;
-    }
-
-    private String readJsonFromFile(String fileName) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        InputStream is = OrgRoleMappingConsumerTestForGetActorById.class
-                .getResourceAsStream(String.format("/%s.json", fileName));
-        Object json = mapper.readValue(is, Object.class);
-        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
     }
 
 }
