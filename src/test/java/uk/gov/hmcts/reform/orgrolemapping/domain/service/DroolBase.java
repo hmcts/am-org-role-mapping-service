@@ -7,7 +7,6 @@ import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
-import org.mockito.Mock;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map;
 
-import static org.mockito.Mockito.mock;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_QUERY_NAME;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 
@@ -29,9 +27,6 @@ public abstract class DroolBase {
     ExecutionResults results;
     Set<UserAccessProfile> allProfiles;
 
-    @Mock
-    private RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
-
     @BeforeEach
     public void setUp() {
 
@@ -41,12 +36,10 @@ public abstract class DroolBase {
         allProfiles = new HashSet<>();
         usersAccessProfiles.forEach((k, v) -> allProfiles.addAll(v));
 
-
         // Set up the rule engine for validation.
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();
         this.kieSession = kieContainer.newStatelessKieSession("org-role-mapping-validation-session");
-        this.kieSession.setGlobal("DATA_SERVICE", retrieveDataService);
 
     }
 
