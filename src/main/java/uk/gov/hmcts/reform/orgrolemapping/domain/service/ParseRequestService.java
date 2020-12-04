@@ -29,7 +29,8 @@ public class ParseRequestService {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
         if (userRequest.getUsers().size() != userProfiles.size()) {
-            throw new ResourceNotFoundException("Some of the user profiles couldn't be found");
+            //log.error("Some of the user profiles couldn't be found")
+            //throw new ResourceNotFoundException("Some of the user profiles couldn't be found");
         }
 
         userProfiles.forEach(userProfile -> {

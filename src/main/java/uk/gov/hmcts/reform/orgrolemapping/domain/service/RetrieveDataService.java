@@ -44,13 +44,17 @@ public class RetrieveDataService {
     public Map<String, Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
         //ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
+        // no of userProfles from CRD  responseEntity.getBody().size()
 
         List<UserProfile> userProfiles = responseEntity.getBody();
         parseRequestService.validateUserProfiles(userProfiles, userRequest);
 
+        // no of userprofile sucessfully validated
+
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
         userProfiles.stream().forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                 convertUserProfileToUserAccessProfile(userProfile)));
+        // logger UAP object  corresponding to UserId
         return usersAccessProfiles;
     }
 }

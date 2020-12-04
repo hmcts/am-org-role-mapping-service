@@ -62,6 +62,7 @@ public class RequestMappingService {
             Set<UserAccessProfile>> usersAccessProfiles) {
         // Create a map to hold the role assignments for each user.
         Map<String, List<RoleAssignment>> usersRoleAssignments = new HashMap<>();
+
         // Make sure every user in the input collection has a list in the map.  This includes users
         // who have been deleted, for whom no role assignments will be created by the rules.
         usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<RoleAssignment>()));
@@ -69,6 +70,8 @@ public class RequestMappingService {
         List<RoleAssignment> roleAssignments = mapUserAccessProfiles(usersAccessProfiles);
         // Add each role assignment to the results map.
         roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
+
+        //print usersRoleAssignments
         return usersRoleAssignments;
     }
 
@@ -125,6 +128,8 @@ public class RequestMappingService {
     ResponseEntity<Object> updateCaseworkerRoleAssignments(String userId, Collection<RoleAssignment> roleAssignments) {
         String process = STAFF_ORGANISATIONAL_ROLE_MAPPING;
         String reference = userId;
+
+        // Print response code  of RAS for each userID
         return updateRoleAssignments(process, reference, roleAssignments);
     }
 

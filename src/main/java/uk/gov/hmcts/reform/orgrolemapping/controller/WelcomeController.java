@@ -69,6 +69,7 @@ public class WelcomeController {
     })
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest) {
         log.debug("createOrgMapping");
+        // processing has started   usfprvers.size() users received.
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
