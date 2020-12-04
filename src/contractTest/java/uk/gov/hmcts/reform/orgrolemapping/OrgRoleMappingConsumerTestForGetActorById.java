@@ -13,7 +13,6 @@ import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +29,6 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.IOException;
 import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
@@ -80,8 +78,8 @@ public class OrgRoleMappingConsumerTestForGetActorById {
                         .then()
                         .log().all().extract().asString();
         JSONObject jsonResponse = new JSONObject(actualResponseBody);
-        JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
-        JSONObject first = (JSONObject)roleAssignmentResponse.get(0);
+        JSONArray roleAssignmentResponse = (JSONArray) jsonResponse.get("roleAssignmentResponse");
+        JSONObject first = (JSONObject) roleAssignmentResponse.get(0);
         assertThat(first.get("actorId"), equalTo(ACTOR_ID));
     }
 
@@ -90,21 +88,21 @@ public class OrgRoleMappingConsumerTestForGetActorById {
                 .minArrayLike("links", 1, 1,
                         link -> link.stringType("rel", "binary")
                                 .stringType("href", "http://localhost:4096/am/role-assignments/actors/23486"))
-                    .minArrayLike("roleAssignmentResponse", 1, 1,
-                            roleAssignmentResponse -> roleAssignmentResponse
-                                    .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                                    .stringValue("actorIdType", "IDAM")
-                                    .stringValue("actorId", ACTOR_ID)
-                                    .stringValue("roleType", "ORGANISATION")
-                                    .stringValue("roleName", "senior-tribunal-caseworker")
-                                    .stringValue("classification", "PRIVATE")
-                                    .stringValue("grantType", "STANDARD")
-                                    .stringValue("roleCategory", "STAFF")
-                                    .booleanValue("readOnly", false)
-                                    .object("attributes", attribute -> attribute
-                                            .stringType("jurisdiction", "IA")
-                                            .stringType("primaryLocation", "219VSA"))
-                    )).build();
+                .minArrayLike("roleAssignmentResponse", 1, 1,
+                        roleAssignmentResponse -> roleAssignmentResponse
+                                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                                .stringValue("actorIdType", "IDAM")
+                                .stringValue("actorId", ACTOR_ID)
+                                .stringValue("roleType", "ORGANISATION")
+                                .stringValue("roleName", "senior-tribunal-caseworker")
+                                .stringValue("classification", "PRIVATE")
+                                .stringValue("grantType", "STANDARD")
+                                .stringValue("roleCategory", "STAFF")
+                                .booleanValue("readOnly", false)
+                                .object("attributes", attribute -> attribute
+                                        .stringType("jurisdiction", "IA")
+                                        .stringType("primaryLocation", "219VSA"))
+                )).build();
     }
 
     @NotNull
