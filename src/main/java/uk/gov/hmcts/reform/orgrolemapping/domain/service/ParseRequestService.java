@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import io.jsonwebtoken.lang.Collections;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
@@ -10,10 +11,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
 
 @Service
+@Slf4j
 public class ParseRequestService {
     //1. This will parse the list of userIds and validate them.
     //2. This will parse and validate the user details received from CRD
@@ -29,8 +32,12 @@ public class ParseRequestService {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
         if (userRequest.getUsers().size() != userProfiles.size()) {
-            //log.error("Some of the user profiles couldn't be found")
-            //throw new ResourceNotFoundException("Some of the user profiles couldn't be found");
+            List<String> userIdsNotInCRDResponse = userRequest.getUsers().stream()
+                    .filter(userId -> !userProfiles.contains(userId))
+                    .collect(Collectors.toList());
+            log.error("Some of the user profiles couldn't be found for the userIds {} in " +
+                    "CRD Response",userIdsNotInCRDResponse);
+
         }
 
         userProfiles.forEach(userProfile -> {

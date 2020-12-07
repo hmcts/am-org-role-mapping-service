@@ -44,17 +44,29 @@ public class RetrieveDataService {
     public Map<String, Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
         //ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
-        // no of userProfles from CRD  responseEntity.getBody().size()
+
+        // no of userProfiles from CRD  responseEntity.getBody().size()
+        log.info("Number of UserProfile received from CRD : {} ",responseEntity.getBody() != null ? responseEntity
+                .getBody().size() : 0);
 
         List<UserProfile> userProfiles = responseEntity.getBody();
         parseRequestService.validateUserProfiles(userProfiles, userRequest);
 
-        // no of userprofile sucessfully validated
+        // no of user profile successfully validated
+        log.info("Number of UserProfile successfully validated : {}",userProfiles.size());
+
+
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
         userProfiles.stream().forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                 convertUserProfileToUserAccessProfile(userProfile)));
+
         // logger UAP object  corresponding to UserId
+        log.info("UserAccessProfiles corresponding  userIds::");
+        usersAccessProfiles.entrySet().stream().forEach(entry->
+            log.info("UserId {} having the corresponding UserAccessProfile {}", entry.getKey(),entry.getValue())
+         );
+
         return usersAccessProfiles;
     }
 }
