@@ -107,7 +107,6 @@ public class OrgRoleMappingConsumerTestForCreate {
     }
 
 
-
     private String createRoleAssignmentRequest(String replaceExisting) {
         String request = "";
         request = "{\n"
@@ -154,92 +153,76 @@ public class OrgRoleMappingConsumerTestForCreate {
     }
 
     private DslPart createRoleAssignmentResponse(boolean replaceExisting) {
-        return newJsonBody((o) -> {
-            o
-                    .minArrayLike("links", 0, 0,
-                link -> link.stringType("urk", "http")
-                    )
-                    .object("roleAssignmentResponse", ob -> ob
-                    .object("roleRequest",
-                        roleRequest -> roleRequest
-                                            .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
-                                            .stringType("authenticatedUserId",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e2f")
-                                            .stringType("correlationId",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e3f")
-                                            .stringType("assignerId",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e4f")
-                                            .stringValue("requestType", "CREATE")
-                                            .stringValue("process", "staff-organisational-role-mapping")
-                                            .stringValue("reference",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                                            .booleanValue("replaceExisting", replaceExisting)
-                                            .stringValue("status", "APPROVED")
-                                            .stringType("log", "Request has been Approved")
-                            )
-
-                            .minArrayLike("requestedRoles", 1, 1,
-                                    requestedRoles -> requestedRoles
-                                            .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                                            .stringValue("actorIdType", "IDAM")
-                                            .stringType("actorId",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                                            .stringValue("roleType", "ORGANISATION")
-                                            .stringValue("roleName", "judge")
-                                            .stringValue("classification", "PUBLIC")
-                                            .stringValue("grantType", "STANDARD")
-                                            .stringValue("roleCategory", "JUDICIAL")
-                                            .stringValue("process", "staff-organisational-role-mapping")
-                                            .stringValue("reference",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                                            .stringValue("status", "LIVE")
-                                            .stringType("log",
-                                                    "Create approved : "
-                                                           + "judicial_organisational_role_mapping_service_create\\"
-                                                           + "nApproved "
-                                                           + ": validate_role_assignment_against_patterns")
-                                            .object("attributes", attribute -> attribute
-                                                    .stringType("jurisdiction", "divorce")
-                                                    .stringType("region", "south-east")
-                                                    .stringType("contractType", "SALARIED")
-                                                    .stringType("caseId", "1234567890123456")
-                                            )
-                            )
-                )
-            ;
-
-        }).build();
+        return newJsonBody(o -> o.minArrayLike("links", 0, 0, link -> link.stringType("urk", "http"))
+                .object("roleAssignmentResponse", ob -> ob
+                        .object("roleRequest", roleRequest -> roleRequest
+                                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
+                                        .stringType("authenticatedUserId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e2f")
+                                        .stringType("correlationId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e3f")
+                                        .stringType("assignerId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e4f")
+                                        .stringValue("requestType", "CREATE")
+                                        .stringValue("process", "staff-organisational-role-mapping")
+                                        .stringValue("reference",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                                        .booleanValue("replaceExisting", replaceExisting)
+                                        .stringValue("status", "APPROVED")
+                                        .stringType("log", "Request has been Approved")
+                        )
+                        .minArrayLike("requestedRoles", 1, 1, requestedRoles -> requestedRoles
+                                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                                        .stringValue("actorIdType", "IDAM")
+                                        .stringType("actorId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                                        .stringValue("roleType", "ORGANISATION")
+                                        .stringValue("roleName", "judge")
+                                        .stringValue("classification", "PUBLIC")
+                                        .stringValue("grantType", "STANDARD")
+                                        .stringValue("roleCategory", "JUDICIAL")
+                                        .stringValue("process", "staff-organisational-role-mapping")
+                                        .stringValue("reference",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                                        .stringValue("status", "LIVE")
+                                        .stringType("log",
+                                                "Create approved : "
+                                                        + "judicial_organisational_role_mapping_service_create\\"
+                                                        + "nApproved "
+                                                        + ": validate_role_assignment_against_patterns")
+                                        .object("attributes", attribute -> attribute
+                                                .stringType("jurisdiction", "divorce")
+                                                .stringType("region", "south-east")
+                                                .stringType("contractType", "SALARIED")
+                                                .stringType("caseId", "1234567890123456")
+                                        )
+                        )
+                )).build();
     }
 
     private DslPart createRoleAssignmentResponseZeroRole() {
-        return newJsonBody((o) -> {
-            o
-                    .minArrayLike("links", 0, 0,
-                            link -> link.stringType("urk", "http")
-                    )
-                    .object("roleAssignmentResponse", ob -> ob
-                            .object("roleRequest",
-                                    roleRequest -> roleRequest
-                                            .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
-                                            .stringType("authenticatedUserId",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e2f")
-                                            .stringType("correlationId",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e3f")
-                                            .stringType("assignerId",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e4f")
-                                            .stringValue("requestType", "CREATE")
-                                            .stringValue("process", "staff-organisational-role-mapping")
-                                            .stringValue("reference",
-                                                    "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                                            .booleanValue("replaceExisting", true)
-                                            .stringValue("status", "APPROVED")
-                                            .stringType("log", "Request has been Approved")
-                            )
-                            .minArrayLike("requestedRoles", 0,0, ar -> {})
-                    )
-            ;
-
-        }).build();
+        return newJsonBody(o -> o
+                .minArrayLike("links", 0, 0, link -> link.stringType("urk", "http"))
+                .object("roleAssignmentResponse", ob -> ob
+                        .object("roleRequest", roleRequest -> roleRequest
+                                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
+                                        .stringType("authenticatedUserId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e2f")
+                                        .stringType("correlationId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e3f")
+                                        .stringType("assignerId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e4f")
+                                        .stringValue("requestType", "CREATE")
+                                        .stringValue("process", "staff-organisational-role-mapping")
+                                        .stringValue("reference",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                                        .booleanValue("replaceExisting", true)
+                                        .stringValue("status", "APPROVED")
+                                        .stringType("log", "Request has been Approved")
+                        )
+                        .minArrayLike("requestedRoles", 0, 0, ar -> {
+                        })
+                )).build();
     }
 
     @Test
@@ -278,7 +261,7 @@ public class OrgRoleMappingConsumerTestForCreate {
                         .then()
                         .log().all().extract().asString();
 
-        JSONObject response =  new JSONObject(actualResponseBody);
+        JSONObject response = new JSONObject(actualResponseBody);
         Assertions.assertThat(response).isNotNull();
         JSONObject roleRequest = response.getJSONObject("roleAssignmentResponse").getJSONObject("roleRequest");
         assertThat(roleRequest.get("status"), equalTo("APPROVED"));
@@ -301,7 +284,7 @@ public class OrgRoleMappingConsumerTestForCreate {
                         .then()
                         .log().all().extract().asString();
 
-        JSONObject response =  new JSONObject(actualResponseBody);
+        JSONObject response = new JSONObject(actualResponseBody);
         Assertions.assertThat(response).isNotNull();
         JSONObject roleRequest = response.getJSONObject("roleAssignmentResponse").getJSONObject("roleRequest");
         assertThat(roleRequest.get("status"), equalTo("APPROVED"));
@@ -309,14 +292,14 @@ public class OrgRoleMappingConsumerTestForCreate {
         assertThat(roleRequest.get("replaceExisting"), equalTo(true));
 
         JSONArray requestedRoles = response.getJSONObject("roleAssignmentResponse").getJSONArray("requestedRoles");
-        assertThat(requestedRoles.isEmpty(),equalTo(true));
+        assertThat(requestedRoles.isEmpty(), equalTo(true));
     }
 
     @NotNull
     private Map<String, String> getRoleAssignmentResponseHeaders() {
         Map<String, String> responseHeaders = Maps.newHashMap();
         responseHeaders.put("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service."
-               + "create-assignments+json");
+                + "create-assignments+json");
         return responseHeaders;
     }
 
