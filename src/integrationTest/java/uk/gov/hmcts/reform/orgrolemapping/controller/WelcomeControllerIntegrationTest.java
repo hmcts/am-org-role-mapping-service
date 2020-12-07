@@ -445,11 +445,11 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
                 .content(mapper.writeValueAsBytes(request)))
-                .andExpect(status().is(404))
+                .andExpect(status().is(400))
                 .andReturn();
 
         String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("Resource not found Some of the user profiles couldn't be found"));
+        assertTrue(contentAsString.contains("The UserIds  is not available in the user's request"));
     }
 
     @Test

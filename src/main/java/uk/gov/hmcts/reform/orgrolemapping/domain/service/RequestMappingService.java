@@ -72,8 +72,9 @@ public class RequestMappingService {
         roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
 
         //print usersRoleAssignments
-        usersRoleAssignments.entrySet().stream().forEach(entry->
-                log.info("RoleAssignments created by the drool  {} corresponding to the UserId {} ", entry.getValue(),entry.getKey()));
+        usersRoleAssignments.entrySet().stream().forEach(entry ->
+                log.info("RoleAssignments created by the drool  {} corresponding to the UserId {} ", entry.getValue(),
+                        entry.getKey()));
 
         return usersRoleAssignments;
     }
@@ -134,8 +135,8 @@ public class RequestMappingService {
 
         // Print response code  of RAS for each userID
         ResponseEntity<Object> responseEntity = updateRoleAssignments(process, reference, roleAssignments);
-        log.info("Role Assignment Service response status : {} for the userId {} :",responseEntity
-                .getStatusCode(),userId);
+        log.info("Role Assignment Service response status : {} for the userId {} :", responseEntity
+                .getStatusCode(), userId);
 
         return responseEntity;
     }

@@ -22,6 +22,10 @@ public class ParseRequestService {
     //2. This will parse and validate the user details received from CRD
 
     public void validateUserRequest(UserRequest userRequest) {
+
+        if (CollectionUtils.isEmpty(userRequest.getUsers())) {
+            throw new BadRequestException("The UserIds  is not available in the user's request");
+        }
         //parse the user List and validate each user Id to be valid string
         userRequest.getUsers().forEach(user ->
                 ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, user));
@@ -35,8 +39,8 @@ public class ParseRequestService {
             List<String> userIdsNotInCRDResponse = userRequest.getUsers().stream()
                     .filter(userId -> !userProfiles.contains(userId))
                     .collect(Collectors.toList());
-            log.error("Some of the user profiles couldn't be found for the userIds {} in " +
-                    "CRD Response",userIdsNotInCRDResponse);
+            log.error("Some of the user profiles couldn't be found for the userIds {} in "
+                    + "CRD Response",userIdsNotInCRDResponse);
 
         }
 

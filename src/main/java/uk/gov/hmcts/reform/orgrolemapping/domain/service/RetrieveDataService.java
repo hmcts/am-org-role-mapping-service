@@ -46,15 +46,14 @@ public class RetrieveDataService {
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
 
         // no of userProfiles from CRD  responseEntity.getBody().size()
-        log.info("Number of UserProfile received from CRD : {} ",responseEntity.getBody() != null ? responseEntity
+        log.info("Number of UserProfile received from CRD : {} ", responseEntity.getBody() != null ? responseEntity
                 .getBody().size() : 0);
 
         List<UserProfile> userProfiles = responseEntity.getBody();
         parseRequestService.validateUserProfiles(userProfiles, userRequest);
 
         // no of user profile successfully validated
-        log.info("Number of UserProfile successfully validated : {}",userProfiles.size());
-
+        log.info("Number of UserProfile successfully validated : {}", userProfiles.size());
 
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
@@ -63,9 +62,9 @@ public class RetrieveDataService {
 
         // logger UAP object  corresponding to UserId
         log.info("UserAccessProfiles corresponding  userIds::");
-        usersAccessProfiles.entrySet().stream().forEach(entry->
-            log.info("UserId {} having the corresponding UserAccessProfile {}", entry.getKey(),entry.getValue())
-         );
+        usersAccessProfiles.entrySet().stream().forEach(entry ->
+                log.info("UserId {} having the corresponding UserAccessProfile {}", entry.getKey(), entry.getValue())
+        );
 
         return usersAccessProfiles;
     }
