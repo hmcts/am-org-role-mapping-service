@@ -308,6 +308,8 @@ public class OrgRoleMappingConsumerTestForCreate {
         assertThat(roleRequest.get("requestType"), equalTo("CREATE"));
         assertThat(roleRequest.get("replaceExisting"), equalTo(true));
 
+        JSONArray requestedRoles = response.getJSONObject("roleAssignmentResponse").getJSONArray("requestedRoles");
+        assertThat(requestedRoles.isEmpty(),equalTo(true));
     }
 
     @NotNull
