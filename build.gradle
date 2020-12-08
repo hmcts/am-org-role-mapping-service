@@ -47,7 +47,7 @@ def versions = [
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
         drools         : '7.40.0.Final',
-        launchDarklySdk: '5.0+'
+        launchDarklySdk: '5.1+'
 ]
 
 mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
@@ -409,8 +409,8 @@ dependencies {
 
     compile group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
 
-    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.39'
-    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.39'
+    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.40'
+    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.40'
     compile group: 'org.springframework', name: 'spring-tx', version: '5.2.9.RELEASE'
 
     compile(group: 'org.springframework', name: 'spring-jms', version: '5.2.9.RELEASE')
