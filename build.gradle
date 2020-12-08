@@ -42,7 +42,7 @@ def versions = [
         springBoot     : '2.3.2.RELEASE',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '3.0.0-SNAPSHOT',
-        pact_version   : '4.1.11',
+        pact_version   : '4.1.7',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
