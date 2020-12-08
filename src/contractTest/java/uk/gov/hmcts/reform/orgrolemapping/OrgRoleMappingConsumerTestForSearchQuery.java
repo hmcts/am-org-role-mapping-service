@@ -44,7 +44,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @SpringBootTest
 public class OrgRoleMappingConsumerTestForSearchQuery {
 
-    private static final String ACTOR_ID = "23486";
+    private static final String ACTOR_ID = "234873";
     private static final String RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL = "/am/role-assignments/query";
 
     @BeforeEach
@@ -58,14 +58,15 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     }
 
     @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
-    public RequestResponsePact executeSearchQueryRoleAssignmentAndGet200(PactDslWithProvider builder) throws IOException {
+    public RequestResponsePact executeSearchQueryRoleAssignmentAndGet200(PactDslWithProvider builder)
+            throws IOException {
 
         return builder
                 .given("A list of role assignments for the search query")
                 .uponReceiving("RAS takes s2s/auth token and returns search query results")
                 .path(RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
-                .method( HttpMethod.POST.toString())
-                .body(createRoleAssignmentRequestSearchQuery(), String.valueOf( ContentType.JSON))
+                .method(HttpMethod.POST.toString())
+                .body(createRoleAssignmentRequestSearchQuery(), String.valueOf(ContentType.JSON))
                 .willRespondWith()
                 .status(HttpStatus.OK.value())
                 .headers(getResponseHeaders())
@@ -74,8 +75,9 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     }
 
     private String createRoleAssignmentRequestSearchQuery() {
-        return "";
-//        return "{\n        \"actorId\": \"[\n        \"23486\"\n        ]\n}";
+        return "{\n"
+                + "\"actorId\": [\"234873\"]\n"
+                + "}";
     }
 
     @Test
@@ -123,7 +125,8 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     private Map<String, String> getResponseHeaders() {
         Map<String, String> responseHeaders = Maps.newHashMap();
         responseHeaders.put("Content-Type",
-                "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=1.0");
+                "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;"
+                        + "charset=UTF-8;version=1.0");
         return responseHeaders;
     }
 
