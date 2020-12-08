@@ -57,6 +57,13 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
         Executor.closeIdleConnections();
     }
 
+    private String createRoleAssignmentRequestSearchQuery() {
+        return "{\n"
+                + "\"actorId\": ["
+                + ACTOR_ID + "]\n"
+                + "}";
+    }
+
     @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
     public RequestResponsePact executeSearchQueryRoleAssignmentAndGet200(PactDslWithProvider builder)
             throws IOException {
@@ -74,11 +81,27 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 .toPact();
     }
 
-    private String createRoleAssignmentRequestSearchQuery() {
+    private String createRoleAssignmentRequestSearchQueryByRoleName() {
         return "{\n"
-                + "\"actorId\": ["
-                + ACTOR_ID + "]\n"
+                + "\"roleName\": [\"senior-tribunal-caseworker\"]\n"
                 + "}";
+    }
+
+    @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
+    public RequestResponsePact executeSearchQueryRoleAssignmentByRoleNameAndGet200(PactDslWithProvider builder)
+            throws IOException {
+
+        return builder
+                .given("A list of role assignments for the search query by role name")
+                .uponReceiving("RAS takes s2s/auth token and returns search query results")
+                .path(RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
+                .method(HttpMethod.POST.toString())
+                .body(createRoleAssignmentRequestSearchQueryByRoleName(), String.valueOf(ContentType.JSON))
+                .willRespondWith()
+                .status(HttpStatus.OK.value())
+                .headers(getResponseHeaders())
+                .body(createRoleAssignmentResponseSearchQuery())
+                .toPact();
     }
 
     @Test
@@ -99,6 +122,26 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
         JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
         JSONObject first = (JSONObject)roleAssignmentResponse.get(0);
         assertThat(first.get("actorId"), equalTo(ACTOR_ID));
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByRoleNameAndGet200")
+    void getSearchQueryResultsByRoleNameAndGet200Test(MockServer mockServer)
+            throws JSONException, IOException {
+        String actualResponseBody =
+                SerenityRest
+                        .given()
+                        .headers(getHttpHeaders())
+                        .contentType(ContentType.JSON)
+                        .body(createRoleAssignmentRequestSearchQueryByRoleName())
+                        .post(mockServer.getUrl() + RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
+                        .then()
+                        .log().all().extract().asString();
+
+        JSONObject jsonResponse = new JSONObject(actualResponseBody);
+        JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
+        JSONObject first = (JSONObject)roleAssignmentResponse.get(0);
+        assertThat(first.get("roleName"), equalTo("senior-tribunal-caseworker"));
     }
 
     private DslPart createRoleAssignmentResponseSearchQuery() {
