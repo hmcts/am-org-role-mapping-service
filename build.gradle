@@ -411,7 +411,8 @@ dependencies {
 
     compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.39'
     compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.39'
-    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.19.Final'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.24.Final'
     compile group: 'org.springframework', name: 'spring-tx', version: '5.2.9.RELEASE'
 
     compile(group: 'org.springframework', name: 'spring-jms', version: '5.2.9.RELEASE')
