@@ -30,14 +30,21 @@ public class BulkAssignmentOrchestrator {
 
 
     public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
+        long startTime = System.currentTimeMillis();
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
         log.info("Validated userID {}", userRequest.getUsers());
         //Create userAccessProfiles based upon roleId and service codes
         Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                 .retrieveCaseWorkerProfiles(userRequest);
+
         //call the requestMapping service to determine role name and create role assignment requests
-        return requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
+        ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
+        log.info(
+                "Execution time of createBulkAssignmentsRequest() : {} in milli seconds ",
+                (System.currentTimeMillis() - startTime)
+        );
+        return responseEntity;
     }
 
 }

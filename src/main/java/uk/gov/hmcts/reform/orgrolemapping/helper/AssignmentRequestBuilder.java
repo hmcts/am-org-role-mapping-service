@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Setter
+@Slf4j
 public class AssignmentRequestBuilder {
 
     public static final String ASSIGNER_ID = "123e4567-e89b-42d3-a456-556642445678";
@@ -99,6 +101,7 @@ public class AssignmentRequestBuilder {
     }
 
     public static Set<UserAccessProfile> convertUserProfileToUserAccessProfile(UserProfile userProfile) {
+        long startTime = System.currentTimeMillis();
         //roleId X serviceCode
         Set<UserAccessProfile> userAccessProfiles = new HashSet<>();
 
@@ -122,7 +125,10 @@ public class AssignmentRequestBuilder {
             });
         });
 
-
+        log.info(
+                "Execution time of convertUserProfileToUserAccessProfile() : {} in milli seconds ",
+                (System.currentTimeMillis() - startTime)
+        );
         return userAccessProfiles;
     }
 }

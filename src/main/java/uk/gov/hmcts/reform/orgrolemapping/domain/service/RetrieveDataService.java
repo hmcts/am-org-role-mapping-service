@@ -42,8 +42,14 @@ public class RetrieveDataService {
 
 
     public Map<String, Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
+        long startTime = System.currentTimeMillis();
         //ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
+
+        log.info(
+                "Execution time of CRD Response : {} in milli seconds ",
+                (System.currentTimeMillis() - startTime)
+        );
 
         // no of userProfiles from CRD  responseEntity.getBody().size()
         log.info("Number of UserProfile received from CRD : {} ", responseEntity.getBody() != null ? responseEntity
@@ -60,12 +66,20 @@ public class RetrieveDataService {
         userProfiles.stream().forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                 convertUserProfileToUserAccessProfile(userProfile)));
 
-        // logger UAP object  corresponding to UserId
-        log.info("UserAccessProfiles corresponding  userIds::");
-        usersAccessProfiles.entrySet().stream().forEach(entry ->
-                log.info("UserId {} having the corresponding UserAccessProfile {}", entry.getKey(), entry.getValue())
-        );
 
+        Map<String, Integer> userAccessProfileCount = new HashMap<>();
+        usersAccessProfiles.entrySet().stream().forEach(entry -> {
+            userAccessProfileCount.put(entry.getKey(), entry.getValue().size());
+            log.debug("UserId {} having the corresponding UserAccessProfile {}", entry.getKey(),
+                            entry.getValue());
+            }
+        );
+        log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
+
+        log.info(
+                "Execution time of retrieveCaseWorkerProfiles() : {} in milli seconds ",
+                (System.currentTimeMillis() - startTime)
+        );
         return usersAccessProfiles;
     }
 }
