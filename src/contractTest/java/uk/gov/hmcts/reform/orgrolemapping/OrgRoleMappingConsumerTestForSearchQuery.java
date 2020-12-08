@@ -76,7 +76,8 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
 
     private String createRoleAssignmentRequestSearchQuery() {
         return "{\n"
-                + "\"actorId\": [\"234873\"]\n"
+                + "\"actorId\": ["
+                + ACTOR_ID + "]\n"
                 + "}";
     }
 
