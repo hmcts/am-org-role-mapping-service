@@ -40,25 +40,25 @@ public class ParseRequestService {
                     .filter(userId -> !userProfiles.contains(userId))
                     .collect(Collectors.toList());
             log.error("Some of the user profiles couldn't be found for the userIds {} in "
-                    + "CRD Response",userIdsNotInCRDResponse);
+                    + "CRD Response", userIdsNotInCRDResponse);
 
         }
 
         userProfiles.forEach(userProfile -> {
             if (CollectionUtils.isEmpty(userProfile.getBaseLocation())) {
-                throw new BadRequestException("The base location is not available");
+                log.error("The base location is not available for the userProfile {} ", userProfile.getId());
             }
             if (CollectionUtils.isEmpty(userProfile.getWorkArea())) {
-                throw new BadRequestException("The work area is not available");
+                log.error("The work area is not available for the userProfile {} ", userProfile.getId());
             }
             if (CollectionUtils.isEmpty(userProfile.getRole())) {
-                throw new BadRequestException("The role is not available");
+                log.error("The role is not available for the userProfile {} ", userProfile.getId());
             }
             long primaryLocation = userProfile.getBaseLocation().stream()
                     .filter(UserProfile.BaseLocation::isPrimary)
                     .count();
             if (primaryLocation != 1) {
-                throw new BadRequestException(String.format("The user has %s primary location(s), only 1 is allowed",
+                log.error(String.format("The user has %s primary location(s), only 1 is allowed",
                         primaryLocation));
             }
 
