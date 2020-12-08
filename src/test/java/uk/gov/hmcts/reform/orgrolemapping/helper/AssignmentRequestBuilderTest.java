@@ -3,13 +3,14 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
-
-import java.util.Set;
 
 class AssignmentRequestBuilderTest {
 
@@ -40,6 +41,15 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
+    void buildAttributesFromFileException() {
+        try {
+            AssignmentRequestBuilder.buildAttributesFromFile("NotFound.json");
+        } catch (AssertionError error) {
+            assertNotNull(error);
+        }
+    }
+
+    @Test
     void buildRequestedRoleForStaff() {
         assertNotNull(AssignmentRequestBuilder.buildRequestedRoleForStaff());
     }
@@ -54,6 +64,7 @@ class AssignmentRequestBuilderTest {
                 assertNotNull(role.getId());
                 assertNotNull(role.getAreaOfWorkId());
                 assertNotNull(role.getPrimaryLocationId());
+                assertFalse(role.isDeleteFlag());
                 assertNotNull(role.getPrimaryLocationName());
                 assertNotNull(role.getRoleId());
                 assertNotNull(role.getRoleName());
