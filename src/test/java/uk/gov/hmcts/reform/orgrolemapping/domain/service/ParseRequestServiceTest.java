@@ -9,12 +9,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,53 +38,48 @@ class ParseRequestServiceTest {
 
     @Test
     void validateUserProfilesTest() {
-        sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+        sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false),
                 TestDataBuilder.buildUserRequest());
     }
 
     @Test
     void validateUserProfiles_throwsBadRequest_noBaseLocationTest() {
-        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, false, true, false, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        assertThrows(BadRequestException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest)
-        );
+
+        sut.validateUserProfiles(userProfiles, userRequest);
     }
 
     @Test
     void validateUserProfiles_throwsBadRequest_noWorkAreaTest() {
-        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, false, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        sut.validateUserProfiles(userProfiles, userRequest);
 
-        assertThrows(BadRequestException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest)
-        );
     }
 
     @Test
     void validateUserProfiles_throwsBadRequest_noRolesTest() {
-        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false);
         userProfiles.get(0).setRole(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        sut.validateUserProfiles(userProfiles, userRequest);
 
-        assertThrows(BadRequestException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest)
-        );
     }
 
     @Test
     void validateUserProfiles_throwsBadRequest_tooManyPrimaryTest() {
-        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false,"1", "2",
+        List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
-        assertThrows(BadRequestException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest)
-        );
+
+        sut.validateUserProfiles(userProfiles, userRequest);
+
     }
 
     @Test
