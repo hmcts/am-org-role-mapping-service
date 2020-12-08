@@ -41,15 +41,6 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
-    void buildAttributesFromFileException() {
-        try {
-            AssignmentRequestBuilder.buildAttributesFromFile("NotFound.json");
-        } catch (AssertionError error) {
-            assertNotNull(error);
-        }
-    }
-
-    @Test
     void buildRequestedRoleForStaff() {
         assertNotNull(AssignmentRequestBuilder.buildRequestedRoleForStaff());
     }
