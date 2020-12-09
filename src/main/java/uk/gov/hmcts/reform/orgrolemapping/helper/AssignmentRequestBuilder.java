@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -84,7 +85,7 @@ public class AssignmentRequestBuilder {
             });
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new InvalidRequest("Class cast exception while parsing the json file");
         }
     }
 
@@ -105,7 +106,7 @@ public class AssignmentRequestBuilder {
         //roleId X serviceCode
         Set<UserAccessProfile> userAccessProfiles = new HashSet<>();
 
-        userProfile.getRole().forEach(role -> {
+        userProfile.getRole().forEach(role ->
             userProfile.getWorkArea().forEach(workArea -> {
                 UserAccessProfile userAccessProfile = new UserAccessProfile();
                 userAccessProfile.setId(userProfile.getId());
@@ -122,8 +123,8 @@ public class AssignmentRequestBuilder {
                 userAccessProfile.setRoleName(role.getRoleName());
 
                 userAccessProfiles.add(userAccessProfile);
-            });
-        });
+            })
+        );
 
         log.info(
                 "Execution time of convertUserProfileToUserAccessProfile() : {} ms",

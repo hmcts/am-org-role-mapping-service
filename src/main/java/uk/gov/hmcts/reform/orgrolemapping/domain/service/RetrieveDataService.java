@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -36,30 +37,35 @@ public class RetrieveDataService {
 
      */
 
-    //private final CRDFeignClient crdFeignClient;
+
     private final ParseRequestService parseRequestService;
     private final CRDFeignClientFallback crdFeignClientFallback;
 
 
     public Map<String, Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
-        //ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
+
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
 
         log.info(
                 "Execution time of CRD Response : {} ms",
                 (System.currentTimeMillis() - startTime)
         );
-
-        // no of userProfiles from CRD  responseEntity.getBody().size()
-        log.info("Number of UserProfile received from CRD : {} ", responseEntity.getBody() != null ? responseEntity
-                .getBody().size() : 0);
-
         List<UserProfile> userProfiles = responseEntity.getBody();
+        if (!CollectionUtils.isEmpty(userProfiles)) {
+            // no of userProfiles from CRD  responseEntity.getBody().size()
+            log.info("Number of UserProfile received from CRD : {} ",
+                    userProfiles.size());
+        } else {
+            log.info("Number of UserProfile received from CRD : {} ", 0);
+        }
+
+
         parseRequestService.validateUserProfiles(userProfiles, userRequest);
 
+
         // no of user profile successfully validated
-        log.info("Number of UserProfile successfully validated : {}", userProfiles.size());
+        log.info("Number of UserProfile successfully validated");
 
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
@@ -72,7 +78,7 @@ public class RetrieveDataService {
             userAccessProfileCount.put(entry.getKey(), entry.getValue().size());
             log.debug("UserId {} having the corresponding UserAccessProfile {}", entry.getKey(),
                             entry.getValue());
-            }
+        }
         );
         log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 

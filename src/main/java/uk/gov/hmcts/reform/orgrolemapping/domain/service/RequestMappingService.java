@@ -74,7 +74,7 @@ public class RequestMappingService {
 
         // Make sure every user in the input collection has a list in the map.  This includes users
         // who have been deleted, for whom no role assignments will be created by the rules.
-        usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<RoleAssignment>()));
+        usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<>()));
         // Get all the role assignments the rules create for the set of access profiles.
         List<RoleAssignment> roleAssignments = mapUserAccessProfiles(usersAccessProfiles);
         // Add each role assignment to the results map.
