@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -33,8 +34,8 @@ public class RoleAssignment {
     private GrantType grantType; // will be set to STANDARD for case-worker
     private RoleCategory roleCategory; // will be set to STAFF for case-worker
     private boolean readOnly; // will be set to false for case-worker
-    private LocalDateTime beginTime; // will be set to null for case-worker
-    private LocalDateTime endTime; // will be set to null for case-worker
+    private ZonedDateTime beginTime; // will be set to null for case-worker
+    private ZonedDateTime endTime; // will be set to null for case-worker
     // there are only 2 attributes identified 1)jurisdiction=IA(set by mapping rule)
     // and primaryLocation=<Extract from Staff user>
     private Map<String, JsonNode> attributes;
