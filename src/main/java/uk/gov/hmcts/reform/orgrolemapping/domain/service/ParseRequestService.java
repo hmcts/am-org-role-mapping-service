@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
@@ -32,7 +33,8 @@ public class ParseRequestService {
                 ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, user));
     }
 
-    public void validateUserProfiles(List<UserProfile> userProfiles, UserRequest userRequest) {
+    public void validateUserProfiles(List<UserProfile> userProfiles, UserRequest userRequest,
+                                     AtomicInteger invalidUserProfilesCount) {
         if (Collections.isEmpty(userProfiles)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
@@ -50,23 +52,30 @@ public class ParseRequestService {
         }
 
         userProfiles.forEach(userProfile -> {
+            boolean isInvalid = false;
             if (CollectionUtils.isEmpty(userProfile.getBaseLocation())) {
                 log.error("The base location is not available for the userProfile {} ", userProfile.getId());
+                isInvalid = true;
             }
             if (CollectionUtils.isEmpty(userProfile.getWorkArea())) {
                 log.error("The work area is not available for the userProfile {} ", userProfile.getId());
+                isInvalid = true;
             }
             if (CollectionUtils.isEmpty(userProfile.getRole())) {
                 log.error("The role is not available for the userProfile {} ", userProfile.getId());
+                isInvalid = true;
             }
             long primaryLocationCount = userProfile.getBaseLocation().stream()
                     .filter(UserProfile.BaseLocation::isPrimary)
                     .count();
             if (primaryLocationCount != 1) {
-                log.error(String.format("The userProfile {} has %s primary location(s), only 1 is allowed",
-                        userProfile.getId(), primaryLocationCount));
+                log.error("The userProfile {} has {} primary location(s), only 1 is allowed",
+                        userProfile.getId(), primaryLocationCount);
+                isInvalid = true;
             }
-
+            if (isInvalid) {
+                invalidUserProfilesCount.getAndIncrement();
+            }
         });
 
     }

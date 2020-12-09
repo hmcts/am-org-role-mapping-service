@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignCli
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -49,7 +50,7 @@ class RetrieveDataServiceTest {
         Mockito.verify(crdFeignClientFallback, Mockito.times(1))
                 .createRoleAssignment(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserProfiles(any(), any());
+                .validateUserProfiles(any(), any(), any());
     }
 
     @Test
@@ -57,15 +58,15 @@ class RetrieveDataServiceTest {
 
         when(crdFeignClientFallback.createRoleAssignment(any())).thenReturn(ResponseEntity
                 .ok(buildUserProfile(buildUserRequest())));
-        doNothing().when(parseRequestService).validateUserProfiles(any(), any());
+        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any());
         Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
         assertNotNull(response);
-        response.entrySet().stream().forEach(entry -> {
-            assertNotNull(entry.getKey());
-            assertNotNull(entry.getValue());
-            entry.getValue().stream().forEach(userAccessProfile -> {
-                assertEquals(entry.getKey(), userAccessProfile.getId());
-                assertEquals(false, userAccessProfile.isDeleteFlag());
+        response.forEach((k,v) -> {
+            assertNotNull(k);
+            assertNotNull(v);
+            v.forEach(userAccessProfile -> {
+                assertEquals(k, userAccessProfile.getId());
+                assertFalse(userAccessProfile.isDeleteFlag());
                 assertEquals("219164", userAccessProfile.getPrimaryLocationId());
             });
 

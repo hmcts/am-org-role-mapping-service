@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
@@ -40,7 +41,7 @@ class ParseRequestServiceTest {
     void validateUserProfilesTest() {
         sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false),
-                TestDataBuilder.buildUserRequest());
+                TestDataBuilder.buildUserRequest(), new AtomicInteger());
     }
 
     @Test
@@ -49,7 +50,7 @@ class ParseRequestServiceTest {
                 ROLE_NAME_STCW, ROLE_NAME_TCW, false, true, false, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
-        sut.validateUserProfiles(userProfiles, userRequest);
+        sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger());
     }
 
     @Test
@@ -57,7 +58,7 @@ class ParseRequestServiceTest {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, false, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        sut.validateUserProfiles(userProfiles, userRequest);
+        sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger());
 
     }
 
@@ -67,7 +68,7 @@ class ParseRequestServiceTest {
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false);
         userProfiles.get(0).setRole(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        sut.validateUserProfiles(userProfiles, userRequest);
+        sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger());
 
     }
 
@@ -78,7 +79,7 @@ class ParseRequestServiceTest {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
 
-        sut.validateUserProfiles(userProfiles, userRequest);
+        sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger());
 
     }
 
@@ -88,7 +89,7 @@ class ParseRequestServiceTest {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest)
+                sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger())
         );
     }
 
@@ -98,7 +99,7 @@ class ParseRequestServiceTest {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest)
+                sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger())
         );
     }
 }

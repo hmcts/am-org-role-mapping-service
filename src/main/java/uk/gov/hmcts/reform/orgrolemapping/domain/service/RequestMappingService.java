@@ -82,10 +82,10 @@ public class RequestMappingService {
 
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
         //print usersRoleAssignments
-        usersRoleAssignments.entrySet().stream().forEach(entry -> {
-            roleAssignmentsCount.put(entry.getKey(), entry.getValue().size());
-            log.debug("UserId {} having the RoleAssignments created by the drool  {}  ", entry.getKey(),
-                    entry.getValue());
+        usersRoleAssignments.forEach((k,v) -> {
+            roleAssignmentsCount.put(k, v.size());
+            log.debug("UserId {} having the RoleAssignments created by the drool  {}  ", k,
+                    v);
         });
 
         log.info("Count of RoleAssignments corresponding to the UserId ::{}  ", roleAssignmentsCount);
@@ -146,11 +146,11 @@ public class RequestMappingService {
         List<Object> finalResponse = new ArrayList<>();
         AtomicInteger failureResponseCount = new AtomicInteger();
 
-        usersRoleAssignments.entrySet().stream()
-                .forEach(entry -> finalResponse.add(updateCaseworkerRoleAssignments(entry.getKey(),
-                        entry.getValue(), failureResponseCount).getBody()));
-        log.info("Count of failure responses from RAS are {} ", failureResponseCount.get());
-        log.info("Count of Success responses from RAS are {} ", (finalResponse.size() - failureResponseCount.get()));
+        usersRoleAssignments
+                .forEach((k,v) -> finalResponse.add(updateCaseworkerRoleAssignments(k,
+                        v, failureResponseCount).getBody()));
+        log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
+        log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
     }
 
@@ -160,12 +160,10 @@ public class RequestMappingService {
      */
     ResponseEntity<Object> updateCaseworkerRoleAssignments(String userId, Collection<RoleAssignment> roleAssignments,
                                                            AtomicInteger failureResponseCount) {
-        String process = STAFF_ORGANISATIONAL_ROLE_MAPPING;
-        String reference = userId;
-
 
         // Print response code  of RAS for each userID
-        ResponseEntity<Object> responseEntity = updateRoleAssignments(process, reference, roleAssignments);
+        ResponseEntity<Object> responseEntity = updateRoleAssignments(STAFF_ORGANISATIONAL_ROLE_MAPPING,
+                userId, roleAssignments);
         if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
             failureResponseCount.getAndIncrement();
         }

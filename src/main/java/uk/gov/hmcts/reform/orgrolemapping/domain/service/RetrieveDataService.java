@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
 
@@ -60,24 +61,28 @@ public class RetrieveDataService {
             log.info("Number of UserProfile received from CRD : {} ", 0);
         }
 
-
-        parseRequestService.validateUserProfiles(userProfiles, userRequest);
+        AtomicInteger invalidUserProfilesCount = new AtomicInteger();
+        parseRequestService.validateUserProfiles(userProfiles, userRequest, invalidUserProfilesCount);
 
 
         // no of user profile successfully validated
-        log.info("Number of UserProfile successfully validated");
+        if (invalidUserProfilesCount.get() > 0) {
+            log.info("Number of invalid UserProfileCount : {} ", invalidUserProfilesCount.get());
+        }
 
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
-        userProfiles.stream().forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
-                convertUserProfileToUserAccessProfile(userProfile)));
+        if (userProfiles != null && !userProfiles.isEmpty()) {
+            userProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
+                    convertUserProfileToUserAccessProfile(userProfile)));
 
+        }
 
         Map<String, Integer> userAccessProfileCount = new HashMap<>();
-        usersAccessProfiles.entrySet().stream().forEach(entry -> {
-            userAccessProfileCount.put(entry.getKey(), entry.getValue().size());
-            log.debug("UserId {} having the corresponding UserAccessProfile {}", entry.getKey(),
-                            entry.getValue());
+        usersAccessProfiles.forEach((k, v) -> {
+            userAccessProfileCount.put(k, v.size());
+            log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
+                            v);
         }
         );
         log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
