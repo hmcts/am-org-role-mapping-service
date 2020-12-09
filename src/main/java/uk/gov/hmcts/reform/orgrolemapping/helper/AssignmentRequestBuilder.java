@@ -126,7 +126,7 @@ public class AssignmentRequestBuilder {
         });
 
         log.info(
-                "Execution time of convertUserProfileToUserAccessProfile() : {} in milli seconds ",
+                "Execution time of convertUserProfileToUserAccessProfile() : {} ms",
                 (System.currentTimeMillis() - startTime)
         );
         return userAccessProfiles;

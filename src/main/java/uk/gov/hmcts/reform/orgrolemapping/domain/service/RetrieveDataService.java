@@ -47,7 +47,7 @@ public class RetrieveDataService {
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
 
         log.info(
-                "Execution time of CRD Response : {} in milli seconds ",
+                "Execution time of CRD Response : {} ms",
                 (System.currentTimeMillis() - startTime)
         );
 
@@ -77,7 +77,7 @@ public class RetrieveDataService {
         log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 
         log.info(
-                "Execution time of retrieveCaseWorkerProfiles() : {} in milli seconds ",
+                "Execution time of retrieveCaseWorkerProfiles() : {} ms",
                 (System.currentTimeMillis() - startTime)
         );
         return usersAccessProfiles;

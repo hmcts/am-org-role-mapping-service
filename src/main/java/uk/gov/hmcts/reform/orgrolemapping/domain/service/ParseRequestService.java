@@ -24,7 +24,7 @@ public class ParseRequestService {
     public void validateUserRequest(UserRequest userRequest) {
 
         if (CollectionUtils.isEmpty(userRequest.getUsers())) {
-            throw new BadRequestException("The UserIds  is not available in the user's request");
+            throw new BadRequestException("Empty user request");
         }
         //parse the user List and validate each user Id to be valid string
         userRequest.getUsers().forEach(user ->
@@ -54,12 +54,12 @@ public class ParseRequestService {
             if (CollectionUtils.isEmpty(userProfile.getRole())) {
                 log.error("The role is not available for the userProfile {} ", userProfile.getId());
             }
-            long primaryLocation = userProfile.getBaseLocation().stream()
+            long primaryLocationCount = userProfile.getBaseLocation().stream()
                     .filter(UserProfile.BaseLocation::isPrimary)
                     .count();
-            if (primaryLocation != 1) {
-                log.error(String.format("The user has %s primary location(s), only 1 is allowed",
-                        primaryLocation));
+            if (primaryLocationCount != 1) {
+                log.error(String.format("The userProfile {} has %s primary location(s), only 1 is allowed",
+                        userProfile.getId(), primaryLocationCount));
             }
 
         });

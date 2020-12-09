@@ -450,7 +450,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andReturn();
 
         String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("The UserIds  is not available in the user's request"));
+        assertTrue(contentAsString.contains("Empty user request"));
     }
 
     @Test

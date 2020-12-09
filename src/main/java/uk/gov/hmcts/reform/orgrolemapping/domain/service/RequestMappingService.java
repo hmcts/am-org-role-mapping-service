@@ -55,7 +55,7 @@ public class RequestMappingService {
         // The response body is a list of ....???....
         ResponseEntity<Object> responseEntity = updateCaseworkersRoleAssignments(usersRoleAssignments);
         log.info(
-                "Execution time of createCaseWorkerAssignments() : {} in milli seconds ",
+                "Execution time of createCaseWorkerAssignments() : {} ms",
                 (System.currentTimeMillis() - startTime)
         );
         return responseEntity;
@@ -102,7 +102,7 @@ public class RequestMappingService {
         long startTime = System.currentTimeMillis();
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
         log.info(
-                "Execution time of mapUserAccessProfiles() in RoleAssignment : {} in milli seconds ",
+                "Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
                 (System.currentTimeMillis() - startTime)
         );
         return roleAssignments;
@@ -198,7 +198,7 @@ public class RequestMappingService {
                         .build();
         ResponseEntity<Object> responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
         log.info(
-                "Execution time of updateRoleAssignments() : {} in milli seconds ",
+                "Execution time of updateRoleAssignments() : {} ms",
                 (System.currentTimeMillis() - startTime)
         );
         return responseEntity;
