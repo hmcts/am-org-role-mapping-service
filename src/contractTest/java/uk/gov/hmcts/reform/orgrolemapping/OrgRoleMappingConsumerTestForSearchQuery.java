@@ -104,6 +104,64 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 .toPact();
     }
 
+    private String createRoleAssignmentRequestSearchQueryByAttributes() {
+        return "{\n"
+                + "\"attributes\": {\n"
+                + "\"primaryLocation\": [\"500A2S\"],\n"
+                + "\"jurisdiction\": [\"IA\"]\n"
+                + "}\n"
+                + "}";
+    }
+
+    @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
+    public RequestResponsePact executeSearchQueryRoleAssignmentByAttributesAndGet200(PactDslWithProvider builder)
+            throws IOException {
+
+        return builder
+                .given("A list of role assignments for the search query by attributes")
+                .uponReceiving("RAS takes s2s/auth token and returns search query results")
+                .path(RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
+                .method(HttpMethod.POST.toString())
+                .body(createRoleAssignmentRequestSearchQueryByAttributes(), String.valueOf(ContentType.JSON))
+                .willRespondWith()
+                .status(HttpStatus.OK.value())
+                .headers(getResponseHeaders())
+                .body(createRoleAssignmentResponseSearchQuery())
+                .toPact();
+    }
+
+    private String createRoleAssignmentRequestSearchQueryMultipleRoleAssignments() {
+        return "{\n"
+                + "\"roleType\": [\"ORGANISATION\"],\n"
+                + "\"roleName\": [\"tribunal-caseworker\",\"senior-tribunal-caseworker\"],\n"
+                + "\"roleCategory\": [\"STAFF\"],\n"
+                + "\"classification\": [\"PUBLIC\",\"PRIVATE\"],\n"
+                + "\"grantType\": [\"STANDARD\"],\n"
+                + "\"validAt\": \"2021-12-04T00:00:00Z\",\n"
+                + "\"attributes\": {\n"
+                + "\"primaryLocation\": [\"219ASA\"],\n"
+                + "\"jurisdiction\": [\"IA\"]\n"
+                + "}\n"
+                + "}";
+    }
+
+    @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
+    public RequestResponsePact executeSearchQueryRoleAssignmentMultipleRoleAssignmentsAndGet200
+            (PactDslWithProvider builder) throws IOException {
+
+        return builder
+                .given("A list of multiple role assignments for the search query")
+                .uponReceiving("RAS takes s2s/auth token and returns search query results")
+                .path(RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
+                .method(HttpMethod.POST.toString())
+                .body(createRoleAssignmentRequestSearchQueryMultipleRoleAssignments(), String.valueOf(ContentType.JSON))
+                .willRespondWith()
+                .status(HttpStatus.OK.value())
+                .headers(getResponseHeaders())
+                .body(createRoleAssignmentResponseSearchQueryMultipleRoleAssignments())
+                .toPact();
+    }
+
     @Test
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentAndGet200")
     void getSearchQueryResultsByActorIdAndGet200Test(MockServer mockServer)
@@ -144,6 +202,51 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
         assertThat(first.get("roleName"), equalTo("senior-tribunal-caseworker"));
     }
 
+    @Test
+    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByAttributesAndGet200")
+    void getSearchQueryResultsByAttributesAndGet200Test(MockServer mockServer)
+            throws JSONException, IOException {
+        String actualResponseBody =
+                SerenityRest
+                        .given()
+                        .headers(getHttpHeaders())
+                        .contentType(ContentType.JSON)
+                        .body(createRoleAssignmentRequestSearchQueryByAttributes())
+                        .post(mockServer.getUrl() + RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
+                        .then()
+                        .log().all().extract().asString();
+
+        JSONObject jsonResponse = new JSONObject(actualResponseBody);
+        JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
+        JSONObject first = (JSONObject)roleAssignmentResponse.get(0);
+        JSONObject attributes = (JSONObject) first.get("attributes");
+        assertThat(attributes.get("primaryLocation"), equalTo("500A2S"));
+        assertThat(attributes.get("jurisdiction"), equalTo("IA"));
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentMultipleRoleAssignmentsAndGet200")
+    void getSearchQueryResultsMultipleRoleAssignmentsAndGet200Test(MockServer mockServer)
+            throws JSONException, IOException {
+        String actualResponseBody =
+                SerenityRest
+                        .given()
+                        .headers(getHttpHeaders())
+                        .contentType(ContentType.JSON)
+                        .body(createRoleAssignmentRequestSearchQueryMultipleRoleAssignments())
+                        .post(mockServer.getUrl() + RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
+                        .then()
+                        .log().all().extract().asString();
+
+        JSONObject jsonResponse = new JSONObject(actualResponseBody);
+        JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
+
+        JSONObject first = (JSONObject)roleAssignmentResponse.get(0);
+        assertThat(first.get("actorId"), equalTo("ca93ea54-c219-4c6d-add6-e687a0f1f5f7"));
+        JSONObject second = (JSONObject)roleAssignmentResponse.get(1);
+        assertThat(second.get("actorId"), equalTo("fa4c86ba-289c-4227-b924-13f55929047c"));
+    }
+
     private DslPart createRoleAssignmentResponseSearchQuery() {
         return newJsonBody(o -> o
             .minArrayLike("roleAssignmentResponse", 1, 1,
@@ -161,6 +264,42 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                                     .stringType("jurisdiction", "IA")
                                     .stringType("primaryLocation", "500A2S"))
             )).build();
+    }
+
+    private DslPart createRoleAssignmentResponseSearchQueryMultipleRoleAssignments() {
+        return newJsonBody(o -> o
+                .minArrayLike("roleAssignmentResponse", 2, 2,
+                        roleAssignmentResponse -> {
+                            roleAssignmentResponse
+                                    .stringType( "id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e" )
+                                    .stringValue( "actorIdType", "IDAM" )
+                                    .stringValue( "actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7" )
+                                    .stringValue( "roleType", "ORGANISATION" )
+                                    .stringValue( "roleName", "senior-tribunal-caseworker" )
+                                    .stringValue( "classification", "PRIVATE" )
+                                    .stringValue( "grantType", "STANDARD" )
+                                    .stringValue( "roleCategory", "STAFF")
+                                    .booleanValue( "readOnly", false )
+                                    .object( "attributes", attribute -> attribute
+                                            .stringType( "jurisdiction", "IA" )
+                                            .stringType( "primaryLocation", "219ASA"));
+
+                            roleAssignmentResponse
+                                    .stringType( "id", "a693b769-6e5b-4c03-8c1e-bf9d6ae9205c" )
+                                    .stringValue( "actorIdType", "IDAM" )
+                                    .stringValue( "actorId", "fa4c86ba-289c-4227-b924-13f55929047c")
+                                    .stringValue( "roleType", "ORGANISATION" )
+                                    .stringValue( "roleName", "tribunal-caseworker" )
+                                    .stringValue( "classification", "PUBLIC" )
+                                    .stringValue( "grantType", "STANDARD" )
+                                    .stringValue( "roleCategory", "STAFF" )
+                                    .booleanValue( "readOnly", false )
+                                    .object( "attributes", attribute -> attribute
+                                            .stringType( "jurisdiction", "IA" )
+                                            .stringType( "primaryLocation", "219ASA" ));
+                        }
+                )
+        ).build();
     }
 
     @NotNull
