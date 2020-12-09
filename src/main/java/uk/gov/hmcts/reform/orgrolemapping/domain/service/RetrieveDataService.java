@@ -76,6 +76,11 @@ public class RetrieveDataService {
             userProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                     convertUserProfileToUserAccessProfile(userProfile)));
 
+        if (!CollectionUtils.isEmpty(userProfiles)) {
+            userProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
+                    convertUserProfileToUserAccessProfile(userProfile)));
+        }
+
         }
 
         Map<String, Integer> userAccessProfileCount = new HashMap<>();
