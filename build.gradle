@@ -385,20 +385,6 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
-    compile('org.springframework.boot:spring-boot-starter-hateoas') {
-        exclude group: 'org.hibernate', module: 'hibernate-core'
-        exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-websocket"
-        exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-core"
-        exclude group: "org.springframework", module: "spring-aop"
-        exclude group: "org.springframework", module: "spring-beans"
-        exclude group: "org.springframework", module: "spring-context"
-        exclude group: "org.springframework", module: "spring-core"
-        exclude group: "org.springframework", module: "spring-jdbc"
-        exclude group: "org.springframework", module: "spring-test"
-        exclude group: "org.springframework", module: "spring-tx"
-        exclude group: "org.springframework", module: "spring-web"
-        exclude group: "org.springframework", module: "spring-webmvc"
-    }
 
     //Azure service bus libraries
     compile group: 'com.microsoft.azure', name: 'azure', version: '1.37.0'
