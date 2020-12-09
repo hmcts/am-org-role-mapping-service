@@ -63,7 +63,7 @@ public class ParseRequestService {
                     .filter(UserProfile.BaseLocation::isPrimary)
                     .count();
             if (primaryLocationCount != 1) {
-                log.error(String.format("The userProfile {} has %s primary location(s), only 1 is allowed",
+                log.error(String.format("The userProfile {} has {} primary location(s) , only 1 is allowed",
                         userProfile.getId(), primaryLocationCount));
             }
 
