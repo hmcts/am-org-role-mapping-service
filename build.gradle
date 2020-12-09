@@ -47,7 +47,7 @@ def versions = [
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
         drools         : '7.40.0.Final',
-        launchDarklySdk: '5.0+'
+        launchDarklySdk: '5.1+'
 ]
 
 mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
@@ -335,7 +335,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-common'
     }
-
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: '1.3.72'
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-common', version: '1.3.72'
 
@@ -385,20 +385,6 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
-    compile('org.springframework.boot:spring-boot-starter-hateoas') {
-        exclude group: 'org.hibernate', module: 'hibernate-core'
-        exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-websocket"
-        exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-core"
-        exclude group: "org.springframework", module: "spring-aop"
-        exclude group: "org.springframework", module: "spring-beans"
-        exclude group: "org.springframework", module: "spring-context"
-        exclude group: "org.springframework", module: "spring-core"
-        exclude group: "org.springframework", module: "spring-jdbc"
-        exclude group: "org.springframework", module: "spring-test"
-        exclude group: "org.springframework", module: "spring-tx"
-        exclude group: "org.springframework", module: "spring-web"
-        exclude group: "org.springframework", module: "spring-webmvc"
-    }
 
     //Azure service bus libraries
     compile group: 'com.microsoft.azure', name: 'azure', version: '1.37.0'
@@ -409,10 +395,8 @@ dependencies {
 
     compile group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
 
-    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.39'
-    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.39'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.24.Final'
+    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.40'
+    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.40'
     compile group: 'org.springframework', name: 'spring-tx', version: '5.2.9.RELEASE'
 
     compile(group: 'org.springframework', name: 'spring-jms', version: '5.2.9.RELEASE')
