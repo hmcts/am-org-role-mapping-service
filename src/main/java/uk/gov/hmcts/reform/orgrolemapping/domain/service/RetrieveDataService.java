@@ -63,8 +63,9 @@ public class RetrieveDataService {
 
         parseRequestService.validateUserProfiles(userProfiles, userRequest);
 
+
         // no of user profile successfully validated
-        log.info("Number of UserProfile successfully validated : {}", userProfiles.size());
+        log.info("Number of UserProfile successfully validated");
 
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();

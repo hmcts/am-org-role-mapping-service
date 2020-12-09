@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,9 +37,13 @@ public class ParseRequestService {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
         if (userRequest.getUsers().size() != userProfiles.size()) {
-            List<String> userIdsNotInCRDResponse = userRequest.getUsers().stream()
-                    .filter(userId -> !userProfiles.contains(userId))
-                    .collect(Collectors.toList());
+            List<String> userProfileIds = new ArrayList<>();
+
+            userProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));
+            List<String> userIdsNotInCRDResponse = userRequest.getUsers().stream().filter(userId -> !userProfileIds
+                    .contains(userId)).collect(Collectors.toList());
+
+
             log.error("Some of the user profiles couldn't be found for the userIds {} in "
                     + "CRD Response", userIdsNotInCRDResponse);
 
