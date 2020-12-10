@@ -75,7 +75,7 @@ public class TopicConsumer {
 
     @Bean
     CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
-            throws InvalidRequest, ServiceBusException, InterruptedException {
+            throws ServiceBusException, InterruptedException {
 
         log.info("    Calling registerMessageHandlerOnClient ");
 
