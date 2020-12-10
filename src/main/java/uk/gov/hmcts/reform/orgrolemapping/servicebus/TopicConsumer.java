@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
@@ -74,7 +75,7 @@ public class TopicConsumer {
 
     @Bean
     CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
-            throws Exception {
+            throws InvalidRequest, ServiceBusException, InterruptedException {
 
         log.info("    Calling registerMessageHandlerOnClient ");
 
@@ -87,10 +88,12 @@ public class TopicConsumer {
                 try {
                     log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
                     log.info("    Delivery Count is : {}", message.getDeliveryCount());
+                    AtomicBoolean result = new AtomicBoolean();
+                    processMessage(body, result);
+                    if (result.get()) {
+                        return receiveClient.completeAsync(message.getLockToken());
+                    }
 
-                        if (processMessage(body)) {
-                            return receiveClient.completeAsync(message.getLockToken());
-                        }
 
                     log.info("    getLockToken......{}", message.getLockToken());
 
@@ -117,15 +120,14 @@ public class TopicConsumer {
 
     }
 
-    private boolean processMessage(List<byte[]> body) {
-        boolean result;
+    private void processMessage(List<byte[]> body, AtomicBoolean result) {
+
         log.info("    Parsing the message");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);
             log.info("----Role Assignment Service Response {}", response.getStatusCode());
-            result = true;
-            return result;
+            result.set(Boolean.TRUE);
         } catch (Exception e) {
             log.error("Exception from RAS service : {}", e.getMessage());
             throw e;
