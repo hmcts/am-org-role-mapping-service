@@ -59,7 +59,7 @@ public class TopicConsumer {
     @Bean
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        URI endpoint = new URI("sb://"+host);
+        URI endpoint = new URI("sb://" + host);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
