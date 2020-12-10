@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
@@ -73,7 +74,7 @@ public class TopicConsumer {
 
     @Bean
     CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
-            throws Throwable {
+            throws Exception {
 
         log.info("    Calling registerMessageHandlerOnClient ");
 
@@ -94,7 +95,7 @@ public class TopicConsumer {
                     log.info("    getLockToken......{}", message.getLockToken());
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
-                    throw e;
+                    throw new InvalidRequest("Some Network issue");
                 }
                 log.info("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
@@ -117,12 +118,14 @@ public class TopicConsumer {
     }
 
     private boolean processMessage(List<byte[]> body) {
+        boolean result;
         log.info("    Parsing the message");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);
             log.info("----Role Assignment Service Response {}", response.getStatusCode());
-            return true;
+            result = true;
+            return result;
         } catch (Exception e) {
             log.error("Exception from RAS service : {}", e.getMessage());
             throw e;
