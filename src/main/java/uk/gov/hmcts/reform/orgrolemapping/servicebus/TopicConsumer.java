@@ -73,7 +73,7 @@ public class TopicConsumer {
 
     @Bean
     CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
-            throws Exception {
+            throws Throwable {
 
         log.info("    Calling registerMessageHandlerOnClient ");
 
@@ -86,14 +86,14 @@ public class TopicConsumer {
                 try {
                     log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
                     log.info("    Delivery Count is : {}", message.getDeliveryCount());
-                    if (roleAssignmentHealthCheck()) {
+
                         if (processMessage(body)) {
                             return receiveClient.completeAsync(message.getLockToken());
                         }
-                    }
+
                     log.info("    getLockToken......{}", message.getLockToken());
 
-                } catch (Throwable e) { // java.lang.Throwable introduces the Sonar issues
+                } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
                     throw e;
                 }
                 log.info("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
@@ -129,16 +129,6 @@ public class TopicConsumer {
         }
     }
 
-    private boolean roleAssignmentHealthCheck() throws InterruptedException {
-        log.info("    Calling the health check");
-        try {
-            //String result = roleAssignmentService.getServiceStatus();
-            log.info("    Health check is Successful : ");
-        } catch (Throwable e) {
-            log.error("    Something is wrong with the health check...");
-            throw e;
-        }
-        return true;
-    }
+
 }
 
