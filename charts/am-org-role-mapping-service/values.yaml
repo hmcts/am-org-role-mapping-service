@@ -11,6 +11,7 @@ java:
         - role-assignment-service-LD-SDK-KEY
         - role-assignment-service-IDAM-CLIENT-SECRET
         - role-assignment-service-IDAM-ADMIN-SECRET
+        - caseworker-topic-primary-send-listen-shared-access-key
 
 
   environment:
@@ -28,4 +29,3 @@ java:
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
     AMQP_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}/subscriptions/rd-caseworker-subscription-{{ .Values.global.environment }}
     TRUST_ALL_CERTS: true
-    AMQP_SHARED_ACCESS_KEY_VALUE: NQm5c/sFSGWTPoBvzNlgsyAjOu4NJWh8mWhWY/iTMmE=
