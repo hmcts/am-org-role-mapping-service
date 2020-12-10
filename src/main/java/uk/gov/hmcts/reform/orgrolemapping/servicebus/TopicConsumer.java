@@ -1,9 +1,6 @@
-/*
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageHandler;
@@ -77,8 +74,7 @@ public class TopicConsumer {
     @Bean
     CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
             throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
+
         log.info("    Calling registerMessageHandlerOnClient ");
 
         IMessageHandler messageHandler = new IMessageHandler() {
@@ -146,4 +142,3 @@ public class TopicConsumer {
     }
 }
 
-*/
