@@ -107,7 +107,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Autowired
     private WelcomeController welcomeController;
 
-    @Autowired
+    @MockBean
     private TopicConsumer topicConsumer;
 
     private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
