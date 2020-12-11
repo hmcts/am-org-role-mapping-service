@@ -107,7 +107,7 @@ roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 amqp:
   host: ${AMQP_HOST:test}
   sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
-  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:NQm5c/sFSGWTPoBvzNlgsyAjOu4NJWh8mWhWY/iTMmE=}
+  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:test}
   topic: ${AMQP_TOPIC_NAME:aat}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
