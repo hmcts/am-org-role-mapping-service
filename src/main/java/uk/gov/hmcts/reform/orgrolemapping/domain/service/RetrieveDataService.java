@@ -72,16 +72,12 @@ public class RetrieveDataService {
 
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
-        if (userProfiles != null && !userProfiles.isEmpty()) {
+
+        if (!CollectionUtils.isEmpty(userProfiles)) {
             userProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                     convertUserProfileToUserAccessProfile(userProfile)));
-
-            if (!CollectionUtils.isEmpty(userProfiles)) {
-                userProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
-                        convertUserProfileToUserAccessProfile(userProfile)));
-            }
-
         }
+
 
         Map<String, Integer> userAccessProfileCount = new HashMap<>();
         usersAccessProfiles.forEach((k, v) -> {
