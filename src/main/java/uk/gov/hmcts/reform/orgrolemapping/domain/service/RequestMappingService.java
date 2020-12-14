@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.StatelessKieSession;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -47,10 +49,16 @@ public class RequestMappingService {
      * and update them in the role assignment service.
      */
     public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+        long startTime = System.currentTimeMillis();
         // Get the role assignments for each caseworker in the input profiles.
         Map<String, List<RoleAssignment>> usersRoleAssignments = getCaseworkerRoleAssignments(usersAccessProfiles);
         // The response body is a list of ....???....
-        return updateCaseworkersRoleAssignments(usersRoleAssignments);
+        ResponseEntity<Object> responseEntity = updateCaseworkersRoleAssignments(usersRoleAssignments);
+        log.info(
+                "Execution time of createCaseWorkerAssignments() : {} ms",
+                (System.currentTimeMillis() - startTime)
+        );
+        return responseEntity;
 
     }
 
@@ -60,15 +68,30 @@ public class RequestMappingService {
      */
     private Map<String, List<RoleAssignment>> getCaseworkerRoleAssignments(Map<String,
             Set<UserAccessProfile>> usersAccessProfiles) {
+
         // Create a map to hold the role assignments for each user.
         Map<String, List<RoleAssignment>> usersRoleAssignments = new HashMap<>();
+
         // Make sure every user in the input collection has a list in the map.  This includes users
         // who have been deleted, for whom no role assignments will be created by the rules.
-        usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<RoleAssignment>()));
+        usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<>()));
         // Get all the role assignments the rules create for the set of access profiles.
         List<RoleAssignment> roleAssignments = mapUserAccessProfiles(usersAccessProfiles);
         // Add each role assignment to the results map.
         roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
+
+        Map<String, Integer> roleAssignmentsCount = new HashMap<>();
+        //print usersRoleAssignments
+        usersRoleAssignments.forEach((k,v) -> {
+            roleAssignmentsCount.put(k, v.size());
+            log.debug("UserId {} having the RoleAssignments created by the drool  {}  ", k,
+                    v);
+        });
+
+        log.info("Count of RoleAssignments corresponding to the UserId ::{}  ", roleAssignmentsCount);
+
+
+
         return usersRoleAssignments;
     }
 
@@ -76,7 +99,17 @@ public class RequestMappingService {
      * Run the mapping rules to generate all the role assignments each caseworker represented in the map.
      */
     private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+        long startTime = System.currentTimeMillis();
+        List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
+        log.info(
+                "Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
+                (System.currentTimeMillis() - startTime)
+        );
+        return roleAssignments;
+    }
 
+    @NotNull
+    private List<RoleAssignment> getRoleAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
         // Combine all the user profiles into a single collection for the rules engine.
         Set<UserAccessProfile> allProfiles = new HashSet<>();
         usersAccessProfiles.forEach((k, v) -> allProfiles.addAll(v));
@@ -111,10 +144,13 @@ public class RequestMappingService {
     ResponseEntity<Object> updateCaseworkersRoleAssignments(Map<String, List<RoleAssignment>> usersRoleAssignments) {
         //prepare an empty list of responses
         List<Object> finalResponse = new ArrayList<>();
+        AtomicInteger failureResponseCount = new AtomicInteger();
 
-        usersRoleAssignments.entrySet().stream()
-                .forEach(entry -> finalResponse.add(updateCaseworkerRoleAssignments(entry.getKey(),
-                        entry.getValue()).getBody()));
+        usersRoleAssignments
+                .forEach((k,v) -> finalResponse.add(updateCaseworkerRoleAssignments(k,
+                        v, failureResponseCount).getBody()));
+        log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
+        log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
     }
 
@@ -122,10 +158,20 @@ public class RequestMappingService {
      * Update a single caseworker's role assignments, using the staff organisational role mapping process ID
      * and the user's ID as the process and reference values.
      */
-    ResponseEntity<Object> updateCaseworkerRoleAssignments(String userId, Collection<RoleAssignment> roleAssignments) {
-        String process = STAFF_ORGANISATIONAL_ROLE_MAPPING;
-        String reference = userId;
-        return updateRoleAssignments(process, reference, roleAssignments);
+    ResponseEntity<Object> updateCaseworkerRoleAssignments(String userId, Collection<RoleAssignment> roleAssignments,
+                                                           AtomicInteger failureResponseCount) {
+
+        // Print response code  of RAS for each userID
+        ResponseEntity<Object> responseEntity = updateRoleAssignments(STAFF_ORGANISATIONAL_ROLE_MAPPING,
+                userId, roleAssignments);
+        if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
+            failureResponseCount.getAndIncrement();
+        }
+
+        log.info("Role Assignment Service response status : {} for the userId {} :", responseEntity
+                .getStatusCode(), userId);
+
+        return responseEntity;
     }
 
     /**
@@ -133,6 +179,7 @@ public class RequestMappingService {
      */
     ResponseEntity<Object> updateRoleAssignments(String process, String reference,
                                                  Collection<RoleAssignment> roleAssignments) {
+        long startTime = System.currentTimeMillis();
         AssignmentRequest assignmentRequest =
                 AssignmentRequest.builder()
                         .request(
@@ -147,7 +194,12 @@ public class RequestMappingService {
                                         .build())
                         .requestedRoles(roleAssignments)
                         .build();
-        return roleAssignmentService.createRoleAssignment(assignmentRequest);
+        ResponseEntity<Object> responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
+        log.info(
+                "Execution time of updateRoleAssignments() : {} ms",
+                (System.currentTimeMillis() - startTime)
+        );
+        return responseEntity;
     }
 
 

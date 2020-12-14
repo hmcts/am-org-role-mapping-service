@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
 
@@ -36,21 +38,64 @@ public class RetrieveDataService {
 
      */
 
-    //private final CRDFeignClient crdFeignClient;
+
     private final ParseRequestService parseRequestService;
     private final CRDFeignClientFallback crdFeignClientFallback;
 
 
     public Map<String, Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
-        //ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.createRoleAssignment(userRequest);
+        long startTime = System.currentTimeMillis();
+
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
 
+        log.info(
+                "Execution time of CRD Response : {} ms",
+                (System.currentTimeMillis() - startTime)
+        );
         List<UserProfile> userProfiles = responseEntity.getBody();
-        parseRequestService.validateUserProfiles(userProfiles, userRequest);
+        if (!CollectionUtils.isEmpty(userProfiles)) {
+            // no of userProfiles from CRD  responseEntity.getBody().size()
+            log.info("Number of UserProfile received from CRD : {} ",
+                    userProfiles.size());
+        } else {
+            log.info("Number of UserProfile received from CRD : {} ", 0);
+        }
+
+        AtomicInteger invalidUserProfilesCount = new AtomicInteger();
+        parseRequestService.validateUserProfiles(userProfiles, userRequest, invalidUserProfilesCount);
+
+
+        // no of user profile successfully validated
+        if (invalidUserProfilesCount.get() > 0) {
+            log.info("Number of invalid UserProfileCount : {} ", invalidUserProfilesCount.get());
+        }
+
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
-        userProfiles.stream().forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
-                convertUserProfileToUserAccessProfile(userProfile)));
+        if (userProfiles != null && !userProfiles.isEmpty()) {
+            userProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
+                    convertUserProfileToUserAccessProfile(userProfile)));
+
+            if (!CollectionUtils.isEmpty(userProfiles)) {
+                userProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
+                        convertUserProfileToUserAccessProfile(userProfile)));
+            }
+
+        }
+
+        Map<String, Integer> userAccessProfileCount = new HashMap<>();
+        usersAccessProfiles.forEach((k, v) -> {
+            userAccessProfileCount.put(k, v.size());
+            log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
+                            v);
+        }
+        );
+        log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
+
+        log.info(
+                "Execution time of retrieveCaseWorkerProfiles() : {} ms",
+                (System.currentTimeMillis() - startTime)
+        );
         return usersAccessProfiles;
     }
 }

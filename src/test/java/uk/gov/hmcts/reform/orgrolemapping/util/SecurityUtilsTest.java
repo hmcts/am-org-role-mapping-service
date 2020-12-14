@@ -120,6 +120,13 @@ class SecurityUtilsTest {
     }
 
     @Test
+    void getServiceAuthorizationHeader() {
+        String result = securityUtils.getServiceAuthorizationHeader();
+        assertNotNull(result);
+        assertTrue(result.contains(serviceAuthorization));
+    }
+
+    @Test
     void getAuthorizationHeaders() throws IOException {
         HttpHeaders result = securityUtils.authorizationHeaders();
         assertEquals(serviceAuthorization, Objects.requireNonNull(result.get(SERVICE_AUTHORIZATION)).get(0));
@@ -127,13 +134,15 @@ class SecurityUtilsTest {
         assertEquals("", Objects.requireNonNull(Objects.requireNonNull(result.get("user-roles")).get(0)));
     }
 
-    //@Test
+    @Test
     void getAuthorizationHeaders_NoContext() {
         when(securityContext.getAuthentication()).thenReturn(null);
         HttpHeaders result = securityUtils.authorizationHeaders();
         assertEquals(serviceAuthorization, Objects.requireNonNull(result.get(SERVICE_AUTHORIZATION)).get(0));
         assertEquals(USER_ID, Objects.requireNonNull(result.get("user-id")).get(0));
         assertEquals("", Objects.requireNonNull(Objects.requireNonNull(result.get("user-roles")).get(0)));
+        assertEquals(serviceAuthorization,
+                Objects.requireNonNull(Objects.requireNonNull(result.get("Authorization")).get(0)));
     }
 
     @Test
