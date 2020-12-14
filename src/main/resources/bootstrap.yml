@@ -10,5 +10,3 @@ spring:
         role-assignment-service-IDAM-CLIENT-SECRET: ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET
         role-assignment-service-IDAM-ADMIN-SECRET: ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD
         caseworker-topic-primary-send-listen-shared-access-key: AMQP_SHARED_ACCESS_KEY_VALUE
-
-
