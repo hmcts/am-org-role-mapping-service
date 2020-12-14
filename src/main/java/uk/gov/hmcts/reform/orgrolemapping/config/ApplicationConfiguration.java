@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import com.launchdarkly.sdk.server.LDClient;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -11,6 +12,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@Slf4j
 public class ApplicationConfiguration {
 
     private final String s2sSecret;
@@ -46,6 +48,7 @@ public class ApplicationConfiguration {
 
     @Bean
     public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
+        log.info("*******LD SDK key:" + sdkKey);
         return new LDClient(sdkKey);
     }
 
