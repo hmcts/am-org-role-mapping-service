@@ -94,7 +94,6 @@ public class IdamRepository {
                 "4",
                 ""
         );
-        log.info("***IDAM Key : " + tokenRequest.toString());
         TokenResponse tokenResponse = idamApi.generateOpenIdToken(tokenRequest);
         return tokenResponse.accessToken;
     }
