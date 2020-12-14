@@ -12,7 +12,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@Slf4j
 public class ApplicationConfiguration {
 
     private final String s2sSecret;
@@ -48,7 +47,6 @@ public class ApplicationConfiguration {
 
     @Bean
     public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
-        log.info("*******LD SDK key:" + sdkKey);
         return new LDClient(sdkKey);
     }
 

@@ -68,8 +68,6 @@ public class TopicConsumer {
                 topic,
                 sharedAccessKeyName,
                 sharedAccessKeyValue);
-        log.info("sharedAccessKeyValue {} ::", sharedAccessKeyValue);
-
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
