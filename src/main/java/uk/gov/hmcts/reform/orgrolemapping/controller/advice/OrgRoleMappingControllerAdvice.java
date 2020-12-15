@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller.advice;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants.CREATED;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants.UNPROCESSABLE_ENTITY;
 
 import java.text.SimpleDateFormat;
@@ -9,6 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -107,6 +109,18 @@ public class OrgRoleMappingControllerAdvice {
             Exception exeception) {
         return errorDetailsResponseEntity(
                 exeception,
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                UNPROCESSABLE_ENTITY.getErrorCode(),
+                UNPROCESSABLE_ENTITY.getErrorMessage()
+        );
+    }
+
+    @ExceptionHandler(FeignException.FeignClientException.class)
+    protected ResponseEntity<Object> handleFeignClientExceptionUnProcessableEntityException(
+            HttpServletRequest request,
+            Exception exception) {
+        return errorDetailsResponseEntity(
+                exception,
                 HttpStatus.UNPROCESSABLE_ENTITY,
                 UNPROCESSABLE_ENTITY.getErrorCode(),
                 UNPROCESSABLE_ENTITY.getErrorMessage()

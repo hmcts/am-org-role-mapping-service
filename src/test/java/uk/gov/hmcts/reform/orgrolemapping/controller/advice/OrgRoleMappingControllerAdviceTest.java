@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller.advice;
 
+import feign.FeignException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -96,5 +97,13 @@ class OrgRoleMappingControllerAdviceTest {
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), responseEntity.getStatusCodeValue());
     }
 
+    @Test
+    void handleFeignClientExceptionUnProcessableEntityException() {
+        FeignException.FeignClientException feignClientException = mock(FeignException.FeignClientException.class);
+        ResponseEntity<Object> responseEntity = csda.handleFeignClientExceptionUnProcessableEntityException(
+                servletRequestMock, feignClientException);
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), responseEntity.getStatusCodeValue());
+    }
 
 }
