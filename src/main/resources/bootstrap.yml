@@ -1,7 +1,7 @@
 spring:
   cloud:
     propertiesvolume:
-      paths: /mnt/secrets/s2s,/mnt/secrets/am
+      paths: /mnt/secrets/am
       prefixed: false
       aliases:
         AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
