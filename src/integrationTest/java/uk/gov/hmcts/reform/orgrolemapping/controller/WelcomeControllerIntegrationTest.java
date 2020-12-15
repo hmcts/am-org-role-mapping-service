@@ -37,7 +37,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClient
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
@@ -107,9 +106,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Autowired
     private WelcomeController welcomeController;
 
-    @MockBean
-    private TopicConsumer topicConsumer;
-
     private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
     private static final String RAS_ONE_USER_MULTI_ROLE = "RASOneUserMultiRole";
     private static final String RAS_MULTI_USER_ONE_ROLE = "RASMultiUserOneRole";
@@ -158,10 +154,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2",
+                        .buildListOfUserProfiles(false, false,"1", "2",
                                 ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "BFA1", "BFA2",
+                                true,"BFA1", "BFA2",
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
@@ -187,9 +183,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, true, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, true,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "BFA1", "BFA2",
+                                true,"BFA1", "BFA2",
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
@@ -215,9 +211,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(true, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(true, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "BFA1", "BFA2",
+                                true,"BFA1", "BFA2",
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
@@ -243,9 +239,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "BFA1", "BFA2", true), HttpStatus.OK));
+                                true,"BFA1", "BFA2",true), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9v"))
@@ -270,9 +266,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+                                true,"BFA1", "BFA2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
@@ -297,9 +293,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+                                true,"BFA1", "BFA2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445000"))
@@ -327,9 +323,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, false, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+                                true,"BFA1", "BFA2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -354,9 +350,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 false, true, true,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+                                true,"BFA1", "BFA2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -381,9 +377,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, true,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+                                true,"BFA1", "BFA2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -408,9 +404,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        .buildListOfUserProfiles(false, false,"1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, true,
-                                false, "BFA1", "BFA2", false), HttpStatus.OK));
+                                false,"BFA1", "BFA2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -438,7 +434,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         .buildListOfUserProfiles(false, false,
                                 "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "1", "2", false), HttpStatus.OK));
+                                true,"1", "2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(new ArrayList<>())
@@ -466,7 +462,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         .buildListOfUserProfiles(false, false,
                                 "3", "2", "Invalid Role Name", ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+                                true,"BFA1", "BFA2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
@@ -492,9 +488,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         Mockito.when(crdFeignClientFallback.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(IntTestDataBuilder
                         .buildListOfUserProfiles(false, false,
-                                "1", "2", "ROLE_NAME_TCW", ROLE_NAME_TCW,
+                                "1", "2","ROLE_NAME_TCW", ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+                                true,"BFA1", "BFA2",false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
                 .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
