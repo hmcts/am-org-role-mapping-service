@@ -9,8 +9,8 @@ java:
         - role-assignment-service-LD-SDK-KEY
         - role-assignment-service-IDAM-CLIENT-SECRET
         - role-assignment-service-IDAM-ADMIN-SECRET
-        - caseworker-topic-primary-send-listen-shared-access-key
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     LAUNCH_DARKLY_ENV: pr
+

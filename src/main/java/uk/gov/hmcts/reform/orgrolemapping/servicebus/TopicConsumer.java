@@ -1,6 +1,9 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageHandler;
@@ -16,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
@@ -29,7 +31,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
@@ -61,21 +62,23 @@ public class TopicConsumer {
     @Bean
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        URI endpoint = new URI("sb://" + host);
+        URI endpoint = new URI(host);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
                 topic,
                 sharedAccessKeyName,
                 sharedAccessKeyValue);
+
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
 
     @Bean
     CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
-            throws ServiceBusException, InterruptedException {
-
+            throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         log.info("    Calling registerMessageHandlerOnClient ");
 
         IMessageHandler messageHandler = new IMessageHandler() {
@@ -87,17 +90,15 @@ public class TopicConsumer {
                 try {
                     log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
                     log.info("    Delivery Count is : {}", message.getDeliveryCount());
-                    AtomicBoolean result = new AtomicBoolean();
-                    processMessage(body, result);
-                    if (result.get()) {
-                        return receiveClient.completeAsync(message.getLockToken());
+                    if (roleAssignmentHealthCheck()) {
+                        if (processMessage(body)) {
+                            return receiveClient.completeAsync(message.getLockToken());
+                        }
                     }
-
-
                     log.info("    getLockToken......{}", message.getLockToken());
 
-                } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
-                    throw new InvalidRequest("Some Network issue");
+                } catch (Throwable e) { // java.lang.Throwable introduces the Sonar issues
+                    throw e;
                 }
                 log.info("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
@@ -119,20 +120,30 @@ public class TopicConsumer {
 
     }
 
-    private void processMessage(List<byte[]> body, AtomicBoolean result) {
-
+    private boolean processMessage(List<byte[]> body) {
         log.info("    Parsing the message");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);
             log.info("----Role Assignment Service Response {}", response.getStatusCode());
-            result.set(Boolean.TRUE);
+            return true;
         } catch (Exception e) {
             log.error("Exception from RAS service : {}", e.getMessage());
             throw e;
         }
     }
 
-
+    private boolean roleAssignmentHealthCheck() throws InterruptedException {
+        log.info("    Calling the health check");
+        try {
+            //String result = roleAssignmentService.getServiceStatus();
+            log.info("    Health check is Successful : ");
+        } catch (Throwable e) {
+            log.error("    Something is wrong with the health check...");
+            throw e;
+        }
+        return true;
+    }
 }
 
+*/
