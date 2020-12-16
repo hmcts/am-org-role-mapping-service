@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -15,8 +17,10 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.ArrayList;
@@ -194,11 +198,28 @@ public class RequestMappingService {
                                         .build())
                         .requestedRoles(roleAssignments)
                         .build();
-        ResponseEntity<Object> responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
-        log.info(
+        ResponseEntity<Object> responseEntity;
+
+        try {
+            responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
+            log.info(
                 "Execution time of updateRoleAssignments() : {} ms",
                 (System.currentTimeMillis() - startTime)
-        );
+            );
+        } catch (FeignException.FeignClientException feignClientException) {
+            log.error("Handling FeignClientException UnprocessableEntity: " + feignClientException.getMessage());
+
+            AssignmentRequest assignmentRequest1 = null;
+            try {
+                assignmentRequest1 = JacksonUtils.readValue(feignClientException.contentUTF8());
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+            responseEntity = new ResponseEntity<>(
+                    new RoleAssignmentRequestResource(assignmentRequest1), HttpStatus.OK);
+
+        }
         return responseEntity;
     }
 
