@@ -209,15 +209,15 @@ public class RequestMappingService {
         } catch (FeignException.FeignClientException feignClientException) {
             log.error("Handling FeignClientException UnprocessableEntity: " + feignClientException.getMessage());
 
-            AssignmentRequest assignmentRequest1 = null;
+            AssignmentRequest assignmentRequest1 = new AssignmentRequest();
             try {
                 assignmentRequest1 = JacksonUtils.readValue(feignClientException.contentUTF8());
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
 
             responseEntity = new ResponseEntity<>(
-                    new RoleAssignmentRequestResource(assignmentRequest1), HttpStatus.OK);
+                    new RoleAssignmentRequestResource(assignmentRequest1), HttpStatus.UNPROCESSABLE_ENTITY);
 
         }
         return responseEntity;
