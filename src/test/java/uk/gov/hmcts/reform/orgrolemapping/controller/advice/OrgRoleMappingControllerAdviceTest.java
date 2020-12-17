@@ -9,7 +9,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.WelcomeController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -63,14 +62,6 @@ class OrgRoleMappingControllerAdviceTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
     }
 
-    @Test
-    void handleUnknownException() {
-        Exception exception = mock(Exception.class);
-        ResponseEntity<Object> responseEntity = csda.handleUnknownException(servletRequestMock, exception);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseEntity.getStatusCodeValue());
-
-    }
 
     @Test
     void handleBadRequestError() {
@@ -87,14 +78,6 @@ class OrgRoleMappingControllerAdviceTest {
                 Locale.ENGLISH).format(new Date()));
     }
 
-    @Test
-    void handleUnProcessableEntityExcepton() {
-        UnprocessableEntityException unprocessableEntityException = mock(UnprocessableEntityException.class);
-        ResponseEntity<Object> responseEntity = csda.handleUnProcessableEntityExcepton(
-                servletRequestMock, unprocessableEntityException);
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), responseEntity.getStatusCodeValue());
-    }
 
 
 }
