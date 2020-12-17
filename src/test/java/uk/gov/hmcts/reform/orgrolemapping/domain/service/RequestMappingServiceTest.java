@@ -20,7 +20,8 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
@@ -84,7 +85,7 @@ class RequestMappingServiceTest {
 
         Mockito.verify(roleAssignmentService, Mockito.times(2))
                 .createRoleAssignment(any());
-            }
+    }
 
     @Test
     void createCaseWorkerAssignmentTestFeignException() {
@@ -151,8 +152,8 @@ class RequestMappingServiceTest {
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
 
-        ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
-            false));
+        ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(
+                TestDataBuilder.buildUserAccessProfileMap(false, false));
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
