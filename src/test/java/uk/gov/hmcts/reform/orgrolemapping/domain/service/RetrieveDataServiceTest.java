@@ -18,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
@@ -55,6 +54,23 @@ class RetrieveDataServiceTest {
                 .createRoleAssignment(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any());
+    }
+
+    @Test
+    void retrieveInvalidCaseWorkerProfilesTest() {
+
+        when(crdFeignClientFallback.createRoleAssignment(TestDataBuilder.buildUserRequest()))
+                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(
+                        TestDataBuilder.buildListOfUserProfiles(true, false, "1",
+                                "2", ROLE_NAME_STCW, ROLE_NAME_TCW, false, true,
+                                false, true, "1", "2",
+                                false)));
+
+        doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any());
+        Map<String, Set<UserAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
+
+        assertEquals(2, result.size());
+
     }
 
     @Test
