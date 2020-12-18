@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.Authentication;
@@ -32,6 +31,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
@@ -94,12 +94,21 @@ class SecurityUtilsTest {
     @BeforeEach
     public void setUp() throws IOException {
         mockSecurityContextData();
-        MockitoAnnotations.initMocks(this);
     }
 
     @Test
     void getUserId() throws IOException {
         assertEquals(USER_ID, securityUtils.getUserId());
+    }
+
+    @Test
+    void getUserIdElse() throws IOException {
+        when(jwtGrantedAuthoritiesConverter.getUserInfo())
+                .thenCallRealMethod();
+        when(idamRepository.getUserInfo(any()))
+                .thenReturn(TestDataBuilder.buildUserInfo(USER_ID));
+        String result = securityUtils.getUserId();
+        assertEquals(USER_ID, result);
     }
 
     @Test
@@ -120,6 +129,15 @@ class SecurityUtilsTest {
     }
 
     @Test
+    void getUserTokenNoContext() {
+        when(securityContext.getAuthentication()).thenReturn(null);
+        when(idamRepository.getUserToken()).thenReturn(serviceAuthorization);
+        String result = securityUtils.getUserToken();
+        assertNotNull(result);
+        assertTrue(result.contains("eyJhbG"));
+    }
+
+    @Test
     void getServiceAuthorizationHeader() {
         String result = securityUtils.getServiceAuthorizationHeader();
         assertNotNull(result);
@@ -132,17 +150,18 @@ class SecurityUtilsTest {
         assertEquals(serviceAuthorization, Objects.requireNonNull(result.get(SERVICE_AUTHORIZATION)).get(0));
         assertEquals(USER_ID, Objects.requireNonNull(result.get("user-id")).get(0));
         assertEquals("", Objects.requireNonNull(Objects.requireNonNull(result.get("user-roles")).get(0)));
+        assertEquals(serviceAuthorization,
+                Objects.requireNonNull(Objects.requireNonNull(result.get("Authorization")).get(0)));
     }
 
     @Test
     void getAuthorizationHeaders_NoContext() {
-        when(securityContext.getAuthentication()).thenReturn(null);
+        when(securityContext.getAuthentication()).thenReturn(authentication).thenReturn(null);
         HttpHeaders result = securityUtils.authorizationHeaders();
         assertEquals(serviceAuthorization, Objects.requireNonNull(result.get(SERVICE_AUTHORIZATION)).get(0));
         assertEquals(USER_ID, Objects.requireNonNull(result.get("user-id")).get(0));
         assertEquals("", Objects.requireNonNull(Objects.requireNonNull(result.get("user-roles")).get(0)));
-        assertEquals(serviceAuthorization,
-                Objects.requireNonNull(Objects.requireNonNull(result.get("Authorization")).get(0)));
+
     }
 
     @Test
