@@ -190,7 +190,7 @@ pitest {
                        'uk.gov.hmcts.reform.orgrolemapping.config.*',
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig',
                        'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
-                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer',
+                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer.java',
                        'uk.gov.hmcts.reform.orgrolemapping.domain.model.*']
     threads = 15
     outputFormats = ['XML', 'HTML']
