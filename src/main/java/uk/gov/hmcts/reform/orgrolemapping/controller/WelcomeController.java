@@ -68,7 +68,7 @@ public class WelcomeController {
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
         log.debug("createOrgMapping");
-        log.info("Process has been Started for the userIds {}",userRequest.getUsers());
+        log.info("Process has been Started for the userIds {}",userRequest.getUserIds());
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
         log.info(
                 "Execution time of createOrgMapping() : {} ms",

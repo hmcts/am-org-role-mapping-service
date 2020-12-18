@@ -165,7 +165,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -178,7 +178,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUsers());
+        assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
     }
 
     @Test
@@ -193,7 +193,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445676"))
+                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445676"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -206,7 +206,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        assertResponse(result, Status.APPROVED, 2, Status.LIVE, request.getUsers());
+        assertResponse(result, Status.APPROVED, 2, Status.LIVE, request.getUserIds());
     }
 
     @Test
@@ -221,7 +221,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445000", "123e4567-e89b-42d3-a456-556642445111"))
+                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445000", "123e4567-e89b-42d3-a456-556642445111"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -234,7 +234,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        assertResponse(result, Status.APPROVED, 2, Status.LIVE, request.getUsers());
+        assertResponse(result, Status.APPROVED, 2, Status.LIVE, request.getUserIds());
     }
 
     @Test
@@ -248,7 +248,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 true, "BFA1", "BFA2", true), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9v"))
+                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9v"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -261,7 +261,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        assertResponse(result, Status.APPROVED, 0, Status.LIVE, request.getUsers());
+        assertResponse(result, Status.APPROVED, 0, Status.LIVE, request.getUserIds());
     }
 
     @Test
@@ -275,7 +275,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 true, "BFA1", "BFA2", false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -288,7 +288,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        assertResponse(result, Status.REJECTED, 1, Status.CREATE_APPROVED, request.getUsers());
+        assertResponse(result, Status.REJECTED, 1, Status.CREATE_APPROVED, request.getUserIds());
     }
 
     @Test
@@ -302,7 +302,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 true, "BFA1", "BFA2", false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445000"))
+                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445000"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -318,7 +318,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         String contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(ROLE_NAME_STCW));
 
-        assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUsers());
+        assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
     }
 
     @Test
@@ -332,7 +332,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 true, "BFA1", "BFA2", false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -359,7 +359,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 true, "BFA1", "BFA2", false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -386,7 +386,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 true, "BFA1", "BFA2", false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -413,7 +413,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 false, "BFA1", "BFA2", false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -441,7 +441,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 true, "1", "2", false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(new ArrayList<>())
+                .userIds(new ArrayList<>())
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -469,7 +469,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 true, "BFA1", "BFA2", false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -482,7 +482,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        assertResponse(result, Status.APPROVED, 0, Status.LIVE, request.getUsers());
+        assertResponse(result, Status.APPROVED, 0, Status.LIVE, request.getUserIds());
     }
 
     @Test
@@ -497,7 +497,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                                 true, "BFA1", "BFA2", false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -513,7 +513,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         String contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
 
-        assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUsers());
+        assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
     }
 
     public void setRoleAssignmentWireMock(HttpStatus status, String fileName) throws IOException {

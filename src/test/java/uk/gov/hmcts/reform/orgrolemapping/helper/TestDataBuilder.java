@@ -46,7 +46,7 @@ public class TestDataBuilder {
         ArrayList<String> users = new ArrayList<>();
         users.add(id_1);
         users.add(id_2);
-        return UserRequest.builder().users(users).build();
+        return UserRequest.builder().userIds(users).build();
     }
 
     public static UserAccessProfile buildUserAccessProfile1(boolean deleteFlag) {

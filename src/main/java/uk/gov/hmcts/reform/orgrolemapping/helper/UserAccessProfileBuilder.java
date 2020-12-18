@@ -89,7 +89,7 @@ public class UserAccessProfileBuilder {
 
     public static UserRequest buildUserRequest() {
         return UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445678", "123e4567-e89b-42d3-a456-556642445698"))
+                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445678", "123e4567-e89b-42d3-a456-556642445698"))
                 .build();
     }
 
@@ -99,7 +99,7 @@ public class UserAccessProfileBuilder {
         Set<UserProfile> userProfiles = new LinkedHashSet<>();
 
 
-        userRequest.getUsers().forEach(userId -> {
+        userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
                          CRDFeignClientFallback.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
                 assert inputStream != null;

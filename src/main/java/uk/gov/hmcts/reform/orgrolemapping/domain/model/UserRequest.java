@@ -13,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRequest implements Serializable {
-    private List<String> users;
+    private List<String> userIds;
 }
