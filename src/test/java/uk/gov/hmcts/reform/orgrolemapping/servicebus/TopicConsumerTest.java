@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class TopicConsumerTest {
+class TopicConsumerTest {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
