@@ -190,7 +190,6 @@ pitest {
                        'uk.gov.hmcts.reform.orgrolemapping.config.*',
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig',
                        'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
-                       'uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService',
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer',
                        'uk.gov.hmcts.reform.orgrolemapping.domain.model.*']
     threads = 15
@@ -399,6 +398,8 @@ dependencies {
 
     compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.40'
     compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.40'
+
+    compile group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.2.2'
     compile group: 'org.springframework', name: 'spring-tx', version: '5.2.9.RELEASE'
 
     compile(group: 'org.springframework', name: 'spring-jms', version: '5.2.9.RELEASE')
