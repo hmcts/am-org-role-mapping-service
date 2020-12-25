@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,13 +40,13 @@ public class RetrieveDataService {
 
 
     private final ParseRequestService parseRequestService;
-    private final CRDFeignClientFallback crdFeignClientFallback;
+    private final CRDFeignClient crdFeignClient;
 
 
     public Map<String, Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
 
-        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClientFallback.createRoleAssignment(userRequest);
+        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.getCaseworkerDetailsById(userRequest);
 
         log.info(
                 "Execution time of CRD Response : {} ms",

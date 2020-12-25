@@ -12,6 +12,9 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.util.Map;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,9 +25,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserRequest;
-
-import java.util.Map;
-import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 class RetrieveDataServiceTest {
@@ -38,7 +38,7 @@ class RetrieveDataServiceTest {
     @Test
     void retrieveCaseWorkerProfilesTest() {
 
-        when(crdFeignClientFallback.createRoleAssignment(TestDataBuilder.buildUserRequest()))
+        when(crdFeignClientFallback.getCaseworkerDetailsById(TestDataBuilder.buildUserRequest()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder
                         .buildListOfUserProfiles(false, false,"1", "2",
                         ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)));
@@ -48,7 +48,7 @@ class RetrieveDataServiceTest {
         assertEquals(1, result.size());
 
         Mockito.verify(crdFeignClientFallback, Mockito.times(1))
-                .createRoleAssignment(any(UserRequest.class));
+                .getCaseworkerDetailsById(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any());
     }
@@ -56,7 +56,7 @@ class RetrieveDataServiceTest {
     @Test
     void shouldReturnCaseWorkerProfile() {
 
-        when(crdFeignClientFallback.createRoleAssignment(any())).thenReturn(ResponseEntity
+        when(crdFeignClientFallback.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
                 .ok(buildUserProfile(buildUserRequest())));
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any());
         Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());

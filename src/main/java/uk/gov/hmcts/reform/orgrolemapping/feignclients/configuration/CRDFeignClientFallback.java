@@ -22,7 +22,7 @@ public class CRDFeignClientFallback implements CRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<List<UserProfile>> createRoleAssignment(UserRequest userRequest) {
+    public ResponseEntity<List<UserProfile>> getCaseworkerDetailsById(UserRequest userRequest) {
         return ResponseEntity.ok(new ArrayList<>(buildUserProfile(userRequest)));
     }
 
