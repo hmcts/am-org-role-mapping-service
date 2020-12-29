@@ -67,7 +67,7 @@ class ParseRequestServiceTest {
     void validateUserProfiles_throwsBadRequest_noRolesTest() {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false);
-        userProfiles.get(0).setRole(new ArrayList<>());
+        userProfiles.get(0).setRoles(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger());
 

@@ -57,11 +57,11 @@ public class ParseRequestService {
                 log.error("The base location is not available for the userProfile {} ", userProfile.getId());
                 isInvalid = true;
             }
-            if (CollectionUtils.isEmpty(userProfile.getWorkArea())) {
+            if (CollectionUtils.isEmpty(userProfile.getWorkAreas())) {
                 log.error("The work area is not available for the userProfile {} ", userProfile.getId());
                 isInvalid = true;
             }
-            if (CollectionUtils.isEmpty(userProfile.getRole())) {
+            if (CollectionUtils.isEmpty(userProfile.getRoles())) {
                 log.error("The role is not available for the userProfile {} ", userProfile.getId());
                 isInvalid = true;
             }

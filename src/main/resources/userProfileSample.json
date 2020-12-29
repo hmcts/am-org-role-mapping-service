@@ -11,7 +11,7 @@
     "deleteFlag": false,
     "createdTime": "2020-04-28T16:00:49",
     "lastUpdateTime": "2021-04-28T16:00:49",
-    "role": [
+    "roles": [
       {
         "roleId": 1,
         "roleName": "senior-tribunal-caseworker",
@@ -43,7 +43,7 @@
         "lastUpdateTime": "2021-04-28T16:00:49"
       }
     ],
-    "workArea": [
+    "workAreas": [
       {
         "areaOfWork": "1",
         "serviceCode": "BFA1",

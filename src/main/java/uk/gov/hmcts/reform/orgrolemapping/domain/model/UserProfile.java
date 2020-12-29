@@ -26,9 +26,9 @@ public class UserProfile {
     private LocalDateTime createdTime;
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
     private LocalDateTime lastUpdateTime;
-    private List<Role> role;
-    public List<BaseLocation> baseLocation;
-    private List<WorkArea> workArea;
+    private List<Role> roles;
+    private List<BaseLocation> baseLocation;
+    private List<WorkArea> workAreas;
 
     @Data
     @Builder

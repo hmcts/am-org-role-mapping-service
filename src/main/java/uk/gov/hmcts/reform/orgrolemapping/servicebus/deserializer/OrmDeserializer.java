@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
