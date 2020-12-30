@@ -1,0 +1,69 @@
+{
+  "_guid_": "S-003_CreateCaseworkerProfileInCRD",
+  "productName": "Caseworker Reference Data",
+  "operationName": "Create Caseworker Profile in CRD",
+  "method": "POST",
+  "uri": "{{CRD_URL}}/refdata/case-worker/users/",
+  "specs": [
+    "to create the caseworker profile"
+  ],
+  "users": {
+    "invokingUser": {
+      "username": "TEST_AM_USER4_BEFTA@test.local",
+      "password": "[[$TEST_AM_USER2_BEFTA_PWD]]"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "arrayInMap": [
+        {
+          "first_name": "cwrdtestuser1",
+          "last_name": "raok",
+          "email_id": "dummyemail38@gmaddil.com",
+          "region_id": 1,
+          "region": "National",
+          "user_type": "CTSC",
+          "delete_flag": false,
+          "idam_roles": [
+            "caseworker-iac-bulkscan"
+          ],
+          "roles": [
+            {
+              "role": "senior-tribunal-caseworker",
+              "is_primary": true
+            }
+          ],
+          "base_location": [
+            {
+              "location_id": 2191654,
+              "location": "Aberdeen Tribunal Hearing Centre",
+              "is_primary": true
+            }
+          ],
+          "work_area": [
+            {
+              "area_of_work": "1",
+              "service_code": "BAA1"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+
+      "caseWorkerRegistrationResponse": "Case Worker Profiles Created."
+    }
+  }
+}
