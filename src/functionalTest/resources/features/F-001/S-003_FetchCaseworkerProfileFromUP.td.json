@@ -1,11 +1,11 @@
 {
-  "_guid_": "S-003_CreateCaseworkerProfileInCRD",
-  "productName": "Caseworker Reference Data",
-  "operationName": "Create Caseworker Profile in CRD",
-  "method": "POST",
-  "uri": "{{CRD_URL}}/refdata/case-worker/users/",
+  "_guid_": "S-003_FetchCaseworkerProfileFromUP",
+  "productName": "Caseworker User Profile",
+  "operationName": "Fetch Caseworker From User Profile",
+  "method": "GET",
+  "uri": "{{USER_PROFILE_URL}}/v1/userprofile?email={email}",
   "specs": [
-    "to create the caseworker profile"
+    "to get the User Profile by email id"
   ],
   "users": {
     "invokingUser": {
@@ -19,12 +19,12 @@
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
       "Content-Type": "application/json"
     },
-    "body": {
-      "_extends_" : "CreateSingleUserProfileCrd"
+    "pathVariables": {
+      "email":"CWR-func-test-user-dwok9N8x6Z@cwrfunctestuser.com"
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_201_Response",
+    "_extends_": "Common_200_Response",
     "headers": {
       "Content-Length": "[[ANYTHING_PRESENT]]",
       "Content-Type": "application/json"

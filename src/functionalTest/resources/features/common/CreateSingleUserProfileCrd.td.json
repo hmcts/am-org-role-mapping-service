@@ -1,0 +1,37 @@
+{
+  "_guid_": "CreateSingleUserProfileCrd",
+  "arrayInMap": [
+    {
+      "first_name": "cwrdtestuser1",
+      "last_name": "raok",
+      "email_id": "${}${[scenarioContext][customValues][generateEmailId]}",
+      "region_id": 1,
+      "region": "National",
+      "user_type": "CTSC",
+      "delete_flag": false,
+      "idam_roles": [
+        "caseworker-iac-bulkscan"
+      ],
+      "roles": [
+        {
+          "role": "senior-tribunal-caseworker",
+          "is_primary": true
+        }
+      ],
+      "base_location": [
+        {
+          "location_id": 2191654,
+          "location": "Aberdeen Tribunal Hearing Centre",
+          "is_primary": true
+        }
+      ],
+      "work_area": [
+        {
+          "area_of_work": "1",
+          "service_code": "BAA1"
+        }
+      ]
+    }
+  ]
+
+}

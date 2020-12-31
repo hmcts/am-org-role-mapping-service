@@ -31,7 +31,8 @@ Feature: Create Role Assignments for Users
     Given a user with [an active IDAM profile with full permissions],
     When a request is prepared with appropriate values,
     And the request [contains the data received from CRD API got transformed],
-    And a successful call [to create the caseworker profile] as in [S-003_CreateCaseworkerProfileInCRD].
+    And a successful call [to create the caseworker profile] as in [S-003_CreateCaseworkerProfileInCRD]
+    And a successful call [to get the User Profile by email id] as in [S-003_FetchCaseworkerProfileFromUP]
     And the request [contains multiple users with multiple role assignments],
     And it is submitted to call the [Create Role Assignments] operation of [Organisation Role Mapping Service],
     Then a positive response is received,
