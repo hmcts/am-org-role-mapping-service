@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserProfile {
     private String id; // can this be of type UUID?
     private String firstName;
@@ -25,23 +29,25 @@ public class UserProfile {
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
     private LocalDateTime createdTime;
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
-    private LocalDateTime lastUpdateTime;
-    private List<Role> roles;
+    private LocalDateTime lastUpdatedTime;
+    private List<Role> role;
     private List<BaseLocation> baseLocation;
-    private List<WorkArea> workAreas;
+    private List<WorkArea> workArea;
 
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Role {
         private String roleId;
+        @JsonProperty("role")
         private String roleName;
-        private boolean primary;
+        private boolean isPrimary;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
-        private LocalDateTime lastUpdateTime;
+        private LocalDateTime lastUpdatedTime;
 
     }
 
@@ -49,14 +55,15 @@ public class UserProfile {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class BaseLocation {
         private String locationId;
         private String location;
-        private boolean primary;
+        private boolean isPrimary;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
-        private LocalDateTime lastUpdateTime;
+        private LocalDateTime lastUpdatedTime;
 
     }
 
@@ -64,13 +71,14 @@ public class UserProfile {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class WorkArea {
         private String areaOfWork;
         private String serviceCode;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
-        private LocalDateTime lastUpdateTime;
+        private LocalDateTime lastUpdatedTime;
 
     }
 

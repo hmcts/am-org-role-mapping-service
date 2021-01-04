@@ -79,9 +79,9 @@ public class TestDataBuilder {
 
 
     public static UserProfile.BaseLocation buildBaseLocation(boolean primaryLocation) {
-        return UserProfile.BaseLocation.builder().primary(primaryLocation)
+        return UserProfile.BaseLocation.builder().isPrimary(primaryLocation)
                 .location("Aberdeen Tribunal Hearing Centre").locationId("219164")
-                .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
+                .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
@@ -98,7 +98,7 @@ public class TestDataBuilder {
 
     public static UserProfile.WorkArea buildWorkArea(String area, String serviceCode) {
         return UserProfile.WorkArea.builder().areaOfWork(area).serviceCode(serviceCode)
-                .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
+                .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
@@ -114,9 +114,9 @@ public class TestDataBuilder {
     }
 
     public static UserProfile.Role buildRole(String id, boolean primaryRole, String roleName) {
-        return UserProfile.Role.builder().roleId(id).primary(primaryRole)
+        return UserProfile.Role.builder().roleId(id).isPrimary(primaryRole)
                 .roleName(roleName)
-                .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
+                .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
@@ -147,14 +147,14 @@ public class TestDataBuilder {
                 .id(id)
                 .firstName("James").lastName("Bond").emailId("007@MI6.gov")
                 .baseLocation(buildListOfBaseLocations(enableLocationList, primaryLocation1, primaryLocation2))
-                .workAreas(buildListOfWorkAreas(enableWorkAreaList, workArea1, workArea2))
+                .workArea(buildListOfWorkAreas(enableWorkAreaList, workArea1, workArea2))
                 .createdTime(LocalDateTime.now())
-                .lastUpdateTime(LocalDateTime.now().minusDays(1L))
+                .lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .region("London").regionId(1234L)
                 .userType("Secret Agent")
                 .userTypeId("007")
                 .deleteFlag(deleteFlag)
-                .roles(buildListOfRoles(multiRole, roleId1, roleId2, roleName1, roleName2))
+                .role(buildListOfRoles(multiRole, roleId1, roleId2, roleName1, roleName2))
                 .build();
     }
 

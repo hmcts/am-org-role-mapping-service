@@ -106,8 +106,8 @@ public class AssignmentRequestBuilder {
         //roleId X serviceCode
         Set<UserAccessProfile> userAccessProfiles = new HashSet<>();
 
-        userProfile.getRoles().forEach(role ->
-            userProfile.getWorkAreas().forEach(workArea -> {
+        userProfile.getRole().forEach(role ->
+            userProfile.getWorkArea().forEach(workArea -> {
                 UserAccessProfile userAccessProfile = new UserAccessProfile();
                 userAccessProfile.setId(userProfile.getId());
                 userAccessProfile.setDeleteFlag(userProfile.isDeleteFlag());
