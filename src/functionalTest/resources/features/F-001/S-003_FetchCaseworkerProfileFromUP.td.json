@@ -20,7 +20,7 @@
       "Content-Type": "application/json"
     },
     "pathVariables": {
-      "email":"CWR-func-test-user-dwok9N8x6Z@cwrfunctestuser.com"
+      "email": "${[scenarioContext][parentContext][childContexts][S-003_CreateCaseworkerProfileInCRD][testData][request][body][arrayInMap][0][email_id]}"
     }
   },
   "expectedResponse": {
@@ -29,8 +29,16 @@
       "Content-Length": "[[ANYTHING_PRESENT]]",
       "Content-Type": "application/json"
     },
-    "body": {
-      "caseWorkerRegistrationResponse": "Case Worker Profiles Created."
+    "body" : {
+      "email" : "${[scenarioContext][parentContext][childContexts][S-003_CreateCaseworkerProfileInCRD][testData][request][body][arrayInMap][0][email_id]}",
+      "firstName" : "[[ANYTHING_PRESENT]]",
+      "lastName" : "[[ANYTHING_PRESENT]]",
+      "idamStatus" :"[[ANYTHING_PRESENT]]",
+      "roleAdditionResponse" : "[[ANY_NULLABLE]]",
+      "roleDeletionResponse" : "[[ANY_NULLABLE]]",
+      "attributeResponse" : "[[ANY_NULLABLE]]",
+      "roles" : "[[ANY_NULLABLE]]",
+      "userIdentifier" : "[[ANYTHING_PRESENT]]"
     }
   }
 }
