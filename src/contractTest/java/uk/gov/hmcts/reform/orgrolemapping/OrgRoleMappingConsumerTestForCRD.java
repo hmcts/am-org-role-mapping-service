@@ -105,16 +105,28 @@ public class OrgRoleMappingConsumerTestForCRD {
         return newJsonBody(o -> o
                     .stringType("id", "91e07fe0-9575-472b-bd1f-33be2944c1f4")
                     .stringValue("“idamRoles”", null)
-                    .stringValue("“first_name”", "testUser1")
-                    .stringValue("roleType", "ORGANISATION")
-                    .stringValue("roleName", "senior-tribunal-caseworker")
-                    .stringValue("classification", "PRIVATE")
-                    .stringValue("grantType", "STANDARD")
-                    .stringValue("roleCategory", "STAFF")
-                    .booleanValue("readOnly", false)
-                    .object("attributes", attribute -> attribute
-                            .stringType("jurisdiction", "IA")
-                            .stringType("primaryLocation", "500A2S"))
+                    .stringValue("“first_name”", "testFirstname")
+                    .stringValue("“last_name”", "TestSurname")
+                    .stringValue("email_id", "sam.test@gmail.com")
+                    .stringValue("regionId", "1")
+                    .stringValue("region", "National")
+                    .object("base_location", baseLocation -> baseLocation
+                        .stringType("location_id", "2191654")
+                        .stringType("location", "Aberdeen Tribunal Hearing Centre")
+                        .booleanValue("is_primary", true)
+                    )
+                    .stringValue("user_type_id", "1")
+                    .stringValue("user_type", "HMCTS")
+                    .object("role", role -> role
+                        .stringType("role_id", "1")
+                        .stringType("role", "senior-tribunal-caseworker")
+                        .booleanValue("is_primary", true)
+                    )
+                    .object("work_area", workArea -> workArea
+                            .stringType("service_code", "BFA1")
+                            .stringType("area_of_work", "1")
+                    )
+                    .booleanValue("delete_flag", false)
                 ).build();
     }
 
@@ -133,5 +145,4 @@ public class OrgRoleMappingConsumerTestForCRD {
         headers.add("Authorization", "Bearer " + "2345");
         return headers;
     }
-
 }
