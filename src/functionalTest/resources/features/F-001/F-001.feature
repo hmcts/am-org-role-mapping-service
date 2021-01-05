@@ -34,10 +34,9 @@ Feature: Create Role Assignments for Users
     And the request [contains the data received from CRD API got transformed],
     And a successful call [to create the caseworker profile] as in [S-003_CreateCaseworkerProfileInCRD]
     And a successful call [to get the User Profile by email id] as in [S-003_FetchCaseworkerProfileFromUP]
-    And the request [contains multiple users with multiple role assignments],
-    And it is submitted to call the [Create Role Assignments] operation of [Organisation Role Mapping Service],
-    Then a positive response is received,
-    And the response has all other details as expected,
+    And the request [contains single users with single role assignment],
+    And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing]
+    And a successful call [to get the assignment from RAS] as in [S-003_FetchAssignmentFromRAS]
 #    And a successful call [to delete role assignments just created above] as in [S-001_DeleteDataForRoleAssignments].
 
   #Will implement this once ORM integrated with CRD API.

@@ -1,0 +1,60 @@
+{
+  "_guid_": "S-003_FetchAssignmentFromRAS",
+  "productName": "Role Assignment Service",
+  "operationName": "Fetch Assignment From Role Assignment Service",
+  "method": "GET",
+  "uri": "{{RAS_URL}}/am/role-assignments/actors/{actorId}",
+  "specs": [
+    "to get the assignment from RAS"
+  ],
+  "users": {
+    "invokingUser": {
+      "username": "TEST_AM_USER4_BEFTA@test.local",
+      "password": "[[$TEST_AM_USER2_BEFTA_PWD]]"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "pathVariables": {
+      "actorId": "${[scenarioContext][parentContext][childContexts][S-003_FetchCaseworkerProfileFromUP][testData][actualResponse][body][userIdentifier]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "links": [
+        {
+          "rel": "binary",
+          "href": "[[ANYTHING_PRESENT]]"
+        }
+      ],
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][parentContext][childContexts][S-003_FetchCaseworkerProfileFromUP][testData][actualResponse][body][userIdentifier]}",
+          "roleType": "ORGANISATION",
+          "roleName": "senior-tribunal-caseworker",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "STAFF",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "2191654",
+            "jurisdiction": "IA"
+          },
+          "authorisations": []
+        }
+      ]
+    }
+  }
+}
