@@ -1,6 +1,5 @@
 server:
   port: ${PORT:4098}
-
 management:
   health:
     defaults:
@@ -20,7 +19,6 @@ management:
       base-path: /
       exposure:
         include: 'health'
-
 security:
   anonymousPaths:
     - "/"
@@ -38,7 +36,6 @@ security:
     - "/favicon.ico"
   authorisedRoles:
   authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org_role_mapping_service,am_role_assignment_service}
-
 spring:
   application:
     name: Organisation Role Mapping Service
@@ -58,9 +55,7 @@ spring:
           oidc:
             client-id: microservicekey-am-role-assignment-service
             client-secret: ${AM_ROLE_ASSIGNMENT_SERVICE_SECRET:AAAAAAAAAAAAAAAA}
-
 oidc.issuer: ${OIDC_ISSUER_URL:https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts}
-
 ### dependency configuration
 idam:
   s2s-auth:
@@ -76,19 +71,16 @@ idam:
     secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:am_docker_secret}
     redirect_uri: ${ORG_ROLE_MAPPING_IDAM_REDIRECT_URI:http://localhost:4096/oauth2redirect}
     admin:
-      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:orm.admin@hmcts.NET}
+      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:TEST_AM_USER4_BEFTA@test.local}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:Pa55word11}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
-
 testS2S:
   api:
     url: "/testS2SAuthorization"
 integrationTest:
   api:
     url: "/"
-
 feign:
-
   client:
     config:
       default:
@@ -96,34 +88,28 @@ feign:
         readTimeout: 5000
         loggerLevel: FULL
       crdclient:
-        url: ${CASE_WORKER_REF_APP_URL:http://localhost:4099}
+        url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
       roleAssignmentApp:
         url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
-
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
 roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
-
 amqp:
-  host: ${AMQP_HOST:test}
-  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
-  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:test}
-  topic: ${AMQP_TOPIC_NAME:aat}
+  host: ${AMQP_HOST:rd-servicebus-sandbox.servicebus.windows.net}
+  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:SendAndListenSharedAccessKey}
+  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:97E6uvE6xHcqHAVlxufN1PH75tMHoZUe78FhsCbLLLQ=}
+  topic: ${AMQP_TOPIC_NAME:rd-caseworker-topic-sandbox/subscriptions/temporary}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
-
-
 send-letter:
   url: ${SEND_LETTER_SERVICE_BASEURL:http://localhost:4021}
   enabled: ${SEND_LETTER_SERVICE_ENABLED:true}
   maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
-
 launchdarkly:
   sdk:
     key: ${LD_SDK_KEY:}
     environment: ${LAUNCH_DARKLY_ENV:pr}
     user: am-${LAUNCH_DARKLY_ENV:local}
-
 token:
   cache:
     ttl:
