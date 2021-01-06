@@ -44,7 +44,7 @@ public class IntTestDataBuilder {
     }
 
     public static UserProfile.BaseLocation buildBaseLocation(boolean primaryLocation) {
-        return UserProfile.BaseLocation.builder().isPrimary(primaryLocation)
+        return UserProfile.BaseLocation.builder().primary(primaryLocation)
                 .location("Aberdeen Tribunal Hearing Centre").locationId("219164")
                 .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
@@ -79,7 +79,7 @@ public class IntTestDataBuilder {
     }
 
     public static UserProfile.Role buildRole(String id, boolean primaryRole, String roleName) {
-        return UserProfile.Role.builder().roleId(id).isPrimary(primaryRole)
+        return UserProfile.Role.builder().roleId(id).primary(primaryRole)
                 .roleName(roleName)
                 .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();

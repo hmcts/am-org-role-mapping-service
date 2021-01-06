@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class UserProfile {
+public class UserProfile implements Serializable {
     private String id; // can this be of type UUID?
     private String firstName;
     private String lastName;
@@ -39,11 +40,12 @@ public class UserProfile {
     @AllArgsConstructor
     @NoArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class Role {
+    public static class Role implements Serializable {
         private String roleId;
         @JsonProperty("role")
         private String roleName;
-        private boolean isPrimary;
+        @JsonProperty("is_primary")
+        private boolean primary;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
@@ -56,10 +58,11 @@ public class UserProfile {
     @AllArgsConstructor
     @NoArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class BaseLocation {
+    public static class BaseLocation implements Serializable {
         private String locationId;
         private String location;
-        private boolean isPrimary;
+        @JsonProperty("is_primary")
+        private boolean primary;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
@@ -72,7 +75,7 @@ public class UserProfile {
     @AllArgsConstructor
     @NoArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class WorkArea {
+    public static class WorkArea implements Serializable {
         private String areaOfWork;
         private String serviceCode;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")

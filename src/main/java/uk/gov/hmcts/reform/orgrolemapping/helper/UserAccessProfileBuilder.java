@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Setter;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -105,6 +106,7 @@ public class UserAccessProfileBuilder {
                 assert inputStream != null;
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.registerModule(new JavaTimeModule());
+                objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
                 UserProfile userProfile = objectMapper.readValue(inputStream, UserProfile.class);
                 userProfile.setId(userId);
                 userProfiles.add(userProfile);
