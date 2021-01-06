@@ -90,7 +90,7 @@ public class UserAccessProfileBuilder {
 
     public static UserRequest buildUserRequest() {
         return UserRequest.builder()
-                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445678", "123e4567-e89b-42d3-a456-556642445698"))
+                .userIds(Arrays.asList(ID1, "123e4567-e89b-42d3-a456-556642445698"))
                 .build();
     }
 
