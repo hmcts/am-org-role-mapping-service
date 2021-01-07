@@ -45,6 +45,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class OrgRoleMappingConsumerTestForCRD {
 
     private static final String USER_ID = "234873";
+    private static final String USER_ID2 = "234879";
     private static final String CRD_GET_ROLE_ASSIGNMENT_URL = "/refdata/case-worker/users/fetchUsersById";
 
     @BeforeEach
@@ -64,6 +65,15 @@ public class OrgRoleMappingConsumerTestForCRD {
                 + "}";
     }
 
+    private String createCRDMultipleUsersRequest() {
+        return "{\n"
+                + "\"userIds\": ["
+                + USER_ID + "\n"
+                + "," + "\n"
+                + USER_ID2  + "]\n"
+                + "}";
+    }
+
     @Pact(provider = "crd_case_worker_ref_service", consumer = "am_org_role_mapping")
     public RequestResponsePact executeGetCRDProfileUsingFetchByUserIdAndGet200(PactDslWithProvider builder)
             throws IOException {
@@ -78,6 +88,23 @@ public class OrgRoleMappingConsumerTestForCRD {
                 .status(HttpStatus.OK.value())
                 .headers(getResponseHeaders())
                 .body(createCRDResponse())
+                .toPact();
+    }
+
+    @Pact(provider = "crd_case_worker_ref_service", consumer = "am_org_role_mapping")
+    public RequestResponsePact executeGetCRDProfileMultipleUsersUsingFetchByUserIdAndGet200(PactDslWithProvider builder)
+            throws IOException {
+
+        return builder
+                .given("A list of multiple users for CRD request")
+                .uponReceiving("CRD takes s2s/auth token and returns user profiles")
+                .path(CRD_GET_ROLE_ASSIGNMENT_URL)
+                .method(HttpMethod.POST.toString())
+                .body(createCRDMultipleUsersRequest(),String.valueOf(ContentType.JSON))
+                .willRespondWith()
+                .status(HttpStatus.OK.value())
+                .headers(getResponseHeaders())
+                .body(createCRDMultipleUsersResponse())
                 .toPact();
     }
 
@@ -103,8 +130,34 @@ public class OrgRoleMappingConsumerTestForCRD {
         assertThat(roleRecord.get("role"), equalTo("senior-tribunal-caseworker"));
     }
 
-    private DslPart createCRDResponse() {
+    @Test
+    @PactTestFor(pactMethod = "executeGetCRDProfileMultipleUsersUsingFetchByUserIdAndGet200")
+    void getCRDProfileMultipleUsersUsingFetchByUserIdAndGet200Test(MockServer mockServer)
+            throws JSONException, IOException {
+        String actualResponseBody =
+                SerenityRest
+                        .given()
+                        .headers(getHttpHeaders())
+                        .contentType(ContentType.JSON)
+                        .body(createCRDMultipleUsersRequest())
+                        .post(mockServer.getUrl() + CRD_GET_ROLE_ASSIGNMENT_URL)
+                        .then()
+                        .log().all().extract().asString();
 
+        JSONObject jsonResponse = new JSONObject(actualResponseBody);
+        JSONArray crdResponse = (JSONArray)jsonResponse.get("");
+        JSONObject firstRecord = (JSONObject)crdResponse.get(0);
+        JSONArray roleObject = (JSONArray)firstRecord.get("role");
+        JSONObject roleRecord = (JSONObject)roleObject.get(0);
+        assertThat(roleRecord.get("role"), equalTo("senior-tribunal-caseworker"));
+
+        JSONObject secondRecord = (JSONObject)crdResponse.get(1);
+        JSONArray roleObject2 = (JSONArray)secondRecord.get("work_area");
+        JSONObject roleRecord2 = (JSONObject)roleObject2.get(0);
+        assertThat(roleRecord2.get("service_code"), equalTo("BFA1"));
+    }
+
+    private DslPart createCRDResponse() {
         return newJsonBody(o -> o
                 .minArrayLike("", 1, 1,
                     crdResponse -> crdResponse
@@ -141,6 +194,83 @@ public class OrgRoleMappingConsumerTestForCRD {
                         });
                     })
                     .booleanValue("delete_flag", false)
+                )
+        ).build();
+    }
+
+    private DslPart createCRDMultipleUsersResponse() {
+        return newJsonBody(o -> o
+                .minArrayLike("", 2, 2,
+                        crdResponse -> crdResponse
+                                .stringType("id", "91e07fe0-9575-472b-bd1f-33be2944c1f4")
+                                .stringValue("idamRoles", null)
+                                .stringValue("first_name", "testFirstname")
+                                .stringValue("last_name", "TestSurname")
+                                .stringValue("email_id", "sam.test@gmail.com")
+                                .stringValue("regionId", "1")
+                                .stringValue("region", "National")
+                                .array("base_location", (bl) -> {
+                                    bl.object((bo) -> {
+                                        bo
+                                                .stringType("location_id", "2191654")
+                                                .stringType("location", "Aberdeen Tribunal Hearing Centre")
+                                                .booleanValue("is_primary", true);
+                                    });
+                                })
+                                .stringValue("user_type_id", "1")
+                                .stringValue("user_type", "HMCTS")
+                                .array("role", (r) -> {
+                                    r.object((ro) -> {
+                                        ro
+                                                .stringType("role_id", "1")
+                                                .stringType("role", "senior-tribunal-caseworker")
+                                                .booleanValue("is_primary", true);
+                                    });
+                                })
+                                .array("work_area", (wa) -> {
+                                    wa.object((wo) -> {
+                                        wo
+                                                .stringType("service_code", "BFA1")
+                                                .stringType("area_of_work", "1");
+                                    });
+                                })
+                                .booleanValue("delete_flag", false)
+                )
+                .minArrayLike("", 2, 2,
+                        crdResponse -> crdResponse
+                                .stringType("id", "91e07fe0-9575-472b-bd1f-33be2944c1f4")
+                                .stringValue("idamRoles", null)
+                                .stringValue("first_name", "testFirstname")
+                                .stringValue("last_name", "TestSurname")
+                                .stringValue("email_id", "sam.test@gmail.com")
+                                .stringValue("regionId", "1")
+                                .stringValue("region", "National")
+                                .array("base_location", (bl) -> {
+                                    bl.object((bo) -> {
+                                        bo
+                                                .stringType("location_id", "2191654")
+                                                .stringType("location", "Aberdeen Tribunal Hearing Centre")
+                                                .booleanValue("is_primary", true);
+                                    });
+                                })
+                                .stringValue("user_type_id", "1")
+                                .stringValue("user_type", "HMCTS")
+                                .array("role", (r) -> {
+                                    r.object((ro) -> {
+                                        ro
+                                                .stringType("role_id", "1")
+                                                .stringType("role", "senior-tribunal-caseworker")
+                                                .booleanValue("is_primary", true);
+                                    });
+                                })
+                                .array("work_area", (wa) -> {
+                                    wa.object((wo) -> {
+                                        wo
+                                                .stringType("service_code", "BFA1")
+                                                .stringType("area_of_work", "1");
+                                    });
+                                })
+                                .booleanValue("delete_flag", false)
                 )
         ).build();
     }
