@@ -9,8 +9,8 @@
   ],
   "users": {
     "invokingUser": {
-      "username": "TEST_AM_USER4_BEFTA@test.local",
-      "password": "[[$TEST_AM_USER2_BEFTA_PWD]]"
+      "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
+      "password": "[[$TEST_AM_CRD_USER1_BEFTA_PASSWORD]]"
     }
   },
   "request": {
