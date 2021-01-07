@@ -3,7 +3,7 @@
   "productName": "Organisation Role Mapping",
   "operationName": "To provide adequate time for RAS to create records",
   "method": "GET",
-  "uri": "{{TEST_URL}}/sleep",
+  "uri": "/sleep",
   "specs": [
     "to provide adequate time for RAS to create records"
   ],
