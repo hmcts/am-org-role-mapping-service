@@ -39,7 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service_search_query")
+@PactTestFor(providerName = "crd_case_worker_ref_service")
 @PactFolder("pacts")
 @SpringBootTest
 public class OrgRoleMappingConsumerTestForCRD {
@@ -72,10 +72,10 @@ public class OrgRoleMappingConsumerTestForCRD {
                 .given("A list of users for CRD request")
                 .uponReceiving("CRD takes s2s/auth token and returns user profiles")
                 .path(CRD_GET_ROLE_ASSIGNMENT_URL)
-                .method( HttpMethod.POST.toString())
-                .body(createCRDUserRequest(), String.valueOf( ContentType.JSON))
+                .method(HttpMethod.POST.toString())
+                .body(createCRDUserRequest(),String.valueOf(ContentType.JSON))
                 .willRespondWith()
-                .status( HttpStatus.OK.value())
+                .status(HttpStatus.OK.value())
                 .headers(getResponseHeaders())
                 .body(createCRDResponse())
                 .toPact();
@@ -96,38 +96,53 @@ public class OrgRoleMappingConsumerTestForCRD {
                         .log().all().extract().asString();
 
         JSONObject jsonResponse = new JSONObject(actualResponseBody);
-        JSONArray crdResponse = (JSONArray)jsonResponse.get("role");
-        JSONObject first = (JSONObject)crdResponse.get(0);
-        assertThat(first.get("“role_id”"), equalTo("1"));
+        JSONArray crdResponse = (JSONArray)jsonResponse.get("");
+        JSONObject firstRecord = (JSONObject)crdResponse.get(0);
+        JSONArray roleObject = (JSONArray)firstRecord.get("role");
+        JSONObject roleRecord = (JSONObject)roleObject.get(0);
+        assertThat(roleRecord.get("role"), equalTo("senior-tribunal-caseworker"));
     }
 
     private DslPart createCRDResponse() {
+
         return newJsonBody(o -> o
+                .minArrayLike("", 1, 1,
+                    crdResponse -> crdResponse
                     .stringType("id", "91e07fe0-9575-472b-bd1f-33be2944c1f4")
-                    .stringValue("“idamRoles”", null)
-                    .stringValue("“first_name”", "testFirstname")
-                    .stringValue("“last_name”", "TestSurname")
+                    .stringValue("idamRoles", null)
+                    .stringValue("first_name", "testFirstname")
+                    .stringValue("last_name", "TestSurname")
                     .stringValue("email_id", "sam.test@gmail.com")
                     .stringValue("regionId", "1")
                     .stringValue("region", "National")
-                    .object("base_location", baseLocation -> baseLocation
-                        .stringType("location_id", "2191654")
-                        .stringType("location", "Aberdeen Tribunal Hearing Centre")
-                        .booleanValue("is_primary", true)
-                    )
+                    .array("base_location", (bl) -> {
+                        bl.object((bo) -> {
+                            bo
+                                .stringType("location_id", "2191654")
+                                .stringType("location", "Aberdeen Tribunal Hearing Centre")
+                                .booleanValue("is_primary", true);
+                        });
+                    })
                     .stringValue("user_type_id", "1")
                     .stringValue("user_type", "HMCTS")
-                    .object("role", role -> role
-                        .stringType("role_id", "1")
-                        .stringType("role", "senior-tribunal-caseworker")
-                        .booleanValue("is_primary", true)
-                    )
-                    .object("work_area", workArea -> workArea
-                            .stringType("service_code", "BFA1")
-                            .stringType("area_of_work", "1")
-                    )
+                    .array("role", (r) -> {
+                        r.object((ro) -> {
+                            ro
+                                .stringType("role_id", "1")
+                                .stringType("role", "senior-tribunal-caseworker")
+                                .booleanValue("is_primary", true);
+                        });
+                    })
+                    .array("work_area", (wa) -> {
+                        wa.object((wo) -> {
+                            wo
+                                .stringType("service_code", "BFA1")
+                                .stringType("area_of_work", "1");
+                        });
+                    })
                     .booleanValue("delete_flag", false)
-                ).build();
+                )
+        ).build();
     }
 
     @NotNull
