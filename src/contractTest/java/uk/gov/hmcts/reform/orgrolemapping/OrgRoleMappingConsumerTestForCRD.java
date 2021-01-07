@@ -201,7 +201,7 @@ public class OrgRoleMappingConsumerTestForCRD {
     private DslPart createCRDMultipleUsersResponse() {
         return newJsonBody(o -> o
                 .minArrayLike("", 2, 2,
-                        crdResponse -> crdResponse
+                    crdResponse -> crdResponse
                                 .stringType("id", "91e07fe0-9575-472b-bd1f-33be2944c1f4")
                                 .stringValue("idamRoles", null)
                                 .stringValue("first_name", "testFirstname")
@@ -237,7 +237,7 @@ public class OrgRoleMappingConsumerTestForCRD {
                                 .booleanValue("delete_flag", false)
                 )
                 .minArrayLike("", 2, 2,
-                        crdResponse -> crdResponse
+                    crdResponse -> crdResponse
                                 .stringType("id", "91e07fe0-9575-472b-bd1f-33be2944c1f4")
                                 .stringValue("idamRoles", null)
                                 .stringValue("first_name", "testFirstname")
