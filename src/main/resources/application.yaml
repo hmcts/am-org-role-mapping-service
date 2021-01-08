@@ -105,10 +105,10 @@ OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
 roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 
 amqp:
-  host: ${AMQP_HOST:rd-servicebus-sandbox.servicebus.windows.net}
-  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:SendAndListenSharedAccessKey}
-  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:97E6uvE6xHcqHAVlxufN1PH75tMHoZUe78FhsCbLLLQ=}
-  topic: ${AMQP_TOPIC_NAME:rd-caseworker-topic-sandbox/subscriptions/BeftaFunctionalTest}
+  host: ${AMQP_HOST:test}
+  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
+  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:test}
+  topic: ${AMQP_TOPIC_NAME:aat}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
 
