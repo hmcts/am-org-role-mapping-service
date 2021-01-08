@@ -62,5 +62,5 @@ withNightlyPipeline(type, product, component) {
   env.AMQP_TOPIC_NAME = "rd-caseworker-topic-sandbox/subscriptions/BeftaFunctionalTest"
   overrideVaultEnvironments(vaultOverrides)
 
-  /*enableMutationTest()*/
+  enableMutationTest()
 }
