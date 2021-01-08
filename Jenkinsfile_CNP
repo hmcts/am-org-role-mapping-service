@@ -64,7 +64,7 @@ env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
 env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
 env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
-env.CRD_URL = "https://rd-caseworker-ref-api-aat.service.core-compute-aat.internal"
+env.CRD_URL = "http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal"
 env.USER_PROFILE_URL= "https://rd-user-profile-api-pr-575.service.core-compute-preview.internal"
 // Vars for Kubernetes PACT
 env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
