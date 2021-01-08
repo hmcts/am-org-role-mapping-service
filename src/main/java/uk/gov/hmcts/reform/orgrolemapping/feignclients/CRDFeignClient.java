@@ -22,7 +22,6 @@ public interface CRDFeignClient {
     @GetMapping(value = "/")
     public String getServiceStatus();
 
-
     @PostMapping(value = "/refdata/case-worker/users/fetchUsersById")
     public ResponseEntity<List<UserProfile>> getCaseworkerDetailsById(UserRequest userRequest);
 
