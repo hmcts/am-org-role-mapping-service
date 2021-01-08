@@ -9,7 +9,8 @@ java:
         - AppInsightsInstrumentationKey
         - am-org-role-mapping-service-s2s-secret
         - role-assignment-service-LD-SDK-KEY
-        - role-assignment-service-IDAM-CLIENT-SECRET
+        - orm-IDAM-CLIENT-ID
+        - orm-IDAM-CLIENT-SECRET
         - role-assignment-service-IDAM-ADMIN-SECRET
         - caseworker-topic-primary-send-listen-shared-access-key
   environment:
@@ -22,7 +23,6 @@ java:
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
-    ORG_ROLE_MAPPING_IDAM_CLIENT_ID: am_role_assignment
     AMQP_HOST: rd-servicebus-{{ .Values.global.environment }}.servicebus.windows.net
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
     AMQP_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}/subscriptions/rd-caseworker-subscription-{{ .Values.global.environment }}

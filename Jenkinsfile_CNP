@@ -37,8 +37,9 @@ def secrets = [
       secret('microservicekey-am-org-role-mapping-service', 'AM_ORG_ROLE_MAPPING_SERVICE_SECRET')
     ],
     'am-${env}': [
-      secret('role-assignment-service-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
-      secret('role-assignment-service-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
+      secret('orm-IDAM-CLIENT-ID', 'ORM_IDAM_CLIENT_ID'),
+      secret('orm-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
+      secret('orm-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
       secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY'),
       secret('test-am-user2-befta-pwd', 'TEST_AM_USER2_BEFTA_PWD'),
       secret('test-am-crd-user1-befta', 'TEST_AM_CRD_USER1_BEFTA'),
@@ -59,7 +60,6 @@ env.OAUTH2_ACCESS_TOKEN_TYPE = "OIDC"
 env.BEFTA_RESPONSE_HEADER_CHECK_POLICY = "JUST_WARN"
 env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
 env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities%20create-user%20manage-user"
-env.IDAM_CLIENT_ID="am_role_assignment"
 env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
 env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
