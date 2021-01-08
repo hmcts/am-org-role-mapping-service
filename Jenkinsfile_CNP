@@ -63,7 +63,6 @@ env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities%20create-us
 env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
 env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
-env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
 env.CRD_URL = "http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal"
 env.USER_PROFILE_URL= "https://rd-user-profile-api-pr-575.service.core-compute-preview.internal"
 // Vars for Kubernetes PACT
@@ -73,9 +72,11 @@ env.AMQP_TOPIC_NAME= "rd-caseworker-topic-sandbox/subscriptions/BeftaFunctionalT
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
     env.LAUNCH_DARKLY_ENV = "pr"
+    env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-pr-580.service.core-compute-preview.internal"
   }
   else if(env.BRANCH_NAME == 'master') {
     env.LAUNCH_DARKLY_ENV = "aat"
+    env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
   }
   else {
     env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
