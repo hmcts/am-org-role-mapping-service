@@ -1,6 +1,6 @@
 {
   "provider": {
-    "name": "am_role_assignment_service_delete_actor"
+    "name": "am_role_assignment_service_delete"
   },
   "consumer": {
     "name": "am_org_role_mapping"

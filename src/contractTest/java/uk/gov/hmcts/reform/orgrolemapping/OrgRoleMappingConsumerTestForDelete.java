@@ -27,7 +27,7 @@ import java.io.IOException;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service_delete_actor")
+@PactTestFor(providerName = "am_role_assignment_service_delete")
 @PactFolder("pacts")
 @SpringBootTest
 public class OrgRoleMappingConsumerTestForDelete {
@@ -49,7 +49,7 @@ public class OrgRoleMappingConsumerTestForDelete {
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "am_role_assignment_service_delete_actor", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_role_assignment_service_delete", consumer = "am_org_role_mapping")
     public RequestResponsePact executeDeleteActorByPrAndGet204(PactDslWithProvider builder) {
 
         return builder
@@ -71,7 +71,7 @@ public class OrgRoleMappingConsumerTestForDelete {
         assertEquals(204, httpResponse.getStatusLine().getStatusCode());
     }
 
-    @Pact(provider = "am_role_assignment_service_delete_actor", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_role_assignment_service_delete", consumer = "am_org_role_mapping")
     public RequestResponsePact executeDeleteActorByIdAndGet204(PactDslWithProvider builder) {
 
         return builder
