@@ -3,7 +3,7 @@
   "productName": "Role Assignment Service",
   "operationName": "Fetch Assignment From Role Assignment Service",
   "method": "GET",
-  "uri": "{{RAS_URL}}/am/role-assignments/actors/{actorId}",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "specs": [
     "to get the assignment from RAS"
   ],
