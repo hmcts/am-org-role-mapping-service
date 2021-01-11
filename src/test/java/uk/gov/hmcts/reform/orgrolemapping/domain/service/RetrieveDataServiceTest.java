@@ -7,6 +7,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
@@ -15,14 +16,18 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,6 +59,23 @@ class RetrieveDataServiceTest {
     }
 
     @Test
+    void retrieveInvalidCaseWorkerProfilesTest() {
+
+        when(crdFeignClientFallback.createRoleAssignment(TestDataBuilder.buildUserRequest()))
+                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(
+                        TestDataBuilder.buildListOfUserProfiles(true, false, "1",
+                                "2", ROLE_NAME_STCW, ROLE_NAME_TCW, false, true,
+                                false, true, "1", "2",
+                                false)));
+
+        doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any());
+        Map<String, Set<UserAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
+
+        assertEquals(2, result.size());
+
+    }
+
+    @Test
     void shouldReturnCaseWorkerProfile() {
 
         when(crdFeignClientFallback.createRoleAssignment(any())).thenReturn(ResponseEntity
@@ -73,6 +95,16 @@ class RetrieveDataServiceTest {
             }
         );
 
+    }
+
+    @Test
+    void shouldReturnZeroCaseWorkerProfile() {
+        List<UserProfile> userProfiles = new ArrayList<>();
+        when(crdFeignClientFallback.createRoleAssignment(any())).thenReturn(ResponseEntity
+                .ok(userProfiles));
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
 }
