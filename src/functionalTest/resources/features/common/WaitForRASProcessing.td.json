@@ -2,7 +2,7 @@
   "_guid_": "WaitForRASProcessing",
   "productName": "Organisation Role Mapping",
   "operationName": "To provide adequate time for RAS to create records",
-  "method": "GET",
+  "method": "POST",
   "uri": "/sleep",
   "specs": [
     "to provide adequate time for RAS to create records"
@@ -18,6 +18,9 @@
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
       "Content-Type": "application/json"
+    },
+    "body": {
+      "waitingTimeCall": "${}${[scenarioContext][customValues][waitForTime]}"
     }
   },
   "expectedResponse": {
@@ -26,8 +29,8 @@
       "Content-Length": "[[ANYTHING_PRESENT]]",
       "Content-Type": "application/json"
     },
-    "body" : {
-      "__plainTextValue__" : "Sleep time for Functional tests is over"
+    "body": {
+      "__plainTextValue__": "Sleep time for Functional tests is over"
     }
   }
 }

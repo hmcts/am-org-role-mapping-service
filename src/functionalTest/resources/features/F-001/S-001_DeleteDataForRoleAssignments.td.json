@@ -21,7 +21,7 @@
     },
     "pathVariables": {
       "process": "staff-organisational-role-mapping",
-      "reference":"${[scenarioContext][parentContext][testData][request][body][users][0]}"
+      "reference":"${[scenarioContext][parentContext][childContexts][S-003_FetchCaseworkerProfileFromUP][testData][actualResponse][body][userIdentifier]}"
     }
    },
 

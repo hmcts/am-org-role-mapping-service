@@ -60,7 +60,7 @@ class WelcomeControllerTest {
         ResponseEntity<Object> response =
                 ResponseEntity.status(HttpStatus.OK).body("Sleep time for Functional tests is over");
 
-        assertEquals(response, sut.waitFor());
+        assertEquals(response, sut.waitFor(null));
     }
 
     @Test
