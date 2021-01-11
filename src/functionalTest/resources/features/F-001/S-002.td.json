@@ -36,14 +36,12 @@
                 "_extends_": "ResponseRequestedRole",
                 "roleName": "senior-tribunal-caseworker",
                 "actorId": "${}${[scenarioContext][testData][request][body][users][0]}",
-                "reference": "${}${[scenarioContext][testData][request][body][users][0]}",
-                "authorisations" : [ ]
+                "reference": "${}${[scenarioContext][testData][request][body][users][0]}"
               },
               {
                 "_extends_": "ResponseRequestedRole",
                 "actorId": "${}${[scenarioContext][testData][request][body][users][0]}",
-                "reference": "${}${[scenarioContext][testData][request][body][users][0]}",
-                "authorisations" : [ ]
+                "reference": "${}${[scenarioContext][testData][request][body][users][0]}"
               }
             ]
           }
