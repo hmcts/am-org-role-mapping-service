@@ -50,7 +50,7 @@ public class RetrieveDataService {
 
         log.info(
                 "Execution time of CRD Response : {} ms",
-                (System.currentTimeMillis() - startTime)
+                (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         List<UserProfile> userProfiles = responseEntity.getBody();
         if (!CollectionUtils.isEmpty(userProfiles)) {
@@ -90,7 +90,7 @@ public class RetrieveDataService {
 
         log.info(
                 "Execution time of retrieveCaseWorkerProfiles() : {} ms",
-                (System.currentTimeMillis() - startTime)
+                (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         return usersAccessProfiles;
     }

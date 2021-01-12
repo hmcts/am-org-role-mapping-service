@@ -75,7 +75,7 @@ public class IdamRepository {
         return null;
     }
 
-    private static HttpHeaders getHttpHeaders(String jwtToken) {
+    public static HttpHeaders getHttpHeaders(String jwtToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken);
         return headers;
