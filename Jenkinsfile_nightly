@@ -59,7 +59,8 @@ withNightlyPipeline(type, product, component) {
   env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
   env.CRD_URL = "http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal"
   env.USER_PROFILE_URL= "https://rd-user-profile-api-pr-575.service.core-compute-preview.internal"
-  env.AMQP_TOPIC_NAME = "rd-caseworker-topic-sandbox/subscriptions/BeftaFunctionalTest"
+  env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
+  env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
   overrideVaultEnvironments(vaultOverrides)
 
   enableMutationTest()

@@ -1,0 +1,50 @@
+package uk.gov.hmcts.reform.orgrolemapping.befta;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.Base64;
+import java.util.List;
+
+public class FunctionalTestUtils {
+
+    public static final String UTF_8 = "UTF-8";
+
+    public static String getSaSToken(String resourceUri, String keyName, String key) throws Exception {
+        long epoch = System.currentTimeMillis() / 1000L;
+        int week = 60 * 60 * 24 * 7;
+        String expiry = Long.toString(epoch + week);
+
+        String stringToSign = URLEncoder.encode(resourceUri, UTF_8) + "\n" + expiry;
+        String signature = getHmac256(key, stringToSign);
+        return "SharedAccessSignature sr="
+                + URLEncoder.encode(resourceUri, UTF_8) + "&sig="
+                + URLEncoder.encode(signature, UTF_8) + "&se=" + expiry + "&skn=" + keyName;
+    }
+
+     static String getHmac256(String key, String input) throws Exception {
+        Mac sha256Hmac = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "HmacSHA256");
+        sha256Hmac.init(secretKey);
+        Base64.Encoder encoder = Base64.getEncoder();
+
+        return new String(encoder.encode(sha256Hmac.doFinal(input.getBytes(UTF_8))));
+    }
+
+    public static List<String> getUserIdFromFile(String fileName) {
+        try (InputStream inputStream =
+                     FunctionalTestUtils.class.getClassLoader().getResourceAsStream(fileName)) {
+            assert inputStream != null;
+            ObjectMapper objectMapper = new ObjectMapper();
+            UserRequest userRequest = objectMapper.readValue(inputStream, UserRequest.class);
+            return userRequest.getUserIds();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
