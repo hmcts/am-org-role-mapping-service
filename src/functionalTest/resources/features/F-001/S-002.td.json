@@ -24,7 +24,6 @@
     "body": {
       "arrayInMap": [
         {
-          "links": [],
           "roleAssignmentResponse": {
             "roleRequest": {
               "_extends_": "ResponseRoleRequest",
