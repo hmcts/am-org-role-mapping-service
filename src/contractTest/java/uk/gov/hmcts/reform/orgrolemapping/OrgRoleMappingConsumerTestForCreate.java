@@ -153,7 +153,7 @@ public class OrgRoleMappingConsumerTestForCreate {
     }
 
     private DslPart createRoleAssignmentResponse(boolean replaceExisting) {
-        return newJsonBody(o -> o.minArrayLike("links", 0, 0, link -> link.stringType("urk", "http"))
+        return newJsonBody(o -> o
                 .object("roleAssignmentResponse", ob -> ob
                         .object("roleRequest", roleRequest -> roleRequest
                                         .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
@@ -202,7 +202,6 @@ public class OrgRoleMappingConsumerTestForCreate {
 
     private DslPart createRoleAssignmentResponseZeroRole() {
         return newJsonBody(o -> o
-                .minArrayLike("links", 0, 0, link -> link.stringType("urk", "http"))
                 .object("roleAssignmentResponse", ob -> ob
                         .object("roleRequest", roleRequest -> roleRequest
                                         .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
