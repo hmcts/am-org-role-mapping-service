@@ -241,7 +241,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
         assertThat(attributes.get("jurisdiction"), equalTo("IA"));
     }
 
-    @Test  //Need to fix assertion for second record.
+    @Test
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentMultipleRoleAssignmentsAndGet200")
     void getSearchQueryResultsMultipleRoleAssignmentsAndGet200Test(MockServer mockServer)
             throws JSONException, IOException {
@@ -303,10 +303,9 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
             )).build();
     }
 
-    //Need to fix the second record.
     private DslPart createRoleAssignmentResponseSearchQueryMultipleRoleAssignments() {
         return newJsonBody(o -> o
-                .minArrayLike("roleAssignmentResponse", 1, 1,
+                .minArrayLike("roleAssignmentResponse", 2, 2,
                     roleAssignmentResponse -> roleAssignmentResponse
                                 .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
                                 .stringValue("actorIdType", "IDAM")
@@ -321,21 +320,21 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                                         .stringType("jurisdiction", "IA")
                                         .stringType("primaryLocation", "219ASA"))
                 )
-        /*.minArrayLike("roleAssignmentResponse", 2, 2,
+                .minArrayLike("roleAssignmentResponse", 2, 2,
                         roleAssignmentResponse -> roleAssignmentResponse
-                                .stringType("id", "a693b769-6e5b-4c03-8c1e-bf9d6ae9205c")
+                                .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
                                 .stringValue("actorIdType", "IDAM")
-                                .stringValue("actorId", "fa4c86ba-289c-4227-b924-13f55929047c")
+                                .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
                                 .stringValue("roleType", "ORGANISATION")
-                                .stringValue("roleName", "tribunal-caseworker")
-                                .stringValue("classification", "PUBLIC")
+                                .stringValue("roleName", "senior-tribunal-caseworker")
+                                .stringValue("classification", "PRIVATE")
                                 .stringValue("grantType", "STANDARD")
                                 .stringValue("roleCategory", "STAFF")
                                 .booleanValue("readOnly", false)
                                 .object("attributes", attribute -> attribute
                                         .stringType("jurisdiction", "IA")
                                         .stringType("primaryLocation", "219ASA"))
-                )*/
+                )
         ).build();
     }
 

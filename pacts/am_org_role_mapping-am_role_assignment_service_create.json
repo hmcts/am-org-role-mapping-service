@@ -82,30 +82,10 @@
                 "status": "LIVE"
               }
             ]
-          },
-          "links": [
-
-          ]
+          }
         },
         "matchingRules": {
           "body": {
-            "$.links": {
-              "matchers": [
-                {
-                  "match": "type",
-                  "min": 0
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.links[*].urk": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
             "$.roleAssignmentResponse.roleRequest.id": {
               "matchers": [
                 {
@@ -296,30 +276,10 @@
                 "status": "LIVE"
               }
             ]
-          },
-          "links": [
-
-          ]
+          }
         },
         "matchingRules": {
           "body": {
-            "$.links": {
-              "matchers": [
-                {
-                  "match": "type",
-                  "min": 0
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.links[*].urk": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
             "$.roleAssignmentResponse.roleRequest.id": {
               "matchers": [
                 {
@@ -476,30 +436,10 @@
             "requestedRoles": [
 
             ]
-          },
-          "links": [
-
-          ]
+          }
         },
         "matchingRules": {
           "body": {
-            "$.links": {
-              "matchers": [
-                {
-                  "match": "type",
-                  "min": 0
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.links[*].urk": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
             "$.roleAssignmentResponse.roleRequest.id": {
               "matchers": [
                 {
