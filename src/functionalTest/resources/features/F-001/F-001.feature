@@ -30,13 +30,12 @@ Feature: Create Role Assignments for Users
   @FeatureToggle(orm-base-flag)
   Scenario: must successfully create org role mapping for single user with single role assignment
     Given a user with [an active IDAM profile with full permissions],
-    When a request is prepared with appropriate values,
     And a successful call [to create the caseworker profile] as in [S-003_CreateCaseworkerProfileInCRD]
-    And a successful call [to get the User Profile by email id] as in [S-003_FetchCaseworkerProfileFromUP]
-    And the request [contains single users with single role assignment],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing]
-    And a successful call [to get the assignment from RAS] as in [S-003_FetchAssignmentFromRAS]
-    And a successful call [to delete role assignments just created above] as in [S-001_DeleteDataForRoleAssignments].
+    And the request [contains the actorId of the user just created],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    And a successful call [to delete role assignments just created above] as in [S-003_DeleteDataForRoleAssignments].
 
   #Will implement this once ORM integrated with CRD API.
   #  @S-006
