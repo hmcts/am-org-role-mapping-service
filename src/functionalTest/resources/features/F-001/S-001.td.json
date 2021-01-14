@@ -11,8 +11,8 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "users": [
-        "${[scenarioContext][customValues][generateUUID]}"
+      "userIds":[
+        "${}${[scenarioContext][customValues][generateUUID]}"
       ]
     }
   },

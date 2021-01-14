@@ -32,7 +32,7 @@ class ParseRequestServiceTest {
     void validateUserRequest_throwsBadRequestTest() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         List<String> emptyUsers = new ArrayList<>();
-        userRequest.setUsers(emptyUsers);
+        userRequest.setUserIds(emptyUsers);
         assertThrows(BadRequestException.class, () ->
                 sut.validateUserRequest(userRequest)
         );
@@ -50,7 +50,7 @@ class ParseRequestServiceTest {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, false, true, false, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        userRequest.getUsers().add("testUser");
+        userRequest.getUserIds().add("testUser");
         sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger());
     }
 

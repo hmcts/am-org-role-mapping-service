@@ -14,8 +14,6 @@ public class FeignClientInterceptor {
     @Autowired
     SecurityUtils securityUtils;
 
-
-
     @Bean
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {

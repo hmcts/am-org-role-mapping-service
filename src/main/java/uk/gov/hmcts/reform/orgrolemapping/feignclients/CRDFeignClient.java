@@ -8,12 +8,13 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 
 import java.util.List;
 
 
 @FeignClient(value = "crdclient", url = "${feign.client.config.crdclient.url}",
-        configuration = FeignClientConfiguration.class,
+        configuration = {FeignClientConfiguration.class, FeignClientInterceptor.class},
         fallback = CRDFeignClientFallback.class)
 
 public interface CRDFeignClient {
@@ -21,8 +22,7 @@ public interface CRDFeignClient {
     @GetMapping(value = "/")
     public String getServiceStatus();
 
-
     @PostMapping(value = "/refdata/case-worker/users/fetchUsersById")
-    public ResponseEntity<List<UserProfile>> createRoleAssignment(UserRequest userRequest);
+    public ResponseEntity<List<UserProfile>> getCaseworkerDetailsById(UserRequest userRequest);
 
 }

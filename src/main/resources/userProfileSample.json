@@ -1,60 +1,60 @@
 
   {
     "id": "21334a2b-79ce-44eb-9168-2d49a744be9c",
-    "firstName": "Sam",
-    "lastName": "Manuel",
-    "emailId": "sam.manuel@gmail.com",
-    "regionId": 1,
+    "first_name": "Sam",
+    "last_name": "Manuel",
+    "email_id": "sam.manuel@gmail.com",
+    "region_id": 1,
     "region": "National",
-    "userTypeId": 1,
-    "userType": "user-type",
-    "deleteFlag": false,
-    "createdTime": "2020-04-28T16:00:49",
-    "lastUpdateTime": "2021-04-28T16:00:49",
+    "user_type_id": 1,
+    "user_type": "user-type",
+    "delete_flag": false,
+    "created_time": "2020-04-28T16:00:49",
+    "last_updated_time": "2021-04-28T16:00:49",
     "role": [
       {
-        "roleId": 1,
-        "roleName": "senior-tribunal-caseworker",
-        "primary": true,
-        "createdTime": "2020-04-28T16:00:49",
-        "lastUpdateTime": "2021-04-28T16:00:49"
+        "role_id": 1,
+        "role": "senior-tribunal-caseworker",
+        "is_primary" : true,
+        "created_time": "2020-04-28T16:00:49",
+        "last_updated_time": "2021-04-28T16:00:49"
       },
       {
-        "roleId": 2,
-        "roleName": "tribunal-caseworker",
-        "primary": false,
-        "createdTime": "2020-04-28T16:00:49",
-        "lastUpdateTime": "2021-04-28T16:00:49"
+        "role_id": 2,
+        "role": "tribunal-caseworker",
+        "is_primary": false,
+        "created_time": "2020-04-28T16:00:49",
+        "last_updated_time": "2021-04-28T16:00:49"
       }
     ],
-    "baseLocation": [
+    "base_location": [
       {
-        "locationId": 219164,
+        "location_id": 219164,
         "location": "Aberdeen Tribunal Hearing Centre",
-        "primary": true,
-        "createdTime": "2020-04-28T16:00:49",
-        "lastUpdateTime": "2021-04-28T16:00:49"
+        "is_primary": true,
+        "created_time": "2020-04-28T16:00:49",
+        "last_updated_time": "2021-04-28T16:00:49"
       },
       {
-        "locationId": 11111,
-        "location": "Non Primary Location",
-        "primary": false,
-        "createdTime": "2020-04-28T16:00:49",
-        "lastUpdateTime": "2021-04-28T16:00:49"
+        "location_id": 11111,
+        "location": "Non is_primary Location",
+        "is_primary": false,
+        "created_time": "2020-04-28T16:00:49",
+        "last_updated_time": "2021-04-28T16:00:49"
       }
     ],
-    "workArea": [
+    "work_area": [
       {
-        "areaOfWork": "1",
-        "serviceCode": "BFA1",
-        "createdTime": "2020-04-28T16:00:49",
-        "lastUpdateTime": "2021-04-28T16:00:49"
+        "area_of_work": "1",
+        "service_code": "BFA1",
+        "created_time": "2020-04-28T16:00:49",
+        "last_updated_time": "2021-04-28T16:00:49"
       },
       {
-        "areaOfWork": "2",
-        "serviceCode": "BFA2",
-        "createdTime": "2020-04-28T16:00:49",
-        "lastUpdateTime": "2021-04-28T16:00:49"
+        "area_of_work": "2",
+        "service_code": "BFA2",
+        "created_time": "2020-04-28T16:00:49",
+        "last_updated_time": "2021-04-28T16:00:49"
       }
     ]
   }

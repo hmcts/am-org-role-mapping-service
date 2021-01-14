@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Setter;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -89,7 +90,7 @@ public class UserAccessProfileBuilder {
 
     public static UserRequest buildUserRequest() {
         return UserRequest.builder()
-                .users(Arrays.asList("123e4567-e89b-42d3-a456-556642445678", "123e4567-e89b-42d3-a456-556642445698"))
+                .userIds(Arrays.asList(ID1, "123e4567-e89b-42d3-a456-556642445698"))
                 .build();
     }
 
@@ -99,12 +100,13 @@ public class UserAccessProfileBuilder {
         Set<UserProfile> userProfiles = new LinkedHashSet<>();
 
 
-        userRequest.getUsers().forEach(userId -> {
+        userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
                          CRDFeignClientFallback.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.registerModule(new JavaTimeModule());
+                objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
                 UserProfile userProfile = objectMapper.readValue(inputStream, UserProfile.class);
                 userProfile.setId(userId);
                 userProfiles.add(userProfile);
