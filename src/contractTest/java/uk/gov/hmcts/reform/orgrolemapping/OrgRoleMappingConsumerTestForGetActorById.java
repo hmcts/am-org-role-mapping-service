@@ -85,21 +85,19 @@ public class OrgRoleMappingConsumerTestForGetActorById {
 
     private DslPart createResponse() {
         return newJsonBody(o -> o
-                .minArrayLike("links", 1, 1, link -> link.stringType("rel", "binary")
-                                .stringType("href", "http://localhost:4096/am/role-assignments/actors/23486"))
                 .minArrayLike("roleAssignmentResponse", 1, 1,
-                        roleAssignmentResponse -> roleAssignmentResponse
-                                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                                .stringValue("actorIdType", "IDAM")
-                                .stringValue("actorId", ACTOR_ID)
-                                .stringValue("roleType", "ORGANISATION")
-                                .stringValue("roleName", "senior-tribunal-caseworker")
-                                .stringValue("classification", "PRIVATE")
-                                .stringValue("grantType", "STANDARD")
-                                .stringValue("roleCategory", "STAFF")
-                                .booleanValue("readOnly", false)
-                                .object("attributes", attribute -> attribute
-                                        .stringType("jurisdiction", "IA"))
+                    roleAssignmentResponse -> roleAssignmentResponse
+                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                        .stringValue("actorIdType", "IDAM")
+                        .stringValue("actorId", ACTOR_ID)
+                        .stringValue("roleType", "ORGANISATION")
+                        .stringValue("roleName", "senior-tribunal-caseworker")
+                        .stringValue("classification", "PRIVATE")
+                        .stringValue("grantType", "STANDARD")
+                        .stringValue("roleCategory", "STAFF")
+                        .booleanValue("readOnly", false)
+                        .object("attributes", attribute -> attribute
+                                .stringType("jurisdiction", "IA"))
                 )).build();
     }
 

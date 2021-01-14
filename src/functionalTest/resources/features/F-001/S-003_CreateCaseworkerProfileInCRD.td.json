@@ -30,7 +30,8 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "caseWorkerRegistrationResponse": "Case Worker Profiles Created."
+      "message": "Case Worker Profiles Created",
+      "case_worker_ids" : "[[ANYTHING_PRESENT]]"
     }
   }
 }

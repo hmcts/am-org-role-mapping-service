@@ -20,7 +20,7 @@
       "Content-Type": "application/json"
     },
     "pathVariables": {
-      "actorId": "${[scenarioContext][parentContext][childContexts][S-003_FetchCaseworkerProfileFromUP][testData][actualResponse][body][userIdentifier]}"
+      "actorId": "${[scenarioContext][parentContext][childContexts][S-003_CreateCaseworkerProfileInCRD][testData][actualResponse][body][case_worker_ids][0]}"
     }
   },
   "expectedResponse": {
@@ -30,17 +30,11 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "links": [
-        {
-          "rel": "binary",
-          "href": "[[ANYTHING_PRESENT]]"
-        }
-      ],
       "roleAssignmentResponse": [
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][parentContext][childContexts][S-003_FetchCaseworkerProfileFromUP][testData][actualResponse][body][userIdentifier]}",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "senior-tribunal-caseworker",
           "classification": "PUBLIC",
@@ -51,8 +45,7 @@
           "attributes": {
             "primaryLocation": "2191654",
             "jurisdiction": "IA"
-          },
-          "authorisations": []
+          }
         }
       ]
     }
