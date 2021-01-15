@@ -5,7 +5,8 @@
   "method": "DELETE",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments?process={process}&reference={reference}",
   "specs": [
-    "to delete role assignments just created above"
+    "to delete role assignments just created above",
+    "to delete existing role assignments corresponding to the test actorId"
   ],
   "users": {
     "invokingUser": {
@@ -21,7 +22,10 @@
     },
     "pathVariables": {
       "process": "staff-organisational-role-mapping",
-      "reference":"${[scenarioContext][parentContext][childContexts][S-003_FetchCaseworkerProfileFromUP][testData][actualResponse][body][userIdentifier]}"
+      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
+    },
+    "body": {
+      "_extends_": "SingleUserId"
     }
    },
 

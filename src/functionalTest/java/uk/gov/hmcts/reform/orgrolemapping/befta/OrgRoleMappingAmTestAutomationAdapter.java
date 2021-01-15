@@ -48,8 +48,8 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                     logger.warn(e.getMessage());
                 }
                 return null;
-            case("getUserIdFromFile"):
-                return FunctionalTestUtils.getUserIdFromFile("SingleUserId.json");
+            /*case("getUserIdFromFile"):
+                return FunctionalTestUtils.getUserIdFromFile("SingleUserId.json");*/
             default:
                 return super.calculateCustomValue(scenarioContext, key);
         }

@@ -5,16 +5,16 @@
   "method": "POST",
   "uri": "https://{{AMQP_HOST}}/{{PUBLISHER_TOPIC}}/messages",
   "specs": [
-    "to publish the user ids to topic"
+    "to publish the user ids to topic",
+    "to publish an existing CRD user ids to topic"
   ],
   "request": {
     "headers": {
-      "Authorization": "${}${[scenarioContext][customValues][generateServiceBusToken]}",
+      "Authorization": "${[scenarioContext][customValues][generateServiceBusToken]}",
       "Content-Type": "application/json"
     },
     "body": {
-      "key": "files",
-      "filePath": "SingleUserId.json"
+      "_extends_": "SingleUserId"
     }
   },
   "expectedResponse": {

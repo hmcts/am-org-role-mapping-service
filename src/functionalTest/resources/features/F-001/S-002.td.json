@@ -1,48 +1,51 @@
 {
   "_guid_": "S-002",
-  "title": "must successfully generate duplicate records message",
+  "title": "must successfully create org role mapping for a multiple user having single role",
   "_extends_": "F-001_Test_Data_Base",
   "specs": [
-    "prepared to submit second time with no changes"
+    "contains the actorIds of the user just published"
   ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
-    "headers": {
-      "Content-Type": "application/json"
-    },
     "body": {
-      "userIds": [
-        "${}${[scenarioContext][customValues][generateUUID]}"
-      ]
+      "actorId": ["0334d896-a6c1-474e-9bf7-92f3e9f7eece", "35b4cf9a-d80c-443a-9100-b4e428c2da45"]
     }
   },
   "expectedResponse": {
     "_extends_": "Common_200_Response",
-    "headers": {
-      "Content-Length": "[[ANYTHING_PRESENT]]",
-      "Content-Type": "application/json"
-    },
     "body": {
-      "arrayInMap": [
+      "roleAssignmentResponse": [
         {
-          "roleAssignmentResponse": {
-            "roleRequest": {
-              "_extends_": "ResponseRoleRequest",
-              "reference": "${}${[scenarioContext][testData][request][body][users][0]}",
-              "log" : "Duplicate Request: Requested Assignments are already live."
-            },
-            "requestedRoles": [
-              {
-                "_extends_": "ResponseRequestedRole",
-                "roleName": "senior-tribunal-caseworker",
-                "actorId": "${}${[scenarioContext][testData][request][body][users][0]}",
-                "reference": "${}${[scenarioContext][testData][request][body][users][0]}"
-              },
-              {
-                "_extends_": "ResponseRequestedRole",
-                "actorId": "${}${[scenarioContext][testData][request][body][users][0]}",
-                "reference": "${}${[scenarioContext][testData][request][body][users][0]}"
-              }
-            ]
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "[[ANYTHING_PRESENT]]",
+          "roleType": "ORGANISATION",
+          "roleName": "senior-tribunal-caseworker",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "STAFF",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "2191654",
+            "jurisdiction": "IA"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "[[ANYTHING_PRESENT]]",
+          "roleType": "ORGANISATION",
+          "roleName": "senior-tribunal-caseworker",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "STAFF",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "2191654",
+            "jurisdiction": "IA"
           }
         }
       ]

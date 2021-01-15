@@ -30,12 +30,6 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "links": [
-        {
-          "rel": "binary",
-          "href": "[[ANYTHING_PRESENT]]"
-        }
-      ],
       "roleAssignmentResponse": [
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -51,8 +45,7 @@
           "attributes": {
             "primaryLocation": "2191654",
             "jurisdiction": "IA"
-          },
-          "authorisations": []
+          }
         }
       ]
     }
