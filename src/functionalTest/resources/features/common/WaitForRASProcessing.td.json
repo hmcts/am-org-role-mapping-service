@@ -1,0 +1,36 @@
+{
+  "_guid_": "WaitForRASProcessing",
+  "productName": "Organisation Role Mapping",
+  "operationName": "To provide adequate time for RAS to create records",
+  "method": "POST",
+  "uri": "/sleep",
+  "specs": [
+    "to provide adequate time for RAS to create records"
+  ],
+  "users": {
+    "invokingUser": {
+      "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
+      "password": "[[$TEST_AM_CRD_USER1_BEFTA_PASSWORD]]"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "waitingTimeCall": "${}${[scenarioContext][customValues][waitForTime]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "__plainTextValue__": "Sleep time for Functional tests is over"
+    }
+  }
+}

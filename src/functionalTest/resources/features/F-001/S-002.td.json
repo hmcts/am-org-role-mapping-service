@@ -10,8 +10,8 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "users": [
-        "${[scenarioContext][customValues][generateUUID]}"
+      "userIds": [
+        "${}${[scenarioContext][customValues][generateUUID]}"
       ]
     }
   },
@@ -24,7 +24,6 @@
     "body": {
       "arrayInMap": [
         {
-          "links": [],
           "roleAssignmentResponse": {
             "roleRequest": {
               "_extends_": "ResponseRoleRequest",

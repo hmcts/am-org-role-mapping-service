@@ -56,6 +56,14 @@ class WelcomeControllerTest {
     }
 
     @Test
+    void functionalSleepTest() throws InterruptedException {
+        ResponseEntity<Object> response =
+                ResponseEntity.status(HttpStatus.OK).body("Sleep time for Functional tests is over");
+
+        assertEquals(response, sut.waitFor(null));
+    }
+
+    @Test
     void errorConstantTest() {
         assertEquals(202, ErrorConstants.ACCEPTED.getErrorCode());
         assertEquals("Accepted", ErrorConstants.ACCEPTED.getErrorMessage());

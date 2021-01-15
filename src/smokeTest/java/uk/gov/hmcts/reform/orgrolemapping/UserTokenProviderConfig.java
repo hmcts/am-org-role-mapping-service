@@ -28,7 +28,7 @@ public class UserTokenProviderConfig {
         //        microService = MICRO_SERVICE_NAME;
         //        s2sUrl = EnvironmentVariableUtils.getRequiredVariable("IDAM_S2S_URL");
         //        clientSecret = EnvironmentVariableUtils.getRequiredVariable("ROLE_ASSIGNMENT_IDAM_CLIENT_SECRET");
-        //        clientId = EnvironmentVariableUtils.getRequiredVariable("IDAM_CLIENT_ID");
+        //        clientId = EnvironmentVariableUtils.getRequiredVariable("ORM_IDAM_CLIENT_ID");
         //        username = USER_NAME;
         //        password = EnvironmentVariableUtils.getRequiredVariable("CCD_BEFTA_CASEWORKER_2_SOLICITOR_2_PWD");
         //        scope = EnvironmentVariableUtils.getRequiredVariable("OPENID_SCOPE_VARIABLES");

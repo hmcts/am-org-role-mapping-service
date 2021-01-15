@@ -25,11 +25,11 @@ public class ParseRequestService {
 
     public void validateUserRequest(UserRequest userRequest) {
 
-        if (CollectionUtils.isEmpty(userRequest.getUsers())) {
+        if (CollectionUtils.isEmpty(userRequest.getUserIds())) {
             throw new BadRequestException("Empty user request");
         }
         //parse the user List and validate each user Id to be valid string
-        userRequest.getUsers().forEach(user ->
+        userRequest.getUserIds().forEach(user ->
                 ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, user));
     }
 
@@ -38,11 +38,11 @@ public class ParseRequestService {
         if (Collections.isEmpty(userProfiles)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
-        if (userRequest.getUsers().size() != userProfiles.size()) {
+        if (userRequest.getUserIds().size() != userProfiles.size()) {
             List<String> userProfileIds = new ArrayList<>();
 
             userProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));
-            List<String> userIdsNotInCRDResponse = userRequest.getUsers().stream().filter(userId -> !userProfileIds
+            List<String> userIdsNotInCRDResponse = userRequest.getUserIds().stream().filter(userId -> !userProfileIds
                     .contains(userId)).collect(Collectors.toList());
 
 
