@@ -6,10 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 class OrmDeserializerTest {
@@ -26,7 +26,7 @@ class OrmDeserializerTest {
 
     @Test
     void deserialize() {
-        String deserializeMe = "4567";
+        String deserializeMe = "{\"userIds\": [\"d24177ce-7ade-435a-8398-2d3338ccb267\"]}";
         byte[] byteArray = deserializeMe.getBytes();
         List<byte[]> list = new ArrayList<>();
         list.add(byteArray);

@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +16,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfile {
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+public class UserProfile implements Serializable {
     private String id; // can this be of type UUID?
     private String firstName;
     private String lastName;
@@ -25,23 +30,26 @@ public class UserProfile {
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
     private LocalDateTime createdTime;
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
-    private LocalDateTime lastUpdateTime;
+    private LocalDateTime lastUpdatedTime;
     private List<Role> role;
-    public List<BaseLocation> baseLocation;
+    private List<BaseLocation> baseLocation;
     private List<WorkArea> workArea;
 
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Role {
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class Role implements Serializable {
         private String roleId;
+        @JsonProperty("role")
         private String roleName;
+        @JsonProperty("is_primary")
         private boolean primary;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
-        private LocalDateTime lastUpdateTime;
+        private LocalDateTime lastUpdatedTime;
 
     }
 
@@ -49,14 +57,16 @@ public class UserProfile {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class BaseLocation {
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class BaseLocation implements Serializable {
         private String locationId;
         private String location;
+        @JsonProperty("is_primary")
         private boolean primary;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
-        private LocalDateTime lastUpdateTime;
+        private LocalDateTime lastUpdatedTime;
 
     }
 
@@ -64,13 +74,14 @@ public class UserProfile {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class WorkArea {
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class WorkArea implements Serializable {
         private String areaOfWork;
         private String serviceCode;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
-        private LocalDateTime lastUpdateTime;
+        private LocalDateTime lastUpdatedTime;
 
     }
 

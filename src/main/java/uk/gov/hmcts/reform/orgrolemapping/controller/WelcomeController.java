@@ -68,7 +68,7 @@ public class WelcomeController {
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
         log.debug("createOrgMapping");
-        log.info("Process has been Started for the userIds {}",userRequest.getUsers());
+        log.info("Process has been Started for the userIds {}",userRequest.getUserIds());
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
         log.info(
                 "Execution time of createOrgMapping() : {} ms",
@@ -83,5 +83,12 @@ public class WelcomeController {
         log.info("Sending message for event");
         topicPublisher.sendMessage(body);
         return new ResponseEntity<>("{}", HttpStatus.OK);
+    }
+
+    //This method needed for the functional tests, so that RAS gets enough time to create records.
+    @PostMapping(value = "/sleep")
+    public ResponseEntity<String> waitFor(String duration) throws InterruptedException {
+        return ResponseEntity.ok("Sleep time for Functional tests is over");
+
     }
 }

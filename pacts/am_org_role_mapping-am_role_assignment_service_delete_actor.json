@@ -1,0 +1,56 @@
+{
+  "provider": {
+    "name": "am_role_assignment_service_delete_actor"
+  },
+  "consumer": {
+    "name": "am_org_role_mapping"
+  },
+  "interactions": [
+    {
+      "description": "RAS takes s2s/auth token and returns actor information",
+      "request": {
+        "method": "DELETE",
+        "path": "/am/role-assignments/704c8b1c-e89b-436a-90f6-953b1dc40157"
+      },
+      "response": {
+        "status": 204
+      },
+      "providerStates": [
+        {
+          "name": "An actor with provided id is available in role assignment service"
+        }
+      ]
+    },
+    {
+      "description": "RAS takes s2s/auth token and returns actor information",
+      "request": {
+        "method": "DELETE",
+        "path": "/am/role-assignments",
+        "query": {
+          "process": [
+            "p2"
+          ],
+          "reference": [
+            "r2"
+          ]
+        }
+      },
+      "response": {
+        "status": 204
+      },
+      "providerStates": [
+        {
+          "name": "An actor with provided process & reference is available in role assignment service"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}
