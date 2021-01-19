@@ -29,7 +29,9 @@ Feature: Create Role Assignments for Users
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected,
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments01],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments02].
+
 
 #  @S-002 @FeatureToggle(orm-base-flag)
 #  Scenario: must successfully generate duplicate records message
