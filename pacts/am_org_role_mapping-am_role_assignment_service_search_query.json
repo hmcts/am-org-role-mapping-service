@@ -64,6 +64,21 @@
               "classification": "PRIVATE",
               "grantType": "STANDARD",
               "actorIdType": "IDAM"
+            },
+            {
+              "actorId": "ca93ea54-c219-4c6d-add6-e687a0f1f5f7",
+              "roleName": "senior-tribunal-caseworker",
+              "roleCategory": "STAFF",
+              "readOnly": false,
+              "attributes": {
+                "primaryLocation": "219ASA",
+                "jurisdiction": "IA"
+              },
+              "id": "da3c7ad9-0be1-4f72-8224-b73e3c61d22e",
+              "roleType": "ORGANISATION",
+              "classification": "PRIVATE",
+              "grantType": "STANDARD",
+              "actorIdType": "IDAM"
             }
           ]
         },
@@ -73,7 +88,11 @@
               "matchers": [
                 {
                   "match": "type",
-                  "min": 1
+                  "min": 2
+                },
+                {
+                  "match": "type",
+                  "min": 2
                 }
               ],
               "combine": "AND"

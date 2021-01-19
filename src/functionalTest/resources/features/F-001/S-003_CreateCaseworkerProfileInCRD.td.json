@@ -1,0 +1,37 @@
+{
+  "_guid_": "S-003_CreateCaseworkerProfileInCRD",
+  "productName": "Caseworker Reference Data",
+  "operationName": "Create Caseworker Profile in CRD",
+  "method": "POST",
+  "uri": "{{CRD_URL}}/refdata/case-worker/users/",
+  "specs": [
+    "to create the caseworker profile"
+  ],
+  "users": {
+    "invokingUser": {
+      "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
+      "password": "[[$TEST_AM_CRD_USER1_BEFTA_PASSWORD]]"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "_extends_" : "CreateSingleUserProfileCrd"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "message": "Case Worker Profiles Created",
+      "case_worker_ids" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}

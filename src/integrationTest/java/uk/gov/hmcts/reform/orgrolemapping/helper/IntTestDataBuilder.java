@@ -40,13 +40,13 @@ public class IntTestDataBuilder {
         ArrayList<String> users = new ArrayList<>();
         users.add(id_1);
         users.add(id_2);
-        return UserRequest.builder().users(users).build();
+        return UserRequest.builder().userIds(users).build();
     }
 
     public static UserProfile.BaseLocation buildBaseLocation(boolean primaryLocation) {
         return UserProfile.BaseLocation.builder().primary(primaryLocation)
                 .location("Aberdeen Tribunal Hearing Centre").locationId("219164")
-                .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
+                .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
@@ -63,7 +63,7 @@ public class IntTestDataBuilder {
 
     public static UserProfile.WorkArea buildWorkArea(String area, String serviceCode) {
         return UserProfile.WorkArea.builder().areaOfWork(area).serviceCode(serviceCode)
-                .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
+                .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
@@ -81,7 +81,7 @@ public class IntTestDataBuilder {
     public static UserProfile.Role buildRole(String id, boolean primaryRole, String roleName) {
         return UserProfile.Role.builder().roleId(id).primary(primaryRole)
                 .roleName(roleName)
-                .createdTime(LocalDateTime.now()).lastUpdateTime(LocalDateTime.now().minusDays(1L))
+                .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
@@ -113,7 +113,7 @@ public class IntTestDataBuilder {
                 .baseLocation(buildListOfBaseLocations(enableLocationList, primaryLocation1, primaryLocation2))
                 .workArea(buildListOfWorkAreas(enableWorkAreaList, workArea1, workArea2))
                 .createdTime(LocalDateTime.now())
-                .lastUpdateTime(LocalDateTime.now().minusDays(1L))
+                .lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .region("London").regionId(1234L)
                 .userType("Secret Agent")
                 .userTypeId("007")

@@ -19,7 +19,6 @@ public class Constants {
     public static final String INPUT_CASE_ID_PATTERN = "^[0-9]*$";
     public static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm";
     public static final String PROD = "PROD";
-
     public static final String NUMBER_PATTERN = "^[0-9]{16}$";
     public static final String NUMBER_TEXT_PATTERN = "^[a-zA-Z0-9]+$";
     public static final String TEXT_HYPHEN_PATTERN = "^[-a-zA-Z]*$";

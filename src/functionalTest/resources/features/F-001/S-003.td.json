@@ -1,0 +1,54 @@
+{
+  "_guid_": "S-003",
+  "productName": "Role Assignment Service",
+  "operationName": "Fetch Assignment From Role Assignment Service",
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "specs": [
+    "an active IDAM profile with full permissions",
+    "contains the actorId of the user just created"
+  ],
+  "users": {
+    "invokingUser": {
+      "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
+      "password": "[[$TEST_AM_CRD_USER1_BEFTA_PASSWORD]]"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "pathVariables": {
+      "actorId": "${[scenarioContext][childContexts][S-003_CreateCaseworkerProfileInCRD][testData][actualResponse][body][case_worker_ids][0]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "senior-tribunal-caseworker",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "STAFF",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "2191654",
+            "jurisdiction": "IA"
+          }
+        }
+      ]
+    }
+  }
+}

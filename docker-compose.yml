@@ -13,7 +13,7 @@ services:
       - AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES=ccd_gw,am_org_role_mapping_service,am_role_assignment_service
       - IDAM_USER_URL
       - IDAM_S2S_URL
-      - ORG_ROLE_MAPPING_IDAM_CLIENT_ID=am_docker
+      - ORM_IDAM_CLIENT_ID=am_docker
       - ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET= am_docker_secret
       - ORG_ROLE_MAPPING_IDAM_ADMIN_USERID=orm.admin@hmcts.NET
       - ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD=Pa55word11

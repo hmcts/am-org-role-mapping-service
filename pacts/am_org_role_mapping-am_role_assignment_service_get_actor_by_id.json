@@ -33,41 +33,10 @@
               "grantType": "STANDARD",
               "actorIdType": "IDAM"
             }
-          ],
-          "links": [
-            {
-              "rel": "binary",
-              "href": "http://localhost:4096/am/role-assignments/actors/23486"
-            }
           ]
         },
         "matchingRules": {
           "body": {
-            "$.links": {
-              "matchers": [
-                {
-                  "match": "type",
-                  "min": 1
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.links[*].rel": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.links[*].href": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
             "$.roleAssignmentResponse": {
               "matchers": [
                 {

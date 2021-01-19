@@ -9,7 +9,7 @@
   ],
   "users": {
     "invokingUser": {
-      "username": "TEST_AM_USER2_BEFTA@test.local",
+      "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
       "password": "[[$TEST_AM_USER2_BEFTA_PWD]]"
     }
   },
@@ -21,7 +21,7 @@
     },
     "pathVariables": {
       "process": "staff-organisational-role-mapping",
-      "reference":"${[scenarioContext][parentContext][testData][request][body][users][0]}"
+      "reference":"${[scenarioContext][parentContext][childContexts][S-003_FetchCaseworkerProfileFromUP][testData][actualResponse][body][userIdentifier]}"
     }
    },
 
