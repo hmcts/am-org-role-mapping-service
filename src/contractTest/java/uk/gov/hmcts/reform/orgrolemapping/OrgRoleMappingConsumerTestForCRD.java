@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping;
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
-import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -17,8 +16,6 @@ import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,12 +28,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
 import java.util.Map;
-
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
@@ -84,7 +76,7 @@ public class OrgRoleMappingConsumerTestForCRD {
                 .given("A list of users for CRD request")
                 .uponReceiving("CRD takes s2s/auth token and returns user profiles")
                 .path(CRD_GET_ROLE_ASSIGNMENT_URL)
-                .method( HttpMethod.POST.toString())
+                .method(HttpMethod.POST.toString())
                 .body(createCRDUserRequest(),String.valueOf(ContentType.JSON))
                 .willRespondWith()
                 .status(HttpStatus.OK.value())
@@ -94,7 +86,7 @@ public class OrgRoleMappingConsumerTestForCRD {
     }
 
     @Pact(provider = "crd_case_worker_ref_service", consumer = "am_org_role_mapping")
-    public RequestResponsePact executeGetCRDProfileMultipleUsersUsingFetchByUserIdAndGet200(PactDslWithProvider builder) {
+    public RequestResponsePact executeGetCRDProfileMultipleUsers_FetchByUserIdAndGet200(PactDslWithProvider builder) {
 
         return builder
                 .given("A list of multiple users for CRD request")
@@ -127,7 +119,7 @@ public class OrgRoleMappingConsumerTestForCRD {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeGetCRDProfileMultipleUsersUsingFetchByUserIdAndGet200")
+    @PactTestFor(pactMethod = "executeGetCRDProfileMultipleUsers_FetchByUserIdAndGet200")
     void getCRDProfileMultipleUsersUsingFetchByUserIdAndGet200Test(MockServer mockServer) {
         String actualResponseBody =
                 SerenityRest
