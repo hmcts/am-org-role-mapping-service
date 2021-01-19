@@ -49,31 +49,31 @@ public class TestDataBuilder {
         return UserRequest.builder().userIds(users).build();
     }
 
-    public static UserAccessProfile buildUserAccessProfile1(boolean deleteFlag) {
-        return UserAccessProfile.builder().id(id_1).deleteFlag(deleteFlag).areaOfWorkId("London")
+    public static UserAccessProfile buildUserAccessProfile1(boolean suspended) {
+        return UserAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
                 .primaryLocationId("123456").primaryLocationName("south-east").roleId("1")
                 .serviceCode("BFA1").roleName(ROLE_NAME_STCW).build();
     }
 
-    public static UserAccessProfile buildUserAccessProfile2(boolean deleteFlag) {
-        return UserAccessProfile.builder().id(id_2).deleteFlag(deleteFlag).areaOfWorkId("London")
+    public static UserAccessProfile buildUserAccessProfile2(boolean suspended) {
+        return UserAccessProfile.builder().id(id_2).suspended(suspended).areaOfWorkId("London")
                 .primaryLocationId("123457").primaryLocationName("south-east").roleId("2")
                 .serviceCode("BFA2").roleName(ROLE_NAME_TCW).build();
     }
 
-    public static Set<UserAccessProfile> buildUserAccessProfileSet(boolean deleteFlag1, boolean deleteFlag2) {
+    public static Set<UserAccessProfile> buildUserAccessProfileSet(boolean suspended1, boolean suspended2) {
         Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(buildUserAccessProfile1(deleteFlag1));
-        userAccessProfileSet.add(buildUserAccessProfile2(deleteFlag2));
+        userAccessProfileSet.add(buildUserAccessProfile1(suspended1));
+        userAccessProfileSet.add(buildUserAccessProfile2(suspended2));
         return userAccessProfileSet;
     }
 
-    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfileMap(boolean deleteFlag1,
-                                                                                boolean deleteFlag2) {
+    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfileMap(boolean suspended1,
+                                                                                boolean suspended2) {
 
         HashMap<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
-        userAccessProfiles.put(id_1, buildUserAccessProfileSet(deleteFlag1, deleteFlag2));
-        userAccessProfiles.put(id_2, buildUserAccessProfileSet(deleteFlag1, deleteFlag2));
+        userAccessProfiles.put(id_1, buildUserAccessProfileSet(suspended1, suspended2));
+        userAccessProfiles.put(id_2, buildUserAccessProfileSet(suspended1, suspended2));
         return userAccessProfiles;
     }
 
@@ -142,7 +142,7 @@ public class TestDataBuilder {
                                                boolean enableWorkAreaList,
                                                String workArea1,
                                                String workArea2,
-                                               boolean deleteFlag) {
+                                               boolean suspended) {
         return UserProfile.builder()
                 .id(id)
                 .firstName("James").lastName("Bond").emailId("007@MI6.gov")
@@ -153,7 +153,7 @@ public class TestDataBuilder {
                 .region("London").regionId(1234L)
                 .userType("Secret Agent")
                 .userTypeId("007")
-                .deleteFlag(deleteFlag)
+                .suspended(suspended)
                 .role(buildListOfRoles(multiRole, roleId1, roleId2, roleName1, roleName2))
                 .build();
     }
@@ -170,15 +170,15 @@ public class TestDataBuilder {
                                                             boolean enableWorkAreaList,
                                                             String workArea1,
                                                             String workArea2,
-                                                            boolean deleteFlag) {
+                                                            boolean suspended) {
         List<UserProfile> userProfiles = new ArrayList<>();
         userProfiles.add(buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
                 enableLocationList, primaryLocation1, primaryLocation2,
-                enableWorkAreaList, workArea1, workArea2, deleteFlag));
+                enableWorkAreaList, workArea1, workArea2, suspended));
         if (multiProfiles) {
             userProfiles.add(buildUserProfile(id_2, multiRole, roleId1, roleId2, roleName1, roleName2,
                     enableLocationList, primaryLocation1, primaryLocation2,
-                    enableWorkAreaList, workArea1, workArea2, deleteFlag));
+                    enableWorkAreaList, workArea1, workArea2, suspended));
         }
         return userProfiles;
     }

@@ -57,7 +57,7 @@
               "user_type_id": "1",
               "id": "91e07fe0-9575-472b-bd1f-33be2944c1f4",
               "region": "National",
-              "delete_flag": false,
+              "suspended": false,
               "first_name": "testFirstname"
             },
             {
@@ -89,7 +89,7 @@
               "user_type_id": "1",
               "id": "91e07fe0-9575-472b-bd1f-33be2944c1f4",
               "region": "National",
-              "delete_flag": false,
+              "suspended": false,
               "first_name": "testFirstname"
             }
           ]
@@ -224,7 +224,7 @@
               "user_type_id": "1",
               "id": "91e07fe0-9575-472b-bd1f-33be2944c1f4",
               "region": "National",
-              "delete_flag": false,
+              "suspended": false,
               "first_name": "testFirstname"
             }
           ]

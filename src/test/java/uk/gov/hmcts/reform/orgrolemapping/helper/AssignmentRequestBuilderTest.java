@@ -55,7 +55,7 @@ class AssignmentRequestBuilderTest {
                 assertNotNull(role.getId());
                 assertNotNull(role.getAreaOfWorkId());
                 assertNotNull(role.getPrimaryLocationId());
-                assertFalse(role.isDeleteFlag());
+                assertFalse(role.isSuspended());
                 assertNotNull(role.getPrimaryLocationName());
                 assertNotNull(role.getRoleId());
                 assertNotNull(role.getRoleName());
