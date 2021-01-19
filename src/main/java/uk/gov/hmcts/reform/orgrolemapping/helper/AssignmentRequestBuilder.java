@@ -110,7 +110,7 @@ public class AssignmentRequestBuilder {
             userProfile.getWorkArea().forEach(workArea -> {
                 UserAccessProfile userAccessProfile = new UserAccessProfile();
                 userAccessProfile.setId(userProfile.getId());
-                userAccessProfile.setDeleteFlag(userProfile.isDeleteFlag());
+                userAccessProfile.setSuspended(userProfile.isSuspended());
                 userProfile.getBaseLocation().forEach(baseLocation -> {
                     if (baseLocation.isPrimary()) {
                         userAccessProfile.setPrimaryLocationId(baseLocation.getLocationId());

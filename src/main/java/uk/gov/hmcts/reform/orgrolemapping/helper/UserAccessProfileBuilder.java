@@ -51,7 +51,7 @@ public class UserAccessProfileBuilder {
                 .primaryLocationId("219164")
                 .serviceCode("BFA1")
                 .roleId("1")
-                .deleteFlag(true)
+                .suspended(true)
                 .build();
     }
 
@@ -62,7 +62,7 @@ public class UserAccessProfileBuilder {
                 .primaryLocationId("219164")
                 .serviceCode("BFA1")
                 .roleId("2")
-                .deleteFlag(true)
+                .suspended(true)
                 .build();
     }
 
@@ -73,7 +73,7 @@ public class UserAccessProfileBuilder {
                 .primaryLocationId("219164")
                 .serviceCode("BFA1")
                 .roleId("1")
-                .deleteFlag(true)
+                .suspended(true)
                 .build();
     }
 
@@ -84,7 +84,7 @@ public class UserAccessProfileBuilder {
                 .primaryLocationId("219164")
                 .serviceCode("BFA1")
                 .roleId("2")
-                .deleteFlag(true)
+                .suspended(true)
                 .build();
     }
 

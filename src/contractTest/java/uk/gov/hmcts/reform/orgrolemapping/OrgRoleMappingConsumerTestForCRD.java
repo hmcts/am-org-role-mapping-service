@@ -193,7 +193,7 @@ public class OrgRoleMappingConsumerTestForCRD {
                                 .stringType("area_of_work", "1");
                         });
                     })
-                    .booleanValue("delete_flag", false)
+                    .booleanValue("suspended", false)
                 )
         ).build();
     }
@@ -234,7 +234,7 @@ public class OrgRoleMappingConsumerTestForCRD {
                                                 .stringType("area_of_work", "1");
                                     });
                                 })
-                                .booleanValue("delete_flag", false)
+                                .booleanValue("suspended", false)
                 )
                 .minArrayLike("", 2, 2,
                     crdResponse -> crdResponse
@@ -270,7 +270,7 @@ public class OrgRoleMappingConsumerTestForCRD {
                                                 .stringType("area_of_work", "1");
                                     });
                                 })
-                                .booleanValue("delete_flag", false)
+                                .booleanValue("suspended", false)
                 )
         ).build();
     }

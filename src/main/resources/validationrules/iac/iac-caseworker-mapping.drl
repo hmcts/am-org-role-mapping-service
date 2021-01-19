@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 rule "iac_senior_tribunal_caseworker"
 when
-  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !deleteFlag)
+  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -35,7 +35,7 @@ end;
 
 rule "iac_tribunal_caseworker"
 when
-  $up: UserAccessProfile(roleId == "2", serviceCode == "BFA1", !deleteFlag)
+  $up: UserAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attr = new HashMap<>();
      attr.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
