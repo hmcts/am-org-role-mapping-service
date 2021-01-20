@@ -24,92 +24,116 @@
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=1.0"
+          "Content-Type": "application/json"
         },
-        "body": {
-          "": [
-            {
-              "email_id": "sam.test@gmail.com",
-              "base_location": [
-                {
-                  "is_primary": true,
-                  "location": "Aberdeen Tribunal Hearing Centre",
-                  "location_id": "2191654"
-                }
-              ],
-              "role": [
-                {
-                  "role": "senior-tribunal-caseworker",
-                  "is_primary": true,
-                  "role_id": "1"
-                }
-              ],
-              "last_name": "TestSurname",
-              "work_area": [
-                {
-                  "area_of_work": "1",
-                  "service_code": "BFA1"
-                }
-              ],
-              "idamRoles": null,
-              "user_type": "HMCTS",
-              "regionId": "1",
-              "user_type_id": "1",
-              "id": "91e07fe0-9575-472b-bd1f-33be2944c1f4",
-              "region": "National",
-              "suspended": false,
-              "first_name": "testFirstname"
-            },
-            {
-              "email_id": "sam.test@gmail.com",
-              "base_location": [
-                {
-                  "is_primary": true,
-                  "location": "Aberdeen Tribunal Hearing Centre",
-                  "location_id": "2191654"
-                }
-              ],
-              "role": [
-                {
-                  "role": "senior-tribunal-caseworker",
-                  "is_primary": true,
-                  "role_id": "1"
-                }
-              ],
-              "last_name": "TestSurname",
-              "work_area": [
-                {
-                  "area_of_work": "1",
-                  "service_code": "BFA1"
-                }
-              ],
-              "idamRoles": null,
-              "user_type": "HMCTS",
-              "regionId": "1",
-              "user_type_id": "1",
-              "id": "91e07fe0-9575-472b-bd1f-33be2944c1f4",
-              "region": "National",
-              "suspended": false,
-              "first_name": "testFirstname"
-            }
-          ]
-        },
+        "body": [
+          {
+            "email_id": "sam.test@justice.gov.uk",
+            "base_location": [
+              {
+                "is_primary": true,
+                "location": "Aberdeen Tribunal Hearing Centre",
+                "location_id": 219164
+              }
+            ],
+            "user_type": "HMCTS",
+            "role": [
+              {
+                "role": "tribunal-caseworker",
+                "is_primary": true,
+                "role_id": "1"
+              }
+            ],
+            "region_id": 1,
+            "last_name": "TestSurname",
+            "id": "234873",
+            "region": "National",
+            "work_area": [
+              {
+                "area_of_work": "1",
+                "service_code": "BFA1"
+              }
+            ],
+            "first_name": "testFirstname"
+          }
+        ],
         "matchingRules": {
           "body": {
-            "$.": {
+            "$": {
               "matchers": [
                 {
                   "match": "type",
-                  "min": 2
-                },
+                  "min": 0
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].first_name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].last_name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].email_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].region_id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].region": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].user_type": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].role": {
+              "matchers": [
                 {
                   "match": "type",
-                  "min": 2
+                  "min": 0
                 }
               ],
               "combine": "AND"
             },
-            "$.[*].id": {
+            "$[*].role[*].role_id": {
               "matchers": [
                 {
                   "match": "type"
@@ -117,7 +141,7 @@
               ],
               "combine": "AND"
             },
-            "$.[*].base_location[0].location_id": {
+            "$[*].role[*].role": {
               "matchers": [
                 {
                   "match": "type"
@@ -125,7 +149,24 @@
               ],
               "combine": "AND"
             },
-            "$.[*].base_location[0].location": {
+            "$[*].base_location": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 0
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].base_location[*].location_id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].base_location[*].location": {
               "matchers": [
                 {
                   "match": "type"
@@ -133,7 +174,16 @@
               ],
               "combine": "AND"
             },
-            "$.[*].role[0].role_id": {
+            "$[*].work_area": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 0
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].work_area[*].area_of_work": {
               "matchers": [
                 {
                   "match": "type"
@@ -141,23 +191,7 @@
               ],
               "combine": "AND"
             },
-            "$.[*].role[0].role": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.[*].work_area[0].service_code": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.[*].work_area[0].area_of_work": {
+            "$[*].work_area[*].service_code": {
               "matchers": [
                 {
                   "match": "type"
@@ -191,56 +225,51 @@
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=1.0"
+          "Content-Type": "application/json"
         },
-        "body": {
-          "": [
-            {
-              "email_id": "sam.test@gmail.com",
-              "base_location": [
-                {
-                  "is_primary": true,
-                  "location": "Aberdeen Tribunal Hearing Centre",
-                  "location_id": "2191654"
-                }
-              ],
-              "role": [
-                {
-                  "role": "senior-tribunal-caseworker",
-                  "is_primary": true,
-                  "role_id": "1"
-                }
-              ],
-              "last_name": "TestSurname",
-              "work_area": [
-                {
-                  "area_of_work": "1",
-                  "service_code": "BFA1"
-                }
-              ],
-              "idamRoles": null,
-              "user_type": "HMCTS",
-              "regionId": "1",
-              "user_type_id": "1",
-              "id": "91e07fe0-9575-472b-bd1f-33be2944c1f4",
-              "region": "National",
-              "suspended": false,
-              "first_name": "testFirstname"
-            }
-          ]
-        },
+        "body": [
+          {
+            "email_id": "sam.test@justice.gov.uk",
+            "base_location": [
+              {
+                "is_primary": true,
+                "location": "Aberdeen Tribunal Hearing Centre",
+                "location_id": 219164
+              }
+            ],
+            "user_type": "HMCTS",
+            "role": [
+              {
+                "role": "tribunal-caseworker",
+                "is_primary": true,
+                "role_id": "1"
+              }
+            ],
+            "region_id": 1,
+            "last_name": "TestSurname",
+            "id": "234873",
+            "region": "National",
+            "work_area": [
+              {
+                "area_of_work": "1",
+                "service_code": "BFA1"
+              }
+            ],
+            "first_name": "testFirstname"
+          }
+        ],
         "matchingRules": {
           "body": {
-            "$.": {
+            "$": {
               "matchers": [
                 {
                   "match": "type",
-                  "min": 1
+                  "min": 0
                 }
               ],
               "combine": "AND"
             },
-            "$.[*].id": {
+            "$[*].id": {
               "matchers": [
                 {
                   "match": "type"
@@ -248,7 +277,7 @@
               ],
               "combine": "AND"
             },
-            "$.[*].base_location[0].location_id": {
+            "$[*].first_name": {
               "matchers": [
                 {
                   "match": "type"
@@ -256,7 +285,7 @@
               ],
               "combine": "AND"
             },
-            "$.[*].base_location[0].location": {
+            "$[*].last_name": {
               "matchers": [
                 {
                   "match": "type"
@@ -264,7 +293,7 @@
               ],
               "combine": "AND"
             },
-            "$.[*].role[0].role_id": {
+            "$[*].email_id": {
               "matchers": [
                 {
                   "match": "type"
@@ -272,7 +301,15 @@
               ],
               "combine": "AND"
             },
-            "$.[*].role[0].role": {
+            "$[*].region_id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].region": {
               "matchers": [
                 {
                   "match": "type"
@@ -280,7 +317,7 @@
               ],
               "combine": "AND"
             },
-            "$.[*].work_area[0].service_code": {
+            "$[*].user_type": {
               "matchers": [
                 {
                   "match": "type"
@@ -288,7 +325,74 @@
               ],
               "combine": "AND"
             },
-            "$.[*].work_area[0].area_of_work": {
+            "$[*].role": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 0
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].role[*].role_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].role[*].role": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].base_location": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 0
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].base_location[*].location_id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].base_location[*].location": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].work_area": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 0
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].work_area[*].area_of_work": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[*].work_area[*].service_code": {
               "matchers": [
                 {
                   "match": "type"
