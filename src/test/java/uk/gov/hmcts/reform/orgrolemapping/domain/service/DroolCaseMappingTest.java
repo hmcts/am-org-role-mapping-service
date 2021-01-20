@@ -158,7 +158,7 @@ class DroolCaseMappingTest extends DroolBase {
     void shouldReturnZeroCaseWorkerWrongFlag() {
 
         allProfiles.forEach(userAccessProfile -> {
-            userAccessProfile.setDeleteFlag(true);
+            userAccessProfile.setSuspended(true);
             if (userAccessProfile.getServiceCode().equals("BFA2")) {
                 userAccessProfile.setServiceCode("BFA1");
             }

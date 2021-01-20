@@ -8,7 +8,7 @@
       "region_id": 1,
       "region": "National",
       "user_type": "CTSC",
-      "delete_flag": false,
+      "suspended": false,
       "idam_roles": [
         "caseworker-iac-bulkscan"
       ],

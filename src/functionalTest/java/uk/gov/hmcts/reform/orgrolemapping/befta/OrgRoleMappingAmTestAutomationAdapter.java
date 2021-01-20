@@ -13,7 +13,7 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
 
     private static final Logger logger = LoggerFactory.getLogger(OrgRoleMappingAmTestAutomationAdapter.class);
 
-    public static final String EMAIL_TEMPLATE = "CWR-func-test-user-%s@cwrfunctestuser.com";
+    public static final String EMAIL_TEMPLATE = "ORM-func-test-user-%s@justice.gov.uk";
 
     @Override
     public void doLoadTestData() {

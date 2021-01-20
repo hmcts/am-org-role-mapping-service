@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 //b. Create a new model class UserAccessProfile(id, roleId, roleName, primaryLocationId,
-// primaryLocationName, areaOfWorkId, serviceCode, deleteFlag) (which will flatten the User Profile into multiple
+// primaryLocationName, areaOfWorkId, serviceCode, suspended) (which will flatten the User Profile into multiple
 // userAccessProfile instances based upon roleId X serviceCode).
 
 
@@ -24,7 +24,7 @@ public class UserAccessProfile implements Serializable {
     private String primaryLocationName;
     private String areaOfWorkId;
     private String serviceCode;
-    private boolean deleteFlag;
+    private boolean suspended;
 
 
 }
