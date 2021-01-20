@@ -88,9 +88,9 @@ class ParseRequestServiceTest {
     void validateUserProfiles_throwsResourceNotFound_noProfilesTest() {
         List<UserProfile> userProfiles = new ArrayList<>();
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-
+        AtomicInteger integer = new AtomicInteger();
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger())
+                sut.validateUserProfiles(userProfiles, userRequest, integer)
         );
     }
 
@@ -98,9 +98,9 @@ class ParseRequestServiceTest {
     void validateUserProfiles_throwsResourceNotFound_someProfilesNotFoundTest() {
         List<UserProfile> userProfiles = new ArrayList<>();
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-
+        AtomicInteger integer = new AtomicInteger();
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger())
+                sut.validateUserProfiles(userProfiles, userRequest, integer)
         );
     }
 }
