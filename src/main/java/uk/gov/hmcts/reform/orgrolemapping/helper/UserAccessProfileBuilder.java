@@ -23,6 +23,7 @@ import java.util.Set;
 public class UserAccessProfileBuilder {
     public static final String ID1 = "123e4567-e89b-42d3-a456-556642445678";
     public static final String ID2 = "123e4567-e89b-42d3-a456-556642445699";
+    public static final String PRIMARY_LOCATION_ID = "219164";
 
     private UserAccessProfileBuilder() {
 
@@ -37,9 +38,9 @@ public class UserAccessProfileBuilder {
         List<UserAccessProfile> userAccessProfiles2 = Arrays.asList(buildUserAccessProfileForRoleId3(),
                 buildUserAccessProfileForRoleId4());
         userProfileMapping.put(userAccessProfiles1.get(0).getId(),
-                new HashSet<UserAccessProfile>(userAccessProfiles1));
+                new HashSet<>(userAccessProfiles1));
         userProfileMapping.put(userAccessProfiles2.get(0).getId(),
-                new HashSet<UserAccessProfile>(userAccessProfiles1));
+                new HashSet<>(userAccessProfiles1));
 
         return userProfileMapping;
     }
@@ -48,7 +49,7 @@ public class UserAccessProfileBuilder {
 
         return UserAccessProfile.builder()
                 .id(ID1)
-                .primaryLocationId("219164")
+                .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
                 .roleId("1")
                 .suspended(true)
@@ -59,7 +60,7 @@ public class UserAccessProfileBuilder {
 
         return UserAccessProfile.builder()
                 .id(ID1)
-                .primaryLocationId("219164")
+                .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
                 .roleId("2")
                 .suspended(true)
@@ -70,7 +71,7 @@ public class UserAccessProfileBuilder {
 
         return UserAccessProfile.builder()
                 .id(ID2)
-                .primaryLocationId("219164")
+                .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
                 .roleId("1")
                 .suspended(true)
@@ -81,7 +82,7 @@ public class UserAccessProfileBuilder {
 
         return UserAccessProfile.builder()
                 .id(ID2)
-                .primaryLocationId("219164")
+                .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
                 .roleId("2")
                 .suspended(true)

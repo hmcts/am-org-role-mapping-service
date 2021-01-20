@@ -87,7 +87,7 @@ public class WelcomeController {
 
     //This method needed for the functional tests, so that RAS gets enough time to create records.
     @PostMapping(value = "/sleep")
-    public ResponseEntity<String> waitFor(String duration) throws InterruptedException {
+    public ResponseEntity<String> waitFor(String duration) {
         return ResponseEntity.ok("Sleep time for Functional tests is over");
 
     }
