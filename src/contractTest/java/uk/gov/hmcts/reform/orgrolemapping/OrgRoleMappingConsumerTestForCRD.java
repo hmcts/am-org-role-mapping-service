@@ -140,7 +140,7 @@ public class OrgRoleMappingConsumerTestForCRD {
                 .stringType("id", USER_ID)
                 .stringType("first_name", "testFirstname")
                 .stringType("last_name", "TestSurname")
-                .stringType("email_id", "sam.test@gmail.com")
+                .stringType("email_id", "sam.test@justice.gov.uk")
                 .integerType("region_id", 1)
                 .stringType("region", "National")
                 .stringType("user_type", "HMCTS")
