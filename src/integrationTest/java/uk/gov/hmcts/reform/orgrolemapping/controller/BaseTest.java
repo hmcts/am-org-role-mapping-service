@@ -11,8 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseTest {
-    private BaseTest() {
-    }
     protected static final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeClass
