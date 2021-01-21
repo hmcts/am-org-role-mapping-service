@@ -60,7 +60,7 @@ public class RequestMappingService {
         ResponseEntity<Object> responseEntity = updateCaseworkersRoleAssignments(usersRoleAssignments);
         log.info(
                 "Execution time of createCaseWorkerAssignments() : {} ms",
-                (System.currentTimeMillis() - startTime)
+                (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         return responseEntity;
 
@@ -107,7 +107,7 @@ public class RequestMappingService {
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
         log.info(
                 "Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
-                (System.currentTimeMillis() - startTime)
+                (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         return roleAssignments;
     }
@@ -204,7 +204,7 @@ public class RequestMappingService {
             responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
             log.info(
                 "Execution time of updateRoleAssignments() : {} ms",
-                (System.currentTimeMillis() - startTime)
+                    (Math.subtractExact(System.currentTimeMillis(),startTime))
             );
         } catch (FeignException.FeignClientException feignClientException) {
             log.error("Handling FeignClientException UnprocessableEntity: " + feignClientException.getMessage());

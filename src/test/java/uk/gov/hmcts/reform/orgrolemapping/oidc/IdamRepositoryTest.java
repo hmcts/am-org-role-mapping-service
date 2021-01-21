@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +26,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -55,6 +58,8 @@ class IdamRepositoryTest {
     private RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
     IdamRepository idamRepository;
+
+    String token = "eyJhbGciOiJIUzUxMiJ9.Eim7hdYejtBbWXnqCf1gntbYpWHRX8BRzm4zIC_oszmC3D5QlNmkIetVPcMINg";
 
     @BeforeEach
     void setUp() {
@@ -106,7 +111,6 @@ class IdamRepositoryTest {
     @Test
     void shouldThrowNullPointerException() {
 
-        String token = "eyJhbGciOiJIUzUxMiJ9.Eim7hdYejtBbWXnqCf1gntbYpWHRX8BRzm4zIC_oszmC3D5QlNmkIetVPcMINg";
         String userId = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
 
 
@@ -138,14 +142,18 @@ class IdamRepositoryTest {
                         isA(HttpEntity.class),
                         (ParameterizedTypeReference<?>) any(ParameterizedTypeReference.class));
 
-        String token = "eyJhbGciOiJIUzUxMiJ9.Eim7hdYejtBbWXnqCf1gntbYpWHRX8BRzm4zIC_oszmC3D5QlNmkIetVPcMINg";
         String userId = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
 
         ResponseEntity<List<Object>> actualResponse = idamRepository.searchUserByUserId(token, userId);
         assertNotNull(actualResponse);
         assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
 
+    }
 
-
+    @Test
+    void shouldGetHeaders() {
+        HttpHeaders headers = IdamRepository.getHttpHeaders(token);
+        assertTrue(headers.containsKey(HttpHeaders.AUTHORIZATION));
+        assertTrue(Objects.requireNonNull(headers.get(HttpHeaders.AUTHORIZATION)).get(0).contains(token));
     }
 }

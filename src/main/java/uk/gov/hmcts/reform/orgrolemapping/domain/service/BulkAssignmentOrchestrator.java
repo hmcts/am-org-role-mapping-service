@@ -42,7 +42,7 @@ public class BulkAssignmentOrchestrator {
         ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
         log.info(
                 "Execution time of createBulkAssignmentsRequest() : {} ms",
-                (System.currentTimeMillis() - startTime)
+                (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         return responseEntity;
     }
