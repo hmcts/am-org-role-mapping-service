@@ -27,7 +27,7 @@ public class RetrieveDataService {
     //1. Fetching multiple case-worker user details from CRD
         //a. Create a new class UserProfile - similar to expected response from CRD(refer LLD)
         //b. Create a new model class UserAccessProfile(id, roleId, roleName, primaryLocationId,
-        // primaryLocationName, areaOfWorkId, serviceCode, deleteFlag) (which will flatten the User Profile
+        // primaryLocationName, areaOfWorkId, serviceCode, suspended) (which will flatten the User Profile
         //into multiple
         // userAccessProfile instances based upon roleId X serviceCode).
     //2. Use CRDFeignClient to integrate with CRD and extend the fallback (to prepare some dummy userProfile and

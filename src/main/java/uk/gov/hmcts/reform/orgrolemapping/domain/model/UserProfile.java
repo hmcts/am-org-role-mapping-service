@@ -26,7 +26,7 @@ public class UserProfile implements Serializable {
     private String region;
     private String userTypeId;
     private String userType;
-    private boolean deleteFlag;
+    private boolean suspended;
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
     private LocalDateTime createdTime;
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")

@@ -1,22 +1,24 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValidationUtilTest {
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
+
+class ValidationUtilTest {
 
 
     @Test
     void shouldThrowBadRequestException_ValidateLists() {
+        List<T> list = List.of();
         Assertions.assertThrows(BadRequestException.class, () ->
-            ValidationUtil.validateLists(new ArrayList())
+            ValidationUtil.validateLists(list)
         );
     }
 
@@ -60,9 +62,9 @@ public class ValidationUtilTest {
 
     @Test
     void shouldThrow_ValidateDateTimeLength() {
+        String dateAfter =  LocalDateTime.now().plusDays(2L).toString();
         Assertions.assertThrows(BadRequestException.class, () ->
-                ValidationUtil.validateDateTime("2020-11-27T15",
-                        LocalDateTime.now().plusDays(2L).toString())
+                ValidationUtil.validateDateTime("2020-11-27T15", dateAfter)
         );
     }
 
@@ -101,25 +103,28 @@ public class ValidationUtilTest {
 
     @Test
     void shouldThrow_BeginTimeBeforeCreateTime() {
+        String previousDate = LocalDateTime.now().minusDays(1L).toString();
+        String futureDate = LocalDateTime.now().plusDays(1L).toString();
         Assertions.assertThrows(BadRequestException.class, () ->
-                ValidationUtil.compareDateOrder(LocalDateTime.now().minusDays(1L).toString(),
-                        LocalDateTime.now().plusDays(1L).toString())
+                ValidationUtil.compareDateOrder(previousDate, futureDate)
         );
     }
 
     @Test
     void shouldThrow_EndTimeBeforeCreateTime() {
+        String previousDate = LocalDateTime.now().minusDays(1L).toString();
+        String futureDate = LocalDateTime.now().plusDays(1L).toString();
         Assertions.assertThrows(BadRequestException.class, () ->
-                ValidationUtil.compareDateOrder(LocalDateTime.now().plusDays(1L).toString(),
-                        LocalDateTime.now().minusDays(1L).toString())
+                ValidationUtil.compareDateOrder(futureDate, previousDate)
         );
     }
 
     @Test
     void shouldThrow_EndTimeBeforeBeginTime() {
+        String futureDate1 = LocalDateTime.now().plusDays(10L).toString();
+        String futureDate2 = LocalDateTime.now().plusDays(5L).toString();
         Assertions.assertThrows(BadRequestException.class, () ->
-                ValidationUtil.compareDateOrder(LocalDateTime.now().plusDays(10L).toString(),
-                        LocalDateTime.now().plusDays(5L).toString())
+                ValidationUtil.compareDateOrder(futureDate1, futureDate2)
         );
     }
 
