@@ -73,7 +73,7 @@ Feature: Create Role Assignments for Users
 #    Then a positive response is received,
 #    And the response has all other details as expected,
 #    And a successful call [to delete role assignments just created above] as in [S-002_DeleteDataForRoleAssignments].
-#
+
 #  @S-003
 #  @FeatureToggle(orm-base-flag)
 #  Scenario: must successfully create org role mapping for single user with single role assignment
@@ -85,7 +85,6 @@ Feature: Create Role Assignments for Users
 #    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
 #    Then a positive response is received,
 #    And the response has all other details as expected,
-#    And a successful call [to delete role assignments just created above] as in [S-003_DeleteDataForRoleAssignments].
 
   #Will implement this once ORM integrated with CRD API.
   #  @S-006

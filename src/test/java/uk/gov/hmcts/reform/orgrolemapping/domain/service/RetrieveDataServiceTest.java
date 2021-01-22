@@ -86,7 +86,7 @@ class RetrieveDataServiceTest {
             assertNotNull(v);
             v.forEach(userAccessProfile -> {
                 assertEquals(k, userAccessProfile.getId());
-                assertFalse(userAccessProfile.isDeleteFlag());
+                assertFalse(userAccessProfile.isSuspended());
                 assertEquals("219164", userAccessProfile.getPrimaryLocationId());
             });
 
