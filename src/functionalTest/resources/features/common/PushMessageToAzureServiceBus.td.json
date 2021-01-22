@@ -14,7 +14,7 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "_extends_": "SingleUserId"
+
     }
   },
   "expectedResponse": {
