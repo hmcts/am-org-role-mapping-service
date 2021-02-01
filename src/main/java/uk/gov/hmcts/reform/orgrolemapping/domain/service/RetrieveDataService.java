@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
+import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
 
 @Service
@@ -75,7 +75,8 @@ public class RetrieveDataService {
         }
 
         // filter the valid userProfiles.
-        List<UserProfile> validUserProfiles = userProfiles.stream().filter(userProfile -> !invalidUserProfiles
+        List<UserProfile> validUserProfiles = requireNonNull(userProfiles).stream()
+                .filter(userProfile -> !invalidUserProfiles
               .contains(userProfile)).collect(Collectors.toList());
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();

@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -90,8 +91,9 @@ class ParseRequestServiceTest {
         List<UserProfile> userProfiles = new ArrayList<>();
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         AtomicInteger integer = new AtomicInteger();
+        Set<UserProfile> invalidUserProfiles = new HashSet<>();
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest, integer,new HashSet<>())
+                sut.validateUserProfiles(userProfiles, userRequest, integer,invalidUserProfiles)
         );
     }
 
@@ -100,8 +102,9 @@ class ParseRequestServiceTest {
         List<UserProfile> userProfiles = new ArrayList<>();
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         AtomicInteger integer = new AtomicInteger();
+        Set<UserProfile> invalidUserProfiles = new HashSet<>();
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(userProfiles, userRequest, integer,new HashSet<>())
+                sut.validateUserProfiles(userProfiles, userRequest, integer,invalidUserProfiles)
         );
     }
 }
