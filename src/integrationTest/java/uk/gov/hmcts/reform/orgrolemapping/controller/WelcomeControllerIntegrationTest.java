@@ -162,7 +162,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         .buildListOfUserProfiles(false, false, "1", "2",
                                 ROLE_NAME_STCW, ROLE_NAME_TCW,
                                 true, true, false,
-                                true, "BFA1", "BFA2",
+                                true, "BFA1", "",
                                 false), HttpStatus.OK));
 
         UserRequest request = UserRequest.builder()

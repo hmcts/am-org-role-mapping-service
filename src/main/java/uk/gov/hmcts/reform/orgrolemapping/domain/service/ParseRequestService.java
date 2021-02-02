@@ -65,6 +65,16 @@ public class ParseRequestService {
                 invalidUserProfiles.add(userProfile);
                 isInvalid = true;
             }
+            long invalidServiceCodeCount = userProfile.getWorkArea().stream().filter(workArea ->
+                   (!workArea.getServiceCode().isEmpty() && !workArea
+                   .getServiceCode().equals("BFA1"))).count();
+            if (invalidServiceCodeCount > 0) {
+                log.error("The userProfile {} has {} invalid service code",
+                        userProfile.getId(), invalidServiceCodeCount);
+                invalidUserProfiles.add(userProfile);
+                isInvalid = true;
+            }
+
             if (CollectionUtils.isEmpty(userProfile.getRole())) {
                 log.error("The role is not available for the userProfile {} ", userProfile.getId());
                 invalidUserProfiles.add(userProfile);

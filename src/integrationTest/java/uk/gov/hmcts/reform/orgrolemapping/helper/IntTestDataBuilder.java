@@ -73,7 +73,7 @@ public class IntTestDataBuilder {
         List<UserProfile.WorkArea> workAreaList = new ArrayList<>();
         if (enableWorkAreaList) {
             workAreaList.add(buildWorkArea(workArea1, "BFA1"));
-            workAreaList.add(buildWorkArea(workArea2, "BFA2"));
+            workAreaList.add(buildWorkArea(workArea2, ""));
         }
         return workAreaList;
     }
