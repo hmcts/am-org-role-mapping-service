@@ -70,7 +70,7 @@ class RequestMappingServiceTest {
 
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);
-        assertEquals(2, resultNode.size());
+        assertEquals(1, resultNode.size());
         assertEquals("staff-organisational-role-mapping",
                 resultNode.get(0).get("roleRequest").get("process").asText());
         assertEquals("tribunal-caseworker",
@@ -78,12 +78,9 @@ class RequestMappingServiceTest {
         assertEquals(actorId,
                 resultNode.get(0).get("requestedRoles").get(0).get("actorId").asText());
 
-        assertEquals("staff-organisational-role-mapping",
-                resultNode.get(1).get("roleRequest").get("process").asText());
-        assertEquals("tribunal-caseworker",
-                resultNode.get(1).get("requestedRoles").get(0).get("roleName").asText());
 
-        Mockito.verify(roleAssignmentService, Mockito.times(2))
+
+        Mockito.verify(roleAssignmentService, Mockito.times(1))
                 .createRoleAssignment(any());
     }
 
@@ -129,16 +126,12 @@ class RequestMappingServiceTest {
 
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);
-        assertEquals(2, resultNode.size());
+        assertEquals(1, resultNode.size());
         assertEquals("staff-organisational-role-mapping",
                 resultNode.get(0).get("roleAssignmentResponse").get("roleRequest").get("process").asText());
         assertEquals("senior-tribunal-caseworker",
                 resultNode.get(0).get("roleAssignmentResponse").get("requestedRoles").get(0).get("roleName").asText());
 
-        assertEquals("staff-organisational-role-mapping",
-                resultNode.get(1).get("roleAssignmentResponse").get("roleRequest").get("process").asText());
-        assertEquals("senior-tribunal-caseworker",
-                resultNode.get(1).get("roleAssignmentResponse").get("requestedRoles").get(0).get("roleName").asText());
     }
 
     @Test
@@ -161,7 +154,7 @@ class RequestMappingServiceTest {
 
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);
-        assertEquals(2, resultNode.size());
+        assertEquals(1, resultNode.size());
 
 
 
