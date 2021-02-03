@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.codehaus.plexus.util.StringUtils;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -563,13 +564,17 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         String contentAsString = result.getResponse().getContentAsString();
+        JsonNode responseNode = null;
 
-        JsonNode responseJsonNode = objectMapper.readValue(contentAsString,
-                JsonNode.class);
-        JsonNode responseNode = responseJsonNode.get(0).get("roleAssignmentResponse");
+        if (StringUtils.isNotEmpty(contentAsString) && !contentAsString.equals("[]")) {
+            JsonNode responseJsonNode = objectMapper.readValue(contentAsString,
+                    JsonNode.class);
 
-        assertEquals(requestStatus.toString(), responseNode.get("roleRequest").get("status").asText());
-        assertEquals(roleAssignmentCount, responseNode.get("requestedRoles").size());
+            responseNode = responseJsonNode.get(0).get("roleAssignmentResponse");
+
+            assertEquals(requestStatus.toString(), responseNode.get("roleRequest").get("status").asText());
+            assertEquals(roleAssignmentCount, responseNode.get("requestedRoles").size());
+        }
         if (roleAssignmentCount > 0) {
             responseNode.get("requestedRoles").forEach(requestedRole -> {
                 assertEquals(roleAssingmentStatus.toString(), requestedRole.get("status").asText());

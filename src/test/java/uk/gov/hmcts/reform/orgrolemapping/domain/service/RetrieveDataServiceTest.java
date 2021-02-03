@@ -53,7 +53,7 @@ class RetrieveDataServiceTest {
         Mockito.verify(crdFeignClient, Mockito.times(1))
                 .getCaseworkerDetailsById(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserProfiles(any(), any(), any());
+                .validateUserProfiles(any(), any(), any(),any());
     }
 
     @Test
@@ -66,10 +66,10 @@ class RetrieveDataServiceTest {
                                 false, true, "1", "2",
                                 false)));
 
-        doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any());
+        doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
         Map<String, Set<UserAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
 
-        assertEquals(2, result.size());
+        assertEquals(0, result.size());
 
     }
 
@@ -78,7 +78,7 @@ class RetrieveDataServiceTest {
 
         when(crdFeignClient.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
                 .ok(buildUserProfile(buildUserRequest())));
-        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any());
+        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
         Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
         assertNotNull(response);
         response.forEach((k,v) -> {

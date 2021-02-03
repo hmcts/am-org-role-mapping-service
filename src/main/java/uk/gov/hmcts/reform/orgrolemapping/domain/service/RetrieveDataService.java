@@ -12,11 +12,13 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.stream.Collectors;
+import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
 
 @Service
@@ -62,7 +64,9 @@ public class RetrieveDataService {
         }
 
         AtomicInteger invalidUserProfilesCount = new AtomicInteger();
-        parseRequestService.validateUserProfiles(userProfiles, userRequest, invalidUserProfilesCount);
+        Set<UserProfile> invalidUserProfiles = new HashSet<>();
+        parseRequestService.validateUserProfiles(userProfiles, userRequest, invalidUserProfilesCount,
+                invalidUserProfiles);
 
 
         // no of user profile successfully validated
@@ -70,11 +74,15 @@ public class RetrieveDataService {
             log.info("Number of invalid UserProfileCount : {} ", invalidUserProfilesCount.get());
         }
 
+        // filter the valid userProfiles.
+        List<UserProfile> validUserProfiles = requireNonNull(userProfiles).stream()
+                .filter(userProfile -> !invalidUserProfiles
+              .contains(userProfile)).collect(Collectors.toList());
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
 
-        if (!CollectionUtils.isEmpty(userProfiles)) {
-            userProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
+        if (!CollectionUtils.isEmpty(validUserProfiles)) {
+            validUserProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                     convertUserProfileToUserAccessProfile(userProfile)));
         }
 
