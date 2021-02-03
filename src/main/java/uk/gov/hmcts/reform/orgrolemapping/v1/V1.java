@@ -32,5 +32,4 @@ public final class V1 {
                 "Unprocessable entity as request has been rejected";
 
     }
-
 }
