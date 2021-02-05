@@ -60,7 +60,7 @@ public class RequestMappingService {
         ResponseEntity<Object> responseEntity = updateCaseworkersRoleAssignments(usersRoleAssignments);
         log.info(
                 "Execution time of createCaseWorkerAssignments() : {} ms",
-                (System.currentTimeMillis() - startTime)
+                (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         return responseEntity;
 
@@ -83,6 +83,31 @@ public class RequestMappingService {
         List<RoleAssignment> roleAssignments = mapUserAccessProfiles(usersAccessProfiles);
         // Add each role assignment to the results map.
         roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
+
+        // if List<RoleAssignment> is empty in case of suspended false in corresponding user access profile then remove
+        // entry of userProfile from usersRoleAssignments map
+        List<String> needToRemoveUAP = new ArrayList<>();
+
+        //Identify the user with empty List<RoleAssignment> in case of suspended is false.
+        usersRoleAssignments.forEach((K, V) -> {
+            if (V.isEmpty()) {
+                Set<UserAccessProfile> accessProfiles = usersAccessProfiles.get(K);
+                if (!accessProfiles.stream().findFirst().get().isSuspended()) {
+                    needToRemoveUAP.add(K);
+
+                }
+            }
+
+        });
+
+        //remove the entry of user from map in case of empty if suspended is false
+
+        if (needToRemoveUAP.size() > 0) {
+            needToRemoveUAP.forEach(id -> {
+                usersRoleAssignments.remove(id);
+            });
+        }
+
 
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
         //print usersRoleAssignments
@@ -107,7 +132,7 @@ public class RequestMappingService {
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
         log.info(
                 "Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
-                (System.currentTimeMillis() - startTime)
+                (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         return roleAssignments;
     }
@@ -204,7 +229,7 @@ public class RequestMappingService {
             responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
             log.info(
                 "Execution time of updateRoleAssignments() : {} ms",
-                (System.currentTimeMillis() - startTime)
+                    (Math.subtractExact(System.currentTimeMillis(),startTime))
             );
         } catch (FeignException.FeignClientException feignClientException) {
             log.error("Handling FeignClientException UnprocessableEntity: " + feignClientException.getMessage());

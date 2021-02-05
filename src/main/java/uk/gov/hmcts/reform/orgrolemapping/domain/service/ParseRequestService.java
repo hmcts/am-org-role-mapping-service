@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,8 @@ public class ParseRequestService {
     }
 
     public void validateUserProfiles(List<UserProfile> userProfiles, UserRequest userRequest,
-                                     AtomicInteger invalidUserProfilesCount) {
+                                     AtomicInteger invalidUserProfilesCount,
+                                     Set<UserProfile> invalidUserProfiles) {
         if (Collections.isEmpty(userProfiles)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
@@ -55,14 +57,17 @@ public class ParseRequestService {
             boolean isInvalid = false;
             if (CollectionUtils.isEmpty(userProfile.getBaseLocation())) {
                 log.error("The base location is not available for the userProfile {} ", userProfile.getId());
+                invalidUserProfiles.add(userProfile);
                 isInvalid = true;
             }
             if (CollectionUtils.isEmpty(userProfile.getWorkArea())) {
                 log.error("The work area is not available for the userProfile {} ", userProfile.getId());
+                invalidUserProfiles.add(userProfile);
                 isInvalid = true;
             }
             if (CollectionUtils.isEmpty(userProfile.getRole())) {
                 log.error("The role is not available for the userProfile {} ", userProfile.getId());
+                invalidUserProfiles.add(userProfile);
                 isInvalid = true;
             }
             long primaryLocationCount = userProfile.getBaseLocation().stream()
@@ -71,6 +76,7 @@ public class ParseRequestService {
             if (primaryLocationCount != 1) {
                 log.error("The userProfile {} has {} primary location(s), only 1 is allowed",
                         userProfile.getId(), primaryLocationCount);
+                invalidUserProfiles.add(userProfile);
                 isInvalid = true;
             }
             if (isInvalid) {
