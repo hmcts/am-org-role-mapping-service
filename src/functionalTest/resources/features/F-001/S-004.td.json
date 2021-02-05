@@ -3,7 +3,7 @@
   "title": "must successfully remove role assignments using delete flag true",
   "_extends_": "F-001_Test_Data_Base",
   "specs": [
-    "contains the actorIds of the user just published",
+    "contains the actorId of the user just published",
     "contains the CRD user whose delete flag set to true"
   ],
   "method": "POST",
