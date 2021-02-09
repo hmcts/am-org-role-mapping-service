@@ -337,8 +337,6 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-common'
     }
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: '1.3.72'
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-common', version: '1.3.72'
 
     // drools engine dependency
     compile(group: 'org.drools', name: 'drools-core', version: versions.drools) {
