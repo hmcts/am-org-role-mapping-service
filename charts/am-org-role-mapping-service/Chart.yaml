@@ -6,3 +6,7 @@ home: https://github.com/hmcts/am-org-role-mapping-service
 version: 0.0.15
 maintainers:
   - name: Access Management Team
+dependencies:
+  - name: java
+    version: 3.4.4
+    repository: '@hmctspublic'
