@@ -94,11 +94,6 @@ public class IdamRepository {
                 "4",
                 ""
         );
-        log.info("client Id : {} ",oauth2Configuration.getClientId());
-        log.info("client Secret : {} ",oauth2Configuration.getClientSecret());
-        log.info("User Id : {} ",oidcAdminConfiguration.getUserId());
-        log.info("User Secret : {} ",oidcAdminConfiguration.getSecret());
-
         TokenResponse tokenResponse = idamApi.generateOpenIdToken(tokenRequest);
         return tokenResponse.accessToken;
     }
