@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -89,12 +90,11 @@ public class RequestMappingService {
         List<String> needToRemoveUAP = new ArrayList<>();
 
         //Identify the user with empty List<RoleAssignment> in case of suspended is false.
-        usersRoleAssignments.forEach((K, V) -> {
-            if (V.isEmpty()) {
-                Set<UserAccessProfile> accessProfiles = usersAccessProfiles.get(K);
-                if (!accessProfiles.stream().findFirst().get().isSuspended()) {
-                    needToRemoveUAP.add(K);
-
+        usersRoleAssignments.forEach((k, v) -> {
+            if (v.isEmpty()) {
+                Set<UserAccessProfile> accessProfiles = usersAccessProfiles.get(k);
+                if (!Objects.requireNonNull(accessProfiles.stream().findFirst().orElse(null)).isSuspended()) {
+                    needToRemoveUAP.add(k);
                 }
             }
 
@@ -102,10 +102,8 @@ public class RequestMappingService {
 
         //remove the entry of user from map in case of empty if suspended is false
 
-        if (needToRemoveUAP.size() > 0) {
-            needToRemoveUAP.forEach(id -> {
-                usersRoleAssignments.remove(id);
-            });
+        if (!needToRemoveUAP.isEmpty()) {
+            needToRemoveUAP.forEach(usersRoleAssignments::remove);
         }
 
 
