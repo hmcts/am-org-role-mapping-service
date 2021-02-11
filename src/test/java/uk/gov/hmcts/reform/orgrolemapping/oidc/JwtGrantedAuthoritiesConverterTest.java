@@ -27,7 +27,6 @@ class JwtGrantedAuthoritiesConverterTest {
 
     private UserInfo userInfo;
 
-    @InjectMocks
     private final JwtGrantedAuthoritiesConverter sut = new JwtGrantedAuthoritiesConverter(idamRepositoryMock);
 
     @Test
