@@ -1,12 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.oidc;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
@@ -16,7 +13,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ACCESS_TOKEN;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -27,18 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JwtGrantedAuthoritiesConverterTest {
 
-    @Mock
     private final IdamRepository idamRepositoryMock = mock(IdamRepository.class);
 
     private UserInfo userInfo;
 
     @InjectMocks
     private final JwtGrantedAuthoritiesConverter sut = new JwtGrantedAuthoritiesConverter(idamRepositoryMock);
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     @DisplayName("Gets empty authorities")
