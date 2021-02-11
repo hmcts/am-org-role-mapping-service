@@ -1,48 +1,34 @@
 {
   "_guid_": "S-001",
-  "title": "must successfully create org role mapping for multiple users with multiple role assignments",
+  "title": "must successfully create org role mapping for a single user having single role",
   "_extends_": "F-001_Test_Data_Base",
+
   "specs": [
-    "contains the data received from CRD API got transformed",
-    "contains multiple users with multiple role assignments"
+    "contains the actorId of the user just published"
   ],
   "request": {
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": {
-      "userIds":[
-        "${}${[scenarioContext][customValues][generateUUID]}"
-      ]
+    "pathVariables": {
+      "actorId": "${[scenarioContext][childContexts][PushMessageToAzureServiceBus][testData][request][body][userIds][0]}"
     }
   },
   "expectedResponse": {
     "_extends_": "Common_200_Response",
-    "headers": {
-      "Content-Length": "[[ANYTHING_PRESENT]]",
-      "Content-Type": "application/json"
-    },
     "body": {
-      "arrayInMap": [
+      "roleAssignmentResponse": [
         {
-          "roleAssignmentResponse": {
-            "roleRequest": {
-              "_extends_": "ResponseRoleRequest",
-              "reference": "${}${[scenarioContext][testData][request][body][users][0]}"
-            },
-            "requestedRoles": [
-              {
-                "_extends_": "ResponseRequestedRole",
-                "roleName": "senior-tribunal-caseworker",
-                "actorId": "${}${[scenarioContext][testData][request][body][users][0]}",
-                "reference": "${}${[scenarioContext][testData][request][body][users][0]}"
-              },
-              {
-                "_extends_": "ResponseRequestedRole",
-                "actorId": "${}${[scenarioContext][testData][request][body][users][0]}",
-                "reference": "${}${[scenarioContext][testData][request][body][users][0]}"
-              }
-            ]
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "senior-tribunal-caseworker",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "STAFF",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "2191654",
+            "jurisdiction": "IA"
           }
         }
       ]

@@ -1,15 +1,16 @@
 {
-  "_guid_": "S-002",
-  "title": "must successfully create org role mapping for a multiple user having single role",
+  "_guid_": "S-006",
+  "title": "must successfully create org role mapping for a user having multiple roles",
   "_extends_": "F-001_Test_Data_Base",
   "specs": [
-    "contains the actorIds of the user just published"
+    "contains the actorId of the user just published",
+    "contains multiple role assignments for the user"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-002_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
+      "actorId": "${[scenarioContext][childContexts][S-006_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
     }
   },
   "expectedResponse": {
@@ -28,7 +29,7 @@
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "2191654",
+            "primaryLocation": "739294",
             "jurisdiction": "IA"
           }
         },
@@ -37,14 +38,14 @@
           "actorIdType": "IDAM",
           "actorId": "[[ANYTHING_PRESENT]]",
           "roleType": "ORGANISATION",
-          "roleName": "senior-tribunal-caseworker",
+          "roleName": "tribunal-caseworker",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "STAFF",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "2191654",
+            "primaryLocation": "739294",
             "jurisdiction": "IA"
           }
         }
