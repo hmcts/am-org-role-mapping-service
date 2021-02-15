@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.Authentication;
@@ -94,6 +95,7 @@ class SecurityUtilsTest {
     @BeforeEach
     public void setUp() throws IOException {
         mockSecurityContextData();
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
