@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-001_DeleteDataForRoleAssignments",
+  "_guid_": "DeleteDataForRoleAssignments",
   "productName": "Role Assignment Service",
   "operationName": "Delete Role Assignments by Process",
   "method": "DELETE",
@@ -22,10 +22,7 @@
     },
     "pathVariables": {
       "process": "staff-organisational-role-mapping",
-      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
-    },
-    "body": {
-      "_extends_": "SingleUserId"
+      "reference":"${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}}"
     }
    },
 

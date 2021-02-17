@@ -1,0 +1,10 @@
+{
+  "_guid_": "S-002_PushMessageToAzureServiceBus",
+  "_extends_": "PushMessageToAzureServiceBus",
+
+  "request": {
+    "body": {
+      "_extends_": "SingleUserId"
+    }
+  }
+}
