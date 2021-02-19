@@ -419,6 +419,7 @@ dependencies {
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
+    implementation group: 'io.netty', name: 'netty-all', version: '4.1.59.Final'
 
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
     testCompile('com.github.tomakehurst:wiremock-jre8:2.25.1')
