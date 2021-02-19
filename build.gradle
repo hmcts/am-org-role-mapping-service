@@ -419,7 +419,21 @@ dependencies {
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-handler', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-buffer', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-codec', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-codec-http', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-codec-socks', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-common', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-handler-proxy', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-resolver', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-transport', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-transport-native-unix-common', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-transport-native-epoll', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-transport-native-kqueue', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-native-kqueue', version: '4.1.59.Final'
+    implementation group: 'io.netty', name: 'netty-native-unix-common', version: '4.1.59.Final'
+
 
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
     testCompile('com.github.tomakehurst:wiremock-jre8:2.25.1')
