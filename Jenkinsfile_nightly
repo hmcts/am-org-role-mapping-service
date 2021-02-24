@@ -37,7 +37,8 @@ def secrets = [
               secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY'),
               secret('test-am-user2-befta-pwd', 'TEST_AM_USER2_BEFTA_PWD'),
               secret('test-am-crd-user1-befta', 'TEST_AM_CRD_USER1_BEFTA'),
-              secret('test-am-crd-user1-befta-password', 'TEST_AM_CRD_USER1_BEFTA_PASSWORD')
+              secret('test-am-crd-user1-befta-password', 'TEST_AM_CRD_USER1_BEFTA_PASSWORD'),
+              secret('caseworker-topic-primary-send-listen-shared-access-key', 'AMQP_SHARED_ACCESS_KEY_VALUE')
       ]
 ]
 
@@ -59,7 +60,8 @@ withNightlyPipeline(type, product, component) {
   env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
   env.CRD_URL = "http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal"
   env.USER_PROFILE_URL= "https://rd-user-profile-api-pr-575.service.core-compute-preview.internal"
-  env.AMQP_TOPIC_NAME = "rd-caseworker-topic-sandbox/subscriptions/BeftaFunctionalTest"
+  env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
+  env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
   overrideVaultEnvironments(vaultOverrides)
 
   enableMutationTest()

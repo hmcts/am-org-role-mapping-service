@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-001_DeleteDataForRoleAssignments",
+  "_guid_": "S-006_DeleteDataForRoleAssignments01",
   "productName": "Role Assignment Service",
   "operationName": "Delete Role Assignments by Process",
   "method": "DELETE",
@@ -25,9 +25,9 @@
       "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
     },
     "body": {
-      "_extends_": "SingleUserId"
+      "_extends_": "SingleUserMultipleRolesIds"
     }
-   },
+  },
 
   "expectedResponse": {
     "headers": {

@@ -4,7 +4,9 @@ package uk.gov.hmcts.reform.orgrolemapping.oidc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +23,7 @@ import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static org.springframework.http.HttpMethod.GET;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.BEARER;
 
@@ -35,19 +38,31 @@ public class IdamRepository {
     @Value("${idam.api.url}")
     protected String idamUrl;
 
+    @Value("${spring.cache.type}")
+    protected String cacheType;
+
+    private CacheManager cacheManager;
+
     @Autowired
     public IdamRepository(IdamApi idamApi,
                           OIdcAdminConfiguration oidcAdminConfiguration,
                           OAuth2Configuration oauth2Configuration,
-                          RestTemplate restTemplate) {
+                          RestTemplate restTemplate, CacheManager cacheManager) {
         this.idamApi = idamApi;
         this.oidcAdminConfiguration = oidcAdminConfiguration;
         this.oauth2Configuration = oauth2Configuration;
         this.restTemplate = restTemplate;
+        this.cacheManager = cacheManager;
     }
 
     @Cacheable(value = "token")
     public UserInfo getUserInfo(String jwtToken) {
+        if (cacheType != null && !cacheType.equals("none")) {
+            CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("token");
+            com.github.benmanes.caffeine.cache.Cache<Object, Object> nativeCache = requireNonNull(caffeineCache)
+                    .getNativeCache();
+            log.info("generating Bearer Token, current size of cache: {}", nativeCache.estimatedSize());
+        }
         return idamApi.retrieveUserInfo(BEARER + jwtToken);
     }
 
