@@ -116,13 +116,13 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
                 + "    \"name\": \"tribunal-caseworker\",\n"
                 + "    \"label\": \"Tribunal Caseworker\",\n"
                 + "    \"description\": \"Tribunal caseworker\",\n"
-                + "    \"category\": \"STAFF\"\n"
+                + "    \"category\": \"LEGAL_OPERATIONS\"\n"
                 + "  },\n"
                 + "  {\n"
                 + "    \"name\": \"senior-tribunal-caseworker\",\n"
                 + "    \"label\": \"Senior Tribunal Caseworker\",\n"
                 + "    \"description\": \"Senior Tribunal caseworker\",\n"
-                + "    \"category\": \"STAFF\"\n"
+                + "    \"category\": \"LEGAL_OPERATIONS\"\n"
                 + "  }\n"
                 + "]";
         return response;
