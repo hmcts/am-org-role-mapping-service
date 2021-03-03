@@ -20,23 +20,123 @@
         "body": [
           {
             "name": "judge",
-            "label": "Judge - Sample role (Only for Testing)",
             "description": "Judicial office holder able to do judicial case work",
+            "label": "Judge - Sample role (Only for Testing)",
             "category": "JUDICIAL"
           },
           {
             "name": "tribunal-caseworker",
-            "label": "Tribunal Caseworker",
             "description": "Tribunal caseworker",
-            "category": "STAFF"
+            "label": "Tribunal Caseworker",
+            "category": "LEGAL_OPERATIONS"
           },
           {
             "name": "senior-tribunal-caseworker",
-            "label": "Senior Tribunal Caseworker",
             "description": "Senior Tribunal caseworker",
-            "category": "STAFF"
+            "label": "Senior Tribunal Caseworker",
+            "category": "LEGAL_OPERATIONS"
           }
-        ]
+        ],
+        "matchingRules": {
+          "body": {
+            "$[0].name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].label": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].description": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].category": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[1].name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[1].label": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[1].description": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[1].category": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[2].name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[2].label": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[2].description": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[2].category": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
       },
       "providerStates": [
         {
