@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
 import au.com.dius.pact.consumer.MockServer;
+import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -13,8 +14,6 @@ import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +27,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static org.junit.Assert.assertNotNull;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
@@ -63,7 +62,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
                 .willRespondWith()
                 .status(HttpStatus.OK.value())
                 .headers(getResponseHeaders())
-                .body(createResponse())
+                .body(createRolesResponse())
                 .toPact();
     }
 
@@ -86,8 +85,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
 
     @Test
     @PactTestFor(pactMethod = "executeGetListOfRolesAndGet200")
-    void getListOfRolesAndGet200Test(MockServer mockServer)
-            throws JSONException {
+    void getListOfRolesAndGet200Test(MockServer mockServer) {
         String actualResponseBody =
                 SerenityRest
                         .given()
@@ -96,36 +94,31 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
                         .then()
                         .log().all().extract().asString();
         JSONArray jsonArray = new JSONArray(actualResponseBody);
-        JSONObject role = jsonArray.getJSONObject(0);
-        assertThat(role.get("name"), equalTo("judge"));
-        assertThat(role.get("description"), equalTo("Judicial office holder able to do judicial case work"));
-        assertThat(role.get("label"), equalTo("Judge - Sample role (Only for Testing)"));
-        assertThat(role.get("category"), equalTo("JUDICIAL"));
+        assertNotNull(jsonArray);
     }
 
-    private String createResponse() {
-        String response = "";
-        response = "[\n"
-                + "  {\n"
-                + "    \"name\": \"judge\",\n"
-                + "    \"label\": \"Judge - Sample role (Only for Testing)\",\n"
-                + "    \"description\": \"Judicial office holder able to do judicial case work\",\n"
-                + "    \"category\": \"JUDICIAL\"\n"
-                + "  },\n"
-                + "  {\n"
-                + "    \"name\": \"tribunal-caseworker\",\n"
-                + "    \"label\": \"Tribunal Caseworker\",\n"
-                + "    \"description\": \"Tribunal caseworker\",\n"
-                + "    \"category\": \"LEGAL_OPERATIONS\"\n"
-                + "  },\n"
-                + "  {\n"
-                + "    \"name\": \"senior-tribunal-caseworker\",\n"
-                + "    \"label\": \"Senior Tribunal Caseworker\",\n"
-                + "    \"description\": \"Senior Tribunal caseworker\",\n"
-                + "    \"category\": \"LEGAL_OPERATIONS\"\n"
-                + "  }\n"
-                + "]";
-        return response;
+    private DslPart createRolesResponse() {
+        String name = "name";
+        String label = "label";
+        String description = "description";
+        String category = "category";
+        return newJsonArray(o -> o
+                .object(role -> role
+                        .stringType(name, "judge")
+                        .stringType(label, "Judge - Sample role (Only for Testing)")
+                        .stringType(description, "Judicial office holder able to do judicial case work")
+                        .stringType(category, "JUDICIAL"))
+                .object(role -> role
+                        .stringType(name, "tribunal-caseworker")
+                        .stringType(label, "Tribunal Caseworker")
+                        .stringType(description, "Tribunal caseworker")
+                        .stringType(category, "LEGAL_OPERATIONS"))
+                .object(role -> role
+                        .stringType(name, "senior-tribunal-caseworker")
+                        .stringType(label, "Senior Tribunal Caseworker")
+                        .stringType(description, "Senior Tribunal caseworker")
+                        .stringType(category, "LEGAL_OPERATIONS"))
+        ).build();
     }
 
     private HttpHeaders getHttpHeaders() {
