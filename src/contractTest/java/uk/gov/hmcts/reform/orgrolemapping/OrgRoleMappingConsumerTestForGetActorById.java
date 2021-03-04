@@ -94,7 +94,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
                         .stringValue("roleName", "senior-tribunal-caseworker")
                         .stringValue("classification", "PRIVATE")
                         .stringValue("grantType", "STANDARD")
-                        .stringValue("roleCategory", "STAFF")
+                        .stringType("roleCategory", "LEGAL_OPERATIONS")
                         .booleanValue("readOnly", false)
                         .object("attributes", attribute -> attribute
                                 .stringType("jurisdiction", "IA"))

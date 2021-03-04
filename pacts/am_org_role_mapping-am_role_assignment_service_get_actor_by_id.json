@@ -22,7 +22,7 @@
             {
               "actorId": "23486",
               "roleName": "senior-tribunal-caseworker",
-              "roleCategory": "STAFF",
+              "roleCategory": "LEGAL_OPERATIONS",
               "readOnly": false,
               "attributes": {
                 "jurisdiction": "IA"
@@ -47,6 +47,14 @@
               "combine": "AND"
             },
             "$.roleAssignmentResponse[*].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse[*].roleCategory": {
               "matchers": [
                 {
                   "match": "type"
