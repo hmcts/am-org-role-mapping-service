@@ -65,7 +65,7 @@ class BulkAssignmentOrchestratorTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ROLE_NAME_TCW, roleAssignment.getRoleName());
         assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType());
-        assertEquals(RoleCategory.STAFF, roleAssignment.getRoleCategory());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
 
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserRequest(Mockito.any(UserRequest.class));
