@@ -32,25 +32,25 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service_get_actor_by_id")
-@PactFolder("pacts")
-@SpringBootTest
-public class OrgRoleMappingConsumerTestForGetActorById {
+    @ExtendWith(SpringExtension.class)
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @PactTestFor(providerName = "am_role_assignment_service_get_actor_by_id")
+    @PactFolder("pacts")
+    @SpringBootTest
+    public class OrgRoleMappingConsumerTestForGetActorById {
 
-    private static final String ACTOR_ID = "23486";
-    private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
+        private static final String ACTOR_ID = "23486";
+        private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
 
-    @BeforeEach
-    public void setUpEachTest() throws InterruptedException {
-        Thread.sleep(2000);
-    }
+        @BeforeEach
+        public void setUpEachTest() throws InterruptedException {
+            Thread.sleep(2000);
+        }
 
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
-    }
+        @After
+        void teardown() {
+            Executor.closeIdleConnections();
+        }
 
     @Pact(provider = "am_role_assignment_service_get_actor_by_id", consumer = "am_org_role_mapping")
     public RequestResponsePact executeGetActorByIdAndGet200(PactDslWithProvider builder) {
@@ -97,7 +97,9 @@ public class OrgRoleMappingConsumerTestForGetActorById {
                         .stringType("roleCategory", "LEGAL_OPERATIONS")
                         .booleanValue("readOnly", false)
                         .object("attributes", attribute -> attribute
-                                .stringType("jurisdiction", "IA"))
+                                .stringType("region", "north-east")
+                                .stringType("contractType", "SALARIED")
+                                .stringType("caseId", "1234567890123456"))
                 )).build();
     }
 
