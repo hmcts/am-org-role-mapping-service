@@ -23,7 +23,7 @@
           "roleName": "senior-tribunal-caseworker",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "STAFF",
+          "roleCategory": "LEGAL_OPERATIONS",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {

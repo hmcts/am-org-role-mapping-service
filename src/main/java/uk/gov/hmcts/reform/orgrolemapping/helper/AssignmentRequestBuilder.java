@@ -71,7 +71,7 @@ public class AssignmentRequestBuilder {
                 .roleName(ROLE_NAME_TCW)
                 .classification(Classification.PUBLIC)
                 .grantType(GrantType.STANDARD)
-                .roleCategory(RoleCategory.STAFF)
+                .roleCategory(RoleCategory.LEGAL_OPERATIONS)
                 .readOnly(false)
                 .attributes(JacksonUtils.convertValue(buildAttributesFromFile("attributes.json")))
                 .build();
@@ -95,7 +95,7 @@ public class AssignmentRequestBuilder {
                 .roleType(RoleType.ORGANISATION)
                 .classification(Classification.PUBLIC) //default is public
                 .grantType(GrantType.STANDARD)
-                .roleCategory(RoleCategory.STAFF)
+                .roleCategory(RoleCategory.LEGAL_OPERATIONS)
                 .readOnly(false)
                 .attributes(new HashMap<>())
                 .build();
