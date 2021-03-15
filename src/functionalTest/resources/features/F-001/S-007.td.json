@@ -5,15 +5,19 @@
   "specs": [
     "contains the actorId of the user just published"
   ],
-  "method": "POST",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
   "request": {
-    "body": {
-      "actorId": "${[scenarioContext][childContexts][S-007_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
-    }
+    "pathVariables": {
+      "actorId": "d50bdb3d-092e-4e74-b492-5d8d51e16585"
+   }
   },
+
   "expectedResponse": {
     "_extends_": "Common_200_Response",
+    "headers": {
+      "_extends_": "Common_200_Response_Headers",
+      "ETag" : "W/\"2\""
+    },
     "body": {
       "roleAssignmentResponse": [
         {
@@ -21,14 +25,14 @@
           "actorIdType": "IDAM",
           "actorId": "[[ANYTHING_PRESENT]]",
           "roleType": "ORGANISATION",
-          "roleName": "senior-tribunal-caseworker",
+          "roleName": "[[ANYTHING_PRESENT]]",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "LEGAL_OPERATIONS",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "445123",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "IA"
           }
         }
