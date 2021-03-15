@@ -15,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-//import uk.gov.hmcts.reform.auth.checker.spring.serviceanduser.ServiceAndUserDetails;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
@@ -69,18 +68,11 @@ class SecurityUtilsTest {
             + ".LH3aiNniHNMlTwuSdzgRic9sD_4inQv5oUqJ0kkRKVasS4RfhIz2tRdttf-sSMkUga1p1teOt2iCq4BQBDS7KA";
     private static final String USER_ID = "21334a2b-79ce-44eb-9168-2d49a744be9c";
 
-    //ServiceAndUserDetails serviceAndUserDetails;
 
 
     private void mockSecurityContextData() throws IOException {
         List<String> collection = new ArrayList<String>();
         collection.add("string");
-        /*serviceAndUserDetails = new ServiceAndUserDetails(
-                USER_ID,
-                serviceAuthorization,
-                collection,
-                "servicename"
-        );*/
         Map<String, Object> headers = new HashMap<>();
         headers.put("header", "head");
         Jwt jwt = new Jwt(serviceAuthorizationNoBearer, Instant.now(), Instant.now().plusSeconds(10),headers, headers);
