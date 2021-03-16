@@ -12,6 +12,7 @@ import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,8 @@ public class JRDTopicConsumer {
     }
 
     @Bean
-    public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
+    @Qualifier("jrdConsumer")
+    public SubscriptionClient getSubscriptionClient1() throws URISyntaxException, ServiceBusException,
             InterruptedException {
         URI endpoint = new URI("sb://" + host);
 
@@ -69,7 +71,8 @@ public class JRDTopicConsumer {
     }
 
     @Bean
-    CompletableFuture<Void> registerMessageHandlerOnJRDClient(@Autowired SubscriptionClient receiveClient)
+    CompletableFuture<Void> registerMessageHandlerOnJRDClient(@Autowired @Qualifier("jrdConsumer")
+                                                                      SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
         log.info("    Calling registerMessageHandlerOnJRDClient ");
@@ -117,7 +120,7 @@ public class JRDTopicConsumer {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.info("    Parsing the message");
+        log.info("    Parsing the message on JRD Consumer");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);

@@ -12,6 +12,7 @@ import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -56,6 +56,7 @@ public class TopicConsumer {
     }
 
     @Bean
+    @Qualifier("crdConsumer")
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
         URI endpoint = new URI("sb://" + host);
@@ -70,7 +71,8 @@ public class TopicConsumer {
     }
 
     @Bean
-    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
+    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
+                                                                   SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
         log.info("    Calling registerMessageHandlerOnClient ");
@@ -118,7 +120,7 @@ public class TopicConsumer {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.info("    Parsing the message");
+        log.info("    Parsing the message on CRD Consumer");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);
