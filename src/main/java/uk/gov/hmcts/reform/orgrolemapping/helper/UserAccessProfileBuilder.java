@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 
@@ -30,25 +32,25 @@ public class UserAccessProfileBuilder {
 
     }
 
-    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfiles() {
+    public static Map<String, Set<CaseWorkerAccessProfile>> buildUserAccessProfiles() {
 
-        Map<String, Set<UserAccessProfile>> userProfileMapping = new HashMap<>();
+        Map<String, Set<CaseWorkerAccessProfile>> userProfileMapping = new HashMap<>();
 
-        List<UserAccessProfile> userAccessProfiles1 = Arrays.asList(buildUserAccessProfileForRoleId1(),
+        List<CaseWorkerAccessProfile> caseWorkerAccessProfiles1 = Arrays.asList(buildUserAccessProfileForRoleId1(),
                 buildUserAccessProfileForRoleId2());
-        List<UserAccessProfile> userAccessProfiles2 = Arrays.asList(buildUserAccessProfileForRoleId3(),
+        List<CaseWorkerAccessProfile> caseWorkerAccessProfiles2 = Arrays.asList(buildUserAccessProfileForRoleId3(),
                 buildUserAccessProfileForRoleId4());
-        userProfileMapping.put(userAccessProfiles1.get(0).getId(),
-                new HashSet<>(userAccessProfiles1));
-        userProfileMapping.put(userAccessProfiles2.get(0).getId(),
-                new HashSet<>(userAccessProfiles1));
+        userProfileMapping.put(caseWorkerAccessProfiles1.get(0).getId(),
+                new HashSet<>(caseWorkerAccessProfiles1));
+        userProfileMapping.put(caseWorkerAccessProfiles2.get(0).getId(),
+                new HashSet<>(caseWorkerAccessProfiles1));
 
         return userProfileMapping;
     }
 
-    public static UserAccessProfile buildUserAccessProfileForRoleId1() {
+    public static CaseWorkerAccessProfile buildUserAccessProfileForRoleId1() {
 
-        return UserAccessProfile.builder()
+        return CaseWorkerAccessProfile.builder()
                 .id(ID1)
                 .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
@@ -57,9 +59,9 @@ public class UserAccessProfileBuilder {
                 .build();
     }
 
-    public static UserAccessProfile buildUserAccessProfileForRoleId2() {
+    public static CaseWorkerAccessProfile buildUserAccessProfileForRoleId2() {
 
-        return UserAccessProfile.builder()
+        return CaseWorkerAccessProfile.builder()
                 .id(ID1)
                 .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
@@ -68,9 +70,9 @@ public class UserAccessProfileBuilder {
                 .build();
     }
 
-    public static UserAccessProfile buildUserAccessProfileForRoleId3() {
+    public static CaseWorkerAccessProfile buildUserAccessProfileForRoleId3() {
 
-        return UserAccessProfile.builder()
+        return CaseWorkerAccessProfile.builder()
                 .id(ID2)
                 .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
@@ -79,9 +81,9 @@ public class UserAccessProfileBuilder {
                 .build();
     }
 
-    public static UserAccessProfile buildUserAccessProfileForRoleId4() {
+    public static CaseWorkerAccessProfile buildUserAccessProfileForRoleId4() {
 
-        return UserAccessProfile.builder()
+        return CaseWorkerAccessProfile.builder()
                 .id(ID2)
                 .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
@@ -97,21 +99,19 @@ public class UserAccessProfileBuilder {
     }
 
 
-    public static List<UserProfile> buildUserProfile(UserRequest userRequest) {
+    public static List<CaseWorkerProfile> buildUserProfile(UserRequest userRequest) {
 
-        Set<UserProfile> userProfiles = new LinkedHashSet<>();
+        Set<CaseWorkerProfile> caseWorkerProfiles = new LinkedHashSet<>();
 
 
         userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
-                         CRDFeignClientFallback.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
+                         UserAccessProfileBuilder.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
                 assert inputStream != null;
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.registerModule(new JavaTimeModule());
-                objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
-                UserProfile userProfile = objectMapper.readValue(inputStream, UserProfile.class);
-                userProfile.setId(userId);
-                userProfiles.add(userProfile);
+                ObjectMapper objectMapper = getObjectMapper();
+                CaseWorkerProfile caseWorkerProfile = objectMapper.readValue(inputStream, CaseWorkerProfile.class);
+                caseWorkerProfile.setId(userId);
+                caseWorkerProfiles.add(caseWorkerProfile);
 
 
             } catch (Exception e) {
@@ -120,6 +120,38 @@ public class UserAccessProfileBuilder {
 
 
         });
-        return new ArrayList<>(userProfiles);
+        return new ArrayList<>(caseWorkerProfiles);
+    }
+
+    public static List<JudicialProfile> buildJudicialProfile(UserRequest userRequest) {
+
+        Set<JudicialProfile> judicialProfilesProfiles = new LinkedHashSet<>();
+
+
+        userRequest.getUserIds().forEach(userId -> {
+            try (InputStream inputStream =
+                         UserAccessProfileBuilder.class.getClassLoader().getResourceAsStream("judicialProfileSample.json")) {
+                assert inputStream != null;
+                ObjectMapper objectMapper = getObjectMapper();
+                JudicialProfile judicialProfile = objectMapper.readValue(inputStream, JudicialProfile.class);
+                judicialProfile.setElinkId(userId);
+                judicialProfilesProfiles.add(judicialProfile);
+
+
+            } catch (Exception e) {
+                throw new BadRequestException("Either the user request is not valid or sample json is missing.");
+            }
+
+
+        });
+        return new ArrayList<>(judicialProfilesProfiles);
+    }
+
+    @NotNull
+    private static ObjectMapper getObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
+        return objectMapper;
     }
 }

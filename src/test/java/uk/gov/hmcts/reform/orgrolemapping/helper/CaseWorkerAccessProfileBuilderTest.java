@@ -1,14 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
-class UserAccessProfileBuilderTest {
+class CaseWorkerAccessProfileBuilderTest {
 
     private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     private static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
@@ -40,11 +40,11 @@ class UserAccessProfileBuilderTest {
 
     @Test
     void buildUserProfiles() {
-        List<UserProfile> userProfiles =
+        List<CaseWorkerProfile> caseWorkerProfiles =
                 UserAccessProfileBuilder.buildUserProfile(TestDataBuilder.buildUserRequest());
-        assertNotNull(userProfiles);
-        assertEquals(2, userProfiles.size());
-        assertEquals(id_1, userProfiles.get(0).getId());
-        assertEquals(id_2, userProfiles.get(1).getId());
+        assertNotNull(caseWorkerProfiles);
+        assertEquals(2, caseWorkerProfiles.size());
+        assertEquals(id_1, caseWorkerProfiles.get(0).getId());
+        assertEquals(id_2, caseWorkerProfiles.get(1).getId());
     }
 }

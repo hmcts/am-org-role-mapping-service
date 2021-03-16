@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
@@ -43,17 +43,17 @@ public class IntTestDataBuilder {
         return UserRequest.builder().userIds(users).build();
     }
 
-    public static UserProfile.BaseLocation buildBaseLocation(boolean primaryLocation) {
-        return UserProfile.BaseLocation.builder().primary(primaryLocation)
+    public static CaseWorkerProfile.BaseLocation buildBaseLocation(boolean primaryLocation) {
+        return CaseWorkerProfile.BaseLocation.builder().primary(primaryLocation)
                 .location("Aberdeen Tribunal Hearing Centre").locationId("219164")
                 .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
-    public static List<UserProfile.BaseLocation> buildListOfBaseLocations(boolean enableLocationList,
-                                                                          boolean primaryLocation1,
-                                                                          boolean primaryLocation2) {
-        List<UserProfile.BaseLocation> baseLocationList = new ArrayList<>();
+    public static List<CaseWorkerProfile.BaseLocation> buildListOfBaseLocations(boolean enableLocationList,
+                                                                                boolean primaryLocation1,
+                                                                                boolean primaryLocation2) {
+        List<CaseWorkerProfile.BaseLocation> baseLocationList = new ArrayList<>();
         if (enableLocationList) {
             baseLocationList.add(buildBaseLocation(primaryLocation1));
             baseLocationList.add(buildBaseLocation(primaryLocation2));
@@ -61,16 +61,16 @@ public class IntTestDataBuilder {
         return baseLocationList;
     }
 
-    public static UserProfile.WorkArea buildWorkArea(String area, String serviceCode) {
-        return UserProfile.WorkArea.builder().areaOfWork(area).serviceCode(serviceCode)
+    public static CaseWorkerProfile.WorkArea buildWorkArea(String area, String serviceCode) {
+        return CaseWorkerProfile.WorkArea.builder().areaOfWork(area).serviceCode(serviceCode)
                 .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
-    public static List<UserProfile.WorkArea> buildListOfWorkAreas(boolean enableWorkAreaList,
-                                                                  String workArea1,
-                                                                  String workArea2) {
-        List<UserProfile.WorkArea> workAreaList = new ArrayList<>();
+    public static List<CaseWorkerProfile.WorkArea> buildListOfWorkAreas(boolean enableWorkAreaList,
+                                                                        String workArea1,
+                                                                        String workArea2) {
+        List<CaseWorkerProfile.WorkArea> workAreaList = new ArrayList<>();
         if (enableWorkAreaList) {
             workAreaList.add(buildWorkArea(workArea1, "BFA1"));
             workAreaList.add(buildWorkArea(workArea2, "BFA2"));
@@ -78,16 +78,16 @@ public class IntTestDataBuilder {
         return workAreaList;
     }
 
-    public static UserProfile.Role buildRole(String id, boolean primaryRole, String roleName) {
-        return UserProfile.Role.builder().roleId(id).primary(primaryRole)
+    public static CaseWorkerProfile.Role buildRole(String id, boolean primaryRole, String roleName) {
+        return CaseWorkerProfile.Role.builder().roleId(id).primary(primaryRole)
                 .roleName(roleName)
                 .createdTime(LocalDateTime.now()).lastUpdatedTime(LocalDateTime.now().minusDays(1L))
                 .build();
     }
 
-    public static List<UserProfile.Role> buildListOfRoles(boolean multiRole, String roleId1,
-                                                          String roleId2, String roleName1, String roleName2) {
-        List<UserProfile.Role> roles = new ArrayList<>();
+    public static List<CaseWorkerProfile.Role> buildListOfRoles(boolean multiRole, String roleId1,
+                                                                String roleId2, String roleName1, String roleName2) {
+        List<CaseWorkerProfile.Role> roles = new ArrayList<>();
         roles.add(buildRole(roleId1,true, roleName1));
         if (multiRole) {
             roles.add(buildRole(roleId2, false, roleName2));
@@ -95,19 +95,19 @@ public class IntTestDataBuilder {
         return roles;
     }
 
-    public static UserProfile buildUserProfile(String id, boolean multiRole,
-                                               String roleId1,
-                                               String roleId2,
-                                               String roleName1,
-                                               String roleName2,
-                                               boolean enableLocationList,
-                                               boolean primaryLocation1,
-                                               boolean primaryLocation2,
-                                               boolean enableWorkAreaList,
-                                               String workArea1,
-                                               String workArea2,
-                                               boolean suspended) {
-        return UserProfile.builder()
+    public static CaseWorkerProfile buildUserProfile(String id, boolean multiRole,
+                                                     String roleId1,
+                                                     String roleId2,
+                                                     String roleName1,
+                                                     String roleName2,
+                                                     boolean enableLocationList,
+                                                     boolean primaryLocation1,
+                                                     boolean primaryLocation2,
+                                                     boolean enableWorkAreaList,
+                                                     String workArea1,
+                                                     String workArea2,
+                                                     boolean suspended) {
+        return CaseWorkerProfile.builder()
                 .id(id)
                 .firstName("James").lastName("Bond").emailId("007@MI6.gov")
                 .baseLocation(buildListOfBaseLocations(enableLocationList, primaryLocation1, primaryLocation2))
@@ -122,48 +122,48 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static List<UserProfile> buildListOfUserProfiles(boolean multiProfiles,
-                                                            boolean multiRole,
-                                                            String roleId1,
-                                                            String roleId2,
-                                                            String roleName1,
-                                                            String roleName2,
-                                                            boolean enableLocationList,
-                                                            boolean primaryLocation1,
-                                                            boolean primaryLocation2,
-                                                            boolean enableWorkAreaList,
-                                                            String workArea1,
-                                                            String workArea2,
-                                                            boolean suspended) {
-        List<UserProfile> userProfiles = new ArrayList<>();
-        userProfiles.add(buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
+    public static List<CaseWorkerProfile> buildListOfUserProfiles(boolean multiProfiles,
+                                                                  boolean multiRole,
+                                                                  String roleId1,
+                                                                  String roleId2,
+                                                                  String roleName1,
+                                                                  String roleName2,
+                                                                  boolean enableLocationList,
+                                                                  boolean primaryLocation1,
+                                                                  boolean primaryLocation2,
+                                                                  boolean enableWorkAreaList,
+                                                                  String workArea1,
+                                                                  String workArea2,
+                                                                  boolean suspended) {
+        List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
+        caseWorkerProfiles.add(buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
                 enableLocationList, primaryLocation1, primaryLocation2,
                 enableWorkAreaList, workArea1, workArea2, suspended));
         if (multiProfiles) {
-            userProfiles.add(buildUserProfile(id_2, multiRole, roleId1, roleId2, roleName1, roleName2,
+            caseWorkerProfiles.add(buildUserProfile(id_2, multiRole, roleId1, roleId2, roleName1, roleName2,
                     enableLocationList, primaryLocation1, primaryLocation2,
                     enableWorkAreaList, workArea1, workArea2, suspended));
         }
-        return userProfiles;
+        return caseWorkerProfiles;
     }
 
-    public static UserAccessProfile buildUserAccessProfile(boolean suspended) {
-        return UserAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
+    public static CaseWorkerAccessProfile buildUserAccessProfile(boolean suspended) {
+        return CaseWorkerAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
                 .primaryLocationId("LDN").primaryLocationName("London").roleId(RoleType.ORGANISATION.toString())
                 .serviceCode("ServiceCode").roleName(ROLE_NAME_TCW).build();
     }
 
-    public static Set<UserAccessProfile> buildUserAccessProfileSet(boolean suspended1, boolean suspended2) {
-        Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(buildUserAccessProfile(suspended1));
-        userAccessProfileSet.add(buildUserAccessProfile(suspended2));
-        return userAccessProfileSet;
+    public static Set<CaseWorkerAccessProfile> buildUserAccessProfileSet(boolean suspended1, boolean suspended2) {
+        Set<CaseWorkerAccessProfile> caseWorkerAccessProfileSet = new HashSet<>();
+        caseWorkerAccessProfileSet.add(buildUserAccessProfile(suspended1));
+        caseWorkerAccessProfileSet.add(buildUserAccessProfile(suspended2));
+        return caseWorkerAccessProfileSet;
     }
 
-    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfileMap(boolean suspended1,
-                                                                                boolean suspended2) {
+    public static Map<String, Set<CaseWorkerAccessProfile>> buildUserAccessProfileMap(boolean suspended1,
+                                                                                      boolean suspended2) {
 
-        HashMap<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
+        HashMap<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
         userAccessProfiles.put(id_1, buildUserAccessProfileSet(suspended1, suspended2));
         return userAccessProfiles;
     }

@@ -6,8 +6,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -46,7 +46,7 @@ class RetrieveDataServiceTest {
                         .buildListOfUserProfiles(false, false,"1", "2",
                         ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)));
 
-        Map<String, Set<UserAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
+        Map<String, Set<CaseWorkerAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
 
         assertEquals(1, result.size());
 
@@ -67,7 +67,7 @@ class RetrieveDataServiceTest {
                                 false)));
 
         doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
-        Map<String, Set<UserAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
+        Map<String, Set<CaseWorkerAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
 
         assertEquals(0, result.size());
 
@@ -79,7 +79,7 @@ class RetrieveDataServiceTest {
         when(crdFeignClient.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
                 .ok(buildUserProfile(buildUserRequest())));
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
-        Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
+        Map<String, Set<CaseWorkerAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
         assertNotNull(response);
         response.forEach((k,v) -> {
             assertNotNull(k);
@@ -97,10 +97,10 @@ class RetrieveDataServiceTest {
 
     @Test
     void shouldReturnZeroCaseWorkerProfile() {
-        List<UserProfile> userProfiles = new ArrayList<>();
+        List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
         when(crdFeignClient.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
-                .ok(userProfiles));
-        Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
+                .ok(caseWorkerProfiles));
+        Map<String, Set<CaseWorkerAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
         assertNotNull(response);
         assertTrue(response.isEmpty());
     }

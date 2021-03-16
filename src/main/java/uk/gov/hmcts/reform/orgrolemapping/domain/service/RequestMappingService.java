@@ -15,10 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
@@ -53,7 +53,7 @@ public class RequestMappingService {
      * For each caseworker represented in the map, determine what the role assignments should be,
      * and update them in the role assignment service.
      */
-    public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+    public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, Set<CaseWorkerAccessProfile>> usersAccessProfiles) {
         long startTime = System.currentTimeMillis();
         // Get the role assignments for each caseworker in the input profiles.
         Map<String, List<RoleAssignment>> usersRoleAssignments = getCaseworkerRoleAssignments(usersAccessProfiles);
@@ -72,7 +72,7 @@ public class RequestMappingService {
      * for each caseworker represented in the map.
      */
     private Map<String, List<RoleAssignment>> getCaseworkerRoleAssignments(Map<String,
-            Set<UserAccessProfile>> usersAccessProfiles) {
+            Set<CaseWorkerAccessProfile>> usersAccessProfiles) {
 
         // Create a map to hold the role assignments for each user.
         Map<String, List<RoleAssignment>> usersRoleAssignments = new HashMap<>();
@@ -92,7 +92,7 @@ public class RequestMappingService {
         //Identify the user with empty List<RoleAssignment> in case of suspended is false.
         usersRoleAssignments.forEach((k, v) -> {
             if (v.isEmpty()) {
-                Set<UserAccessProfile> accessProfiles = usersAccessProfiles.get(k);
+                Set<CaseWorkerAccessProfile> accessProfiles = usersAccessProfiles.get(k);
                 if (!Objects.requireNonNull(accessProfiles.stream().findFirst().orElse(null)).isSuspended()) {
                     needToRemoveUAP.add(k);
                 }
@@ -125,7 +125,7 @@ public class RequestMappingService {
     /**
      * Run the mapping rules to generate all the role assignments each caseworker represented in the map.
      */
-    private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+    private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<CaseWorkerAccessProfile>> usersAccessProfiles) {
         long startTime = System.currentTimeMillis();
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
         log.info(
@@ -136,9 +136,9 @@ public class RequestMappingService {
     }
 
     @NotNull
-    private List<RoleAssignment> getRoleAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+    private List<RoleAssignment> getRoleAssignments(Map<String, Set<CaseWorkerAccessProfile>> usersAccessProfiles) {
         // Combine all the user profiles into a single collection for the rules engine.
-        Set<UserAccessProfile> allProfiles = new HashSet<>();
+        Set<CaseWorkerAccessProfile> allProfiles = new HashSet<>();
         usersAccessProfiles.forEach((k, v) -> allProfiles.addAll(v));
 
         // Sequence of processing for executing the rules:

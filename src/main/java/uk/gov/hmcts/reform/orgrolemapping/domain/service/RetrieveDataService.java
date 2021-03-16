@@ -6,11 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +28,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 @Service
 @Slf4j
 @AllArgsConstructor
-public class RetrieveDataService {
+public class RetrieveDataService implements RetrieveProfile<String, Collection<Object>> {
     /*
     //1. Fetching multiple case-worker user details from CRD
         //a. Create a new class UserProfile - similar to expected response from CRD(refer LLD)
@@ -43,63 +47,72 @@ public class RetrieveDataService {
 
     private final ParseRequestService parseRequestService;
     private final CRDFeignClient crdFeignClient;
+    private final JRDFeignClient jrdFeignClient;
 
 
-    public Map<String, Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
+    public Map<String, Collection<Object>> retrieveCaseWorkerProfiles(UserRequest userRequest, UserType userType) {
         long startTime = System.currentTimeMillis();
 
-        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.getCaseworkerDetailsById(userRequest);
-
-        log.info(
-                "Execution time of CRD Response : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
-        );
-        List<UserProfile> userProfiles = responseEntity.getBody();
-        if (!CollectionUtils.isEmpty(userProfiles)) {
-            // no of userProfiles from CRD  responseEntity.getBody().size()
-            log.info("Number of UserProfile received from CRD : {} ",
-                    userProfiles.size());
-        } else {
-            log.info("Number of UserProfile received from CRD : {} ", 0);
-        }
-
         AtomicInteger invalidUserProfilesCount = new AtomicInteger();
-        Set<UserProfile> invalidUserProfiles = new HashSet<>();
-        parseRequestService.validateUserProfiles(userProfiles, userRequest, invalidUserProfilesCount,
-                invalidUserProfiles);
+        Set<Object> invalidProfiles = new HashSet<>();
 
+       if(userType.equals(UserType.CASEWORKER)) {
+           ResponseEntity<List<CaseWorkerProfile>> caseworkerResponse  = crdFeignClient.getCaseworkerDetailsById(userRequest);
+
+           if (!CollectionUtils.isEmpty(caseworkerResponse.getBody())) {
+               // no of userProfiles from CRD  responseEntity.getBody().size()
+               log.info("Number of UserProfile received from CRD : {} ",
+                       caseworkerResponse.getBody().size());
+
+               parseRequestService.validateUserProfiles( caseworkerResponse.getBody(), userRequest, invalidUserProfilesCount,
+                       invalidProfiles,userType);
+
+               List<CaseWorkerProfile> validCaseWorkerProfiles = requireNonNull(caseworkerResponse.getBody()).stream()
+                       .filter(userProfile -> !invalidProfiles
+                               .contains(userProfile)).collect(Collectors.toList());
+               Map<String, Set<CaseWorkerAccessProfile>> usersAccessProfiles = new HashMap<>();
+
+               if (!CollectionUtils.isEmpty(validCaseWorkerProfiles)) {
+                   validCaseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
+                           convertUserProfileToUserAccessProfile(userProfile)));
+               }
+               Map<String, Integer> userAccessProfileCount = new HashMap<>();
+               usersAccessProfiles.forEach((k, v) -> {
+                           userAccessProfileCount.put(k, v.size());
+                           log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
+                                   v);
+                       }
+               );
+               log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
+               return usersAccessProfiles;
+
+           } else {
+               log.info("Number of UserProfile received from CRD : {} ", 0);
+           }
+
+
+
+
+       } else if(userType.equals(UserType.JUDICIAL)){
+           ResponseEntity<List<JudicialProfile>> responseEntity = jrdFeignClient.getJudicialDetailsById(userRequest);
+
+
+        }
 
         // no of user profile successfully validated
         if (invalidUserProfilesCount.get() > 0) {
             log.info("Number of invalid UserProfileCount : {} ", invalidUserProfilesCount.get());
         }
-
-        // filter the valid userProfiles.
-        List<UserProfile> validUserProfiles = requireNonNull(userProfiles).stream()
-                .filter(userProfile -> !invalidUserProfiles
-              .contains(userProfile)).collect(Collectors.toList());
-
-        Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
-
-        if (!CollectionUtils.isEmpty(validUserProfiles)) {
-            validUserProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
-                    convertUserProfileToUserAccessProfile(userProfile)));
-        }
-
-
-        Map<String, Integer> userAccessProfileCount = new HashMap<>();
-        usersAccessProfiles.forEach((k, v) -> {
-            userAccessProfileCount.put(k, v.size());
-            log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
-                            v);
-        }
+        log.info(
+                "Execution time of CRD Response : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
-        log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
+
 
         log.info(
                 "Execution time of retrieveCaseWorkerProfiles() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
-        return usersAccessProfiles;
+
     }
 }

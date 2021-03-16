@@ -7,10 +7,10 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -101,28 +101,28 @@ public class AssignmentRequestBuilder {
                 .build();
     }
 
-    public static Set<UserAccessProfile> convertUserProfileToUserAccessProfile(UserProfile userProfile) {
+    public static Set<CaseWorkerAccessProfile> convertUserProfileToUserAccessProfile(CaseWorkerProfile caseWorkerProfile) {
         long startTime = System.currentTimeMillis();
         //roleId X serviceCode
-        Set<UserAccessProfile> userAccessProfiles = new HashSet<>();
+        Set<CaseWorkerAccessProfile> caseWorkerAccessProfiles = new HashSet<>();
 
-        userProfile.getRole().forEach(role ->
-            userProfile.getWorkArea().forEach(workArea -> {
-                UserAccessProfile userAccessProfile = new UserAccessProfile();
-                userAccessProfile.setId(userProfile.getId());
-                userAccessProfile.setSuspended(userProfile.isSuspended());
-                userProfile.getBaseLocation().forEach(baseLocation -> {
+        caseWorkerProfile.getRole().forEach(role ->
+            caseWorkerProfile.getWorkArea().forEach(workArea -> {
+                CaseWorkerAccessProfile caseWorkerAccessProfile = new CaseWorkerAccessProfile();
+                caseWorkerAccessProfile.setId(caseWorkerProfile.getId());
+                caseWorkerAccessProfile.setSuspended(caseWorkerProfile.isSuspended());
+                caseWorkerProfile.getBaseLocation().forEach(baseLocation -> {
                     if (baseLocation.isPrimary()) {
-                        userAccessProfile.setPrimaryLocationId(baseLocation.getLocationId());
-                        userAccessProfile.setPrimaryLocationName(baseLocation.getLocation());
+                        caseWorkerAccessProfile.setPrimaryLocationId(baseLocation.getLocationId());
+                        caseWorkerAccessProfile.setPrimaryLocationName(baseLocation.getLocation());
                     }
                 });
-                userAccessProfile.setAreaOfWorkId(workArea.getAreaOfWork());
-                userAccessProfile.setServiceCode(workArea.getServiceCode());
-                userAccessProfile.setRoleId(role.getRoleId());
-                userAccessProfile.setRoleName(role.getRoleName());
+                caseWorkerAccessProfile.setAreaOfWorkId(workArea.getAreaOfWork());
+                caseWorkerAccessProfile.setServiceCode(workArea.getServiceCode());
+                caseWorkerAccessProfile.setRoleId(role.getRoleId());
+                caseWorkerAccessProfile.setRoleName(role.getRoleName());
 
-                userAccessProfiles.add(userAccessProfile);
+                caseWorkerAccessProfiles.add(caseWorkerAccessProfile);
             })
         );
 
@@ -130,6 +130,6 @@ public class AssignmentRequestBuilder {
                 "Execution time of convertUserProfileToUserAccessProfile() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
-        return userAccessProfiles;
+        return caseWorkerAccessProfiles;
     }
 }

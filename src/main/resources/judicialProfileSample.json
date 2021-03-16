@@ -1,0 +1,49 @@
+{
+  "elinksId": "21334a2b-79ce-44eb-9168-2d49a744be9c",
+  "personalCode": "abc",
+  "title": "cde",
+  "knownAs": "sds",
+  "surname": "string",
+  "fullName": "string",
+  "postNominals": "string",
+  "contractTypeId": "string",
+  "workPattern": "string",
+  "emailId": "string",
+  "joiningDate": "2020-04-28T16:00:49",
+  "lastWorkingDate": "2020-04-28T16:00:49",
+  "extractedDate": "2020-04-28T16:00:49",
+  "activeFlag": "string",
+  "appointments": [
+    {
+      "roleId": "string",
+      "roleDesc_En": "string",
+      "contractTypeId": "string",
+      "contractTypeDescEn": "string",
+      "baseLocationId": "string",
+      "courtName": "string",
+      "bench": "string",
+      "courtType": "string",
+      "circuit": "string",
+      "areaOfExpertise": "string",
+      "locationId": "string",
+      "locationDescEn": "string",
+      "isPrincipalAppointment": "string",
+      "startDate": "2020-04-28T16:00:49",
+      "endDate": "2020-04-28T16:00:49",
+      "activeFlag": "string",
+      "extractedDate": "2020-04-28T16:00:49"
+    }
+  ],
+  "authorisations": [
+    {
+      "authorisationId": "string",
+      "jurisdiction": "string",
+      "lowerLevel": "string",
+      "startDate": "2020-04-28T16:00:49",
+      "endDate": "2020-04-28T16:00:49",
+      "createdDate": "string",
+      "lastUpdatedDate": "2020-04-28T16:00:49",
+      "lowerLevel": "string"
+    }
+  ]
+}
