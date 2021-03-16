@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.PublishCaseWorkerData;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
+
+import java.util.Arrays;
 
 @RestController
 @Slf4j
@@ -81,7 +84,10 @@ public class WelcomeController {
     @PostMapping(value = "/send")
     public ResponseEntity<String> send(@RequestBody String body) {
         log.info("Sending message for event");
-        topicPublisher.sendMessage(body);
+        PublishCaseWorkerData publishCaseWorkerData = new PublishCaseWorkerData();
+        publishCaseWorkerData.setUserIds(Arrays.asList("4b141f3c-9d8b-4eb2-932e-23fa4933642e"));
+        topicPublisher.sendMessage(publishCaseWorkerData);
+        //topicPublisher.sendMessage(body);
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 

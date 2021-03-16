@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -33,22 +32,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class TopicConsumer {
+public class JRDTopicConsumer {
 
-    @Value("${amqp.host}")
+    @Value("${jrd-consumer.host}")
     String host;
-    @Value("${amqp.topic}")
-    String topic;
-    @Value("${amqp.sharedAccessKeyName}")
+    @Value("${jrd-consumer.subscription}")
+    String subscription;
+    @Value("${jrd-consumer.sharedAccessKeyName}")
     String sharedAccessKeyName;
-    @Value("${amqp.sharedAccessKeyValue}")
+    @Value("${jrd-consumer.sharedAccessKeyValue}")
     String sharedAccessKeyValue;
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     private OrmDeserializer deserializer;
 
-    public TopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
+    public JRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
                          OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
@@ -62,7 +61,7 @@ public class TopicConsumer {
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
-                topic,
+                subscription,
                 sharedAccessKeyName,
                 sharedAccessKeyValue);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
@@ -70,10 +69,10 @@ public class TopicConsumer {
     }
 
     @Bean
-    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
+    CompletableFuture<Void> registerMessageHandlerOnJRDClient(@Autowired SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.info("    Calling registerMessageHandlerOnClient ");
+        log.info("    Calling registerMessageHandlerOnJRDClient ");
 
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message

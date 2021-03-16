@@ -117,10 +117,14 @@ amqp:
   trustAllCerts: ${TRUST_ALL_CERTS:true}
 
 
-send-letter:
-  url: ${SEND_LETTER_SERVICE_BASEURL:http://localhost:4021}
-  enabled: ${SEND_LETTER_SERVICE_ENABLED:true}
+jrd-consumer:
+  host: ${JRD_HOST:rd-servicebus-sandbox.servicebus.windows.net}
+  sharedAccessKeyName: ${JRD_SHARED_ACCESS_KEY_NAME:SendAndListenSharedAccessKey}
+  sharedAccessKeyValue: ${JRD_SHARED_ACCESS_KEY_VALUE:crt8pi7QuoOc2LGQqlHcEMTxFNVWGWraTffCAP5567A=}
+  topic: ${JRD_TOPIC_NAME:rd-judicial-topic-sandbox}
+  subscription: ${JRD_SUBSCRIPTION_NAME:rd-judicial-topic-sandbox/subscriptions/rd-judicial-subscription-sandbox}
   maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
+  trustAllCerts: ${TRUST_ALL_CERTS:true}
 
 launchdarkly:
   sdk:
