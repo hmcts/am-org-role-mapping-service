@@ -7,7 +7,7 @@
   "roleName" : "tribunal-caseworker",
   "classification" : "PUBLIC",
   "grantType": "STANDARD",
-  "roleCategory":"STAFF",
+  "roleCategory":"LEGAL_OPERATIONS",
   "readOnly" : false,
   "process" : "staff-organisational-role-mapping",
   "reference": "${}${[scenarioContext][testData][request][body][roleRequest][reference]}",

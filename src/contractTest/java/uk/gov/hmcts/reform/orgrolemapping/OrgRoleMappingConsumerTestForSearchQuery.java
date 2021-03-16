@@ -134,7 +134,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
         return "{\n"
                 + "\"roleType\": [\"ORGANISATION\"],\n"
                 + "\"roleName\": [\"tribunal-caseworker\",\"senior-tribunal-caseworker\"],\n"
-                + "\"roleCategory\": [\"STAFF\"],\n"
+                + "\"roleCategory\": [\"LEGAL_OPERATIONS\"],\n"
                 + "\"classification\": [\"PUBLIC\",\"PRIVATE\"],\n"
                 + "\"grantType\": [\"STANDARD\"],\n"
                 + "\"validAt\": \"2021-12-04T00:00:00Z\",\n"
@@ -295,7 +295,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                             .stringValue("roleName", "senior-tribunal-caseworker")
                             .stringValue("classification", "PRIVATE")
                             .stringValue("grantType", "STANDARD")
-                            .stringValue("roleCategory", "STAFF")
+                            .stringValue("roleCategory", "LEGAL_OPERATIONS")
                             .booleanValue("readOnly", false)
                             .object("attributes", attribute -> attribute
                                     .stringType("jurisdiction", "IA")
@@ -314,7 +314,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                                 .stringValue("roleName", "senior-tribunal-caseworker")
                                 .stringValue("classification", "PRIVATE")
                                 .stringValue("grantType", "STANDARD")
-                                .stringValue("roleCategory", "STAFF")
+                                .stringValue("roleCategory", "LEGAL_OPERATIONS")
                                 .booleanValue("readOnly", false)
                                 .object("attributes", attribute -> attribute
                                         .stringType("jurisdiction", "IA")
@@ -329,7 +329,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                                 .stringValue("roleName", "senior-tribunal-caseworker")
                                 .stringValue("classification", "PRIVATE")
                                 .stringValue("grantType", "STANDARD")
-                                .stringValue("roleCategory", "STAFF")
+                                .stringValue("roleCategory", "LEGAL_OPERATIONS")
                                 .booleanValue("readOnly", false)
                                 .object("attributes", attribute -> attribute
                                         .stringType("jurisdiction", "IA")

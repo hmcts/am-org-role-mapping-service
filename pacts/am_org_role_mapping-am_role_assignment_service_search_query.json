@@ -53,7 +53,7 @@
             {
               "actorId": "ca93ea54-c219-4c6d-add6-e687a0f1f5f7",
               "roleName": "senior-tribunal-caseworker",
-              "roleCategory": "STAFF",
+              "roleCategory": "LEGAL_OPERATIONS",
               "readOnly": false,
               "attributes": {
                 "primaryLocation": "219ASA",
@@ -68,7 +68,7 @@
             {
               "actorId": "ca93ea54-c219-4c6d-add6-e687a0f1f5f7",
               "roleName": "senior-tribunal-caseworker",
-              "roleCategory": "STAFF",
+              "roleCategory": "LEGAL_OPERATIONS",
               "readOnly": false,
               "attributes": {
                 "primaryLocation": "219ASA",
@@ -159,7 +159,7 @@
             {
               "actorId": "234873",
               "roleName": "senior-tribunal-caseworker",
-              "roleCategory": "STAFF",
+              "roleCategory": "LEGAL_OPERATIONS",
               "readOnly": false,
               "attributes": {
                 "primaryLocation": "500A2S",
@@ -241,7 +241,7 @@
             {
               "actorId": "234873",
               "roleName": "senior-tribunal-caseworker",
-              "roleCategory": "STAFF",
+              "roleCategory": "LEGAL_OPERATIONS",
               "readOnly": false,
               "attributes": {
                 "primaryLocation": "500A2S",
@@ -323,7 +323,7 @@
             {
               "actorId": "234873",
               "roleName": "senior-tribunal-caseworker",
-              "roleCategory": "STAFF",
+              "roleCategory": "LEGAL_OPERATIONS",
               "readOnly": false,
               "attributes": {
                 "primaryLocation": "500A2S",
