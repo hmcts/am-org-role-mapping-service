@@ -166,13 +166,12 @@ public class RequestMappingService {
     }
 
     public static void logRejectedAccessProfiles(Set<UserAccessProfile> userAccessProfiles,
-                                                                    List<RoleAssignment> roleAssignments)
-    {
+                                                                    List<RoleAssignment> roleAssignments) {
         List<UserAccessProfile> userAccessProfileList = (userAccessProfiles.stream()
                 .filter(two -> roleAssignments.stream()
                         .anyMatch(one -> !one.getActorId().equals(two.getId())))
                 .collect(Collectors.toList()));
-        if(!userAccessProfileList.isEmpty()) {
+        if (!userAccessProfileList.isEmpty()) {
             log.info("Count of rejected access profiles in ORM : {} ", userAccessProfileList.size());
             log.info("Access profiles rejected by Drools in ORM: {} ",
                     userAccessProfileList.stream().map(UserAccessProfile::getId).collect(Collectors.toList()));
