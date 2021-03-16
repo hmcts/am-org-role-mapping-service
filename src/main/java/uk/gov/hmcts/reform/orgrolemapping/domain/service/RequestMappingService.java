@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -160,7 +161,22 @@ public class RequestMappingService {
         for (QueryResultsRow row : queryResults) {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
+        logRejectedAccessProfiles(allProfiles, roleAssignments);
         return roleAssignments;
+    }
+
+    public static void logRejectedAccessProfiles(Set<UserAccessProfile> userAccessProfiles,
+                                                                    List<RoleAssignment> roleAssignments)
+    {
+        List<UserAccessProfile> userAccessProfileList = (userAccessProfiles.stream()
+                .filter(two -> roleAssignments.stream()
+                        .anyMatch(one -> !one.getActorId().equals(two.getId())))
+                .collect(Collectors.toList()));
+        if(!userAccessProfileList.isEmpty()) {
+            log.info("Count of rejected access profiles in ORM : {} ", userAccessProfileList.size());
+            log.info("Access profiles rejected by Drools in ORM: {} ",
+                    userAccessProfileList.stream().map(UserAccessProfile::getId).collect(Collectors.toList()));
+        }
     }
 
     /**
