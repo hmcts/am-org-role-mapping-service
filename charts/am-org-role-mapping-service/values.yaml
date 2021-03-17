@@ -30,5 +30,4 @@ java:
     TRUST_ALL_CERTS: "true"
     JRD_HOST: rd-servicebus-{{ .Values.global.environment }}.servicebus.windows.net
     JRD_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
-    JRD_TOPIC_NAME: rd-judicial-topic-{{ .Values.global.environment }}
     JRD_SUBSCRIPTION_NAME: rd-judicial-topic-{{ .Values.global.environment }}/subscriptions/rd-judicial-subscription-{{ .Values.global.environment }}
