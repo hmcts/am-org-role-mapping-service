@@ -45,7 +45,6 @@ public class TopicConsumer {
     String sharedAccessKeyValue;
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
-
     private OrmDeserializer deserializer;
 
     public TopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
