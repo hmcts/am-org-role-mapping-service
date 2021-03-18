@@ -34,6 +34,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 class RetrieveDataServiceTest {
 
     private final CRDFeignClient crdFeignClient = Mockito.mock(CRDFeignClient.class);
+    private final JRDFeignClient jrdFeignClient = Mockito.mock(JRDFeignClient.class);
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
 
     RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdFeignClient);
@@ -103,6 +104,55 @@ class RetrieveDataServiceTest {
         Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
         assertNotNull(response);
         assertTrue(response.isEmpty());
+    }
+
+    @Test
+    void shouldReturnJudicialProfile() {
+
+        when(jrdFeignClient.getJudicialDetailsById(any())).thenReturn(ResponseEntity
+                .ok(buildUserProfile(buildUserRequest())));
+        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
+        Map<String, Set<JudicialAccessProfile>> response = sut.retrieveJudicialProfiles(buildUserRequest());
+        assertNotNull(response);
+        response.forEach((k,v) -> {
+                    assertNotNull(k);
+                    assertNotNull(v);
+                    v.forEach(judicialAccessProfile -> {
+                        assertEquals(k, judicialAccessProfile.getId());
+
+                        assertEquals("219164", judicialAccessProfile.getPrimaryLocationId());
+                    });
+
+                }
+        );
+
+    }
+
+    @Test
+    void shouldReturnZeroJudicialProfile() {
+        List<JudicialProfile> judicialProfiles = new ArrayList<>();
+        when(jrdFeignClient.getJudicialDetailsById(any())).thenReturn(ResponseEntity
+                .ok(judicialProfiles));
+        Map<String, Set<JudicialAccessProfile>> response = sut.retrieveJudicialProfiles(buildUserRequest());
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+    }
+
+    @Test
+    void retrieveInvalidJudicialProfilesTest() {
+
+        when(jrdFeignClient.getJudicialDetailsById(any()))
+                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(
+                        TestDataBuilder.buildListOfJudicialProfiles(true, false, "1",
+                                "2", "Tribunal Judge", false, true,
+                                false, true, "1", "2",
+                                false)));
+
+        doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
+        Map<String, Set<JudicialAccessProfile>> result = sut.retrieveJudicialProfiles(TestDataBuilder.buildUserRequest());
+
+        assertEquals(0, result.size());
+
     }
 
 }

@@ -161,4 +161,39 @@ class RequestMappingServiceTest {
 
 
     }
+
+
+    @Test
+    void createJudicialAssignmentsTest() {
+
+        final String actorId = "123e4567-e89b-42d3-a456-556642445612";
+
+        Mockito.when(roleAssignmentService.createRoleAssignment(any()))
+                .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
+                        .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
+
+        ResponseEntity<Object> responseEntity =
+                requestMappingService.createCaseWorkerAssignments(TestDataBuilder.buildJudicialAccessProfileMap(false,
+                        false));
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
+                JsonNode.class);
+        assertEquals(1, resultNode.size());
+        assertEquals("judicial-organisational-role-mapping",
+                resultNode.get(0).get("roleRequest").get("process").asText());
+        assertEquals("Tribunal Judge",
+                resultNode.get(0).get("requestedRoles").get(0).get("roleName").asText());
+        assertEquals(actorId,
+                resultNode.get(0).get("requestedRoles").get(0).get("actorId").asText());
+
+
+
+        Mockito.verify(roleAssignmentService, Mockito.times(1))
+                .createRoleAssignment(any());
+    }
 }
