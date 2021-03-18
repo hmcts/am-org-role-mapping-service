@@ -3,20 +3,20 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -40,6 +40,7 @@ public class ParseRequestService extends ParseRequestBase {
 
     //this method is common across all service
     @Override
+    @SuppressWarnings("unchecked")
     public void validateUserProfiles(List profiles, UserRequest userRequest, AtomicInteger invalidUserProfilesCount, Set invalidProfiles, UserType userType) {
 
         if (Collections.isEmpty(profiles)) {
@@ -50,6 +51,7 @@ public class ParseRequestService extends ParseRequestBase {
 
             if(userType.equals(UserType.CASEWORKER)) {
             List<CaseWorkerProfile> caseWorkerProfiles  = profiles;
+
                 caseWorkerProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));
             } else if(userType.equals(UserType.JUDICIAL)){
                 List<JudicialProfile> judicialProfileList  = profiles;
@@ -60,7 +62,7 @@ public class ParseRequestService extends ParseRequestBase {
 
 
             log.error("Some of the user profiles couldn't be found for the userIds {} in "
-                    + "CRD Response", userIdsNotInCRDResponse);
+                    + " Response", userIdsNotInCRDResponse);
 
         }
         if(userType.equals(UserType.CASEWORKER)) {
@@ -68,6 +70,7 @@ public class ParseRequestService extends ParseRequestBase {
         } else if(userType.equals(UserType.JUDICIAL)){
 
             //Validation of judicial profile
+            judicialProfileValidation(profiles,invalidUserProfilesCount, invalidProfiles);
 
         }
 
@@ -102,6 +105,52 @@ public class ParseRequestService extends ParseRequestBase {
                 isInvalid = true;
             }
             if (isInvalid) {
+                invalidUserProfilesCount.getAndIncrement();
+            }
+        });
+    }
+
+    private void judicialProfileValidation(List<JudicialProfile> profiles, AtomicInteger invalidUserProfilesCount, Set<Object> invalidJudicialProfiles) {
+
+        profiles.forEach(userProfile -> {
+            AtomicBoolean isInvalid = new AtomicBoolean(false);
+            if (CollectionUtils.isEmpty(userProfile.getAppointments())) {
+                log.error("appointment is not available for the judicialProfile {} ", userProfile.getElinkId());
+                invalidJudicialProfiles.add(userProfile);
+                isInvalid.set(true);
+            } else {
+                userProfile.getAppointments().forEach(appointment -> {
+                    if(StringUtils.isEmpty(appointment.getContractTypeId())
+                            || StringUtils.isEmpty(appointment.getRoleId())
+                    || StringUtils.isEmpty(appointment.getBaseLocationId())
+                            || StringUtils.isEmpty(appointment.getLocationId())
+                            || appointment.getStartDate() == null
+                            || appointment.getEndDate() == null
+
+                    ){
+                        log.error("appointment is not valid for the judicialProfile id {} having roleId {} ", userProfile.getElinkId(),appointment.getRoleId());
+                        invalidJudicialProfiles.add(userProfile);
+                        isInvalid.set(true);
+                    }
+                });
+            }
+            if (CollectionUtils.isEmpty(userProfile.getAuthorisations())) {
+                log.error("The authorisation is not available for the judicialProfile {} ", userProfile.getElinkId());
+                invalidJudicialProfiles.add(userProfile);
+                isInvalid.set(true);
+            } else {
+                userProfile.getAuthorisations().forEach(authorisation -> {
+                    if(StringUtils.isEmpty( authorisation.getAuthorisationId())){
+                        log.error("The authorisation is not valid for the judicialProfile {} ", userProfile.getElinkId());
+                        invalidJudicialProfiles.add(userProfile);
+                        isInvalid.set(true);
+                    }
+                });
+            }
+
+
+
+            if (isInvalid.get()) {
                 invalidUserProfilesCount.getAndIncrement();
             }
         });

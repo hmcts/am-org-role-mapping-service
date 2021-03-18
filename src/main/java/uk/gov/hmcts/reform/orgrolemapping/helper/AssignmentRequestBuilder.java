@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
@@ -20,10 +22,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.InputStream;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -131,5 +135,32 @@ public class AssignmentRequestBuilder {
                 (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         return caseWorkerAccessProfiles;
+    }
+
+    public static Set<JudicialAccessProfile> convertUserProfileToJudicialAccessProfile(JudicialProfile judicialProfile) {
+
+        Set<JudicialAccessProfile> judicialAccessProfiles = new HashSet<>();
+
+        List<String> authorisations = new ArrayList<>();
+        judicialProfile.getAuthorisations().forEach(authorisation -> authorisations.add(authorisation.getAuthorisationId()));
+
+        judicialProfile.getAppointments().forEach(appointment ->
+                         {
+
+            JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder().build();
+            judicialAccessProfile.setUserId(judicialProfile.getElinkId());
+            judicialAccessProfile.setRoleId(appointment.getRoleId());
+            judicialAccessProfile.setBeginTime(appointment.getStartDate().atZone(ZoneId.of("UTC")));
+            judicialAccessProfile.setEndTime(appointment.getEndDate().atZone(ZoneId.of("UTC")));
+            judicialAccessProfile.setRegionId(appointment.getLocationId());
+            judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
+            judicialAccessProfile.setContractTypeId(appointment.getContractTypeId());
+            judicialAccessProfile.setAuthorisations(authorisations);
+            judicialAccessProfiles.add(judicialAccessProfile);
+
+        });
+
+        return judicialAccessProfiles;
+
     }
 }

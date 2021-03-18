@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class CaseWorkerProfile implements Serializable {
+public class CaseWorkerProfile  implements Serializable  {
     private String id; // can this be of type UUID?
     private String firstName;
     private String lastName;

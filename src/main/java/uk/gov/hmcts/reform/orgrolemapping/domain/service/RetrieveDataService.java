@@ -8,13 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,13 +23,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToJudicialAccessProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
 
 @Service
 @Slf4j
 @AllArgsConstructor
-public class RetrieveDataService implements RetrieveProfile<String, Collection<Object>> {
+public class RetrieveDataService {
     /*
     //1. Fetching multiple case-worker user details from CRD
         //a. Create a new class UserProfile - similar to expected response from CRD(refer LLD)
@@ -46,73 +49,121 @@ public class RetrieveDataService implements RetrieveProfile<String, Collection<O
 
 
     private final ParseRequestService parseRequestService;
-    private final CRDFeignClient crdFeignClient;
-    private final JRDFeignClient jrdFeignClient;
+    private final CRDFeignClientFallback crdFeignClient;
+    private final JRDFeignClientFallback jrdFeignClient;
 
 
-    public Map<String, Collection<Object>> retrieveCaseWorkerProfiles(UserRequest userRequest, UserType userType) {
+    public Map<String, Set<CaseWorkerAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest, UserType userType) {
         long startTime = System.currentTimeMillis();
 
-        AtomicInteger invalidUserProfilesCount = new AtomicInteger();
-        Set<Object> invalidProfiles = new HashSet<>();
+         AtomicInteger invalidUserProfilesCount = new AtomicInteger();
+         Set<Object> invalidProfiles = new HashSet<>();
+        Map<String, Set<CaseWorkerAccessProfile>> usersAccessProfiles = new HashMap<>();
 
-       if(userType.equals(UserType.CASEWORKER)) {
-           ResponseEntity<List<CaseWorkerProfile>> caseworkerResponse  = crdFeignClient.getCaseworkerDetailsById(userRequest);
+        if (userType.equals(UserType.CASEWORKER)) {
+            ResponseEntity<List<CaseWorkerProfile>> caseworkerResponse = crdFeignClient.getCaseworkerDetailsById(userRequest);
 
-           if (!CollectionUtils.isEmpty(caseworkerResponse.getBody())) {
-               // no of userProfiles from CRD  responseEntity.getBody().size()
-               log.info("Number of UserProfile received from CRD : {} ",
-                       caseworkerResponse.getBody().size());
+            log.info(
+                    "Execution time of CRD Response : {} ms",
+                    (Math.subtractExact(System.currentTimeMillis(), startTime))
+            );
 
-               parseRequestService.validateUserProfiles( caseworkerResponse.getBody(), userRequest, invalidUserProfilesCount,
-                       invalidProfiles,userType);
+            if (!CollectionUtils.isEmpty(caseworkerResponse.getBody())) {
+                // no of userProfiles from CRD  responseEntity.getBody().size()
+                log.info("Number of CaseWorkerProfile received from CRD : {} ",
+                        caseworkerResponse.getBody().size());
 
-               List<CaseWorkerProfile> validCaseWorkerProfiles = requireNonNull(caseworkerResponse.getBody()).stream()
-                       .filter(userProfile -> !invalidProfiles
-                               .contains(userProfile)).collect(Collectors.toList());
-               Map<String, Set<CaseWorkerAccessProfile>> usersAccessProfiles = new HashMap<>();
+                parseRequestService.validateUserProfiles(caseworkerResponse.getBody(), userRequest, invalidUserProfilesCount,
+                        invalidProfiles, userType);
 
-               if (!CollectionUtils.isEmpty(validCaseWorkerProfiles)) {
-                   validCaseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
-                           convertUserProfileToUserAccessProfile(userProfile)));
-               }
-               Map<String, Integer> userAccessProfileCount = new HashMap<>();
-               usersAccessProfiles.forEach((k, v) -> {
-                           userAccessProfileCount.put(k, v.size());
-                           log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
-                                   v);
-                       }
-               );
-               log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
-               return usersAccessProfiles;
-
-           } else {
-               log.info("Number of UserProfile received from CRD : {} ", 0);
-           }
+                List<CaseWorkerProfile> validCaseWorkerProfiles = requireNonNull(caseworkerResponse.getBody()).stream()
+                        .filter(userProfile -> !invalidProfiles
+                                .contains(userProfile)).collect(Collectors.toList());
 
 
+                if (!CollectionUtils.isEmpty(validCaseWorkerProfiles)) {
+                    validCaseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
+                            convertUserProfileToUserAccessProfile(userProfile)));
+                }
+                Map<String, Integer> userAccessProfileCount = new HashMap<>();
+                usersAccessProfiles.forEach((k, v) -> {
+                            userAccessProfileCount.put(k, v.size());
+                            log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
+                                    v);
+                        }
+                );
+                log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 
 
-       } else if(userType.equals(UserType.JUDICIAL)){
-           ResponseEntity<List<JudicialProfile>> responseEntity = jrdFeignClient.getJudicialDetailsById(userRequest);
+            } else {
+                log.info("Number of UserProfile received from CRD : {} ", 0);
+            }
 
 
         }
 
         // no of user profile successfully validated
         if (invalidUserProfilesCount.get() > 0) {
-            log.info("Number of invalid UserProfileCount : {} ", invalidUserProfilesCount.get());
+            log.info("Number of invalid CaseWorkerProfile Count : {} ", invalidUserProfilesCount.get());
         }
-        log.info(
-                "Execution time of CRD Response : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
-        );
 
 
         log.info(
                 "Execution time of retrieveCaseWorkerProfiles() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
+        return usersAccessProfiles;
+    }
 
+
+
+    public Map<String, Set<JudicialAccessProfile>> retrieveJudicialProfiles(UserRequest userRequest, UserType userType) {
+
+
+        AtomicInteger invalidUserProfilesCount = new AtomicInteger();
+        Set<Object> invalidProfiles = new HashSet<>();
+        Map<String, Set<JudicialAccessProfile>> judicialAccessProfiles = new HashMap<>();
+
+
+        ResponseEntity<List<JudicialProfile>> judicialResponse = jrdFeignClient.getJudicialDetailsById(userRequest);
+
+        if (!CollectionUtils.isEmpty(judicialResponse.getBody())) {
+            // no of userProfiles from CRD  responseEntity.getBody().size()
+            log.info("Number of JudicialProfile received from JRD : {} ",
+                    judicialResponse.getBody().size());
+
+            parseRequestService.validateUserProfiles(judicialResponse.getBody(), userRequest, invalidUserProfilesCount,
+                    invalidProfiles, userType);
+
+            List<JudicialProfile> validJudicialProfiles = requireNonNull(judicialResponse.getBody()).stream()
+                    .filter(userProfile -> !invalidProfiles
+                            .contains(userProfile)).collect(Collectors.toList());
+
+
+            if (!CollectionUtils.isEmpty(validJudicialProfiles)) {
+                validJudicialProfiles.forEach(userProfile -> judicialAccessProfiles.put(userProfile.getElinkId(),
+                        convertUserProfileToJudicialAccessProfile(userProfile)));
+            }
+            Map<String, Integer> userAccessProfileCount = new HashMap<>();
+            judicialAccessProfiles.forEach((k, v) -> {
+                        userAccessProfileCount.put(k, v.size());
+                        log.debug("UserId {} having the corresponding JudicialAccessProfile {}", k,
+                                v);
+                    }
+            );
+            log.info("Count of JudicialAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
+
+
+        } else {
+            log.info("Number of JudicialProfile received from JRD : {} ", 0);
+        }
+
+
+        // no of user profile successfully validated
+        if (invalidUserProfilesCount.get() > 0) {
+            log.info("Number of invalid JudicialProfileCount : {} ", invalidUserProfilesCount.get());
+        }
+
+        return judicialAccessProfiles;
     }
 }
