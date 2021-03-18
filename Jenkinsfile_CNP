@@ -85,9 +85,15 @@ withPipeline(type, product, component) {
   }
   onMaster {
     enableSlackNotifications('#am-org-role-mapping-service-builds')
+    enablePactAs([
+            AppPipelineDsl.PactRoles.CONSUMER
+    ])
   }
   onPR {
     enableSlackNotifications('#am-org-role-mapping-service-builds')
+    enablePactAs([
+            AppPipelineDsl.PactRoles.CONSUMER
+    ])
   }
 
   overrideVaultEnvironments(vaultOverrides)
@@ -114,8 +120,4 @@ withPipeline(type, product, component) {
   after('smoketest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/site/serenity/**'
   }
-
-  enablePactAs([
-    AppPipelineDsl.PactRoles.CONSUMER
-  ])
 }

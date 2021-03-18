@@ -405,6 +405,7 @@ dependencies {
     contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.3.2")
     contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
     contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
+    contractTestImplementation('org.springframework.boot:spring-boot-starter-test')
 
     contractTestCompile sourceSets.main.runtimeClasspath
     contractTestCompile sourceSets.test.runtimeClasspath
@@ -420,15 +421,19 @@ task contract(type: Test) {
 }
 
 task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test to broker.', group: 'Verification') {
+    useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
+    include "uk/gov/hmcts/reform/refdata/**"
+    systemProperty 'pact.rootDir', "pacts"
 }
 
 runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 
 project.ext {
-    pactVersion = getCheckedOutGitCommitHash()
+    pacticipant = 'accessManagement_orgRoleMappingService'
+    pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
 def getCheckedOutGitCommitHash() {
@@ -436,10 +441,12 @@ def getCheckedOutGitCommitHash() {
 }
 
 pact {
+    broker {
+     pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
+    }
     publish {
         pactDirectory = 'pacts'
-        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
-        version = project.pactVersion
+        version = project.pacticipantVersion
     }
 }
 
