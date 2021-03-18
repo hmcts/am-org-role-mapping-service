@@ -213,7 +213,8 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/feignclients/configuration/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/model/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/servicebus/**," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**"
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**", +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/WelcomeController.java"
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
 }
