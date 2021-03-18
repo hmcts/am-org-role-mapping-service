@@ -16,7 +16,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
 @NoArgsConstructor
@@ -35,7 +35,7 @@ public class SmokeTest {
     UserTokenProviderConfig config;
 
     @MockBean
-    private TopicConsumer topicConsumer;
+    private CRDTopicConsumer crdTopicConsumer;
 
     @Rule
     public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator(this);

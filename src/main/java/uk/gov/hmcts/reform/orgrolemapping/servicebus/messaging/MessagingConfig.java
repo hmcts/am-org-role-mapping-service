@@ -1,112 +1,94 @@
 package uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging;
 
-
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.qpid.jms.JmsConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
-import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+import org.springframework.jms.support.converter.MessageConverter;
+import org.springframework.jms.support.converter.MessageType;
 
 import javax.jms.ConnectionFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 
 @Configuration
 @Slf4j
 public class MessagingConfig {
 
     @Bean
-    public String jmsUrlString(@Value("${amqp.host}") final String host) {
-        return String.format("amqps://%1s?amqp.idleTimeout=3600000",host);
+    public String jmsUrlString(@Value("${aws-consumer.host}") final String host) {
+        return String.format("amqps://%1s?amqp.idleTimeout=3600000", host);
     }
 
     @Bean
-    public ConnectionFactory jmsConnectionFactory(@Value("${spring.application.name}") final String clientId,
-                                                  @Value("${amqp.sharedAccessKeyName}") final String username,
-                                                  @Value("${amqp.sharedAccessKeyValue}") final String password,
-                                                  @Autowired final String jmsUrlString,
-                                                  @Autowired(required = false) final SSLContext jmsSslContext) {
+    public ConnectionFactory jmsConnectionFactoryJRD(
+            @Value("${spring.application.name}") final String clientId,
+            @Value("${aws-consumer.sharedAccessKeyName}") final String username,
+            @Value("${aws-consumer.jrd.sharedAccessKeyValue}") final String password,
+            @Autowired final String jmsUrlString,
+            @Autowired(required = false) final SSLContext jmsSslContext,
+            @Value("${aws-consumer.trustAllCerts}") final boolean trustAllCerts) {
+        log.info("jmsConnectionFactory for JRD is created");
         JmsConnectionFactory jmsConnectionFactory = new JmsConnectionFactory(jmsUrlString);
         jmsConnectionFactory.setUsername(username);
         jmsConnectionFactory.setPassword(password);
         jmsConnectionFactory.setClientID(clientId);
         jmsConnectionFactory.setReceiveLocalOnly(true);
-        if (jmsSslContext != null) {
+        if (trustAllCerts && jmsSslContext != null) {
             jmsConnectionFactory.setSslContext(jmsSslContext);
         }
-
         return new CachingConnectionFactory(jmsConnectionFactory);
     }
 
     @Bean
-    public SSLContext jmsSslContext(@Value("${amqp.trustAllCerts}") final boolean trustAllCerts)
-            throws NoSuchAlgorithmException, KeyManagementException {
-
-        if (trustAllCerts) {
-            // https://stackoverflow.com/a/2893932
-            // DO NOT USE THIS IN PRODUCTION!
-            TrustManager[] trustCerts = getTrustManagers();
-
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustCerts, new SecureRandom());
-
-            return sc;
+    public ConnectionFactory jmsConnectionFactoryCRD(
+            @Value("${spring.application.name}") final String clientId,
+            @Value("${aws-consumer.sharedAccessKeyName}") final String username,
+            @Value("${aws-consumer.crd.sharedAccessKeyValue}") final String password,
+            @Autowired final String jmsUrlString,
+            @Autowired(required = false) final SSLContext jmsSslContext,
+            @Value("${aws-consumer.trustAllCerts}") final boolean trustAllCerts) {
+        log.info("jmsConnectionFactory for CRD is created");
+        JmsConnectionFactory jmsConnectionFactory = new JmsConnectionFactory(jmsUrlString);
+        jmsConnectionFactory.setUsername(username);
+        jmsConnectionFactory.setPassword(password);
+        jmsConnectionFactory.setClientID(clientId);
+        jmsConnectionFactory.setReceiveLocalOnly(true);
+        if (trustAllCerts && jmsSslContext != null) {
+            jmsConnectionFactory.setSslContext(jmsSslContext);
         }
-        return null;
-    }
-
-    /*
-     * DO NOT USE THIS IN PRODUCTION!
-     * This was only used for testing unverified ssl certs locally!
-     */
-    @Deprecated
-    private TrustManager[] getTrustManagers() {
-        return new TrustManager[]{
-            new X509TrustManager() {
-                    @Override
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-
-                    @Override
-                    public void checkClientTrusted(
-                            X509Certificate[] certs, String authType) {
-                    }
-
-                    @Override
-                    public void checkServerTrusted(
-                            X509Certificate[] certs, String authType) {
-                    }
-                }
-        };
+        return new CachingConnectionFactory(jmsConnectionFactory);
     }
 
     @Bean
-    public JmsTemplate jmsTemplate(ConnectionFactory jmsConnectionFactory) {
+    public JmsTemplate jmsTemplateJRD(ConnectionFactory jmsConnectionFactoryJRD) {
+        log.info("jmsTemplate for JRD is created");
         JmsTemplate returnValue = new JmsTemplate();
-        returnValue.setConnectionFactory(jmsConnectionFactory);
+        returnValue.setConnectionFactory(jmsConnectionFactoryJRD);
+        returnValue.setMessageConverter(new MappingJackson2MessageConverter());
+        returnValue.setSessionTransacted(true);
         return returnValue;
     }
 
     @Bean
-    public JmsListenerContainerFactory topicJmsListenerContainerFactory(ConnectionFactory connectionFactory) {
-        log.info("Creating JMSListenerContainer bean for topics..");
-        DefaultJmsListenerContainerFactory returnValue = new DefaultJmsListenerContainerFactory();
-        returnValue.setConnectionFactory(connectionFactory);
-        returnValue.setSubscriptionDurable(Boolean.TRUE);
-        returnValue.setErrorHandler(new JmsErrorHandler());
+    public JmsTemplate jmsTemplateCRD(ConnectionFactory jmsConnectionFactoryCRD) {
+        log.info("jmsTemplate for JRD is created");
+        JmsTemplate returnValue = new JmsTemplate();
+        returnValue.setConnectionFactory(jmsConnectionFactoryCRD);
+        returnValue.setMessageConverter(new MappingJackson2MessageConverter());
+        returnValue.setSessionTransacted(true);
         return returnValue;
+    }
+
+    @Bean // Serialize message content to json using TextMessage
+    public MessageConverter jacksonJmsMessageConverter() {
+        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+        converter.setTargetType(MessageType.TEXT);
+        return converter;
     }
 
 }

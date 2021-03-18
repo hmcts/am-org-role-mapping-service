@@ -39,7 +39,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClient
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
@@ -68,7 +68,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
 
-    private transient MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Mock
     private Authentication authentication;
@@ -95,7 +95,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private WebApplicationContext wac;
 
     @ClassRule
-    public static WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(4096));
+    public static final WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(4096));
 
     @ClassRule
     public static final WireMockRule crdClient = new WireMockRule(wireMockConfig().port(4099));
@@ -110,7 +110,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private WelcomeController welcomeController;
 
     @MockBean
-    private TopicConsumer topicConsumer;
+    private CRDTopicConsumer crdTopicConsumer;
 
     private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
     private static final String RAS_ONE_USER_MULTI_ROLE = "RASOneUserMultiRole";

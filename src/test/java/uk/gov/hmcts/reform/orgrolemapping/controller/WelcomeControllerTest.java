@@ -12,7 +12,8 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,10 +23,14 @@ class WelcomeControllerTest {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     @Mock
-    private TopicPublisher topicPublisher;
+    private JRDTopicPublisher jrdTopicPublisher;
+
+    @Mock
+    private CRDTopicPublisher crdTopicPublisher;
 
     @InjectMocks
-    private final WelcomeController sut = new WelcomeController(topicPublisher, bulkAssignmentOrchestrator);
+    private final WelcomeController sut = new WelcomeController(jrdTopicPublisher,
+            crdTopicPublisher, bulkAssignmentOrchestrator);
 
     @BeforeEach
     public void setUp() {
@@ -56,7 +61,7 @@ class WelcomeControllerTest {
     }
 
     @Test
-    void functionalSleepTest() throws InterruptedException {
+    void functionalSleepTest() {
         ResponseEntity<Object> response =
                 ResponseEntity.status(HttpStatus.OK).body("Sleep time for Functional tests is over");
 

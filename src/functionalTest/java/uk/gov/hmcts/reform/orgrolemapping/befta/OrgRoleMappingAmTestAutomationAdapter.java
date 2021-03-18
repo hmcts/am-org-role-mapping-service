@@ -43,7 +43,7 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                     return FunctionalTestUtils.getSaSToken("sb://"
                                     + EnvironmentVariableUtils.getRequiredVariable("AMQP_HOST"),
                             "SendAndListenSharedAccessKey",
-                            EnvironmentVariableUtils.getRequiredVariable("AMQP_SHARED_ACCESS_KEY_VALUE"));
+                            EnvironmentVariableUtils.getRequiredVariable("CRD_SHARED_ACCESS_KEY_VALUE"));
                 } catch (Exception e) {
                     logger.warn(e.getMessage());
                 }

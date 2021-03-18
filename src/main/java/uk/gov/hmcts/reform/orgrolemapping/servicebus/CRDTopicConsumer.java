@@ -33,23 +33,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class TopicConsumer {
+public class CRDTopicConsumer {
 
-    @Value("${amqp.host}")
+    @Value("${aws-consumer.host}")
     String host;
-    @Value("${amqp.topic}")
-    String topic;
-    @Value("${amqp.sharedAccessKeyName}")
-    String sharedAccessKeyName;
-    @Value("${amqp.sharedAccessKeyValue}")
-    String sharedAccessKeyValue;
+    @Value("${aws-consumer.crd.subscription}")
+    String subscription;
+    @Value("${aws-consumer.sharedAccessKeyName}")
+    String username;
+    @Value("${aws-consumer.crd.sharedAccessKeyValue}")
+    String password;
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     private OrmDeserializer deserializer;
 
-    public TopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                         OrmDeserializer deserializer) {
+    public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
+                            OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
 
@@ -63,9 +63,9 @@ public class TopicConsumer {
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
-                topic,
-                sharedAccessKeyName,
-                sharedAccessKeyValue);
+                subscription,
+                username,
+                password);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }

@@ -11,21 +11,21 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class TopicPublisher {
+public class CRDTopicPublisher {
 
     private final JmsTemplate jmsTemplate;
     private final String destination;
 
     @Autowired
-    public TopicPublisher(JmsTemplate jmsTemplate,
-                          @Value("${jrd-consumer.topic}") final String destination) {
-        this.jmsTemplate = jmsTemplate;
+    public CRDTopicPublisher(JmsTemplate jmsTemplateCRD,
+                             @Value("${aws-consumer.crd.topic}") final String destination) {
+        this.jmsTemplate = jmsTemplateCRD;
         this.destination = destination;
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 3))
     public void sendMessage(Object message) {
-        log.info("{}:: Publishing message to service bus topic:: Job Id is: {}");
+        log.info("Publishing message to CRD service bus topic.");
         if (message instanceof PublishCaseWorkerData) {
             log.info("Job Id is: Count of User Ids is: {} ",
                     ((PublishCaseWorkerData) message).getUserIds() != null

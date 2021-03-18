@@ -35,14 +35,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Component
 public class JRDTopicConsumer {
 
-    @Value("${jrd-consumer.host}")
+    @Value("${aws-consumer.host}")
     String host;
-    @Value("${jrd-consumer.subscription}")
+    @Value("${aws-consumer.jrd.subscription}")
     String subscription;
-    @Value("${jrd-consumer.sharedAccessKeyName}")
-    String sharedAccessKeyName;
-    @Value("${jrd-consumer.sharedAccessKeyValue}")
-    String sharedAccessKeyValue;
+    @Value("${aws-consumer.sharedAccessKeyName}")
+    String username;
+    @Value("${aws-consumer.jrd.sharedAccessKeyValue}")
+    String password;
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
@@ -64,8 +64,8 @@ public class JRDTopicConsumer {
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
                 subscription,
-                sharedAccessKeyName,
-                sharedAccessKeyValue);
+                username,
+                password);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
