@@ -40,6 +40,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
@@ -111,6 +112,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @MockBean
     private CRDTopicConsumer crdTopicConsumer;
+
+    @MockBean
+    private JRDTopicConsumer jrdTopicConsumer;
 
     private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
     private static final String RAS_ONE_USER_MULTI_ROLE = "RASOneUserMultiRole";
