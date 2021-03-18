@@ -45,7 +45,6 @@ public class CRDTopicConsumer {
     String password;
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
-
     private OrmDeserializer deserializer;
 
     public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,

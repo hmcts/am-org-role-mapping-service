@@ -53,7 +53,7 @@ withNightlyPipeline(type, product, component) {
   env.OAUTH2_ACCESS_TOKEN_TYPE = "OIDC"
   env.BEFTA_RESPONSE_HEADER_CHECK_POLICY = "JUST_WARN"
   env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-  env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities%20create-user%20manage-user"
+  env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities"
   env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
   env.MICROSERVICE_NAME = "am_org_role_mapping_service"
   env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
