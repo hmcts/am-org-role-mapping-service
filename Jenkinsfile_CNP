@@ -9,7 +9,7 @@ properties(
   ]
 )
 
-@Library("Infrastructure")
+@Library("Infrastructure@TA-471_PactCanIDeploy")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 
@@ -92,7 +92,8 @@ withPipeline(type, product, component) {
   onPR {
     enableSlackNotifications('#am-org-role-mapping-service-builds')
     enablePactAs([
-            AppPipelineDsl.PactRoles.CONSUMER
+            AppPipelineDsl.PactRoles.CONSUMER,
+            AppPipelineDsl.PactRoles.CAN_I_DEPLOY,
     ])
   }
 

@@ -41,7 +41,7 @@ public class RefDataCaseworkerConsumerTest {
     @Autowired
     CRDFeignClient crdFeignClient;
 
-    @Pact(provider = "referenceData_caseworkerRefUsers", consumer = "accessManagement_orgRoleMappingService")
+    @Pact(provider = "referenceData_caseworkerRefUsers", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact generatePactFragment(PactDslWithProvider builder) throws JSONException,
         JsonProcessingException {
 
