@@ -108,23 +108,20 @@ swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
 roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 
-amqp:
+aws-consumer:
   host: ${AMQP_HOST:test}
-  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
-  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:test}
-  topic: ${AMQP_TOPIC_NAME:aat}
+  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:SendAndListenSharedAccessKey}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
-
-
-jrd-consumer:
-  host: ${JRD_HOST:rd-servicebus-sandbox.servicebus.windows.net}
-  sharedAccessKeyName: ${JRD_SHARED_ACCESS_KEY_NAME:SendAndListenSharedAccessKey}
-  sharedAccessKeyValue: ${JRD_SHARED_ACCESS_KEY_VALUE:crt8pi7QuoOc2LGQqlHcEMTxFNVWGWraTffCAP5567A=}
-  topic: ${JRD_TOPIC_NAME:rd-judicial-topic-sandbox}
-  subscription: ${JRD_SUBSCRIPTION_NAME:rd-judicial-topic-sandbox/subscriptions/rd-judicial-subscription-sandbox}
   maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
-  trustAllCerts: ${TRUST_ALL_CERTS:true}
+  crd:
+    sharedAccessKeyValue: ${CRD_SHARED_ACCESS_KEY_VALUE:test}
+    topic: ${CRD_TOPIC_NAME:test}
+    subscription: ${CRD_SUBSCRIPTION_NAME:test}
+  jrd:
+    sharedAccessKeyValue: ${JRD_SHARED_ACCESS_KEY_VALUE:test}
+    topic: ${JRD_TOPIC_NAME:test}
+    subscription: ${JRD_SUBSCRIPTION_NAME:test}
 
 launchdarkly:
   sdk:
