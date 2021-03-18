@@ -447,6 +447,7 @@ pact {
     publish {
         pactDirectory = 'pacts'
         version = project.pacticipantVersion
+        tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
     }
 }
 

@@ -51,7 +51,7 @@ class RetrieveDataServiceTest {
         assertEquals(1, result.size());
 
         Mockito.verify(crdFeignClient, Mockito.times(1))
-                .getCaseworkerDetailsById(any(UserRequest.class));
+                .  getCaseworkerDetailsById(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any(),any());
     }

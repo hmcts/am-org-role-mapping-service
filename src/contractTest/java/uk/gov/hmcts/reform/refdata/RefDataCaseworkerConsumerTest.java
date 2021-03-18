@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -61,6 +63,7 @@ public class RefDataCaseworkerConsumerTest {
 
         ResponseEntity<List<UserProfile>> caseWorkerProfiles =
             crdFeignClient.getCaseworkerDetailsById(buildUserRequest());
+        assertThat(caseWorkerProfiles.getBody().get(0).getEmailId(), equalTo("sam.manuel@gmail.com"));
 
     }
 
@@ -72,12 +75,33 @@ public class RefDataCaseworkerConsumerTest {
     }
 
     private DslPart buildCaseworkerListResponsePactDsl() {
+
         return newJsonArray(o -> {
             o.object(ob -> ob
                 .stringType("first_name",
-                    "firstName")
+                    "Sam")
                 .stringType("last_name",
-                    "lastName")
+                    "Manuel")
+                .stringType("email_id", "sam.manuel@gmail.com")
+                .numberType("region_id", 1)
+                .stringType("region", "National")
+                .numberType("user_type_id", 1)
+                .stringType("user_type", "HMCTS")
+                .stringMatcher("suspended", "true|false", "true")
+                .minArrayLike("role", 1, r -> r
+                    .stringType("role_id", "1")
+                    .stringType("role", "senior-tribunal-caseworker")
+                    .booleanType("is_primary", true)
+                )
+                .minArrayLike("base_location", 1, r -> r
+                    .numberType("location_id", 1)
+                    .stringType("location", "Aberdeen Tribunal Hearing Centre")
+                    .booleanType("is_primary", true)
+                )
+                .minArrayLike("work_area", 1, r -> r
+                    .stringType("area_of_work", "1")
+                    .stringType("service_code", "BFA1")
+                )
             );
         }).build();
     }
