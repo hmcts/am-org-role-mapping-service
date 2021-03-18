@@ -432,7 +432,7 @@ runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 
 project.ext {
-    pacticipant = 'accessManagement_orgRoleMappingService'
+    pacticipant = 'accessMgmt_orgRoleMapping'
     pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
