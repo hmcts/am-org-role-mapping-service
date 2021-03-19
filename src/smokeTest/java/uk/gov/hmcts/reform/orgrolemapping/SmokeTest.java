@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
 @NoArgsConstructor
@@ -33,9 +31,6 @@ public class SmokeTest {
     private String sdkKey;
 
     UserTokenProviderConfig config;
-
-    @MockBean
-    private CRDTopicConsumer crdTopicConsumer;
 
     @Rule
     public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator(this);

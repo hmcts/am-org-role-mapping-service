@@ -12,8 +12,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,15 +20,8 @@ class WelcomeControllerTest {
     @Mock
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
-    @Mock
-    private JRDTopicPublisher jrdTopicPublisher;
-
-    @Mock
-    private CRDTopicPublisher crdTopicPublisher;
-
     @InjectMocks
-    private final WelcomeController sut = new WelcomeController(jrdTopicPublisher,
-            crdTopicPublisher, bulkAssignmentOrchestrator);
+    private final WelcomeController sut = new WelcomeController(bulkAssignmentOrchestrator);
 
     @BeforeEach
     public void setUp() {
@@ -70,6 +61,12 @@ class WelcomeControllerTest {
 
     @Test
     void errorConstantTest() {
+        assertEquals(202, ErrorConstants.ACCEPTED.getErrorCode());
+        assertEquals("Accepted", ErrorConstants.ACCEPTED.getErrorMessage());
+    }
+
+    @Test
+    void send2JRDTest() {
         assertEquals(202, ErrorConstants.ACCEPTED.getErrorCode());
         assertEquals("Accepted", ErrorConstants.ACCEPTED.getErrorMessage());
     }
