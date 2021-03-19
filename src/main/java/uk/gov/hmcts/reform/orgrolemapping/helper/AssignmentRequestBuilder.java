@@ -152,10 +152,11 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setRoleId(appointment.getRoleId());
             judicialAccessProfile.setBeginTime(appointment.getStartDate().atZone(ZoneId.of("UTC")));
             judicialAccessProfile.setEndTime(appointment.getEndDate().atZone(ZoneId.of("UTC")));
-            judicialAccessProfile.setRegionId(appointment.getLocationId());
+            judicialAccessProfile.setRegionId(appointment.getLocationDescEn());
             judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
             judicialAccessProfile.setContractTypeId(appointment.getContractTypeId());
             judicialAccessProfile.setAuthorisations(authorisations);
+            judicialAccessProfile.setAppointmentId(appointment.getAppointmentId());
             judicialAccessProfiles.add(judicialAccessProfile);
 
         });

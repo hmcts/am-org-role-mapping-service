@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
@@ -35,8 +37,9 @@ class RetrieveDataServiceTest {
 
     private final CRDFeignClient crdFeignClient = Mockito.mock(CRDFeignClient.class);
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
+    private final JRDFeignClient jrdFeignClient = Mockito.mock(JRDFeignClient.class);
 
-    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdFeignClient);
+    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdFeignClient,jrdFeignClient);
 
     @Test
     void retrieveCaseWorkerProfilesTest() {
@@ -46,14 +49,14 @@ class RetrieveDataServiceTest {
                         .buildListOfUserProfiles(false, false,"1", "2",
                         ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)));
 
-        Map<String, Set<CaseWorkerAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
+        Map<String, Set<CaseWorkerAccessProfile>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
         assertEquals(1, result.size());
 
         Mockito.verify(crdFeignClient, Mockito.times(1))
                 .getCaseworkerDetailsById(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserProfiles(any(), any(), any(),any());
+                .validateUserProfiles(any(), any(), any(),any(),any());
     }
 
     @Test
@@ -66,8 +69,8 @@ class RetrieveDataServiceTest {
                                 false, true, "1", "2",
                                 false)));
 
-        doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
-        Map<String, Set<CaseWorkerAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
+        doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(),any(),any());
+        Map<String, Set<CaseWorkerAccessProfile>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(),any());
 
         assertEquals(0, result.size());
 
@@ -78,8 +81,8 @@ class RetrieveDataServiceTest {
 
         when(crdFeignClient.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
                 .ok(buildUserProfile(buildUserRequest())));
-        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
-        Map<String, Set<CaseWorkerAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
+        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any(),any());
+        Map<String, Set<CaseWorkerAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(),UserType.CASEWORKER);
         assertNotNull(response);
         response.forEach((k,v) -> {
             assertNotNull(k);
@@ -100,7 +103,7 @@ class RetrieveDataServiceTest {
         List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
         when(crdFeignClient.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
                 .ok(caseWorkerProfiles));
-        Map<String, Set<CaseWorkerAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
+        Map<String, Set<CaseWorkerAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(),UserType.CASEWORKER);
         assertNotNull(response);
         assertTrue(response.isEmpty());
     }

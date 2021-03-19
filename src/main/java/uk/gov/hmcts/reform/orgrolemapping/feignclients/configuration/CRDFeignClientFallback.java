@@ -22,8 +22,9 @@ public class CRDFeignClientFallback implements CRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<List<CaseWorkerProfile>> getCaseworkerDetailsById(UserRequest userRequest) {
-        return ResponseEntity.ok(new ArrayList<>(buildUserProfile(userRequest)));
+    @SuppressWarnings("unchecked")
+    public <T> ResponseEntity<List<T>> getCaseworkerDetailsById(UserRequest userRequest) {
+        return ResponseEntity.ok((List<T>) new ArrayList<>(buildUserProfile(userRequest)));
     }
 
 }

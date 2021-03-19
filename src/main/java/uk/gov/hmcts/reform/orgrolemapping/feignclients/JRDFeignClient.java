@@ -21,5 +21,5 @@ public interface JRDFeignClient {
     public String getServiceStatus();
 
     @PostMapping(value = "/refdata/judicial/users/fetchUsersById")
-    public  ResponseEntity<List<JudicialProfile>> getJudicialDetailsById(UserRequest userRequest);
+    public <T> ResponseEntity<List<T>> getJudicialDetailsById(UserRequest userRequest);
 }

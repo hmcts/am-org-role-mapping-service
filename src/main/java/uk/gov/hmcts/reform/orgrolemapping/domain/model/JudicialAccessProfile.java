@@ -16,13 +16,14 @@ import java.util.List;
 @AllArgsConstructor
 public class JudicialAccessProfile implements Serializable {
 
-   private String userId;
-   private String roleId;
+    private String userId;
+    private String roleId;
     private ZonedDateTime beginTime;
     private ZonedDateTime endTime;
     private List<String> authorisations;
     private String regionId;
     private String  baseLocationId;
     private String  contractTypeId;
+    private String appointmentId;
 
 }

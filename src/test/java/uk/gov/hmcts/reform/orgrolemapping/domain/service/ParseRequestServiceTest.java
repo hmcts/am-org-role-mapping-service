@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ class ParseRequestServiceTest {
     void validateUserProfilesTest() {
         sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false),
-                TestDataBuilder.buildUserRequest(), new AtomicInteger(),new HashSet<>());
+                TestDataBuilder.buildUserRequest(), new AtomicInteger(),new HashSet<>(), UserType.CASEWORKER);
     }
 
     @Test
@@ -53,7 +54,7 @@ class ParseRequestServiceTest {
                 ROLE_NAME_STCW, ROLE_NAME_TCW, false, true, false, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         userRequest.getUserIds().add("testUser");
-        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>());
+        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),UserType.CASEWORKER);
     }
 
     @Test
@@ -61,7 +62,7 @@ class ParseRequestServiceTest {
         List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, false, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>());
+        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),UserType.CASEWORKER);
 
     }
 
@@ -71,7 +72,7 @@ class ParseRequestServiceTest {
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false);
         caseWorkerProfiles.get(0).setRole(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>());
+        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),UserType.CASEWORKER);
 
     }
 
@@ -82,7 +83,7 @@ class ParseRequestServiceTest {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
 
-        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>());
+        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),UserType.CASEWORKER);
 
     }
 
@@ -93,7 +94,7 @@ class ParseRequestServiceTest {
         AtomicInteger integer = new AtomicInteger();
         Set<CaseWorkerProfile> invalidCaseWorkerProfiles = new HashSet<>();
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles)
+                sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles,UserType.CASEWORKER)
         );
     }
 
@@ -104,7 +105,7 @@ class ParseRequestServiceTest {
         AtomicInteger integer = new AtomicInteger();
         Set<CaseWorkerProfile> invalidCaseWorkerProfiles = new HashSet<>();
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles)
+                sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles,UserType.CASEWORKER)
         );
     }
 }

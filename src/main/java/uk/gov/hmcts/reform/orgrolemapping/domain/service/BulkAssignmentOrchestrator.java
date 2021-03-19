@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
@@ -30,42 +28,26 @@ public class BulkAssignmentOrchestrator {
 
     private final RequestMappingService requestMappingService;
 
-
+    @SuppressWarnings("unchecked")
     public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
-        UserType userType = UserType.JUDICIAL;
+        UserType userType = UserType.CASEWORKER;
         long startTime = System.currentTimeMillis();
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
         log.info("Validated userIds {}", userRequest.getUserIds());
-        ResponseEntity<Object> responseEntity = null;
 
 
-        switch(userType){
-            case CASEWORKER :
+        //Create userAccessProfiles based upon roleId and service codes
+        Map<String, Set<?>> userAccessProfiles = retrieveDataService
+                .retrieveProfiles(userRequest, userType);
 
-                //Create userAccessProfiles based upon roleId and service codes
-                Map<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = retrieveDataService
-                        .retrieveCaseWorkerProfiles(userRequest,userType);
+        //call the requestMapping service to determine role name and create role assignment requests
+        ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
 
-                //call the requestMapping service to determine role name and create role assignment requests
-                responseEntity = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
-                break;
-
-            case JUDICIAL:
-
-                //Create JudicialAccessProfiles based upon appointment
-                //Create userAccessProfiles based upon roleId and service codes
-                Map<String, Set<JudicialAccessProfile>> judicialAccessProfie = retrieveDataService
-                        .retrieveJudicialProfiles(userRequest,userType);
-
-
-                //call the requestMapping service to determine role name and create role assignment requests
-                break;
-        }
 
         log.info(
                 "Execution time of createBulkAssignmentsRequest() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
         return responseEntity;
     }

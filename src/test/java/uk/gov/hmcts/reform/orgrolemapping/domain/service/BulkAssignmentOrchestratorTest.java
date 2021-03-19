@@ -45,12 +45,13 @@ class BulkAssignmentOrchestratorTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void createBulkAssignmentsRequestTest() {
 
-        Mockito.when(retrieveDataService.retrieveCaseWorkerProfiles(Mockito.any()))
+        Mockito.when(retrieveDataService.retrieveProfiles(Mockito.any(),Mockito.any() ))
                 .thenReturn(TestDataBuilder.buildUserAccessProfileMap(false, false));
 
-        Mockito.when(requestMappingService.createCaseWorkerAssignments(Mockito.any()))
+        Mockito.when(requestMappingService.createAssignments(Mockito.any(), Mockito.any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(AssignmentRequestBuilder
                         .buildAssignmentRequest(false)));
 
@@ -70,9 +71,9 @@ class BulkAssignmentOrchestratorTest {
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserRequest(Mockito.any(UserRequest.class));
         Mockito.verify(retrieveDataService, Mockito.times(1))
-                .retrieveCaseWorkerProfiles(Mockito.any(UserRequest.class));
+                .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
         Mockito.verify(requestMappingService, Mockito.times(1))
-                .createCaseWorkerAssignments(Mockito.any());
+                .createAssignments(Mockito.any(),Mockito.any());
     }
 
 }
