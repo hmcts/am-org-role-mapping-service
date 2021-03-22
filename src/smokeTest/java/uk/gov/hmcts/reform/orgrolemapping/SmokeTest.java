@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import lombok.NoArgsConstructor;
-import net.serenitybdd.rest.SerenityRest;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.Before;
@@ -11,9 +13,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.Tag;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
@@ -21,8 +20,7 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 @RunWith(SpringIntegrationSerenityRunner.class)
 @NoArgsConstructor
 @WithTags({@WithTag("testType:Smoke")})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SmokeTest {
+public class SmokeTest extends BaseTest {
     @Value("${launchdarkly.sdk.environment}")
     private String environment;
 
