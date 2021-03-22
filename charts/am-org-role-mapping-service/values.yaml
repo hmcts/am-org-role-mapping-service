@@ -13,6 +13,7 @@ java:
         - orm-IDAM-CLIENT-SECRET
         - orm-IDAM-ADMIN-SECRET
         - caseworker-topic-primary-send-listen-shared-access-key
+        - org-role-mapping-service-POSTGRES-PASS
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
