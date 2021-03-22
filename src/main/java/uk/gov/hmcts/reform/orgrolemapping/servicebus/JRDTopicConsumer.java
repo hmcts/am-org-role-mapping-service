@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -34,6 +35,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 @Component
 public class JRDTopicConsumer {
+
+    @Autowired
+    private FeatureConditionEvaluator featureConditionEvaluator;
 
     @Value("${aws-consumer.host}")
     String host;
@@ -82,25 +86,28 @@ public class JRDTopicConsumer {
             @SneakyThrows
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
                 log.info("    Calling onMessageAsync.....{}", message);
-                List<byte[]> body = message.getMessageBody().getBinaryData();
-                try {
-                    log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
-                    log.info("    Delivery Count is : {}", message.getDeliveryCount());
-                    AtomicBoolean result = new AtomicBoolean();
-                    processMessage(body, result);
-                    if (result.get()) {
-                        return receiveClient.completeAsync(message.getLockToken());
+                    List<byte[]> body = message.getMessageBody().getBinaryData();
+                    try {
+                        log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
+                        log.info("    Delivery Count is : {}", message.getDeliveryCount());
+                        AtomicBoolean result = new AtomicBoolean();
+                        if (featureConditionEvaluator.isFlagEnabled("am_org_role_mapping_service",
+                                "orm-jrd-org-role")) {
+                            processMessage(body, result);
+                            if (result.get()) {
+                                return receiveClient.completeAsync(message.getLockToken());
+                            }
+                            log.info("    getLockToken......{}", message.getLockToken());
+                        } else {
+                            log.info("The JRD feature flag is currently disabled. This message would be supressed");
+                            return receiveClient.completeAsync(message.getLockToken());
+                        }
+
+                    } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
+                        throw new InvalidRequest("Some Network issue");
                     }
-
-
-                    log.info("    getLockToken......{}", message.getLockToken());
-
-                } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
-                    throw new InvalidRequest("Some Network issue");
-                }
                 log.info("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
-
             }
 
             public void notifyException(Throwable throwable, ExceptionPhase exceptionPhase) {
