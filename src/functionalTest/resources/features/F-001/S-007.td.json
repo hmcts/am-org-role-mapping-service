@@ -16,7 +16,7 @@
     "_extends_": "Common_200_Response",
     "headers": {
       "_extends_": "Common_200_Response_Headers",
-      "ETag" : "W/\"2\""
+      "ETag" : "W/\"8\""
     },
     "body": {
       "roleAssignmentResponse": [
