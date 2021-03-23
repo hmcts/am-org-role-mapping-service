@@ -56,15 +56,15 @@ public class RequestMappingService<T> {
      * and update them in the role assignment service.
      */
     @SuppressWarnings("unchecked")
-    public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles,UserType userType) {
+    public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles, UserType userType) {
         long startTime = System.currentTimeMillis();
         // Get the role assignments for each caseworker in the input profiles.
         Map<String, List<RoleAssignment>> usersRoleAssignments = getProfileRoleAssignments(usersAccessProfiles);
         // The response body is a list of ....???....
-        ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleAssignments,userType);
+        ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleAssignments, userType);
         log.info(
                 "Execution time of createCaseWorkerAssignments() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
         return responseEntity;
 
@@ -113,14 +113,13 @@ public class RequestMappingService<T> {
 
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
         //print usersRoleAssignments
-        usersRoleAssignments.forEach((k,v) -> {
+        usersRoleAssignments.forEach((k, v) -> {
             roleAssignmentsCount.put(k, v.size());
             log.debug("UserId {} having the RoleAssignments created by the drool  {}  ", k,
                     v);
         });
 
         log.info("Count of RoleAssignments corresponding to the UserId ::{}  ", roleAssignmentsCount);
-
 
 
         return usersRoleAssignments;
@@ -134,7 +133,7 @@ public class RequestMappingService<T> {
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
         log.info(
                 "Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
         return roleAssignments;
     }
@@ -173,14 +172,15 @@ public class RequestMappingService<T> {
      * Note that some caseworker IDs may have empty role assignment collections.
      * This is OK - these caseworkers have been deleted (or just don't have any appointments which map to roles).
      */
-    ResponseEntity<Object> updateProfilesRoleAssignments(Map<String, List<RoleAssignment>> usersRoleAssignments, UserType userType) {
+    ResponseEntity<Object> updateProfilesRoleAssignments(Map<String, List<RoleAssignment>> usersRoleAssignments,
+                                                         UserType userType) {
         //prepare an empty list of responses
         List<Object> finalResponse = new ArrayList<>();
         AtomicInteger failureResponseCount = new AtomicInteger();
 
         usersRoleAssignments
-                .forEach((k,v) -> finalResponse.add(updateProfileRoleAssignments(k,
-                        v, failureResponseCount,userType).getBody()));
+                .forEach((k, v) -> finalResponse.add(updateProfileRoleAssignments(k,
+                        v, failureResponseCount, userType).getBody()));
         log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
         log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
@@ -196,10 +196,10 @@ public class RequestMappingService<T> {
         ResponseEntity<Object> responseEntity = null;
 
         // Print response code  of RAS for each userID
-        if(userType.equals(UserType.CASEWORKER)) {
+        if (userType.equals(UserType.CASEWORKER)) {
             responseEntity = updateRoleAssignments(STAFF_ORGANISATIONAL_ROLE_MAPPING,
                     userId, roleAssignments);
-        } else if(userType.equals(UserType.JUDICIAL)){
+        } else if (userType.equals(UserType.JUDICIAL)) {
             responseEntity = updateRoleAssignments(JUDICIAL_ORGANISATIONAL_ROLE_MAPPING,
                     userId, roleAssignments);
         }
@@ -238,8 +238,8 @@ public class RequestMappingService<T> {
         try {
             responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
             log.info(
-                "Execution time of updateRoleAssignments() : {} ms",
-                    (Math.subtractExact(System.currentTimeMillis(),startTime))
+                    "Execution time of updateRoleAssignments() : {} ms",
+                    (Math.subtractExact(System.currentTimeMillis(), startTime))
             );
         } catch (FeignException.FeignClientException feignClientException) {
             log.error("Handling FeignClientException UnprocessableEntity: " + feignClientException.getMessage());

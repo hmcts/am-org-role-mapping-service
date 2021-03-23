@@ -28,6 +28,7 @@ public class CaseWorkerProfile  implements Serializable  {
     private String userType;
     private boolean suspended;
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
+
     private LocalDateTime createdTime;
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
     private LocalDateTime lastUpdatedTime;

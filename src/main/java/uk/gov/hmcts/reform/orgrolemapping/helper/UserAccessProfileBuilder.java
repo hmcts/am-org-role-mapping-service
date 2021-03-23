@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -106,7 +105,8 @@ public class UserAccessProfileBuilder {
 
         userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
-                         UserAccessProfileBuilder.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
+                         UserAccessProfileBuilder.class.getClassLoader()
+                                 .getResourceAsStream("userProfileSample.json")) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
                 CaseWorkerProfile caseWorkerProfile = objectMapper.readValue(inputStream, CaseWorkerProfile.class);
@@ -130,7 +130,8 @@ public class UserAccessProfileBuilder {
 
         userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
-                         UserAccessProfileBuilder.class.getClassLoader().getResourceAsStream("judicialProfileSample.json")) {
+                         UserAccessProfileBuilder.class.getClassLoader()
+                                 .getResourceAsStream("judicialProfileSample.json")) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
                 JudicialProfile judicialProfile = objectMapper.readValue(inputStream, JudicialProfile.class);

@@ -41,7 +41,8 @@ public class ParseRequestService extends ParseRequestBase {
     //this method is common across all service
     @Override
     @SuppressWarnings("unchecked")
-    public void validateUserProfiles(List profiles, UserRequest userRequest, AtomicInteger invalidUserProfilesCount, Set invalidProfiles, UserType userType) {
+    public void validateUserProfiles(List profiles, UserRequest userRequest, AtomicInteger invalidUserProfilesCount,
+                                     Set invalidProfiles, UserType userType) {
 
         if (Collections.isEmpty(profiles)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
@@ -49,12 +50,12 @@ public class ParseRequestService extends ParseRequestBase {
         if (userRequest.getUserIds().size() != profiles.size()) {
             List<String> userProfileIds = new ArrayList<>();
 
-            if(userType.equals(UserType.CASEWORKER)) {
-            List<CaseWorkerProfile> caseWorkerProfiles  = profiles;
+            if (userType.equals(UserType.CASEWORKER)) {
+                List<CaseWorkerProfile> caseWorkerProfiles = profiles;
 
                 caseWorkerProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));
-            } else if(userType.equals(UserType.JUDICIAL)){
-                List<JudicialProfile> judicialProfileList  = profiles;
+            } else if (userType.equals(UserType.JUDICIAL)) {
+                List<JudicialProfile> judicialProfileList = profiles;
                 judicialProfileList.forEach(judicialProfile -> userProfileIds.add(judicialProfile.getElinkId()));
             }
             List<String> userIdsNotInCRDResponse = userRequest.getUserIds().stream().filter(userId -> !userProfileIds
@@ -65,18 +66,19 @@ public class ParseRequestService extends ParseRequestBase {
                     + " Response", userIdsNotInCRDResponse);
 
         }
-        if(userType.equals(UserType.CASEWORKER)) {
+        if (userType.equals(UserType.CASEWORKER)) {
             caseworkerProfileValidation(profiles, invalidUserProfilesCount, invalidProfiles);
-        } else if(userType.equals(UserType.JUDICIAL)){
+        } else if (userType.equals(UserType.JUDICIAL)) {
 
             //Validation of judicial profile
-            judicialProfileValidation(profiles,invalidUserProfilesCount, invalidProfiles);
+            judicialProfileValidation(profiles, invalidUserProfilesCount, invalidProfiles);
 
         }
 
     }
 
-    private void caseworkerProfileValidation(List<CaseWorkerProfile> profiles, AtomicInteger invalidUserProfilesCount, Set<Object> invalidCaseWorkerProfiles) {
+    private void caseworkerProfileValidation(List<CaseWorkerProfile> profiles, AtomicInteger invalidUserProfilesCount,
+                                             Set<Object> invalidCaseWorkerProfiles) {
 
         profiles.forEach(userProfile -> {
             boolean isInvalid = false;
@@ -110,7 +112,8 @@ public class ParseRequestService extends ParseRequestBase {
         });
     }
 
-    private void judicialProfileValidation(List<JudicialProfile> profiles, AtomicInteger invalidUserProfilesCount, Set<Object> invalidJudicialProfiles) {
+    private void judicialProfileValidation(List<JudicialProfile> profiles, AtomicInteger invalidUserProfilesCount,
+                                           Set<Object> invalidJudicialProfiles) {
 
         profiles.forEach(userProfile -> {
             AtomicBoolean isInvalid = new AtomicBoolean(false);
@@ -120,15 +123,16 @@ public class ParseRequestService extends ParseRequestBase {
                 isInvalid.set(true);
             } else {
                 userProfile.getAppointments().forEach(appointment -> {
-                    if(StringUtils.isEmpty(appointment.getContractTypeId())
+                    if (StringUtils.isEmpty(appointment.getContractTypeId())
                             || StringUtils.isEmpty(appointment.getRoleId())
-                    || StringUtils.isEmpty(appointment.getBaseLocationId())
+                            || StringUtils.isEmpty(appointment.getBaseLocationId())
                             || StringUtils.isEmpty(appointment.getLocationId())
                             || appointment.getStartDate() == null
                             || appointment.getEndDate() == null
 
-                    ){
-                        log.error("appointment is not valid for the judicialProfile id {} having roleId {} ", userProfile.getElinkId(),appointment.getRoleId());
+                    ) {
+                        log.error("appointment is not valid for the judicialProfile id {} having roleId {} ",
+                                userProfile.getElinkId(), appointment.getRoleId());
                         invalidJudicialProfiles.add(userProfile);
                         isInvalid.set(true);
                     }
@@ -140,14 +144,14 @@ public class ParseRequestService extends ParseRequestBase {
                 isInvalid.set(true);
             } else {
                 userProfile.getAuthorisations().forEach(authorisation -> {
-                    if(StringUtils.isEmpty( authorisation.getAuthorisationId())){
-                        log.error("The authorisation is not valid for the judicialProfile {} ", userProfile.getElinkId());
+                    if (StringUtils.isEmpty(authorisation.getAuthorisationId())) {
+                        log.error("The authorisation is not valid for the judicialProfile {} ",
+                                userProfile.getElinkId());
                         invalidJudicialProfiles.add(userProfile);
                         isInvalid.set(true);
                     }
                 });
             }
-
 
 
             if (isInvalid.get()) {

@@ -29,8 +29,7 @@ public class BulkAssignmentOrchestrator {
     private final RequestMappingService requestMappingService;
 
     @SuppressWarnings("unchecked")
-    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
-        UserType userType = UserType.CASEWORKER;
+    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest,UserType userType) {
         long startTime = System.currentTimeMillis();
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);

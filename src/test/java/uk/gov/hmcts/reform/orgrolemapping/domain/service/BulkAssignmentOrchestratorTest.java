@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.BeforeEach;
-
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,15 +14,17 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
-
-import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 class BulkAssignmentOrchestratorTest {
@@ -48,14 +49,17 @@ class BulkAssignmentOrchestratorTest {
     @SuppressWarnings("unchecked")
     void createBulkAssignmentsRequestTest() {
 
-        Mockito.when(retrieveDataService.retrieveProfiles(Mockito.any(),Mockito.any() ))
-                .thenReturn(TestDataBuilder.buildUserAccessProfileMap(false, false));
+
+
+        doReturn(TestDataBuilder.buildUserAccessProfileMap(false, false)).when(retrieveDataService)
+                .retrieveProfiles(Mockito.any(),Mockito.any());
 
         Mockito.when(requestMappingService.createAssignments(Mockito.any(), Mockito.any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(AssignmentRequestBuilder
                         .buildAssignmentRequest(false)));
 
-        ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest());
+        ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
+                UserType.CASEWORKER);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

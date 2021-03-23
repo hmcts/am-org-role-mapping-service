@@ -17,26 +17,26 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class JudicialProfile  implements Serializable {
+public class JudicialProfile implements Serializable {
 
     @NonNull
     private String elinkId;
     private String personalCode;
-    private String  title;
-    private String  knownAs;
+    private String title;
+    private String knownAs;
     private String surname;
     private String fullName;
     private String postNominals;
 
     private String contractTypeId;
     private String workPattern;
-    private String  emailId;
+    private String emailId;
     private LocalDateTime joiningDate;
     private LocalDateTime lastWorkingDate;
     private String extractedDate;
-    private String  activeFlag;
+    private String activeFlag;
     private List<Appointment> appointments;
-    private List<Authorisation>  authorisations;
+    private List<Authorisation> authorisations;
     private String userType;
 
     @Data
@@ -44,7 +44,7 @@ public class JudicialProfile  implements Serializable {
     @AllArgsConstructor
     @NoArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class  Appointment implements Serializable {
+    public static class Appointment implements Serializable {
 
         @NonNull
         private String roleId;
@@ -64,7 +64,7 @@ public class JudicialProfile  implements Serializable {
         private String locationDescEn;
         private String isPrincipalAppointment;
         @NonNull
-        private LocalDateTime  startDate;
+        private LocalDateTime startDate;
         @NonNull
         private LocalDateTime endDate;
         private String activeFlag;
@@ -77,14 +77,14 @@ public class JudicialProfile  implements Serializable {
     @AllArgsConstructor
     @NoArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class  Authorisation implements Serializable {
+    public static class Authorisation implements Serializable {
         @NonNull
-        private String authorisationId ;
-        private String jurisdiction ;
-        private LocalDateTime startDate ;
-        private LocalDateTime endDate ;
-        private LocalDateTime createdDate ;
-        private LocalDateTime lastUpdatedDate ;
+        private String authorisationId;
+        private String jurisdiction;
+        private LocalDateTime startDate;
+        private LocalDateTime endDate;
+        private LocalDateTime createdDate;
+        private LocalDateTime lastUpdatedDate;
         private String lowerLevel;
     }
 }

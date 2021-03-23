@@ -9,8 +9,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ParseRequestBase<T> {
 
-    public abstract void validateUserProfiles(List<T> profiles, UserRequest userRequest,AtomicInteger invalidUserProfilesCount,
-                                              Set<T> invalidProfiles,  UserType userType );
+    public abstract void validateUserProfiles(List<T> profiles, UserRequest userRequest,
+                                              AtomicInteger invalidUserProfilesCount,
+                                              Set<T> invalidProfiles, UserType userType);
 
 
 }

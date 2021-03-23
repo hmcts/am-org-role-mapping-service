@@ -11,9 +11,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,8 +23,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToJudicialAccessProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfile;
 
 @Service
 @Slf4j
@@ -48,7 +50,7 @@ public class RetrieveDataService {
 
     private final ParseRequestService parseRequestService;
     private final CRDFeignClient crdFeignClient;
-    private final JRDFeignClientFallback jrdFeignClient;
+    private final JRDFeignClient jrdFeignClient;
 
     @SuppressWarnings("unchecked")
     public Map<String, Set<?>> retrieveProfiles(UserRequest userRequest, UserType userType) {
@@ -58,11 +60,23 @@ public class RetrieveDataService {
         Set<Object> invalidProfiles = new HashSet<>();
         Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
         ResponseEntity<List<Object>> response = null;
+        List<Object> convertProfile = new ArrayList<>();
 
         if (userType.equals(UserType.CASEWORKER)) {
             response = crdFeignClient.getCaseworkerDetailsById(userRequest);
+            if (response.getBody() != null) {
+
+                response.getBody().forEach(o -> convertProfile.add(convertInCaseWorkerProfile(o)));
+
+            }
+
         } else if (userType.equals(UserType.JUDICIAL)) {
             response = jrdFeignClient.getJudicialDetailsById(userRequest);
+            if (response.getBody() != null) {
+
+                response.getBody().forEach(o -> convertProfile.add(convertInJudicialProfile(o)));
+
+            }
 
         }
 
@@ -71,21 +85,20 @@ public class RetrieveDataService {
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
 
-        if (response != null && !CollectionUtils.isEmpty(response.getBody())) {
+        if (response != null && !CollectionUtils.isEmpty(convertProfile)) {
             // no of userProfiles from  responseEntity.getBody().size()
             log.info("Number of Profile received from upstream : {} ",
-                    response.getBody().size());
+                    convertProfile.size());
 
-            parseRequestService.validateUserProfiles(response.getBody(), userRequest, invalidUserProfilesCount,
+            parseRequestService.validateUserProfiles(convertProfile, userRequest, invalidUserProfilesCount,
                     invalidProfiles, userType);
 
-            List<Object> validProfiles = requireNonNull(response.getBody()).stream()
+            List<Object> validProfiles = requireNonNull(convertProfile).stream()
                     .filter(userProfile -> !invalidProfiles
                             .contains(userProfile)).collect(Collectors.toList());
 
 
             if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.CASEWORKER)) {
-
 
                 List<CaseWorkerProfile> caseWorkerProfiles = (List<CaseWorkerProfile>) (Object) validProfiles;
                 caseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
@@ -94,14 +107,14 @@ public class RetrieveDataService {
 
                 List<JudicialProfile> validJudicialProfiles = (List<JudicialProfile>) (Object) validProfiles;
                 validJudicialProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getElinkId(),
-                        convertUserProfileToJudicialAccessProfile(userProfile)));
+                        convertProfileToJudicialAccessProfile(userProfile)));
             }
             Map<String, Integer> userAccessProfileCount = new HashMap<>();
             usersAccessProfiles.forEach((k, v) -> {
-                        userAccessProfileCount.put(k, v.size());
-                        log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
+                userAccessProfileCount.put(k, v.size());
+                log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
                                 v);
-                    }
+            }
             );
             log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 

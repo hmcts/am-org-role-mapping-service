@@ -43,47 +43,61 @@ class ParseRequestServiceTest {
 
     @Test
     void validateUserProfilesTest() {
-        sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
-                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false),
+        sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false,
+                "1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false,
+                true, "1", "2", false),
                 TestDataBuilder.buildUserRequest(), new AtomicInteger(),new HashSet<>(), UserType.CASEWORKER);
     }
 
     @Test
     void validateUserProfiles_throwsBadRequest_noBaseLocationTest() {
-        List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
-                ROLE_NAME_STCW, ROLE_NAME_TCW, false, true, false, true, "1", "2", false);
+        List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true,
+                false, "1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, false, true,
+                false, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         userRequest.getUserIds().add("testUser");
-        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),UserType.CASEWORKER);
+        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),
+                UserType.CASEWORKER);
     }
 
     @Test
     void validateUserProfiles_throwsBadRequest_noWorkAreaTest() {
-        List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
-                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, false, "1", "2", false);
+        List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true,
+                false, "1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false,
+                false, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),UserType.CASEWORKER);
+        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),
+                UserType.CASEWORKER);
 
     }
 
     @Test
     void validateUserProfiles_throwsBadRequest_noRolesTest() {
-        List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
-                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false);
+        List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true,
+                false, "1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false,
+                true, "1", "2", false);
         caseWorkerProfiles.get(0).setRole(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),UserType.CASEWORKER);
+        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),
+                UserType.CASEWORKER);
 
     }
 
     @Test
     void validateUserProfiles_throwsBadRequest_tooManyPrimaryTest() {
-        List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
-                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true, true, "1", "2", false);
+        List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true,
+                false, "1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true,
+                true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
 
-        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),UserType.CASEWORKER);
+        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),
+                UserType.CASEWORKER);
 
     }
 
@@ -94,7 +108,8 @@ class ParseRequestServiceTest {
         AtomicInteger integer = new AtomicInteger();
         Set<CaseWorkerProfile> invalidCaseWorkerProfiles = new HashSet<>();
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles,UserType.CASEWORKER)
+                sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles,
+                        UserType.CASEWORKER)
         );
     }
 
@@ -105,7 +120,8 @@ class ParseRequestServiceTest {
         AtomicInteger integer = new AtomicInteger();
         Set<CaseWorkerProfile> invalidCaseWorkerProfiles = new HashSet<>();
         assertThrows(ResourceNotFoundException.class, () ->
-                sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles,UserType.CASEWORKER)
+                sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles,
+                        UserType.CASEWORKER)
         );
     }
 }
