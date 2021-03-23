@@ -24,7 +24,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT
 
 @Service
 @Slf4j
-public class ParseRequestService extends ParseRequestBase {
+public class ParseRequestService implements ParseRequestBase {
     //1. This will parse the list of userIds and validate them.
     //2. This will parse and validate the user details received from CRD
 
@@ -70,7 +70,7 @@ public class ParseRequestService extends ParseRequestBase {
         } else if (userType.equals(UserType.JUDICIAL)) {
 
             //Validation of judicial profile
-            judicialProfileValidation(profiles, invalidUserProfilesCount, invalidProfiles);
+            judicialValidation(profiles, invalidUserProfilesCount, invalidProfiles);
 
         }
 
@@ -111,8 +111,8 @@ public class ParseRequestService extends ParseRequestBase {
         });
     }
 
-    private void judicialProfileValidation(List<JudicialProfile> profiles, AtomicInteger invalidUserProfilesCount,
-                                           Set<Object> invalidJudicialProfiles) {
+    private void judicialValidation(List<JudicialProfile> profiles, AtomicInteger invalidUserProfilesCount,
+                                    Set<Object> invalidJudicialProfiles) {
 
         profiles.forEach(userProfile -> {
             AtomicBoolean isInvalid = new AtomicBoolean(false);

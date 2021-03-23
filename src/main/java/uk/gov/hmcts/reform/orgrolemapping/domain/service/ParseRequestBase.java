@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class ParseRequestBase<T> {
+public  interface ParseRequestBase<T> {
 
-    public abstract void validateUserProfiles(List<T> profiles, UserRequest userRequest,
+    void validateUserProfiles(List<T> profiles, UserRequest userRequest,
                                               AtomicInteger invalidUserProfilesCount,
                                               Set<T> invalidProfiles, UserType userType);
 

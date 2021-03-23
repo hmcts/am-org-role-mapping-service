@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -64,19 +65,13 @@ public class RetrieveDataService {
 
         if (userType.equals(UserType.CASEWORKER)) {
             response = crdFeignClient.getCaseworkerDetailsById(userRequest);
-            if (response.getBody() != null) {
 
-                response.getBody().forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
-
-            }
+            Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
 
         } else if (userType.equals(UserType.JUDICIAL)) {
             response = jrdFeignClient.getJudicialDetailsById(userRequest);
-            if (response.getBody() != null) {
+            Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
 
-                response.getBody().forEach(o -> profiles.add(convertInJudicialProfile(o)));
-
-            }
 
         }
 
