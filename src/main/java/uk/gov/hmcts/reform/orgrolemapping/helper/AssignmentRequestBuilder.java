@@ -38,7 +38,9 @@ public class AssignmentRequestBuilder {
     public static final String ASSIGNER_ID = "123e4567-e89b-42d3-a456-556642445678";
     public static final String ACTOR_ID = "123e4567-e89b-42d3-a456-556642445612";
     public static final String PROCESS_ID = "staff-organisational-role-mapping";
+    public static final String JUDICIAL_PROCESS_ID = "judicial-organisational-role-mapping";
     public static final String ROLE_NAME_TCW = "tribunal-caseworker";
+    public static final String ROLE_NAME_SJ = "salaried-judge";
     public static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
 
     private AssignmentRequestBuilder() {
@@ -48,6 +50,11 @@ public class AssignmentRequestBuilder {
     public static AssignmentRequest buildAssignmentRequest(Boolean replaceExisting) {
         return new AssignmentRequest(buildRequest(replaceExisting),
                 buildRequestedRoleCollection());
+    }
+
+    public static AssignmentRequest buildJudicialAssignmentRequest(Boolean replaceExisting) {
+        return new AssignmentRequest(buildJudicialRequest(replaceExisting),
+                buildJudicialRequestedRoleCollection());
     }
 
     public static Request buildRequest(Boolean replaceExisting) {
@@ -165,5 +172,36 @@ public class AssignmentRequestBuilder {
 
         return judicialAccessProfiles;
 
+    }
+
+    public static Request buildJudicialRequest(Boolean replaceExisting) {
+
+        return Request.builder()
+                .assignerId(ASSIGNER_ID) // This won't be set for the requests.
+                .process((JUDICIAL_PROCESS_ID))
+                .requestType(RequestType.CREATE)
+                .correlationId(UUID.randomUUID().toString())
+                .replaceExisting(replaceExisting)
+                .build();
+    }
+
+    public static Collection<RoleAssignment> buildJudicialRequestedRoleCollection() {
+        Collection<RoleAssignment> requestedRoles = new ArrayList<>();
+        requestedRoles.add(buildJudicialRoleAssignment());
+        return requestedRoles;
+    }
+
+    public static RoleAssignment buildJudicialRoleAssignment() {
+        return RoleAssignment.builder()
+                .actorId(ACTOR_ID)
+                .actorIdType(ActorIdType.IDAM)
+                .roleType(RoleType.ORGANISATION)
+                .roleName(ROLE_NAME_SJ)
+                .classification(Classification.PUBLIC)
+                .grantType(GrantType.STANDARD)
+                .roleCategory(RoleCategory.JUDICIAL)
+                .readOnly(false)
+                .attributes(JacksonUtils.convertValue(buildAttributesFromFile("judicialAttributes.json")))
+                .build();
     }
 }

@@ -52,7 +52,6 @@ public class ParseRequestService extends ParseRequestBase {
 
             if (userType.equals(UserType.CASEWORKER)) {
                 List<CaseWorkerProfile> caseWorkerProfiles = profiles;
-
                 caseWorkerProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));
             } else if (userType.equals(UserType.JUDICIAL)) {
                 List<JudicialProfile> judicialProfileList = profiles;

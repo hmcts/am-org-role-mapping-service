@@ -7,6 +7,7 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.InputStream;
@@ -28,6 +29,7 @@ public class TestDataBuilder {
     private static final String PROCESS_ID = "staff-organisational-role-mapping";
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
+    private static final String ROLE_NAME_SJ = "salaried-judge";
 
     private TestDataBuilder() {
     }
@@ -194,5 +196,26 @@ public class TestDataBuilder {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Map<String, Set<JudicialAccessProfile>> buildJudicialAccessProfileMap() {
+
+        HashMap<String, Set<JudicialAccessProfile>> userAccessProfiles = new HashMap<>();
+        userAccessProfiles.put(id_1, buildJudicialAccessProfileSet());
+        userAccessProfiles.put(id_2, buildJudicialAccessProfileSet());
+        return userAccessProfiles;
+    }
+
+    public static JudicialAccessProfile buildJudicialAccessProfile() {
+        return JudicialAccessProfile.builder().userId(id_1).roleId("8")
+                .baseLocationId("south-east")
+                .build();
+    }
+
+    public static Set<JudicialAccessProfile> buildJudicialAccessProfileSet() {
+        Set<JudicialAccessProfile> judicialAccessProfileSet = new HashSet<>();
+        judicialAccessProfileSet.add(buildJudicialAccessProfile());
+
+        return judicialAccessProfileSet;
     }
 }

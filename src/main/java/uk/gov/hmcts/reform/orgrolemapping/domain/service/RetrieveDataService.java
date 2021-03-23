@@ -60,13 +60,13 @@ public class RetrieveDataService {
         Set<Object> invalidProfiles = new HashSet<>();
         Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
         ResponseEntity<List<Object>> response = null;
-        List<Object> convertProfile = new ArrayList<>();
+        List<Object> profiles = new ArrayList<>();
 
         if (userType.equals(UserType.CASEWORKER)) {
             response = crdFeignClient.getCaseworkerDetailsById(userRequest);
             if (response.getBody() != null) {
 
-                response.getBody().forEach(o -> convertProfile.add(convertInCaseWorkerProfile(o)));
+                response.getBody().forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
 
             }
 
@@ -74,7 +74,7 @@ public class RetrieveDataService {
             response = jrdFeignClient.getJudicialDetailsById(userRequest);
             if (response.getBody() != null) {
 
-                response.getBody().forEach(o -> convertProfile.add(convertInJudicialProfile(o)));
+                response.getBody().forEach(o -> profiles.add(convertInJudicialProfile(o)));
 
             }
 
@@ -85,15 +85,15 @@ public class RetrieveDataService {
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
 
-        if (response != null && !CollectionUtils.isEmpty(convertProfile)) {
+        if (response != null && !CollectionUtils.isEmpty(profiles)) {
             // no of userProfiles from  responseEntity.getBody().size()
             log.info("Number of Profile received from upstream : {} ",
-                    convertProfile.size());
+                    profiles.size());
 
-            parseRequestService.validateUserProfiles(convertProfile, userRequest, invalidUserProfilesCount,
+            parseRequestService.validateUserProfiles(profiles, userRequest, invalidUserProfilesCount,
                     invalidProfiles, userType);
 
-            List<Object> validProfiles = requireNonNull(convertProfile).stream()
+            List<Object> validProfiles = requireNonNull(profiles).stream()
                     .filter(userProfile -> !invalidProfiles
                             .contains(userProfile)).collect(Collectors.toList());
 

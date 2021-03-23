@@ -82,16 +82,18 @@ class BulkAssignmentOrchestratorTest {
 
 
     @Test
+    @SuppressWarnings("unchecked")
     void createBulkAssignmentsRequestForJudicial() {
 
-        Mockito.when(retrieveDataService.retrieveJudicialWorkerProfiles(Mockito.any()))
-                .thenReturn(TestDataBuilder.buildJudicialAccessProfileMap(false, false));
+        doReturn(TestDataBuilder.buildJudicialAccessProfileMap()).when(retrieveDataService)
+                .retrieveProfiles(Mockito.any(),Mockito.any());
 
-        Mockito.when(requestMappingService.createJudicialAssignments(Mockito.any()))
+        Mockito.when(requestMappingService.createAssignments(Mockito.any(), Mockito.any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(AssignmentRequestBuilder
-                        .buildAssignmentRequest(false)));
+                        .buildJudicialAssignmentRequest(false)));
 
-        ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest());
+        ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
+                UserType.JUDICIAL);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -100,16 +102,16 @@ class BulkAssignmentOrchestratorTest {
         RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Tribunal Judge", roleAssignment.getRoleName());
+        assertEquals("salaried-judge", roleAssignment.getRoleName());
         assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, roleAssignment.getRoleCategory());
 
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserRequest(Mockito.any(UserRequest.class));
         Mockito.verify(retrieveDataService, Mockito.times(1))
-                .retrieveJudicialProfiles(Mockito.any(UserRequest.class));
+                .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
         Mockito.verify(requestMappingService, Mockito.times(1))
-                .createJudicialAssignments(Mockito.any());
+                .createAssignments(Mockito.any(),Mockito.any());
     }
 
 }
