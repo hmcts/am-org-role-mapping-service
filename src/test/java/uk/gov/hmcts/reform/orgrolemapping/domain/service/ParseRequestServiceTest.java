@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -123,5 +124,11 @@ class ParseRequestServiceTest {
                 sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles,
                         UserType.CASEWORKER)
         );
+    }
+
+    @Test
+    void validateJudicialProfilesTest() {
+        sut.validateUserProfiles(buildJudicialProfile(TestDataBuilder.buildUserRequest()),
+                TestDataBuilder.buildUserRequest(), new AtomicInteger(),new HashSet<>(), UserType.JUDICIAL);
     }
 }
