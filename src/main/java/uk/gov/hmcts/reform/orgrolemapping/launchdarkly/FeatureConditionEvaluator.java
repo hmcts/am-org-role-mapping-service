@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.launchdarkly;
 
 import com.launchdarkly.sdk.LDUser;
 import com.launchdarkly.sdk.server.LDClient;
+import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
