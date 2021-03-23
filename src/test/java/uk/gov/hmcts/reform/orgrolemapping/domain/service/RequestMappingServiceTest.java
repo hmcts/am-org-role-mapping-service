@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
@@ -51,6 +52,7 @@ class RequestMappingServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void createCaseWorkerAssignmentsTest() {
 
         final String actorId = "123e4567-e89b-42d3-a456-556642445612";
@@ -60,8 +62,8 @@ class RequestMappingServiceTest {
                         .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
 
         ResponseEntity<Object> responseEntity =
-                requestMappingService.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
-                        false));
+                requestMappingService.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
+                        false), UserType.CASEWORKER);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -85,6 +87,7 @@ class RequestMappingServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void createCaseWorkerAssignmentTestFeignException() {
 
         String content = "{\"roleRequest\":{\"id\":\"484144da-2ce0-4496-aa4d-8910a5582cba\",\"authenticatedUserId\""
@@ -118,8 +121,8 @@ class RequestMappingServiceTest {
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
         ResponseEntity<Object> responseEntity =
-                requestMappingService.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
-                        false));
+                requestMappingService.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
+                        false),UserType.CASEWORKER);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -137,6 +140,7 @@ class RequestMappingServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void createCaseWorkerAssignmentJsonProcessingException() {
 
         String content = "}";
@@ -147,8 +151,8 @@ class RequestMappingServiceTest {
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
 
-        ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(
-                TestDataBuilder.buildUserAccessProfileMap(false, false));
+        ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(
+                TestDataBuilder.buildUserAccessProfileMap(false, false),UserType.CASEWORKER);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 

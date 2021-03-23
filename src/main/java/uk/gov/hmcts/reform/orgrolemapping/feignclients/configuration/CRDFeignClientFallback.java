@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
@@ -22,8 +21,9 @@ public class CRDFeignClientFallback implements CRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<List<UserProfile>> getCaseworkerDetailsById(UserRequest userRequest) {
-        return ResponseEntity.ok(new ArrayList<>(buildUserProfile(userRequest)));
+    @SuppressWarnings("unchecked")
+    public <T> ResponseEntity<List<T>> getCaseworkerDetailsById(UserRequest userRequest) {
+        return ResponseEntity.ok((List<T>) new ArrayList<>(buildUserProfile(userRequest)));
     }
 
 }

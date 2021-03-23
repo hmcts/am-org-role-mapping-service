@@ -7,7 +7,7 @@ import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
@@ -22,10 +22,10 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingSe
 public abstract class DroolBase {
 
     StatelessKieSession kieSession;
-    Map<String, Set<UserAccessProfile>> usersAccessProfiles;
+    Map<String, Set<CaseWorkerAccessProfile>> usersAccessProfiles;
     List<Command<?>> commands;
     ExecutionResults results;
-    Set<UserAccessProfile> allProfiles;
+    Set<CaseWorkerAccessProfile> allProfiles;
 
     @BeforeEach
     public void setUp() {

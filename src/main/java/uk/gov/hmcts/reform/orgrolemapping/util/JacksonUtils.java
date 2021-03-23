@@ -1,15 +1,16 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -22,16 +23,17 @@ public class JacksonUtils {
     private JacksonUtils() {
     }
 
-    public static final JsonFactory jsonFactory = JsonFactory.builder()
-        // Change per-factory setting to prevent use of `String.intern()` on symbols
-        .disable(JsonFactory.Feature.INTERN_FIELD_NAMES)
-        .build();
 
-    public static final ObjectMapper MAPPER = JsonMapper.builder(jsonFactory)
+
+    public static final ObjectMapper MAPPER = new ObjectMapper()
+            .registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true)
         .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
-        .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
-        .build();
+        .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+
+
+
+
 
 
 
@@ -53,5 +55,15 @@ public class JacksonUtils {
     public static final TypeReference<HashMap<String, JsonNode>> getHashMapTypeReference() {
         return new TypeReference<HashMap<String, JsonNode>>() {
         };
+    }
+
+    public static CaseWorkerProfile convertInCaseWorkerProfile(Object from) {
+        return MAPPER.convertValue(from, new TypeReference<>() {
+        });
+    }
+
+    public static JudicialProfile convertInJudicialProfile(Object from) {
+        return MAPPER.convertValue(from, new TypeReference<>() {
+        });
     }
 }

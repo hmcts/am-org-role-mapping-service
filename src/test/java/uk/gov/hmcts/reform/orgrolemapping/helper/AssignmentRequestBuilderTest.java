@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 
 import java.util.Set;
 
@@ -47,11 +47,11 @@ class AssignmentRequestBuilderTest {
 
     @Test
     void convertUserProfileToUserAccessProfile() {
-        Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder
+        Set<CaseWorkerAccessProfile> caseWorkerAccessProfiles = AssignmentRequestBuilder
                 .convertUserProfileToUserAccessProfile(TestDataBuilder
                         .buildUserProfile("21334a2b-79ce-44eb-9168-2d49a744be9c",false,"1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false));
-        userAccessProfiles.forEach(role -> {
+        caseWorkerAccessProfiles.forEach(role -> {
                 assertNotNull(role.getId());
                 assertNotNull(role.getAreaOfWorkId());
                 assertNotNull(role.getPrimaryLocationId());
@@ -62,6 +62,6 @@ class AssignmentRequestBuilderTest {
                 assertNotNull(role.getServiceCode());
             }
         );
-        assertEquals(2, userAccessProfiles.size());
+        assertEquals(2, caseWorkerAccessProfiles.size());
     }
 }
