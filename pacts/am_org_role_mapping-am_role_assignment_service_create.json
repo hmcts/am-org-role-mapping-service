@@ -1,0 +1,510 @@
+{
+  "provider": {
+    "name": "am_role_assignment_service_create"
+  },
+  "consumer": {
+    "name": "am_org_role_mapping"
+  },
+  "interactions": [
+    {
+      "description": "role assignment service takes s2s/auth token and create a role assignment",
+      "request": {
+        "method": "POST",
+        "path": "/am/role-assignments",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "roleRequest": {
+            "assignerId": "3168da13-00b3-41e3-81fa-cbc71ac28a0f",
+            "process": "staff-organisational-role-mapping",
+            "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+            "replaceExisting": false
+          },
+          "requestedRoles": [
+            {
+              "actorIdType": "IDAM",
+              "actorId": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+              "roleType": "ORGANISATION",
+              "roleName": "judge",
+              "roleCategory": "JUDICIAL",
+              "classification": "PUBLIC",
+              "grantType": "STANDARD",
+              "readOnly": false,
+              "attributes": {
+                "jurisdiction": "divorce",
+                "region": "south-east",
+                "contractType": "SALARIED",
+                "caseId": "1234567890123456"
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments+json"
+        },
+        "body": {
+          "roleAssignmentResponse": {
+            "roleRequest": {
+              "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+              "process": "staff-organisational-role-mapping",
+              "replaceExisting": false,
+              "requestType": "CREATE",
+              "log": "Request has been Approved",
+              "authenticatedUserId": "14a21569-eb80-4681-b62c-6ae2ed069e2f",
+              "correlationId": "14a21569-eb80-4681-b62c-6ae2ed069e3f",
+              "id": "14a21569-eb80-4681-b62c-6ae2ed069e1f",
+              "assignerId": "14a21569-eb80-4681-b62c-6ae2ed069e4f",
+              "status": "APPROVED"
+            },
+            "requestedRoles": [
+              {
+                "process": "staff-organisational-role-mapping",
+                "log": "Create approved : judicial_organisational_role_mapping_service_create\\nApproved : validate_role_assignment_against_patterns",
+                "roleCategory": "JUDICIAL",
+                "roleType": "ORGANISATION",
+                "classification": "PUBLIC",
+                "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+                "actorId": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+                "roleName": "judge",
+                "attributes": {
+                  "contractType": "SALARIED",
+                  "jurisdiction": "divorce",
+                  "caseId": "1234567890123456",
+                  "region": "south-east"
+                },
+                "id": "14a21569-eb80-4681-b62c-6ae2ed069e6f",
+                "grantType": "STANDARD",
+                "actorIdType": "IDAM",
+                "status": "LIVE"
+              }
+            ]
+          }
+        },
+        "matchingRules": {
+          "body": {
+            "$.roleAssignmentResponse.roleRequest.id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.authenticatedUserId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.correlationId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.assignerId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.log": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].actorId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].log": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.jurisdiction": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.region": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.contractType": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.caseId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "The assignment request is valid with one requested role and replaceExisting flag as false"
+        }
+      ]
+    },
+    {
+      "description": "role assignment service takes s2s/auth token and create or update a role assignment",
+      "request": {
+        "method": "POST",
+        "path": "/am/role-assignments",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "roleRequest": {
+            "assignerId": "3168da13-00b3-41e3-81fa-cbc71ac28a0f",
+            "process": "staff-organisational-role-mapping",
+            "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+            "replaceExisting": true
+          },
+          "requestedRoles": [
+            {
+              "actorIdType": "IDAM",
+              "actorId": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+              "roleType": "ORGANISATION",
+              "roleName": "judge",
+              "roleCategory": "JUDICIAL",
+              "classification": "PUBLIC",
+              "grantType": "STANDARD",
+              "readOnly": false,
+              "attributes": {
+                "jurisdiction": "divorce",
+                "region": "south-east",
+                "contractType": "SALARIED",
+                "caseId": "1234567890123456"
+              }
+            }
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments+json"
+        },
+        "body": {
+          "roleAssignmentResponse": {
+            "roleRequest": {
+              "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+              "process": "staff-organisational-role-mapping",
+              "replaceExisting": true,
+              "requestType": "CREATE",
+              "log": "Request has been Approved",
+              "authenticatedUserId": "14a21569-eb80-4681-b62c-6ae2ed069e2f",
+              "correlationId": "14a21569-eb80-4681-b62c-6ae2ed069e3f",
+              "id": "14a21569-eb80-4681-b62c-6ae2ed069e1f",
+              "assignerId": "14a21569-eb80-4681-b62c-6ae2ed069e4f",
+              "status": "APPROVED"
+            },
+            "requestedRoles": [
+              {
+                "process": "staff-organisational-role-mapping",
+                "log": "Create approved : judicial_organisational_role_mapping_service_create\\nApproved : validate_role_assignment_against_patterns",
+                "roleCategory": "JUDICIAL",
+                "roleType": "ORGANISATION",
+                "classification": "PUBLIC",
+                "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+                "actorId": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+                "roleName": "judge",
+                "attributes": {
+                  "contractType": "SALARIED",
+                  "jurisdiction": "divorce",
+                  "caseId": "1234567890123456",
+                  "region": "south-east"
+                },
+                "id": "14a21569-eb80-4681-b62c-6ae2ed069e6f",
+                "grantType": "STANDARD",
+                "actorIdType": "IDAM",
+                "status": "LIVE"
+              }
+            ]
+          }
+        },
+        "matchingRules": {
+          "body": {
+            "$.roleAssignmentResponse.roleRequest.id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.authenticatedUserId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.correlationId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.assignerId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.log": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].actorId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].log": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.jurisdiction": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.region": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.contractType": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.caseId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "The assignment request is valid with one requested role and replaceExisting flag as true"
+        }
+      ]
+    },
+    {
+      "description": "role assignment service takes s2s/auth token and create zero role assignment",
+      "request": {
+        "method": "POST",
+        "path": "/am/role-assignments",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "roleRequest": {
+            "assignerId": "3168da13-00b3-41e3-81fa-cbc71ac28a0f",
+            "process": "staff-organisational-role-mapping",
+            "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+            "replaceExisting": true
+          },
+          "requestedRoles": [
+
+          ]
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments+json"
+        },
+        "body": {
+          "roleAssignmentResponse": {
+            "roleRequest": {
+              "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+              "process": "staff-organisational-role-mapping",
+              "replaceExisting": true,
+              "requestType": "CREATE",
+              "log": "Request has been Approved",
+              "authenticatedUserId": "14a21569-eb80-4681-b62c-6ae2ed069e2f",
+              "correlationId": "14a21569-eb80-4681-b62c-6ae2ed069e3f",
+              "id": "14a21569-eb80-4681-b62c-6ae2ed069e1f",
+              "assignerId": "14a21569-eb80-4681-b62c-6ae2ed069e4f",
+              "status": "APPROVED"
+            },
+            "requestedRoles": [
+
+            ]
+          }
+        },
+        "matchingRules": {
+          "body": {
+            "$.roleAssignmentResponse.roleRequest.id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.authenticatedUserId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.correlationId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.assignerId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.roleRequest.log": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.roleAssignmentResponse.requestedRoles": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 0
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "The assignment request is valid with zero requested role and replaceExisting flag as true"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}
