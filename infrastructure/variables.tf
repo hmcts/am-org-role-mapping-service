@@ -83,7 +83,7 @@ variable "database_name" {
 
 variable "data_store_max_pool_size" {
   type    = string
-  default = "16"
+  default = "48"
 }
 
 variable "database_sku_name" {

@@ -53,32 +53,8 @@ module "org-role-mapping-database" {
 // Populate Vault with DB info
 ////////////////////////////////
 
-resource "azurerm_key_vault_secret" "POSTGRES-USER" {
-  name          = join("-", [var.component, "POSTGRES-USER"])
-  value         = module.org-role-mapping-database.user_name
-  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
-}
-
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   name          = join("-", [var.component, "POSTGRES-PASS"])
   value         = module.org-role-mapping-database.postgresql_password
-  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
-}
-
-resource "azurerm_key_vault_secret" "POSTGRES_HOST" {
-  name          = join("-", [var.component, "POSTGRES-HOST"])
-  value         = module.org-role-mapping-database.host_name
-  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
-}
-
-resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
-  name          = join("-", [var.component, "POSTGRES-PORT"])
-  value         = module.org-role-mapping-database.postgresql_listen_port
-  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
-}
-
-resource "azurerm_key_vault_secret" "POSTGRES_DATABASE" {
-  name          = join("-", [var.component, "POSTGRES-DATABASE"])
-  value         = module.org-role-mapping-database.postgresql_database
   key_vault_id  = data.azurerm_key_vault.am_key_vault.id
 }
