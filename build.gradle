@@ -424,8 +424,7 @@ task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test 
     useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
-    include "uk/gov/hmcts/reform/refdata/**"
-    include "uk/gov/hmcts/reform/orgrolemapping/**"
+    include "uk/gov/hmcts/reform/refdata/**", "uk/gov/hmcts/reform/orgrolemapping/**"
     systemProperty 'pact.rootDir', "pacts"
 }
 
