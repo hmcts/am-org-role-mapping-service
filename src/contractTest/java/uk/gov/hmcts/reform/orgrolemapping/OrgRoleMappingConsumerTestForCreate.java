@@ -27,7 +27,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Map;
@@ -43,7 +42,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @PactTestFor(providerName = "am_roleAssignment_createAssignment")
 @PactFolder("pacts")
 @SpringBootTest
-@TestPropertySource(properties = {"feign.client.config.roleAssignmentApp.url=http://localhost:4096"})
 public class OrgRoleMappingConsumerTestForCreate {
 
     private static final String RAS_CREATE_ROLE_ASSIGNMENT_URL = "/am/role-assignments";
