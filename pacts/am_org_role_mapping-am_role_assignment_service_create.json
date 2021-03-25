@@ -33,7 +33,7 @@
               "readOnly": false,
               "attributes": {
                 "jurisdiction": "IA",
-                "primaryLocation": "123456"
+                "region": "south-east"
               }
             }
           ]
@@ -69,8 +69,8 @@
                 "actorId": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
                 "roleName": "judge",
                 "attributes": {
-                  "primaryLocation": "123456",
-                  "jurisdiction": "IA"
+                  "jurisdiction": "IA",
+                  "region": "south-east"
                 },
                 "id": "14a21569-eb80-4681-b62c-6ae2ed069e6f",
                 "grantType": "STANDARD",
@@ -163,7 +163,7 @@
               ],
               "combine": "AND"
             },
-            "$.roleAssignmentResponse.requestedRoles[*].attributes.primaryLocation": {
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.region": {
               "matchers": [
                 {
                   "match": "type"
@@ -207,7 +207,7 @@
               "readOnly": false,
               "attributes": {
                 "jurisdiction": "IA",
-                "primaryLocation": "123456"
+                "region": "south-east"
               }
             }
           ]
@@ -243,8 +243,8 @@
                 "actorId": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
                 "roleName": "judge",
                 "attributes": {
-                  "primaryLocation": "123456",
-                  "jurisdiction": "IA"
+                  "jurisdiction": "IA",
+                  "region": "south-east"
                 },
                 "id": "14a21569-eb80-4681-b62c-6ae2ed069e6f",
                 "grantType": "STANDARD",
@@ -337,7 +337,7 @@
               ],
               "combine": "AND"
             },
-            "$.roleAssignmentResponse.requestedRoles[*].attributes.primaryLocation": {
+            "$.roleAssignmentResponse.requestedRoles[*].attributes.region": {
               "matchers": [
                 {
                   "match": "type"

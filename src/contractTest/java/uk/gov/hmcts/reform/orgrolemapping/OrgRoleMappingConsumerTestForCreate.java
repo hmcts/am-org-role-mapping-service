@@ -128,7 +128,7 @@ public class OrgRoleMappingConsumerTestForCreate {
                 + "        \"readOnly\": false,\n"
                 + "        \"attributes\": {\n"
                 + "            \"jurisdiction\": \"IA\",\n"
-                + "            \"primaryLocation\": \"123456\"\n"
+                + "            \"region\": \"south-east\",\n"
                 + "        }\n"
                 + "    }\n"
                 + "    ]\n"
@@ -190,7 +190,7 @@ public class OrgRoleMappingConsumerTestForCreate {
                                                 + ": validate_role_assignment_against_patterns")
                                 .object("attributes", attribute -> attribute
                                         .stringType("jurisdiction", "IA")
-                                        .stringType("primaryLocation", "123456")
+                                        .stringType("region", "south-east")
                                 )
                         )
                 )).build();
@@ -200,20 +200,20 @@ public class OrgRoleMappingConsumerTestForCreate {
         return newJsonBody(o -> o
                 .object("roleAssignmentResponse", ob -> ob
                         .object("roleRequest", roleRequest -> roleRequest
-                                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
-                                .stringType("authenticatedUserId",
-                                        "14a21569-eb80-4681-b62c-6ae2ed069e2f")
-                                .stringType("correlationId",
-                                        "14a21569-eb80-4681-b62c-6ae2ed069e3f")
-                                .stringType("assignerId",
-                                        "14a21569-eb80-4681-b62c-6ae2ed069e4f")
-                                .stringValue("requestType", "CREATE")
-                                .stringValue("process", "staff-organisational-role-mapping")
-                                .stringValue("reference",
-                                        "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                                .booleanValue("replaceExisting", true)
-                                .stringValue("status", "APPROVED")
-                                .stringType("log", "Request has been Approved")
+                                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
+                                        .stringType("authenticatedUserId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e2f")
+                                        .stringType("correlationId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e3f")
+                                        .stringType("assignerId",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e4f")
+                                        .stringValue("requestType", "CREATE")
+                                        .stringValue("process", "staff-organisational-role-mapping")
+                                        .stringValue("reference",
+                                                "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                                        .booleanValue("replaceExisting", true)
+                                        .stringValue("status", "APPROVED")
+                                        .stringType("log", "Request has been Approved")
                         )
                         .minArrayLike("requestedRoles", 0, 0, ar -> {
                         })
