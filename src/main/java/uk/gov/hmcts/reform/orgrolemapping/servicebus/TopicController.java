@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-
 @RestController
 @Slf4j
 @NoArgsConstructor
@@ -31,7 +29,6 @@ public class TopicController {
     @PostMapping(value = "/send2CRD")
     public ResponseEntity<String> send2CRD(@RequestBody PublishCaseWorkerData body) {
         log.info("Sending message 2 CRD topic");
-
         crdTopicPublisher.sendMessage(body);
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }

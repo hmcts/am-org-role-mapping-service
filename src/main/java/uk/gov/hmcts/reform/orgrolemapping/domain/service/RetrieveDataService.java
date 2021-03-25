@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class RetrieveDataService {
 
     private final ParseRequestService parseRequestService;
     private final CRDFeignClient crdFeignClient;
-    private final JRDFeignClient jrdFeignClient;
+    private final JRDFeignClientFallback jrdFeignClient;
 
     @SuppressWarnings("unchecked")
     public Map<String, Set<?>> retrieveProfiles(UserRequest userRequest, UserType userType) {
