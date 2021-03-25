@@ -21,7 +21,6 @@ Feature: Create Role Assignments for Users
 
   @S-005 @FeatureToggle(orm-base-flag)
   Scenario: should not create role assignments when user primary work location is false
-
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-005_DeleteDataForRoleAssignments01],
     And a successful call [to publish an existing CRD user ids to topic] as in [S-005_PushMessageToAzureServiceBus],

@@ -12,6 +12,7 @@ import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -34,46 +34,45 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class TopicConsumer {
+public class CRDTopicConsumer {
 
-    @Value("${amqp.host}")
+    @Value("${aws-consumer.host}")
     String host;
-    @Value("${amqp.topic}")
-    String topic;
-    @Value("${amqp.sharedAccessKeyName}")
-    String sharedAccessKeyName;
-    @Value("${amqp.sharedAccessKeyValue}")
-    String sharedAccessKeyValue;
+    @Value("${aws-consumer.crd.subscription}")
+    String subscription;
+    @Value("${aws-consumer.sharedAccessKeyName}")
+    String username;
+    @Value("${aws-consumer.crd.sharedAccessKeyValue}")
+    String password;
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
 
-    @Autowired
-    private RoleAssignmentService roleAssignmentService;
-
-    public TopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                         OrmDeserializer deserializer) {
+    public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
+                            OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
 
     }
 
     @Bean
+    @Qualifier("crdConsumer")
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
         URI endpoint = new URI("sb://" + host);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
-                topic,
-                sharedAccessKeyName,
-                sharedAccessKeyValue);
+                subscription,
+                username,
+                password);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
 
     @Bean
-    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
+    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
+                                                                   SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
         log.info("    Calling registerMessageHandlerOnClient ");
@@ -121,7 +120,7 @@ public class TopicConsumer {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.info("    Parsing the message");
+        log.info("    Parsing the message on CRD Consumer");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,

@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -23,11 +22,8 @@ class WelcomeControllerTest {
     @Mock
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
-    @Mock
-    private TopicPublisher topicPublisher;
-
     @InjectMocks
-    private final WelcomeController sut = new WelcomeController(topicPublisher, bulkAssignmentOrchestrator);
+    private final WelcomeController sut = new WelcomeController(bulkAssignmentOrchestrator);
 
     @BeforeEach
     public void setUp() {
