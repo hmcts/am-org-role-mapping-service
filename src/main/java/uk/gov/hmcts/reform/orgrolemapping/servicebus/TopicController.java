@@ -29,21 +29,18 @@ public class TopicController {
 
     //This method is reserved for ASB topic testing. Need to be removed later.
     @PostMapping(value = "/send2CRD")
-    public ResponseEntity<String> send2CRD(@RequestBody String body) {
+    public ResponseEntity<String> send2CRD(@RequestBody PublishCaseWorkerData body) {
         log.info("Sending message 2 CRD topic");
-        PublishCaseWorkerData publishCaseWorkerData = new PublishCaseWorkerData();
-        publishCaseWorkerData.setUserIds(Arrays.asList("4b141f3c-9d8b-4eb2-932e-23fa49336CRD"));
-        crdTopicPublisher.sendMessage(publishCaseWorkerData);
+
+        crdTopicPublisher.sendMessage(body);
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 
     //This method is reserved for ASB topic testing. Need to be removed later.
     @PostMapping(value = "/send2JRD")
-    public ResponseEntity<String> send2JRD(@RequestBody String body) {
+    public ResponseEntity<String> send2JRD(@RequestBody PublishCaseWorkerData body) {
         log.info("Sending message 2 JRD topic");
-        PublishCaseWorkerData publishCaseWorkerData = new PublishCaseWorkerData();
-        publishCaseWorkerData.setUserIds(Arrays.asList("4b141f3c-9d8b-4eb2-932e-23fa49336JRD"));
-        jrdTopicPublisher.sendMessage(publishCaseWorkerData);
+        jrdTopicPublisher.sendMessage(body);
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 
