@@ -60,7 +60,7 @@ env.OAUTH2_REDIRECT_URI = "http://am-role-assignment-service-aat.service.core-co
 env.OAUTH2_ACCESS_TOKEN_TYPE = "OIDC"
 env.BEFTA_RESPONSE_HEADER_CHECK_POLICY = "JUST_WARN"
 env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities%20create-user%20manage-user"
+env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities"
 env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
 env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
@@ -70,6 +70,7 @@ env.USER_PROFILE_URL= "https://rd-user-profile-api-pr-575.service.core-compute-p
 env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
 env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
 env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
+
 
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
