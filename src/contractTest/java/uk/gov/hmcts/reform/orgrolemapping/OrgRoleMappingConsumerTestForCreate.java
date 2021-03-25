@@ -23,11 +23,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 
 import java.util.Map;
 
@@ -45,6 +47,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class OrgRoleMappingConsumerTestForCreate {
 
     private static final String RAS_CREATE_ROLE_ASSIGNMENT_URL = "/am/role-assignments";
+
+    @Autowired
+    RASFeignClient rasFeignClient;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
