@@ -27,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Map;
@@ -39,9 +40,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service_create")
+@PactTestFor(providerName = "am_roleAssignment_createAssignment")
 @PactFolder("pacts")
 @SpringBootTest
+@TestPropertySource(properties = {"feign.client.config.roleAssignmentApp.url=http://localhost:4096"})
 public class OrgRoleMappingConsumerTestForCreate {
 
     private static final String RAS_CREATE_ROLE_ASSIGNMENT_URL = "/am/role-assignments";
@@ -57,7 +59,7 @@ public class OrgRoleMappingConsumerTestForCreate {
     }
 
 
-    @Pact(provider = "am_role_assignment_service_create", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_createAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeCreateRoleAssignmentReplacingExistingFalseAndGet201(PactDslWithProvider builder) {
 
         return builder
@@ -74,7 +76,7 @@ public class OrgRoleMappingConsumerTestForCreate {
                 .toPact();
     }
 
-    @Pact(provider = "am_role_assignment_service_create", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_createAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeCreateRoleAssignmentOneRoleAndGet201(PactDslWithProvider builder) {
 
         return builder
@@ -90,7 +92,7 @@ public class OrgRoleMappingConsumerTestForCreate {
                 .toPact();
     }
 
-    @Pact(provider = "am_role_assignment_service_create", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_createAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeCreateRoleAssignmentZeroRoleAndGet201(PactDslWithProvider builder) {
 
         return builder

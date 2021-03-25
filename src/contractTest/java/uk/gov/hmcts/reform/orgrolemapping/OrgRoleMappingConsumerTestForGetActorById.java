@@ -34,7 +34,7 @@ import java.util.Map;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service_get_actor_by_id")
+@PactTestFor(providerName = "am_roleAssignment_getAssignment")
 @PactFolder("pacts")
 @SpringBootTest
 public class OrgRoleMappingConsumerTestForGetActorById {
@@ -52,7 +52,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "am_role_assignment_service_get_actor_by_id", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_getAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeGetActorByIdAndGet200(PactDslWithProvider builder) {
 
         return builder
@@ -97,9 +97,8 @@ public class OrgRoleMappingConsumerTestForGetActorById {
                         .stringType("roleCategory", "LEGAL_OPERATIONS")
                         .booleanValue("readOnly", false)
                         .object("attributes", attribute -> attribute
-                                .stringType("region", "north-east")
-                                .stringType("contractType", "SALARIED")
-                                .stringType("caseId", "1234567890123456"))
+                                .stringType("jurisdiction", "IA")
+                                .stringType("primaryLocation", "123456"))
                 )).build();
     }
 

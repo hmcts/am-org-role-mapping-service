@@ -39,7 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service_search_query")
+@PactTestFor(providerName = "am_roleAssignment_queryAssignment")
 @PactFolder("pacts")
 @SpringBootTest
 public class OrgRoleMappingConsumerTestForSearchQuery {
@@ -64,7 +64,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 + "}";
     }
 
-    @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeSearchQueryRoleAssignmentAndGet200(PactDslWithProvider builder)
             throws IOException {
 
@@ -87,7 +87,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 + "}";
     }
 
-    @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeSearchQueryRoleAssignmentByRoleNameAndGet200(PactDslWithProvider builder)
             throws IOException {
 
@@ -113,7 +113,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 + "}";
     }
 
-    @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeSearchQueryRoleAssignmentByAttributesAndGet200(PactDslWithProvider builder)
             throws IOException {
 
@@ -145,7 +145,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 + "}";
     }
 
-    @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeSearchQueryRoleAssignmentMultipleRoleAssignmentsAndGet200(
             PactDslWithProvider builder) throws IOException {
 
@@ -162,7 +162,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 .toPact();
     }
 
-    @Pact(provider = "am_role_assignment_service_search_query", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeSearchQueryRoleAssignmentEmptyCollectionAndGet200(
         PactDslWithProvider builder) throws IOException {
 
