@@ -12,7 +12,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,8 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClient
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
@@ -68,7 +68,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
 
-    private transient MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Mock
     private Authentication authentication;
@@ -88,6 +88,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @MockBean
     private FeignClientInterceptor feignClientInterceptor;
 
+    @MockBean
+    private CRDTopicConsumer crdTopicConsumer;
+
+    @MockBean
+    private JRDTopicConsumer jrdTopicConsumer;
+
+
     @Inject
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 
@@ -95,7 +102,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private WebApplicationContext wac;
 
     @ClassRule
-    public static WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(4096));
+    public static final WireMockRule roleAssignmentService = new WireMockRule(wireMockConfig().port(4096));
 
     @ClassRule
     public static final WireMockRule crdClient = new WireMockRule(wireMockConfig().port(4099));
@@ -108,9 +115,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @Autowired
     private WelcomeController welcomeController;
-
-    @MockBean
-    private TopicConsumer topicConsumer;
 
     private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
     private static final String RAS_ONE_USER_MULTI_ROLE = "RASOneUserMultiRole";
@@ -158,13 +162,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S1: must successfully create org role mapping for single user with one role assignment")
     public void createOrgRoleMappingForSingleUserWithOneRoleAssignment() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2",
-                                ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, false,
-                                true, "BFA1", "BFA2",
-                                false), HttpStatus.OK));
+
+
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2",
+                        ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2",
+                        false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
@@ -187,12 +192,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S2: must successfully create org role mapping for single user with multiple role assignments")
     public void createOrgRoleMappingForSingleUserWithMultipleRoleAssignment() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, true, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, false,
-                                true, "BFA1", "BFA2",
-                                false), HttpStatus.OK));
+
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, true, "1", "2", ROLE_NAME_STCW,
+                        ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2",
+                        false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445676"))
@@ -215,12 +221,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S3: must successfully create org role mapping for multiple users each has single role assignment")
     public void createOrgRoleMappingForMultipleUsersWithOneRoleAssignment() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(true, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, false,
-                                true, "BFA1", "BFA2",
-                                false), HttpStatus.OK));
+
+
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(true, false, "1", "2", ROLE_NAME_STCW,
+                        ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2",
+                        false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445000", "123e4567-e89b-42d3-a456-556642445111"))
@@ -243,11 +251,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S6: must successfully delete org role mapping when delete flag is true")
     public void createOrgRoleMappingDeleteOrgRoleMappingTrue() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, false,
-                                true, "BFA1", "BFA2", true), HttpStatus.OK));
+
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
+                        ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2", true), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
+
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9v"))
@@ -270,11 +281,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S8: must receive a rejected response when drool rules fail in RAS")
     public void createOrgRoleMappingErrorWhenDroolsFail() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
+                        ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2", false), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
@@ -297,11 +309,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S9: must successfully create org role mapping for an update of role TCW to STCW")
     public void createOrgRoleMappingUpdateRole() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+
+
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
+                        ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2", false), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445000"))
@@ -327,11 +342,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S11: must receive an error message when there is no primary location")
     public void createOrgRoleMappingErrorWhenNoPrimaryLocation() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, false, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
+                        ROLE_NAME_TCW,
+                        true, false, false,
+                        true, "BFA1", "BFA2", false), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -354,11 +371,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S12: must receive an error message when no base location list is provided")
     public void createOrgRoleMappingErrorWhenNoLocationList() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                false, true, true,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
+                        ROLE_NAME_TCW,
+                        false, true, true,
+                        true, "BFA1", "BFA2", false), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -381,11 +400,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S13: must receive an error message when base location has more than one primary")
     public void createOrgRoleMappingErrorWhenMultiPrimaryLocation() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, true,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
+                        ROLE_NAME_TCW,
+                        true, true, true,
+                        true, "BFA1", "BFA2", false), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -408,11 +428,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S16: must receive an error message when no work area list is provided")
     public void createOrgRoleMappingErrorWhenNoWorkArea() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, true,
-                                false, "BFA1", "BFA2", false), HttpStatus.OK));
+
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
+                        ROLE_NAME_TCW,
+                        true, true, true,
+                        false, "BFA1", "BFA2", false), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
@@ -435,12 +457,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S17: must receive an error message when no users provided")
     public void createOrgRoleMappingErrorWhenNoUsers() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false,
-                                "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
-                                true, true, false,
-                                true, "1", "2", false), HttpStatus.OK));
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false,
+                        "1", "2", ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "1", "2", false), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(new ArrayList<>())
@@ -463,12 +485,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S18: must return empty list of requestedRoles when invalid roleId provided")
     public void createOrgRoleMappingErrorWhenInvalidRole() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false,
-                                "3", "2", "Invalid Role Name", ROLE_NAME_TCW,
-                                true, true, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false,
+                        "3", "2", "Invalid Role Name", ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2", false), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
@@ -491,12 +513,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S19: drools must map correct role name based on roleId")
     public void createOrgRoleMappingDroolsMustMapCorrectRoleName() throws Exception {
 
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(IntTestDataBuilder
-                        .buildListOfUserProfiles(false, false,
-                                "1", "2", "ROLE_NAME_TCW", ROLE_NAME_TCW,
-                                true, true, false,
-                                true, "BFA1", "BFA2", false), HttpStatus.OK));
+
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false,
+                        "1", "2", "ROLE_NAME_TCW", ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2", false), HttpStatus.OK))
+                .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))

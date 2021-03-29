@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
 import java.util.Map;
 import java.util.Set;
@@ -28,21 +28,25 @@ public class BulkAssignmentOrchestrator {
 
     private final RequestMappingService requestMappingService;
 
-
-    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
+    @SuppressWarnings("unchecked")
+    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest,UserType userType) {
         long startTime = System.currentTimeMillis();
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
         log.info("Validated userIds {}", userRequest.getUserIds());
+
+
         //Create userAccessProfiles based upon roleId and service codes
-        Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
-                .retrieveCaseWorkerProfiles(userRequest);
+        Map<String, Set<?>> userAccessProfiles = retrieveDataService
+                .retrieveProfiles(userRequest, userType);
 
         //call the requestMapping service to determine role name and create role assignment requests
-        ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
+        ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
+
+
         log.info(
                 "Execution time of createBulkAssignmentsRequest() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
         return responseEntity;
     }

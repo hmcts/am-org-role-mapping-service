@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
+
 
 @RestController
 @Slf4j
@@ -25,13 +26,9 @@ public class WelcomeController {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
-    TopicPublisher topicPublisher;
-
     @Autowired
-    public WelcomeController(final TopicPublisher topicPublisher,
-                             BulkAssignmentOrchestrator bulkAssignmentOrchestrator) {
+    public WelcomeController(BulkAssignmentOrchestrator bulkAssignmentOrchestrator) {
 
-        this.topicPublisher = topicPublisher;
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
 
     }
@@ -69,20 +66,13 @@ public class WelcomeController {
         long startTime = System.currentTimeMillis();
         log.debug("createOrgMapping");
         log.info("Process has been Started for the userIds {}",userRequest.getUserIds());
-        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
+        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest,
+                UserType.CASEWORKER);
         log.info(
                 "Execution time of createOrgMapping() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-    }
-
-    //This method is reserved for ASB topic testing. Need to be removed later.
-    @PostMapping(value = "/send")
-    public ResponseEntity<String> send(@RequestBody String body) {
-        log.info("Sending message for event");
-        topicPublisher.sendMessage(body);
-        return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 
     //This method needed for the functional tests, so that RAS gets enough time to create records.

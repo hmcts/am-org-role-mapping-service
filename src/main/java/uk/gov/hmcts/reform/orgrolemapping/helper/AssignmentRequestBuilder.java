@@ -7,10 +7,12 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -20,10 +22,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.InputStream;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,7 +38,9 @@ public class AssignmentRequestBuilder {
     public static final String ASSIGNER_ID = "123e4567-e89b-42d3-a456-556642445678";
     public static final String ACTOR_ID = "123e4567-e89b-42d3-a456-556642445612";
     public static final String PROCESS_ID = "staff-organisational-role-mapping";
+    public static final String JUDICIAL_PROCESS_ID = "judicial-organisational-role-mapping";
     public static final String ROLE_NAME_TCW = "tribunal-caseworker";
+    public static final String ROLE_NAME_SJ = "salaried-judge";
     public static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
 
     private AssignmentRequestBuilder() {
@@ -44,6 +50,11 @@ public class AssignmentRequestBuilder {
     public static AssignmentRequest buildAssignmentRequest(Boolean replaceExisting) {
         return new AssignmentRequest(buildRequest(replaceExisting),
                 buildRequestedRoleCollection());
+    }
+
+    public static AssignmentRequest buildJudicialAssignmentRequest(Boolean replaceExisting) {
+        return new AssignmentRequest(buildJudicialRequest(replaceExisting),
+                buildJudicialRequestedRoleCollection());
     }
 
     public static Request buildRequest(Boolean replaceExisting) {
@@ -101,35 +112,96 @@ public class AssignmentRequestBuilder {
                 .build();
     }
 
-    public static Set<UserAccessProfile> convertUserProfileToUserAccessProfile(UserProfile userProfile) {
+    public static Set<CaseWorkerAccessProfile> convertUserProfileToUserAccessProfile(CaseWorkerProfile
+                                                                                             caseWorkerProfile) {
         long startTime = System.currentTimeMillis();
         //roleId X serviceCode
-        Set<UserAccessProfile> userAccessProfiles = new HashSet<>();
+        Set<CaseWorkerAccessProfile> caseWorkerAccessProfiles = new HashSet<>();
 
-        userProfile.getRole().forEach(role ->
-            userProfile.getWorkArea().forEach(workArea -> {
-                UserAccessProfile userAccessProfile = new UserAccessProfile();
-                userAccessProfile.setId(userProfile.getId());
-                userAccessProfile.setSuspended(userProfile.isSuspended());
-                userProfile.getBaseLocation().forEach(baseLocation -> {
-                    if (baseLocation.isPrimary()) {
-                        userAccessProfile.setPrimaryLocationId(baseLocation.getLocationId());
-                        userAccessProfile.setPrimaryLocationName(baseLocation.getLocation());
-                    }
-                });
-                userAccessProfile.setAreaOfWorkId(workArea.getAreaOfWork());
-                userAccessProfile.setServiceCode(workArea.getServiceCode());
-                userAccessProfile.setRoleId(role.getRoleId());
-                userAccessProfile.setRoleName(role.getRoleName());
+        caseWorkerProfile.getRole().forEach(role ->
+                caseWorkerProfile.getWorkArea().forEach(workArea -> {
+                    CaseWorkerAccessProfile caseWorkerAccessProfile = new CaseWorkerAccessProfile();
+                    caseWorkerAccessProfile.setId(caseWorkerProfile.getId());
+                    caseWorkerAccessProfile.setSuspended(caseWorkerProfile.isSuspended());
+                    caseWorkerProfile.getBaseLocation().forEach(baseLocation -> {
+                        if (baseLocation.isPrimary()) {
+                            caseWorkerAccessProfile.setPrimaryLocationId(baseLocation.getLocationId());
+                            caseWorkerAccessProfile.setPrimaryLocationName(baseLocation.getLocation());
+                        }
+                    });
+                    caseWorkerAccessProfile.setAreaOfWorkId(workArea.getAreaOfWork());
+                    caseWorkerAccessProfile.setServiceCode(workArea.getServiceCode());
+                    caseWorkerAccessProfile.setRoleId(role.getRoleId());
+                    caseWorkerAccessProfile.setRoleName(role.getRoleName());
 
-                userAccessProfiles.add(userAccessProfile);
-            })
+                    caseWorkerAccessProfiles.add(caseWorkerAccessProfile);
+                })
         );
 
         log.info(
                 "Execution time of convertUserProfileToUserAccessProfile() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
-        return userAccessProfiles;
+        return caseWorkerAccessProfiles;
+    }
+
+    public static Set<JudicialAccessProfile> convertProfileToJudicialAccessProfile(JudicialProfile
+                                                                                               judicialProfile) {
+
+        Set<JudicialAccessProfile> judicialAccessProfiles = new HashSet<>();
+
+        List<String> authorisations = new ArrayList<>();
+        judicialProfile.getAuthorisations().forEach(authorisation -> authorisations.add(authorisation
+                .getAuthorisationId()));
+
+        judicialProfile.getAppointments().forEach(appointment -> {
+
+            JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder().build();
+            judicialAccessProfile.setUserId(judicialProfile.getElinkId());
+            judicialAccessProfile.setRoleId(appointment.getRoleId());
+            judicialAccessProfile.setBeginTime(appointment.getStartDate().atZone(ZoneId.of("UTC")));
+            judicialAccessProfile.setEndTime(appointment.getEndDate().atZone(ZoneId.of("UTC")));
+            judicialAccessProfile.setRegionId(appointment.getLocationDescEn());
+            judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
+            judicialAccessProfile.setContractTypeId(appointment.getContractTypeId());
+            judicialAccessProfile.setAuthorisations(authorisations);
+            judicialAccessProfile.setAppointmentId(appointment.getAppointmentId());
+            judicialAccessProfiles.add(judicialAccessProfile);
+
+        });
+
+        return judicialAccessProfiles;
+
+    }
+
+    public static Request buildJudicialRequest(Boolean replaceExisting) {
+
+        return Request.builder()
+                .assignerId(ASSIGNER_ID) // This won't be set for the requests.
+                .process((JUDICIAL_PROCESS_ID))
+                .requestType(RequestType.CREATE)
+                .correlationId(UUID.randomUUID().toString())
+                .replaceExisting(replaceExisting)
+                .build();
+    }
+
+    public static Collection<RoleAssignment> buildJudicialRequestedRoleCollection() {
+        Collection<RoleAssignment> requestedRoles = new ArrayList<>();
+        requestedRoles.add(buildJudicialRoleAssignment());
+        return requestedRoles;
+    }
+
+    public static RoleAssignment buildJudicialRoleAssignment() {
+        return RoleAssignment.builder()
+                .actorId(ACTOR_ID)
+                .actorIdType(ActorIdType.IDAM)
+                .roleType(RoleType.ORGANISATION)
+                .roleName(ROLE_NAME_SJ)
+                .classification(Classification.PUBLIC)
+                .grantType(GrantType.STANDARD)
+                .roleCategory(RoleCategory.JUDICIAL)
+                .readOnly(false)
+                .attributes(JacksonUtils.convertValue(buildAttributesFromFile("judicialAttributes.json")))
+                .build();
     }
 }

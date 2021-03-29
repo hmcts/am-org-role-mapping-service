@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class TopicConsumerTest {
+class CRDTopicConsumerTest {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
@@ -24,20 +24,20 @@ class TopicConsumerTest {
     @Mock
     public SubscriptionClient subscriptionClient;
 
-    TopicConsumer sut;
+    CRDTopicConsumer sut;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        sut = new TopicConsumer(bulkAssignmentOrchestrator, deserializer);
+        sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
     }
 
     //@Test
     void getSubscriptionClientThrowsServiceBusException() {
         sut.host = "http://test.com";
-        sut.sharedAccessKeyName = "test";
-        sut.sharedAccessKeyValue = "test";
-        sut.topic = "test";
+        sut.username = "test";
+        sut.password = "test";
+        sut.subscription = "test";
 
         assertThrows(ServiceBusException.class, () ->  sut.getSubscriptionClient());
 

@@ -6,10 +6,14 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
@@ -24,9 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserRequest;
 
@@ -34,40 +39,43 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 class RetrieveDataServiceTest {
 
     private final CRDFeignClient crdFeignClient = Mockito.mock(CRDFeignClient.class);
+    private final JRDFeignClientFallback jrdFeignClient = Mockito.mock(JRDFeignClientFallback.class);
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
 
-    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdFeignClient);
+
+    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdFeignClient,jrdFeignClient);
 
     @Test
     void retrieveCaseWorkerProfilesTest() {
 
-        when(crdFeignClient.getCaseworkerDetailsById(TestDataBuilder.buildUserRequest()))
-                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder
-                        .buildListOfUserProfiles(false, false,"1", "2",
-                        ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)));
 
-        Map<String, Set<UserAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
+
+        doReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder
+                .buildListOfUserProfiles(false, false,"1", "2",
+                        ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)))
+                .when(crdFeignClient).getCaseworkerDetailsById(TestDataBuilder.buildUserRequest());
+
+        Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
         assertEquals(1, result.size());
 
         Mockito.verify(crdFeignClient, Mockito.times(1))
                 .getCaseworkerDetailsById(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserProfiles(any(), any(), any(),any());
+                .validateUserProfiles(any(), any(), any(),any(),any());
     }
 
     @Test
     void retrieveInvalidCaseWorkerProfilesTest() {
 
-        when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(
-                        TestDataBuilder.buildListOfUserProfiles(true, false, "1",
-                                "2", ROLE_NAME_STCW, ROLE_NAME_TCW, false, true,
-                                false, true, "1", "2",
-                                false)));
+        doReturn(ResponseEntity.status(HttpStatus.CREATED).body(
+                TestDataBuilder.buildListOfUserProfiles(true, false, "1",
+                        "2", ROLE_NAME_STCW, ROLE_NAME_TCW, false, true,
+                        false, true, "1", "2",
+                        false))).when(crdFeignClient).getCaseworkerDetailsById(any());
 
-        doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
-        Map<String, Set<UserAccessProfile>> result = sut.retrieveCaseWorkerProfiles(TestDataBuilder.buildUserRequest());
+        doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(),any(),any());
+        Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(),UserType.CASEWORKER);
 
         assertEquals(0, result.size());
 
@@ -76,18 +84,20 @@ class RetrieveDataServiceTest {
     @Test
     void shouldReturnCaseWorkerProfile() {
 
-        when(crdFeignClient.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
-                .ok(buildUserProfile(buildUserRequest())));
-        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
-        Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
+        doReturn(ResponseEntity
+                .ok(buildUserProfile(buildUserRequest()))).when(crdFeignClient).getCaseworkerDetailsById(any());
+
+
+        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any(),any());
+        Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(),UserType.CASEWORKER);
         assertNotNull(response);
         response.forEach((k,v) -> {
             assertNotNull(k);
             assertNotNull(v);
             v.forEach(userAccessProfile -> {
-                assertEquals(k, userAccessProfile.getId());
-                assertFalse(userAccessProfile.isSuspended());
-                assertEquals("219164", userAccessProfile.getPrimaryLocationId());
+                assertEquals(k, ((CaseWorkerAccessProfile)userAccessProfile).getId());
+                assertFalse(((CaseWorkerAccessProfile)userAccessProfile).isSuspended());
+
             });
 
             }
@@ -97,12 +107,47 @@ class RetrieveDataServiceTest {
 
     @Test
     void shouldReturnZeroCaseWorkerProfile() {
-        List<UserProfile> userProfiles = new ArrayList<>();
-        when(crdFeignClient.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
-                .ok(userProfiles));
-        Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
+        List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
+        doReturn(ResponseEntity
+                .ok(caseWorkerProfiles)).when(crdFeignClient).getCaseworkerDetailsById(any());
+        Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(),UserType.CASEWORKER);
         assertNotNull(response);
         assertTrue(response.isEmpty());
     }
+
+    @Test
+    void shouldReturnJudicialProfile() {
+
+        doReturn(ResponseEntity
+                .ok(buildJudicialProfile(buildUserRequest()))).when(jrdFeignClient).getJudicialDetailsById(any());
+
+
+        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any(),any());
+        Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(),UserType.JUDICIAL);
+        assertNotNull(response);
+        response.forEach((k,v) -> {
+            assertNotNull(k);
+            assertNotNull(v);
+            v.forEach(userAccessProfile -> {
+                assertEquals(k, ((JudicialAccessProfile)userAccessProfile).getUserId());
+            });
+
+        }
+        );
+
+    }
+
+    @Test
+    void shouldReturnZeroJudicialProfile() {
+        List<JudicialProfile> judicialProfiles = new ArrayList<>();
+        doReturn(ResponseEntity
+                .ok(judicialProfiles)).when(jrdFeignClient).getJudicialDetailsById(any());
+
+        Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(),UserType.JUDICIAL);
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+    }
+
+
 
 }
