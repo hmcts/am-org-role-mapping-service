@@ -97,9 +97,8 @@ public class OrgRoleMappingConsumerTestForGetActorById {
                         .stringType("roleCategory", "LEGAL_OPERATIONS")
                         .booleanValue("readOnly", false)
                         .object("attributes", attribute -> attribute
-                                .stringType("region", "north-east")
-                                .stringType("contractType", "SALARIED")
-                                .stringType("caseId", "1234567890123456"))
+                                .stringType("jurisdiction", "IA")
+                                .stringType("primaryLocation", "123456"))
                 )).build();
     }
 
