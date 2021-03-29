@@ -32,10 +32,8 @@
               "grantType": "STANDARD",
               "readOnly": false,
               "attributes": {
-                "jurisdiction": "divorce",
-                "region": "south-east",
-                "contractType": "SALARIED",
-                "caseId": "1234567890123456"
+                "jurisdiction": "IA",
+                "region": "south-east"
               }
             }
           ]
@@ -71,9 +69,7 @@
                 "actorId": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
                 "roleName": "judge",
                 "attributes": {
-                  "contractType": "SALARIED",
-                  "jurisdiction": "divorce",
-                  "caseId": "1234567890123456",
+                  "jurisdiction": "IA",
                   "region": "south-east"
                 },
                 "id": "14a21569-eb80-4681-b62c-6ae2ed069e6f",
@@ -168,22 +164,6 @@
               "combine": "AND"
             },
             "$.roleAssignmentResponse.requestedRoles[*].attributes.region": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.roleAssignmentResponse.requestedRoles[*].attributes.contractType": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.roleAssignmentResponse.requestedRoles[*].attributes.caseId": {
               "matchers": [
                 {
                   "match": "type"
@@ -226,10 +206,8 @@
               "grantType": "STANDARD",
               "readOnly": false,
               "attributes": {
-                "jurisdiction": "divorce",
-                "region": "south-east",
-                "contractType": "SALARIED",
-                "caseId": "1234567890123456"
+                "jurisdiction": "IA",
+                "region": "south-east"
               }
             }
           ]
@@ -265,9 +243,7 @@
                 "actorId": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
                 "roleName": "judge",
                 "attributes": {
-                  "contractType": "SALARIED",
-                  "jurisdiction": "divorce",
-                  "caseId": "1234567890123456",
+                  "jurisdiction": "IA",
                   "region": "south-east"
                 },
                 "id": "14a21569-eb80-4681-b62c-6ae2ed069e6f",
@@ -362,22 +338,6 @@
               "combine": "AND"
             },
             "$.roleAssignmentResponse.requestedRoles[*].attributes.region": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.roleAssignmentResponse.requestedRoles[*].attributes.contractType": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.roleAssignmentResponse.requestedRoles[*].attributes.caseId": {
               "matchers": [
                 {
                   "match": "type"
