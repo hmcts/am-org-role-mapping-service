@@ -25,9 +25,8 @@
               "roleCategory": "LEGAL_OPERATIONS",
               "readOnly": false,
               "attributes": {
-                "contractType": "SALARIED",
-                "caseId": "1234567890123456",
-                "region": "north-east"
+                "primaryLocation": "123456",
+                "jurisdiction": "IA"
               },
               "id": "14a21569-eb80-4681-b62c-6ae2ed069e6f",
               "roleType": "ORGANISATION",
@@ -64,7 +63,7 @@
               ],
               "combine": "AND"
             },
-            "$.roleAssignmentResponse[*].attributes.region": {
+            "$.roleAssignmentResponse[*].attributes.jurisdiction": {
               "matchers": [
                 {
                   "match": "type"
@@ -72,15 +71,7 @@
               ],
               "combine": "AND"
             },
-            "$.roleAssignmentResponse[*].attributes.contractType": {
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ],
-              "combine": "AND"
-            },
-            "$.roleAssignmentResponse[*].attributes.caseId": {
+            "$.roleAssignmentResponse[*].attributes.primaryLocation": {
               "matchers": [
                 {
                   "match": "type"
