@@ -32,7 +32,7 @@ public class RoleAssignment {
     private String roleName; // will be set as per mapping rule
     private Classification classification; // will be set to PUBLIC for case-worker
     private GrantType grantType; // will be set to STANDARD for case-worker
-    private RoleCategory roleCategory; // will be set to STAFF for case-worker
+    private RoleCategory roleCategory; // will be set to LEGAL_OPERATIONS for case-worker
     private boolean readOnly; // will be set to false for case-worker
     private ZonedDateTime beginTime; // will be set to null for case-worker
     private ZonedDateTime endTime; // will be set to null for case-worker

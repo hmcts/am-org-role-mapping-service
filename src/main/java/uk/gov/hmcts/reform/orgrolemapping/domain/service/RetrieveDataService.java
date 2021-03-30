@@ -8,9 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -101,5 +104,24 @@ public class RetrieveDataService {
                 (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
         return usersAccessProfiles;
+    }
+
+    public UserProfilesResponse retrieve(List<String> ccdServiceNames,
+                           int pageSize,
+                           int pageNumber,
+                           String sortDirection,
+                           String sortColumn) {
+
+        //UserProfilesResponse userProfilesResponse =
+        return  UserProfilesResponse.builder().totalRecords(1)
+                        .userProfiles(
+                                UserAccessProfileBuilder.buildUserProfile(
+                                        UserRequest.builder().userIds(
+                                                Collections.singletonList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                                                .build())).build();
+        //        crdFeignClient.getUsersByServiceName(ccdServiceNames, pageSize, pageNumber, sortDirection,
+        //        sortColumn);
+
+        //return userProfilesResponse;
     }
 }

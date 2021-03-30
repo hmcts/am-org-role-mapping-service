@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
@@ -24,8 +25,12 @@ class WelcomeControllerTest {
     @Mock
     private TopicPublisher topicPublisher;
 
+    @Mock
+    private RefreshOrchestrator refreshOrchestrator;
+
     @InjectMocks
-    private final WelcomeController sut = new WelcomeController(topicPublisher, bulkAssignmentOrchestrator);
+    private final WelcomeController sut = new WelcomeController(topicPublisher,
+            bulkAssignmentOrchestrator, refreshOrchestrator);
 
     @BeforeEach
     public void setUp() {

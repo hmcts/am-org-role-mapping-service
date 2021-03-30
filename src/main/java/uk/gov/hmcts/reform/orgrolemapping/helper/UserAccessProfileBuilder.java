@@ -26,6 +26,13 @@ public class UserAccessProfileBuilder {
     public static final String ID2 = "123e4567-e89b-42d3-a456-556642445699";
     public static final String PRIMARY_LOCATION_ID = "219164";
 
+    private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
+    private static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
+
+    private static final String PROCESS_ID = "staff-organisational-role-mapping";
+    private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
+    private static final String ROLE_NAME_TCW = "tribunal-caseworker";
+
     private UserAccessProfileBuilder() {
 
     }
@@ -63,7 +70,7 @@ public class UserAccessProfileBuilder {
                 .id(ID1)
                 .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
-                .roleId("2")
+                .roleId("1")
                 .suspended(true)
                 .build();
     }
@@ -85,7 +92,7 @@ public class UserAccessProfileBuilder {
                 .id(ID2)
                 .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
-                .roleId("2")
+                .roleId("1")
                 .suspended(true)
                 .build();
     }
@@ -94,6 +101,34 @@ public class UserAccessProfileBuilder {
         return UserRequest.builder()
                 .userIds(Arrays.asList(ID1, "123e4567-e89b-42d3-a456-556642445698"))
                 .build();
+    }
+
+    public static UserAccessProfile buildUserAccessProfile1(boolean suspended) {
+        return UserAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
+                .primaryLocationId("123456").primaryLocationName("south-east").roleId("1")
+                .serviceCode("BFA1").roleName(ROLE_NAME_STCW).build();
+    }
+
+    public static UserAccessProfile buildUserAccessProfile2(boolean suspended) {
+        return UserAccessProfile.builder().id(id_2).suspended(suspended).areaOfWorkId("London")
+                .primaryLocationId("123457").primaryLocationName("south-east").roleId("1")
+                .serviceCode("BFA1").roleName(ROLE_NAME_TCW).build();
+    }
+
+    public static Set<UserAccessProfile> buildUserAccessProfileSet(boolean suspended1, boolean suspended2) {
+        Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
+        userAccessProfileSet.add(buildUserAccessProfile1(suspended1));
+        userAccessProfileSet.add(buildUserAccessProfile2(suspended2));
+        return userAccessProfileSet;
+    }
+
+    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfileMap(boolean suspended1,
+                                                                                boolean suspended2) {
+
+        HashMap<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
+        userAccessProfiles.put(id_1, buildUserAccessProfileSet(suspended1, suspended2));
+        userAccessProfiles.put(id_2, buildUserAccessProfileSet(suspended1, suspended2));
+        return userAccessProfiles;
     }
 
 

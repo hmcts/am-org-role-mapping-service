@@ -11,12 +11,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -27,12 +33,16 @@ public class WelcomeController {
 
     TopicPublisher topicPublisher;
 
+    RefreshOrchestrator refreshOrchestrator;
+
     @Autowired
     public WelcomeController(final TopicPublisher topicPublisher,
-                             BulkAssignmentOrchestrator bulkAssignmentOrchestrator) {
+                             BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
+                             RefreshOrchestrator refreshOrchestrator) {
 
         this.topicPublisher = topicPublisher;
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
+        this.refreshOrchestrator = refreshOrchestrator;
 
     }
 
@@ -89,6 +99,32 @@ public class WelcomeController {
     @PostMapping(value = "/sleep")
     public ResponseEntity<String> waitFor(String duration) {
         return ResponseEntity.ok("Sleep time for Functional tests is over");
+
+    }
+
+    @PostMapping(
+            path = "/am/role-mapping/refresh",
+            produces = V1.MediaType.MAP_ASSIGNMENTS,
+            consumes = {"application/json"}
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @ApiOperation("refreshes role assignments")
+    @ApiResponses({
+            @ApiResponse(
+                    code = 200,
+                    message = "OK",
+                    response = Object.class
+            ),
+            @ApiResponse(
+                    code = 400,
+                    message = V1.Error.INVALID_REQUEST
+            )
+    })
+    public ResponseEntity<Object> refresh(@RequestParam String roleCategory,
+                                          @RequestParam String jurisdiction,
+                                          @RequestBody(required=false) List<String> retryUserIds) {
+
+        return refreshOrchestrator.refresh(roleCategory, jurisdiction, retryUserIds);
 
     }
 }

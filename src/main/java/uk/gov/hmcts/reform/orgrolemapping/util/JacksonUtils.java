@@ -10,10 +10,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Named
 @Singleton
@@ -53,5 +64,30 @@ public class JacksonUtils {
     public static final TypeReference<HashMap<String, JsonNode>> getHashMapTypeReference() {
         return new TypeReference<HashMap<String, JsonNode>>() {
         };
+    }
+
+    public AssignmentRequest convertUserProfileToAssignmentRequest(UserProfile request) {
+
+        Collection<RoleAssignment> roleAssignmentCollections = Collections.singletonList(
+                RoleAssignment.builder()
+                .actorId(request.getId())
+                .actorIdType(ActorIdType.IDAM)
+                .roleType(RoleType.CASE)
+                .roleName(request.getRole().get(0).getRoleName())
+                .roleCategory(RoleCategory.JUDICIAL)
+                .classification(Classification.RESTRICTED)
+                //.attributes(null)
+                .grantType(GrantType.SPECIFIC)
+                .readOnly(false)
+                .build());
+
+        return AssignmentRequest.builder()
+                .request(Request.builder()
+                        .assignerId(UUID.randomUUID().toString())
+                        .replaceExisting(true)
+                        .build())
+                .requestedRoles(roleAssignmentCollections)
+                .build();
+
     }
 }
