@@ -1,0 +1,42 @@
+{
+  "_guid_": "S-007",
+  "title": "must successfully generate duplicate records message",
+  "_extends_": "F-001_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "f5bdd3b5-b76d-4460-891e-ab9365669c5d"
+   }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "_extends_": "Common_200_Response_Headers",
+      "ETag" : "W/\"8\""
+    },
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "[[ANYTHING_PRESENT]]",
+          "roleType": "ORGANISATION",
+          "roleName": "[[ANYTHING_PRESENT]]",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "IA"
+          }
+        }
+      ]
+    }
+  }
+}
