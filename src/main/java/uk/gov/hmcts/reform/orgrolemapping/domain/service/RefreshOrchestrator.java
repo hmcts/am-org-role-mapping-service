@@ -47,8 +47,8 @@ public class RefreshOrchestrator {
         //Map userprofiles from userProfilesResponse to userAccessProfiles and fire request
 
         List<AssignmentRequest> assignmentRequests =
-                validationModelService.runRulesOnAccessProfiles(UserAccessProfileBuilder.buildUserAccessProfileMap
-                        (false, false));
+                validationModelService
+                        .runRulesOnAccessProfiles(UserAccessProfileBuilder.buildUserAccessProfileMap(false, false));
 
         assignmentRequests.forEach(this::tryPost);
 
@@ -59,7 +59,7 @@ public class RefreshOrchestrator {
         ResponseEntity<Object> responseEntity;
         try {
             responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
-            if(!responseEntity.getStatusCode().is2xxSuccessful()) {
+            if (!responseEntity.getStatusCode().is2xxSuccessful()) {
                 log.error("Assignment Request received status code: {}",
                         responseEntity.getStatusCodeValue());
                 log.info("Time: {}", System.currentTimeMillis());

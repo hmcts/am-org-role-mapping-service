@@ -20,8 +20,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -122,7 +120,7 @@ public class WelcomeController {
     })
     public ResponseEntity<Object> refresh(@RequestParam String roleCategory,
                                           @RequestParam String jurisdiction,
-                                          @RequestBody(required=false) List<String> retryUserIds) {
+                                          @RequestBody(required = false) List<String> retryUserIds) {
 
         return refreshOrchestrator.refresh(roleCategory, jurisdiction, retryUserIds);
 
