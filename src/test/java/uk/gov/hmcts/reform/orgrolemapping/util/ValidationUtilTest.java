@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,14 @@ class ValidationUtilTest {
         String dateAfter =  LocalDateTime.now().plusDays(2L).toString();
         Assertions.assertThrows(BadRequestException.class, () ->
                 ValidationUtil.validateDateTime("2020-11-27T15", dateAfter)
+        );
+    }
+
+    @Test
+    void shouldValidate_ValidateDateTime_ParseException() {
+        String dateAfter =  LocalDateTime.now().plusDays(2L).toString();
+        Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.validateDateTime("20201127T1512345", dateAfter)
         );
     }
 
