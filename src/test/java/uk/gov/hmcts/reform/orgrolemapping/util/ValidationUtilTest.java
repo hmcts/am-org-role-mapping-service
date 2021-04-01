@@ -94,6 +94,13 @@ class ValidationUtilTest {
     }
 
     @Test
+    void shouldThrow_DoesNotMatchPatternId() {
+        Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, "req@@2")
+        );
+    }
+
+    @Test
     void shouldValidate_CompareDateTime() {
         Assertions.assertDoesNotThrow(() ->
                 ValidationUtil.validateDateTime(LocalDateTime.now().plusDays(1L).toString(),
