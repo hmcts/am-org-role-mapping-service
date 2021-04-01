@@ -69,6 +69,14 @@ class ValidationUtilTest {
     }
 
     @Test
+    void shouldValidate_ValidateDateTime_ParseException() {
+        String dateAfter =  LocalDateTime.now().plusDays(2L).toString();
+        Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.validateDateTime("20201127T1512345", dateAfter)
+        );
+    }
+
+    @Test
     void shouldThrow_cannotBePriorToCurrentDate() {
         String time = LocalDateTime.now().minusDays(1L).toString();
         String time2 = LocalDateTime.now().minusDays(1L).toString();
