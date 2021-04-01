@@ -331,7 +331,45 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
 
-
+    implementation('io.netty:netty-buffer:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-codec:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-codec-http:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-common:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-handler:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-resolver:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-transport:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-transport-native-epoll:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-transport-native-kqueue:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-transport-native-unix-common:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-codec-http2:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-codec-socks:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation('io.netty:netty-handler-proxy:4.1.60.Final') {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
 
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
     testCompile('com.github.tomakehurst:wiremock-jre8:2.25.1')

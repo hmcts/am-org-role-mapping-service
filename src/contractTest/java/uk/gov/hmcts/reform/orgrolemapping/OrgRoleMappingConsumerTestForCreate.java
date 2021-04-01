@@ -132,10 +132,8 @@ public class OrgRoleMappingConsumerTestForCreate {
                 + "        \"grantType\": \"STANDARD\",\n"
                 + "        \"readOnly\": false,\n"
                 + "        \"attributes\": {\n"
-                + "            \"jurisdiction\": \"divorce\",\n"
+                + "            \"jurisdiction\": \"IA\",\n"
                 + "            \"region\": \"south-east\",\n"
-                + "            \"contractType\": \"SALARIED\",\n"
-                + "            \"caseId\": \"1234567890123456\"\n"
                 + "        }\n"
                 + "    }\n"
                 + "    ]\n"
@@ -177,30 +175,28 @@ public class OrgRoleMappingConsumerTestForCreate {
                                         .stringType("log", "Request has been Approved")
                         )
                         .minArrayLike("requestedRoles", 1, 1, requestedRoles -> requestedRoles
-                                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                                        .stringValue("actorIdType", "IDAM")
-                                        .stringType("actorId",
-                                                "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                                        .stringValue("roleType", "ORGANISATION")
-                                        .stringValue("roleName", "judge")
-                                        .stringValue("classification", "PUBLIC")
-                                        .stringValue("grantType", "STANDARD")
-                                        .stringValue("roleCategory", "JUDICIAL")
-                                        .stringValue("process", "staff-organisational-role-mapping")
-                                        .stringValue("reference",
-                                                "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                                        .stringValue("status", "LIVE")
-                                        .stringType("log",
-                                                "Create approved : "
-                                                        + "judicial_organisational_role_mapping_service_create\\"
-                                                        + "nApproved "
-                                                        + ": validate_role_assignment_against_patterns")
-                                        .object("attributes", attribute -> attribute
-                                                .stringType("jurisdiction", "divorce")
-                                                .stringType("region", "south-east")
-                                                .stringType("contractType", "SALARIED")
-                                                .stringType("caseId", "1234567890123456")
-                                        )
+                                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                                .stringValue("actorIdType", "IDAM")
+                                .stringType("actorId",
+                                        "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                                .stringValue("roleType", "ORGANISATION")
+                                .stringValue("roleName", "judge")
+                                .stringValue("classification", "PUBLIC")
+                                .stringValue("grantType", "STANDARD")
+                                .stringValue("roleCategory", "JUDICIAL")
+                                .stringValue("process", "staff-organisational-role-mapping")
+                                .stringValue("reference",
+                                        "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                                .stringValue("status", "LIVE")
+                                .stringType("log",
+                                        "Create approved : "
+                                                + "judicial_organisational_role_mapping_service_create\\"
+                                                + "nApproved "
+                                                + ": validate_role_assignment_against_patterns")
+                                .object("attributes", attribute -> attribute
+                                        .stringType("jurisdiction", "IA")
+                                        .stringType("region", "south-east")
+                                )
                         )
                 )).build();
     }
