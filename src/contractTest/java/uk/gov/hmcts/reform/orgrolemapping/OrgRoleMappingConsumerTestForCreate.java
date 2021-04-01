@@ -25,11 +25,13 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 
 import java.util.Map;
 
@@ -50,6 +52,9 @@ public class OrgRoleMappingConsumerTestForCreate {
 
     @Autowired
     RASFeignClient rasFeignClient;
+
+    @MockBean
+    TopicConsumer topicConsumer;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {

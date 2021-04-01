@@ -16,9 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,6 +40,8 @@ public class OrgRoleMappingConsumerTestForDelete {
     private static final String RAS_DELETE_ACTOR_BY_ID = AM_RAS_URL + "/" + ACTOR_ID;
     private static final String RAS_DELETE_ACTOR_BY_PR = AM_RAS_URL + "?" + QUERY_PARAMS;
 
+    @MockBean
+    TopicConsumer topicConsumer;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
