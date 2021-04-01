@@ -1,6 +1,18 @@
 java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  
+  secrets:
+    SB_ACCESS_KEY:
+      secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
+      key: primaryKey
+    SB_NAMESPACE:
+      secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
+      key: namespaceName
+    SB_TOPIC_CONN_STRING:
+      secretRef: servicebus-topic-{{ .Release.Name }}-rd-caseworker-topic
+      key: connectionString
+      
   keyVaults:
     am:
       secrets:
@@ -11,6 +23,7 @@ java:
         - orm-IDAM-CLIENT-SECRET
         - orm-IDAM-ADMIN-SECRET
         - caseworker-topic-primary-send-listen-shared-access-key
+  
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
@@ -18,3 +31,14 @@ java:
     AMQP_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}/subscriptions/am-orm-preview-functional-test
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-pr-580.service.core-compute-preview.internal
     LAUNCH_DARKLY_ENV: pr
+    AMQP_SHARED_ACCESS_KEY_VALUE: "$(SB_TOPIC_CONN_STRING)"
+
+servicebus:
+  enabled: true
+  teamName: RD
+  resourceGroup: rd-aks
+  serviceplan: standard
+  setup:
+    topics:
+      - name: rd-caseworker-topic
+        subscriptionNeeded: yes
