@@ -1,9 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -26,8 +31,10 @@ class JacksonUtilsTest {
     }
 
     @Test
-    void convertInCaseWorkerProfile() {
-        assertNotNull(JacksonUtils.convertInCaseWorkerProfile(""));
+    void convertInCaseWorkerProfile() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CaseWorkerProfile caseWorkerProfile = objectMapper.readValue(new File("src/main/resources/userProfileSample.json"), CaseWorkerProfile.class);
+        assertNotNull(JacksonUtils.convertInCaseWorkerProfile(caseWorkerProfile));
     }
 
     @Test

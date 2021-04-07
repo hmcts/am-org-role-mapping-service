@@ -9,22 +9,22 @@
     "user_type_id": 1,
     "user_type": "user-type",
     "suspended": false,
-    "created_time": "2020-04-28T16:00:49",
-    "last_updated_time": "2021-04-28T16:00:49",
+    "createdTime": "2020-04-28T16:00:49:000",
+    "last_updated_time": "2021-04-28T16:00:49:000",
     "role": [
       {
         "role_id": 1,
         "role": "senior-tribunal-caseworker",
         "is_primary" : true,
-        "created_time": "2020-04-28T16:00:49",
-        "last_updated_time": "2021-04-28T16:00:49"
+        "createdTime": "2020-04-28T16:00:49:000",
+        "last_updated_time": "2021-04-28T16:00:49:000"
       },
       {
         "role_id": 2,
         "role": "tribunal-caseworker",
         "is_primary": false,
-        "created_time": "2020-04-28T16:00:49",
-        "last_updated_time": "2021-04-28T16:00:49"
+        "createdTime": "2020-04-28T16:00:49:000",
+        "last_updated_time": "2021-04-28T16:00:49:000"
       }
     ],
     "base_location": [
@@ -32,29 +32,29 @@
         "location_id": 219164,
         "location": "Aberdeen Tribunal Hearing Centre",
         "is_primary": true,
-        "created_time": "2020-04-28T16:00:49",
-        "last_updated_time": "2021-04-28T16:00:49"
+        "createdTime": "2020-04-28T16:00:49:000",
+        "last_updated_time": "2021-04-28T16:00:49:000"
       },
       {
         "location_id": 11111,
         "location": "Non is_primary Location",
         "is_primary": false,
-        "created_time": "2020-04-28T16:00:49",
-        "last_updated_time": "2021-04-28T16:00:49"
+        "createdTime": "2020-04-28T16:00:49:000",
+        "last_updated_time": "2021-04-28T16:00:49:000"
       }
     ],
     "work_area": [
       {
         "area_of_work": "1",
         "service_code": "BFA1",
-        "created_time": "2020-04-28T16:00:49",
-        "last_updated_time": "2021-04-28T16:00:49"
+        "createdTime": "2020-04-28T16:00:49:000",
+        "last_updated_time": "2021-04-28T16:00:49:000"
       },
       {
         "area_of_work": "2",
         "service_code": "BFA2",
-        "created_time": "2020-04-28T16:00:49",
-        "last_updated_time": "2021-04-28T16:00:49"
+        "createdTime": "2020-04-28T16:00:49:000",
+        "last_updated_time": "2021-04-28T16:00:49:000"
       }
     ]
   }

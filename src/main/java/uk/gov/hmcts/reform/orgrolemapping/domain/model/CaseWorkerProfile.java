@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -27,10 +28,10 @@ public class CaseWorkerProfile  implements Serializable  {
     private String userTypeId;
     private String userType;
     private boolean suspended;
-    //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
+    @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
 
     private LocalDateTime createdTime;
-    //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
+    @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
     private LocalDateTime lastUpdatedTime;
     private List<Role> role;
     private List<BaseLocation> baseLocation;
@@ -47,9 +48,9 @@ public class CaseWorkerProfile  implements Serializable  {
         private String roleName;
         @JsonProperty("is_primary")
         private boolean primary;
-        //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
+        @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
-        //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
+        @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime lastUpdatedTime;
 
     }
@@ -64,9 +65,9 @@ public class CaseWorkerProfile  implements Serializable  {
         private String location;
         @JsonProperty("is_primary")
         private boolean primary;
-        //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
+        @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
-        //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
+        @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime lastUpdatedTime;
 
     }
@@ -79,9 +80,9 @@ public class CaseWorkerProfile  implements Serializable  {
     public static class WorkArea implements Serializable {
         private String areaOfWork;
         private String serviceCode;
-        //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
+        @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime createdTime;
-        //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
+        @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime lastUpdatedTime;
 
     }
