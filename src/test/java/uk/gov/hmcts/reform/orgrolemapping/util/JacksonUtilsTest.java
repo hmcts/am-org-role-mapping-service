@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -33,6 +34,7 @@ class JacksonUtilsTest {
     @Test
     void convertInCaseWorkerProfile() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         CaseWorkerProfile caseWorkerProfile = objectMapper.readValue(new File("src/main/resources/userProfileSample.json"), CaseWorkerProfile.class);
         assertNotNull(JacksonUtils.convertInCaseWorkerProfile(caseWorkerProfile));
     }
