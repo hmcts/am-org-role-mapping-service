@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.io.File;
@@ -40,7 +41,10 @@ class JacksonUtilsTest {
     }
 
     @Test
-    void convertInJudicialProfile() {
-        assertNotNull(JacksonUtils.convertInJudicialProfile("\"elinkId\": \"21336a2b-79ce-44eb-9168-2d49a744be9c\""));
+    void convertInJudicialProfile() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile judicialProfile = objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"), JudicialProfile.class);
+        assertNotNull(JacksonUtils.convertInJudicialProfile(judicialProfile));
     }
 }
