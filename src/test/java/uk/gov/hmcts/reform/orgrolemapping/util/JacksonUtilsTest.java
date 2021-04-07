@@ -24,4 +24,14 @@ class JacksonUtilsTest {
     void getHashMapTypeReference() {
         assertNotNull(JacksonUtils.getHashMapTypeReference());
     }
+
+    @Test
+    void convertInCaseWorkerProfile() {
+        assertNotNull(JacksonUtils.convertInCaseWorkerProfile(""));
+    }
+
+    @Test
+    void convertInJudicialProfile() {
+        assertNotNull(JacksonUtils.convertInJudicialProfile("\"elinkId\": \"21336a2b-79ce-44eb-9168-2d49a744be9c\""));
+    }
 }
