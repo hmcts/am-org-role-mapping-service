@@ -36,7 +36,9 @@ class JacksonUtilsTest {
     void convertInCaseWorkerProfile() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        CaseWorkerProfile caseWorkerProfile = objectMapper.readValue(new File("src/main/resources/userProfileSample.json"), CaseWorkerProfile.class);
+        CaseWorkerProfile caseWorkerProfile =
+                objectMapper.readValue(new File("src/main/resources/userProfileSample.json"),
+                        CaseWorkerProfile.class);
         assertNotNull(JacksonUtils.convertInCaseWorkerProfile(caseWorkerProfile));
     }
 
@@ -44,7 +46,9 @@ class JacksonUtilsTest {
     void convertInJudicialProfile() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile judicialProfile = objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"), JudicialProfile.class);
+        JudicialProfile judicialProfile =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
         assertNotNull(JacksonUtils.convertInJudicialProfile(judicialProfile));
     }
 }
