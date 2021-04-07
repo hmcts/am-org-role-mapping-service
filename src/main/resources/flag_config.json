@@ -1,0 +1,26 @@
+[
+  {
+    "name": "get-ld-flag",
+    "default": false,
+    "refresh": [
+      {
+      "jurisdiction": "ALL",
+      "roleCategory": "ALL"
+      }
+    ]
+  },
+  {
+    "name": "ras_drool_iac_flag_1_0",
+    "default": false,
+    "refresh": [
+      {
+        "jurisdiction": "IA",
+        "roleCategory": "JUDICIAL"
+      },
+      {
+        "jurisdiction": "IA",
+        "roleCategory": "LEGAL_OPERATIONS"
+      }
+    ]
+  }
+]
