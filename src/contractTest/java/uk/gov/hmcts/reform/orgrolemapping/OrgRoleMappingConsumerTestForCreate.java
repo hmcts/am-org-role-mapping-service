@@ -23,11 +23,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 
 import java.util.Map;
 
@@ -39,12 +43,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service_create")
+@PactTestFor(providerName = "am_roleAssignment_createAssignment")
 @PactFolder("pacts")
 @SpringBootTest
 public class OrgRoleMappingConsumerTestForCreate {
 
     private static final String RAS_CREATE_ROLE_ASSIGNMENT_URL = "/am/role-assignments";
+
+    @Autowired
+    RASFeignClient rasFeignClient;
+
+    @MockBean
+    TopicConsumer topicConsumer;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -57,7 +67,7 @@ public class OrgRoleMappingConsumerTestForCreate {
     }
 
 
-    @Pact(provider = "am_role_assignment_service_create", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_createAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeCreateRoleAssignmentReplacingExistingFalseAndGet201(PactDslWithProvider builder) {
 
         return builder
@@ -74,7 +84,7 @@ public class OrgRoleMappingConsumerTestForCreate {
                 .toPact();
     }
 
-    @Pact(provider = "am_role_assignment_service_create", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_createAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeCreateRoleAssignmentOneRoleAndGet201(PactDslWithProvider builder) {
 
         return builder
@@ -90,7 +100,7 @@ public class OrgRoleMappingConsumerTestForCreate {
                 .toPact();
     }
 
-    @Pact(provider = "am_role_assignment_service_create", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_createAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeCreateRoleAssignmentZeroRoleAndGet201(PactDslWithProvider builder) {
 
         return builder
