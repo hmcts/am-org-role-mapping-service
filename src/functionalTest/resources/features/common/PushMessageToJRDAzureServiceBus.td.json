@@ -5,8 +5,7 @@
   "method": "POST",
   "uri": "https://{{AMQP_HOST}}/{{JRD_PUBLISHER_TOPIC}}/messages",
   "specs": [
-    "to publish the user ids to topic",
-    "to publish an existing CRD user ids to topic"
+    "to publish existing JRD user ids to topic"
   ],
   "request": {
     "headers": {

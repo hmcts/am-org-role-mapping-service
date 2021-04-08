@@ -1,10 +1,10 @@
 {
-  "_guid_": "S-001_PushMessageToAzureServiceBus",
+  "_guid_": "S-011_PushMessageToAzureServiceBus",
   "_extends_": "PushMessageToJRDAzureServiceBus",
 
   "request": {
     "body": {
-      "_extends_": "SingleUserId"
+      "_extends_": "JRDSingleUserId"
     }
   }
 }

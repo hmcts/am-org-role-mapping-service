@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-001",
-  "title": "must successfully create org role mapping for a multiple user having single role",
-  "_extends_": "F-001_Test_Data_Base",
+  "_guid_": "S-011",
+  "title": "must successfully create judicial role mapping for a multiple user having single role",
+  "_extends_": "F-002_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
   ],
@@ -9,7 +9,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-001_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
+      "actorId": "${[scenarioContext][childContexts][S-011_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
     }
   },
   "expectedResponse": {
@@ -24,13 +24,18 @@
           "roleName": "[[ANYTHING_PRESENT]]",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "JUDICIAL",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA"
-          }
+            "baseLocation" : "[[ANYTHING_PRESENT]]",
+            "contractType" : "SALARIED",
+            "jurisdiction" : "IA",
+            "region" : "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -40,13 +45,18 @@
           "roleName": "[[ANYTHING_PRESENT]]",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "JUDICIAL",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA"
-          }
+            "baseLocation" : "[[ANYTHING_PRESENT]]",
+            "contractType" : "SALARIED",
+            "jurisdiction" : "IA",
+            "region" : "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         }
       ]
     }
