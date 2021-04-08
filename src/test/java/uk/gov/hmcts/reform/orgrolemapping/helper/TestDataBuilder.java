@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
+import org.apache.tomcat.jni.Local;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
 
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -184,6 +183,68 @@ public class TestDataBuilder {
         }
         return caseWorkerProfiles;
     }
+
+    public static JudicialProfile buildJudicialProfile(String elinkId,
+                                                       String personalCode,
+                                                       String title,
+                                                       String knownAs,
+                                                       String surname,
+                                                       String fullName,
+                                                       String postNominals,
+                                                       String contractTypeId,
+                                                       String workPattern,
+                                                       String emailId,
+                                                       LocalDateTime joiningDate,
+                                                       LocalDateTime lastWorkingDate,
+                                                       String extractedDate,
+                                                       String activeFlag,
+                                                       List<JudicialProfile.Appointment> appointments,
+                                                       List<JudicialProfile.Authorisation> authorisations,
+                                                       String userType) {
+
+        return JudicialProfile.builder()
+                .elinkId(elinkId)
+                .personalCode(personalCode)
+                .title(title)
+                .knownAs(knownAs)
+                .surname(surname)
+                .fullName(fullName)
+                .postNominals(postNominals)
+                .contractTypeId(contractTypeId)
+                .workPattern(workPattern)
+                .emailId(emailId)
+                .joiningDate(joiningDate)
+                .lastWorkingDate(lastWorkingDate)
+                .extractedDate(extractedDate)
+                .activeFlag(activeFlag)
+                .appointments(appointments)
+                .authorisations(authorisations)
+                .userType(userType)
+                .build();
+    }
+
+    public static JudicialProfile.Appointment buildJPAppointment(String roleId,
+                                                                 String contractTypeId,
+                                                                 String baseLocationId,
+                                                                 String locationId,
+                                                                 LocalDateTime startDate,
+                                                                 LocalDateTime endDate) {
+        return JudicialProfile.Appointment.builder()
+                .roleId(roleId)
+                .contractTypeId(contractTypeId)
+                .baseLocationId(baseLocationId)
+                .locationId(locationId)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+    }
+
+    public static JudicialProfile.Authorisation buildJPAuthorisation(String authorisationId) {
+        return JudicialProfile.Authorisation.builder()
+                .authorisationId(authorisationId)
+                .build();
+    }
+
 
     public static JsonNode buildAttributesFromFile() {
         try (InputStream inputStream =

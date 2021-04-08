@@ -6,14 +6,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -127,8 +126,128 @@ class ParseRequestServiceTest {
     }
 
     @Test
+    //lots to add
     void validateJudicialProfilesTest() {
         sut.validateUserProfiles(buildJudicialProfile(TestDataBuilder.buildUserRequest()),
                 TestDataBuilder.buildUserRequest(), new AtomicInteger(),new HashSet<>(), UserType.JUDICIAL);
     }
+
+    @Test
+    void judicialValidationTest() {
+
+        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
+                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
+                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                "2020-04-28T16:00:49", "TRUE",
+                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
+                        "5",
+                        "1351",
+                        "1",
+                        LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                        LocalDateTime.of(2020, 04, 28, 16, 01, 00))),
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
+                "Judicial");
+
+        sut.judicialValidation(Collections.singletonList(profile),
+                new AtomicInteger(0),
+                Collections.emptySet());
+    }
+
+    @Test
+    void judicialValidationTest_NoAppointment() {
+
+    List<JudicialProfile.Appointment> noAppointmentList = new ArrayList<>();
+
+        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
+                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
+                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                "2020-04-28T16:00:49", "TRUE",
+                noAppointmentList,
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
+                "Judicial");
+
+        assertThrows(UnsupportedOperationException.class, () ->
+                sut.judicialValidation(Collections.singletonList(profile),
+                new AtomicInteger(0),
+                Collections.emptySet()));
+    }
+
+    @Test
+    void judicialValidationTest_NoAppointmentRoleId() {
+
+        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
+                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
+                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                "2020-04-28T16:00:49", "TRUE",
+                Collections.singletonList(TestDataBuilder.buildJPAppointment("",
+                        "5",
+                        "1351",
+                        "1",
+                        LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                        LocalDateTime.of(2020, 04, 28, 16, 01, 00))),
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
+                "Judicial");
+
+        assertThrows(UnsupportedOperationException.class, () ->
+                sut.judicialValidation(Collections.singletonList(profile),
+                new AtomicInteger(0),
+                Collections.emptySet()));
+    }
+
+    @Test
+    void judicialValidationTest_NoAuthorisation() {
+
+        List<JudicialProfile.Authorisation> noAuthorisationList = new ArrayList<>();
+
+        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
+                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
+                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                "2020-04-28T16:00:49", "TRUE",
+                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
+                        "5",
+                        "1351",
+                        "1",
+                        LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                        LocalDateTime.of(2020, 04, 28, 16, 01, 00))),
+                noAuthorisationList,
+                "Judicial");
+
+        assertThrows(UnsupportedOperationException.class, () ->
+                sut.judicialValidation(Collections.singletonList(profile),
+                new AtomicInteger(0),
+                Collections.emptySet()));
+    }
+
+    @Test
+    void judicialValidationTest_NoAuthorisationId() {
+
+        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
+                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
+                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                "2020-04-28T16:00:49", "TRUE",
+                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
+                        "5",
+                        "1351",
+                        "1",
+                        LocalDateTime.of(2020, 04, 28, 16, 01, 00),
+                        LocalDateTime.of(2020, 04, 28, 16, 01, 00))),
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("")),
+                "Judicial");
+
+        assertThrows(UnsupportedOperationException.class, () ->
+                sut.judicialValidation(Collections.singletonList(profile),
+                new AtomicInteger(0),
+                Collections.emptySet()));
+    }
+
 }
