@@ -1,0 +1,10 @@
+{
+  "_guid_": "S-012_PushMessageToAzureServiceBus",
+  "_extends_": "PushMessageToJRDAzureServiceBus",
+
+  "request": {
+    "body": {
+      "_extends_": "JRDSingleUserMultipleRoles"
+    }
+  }
+}
