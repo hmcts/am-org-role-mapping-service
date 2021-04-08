@@ -10,7 +10,7 @@ java:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: namespaceName
     SB_TOPIC_CONN_STRING:
-      secretRef: servicebus-topic-{{ .Release.Name }}-rd-caseworker-topic
+      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
       key: connectionString
       
   keyVaults:
