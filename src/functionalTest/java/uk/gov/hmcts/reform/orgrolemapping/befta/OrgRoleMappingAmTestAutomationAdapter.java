@@ -48,6 +48,16 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                     logger.warn(e.getMessage());
                 }
                 return null;
+            case ("generateJRDServiceBusToken"):
+                try {
+                    return FunctionalTestUtils.getSaSToken("sb://"
+                                    + EnvironmentVariableUtils.getRequiredVariable("AMQP_HOST"),
+                                                           "SendAndListenSharedAccessKey",
+                                                           EnvironmentVariableUtils.getRequiredVariable("JRD_SHARED_ACCESS_KEY_VALUE"));
+                } catch (Exception e) {
+                    logger.warn(e.getMessage());
+                }
+                return null;
             /*case("getUserIdFromFile"):
                 return FunctionalTestUtils.getUserIdFromFile("SingleUserId.json");*/
             default:
