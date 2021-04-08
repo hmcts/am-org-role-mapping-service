@@ -12,7 +12,11 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -158,7 +162,7 @@ class ParseRequestServiceTest {
     @Test
     void judicialValidationTest_NoAppointment() {
 
-    List<JudicialProfile.Appointment> noAppointmentList = new ArrayList<>();
+        List<JudicialProfile.Appointment> noAppointmentList = new ArrayList<>();
 
         JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
                 "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
