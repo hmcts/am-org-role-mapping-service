@@ -41,8 +41,8 @@ public class RefreshJob {
     @Column(name = "locked_by")
     private String lockedBy;
 
-    @Column(name = "locked_at")
-    private LocalDateTime lockedAt;
+    @Column(name = "unlock_at")
+    private LocalDateTime unlockAt;
 
     @Column(name = "retries_count", nullable = false)
     private Integer retries_count;

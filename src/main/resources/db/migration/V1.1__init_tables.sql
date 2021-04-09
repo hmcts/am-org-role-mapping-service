@@ -10,7 +10,7 @@ create table refresh_jobs(
 	jurisdiction text not null,
 	status text not null,
 	locked_by text,
-	locked_at timestamp,
+	unlock_at timestamp,
 	retries_count int not null,
 	log text,
 	created timestamp,
