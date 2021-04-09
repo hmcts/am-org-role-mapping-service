@@ -19,7 +19,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($jap.getRegionId()));
-   attribute.put("location", JacksonUtils.convertObjectIntoJsonNode($jap.getBaseLocationId()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($jap.getBaseLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("SALARIED"));
   insert(
       RoleAssignment.builder()
