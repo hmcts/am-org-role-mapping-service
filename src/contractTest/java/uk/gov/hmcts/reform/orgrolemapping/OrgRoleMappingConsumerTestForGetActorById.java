@@ -20,10 +20,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -34,13 +37,19 @@ import java.util.Map;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service_get_actor_by_id")
+@PactTestFor(providerName = "am_roleAssignment_getAssignment")
 @PactFolder("pacts")
 @SpringBootTest
 public class OrgRoleMappingConsumerTestForGetActorById {
 
     private static final String ACTOR_ID = "23486";
     private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
+
+    @MockBean
+    CRDTopicConsumer topicConsumer;
+
+    @MockBean
+    JRDTopicConsumer jrdTopicConsumer;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -52,7 +61,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "am_role_assignment_service_get_actor_by_id", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_getAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeGetActorByIdAndGet200(PactDslWithProvider builder) {
 
         return builder
@@ -97,9 +106,8 @@ public class OrgRoleMappingConsumerTestForGetActorById {
                         .stringType("roleCategory", "LEGAL_OPERATIONS")
                         .booleanValue("readOnly", false)
                         .object("attributes", attribute -> attribute
-                                .stringType("region", "north-east")
-                                .stringType("contractType", "SALARIED")
-                                .stringType("caseId", "1234567890123456"))
+                                .stringType("jurisdiction", "IA")
+                                .stringType("primaryLocation", "123456"))
                 )).build();
     }
 
