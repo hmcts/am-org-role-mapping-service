@@ -14,23 +14,23 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class FlagConfigs {
-    @Getter
-    private static FlagConfigs flagConfigs = buildFlagConfig();
+    public class FlagConfigs {
+        @Getter
+        private static FlagConfigs flagConfigs = buildFlagConfig();
 
-    private final Map<String,FlagConfig> flagConfigByFlagName = new HashMap<>();
+        private final Map<String,FlagConfig> flagConfigByFlagName = new HashMap<>();
 
-    private FlagConfigs(Collection<FlagConfig> flags) {
-        flags.forEach(f -> flagConfigByFlagName.put(f.getName(), f));
-    }
+        private FlagConfigs(Collection<FlagConfig> flags) {
+            flags.forEach(f -> flagConfigByFlagName.put(f.getName(), f));
+        }
 
-    public FlagConfig get(String flagName) {
-        return flagConfigByFlagName.get(flagName);
-    }
+        public FlagConfig get(String flagName) {
+            return flagConfigByFlagName.get(flagName);
+        }
 
-    public Collection<FlagConfig> getValues() {
-        return flagConfigByFlagName.values();
-    }
+        public Collection<FlagConfig> getValues() {
+            return flagConfigByFlagName.values();
+        }
 
     private static FlagConfigs buildFlagConfig() {
         InputStream input = JacksonUtils.class.getClassLoader().getResourceAsStream("flag_config.json");

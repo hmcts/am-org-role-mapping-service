@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FlagConfigs;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
@@ -44,7 +45,8 @@ public class WelcomeController {
     @GetMapping(value = "/welcome")
     public String welcome() {
         //Use the below statement for any given API to implement Launch Darkly.
-        return "Welcome to Organisation Role Mapping Service";
+        return FlagConfigs.getFlagConfigs().get("get-ld-flag").toString();
+        //return "Welcome to Organisation Role Mapping Service";
     }
 
     @PostMapping(
