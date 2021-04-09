@@ -333,43 +333,43 @@ dependencies {
 
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
-    implementation('io.netty:netty-buffer:4.1.60.Final') {
+    implementation('io.netty:netty-buffer:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec:4.1.60.Final') {
+    implementation('io.netty:netty-codec:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-http:4.1.60.Final') {
+    implementation('io.netty:netty-codec-http:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-common:4.1.60.Final') {
+    implementation('io.netty:netty-common:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-handler:4.1.60.Final') {
+    implementation('io.netty:netty-handler:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver:4.1.60.Final') {
+    implementation('io.netty:netty-resolver:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport:4.1.60.Final') {
+    implementation('io.netty:netty-transport:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-epoll:4.1.60.Final') {
+    implementation('io.netty:netty-transport-native-epoll:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-kqueue:4.1.60.Final') {
+    implementation('io.netty:netty-transport-native-kqueue:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-unix-common:4.1.60.Final') {
+    implementation('io.netty:netty-transport-native-unix-common:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-http2:4.1.60.Final') {
+    implementation('io.netty:netty-codec-http2:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-socks:4.1.60.Final') {
+    implementation('io.netty:netty-codec-socks:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-handler-proxy:4.1.60.Final') {
+    implementation('io.netty:netty-handler-proxy:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
 
