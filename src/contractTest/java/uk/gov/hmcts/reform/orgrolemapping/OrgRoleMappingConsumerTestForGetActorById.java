@@ -25,7 +25,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -45,7 +46,10 @@ public class OrgRoleMappingConsumerTestForGetActorById {
     private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
 
     @MockBean
-    TopicConsumer topicConsumer;
+    CRDTopicConsumer topicConsumer;
+
+    @MockBean
+    JRDTopicConsumer jrdTopicConsumer;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {

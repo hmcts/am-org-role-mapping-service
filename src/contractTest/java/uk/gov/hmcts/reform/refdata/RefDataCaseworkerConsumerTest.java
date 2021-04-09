@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
@@ -61,7 +61,7 @@ public class RefDataCaseworkerConsumerTest {
     @PactTestFor(pactMethod = "generatePactFragment")
     public void verifyCaseworkersFetch() {
 
-        ResponseEntity<List<UserProfile>> caseWorkerProfiles =
+        ResponseEntity<List<CaseWorkerProfile>> caseWorkerProfiles =
             crdFeignClient.getCaseworkerDetailsById(buildUserRequest());
         assertThat(caseWorkerProfiles.getBody().get(0).getEmailId(), equalTo("sam.manuel@gmail.com"));
 

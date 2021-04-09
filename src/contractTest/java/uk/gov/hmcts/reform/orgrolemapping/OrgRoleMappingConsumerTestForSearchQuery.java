@@ -28,7 +28,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 
 import java.io.IOException;
 import java.util.Map;
@@ -50,7 +51,10 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     private static final String RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL = "/am/role-assignments/query";
 
     @MockBean
-    TopicConsumer topicConsumer;
+    CRDTopicConsumer topicConsumer;
+
+    @MockBean
+    JRDTopicConsumer jrdTopicConsumer;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
