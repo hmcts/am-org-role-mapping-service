@@ -20,10 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 
 import java.util.Map;
 
@@ -34,12 +36,15 @@ import static org.junit.Assert.assertNotNull;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_role_assignment_service_roles")
+@PactTestFor(providerName = "am_roleAssignment_getRoles")
 @PactFolder("pacts")
 @SpringBootTest
 public class OrgRoleMappingConsumerTestForStaticRoles {
 
     private static final String RAS_GET_LIST_ROLES_URL = "/am/role-assignments/roles";
+
+    @MockBean
+    TopicConsumer topicConsumer;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -51,7 +56,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "am_role_assignment_service_roles", consumer = "am_org_role_mapping")
+    @Pact(provider = "am_roleAssignment_getRoles", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeGetListOfRolesAndGet200(PactDslWithProvider builder) {
 
         return builder

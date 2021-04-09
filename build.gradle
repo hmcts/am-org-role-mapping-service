@@ -331,43 +331,43 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
 
-    implementation('io.netty:netty-buffer:4.1.60.Final') {
+    implementation('io.netty:netty-buffer:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec:4.1.60.Final') {
+    implementation('io.netty:netty-codec:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-http:4.1.60.Final') {
+    implementation('io.netty:netty-codec-http:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-common:4.1.60.Final') {
+    implementation('io.netty:netty-common:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-handler:4.1.60.Final') {
+    implementation('io.netty:netty-handler:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver:4.1.60.Final') {
+    implementation('io.netty:netty-resolver:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport:4.1.60.Final') {
+    implementation('io.netty:netty-transport:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-epoll:4.1.60.Final') {
+    implementation('io.netty:netty-transport-native-epoll:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-kqueue:4.1.60.Final') {
+    implementation('io.netty:netty-transport-native-kqueue:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-unix-common:4.1.60.Final') {
+    implementation('io.netty:netty-transport-native-unix-common:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-http2:4.1.60.Final') {
+    implementation('io.netty:netty-codec-http2:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-socks:4.1.60.Final') {
+    implementation('io.netty:netty-codec-socks:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-handler-proxy:4.1.60.Final') {
+    implementation('io.netty:netty-handler-proxy:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
 
@@ -443,6 +443,7 @@ dependencies {
     contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.3.2")
     contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
     contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
+    contractTestImplementation('org.springframework.boot:spring-boot-starter-test')
 
     contractTestCompile sourceSets.main.runtimeClasspath
     contractTestCompile sourceSets.test.runtimeClasspath
@@ -454,19 +455,25 @@ task contract(type: Test) {
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
     include "uk/gov/hmcts/reform/orgrolemapping/**"
+    include "uk/gov/hmcts/reform/refdata/**"
     systemProperty 'pact.rootDir', "pacts"
 }
 
 task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test to broker.', group: 'Verification') {
+    useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
+    include "uk/gov/hmcts/reform/refdata/**"
+    include "uk/gov/hmcts/reform/orgrolemapping/**"
+    systemProperty 'pact.rootDir', "pacts"
 }
 
 runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 
 project.ext {
-    pactVersion = getCheckedOutGitCommitHash()
+    pacticipant = 'accessMgmt_orgRoleMapping'
+    pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
 def getCheckedOutGitCommitHash() {
@@ -474,10 +481,13 @@ def getCheckedOutGitCommitHash() {
 }
 
 pact {
+    broker {
+     pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
+    }
     publish {
         pactDirectory = 'pacts'
-        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
-        version = project.pactVersion
+        version = project.pacticipantVersion
+        tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
     }
 }
 
