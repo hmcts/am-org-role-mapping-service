@@ -111,7 +111,7 @@ public class ParseRequestService implements ParseRequestBase {
         });
     }
 
-    public void judicialValidation(List<JudicialProfile> profiles, AtomicInteger invalidUserProfilesCount,
+    private void judicialValidation(List<JudicialProfile> profiles, AtomicInteger invalidUserProfilesCount,
                                     Set<Object> invalidJudicialProfiles) {
 
         profiles.forEach(userProfile -> {
