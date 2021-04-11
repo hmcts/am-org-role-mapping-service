@@ -22,13 +22,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
 
 
 @RunWith(MockitoJUnitRunner.class)
 class ParseRequestServiceTest {
 
     ParseRequestService sut = new ParseRequestService();
+    Set<JudicialProfile> invalidJudicialProfiles = new HashSet<>();
+    UserRequest judicialUser = TestDataBuilder.buildUserRequest();
+    AtomicInteger integer = new AtomicInteger();
 
     @Test
     void validateUserRequestTest() {
@@ -130,14 +132,7 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    //lots to add
     void validateJudicialProfilesTest() {
-        sut.validateUserProfiles(buildJudicialProfile(TestDataBuilder.buildUserRequest()),
-                TestDataBuilder.buildUserRequest(), new AtomicInteger(),new HashSet<>(), UserType.JUDICIAL);
-    }
-
-    @Test
-    void judicialValidationTest() {
 
         JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
                 "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
@@ -154,9 +149,11 @@ class ParseRequestServiceTest {
                 Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
                 "Judicial");
 
-        sut.judicialValidation(Collections.singletonList(profile),
-                new AtomicInteger(0),
-                Collections.emptySet());
+        sut.validateUserProfiles(Collections.singletonList(profile),
+                judicialUser,
+                integer,
+                invalidJudicialProfiles,
+                UserType.JUDICIAL);
     }
 
     @Test
@@ -174,10 +171,11 @@ class ParseRequestServiceTest {
                 Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
                 "Judicial");
 
-        assertThrows(UnsupportedOperationException.class, () ->
-                sut.judicialValidation(Collections.singletonList(profile),
-                new AtomicInteger(0),
-                Collections.emptySet()));
+        sut.validateUserProfiles(Collections.singletonList(profile),
+                judicialUser,
+                integer,
+                invalidJudicialProfiles,
+                UserType.JUDICIAL);
     }
 
     @Test
@@ -198,10 +196,11 @@ class ParseRequestServiceTest {
                 Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
                 "Judicial");
 
-        assertThrows(UnsupportedOperationException.class, () ->
-                sut.judicialValidation(Collections.singletonList(profile),
-                new AtomicInteger(0),
-                Collections.emptySet()));
+        sut.validateUserProfiles(Collections.singletonList(profile),
+                judicialUser,
+                integer,
+                invalidJudicialProfiles,
+                UserType.JUDICIAL);
     }
 
     @Test
@@ -224,10 +223,11 @@ class ParseRequestServiceTest {
                 noAuthorisationList,
                 "Judicial");
 
-        assertThrows(UnsupportedOperationException.class, () ->
-                sut.judicialValidation(Collections.singletonList(profile),
-                new AtomicInteger(0),
-                Collections.emptySet()));
+        sut.validateUserProfiles(Collections.singletonList(profile),
+                judicialUser,
+                integer,
+                invalidJudicialProfiles,
+                UserType.JUDICIAL);
     }
 
     @Test
@@ -248,10 +248,11 @@ class ParseRequestServiceTest {
                 Collections.singletonList(TestDataBuilder.buildJPAuthorisation("")),
                 "Judicial");
 
-        assertThrows(UnsupportedOperationException.class, () ->
-                sut.judicialValidation(Collections.singletonList(profile),
-                new AtomicInteger(0),
-                Collections.emptySet()));
+        sut.validateUserProfiles(Collections.singletonList(profile),
+                judicialUser,
+                integer,
+                invalidJudicialProfiles,
+                UserType.JUDICIAL);
     }
 
 }
