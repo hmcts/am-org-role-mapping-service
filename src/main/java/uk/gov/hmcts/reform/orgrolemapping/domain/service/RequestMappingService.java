@@ -20,6 +20,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.LDEventListener;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.LDFeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -146,8 +148,22 @@ public class RequestMappingService {
         //   2. fire all the rules
         //   3. retrieve all the created role assignments
         //      (into a variable populated by the results of a query defined in the rules).
+
+        // Build the list of feature flag objects from static map.
+        List<LDFeatureFlag> featureFlags = new ArrayList<>();
+        Map<String,Boolean> droolFlagStates = LDEventListener.getDroolFlagStates();
+        for (String flag : droolFlagStates.keySet()) {
+            LDFeatureFlag  featureFlag = LDFeatureFlag.builder()
+                    .flagName(flag)
+                    .status(droolFlagStates.get(flag))
+                    .build();
+            featureFlags.add(featureFlag);
+        }
+
         List<Command<?>> commands = new ArrayList<>();
         commands.add(CommandFactory.newInsertElements(allProfiles));
+        // add the featureFlag objects
+        commands.add(CommandFactory.newInsertElements(featureFlags));
         commands.add(CommandFactory.newFireAllRules());
         commands.add(CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME));
 
