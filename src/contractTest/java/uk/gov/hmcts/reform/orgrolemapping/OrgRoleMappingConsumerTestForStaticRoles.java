@@ -127,6 +127,11 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
                         .stringType(label, "Senior Tribunal Caseworker")
                         .stringType(description, "Senior Tribunal caseworker")
                         .stringType(category, "LEGAL_OPERATIONS"))
+                .object(role -> role
+                        .stringType(name, "salaried-judge")
+                        .stringType(label, "salaried-judge")
+                        .stringType(description, "Judicial office holder able to do judicial case work")
+                        .stringType(category, "JUDICIAL"))
         ).build();
     }
 
