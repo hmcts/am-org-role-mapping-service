@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 class RoleAssignmentServiceTest {
@@ -27,11 +28,12 @@ class RoleAssignmentServiceTest {
     }
 
     @Test
-    void testGetServiceStatus_EmptyString() {
+    void testGetServiceStatus() {
         Mockito.when(rasFeignClient.getServiceStatus())
-                .thenReturn("Hello!");
+                .thenReturn("Okay!");
         String serviceStatus = sut.getServiceStatus();
-        assertEquals(serviceStatus, "Hello!");
+        assertNotNull(serviceStatus);
+        assertEquals(serviceStatus, "Okay!");
     }
 
 }

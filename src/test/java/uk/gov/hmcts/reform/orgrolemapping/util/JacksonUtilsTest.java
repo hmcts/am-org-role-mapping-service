@@ -1,9 +1,16 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -23,5 +30,25 @@ class JacksonUtilsTest {
     @Test
     void getHashMapTypeReference() {
         assertNotNull(JacksonUtils.getHashMapTypeReference());
+    }
+
+    @Test
+    void convertInCaseWorkerProfile() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        CaseWorkerProfile caseWorkerProfile =
+                objectMapper.readValue(new File("src/main/resources/userProfileSample.json"),
+                        CaseWorkerProfile.class);
+        assertNotNull(JacksonUtils.convertInCaseWorkerProfile(caseWorkerProfile));
+    }
+
+    @Test
+    void convertInJudicialProfile() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile judicialProfile =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+        assertNotNull(JacksonUtils.convertInJudicialProfile(judicialProfile));
     }
 }
