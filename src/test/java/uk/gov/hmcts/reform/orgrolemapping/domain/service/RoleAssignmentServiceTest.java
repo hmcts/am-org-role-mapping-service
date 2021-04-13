@@ -26,4 +26,12 @@ class RoleAssignmentServiceTest {
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
+    @Test
+    void testGetServiceStatus_EmptyString() {
+        Mockito.when(rasFeignClient.getServiceStatus())
+                .thenReturn("Hello!");
+        String serviceStatus = sut.getServiceStatus();
+        assertEquals(serviceStatus, "Hello!");
+    }
+
 }
