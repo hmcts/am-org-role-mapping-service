@@ -35,10 +35,11 @@ public class LDEventListener implements CommandLineRunner {
                 .lastName("am")
                 .custom(SERVICE_NAME, "am_org_role_mapping_service")
                 .build();
-
+        //This if config file flow
         for (FlagConfig flag : FlagConfigs.getFlagConfigs().getValues()) {
             featureFlagListener.logWheneverOneFlagChangesForOneUser(flag.getName(), user);
-            //add the logic to insert the flag with default status if it doesn't exist in the state table
+            //1) Check if role-refresh-enabled flag is true and proceed with DB operation.
+            //add the logic to insert the flag with default status if it doesn't exist in the state table and insert refresh jobs
             //code
             //add the flag with default status in the static map.
             droolFlagStates.put(flag.getName(),flag.getDefaultValue());
