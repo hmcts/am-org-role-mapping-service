@@ -16,7 +16,9 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -113,6 +115,37 @@ class RetrieveDataServiceTest {
         Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(),UserType.CASEWORKER);
         assertNotNull(response);
         assertTrue(response.isEmpty());
+    }
+
+    @Test
+    void retrieveJudicialProfilesTest() {
+
+        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
+                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
+                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
+                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                "2020-04-28T16:00:49", "TRUE",
+                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
+                        "5",
+                        "1351",
+                        "1",
+                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                        LocalDateTime.of(2020, 4, 28, 16, 1, 0))),
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
+                "Judicial");
+
+        doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
+                .when(jrdFeignClient).getJudicialDetailsById(TestDataBuilder.buildUserRequest());
+
+        Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
+
+        assertEquals(1, result.size());
+
+        Mockito.verify(jrdFeignClient, Mockito.times(1))
+                .getJudicialDetailsById(any(UserRequest.class));
+        Mockito.verify(parseRequestService, Mockito.times(1))
+                .validateUserProfiles(any(), any(), any(),any(),any());
     }
 
     @Test
