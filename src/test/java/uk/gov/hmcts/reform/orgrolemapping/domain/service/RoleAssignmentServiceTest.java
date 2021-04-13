@@ -33,7 +33,7 @@ class RoleAssignmentServiceTest {
                 .thenReturn("Okay!");
         String serviceStatus = sut.getServiceStatus();
         assertNotNull(serviceStatus);
-        assertEquals(serviceStatus, "Okay!");
+        assertEquals("Okay!", serviceStatus);
     }
 
 }
