@@ -229,15 +229,19 @@ public class TestDataBuilder {
                                                                  String contractTypeId,
                                                                  String baseLocationId,
                                                                  String locationId,
+                                                                 String locationDescEn,
                                                                  LocalDateTime startDate,
-                                                                 LocalDateTime endDate) {
+                                                                 LocalDateTime endDate,
+                                                                 String appointmentId) {
         return JudicialProfile.Appointment.builder()
                 .roleId(roleId)
                 .contractTypeId(contractTypeId)
                 .baseLocationId(baseLocationId)
                 .locationId(locationId)
+                .locationDescEn(locationDescEn)
                 .startDate(startDate)
                 .endDate(endDate)
+                .appointmentId(appointmentId)
                 .build();
     }
 
@@ -246,7 +250,6 @@ public class TestDataBuilder {
                 .authorisationId(authorisationId)
                 .build();
     }
-
 
     public static JsonNode buildAttributesFromFile() {
         try (InputStream inputStream =

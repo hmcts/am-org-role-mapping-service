@@ -130,8 +130,10 @@ class RetrieveDataServiceTest {
                         "5",
                         "1351",
                         "1",
+                        "north-east",
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0))),
+                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                        "1")),
                 Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
                 "Judicial");
 
