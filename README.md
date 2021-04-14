@@ -60,6 +60,14 @@ If the API is running, you should see response like below:
 The application uses a Postgres database which can be run through a docker container on its own if required.
 The application should automatically apply any database migrations using flyway.
 
+### Running unit tests tests:
+
+If you have some time to spare, you can run the *unit tests* as follows:
+
+```
+./gradlew test
+```
+
 ### Running integration tests:
 
 
