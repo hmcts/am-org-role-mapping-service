@@ -1,14 +1,19 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
+import org.mvel2.ast.Assignment;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
@@ -40,6 +45,12 @@ class AssignmentRequestBuilderTest {
     @Test
     void buildAttributesFromFile() {
         assertNotNull(AssignmentRequestBuilder.buildAttributesFromFile("attributes.json"));
+    }
+
+    @Test
+    void buildAttributesFromFile_InvalidRequest() {
+        assertThrows(InvalidRequest.class, () ->
+                AssignmentRequestBuilder.buildAttributesFromFile(""));
     }
 
     @Test
