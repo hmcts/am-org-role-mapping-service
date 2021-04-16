@@ -134,8 +134,7 @@ class RetrieveDataServiceTest {
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
-                "Judicial");
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
                 .when(jrdFeignClient).getJudicialDetailsById(TestDataBuilder.buildUserRequest());

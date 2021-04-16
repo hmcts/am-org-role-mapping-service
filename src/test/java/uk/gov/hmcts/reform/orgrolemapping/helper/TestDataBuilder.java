@@ -201,8 +201,7 @@ public class TestDataBuilder {
                                                        String extractedDate,
                                                        String activeFlag,
                                                        List<JudicialProfile.Appointment> appointments,
-                                                       List<JudicialProfile.Authorisation> authorisations,
-                                                       String userType) {
+                                                       List<JudicialProfile.Authorisation> authorisations) {
 
         return JudicialProfile.builder()
                 .elinkId(elinkId)
@@ -221,7 +220,6 @@ public class TestDataBuilder {
                 .activeFlag(activeFlag)
                 .appointments(appointments)
                 .authorisations(authorisations)
-                .userType(userType)
                 .build();
     }
 

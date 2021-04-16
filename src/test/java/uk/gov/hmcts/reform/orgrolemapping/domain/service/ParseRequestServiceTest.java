@@ -148,8 +148,7 @@ class ParseRequestServiceTest {
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
-                "Judicial");
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
@@ -170,8 +169,7 @@ class ParseRequestServiceTest {
                 LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                 "2020-04-28T16:00:49", "TRUE",
                 noAppointmentList,
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
-                "Judicial");
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
@@ -197,8 +195,7 @@ class ParseRequestServiceTest {
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")),
-                "Judicial");
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
@@ -226,8 +223,7 @@ class ParseRequestServiceTest {
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         "1")),
-                noAuthorisationList,
-                "Judicial");
+                noAuthorisationList);
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
@@ -253,8 +249,7 @@ class ParseRequestServiceTest {
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         LocalDateTime.of(2020, 4, 28, 16, 1, 0),
                         "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("")),
-                "Judicial");
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("")));
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,

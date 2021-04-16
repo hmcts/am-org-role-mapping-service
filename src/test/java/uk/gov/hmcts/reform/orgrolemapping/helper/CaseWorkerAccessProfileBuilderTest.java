@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,5 +47,15 @@ class CaseWorkerAccessProfileBuilderTest {
         assertEquals(2, caseWorkerProfiles.size());
         assertEquals(id_1, caseWorkerProfiles.get(0).getId());
         assertEquals(id_2, caseWorkerProfiles.get(1).getId());
+    }
+
+    @Test
+    void buildJudicialProfilesTest() {
+        List<JudicialProfile> judicialProfiles =
+                UserAccessProfileBuilder.buildJudicialProfile(TestDataBuilder.buildUserRequest());
+        assertNotNull(judicialProfiles);
+        assertEquals(2, judicialProfiles.size());
+        assertEquals(id_1, judicialProfiles.get(0).getElinkId());
+        assertEquals(id_2, judicialProfiles.get(1).getElinkId());
     }
 }
