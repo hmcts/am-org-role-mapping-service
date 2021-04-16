@@ -1,13 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
-import org.mvel2.ast.Assignment;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
