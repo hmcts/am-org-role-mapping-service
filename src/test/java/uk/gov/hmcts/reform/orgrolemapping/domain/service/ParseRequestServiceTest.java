@@ -48,6 +48,13 @@ class ParseRequestServiceTest {
     }
 
     @Test
+    void invalidUserRequestTest() {
+        UserRequest userRequest = TestDataBuilder.buildInvalidRequest();
+        assertThrows(BadRequestException.class, () ->
+                sut.validateUserRequest(userRequest));
+    }
+
+    @Test
     void validateUserProfilesTest() {
         sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false,
                 "1", "2",
