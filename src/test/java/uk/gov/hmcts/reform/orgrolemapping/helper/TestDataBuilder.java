@@ -53,6 +53,12 @@ public class TestDataBuilder {
         return UserRequest.builder().userIds(users).build();
     }
 
+    public static UserRequest buildUserRequestIndividual() {
+        ArrayList<String> users = new ArrayList<>();
+        users.add(id_1);
+        return UserRequest.builder().userIds(users).build();
+    }
+
     public static UserRequest buildInvalidRequest() {
         ArrayList<String> users = new ArrayList<>();
         users.add(id_1);
