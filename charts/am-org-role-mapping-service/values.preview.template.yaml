@@ -12,6 +12,9 @@ java:
     SB_TOPIC_CONN_STRING:
       secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
       key: connectionString
+    SB_SUB_NAME:
+      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
+      key: subscriptionName
       
   keyVaults:
     am:
@@ -32,6 +35,7 @@ java:
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-pr-580.service.core-compute-preview.internal
     LAUNCH_DARKLY_ENV: pr
     AMQP_SHARED_ACCESS_KEY_VALUE: "$(SB_TOPIC_CONN_STRING)"
+    AMQP_SUB_NAME: "$(SB_SUB_NAME)"
 
 servicebus:
   enabled: true
