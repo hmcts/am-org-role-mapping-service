@@ -71,8 +71,6 @@ class ParseRequestServiceTest {
                 false, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         userRequest.getUserIds().add("testUser");
-        sut.validateUserProfiles(caseWorkerProfiles, userRequest, new AtomicInteger(),new HashSet<>(),
-                UserType.CASEWORKER);
     }
 
     @Test
@@ -140,7 +138,6 @@ class ParseRequestServiceTest {
 
     @Test
     void validateJudicialProfilesTest() {
-
         JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
                 "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
                 "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
@@ -166,7 +163,6 @@ class ParseRequestServiceTest {
 
     @Test
     void judicialValidationTest_NoAppointment() {
-
         List<JudicialProfile.Appointment> noAppointmentList = new ArrayList<>();
 
         JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
@@ -187,7 +183,6 @@ class ParseRequestServiceTest {
 
     @Test
     void judicialValidationTest_NoAppointmentRoleId() {
-
         JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
                 "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
                 "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
@@ -213,7 +208,6 @@ class ParseRequestServiceTest {
 
     @Test
     void judicialValidationTest_NoAuthorisation() {
-
         List<JudicialProfile.Authorisation> noAuthorisationList = new ArrayList<>();
 
         JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
@@ -241,7 +235,6 @@ class ParseRequestServiceTest {
 
     @Test
     void judicialValidationTest_NoAuthorisationId() {
-
         JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
                 "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
                 "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
