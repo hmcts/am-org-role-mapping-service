@@ -71,13 +71,14 @@ class ParseRequestServiceTest {
     void validateUserProfiles_throwsBadRequest_noBaseLocationTest() {
         List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true,
                 false, "1", "2",
-                ROLE_NAME_STCW, ROLE_NAME_TCW, false, true,
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true,
                 false, true, "1", "2", false);
+        caseWorkerProfiles.get(0).setBaseLocation(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         userRequest.getUserIds().add("testUser");
         sut.validateUserProfiles(caseWorkerProfiles, userRequest, mockInteger, new HashSet<>(),
                 UserType.CASEWORKER);
-        Mockito.verify(mockInteger, Mockito.times(2)).getAndIncrement();
+        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
     }
 
     @Test
@@ -99,11 +100,11 @@ class ParseRequestServiceTest {
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false,
                 true, "1", "2", false);
         caseWorkerProfiles.get(0).setRole(new ArrayList<>());
+        caseWorkerProfiles.get(1).setRole(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         sut.validateUserProfiles(caseWorkerProfiles, userRequest, mockInteger,new HashSet<>(),
                 UserType.CASEWORKER);
-        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
-
+        Mockito.verify(mockInteger, Mockito.times(2)).getAndIncrement();
     }
 
     @Test
@@ -118,8 +119,6 @@ class ParseRequestServiceTest {
         sut.validateUserProfiles(caseWorkerProfiles, userRequest, mockInteger,new HashSet<>(),
                 UserType.CASEWORKER);
         Mockito.verify(mockInteger, Mockito.times(2)).getAndIncrement();
-
-
     }
 
     @Test
@@ -194,6 +193,71 @@ class ParseRequestServiceTest {
     }
 
     @Test
+    void validateJudicialProfilesTest_emptyContractorTypeId_emptyBaseLocationId_emptyLocationId() {
+        List<JudicialProfile> judicialProfileList = new ArrayList<>();
+        UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
+
+        JudicialProfile profile1 = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
+                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
+                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
+                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                "2020-04-28T16:00:49", "TRUE",
+                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
+                        "",
+                        "1351",
+                        "1",
+                        "north-east",
+                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                        "1")),
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
+
+        JudicialProfile profile2 = TestDataBuilder.buildJudicialProfile("37396", "EMP37395",
+                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
+                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
+                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                "2020-04-28T16:00:49", "TRUE",
+                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
+                        "5",
+                        "",
+                        "1",
+                        "north-east",
+                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                        "1")),
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52150")));
+
+        JudicialProfile profile3 = TestDataBuilder.buildJudicialProfile("37396", "EMP37395",
+                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
+                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
+                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                "2020-04-28T16:00:49", "TRUE",
+                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
+                        "5",
+                        "1351",
+                        "",
+                        "north-east",
+                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
+                        "1")),
+                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52150")));
+
+        judicialProfileList.add(profile1);
+        judicialProfileList.add(profile2);
+        judicialProfileList.add(profile3);
+
+        sut.validateUserProfiles(judicialProfileList,
+                judicialUserRequest,
+                mockInteger,
+                invalidJudicialProfiles,
+                UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(3)).getAndIncrement();
+    }
+
+    @Test
     void judicialValidationTest_NoAppointment() {
         List<JudicialProfile.Appointment> noAppointmentList = new ArrayList<>();
 
@@ -212,7 +276,6 @@ class ParseRequestServiceTest {
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
         Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
-
     }
 
     @Test
@@ -293,7 +356,6 @@ class ParseRequestServiceTest {
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
         Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
-
     }
 
 }
