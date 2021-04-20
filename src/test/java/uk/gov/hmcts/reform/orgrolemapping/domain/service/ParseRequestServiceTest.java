@@ -195,7 +195,6 @@ class ParseRequestServiceTest {
     @Test
     void validateJudicialProfilesTest_emptyContractorTypeId_emptyBaseLocationId_emptyLocationId() {
         List<JudicialProfile> judicialProfileList = new ArrayList<>();
-        UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
 
         JudicialProfile profile1 = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
                 "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
@@ -250,7 +249,7 @@ class ParseRequestServiceTest {
         judicialProfileList.add(profile3);
 
         sut.validateUserProfiles(judicialProfileList,
-                judicialUserRequest,
+                TestDataBuilder.buildUserRequestIndividual(),
                 mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
