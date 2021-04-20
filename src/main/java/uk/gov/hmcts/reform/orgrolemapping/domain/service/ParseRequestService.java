@@ -126,8 +126,6 @@ public class ParseRequestService implements ParseRequestBase {
                             || StringUtils.isEmpty(appointment.getRoleId())
                             || StringUtils.isEmpty(appointment.getBaseLocationId())
                             || StringUtils.isEmpty(appointment.getLocationId())
-                            || appointment.getStartDate() == null
-                            || appointment.getEndDate() == null
 
                     ) {
                         log.error("appointment is not valid for the judicialProfile id {} having roleId {} ",
