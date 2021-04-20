@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
@@ -9,10 +8,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 class CaseWorkerAccessProfileBuilderTest {
