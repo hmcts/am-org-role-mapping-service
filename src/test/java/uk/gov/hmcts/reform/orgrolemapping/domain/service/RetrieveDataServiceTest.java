@@ -87,7 +87,7 @@ class RetrieveDataServiceTest {
     void shouldReturnCaseWorkerProfile() {
 
         doReturn(ResponseEntity
-                .ok(buildUserProfile(buildUserRequest()))).when(crdFeignClient).getCaseworkerDetailsById(any());
+                .ok(buildUserProfile(buildUserRequest(), "userProfileSample.json"))).when(crdFeignClient).getCaseworkerDetailsById(any());
 
 
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any(),any());
@@ -153,7 +153,7 @@ class RetrieveDataServiceTest {
     void shouldReturnJudicialProfile() {
 
         doReturn(ResponseEntity
-                .ok(buildJudicialProfile(buildUserRequest()))).when(jrdFeignClient).getJudicialDetailsById(any());
+                .ok(buildJudicialProfile(buildUserRequest(), "judicialProfileSample.json"))).when(jrdFeignClient).getJudicialDetailsById(any());
 
 
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any(),any());

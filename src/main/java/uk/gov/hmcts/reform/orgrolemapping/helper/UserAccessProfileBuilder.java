@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.Setter;
+import org.eclipse.sisu.inject.BindingPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
@@ -98,7 +99,7 @@ public class UserAccessProfileBuilder {
     }
 
 
-    public static List<CaseWorkerProfile> buildUserProfile(UserRequest userRequest) {
+    public static List<CaseWorkerProfile> buildUserProfile(UserRequest userRequest, String resource) {
 
         Set<CaseWorkerProfile> caseWorkerProfiles = new LinkedHashSet<>();
 
@@ -106,7 +107,7 @@ public class UserAccessProfileBuilder {
         userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
                          UserAccessProfileBuilder.class.getClassLoader()
-                                 .getResourceAsStream("userProfileSample.json")) {
+                                 .getResourceAsStream(resource)) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
                 CaseWorkerProfile caseWorkerProfile = objectMapper.readValue(inputStream, CaseWorkerProfile.class);
@@ -123,7 +124,7 @@ public class UserAccessProfileBuilder {
         return new ArrayList<>(caseWorkerProfiles);
     }
 
-    public static List<JudicialProfile> buildJudicialProfile(UserRequest userRequest) {
+    public static List<JudicialProfile> buildJudicialProfile(UserRequest userRequest, String resource) {
 
         Set<JudicialProfile> judicialProfilesProfiles = new LinkedHashSet<>();
 
@@ -131,7 +132,7 @@ public class UserAccessProfileBuilder {
         userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
                          UserAccessProfileBuilder.class.getClassLoader()
-                                 .getResourceAsStream("judicialProfileSample.json")) {
+                                 .getResourceAsStream(resource)) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
                 JudicialProfile judicialProfile = objectMapper.readValue(inputStream, JudicialProfile.class);

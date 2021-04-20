@@ -1,12 +1,18 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 class CaseWorkerAccessProfileBuilderTest {
@@ -42,7 +48,8 @@ class CaseWorkerAccessProfileBuilderTest {
     @Test
     void buildUserProfiles() {
         List<CaseWorkerProfile> caseWorkerProfiles =
-                UserAccessProfileBuilder.buildUserProfile(TestDataBuilder.buildUserRequest());
+                UserAccessProfileBuilder.buildUserProfile(TestDataBuilder.buildUserRequest(),
+                        "userProfileSample.json");
         assertNotNull(caseWorkerProfiles);
         assertEquals(2, caseWorkerProfiles.size());
         assertEquals(id_1, caseWorkerProfiles.get(0).getId());
@@ -50,12 +57,25 @@ class CaseWorkerAccessProfileBuilderTest {
     }
 
     @Test
+    void buildUserProfiles_BadRequest() {
+        assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder
+                .buildUserProfile(TestDataBuilder.buildUserRequest(), ""));
+    }
+
+    @Test
     void buildJudicialProfilesTest() {
         List<JudicialProfile> judicialProfiles =
-                UserAccessProfileBuilder.buildJudicialProfile(TestDataBuilder.buildUserRequest());
+                UserAccessProfileBuilder.buildJudicialProfile(TestDataBuilder.buildUserRequest(),
+                        "judicialProfileSample.json");
         assertNotNull(judicialProfiles);
         assertEquals(2, judicialProfiles.size());
         assertEquals(id_1, judicialProfiles.get(0).getElinkId());
         assertEquals(id_2, judicialProfiles.get(1).getElinkId());
+    }
+
+    @Test
+    void buildJudicialProfiles_BadRequest() {
+        assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder
+                .buildJudicialProfile(TestDataBuilder.buildUserRequest(), ""));
     }
 }

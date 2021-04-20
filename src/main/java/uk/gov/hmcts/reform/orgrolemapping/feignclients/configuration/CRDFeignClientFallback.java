@@ -23,7 +23,8 @@ public class CRDFeignClientFallback implements CRDFeignClient {
     @Override
     @SuppressWarnings("unchecked")
     public <T> ResponseEntity<List<T>> getCaseworkerDetailsById(UserRequest userRequest) {
-        return ResponseEntity.ok((List<T>) new ArrayList<>(buildUserProfile(userRequest)));
+        return ResponseEntity.ok((List<T>) new ArrayList<>(buildUserProfile(userRequest, "userProfileSample.json")));
+
     }
 
 }
