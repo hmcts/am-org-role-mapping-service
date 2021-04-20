@@ -208,9 +208,11 @@ class ParseRequestServiceTest {
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
-                integer,
+                mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+
     }
 
     @Test
@@ -233,9 +235,10 @@ class ParseRequestServiceTest {
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
-                integer,
+                mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
     }
 
     @Test
@@ -260,9 +263,10 @@ class ParseRequestServiceTest {
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
-                integer,
+                mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
     }
 
     @Test
@@ -285,9 +289,11 @@ class ParseRequestServiceTest {
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
-                integer,
+                mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+
     }
 
 }
