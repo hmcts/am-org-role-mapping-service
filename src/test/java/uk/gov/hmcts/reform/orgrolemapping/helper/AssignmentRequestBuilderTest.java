@@ -4,9 +4,12 @@ import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,7 +80,6 @@ class AssignmentRequestBuilderTest {
 
     @Test
     void convertUserProfileToJudicialAccessProfile() {
-
         Set<JudicialAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
                 .convertProfileToJudicialAccessProfile(TestDataBuilder.buildJudicialProfile(
                         "37395", "EMP37395",
@@ -105,6 +107,7 @@ class AssignmentRequestBuilderTest {
                 assertNotNull(appointment.getBaseLocationId());
                 assertNotNull(appointment.getContractTypeId());
                 assertNotNull(appointment.getAuthorisations());
+                assertEquals(1, appointment.getAuthorisations().size());
                 assertNotNull(appointment.getAppointmentId());
             }
         );
