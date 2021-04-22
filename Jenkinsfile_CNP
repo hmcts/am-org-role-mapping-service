@@ -106,6 +106,14 @@ withPipeline(type, product, component) {
   // Sync environment specific branches with master branch
   syncBranchesWithMaster(branchesToSync)
 
+  before('functionalTest:aat') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+  }
+
+  before('functionalTest:preview') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+  }
+
   after('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
   }
