@@ -107,11 +107,11 @@ withPipeline(type, product, component) {
   syncBranchesWithMaster(branchesToSync)
 
   before('functionalTest:aat') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
   }
 
   before('functionalTest:preview') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
   }
 
   after('functionalTest:preview') {
