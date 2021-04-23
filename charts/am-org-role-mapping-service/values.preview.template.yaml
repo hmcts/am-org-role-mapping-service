@@ -8,6 +8,7 @@ java:
         - am-org-role-mapping-service-s2s-secret
         - role-assignment-service-LD-SDK-KEY
         - orm-IDAM-CLIENT-ID
+        - orm-IDAM-ADMIN-USERNAME
         - orm-IDAM-CLIENT-SECRET
         - orm-IDAM-ADMIN-SECRET
         - caseworker-topic-primary-send-listen-shared-access-key
