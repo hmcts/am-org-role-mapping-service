@@ -71,6 +71,7 @@ env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
 env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
 env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
 
+
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
     env.LAUNCH_DARKLY_ENV = "pr"
@@ -85,9 +86,15 @@ withPipeline(type, product, component) {
   }
   onMaster {
     enableSlackNotifications('#am-org-role-mapping-service-builds')
+    enablePactAs([
+            AppPipelineDsl.PactRoles.CONSUMER
+    ])
   }
   onPR {
     enableSlackNotifications('#am-org-role-mapping-service-builds')
+    enablePactAs([
+            AppPipelineDsl.PactRoles.CONSUMER
+    ])
   }
 
   overrideVaultEnvironments(vaultOverrides)
@@ -114,8 +121,4 @@ withPipeline(type, product, component) {
   after('smoketest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/site/serenity/**'
   }
-
-  enablePactAs([
-    AppPipelineDsl.PactRoles.CONSUMER
-  ])
 }
