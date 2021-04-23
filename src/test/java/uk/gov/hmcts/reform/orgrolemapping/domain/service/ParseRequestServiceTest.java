@@ -193,7 +193,7 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateJudicialProfilesTest_emptyContractorTypeId_emptyBaseLocationId_emptyLocationId() {
+    void judicialProfiles_noContractorTypeId_noBaseLocationId_noLocationId() {
         List<JudicialProfile> judicialProfileList = new ArrayList<>();
 
         JudicialProfile profile1 = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
