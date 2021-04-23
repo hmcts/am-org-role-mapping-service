@@ -27,3 +27,4 @@ java:
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
     AMQP_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}/subscriptions/rd-caseworker-subscription-{{ .Values.global.environment }}
     TRUST_ALL_CERTS: "true"
+    ORG_ROLE_MAPPING_IDAM_ADMIN_USERID: orm.admin@hmcts.NET
