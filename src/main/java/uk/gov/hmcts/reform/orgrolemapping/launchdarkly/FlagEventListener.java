@@ -13,6 +13,9 @@ public class FlagEventListener {
     @Autowired
     private final LDClient ldClient;
 
+    @Autowired
+    private FlagRefreshService flagRefreshService;
+
     public FlagEventListener(LDClient ldClient) {
         this.ldClient = ldClient;
     }
@@ -24,7 +27,7 @@ public class FlagEventListener {
                         user.getKey(), event.getOldValue(), event.getNewValue()
                 );
                 if(event.getNewValue() != event.getOldValue()){
-                    // FlagRefreshService.UpdateFlagValue(event.getKey()--> flag name)
+                    flagRefreshService.initRefreshJob();
                     //1) Check if orm-refresh-role flag is true on LD server. If yes then proceed with DB.
                     //
                     //2) Retrieve the DB lock so that another running node cannot intervene and insert the updated value in the DB

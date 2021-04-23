@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator.SERVICE_NAME;
 
@@ -22,11 +23,14 @@ public class LDFlagRegister implements CommandLineRunner {
     @Autowired
     FeatureConditionEvaluator featureConditionEvaluator;
 
+    @Autowired
+    FlagRefreshService flagRefreshService;
+
     @Value("${launchdarkly.sdk.environment}")
     private String environment;
 
     @Getter
-    public static final Map<String,Boolean> droolFlagStates = new HashMap<>();
+    public static final ConcurrentHashMap<String,Boolean> droolFlagStates = new ConcurrentHashMap<>();
 
         @Override
         public void run(String... args) throws Exception {
@@ -39,13 +43,8 @@ public class LDFlagRegister implements CommandLineRunner {
         for (FlagConfig flag : FlagConfigs.getFlagConfigs().getValues()) {
 
             flagEventListener.logWheneverOneFlagChangesForOneUser(flag.getName(), user);
-            // FlagRefreshService.initFlagConfig(flag.getName())
-            //1) This is first time flag value being read and inserted in the DB, hence no need to check orm-refresh-role flag.
-            // First check if the flag already exist in the table, if yes then skip. If No then insert with default config value.
-            // If inserting, then retrieve the exclusive lock on the table, so that other nodes cannot insert the same entry.
-            // insert the flag
-            // 2) If DB operation executed successfully, then add the flag with default status in the static map as well.
-            droolFlagStates.put(flag.getName(),flag.getDefaultValue()); //add this inthe above method
+            flagRefreshService.initFlagState(flag);
+
         }
     }
 }
