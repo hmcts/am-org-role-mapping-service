@@ -32,7 +32,7 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
             case ("waitForTime"):
                 logger.info("Sleeping for 30 seconds");
                 try {
-                    Thread.sleep(30000);
+                    Thread.sleep(20000);
                 } catch (InterruptedException exception) {
                     logger.info(exception.getMessage());
                 }
