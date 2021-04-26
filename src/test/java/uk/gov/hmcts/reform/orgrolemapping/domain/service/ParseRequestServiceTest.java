@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -12,7 +14,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.time.LocalDateTime;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,9 +35,8 @@ class ParseRequestServiceTest {
     ParseRequestService sut = new ParseRequestService();
     Set<JudicialProfile> invalidJudicialProfiles = new HashSet<>();
     UserRequest judicialUser = TestDataBuilder.buildUserRequest();
-    AtomicInteger integer = new AtomicInteger();
-
     AtomicInteger mockInteger = mock(AtomicInteger.class);
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void validateUserRequestTest() {
@@ -146,103 +148,47 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateJudicialProfilesTest() {
-        List<JudicialProfile> judicialProfileList = new ArrayList<>();
+    void validateJudicialProfilesTest() throws IOException {
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile judicialProfile1 =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+        JudicialProfile judicialProfile2 =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+        judicialProfile2.setElinkId("37396");
         UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
+        List<JudicialProfile> judicialProfileList = new ArrayList<>();
 
-        JudicialProfile profile1 = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
-                        "5",
-                        "1351",
-                        "1",
-                        "north-east",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
-
-        JudicialProfile profile2 = TestDataBuilder.buildJudicialProfile("37396", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
-                        "5",
-                        "1351",
-                        "1",
-                        "north-east",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52150")));
-
-        judicialProfileList.add(profile1);
-        judicialProfileList.add(profile2);
+        judicialProfileList.add(judicialProfile1);
+        judicialProfileList.add(judicialProfile2);
 
         sut.validateUserProfiles(judicialProfileList,
                 judicialUserRequest,
-                integer,
+                new AtomicInteger(),
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
     }
 
     @Test
-    void judicialProfiles_noContractorTypeId_noBaseLocationId_noLocationId() {
+    void judicialProfiles_noContractTypeId_noBaseLocationId_noLocationId() throws IOException {
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile profile1 =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+        profile1.getAppointments().get(0).setContractTypeId("");
+        profile1.getAppointments().get(1).setContractTypeId("");
+        JudicialProfile profile2 =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+        profile2.getAppointments().get(0).setBaseLocationId("");
+        profile2.getAppointments().get(1).setBaseLocationId("");
+        JudicialProfile profile3 =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+        profile3.getAppointments().get(0).setLocationId("");
+        profile3.getAppointments().get(1).setLocationId("");
         List<JudicialProfile> judicialProfileList = new ArrayList<>();
-
-        JudicialProfile profile1 = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
-                        "",
-                        "1351",
-                        "1",
-                        "north-east",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
-
-        JudicialProfile profile2 = TestDataBuilder.buildJudicialProfile("37396", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
-                        "5",
-                        "",
-                        "1",
-                        "north-east",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52150")));
-
-        JudicialProfile profile3 = TestDataBuilder.buildJudicialProfile("37396", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
-                        "5",
-                        "1351",
-                        "",
-                        "north-east",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52150")));
 
         judicialProfileList.add(profile1);
         judicialProfileList.add(profile2);
@@ -257,17 +203,12 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void judicialValidationTest_NoAppointment() {
-        List<JudicialProfile.Appointment> noAppointmentList = new ArrayList<>();
-
-        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                noAppointmentList,
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
+    void judicialValidationTest_NoAppointment() throws IOException {
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile profile =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                JudicialProfile.class);
+        profile.setAppointments(new ArrayList<>());
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
@@ -278,22 +219,13 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void judicialValidationTest_NoAppointmentRoleId() {
-        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                Collections.singletonList(TestDataBuilder.buildJPAppointment("",
-                        "5",
-                        "1351",
-                        "1",
-                        "north-east",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
+    void judicialValidationTest_NoAppointmentRoleId() throws IOException {
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile profile =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+        profile.getAppointments().get(0).setRoleId("");
+        profile.getAppointments().get(1).setRoleId("");
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
@@ -304,24 +236,12 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void judicialValidationTest_NoAuthorisation() {
-        List<JudicialProfile.Authorisation> noAuthorisationList = new ArrayList<>();
-
-        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
-                        "5",
-                        "1351",
-                        "1",
-                        "north-east",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "1")),
-                noAuthorisationList);
+    void judicialValidationTest_NoAuthorisation() throws IOException {
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile profile =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+        profile.setAuthorisations(new ArrayList<>());
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,
@@ -332,22 +252,14 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void judicialValidationTest_NoAuthorisationId() {
-        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
-                        "5",
-                        "1351",
-                        "1",
-                        "north-east",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("")));
+    void judicialValidationTest_NoAuthorisationId() throws IOException {
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile profile =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+        profile.getAuthorisations().get(0).setAuthorisationId("");
+        profile.getAuthorisations().get(1).setAuthorisationId("");
+        profile.getAuthorisations().get(2).setAuthorisationId("");
 
         sut.validateUserProfiles(Collections.singletonList(profile),
                 judicialUser,

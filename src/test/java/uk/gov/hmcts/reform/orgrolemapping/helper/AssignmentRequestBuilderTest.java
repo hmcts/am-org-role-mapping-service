@@ -1,12 +1,15 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,25 +79,17 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
-    void convertUserProfileToJudicialAccessProfile() {
+    void convertUserProfileToJudicialAccessProfile() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile judicialProfile =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                JudicialProfile.class);
+        judicialProfile.getAppointments().get(0).setAppointmentId("1");
+        judicialProfile.getAppointments().get(1).setAppointmentId("2");
         Set<JudicialAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                .convertProfileToJudicialAccessProfile(TestDataBuilder.buildJudicialProfile(
-                        "37395", "EMP37395",
-                        "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                        "1", "Fee Paid Judiciary 5 Days Mon - Fri",
-                        "EMP62506@ejudiciary.net",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "2020-04-28T16:00:49", "TRUE",
-                        Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
-                                "5",
-                                "1351",
-                                "1",
-                                "north-east",
-                                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                                "1")),
-                        Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149"))));
+                .convertProfileToJudicialAccessProfile(judicialProfile);
+
         judicialAccessProfiles.forEach(appointment -> {
                 assertNotNull(appointment.getUserId());
                 assertNotNull(appointment.getRoleId());
@@ -104,10 +99,10 @@ class AssignmentRequestBuilderTest {
                 assertNotNull(appointment.getBaseLocationId());
                 assertNotNull(appointment.getContractTypeId());
                 assertNotNull(appointment.getAuthorisations());
-                assertEquals(1, appointment.getAuthorisations().size());
+                assertEquals(3, appointment.getAuthorisations().size());
                 assertNotNull(appointment.getAppointmentId());
             }
         );
-        assertEquals(1, judicialAccessProfiles.size());
+        assertEquals(2, judicialAccessProfiles.size());
     }
 }

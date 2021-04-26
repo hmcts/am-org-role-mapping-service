@@ -7,7 +7,6 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
@@ -198,69 +197,6 @@ public class TestDataBuilder {
                     enableWorkAreaList, workArea1, workArea2, suspended));
         }
         return caseWorkerProfiles;
-    }
-
-    public static JudicialProfile buildJudicialProfile(String elinkId,
-                                                       String personalCode,
-                                                       String title,
-                                                       String knownAs,
-                                                       String surname,
-                                                       String fullName,
-                                                       String postNominals,
-                                                       String contractTypeId,
-                                                       String workPattern,
-                                                       String emailId,
-                                                       LocalDateTime joiningDate,
-                                                       LocalDateTime lastWorkingDate,
-                                                       String extractedDate,
-                                                       String activeFlag,
-                                                       List<JudicialProfile.Appointment> appointments,
-                                                       List<JudicialProfile.Authorisation> authorisations) {
-
-        return JudicialProfile.builder()
-                .elinkId(elinkId)
-                .personalCode(personalCode)
-                .title(title)
-                .knownAs(knownAs)
-                .surname(surname)
-                .fullName(fullName)
-                .postNominals(postNominals)
-                .contractTypeId(contractTypeId)
-                .workPattern(workPattern)
-                .emailId(emailId)
-                .joiningDate(joiningDate)
-                .lastWorkingDate(lastWorkingDate)
-                .extractedDate(extractedDate)
-                .activeFlag(activeFlag)
-                .appointments(appointments)
-                .authorisations(authorisations)
-                .build();
-    }
-
-    public static JudicialProfile.Appointment buildJPAppointment(String roleId,
-                                                                 String contractTypeId,
-                                                                 String baseLocationId,
-                                                                 String locationId,
-                                                                 String locationDescEn,
-                                                                 LocalDateTime startDate,
-                                                                 LocalDateTime endDate,
-                                                                 String appointmentId) {
-        return JudicialProfile.Appointment.builder()
-                .roleId(roleId)
-                .contractTypeId(contractTypeId)
-                .baseLocationId(baseLocationId)
-                .locationId(locationId)
-                .locationDescEn(locationDescEn)
-                .startDate(startDate)
-                .endDate(endDate)
-                .appointmentId(appointmentId)
-                .build();
-    }
-
-    public static JudicialProfile.Authorisation buildJPAuthorisation(String authorisationId) {
-        return JudicialProfile.Authorisation.builder()
-                .authorisationId(authorisationId)
-                .build();
     }
 
     public static JsonNode buildAttributesFromFile() {

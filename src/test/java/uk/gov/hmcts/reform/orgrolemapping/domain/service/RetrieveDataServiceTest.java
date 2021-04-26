@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -16,7 +18,8 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.time.LocalDateTime;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -119,23 +122,11 @@ class RetrieveDataServiceTest {
     }
 
     @Test
-    void retrieveJudicialProfilesTest() {
-
-        JudicialProfile profile = TestDataBuilder.buildJudicialProfile("37395", "EMP37395",
-                "Magistrate", "Joe", "Bloggs", "Joe Bloggs", "Miss",
-                "1", "Fee Paid Judiciary 5 Days Mon - Fri", "EMP62506@ejudiciary.net",
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                "2020-04-28T16:00:49", "TRUE",
-                Collections.singletonList(TestDataBuilder.buildJPAppointment("84",
-                        "5",
-                        "1351",
-                        "1",
-                        "north-east",
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        LocalDateTime.of(2020, 4, 28, 16, 1, 0),
-                        "1")),
-                Collections.singletonList(TestDataBuilder.buildJPAuthorisation("52149")));
+    void retrieveJudicialProfilesTest() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialProfile profile =  objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                JudicialProfile.class);
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
                 .when(jrdFeignClient).getJudicialDetailsById(TestDataBuilder.buildUserRequest());
