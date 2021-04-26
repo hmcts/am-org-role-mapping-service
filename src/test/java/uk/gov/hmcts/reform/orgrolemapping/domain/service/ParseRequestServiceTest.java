@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -37,6 +38,15 @@ class ParseRequestServiceTest {
     UserRequest judicialUser = TestDataBuilder.buildUserRequest();
     AtomicInteger mockInteger = mock(AtomicInteger.class);
     ObjectMapper objectMapper = new ObjectMapper();
+    JudicialProfile judicialProfile;
+
+    @BeforeEach
+    void setupReadFromFile() throws IOException {
+        objectMapper.registerModule(new JavaTimeModule());
+        judicialProfile =
+                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
+                        JudicialProfile.class);
+    }
 
     @Test
     void validateUserRequestTest() {
@@ -148,19 +158,14 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateJudicialProfilesTest() throws IOException {
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile judicialProfile1 =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
-        JudicialProfile judicialProfile2 =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
+    void validateJudicialProfilesTest() {
+        JudicialProfile judicialProfile2;
+        judicialProfile2 = judicialProfile;
         judicialProfile2.setElinkId("37396");
         UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
         List<JudicialProfile> judicialProfileList = new ArrayList<>();
 
-        judicialProfileList.add(judicialProfile1);
+        judicialProfileList.add(judicialProfile);
         judicialProfileList.add(judicialProfile2);
 
         sut.validateUserProfiles(judicialProfileList,
@@ -171,46 +176,49 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void judicialProfiles_noContractTypeId_noBaseLocationId_noLocationId() throws IOException {
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile profile1 =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
-        profile1.getAppointments().get(0).setContractTypeId("");
-        profile1.getAppointments().get(1).setContractTypeId("");
-        JudicialProfile profile2 =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
-        profile2.getAppointments().get(0).setBaseLocationId("");
-        profile2.getAppointments().get(1).setBaseLocationId("");
-        JudicialProfile profile3 =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
-        profile3.getAppointments().get(0).setLocationId("");
-        profile3.getAppointments().get(1).setLocationId("");
-        List<JudicialProfile> judicialProfileList = new ArrayList<>();
+    void judicialValidationTest_noContractTypeId() {
+        judicialProfile.getAppointments().get(0).setContractTypeId("");
+        judicialProfile.getAppointments().get(1).setContractTypeId("");
 
-        judicialProfileList.add(profile1);
-        judicialProfileList.add(profile2);
-        judicialProfileList.add(profile3);
-
-        sut.validateUserProfiles(judicialProfileList,
+        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 TestDataBuilder.buildUserRequestIndividual(),
                 mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
-        Mockito.verify(mockInteger, Mockito.times(3)).getAndIncrement();
+        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
     }
 
     @Test
-    void judicialValidationTest_NoAppointment() throws IOException {
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile profile =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                JudicialProfile.class);
-        profile.setAppointments(new ArrayList<>());
+    void judicialValidationTest_noBaseLocationId() {
+        judicialProfile.getAppointments().get(0).setBaseLocationId("");
+        judicialProfile.getAppointments().get(1).setBaseLocationId("");
 
-        sut.validateUserProfiles(Collections.singletonList(profile),
+        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
+                TestDataBuilder.buildUserRequestIndividual(),
+                mockInteger,
+                invalidJudicialProfiles,
+                UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+    }
+
+    @Test
+    void judicialValidationTest_noLocationId() {
+        judicialProfile.getAppointments().get(0).setLocationId("");
+        judicialProfile.getAppointments().get(1).setLocationId("");
+
+        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
+                TestDataBuilder.buildUserRequestIndividual(),
+                mockInteger,
+                invalidJudicialProfiles,
+                UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+    }
+
+    @Test
+    void judicialValidationTest_NoAppointment() {
+        judicialProfile.setAppointments(new ArrayList<>());
+
+        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 judicialUser,
                 mockInteger,
                 invalidJudicialProfiles,
@@ -219,15 +227,11 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void judicialValidationTest_NoAppointmentRoleId() throws IOException {
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile profile =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
-        profile.getAppointments().get(0).setRoleId("");
-        profile.getAppointments().get(1).setRoleId("");
+    void judicialValidationTest_NoAppointmentRoleId() {
+        judicialProfile.getAppointments().get(0).setRoleId("");
+        judicialProfile.getAppointments().get(1).setRoleId("");
 
-        sut.validateUserProfiles(Collections.singletonList(profile),
+        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 judicialUser,
                 mockInteger,
                 invalidJudicialProfiles,
@@ -236,14 +240,10 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void judicialValidationTest_NoAuthorisation() throws IOException {
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile profile =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
-        profile.setAuthorisations(new ArrayList<>());
+    void judicialValidationTest_NoAuthorisation() {
+        judicialProfile.setAuthorisations(new ArrayList<>());
 
-        sut.validateUserProfiles(Collections.singletonList(profile),
+        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 judicialUser,
                 mockInteger,
                 invalidJudicialProfiles,
@@ -252,16 +252,12 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void judicialValidationTest_NoAuthorisationId() throws IOException {
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile profile =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
-        profile.getAuthorisations().get(0).setAuthorisationId("");
-        profile.getAuthorisations().get(1).setAuthorisationId("");
-        profile.getAuthorisations().get(2).setAuthorisationId("");
+    void judicialValidationTest_NoAuthorisationId() {
+        judicialProfile.getAuthorisations().get(0).setAuthorisationId("");
+        judicialProfile.getAuthorisations().get(1).setAuthorisationId("");
+        judicialProfile.getAuthorisations().get(2).setAuthorisationId("");
 
-        sut.validateUserProfiles(Collections.singletonList(profile),
+        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 judicialUser,
                 mockInteger,
                 invalidJudicialProfiles,
