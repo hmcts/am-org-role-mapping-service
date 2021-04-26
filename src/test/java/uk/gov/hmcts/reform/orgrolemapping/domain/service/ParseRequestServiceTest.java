@@ -159,16 +159,9 @@ class ParseRequestServiceTest {
 
     @Test
     void validateJudicialProfilesTest() {
-        JudicialProfile judicialProfile2;
-        judicialProfile2 = judicialProfile;
-        judicialProfile2.setElinkId("37396");
         UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
-        List<JudicialProfile> judicialProfileList = new ArrayList<>();
 
-        judicialProfileList.add(judicialProfile);
-        judicialProfileList.add(judicialProfile2);
-
-        sut.validateUserProfiles(judicialProfileList,
+        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 judicialUserRequest,
                 new AtomicInteger(),
                 invalidJudicialProfiles,
