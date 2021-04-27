@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -41,10 +45,36 @@ class CaseWorkerAccessProfileBuilderTest {
     @Test
     void buildUserProfiles() {
         List<CaseWorkerProfile> caseWorkerProfiles =
-                UserAccessProfileBuilder.buildUserProfile(TestDataBuilder.buildUserRequest());
+                UserAccessProfileBuilder.buildUserProfile(TestDataBuilder.buildUserRequest(),
+                        "userProfileSample.json");
         assertNotNull(caseWorkerProfiles);
         assertEquals(2, caseWorkerProfiles.size());
         assertEquals(id_1, caseWorkerProfiles.get(0).getId());
         assertEquals(id_2, caseWorkerProfiles.get(1).getId());
+    }
+
+    @Test
+    void buildUserProfiles_BadRequest() {
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder
+                .buildUserProfile(userRequest, ""));
+    }
+
+    @Test
+    void buildJudicialProfilesTest() {
+        List<JudicialProfile> judicialProfiles =
+                UserAccessProfileBuilder.buildJudicialProfile(TestDataBuilder.buildUserRequest(),
+                        "judicialProfileSample.json");
+        assertNotNull(judicialProfiles);
+        assertEquals(2, judicialProfiles.size());
+        assertEquals(id_1, judicialProfiles.get(0).getElinkId());
+        assertEquals(id_2, judicialProfiles.get(1).getElinkId());
+    }
+
+    @Test
+    void buildJudicialProfiles_BadRequest() {
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder
+                .buildJudicialProfile(userRequest, ""));
     }
 }

@@ -98,7 +98,7 @@ public class UserAccessProfileBuilder {
     }
 
 
-    public static List<CaseWorkerProfile> buildUserProfile(UserRequest userRequest) {
+    public static List<CaseWorkerProfile> buildUserProfile(UserRequest userRequest, String resource) {
 
         Set<CaseWorkerProfile> caseWorkerProfiles = new LinkedHashSet<>();
 
@@ -106,7 +106,7 @@ public class UserAccessProfileBuilder {
         userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
                          UserAccessProfileBuilder.class.getClassLoader()
-                                 .getResourceAsStream("userProfileSample.json")) {
+                                 .getResourceAsStream(resource)) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
                 CaseWorkerProfile caseWorkerProfile = objectMapper.readValue(inputStream, CaseWorkerProfile.class);
@@ -123,7 +123,7 @@ public class UserAccessProfileBuilder {
         return new ArrayList<>(caseWorkerProfiles);
     }
 
-    public static List<JudicialProfile> buildJudicialProfile(UserRequest userRequest) {
+    public static List<JudicialProfile> buildJudicialProfile(UserRequest userRequest, String resource) {
 
         Set<JudicialProfile> judicialProfilesProfiles = new LinkedHashSet<>();
 
@@ -131,7 +131,7 @@ public class UserAccessProfileBuilder {
         userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
                          UserAccessProfileBuilder.class.getClassLoader()
-                                 .getResourceAsStream("judicialProfileSample.json")) {
+                                 .getResourceAsStream(resource)) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
                 JudicialProfile judicialProfile = objectMapper.readValue(inputStream, JudicialProfile.class);

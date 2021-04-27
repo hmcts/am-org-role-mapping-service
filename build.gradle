@@ -191,7 +191,8 @@ pitest {
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig',
                        'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
                        'uk.gov.hmcts.reform.orgrolemapping.domain.model.*',
-                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.*']
+                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.*',
+                       'uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.*']
     threads = 15
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
@@ -213,7 +214,8 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/feignclients/configuration/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/model/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/servicebus/**," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**"
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/advice/exception/**"
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
 }
@@ -330,6 +332,7 @@ dependencies {
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
+    implementation 'commons-io:commons-io:2.8.0'
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     implementation('io.netty:netty-buffer:4.1.63.Final') {

@@ -7,7 +7,6 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
@@ -26,6 +25,7 @@ public class TestDataBuilder {
 
     private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     private static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
+    private static String id_3 = "invalid_id";
 
     private static final String PROCESS_ID = "staff-organisational-role-mapping";
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
@@ -49,6 +49,19 @@ public class TestDataBuilder {
         ArrayList<String> users = new ArrayList<>();
         users.add(id_1);
         users.add(id_2);
+        return UserRequest.builder().userIds(users).build();
+    }
+
+    public static UserRequest buildUserRequestIndividual() {
+        ArrayList<String> users = new ArrayList<>();
+        users.add(id_1);
+        return UserRequest.builder().userIds(users).build();
+    }
+
+    public static UserRequest buildInvalidRequest() {
+        ArrayList<String> users = new ArrayList<>();
+        users.add(id_1);
+        users.add(id_3);
         return UserRequest.builder().userIds(users).build();
     }
 
@@ -185,68 +198,6 @@ public class TestDataBuilder {
         }
         return caseWorkerProfiles;
     }
-
-    public static JudicialProfile buildJudicialProfile(String elinkId,
-                                                       String personalCode,
-                                                       String title,
-                                                       String knownAs,
-                                                       String surname,
-                                                       String fullName,
-                                                       String postNominals,
-                                                       String contractTypeId,
-                                                       String workPattern,
-                                                       String emailId,
-                                                       LocalDateTime joiningDate,
-                                                       LocalDateTime lastWorkingDate,
-                                                       String extractedDate,
-                                                       String activeFlag,
-                                                       List<JudicialProfile.Appointment> appointments,
-                                                       List<JudicialProfile.Authorisation> authorisations,
-                                                       String userType) {
-
-        return JudicialProfile.builder()
-                .elinkId(elinkId)
-                .personalCode(personalCode)
-                .title(title)
-                .knownAs(knownAs)
-                .surname(surname)
-                .fullName(fullName)
-                .postNominals(postNominals)
-                .contractTypeId(contractTypeId)
-                .workPattern(workPattern)
-                .emailId(emailId)
-                .joiningDate(joiningDate)
-                .lastWorkingDate(lastWorkingDate)
-                .extractedDate(extractedDate)
-                .activeFlag(activeFlag)
-                .appointments(appointments)
-                .authorisations(authorisations)
-                .userType(userType)
-                .build();
-    }
-
-    public static JudicialProfile.Appointment buildJPAppointment(String roleId,
-                                                                 String contractTypeId,
-                                                                 String baseLocationId,
-                                                                 String locationId,
-                                                                 LocalDateTime startDate,
-                                                                 LocalDateTime endDate) {
-        return JudicialProfile.Appointment.builder()
-                .roleId(roleId)
-                .contractTypeId(contractTypeId)
-                .baseLocationId(baseLocationId)
-                .locationId(locationId)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
-    }
-
-    public static JudicialProfile.Authorisation buildJPAuthorisation(String authorisationId) {
-        return JudicialProfile.Authorisation.builder()
-                .authorisationId(authorisationId)
-                .build();
-    }
-
 
     public static JsonNode buildAttributesFromFile() {
         try (InputStream inputStream =

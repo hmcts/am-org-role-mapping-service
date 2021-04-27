@@ -137,9 +137,11 @@ class ValidationUtilTest {
     void shouldThrow_EndTimeBeforeCreateTime() {
         String previousDate = LocalDateTime.now().minusDays(1L).toString();
         String futureDate = LocalDateTime.now().plusDays(1L).toString();
-        Assertions.assertThrows(BadRequestException.class, () ->
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class, () ->
                 ValidationUtil.compareDateOrder(futureDate, previousDate)
         );
+        Assertions.assertTrue(exception.getLocalizedMessage().contains(String.format(
+                "The end time: %s takes place before the current time:", previousDate)));
     }
 
     @Test
