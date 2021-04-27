@@ -31,5 +31,4 @@ java:
     JRD_TOPIC_NAME: rd-judicial-topic-{{ .Values.global.environment }}
     JRD_SUBSCRIPTION_NAME: rd-judicial-topic-{{ .Values.global.environment }}/subscriptions/rd-judicial-subscription-{{ .Values.global.environment }}
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
-    AMQP_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}/subscriptions/rd-caseworker-subscription-{{ .Values.global.environment }}
     ORG_ROLE_MAPPING_IDAM_ADMIN_USERID: orm.admin@hmcts.NET
