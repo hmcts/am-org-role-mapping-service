@@ -187,6 +187,10 @@ public class RequestMappingService<T> {
         List<Object> finalResponse = new ArrayList<>();
         AtomicInteger failureResponseCount = new AtomicInteger();
 
+      // create customized object which have userId,responseCode,responseBody
+
+
+
         usersRoleAssignments
                 .forEach((k, v) -> finalResponse.add(updateProfileRoleAssignments(k,
                         v, failureResponseCount, userType).getBody()));

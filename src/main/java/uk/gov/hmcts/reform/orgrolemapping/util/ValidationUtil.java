@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -100,6 +101,19 @@ public class ValidationUtil {
             throw new BadRequestException(
                     String.format("The input parameter: \"%s\", does not comply with the required pattern",
                             inputString));
+        }
+    }
+
+    public static void compareRoleCategory(String roleType) {
+        boolean valid = false;
+        for (RoleCategory realRole : RoleCategory.values()) {
+            if (realRole.name().equalsIgnoreCase(roleType)) {
+                valid = true;
+                break;
+            }
+        }
+        if (!valid) {
+            throw new BadRequestException("The roleCategory parameter supplied is not valid");
         }
     }
 

@@ -8,12 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +54,7 @@ public class RetrieveDataService {
 
 
     private final ParseRequestService parseRequestService;
-    private final CRDFeignClient crdFeignClient;
+    private final CRDFeignClientFallback crdFeignClient;
     private final JRDFeignClientFallback jrdFeignClient;
 
     @SuppressWarnings("unchecked")
@@ -80,6 +84,64 @@ public class RetrieveDataService {
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
 
+        getAccessProfile(userRequest, userType, invalidUserProfilesCount, invalidProfiles, usersAccessProfiles, response, profiles);
+
+
+        log.info(
+                "Execution time of retrieveProfiles() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
+        );
+        return usersAccessProfiles;
+    }
+
+
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Set<?>> retrieveProfilesByServiceName(String roleCategory, String serviceName) {
+        AtomicInteger invalidUserProfilesCount = new AtomicInteger();
+        Set<Object> invalidProfiles = new HashSet<>();
+        Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
+        ResponseEntity<List<Object>> response = null;
+        List<Object> profiles = new ArrayList<>();
+
+
+        if (roleCategory.equals(RoleCategory.LEGAL_OPERATIONS.name())) {
+            //call CRD and get user details
+            response = crdFeignClient.getCaseworkerDetailsByServiceName(serviceName,10,1,
+                    "ASC","roleName");
+
+           List<UserProfilesResponse> userProfilesResponse  = (List<UserProfilesResponse>)
+                   (Object) requireNonNull(response.getBody());
+
+            userProfilesResponse.stream().forEach(userResponse -> userResponse.getUserProfiles().stream().
+                    forEach(o -> profiles.add(convertInCaseWorkerProfile(o))));
+
+
+            List<String> userIds = new ArrayList<>();
+            profiles.forEach(o->userIds.add( ((CaseWorkerProfile)o).getId()));
+
+            UserRequest userRequest = UserRequest.builder().userIds(userIds)
+                    .build();
+
+            getAccessProfile(userRequest, UserType.CASEWORKER, invalidUserProfilesCount, invalidProfiles,
+                    usersAccessProfiles, response, profiles);
+        } else if (roleCategory.equals(RoleCategory.JUDICIAL.name())) {
+            //call JRD and get user details
+
+        }
+
+
+
+
+
+        return usersAccessProfiles;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getAccessProfile(UserRequest userRequest, UserType userType, AtomicInteger invalidUserProfilesCount,
+                                  Set<Object> invalidProfiles, Map<String, Set<?>> usersAccessProfiles,
+                                  ResponseEntity<List<Object>> response,
+                                  List<Object> profiles) {
         if (response != null && !CollectionUtils.isEmpty(profiles)) {
             // no of userProfiles from  responseEntity.getBody().size()
             log.info("Number of Profile received from upstream : {} ",
@@ -106,10 +168,10 @@ public class RetrieveDataService {
             }
             Map<String, Integer> userAccessProfileCount = new HashMap<>();
             usersAccessProfiles.forEach((k, v) -> {
-                userAccessProfileCount.put(k, v.size());
-                log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
+                        userAccessProfileCount.put(k, v.size());
+                        log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
                                 v);
-            }
+                    }
             );
             log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 
@@ -121,14 +183,6 @@ public class RetrieveDataService {
         } else {
             log.info("Number of UserProfile received from upstream : {} ", 0);
         }
-
-
-        log.info(
-                "Execution time of retrieveProfiles() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
-        return usersAccessProfiles;
     }
-
 
 }
