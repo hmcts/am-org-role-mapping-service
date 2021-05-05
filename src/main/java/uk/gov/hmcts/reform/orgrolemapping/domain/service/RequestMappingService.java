@@ -102,6 +102,9 @@ public class RequestMappingService {
 
         });
 
+        log.info("Count of rejected access profiles in ORM : {} ", needToRemoveUAP.size());
+        log.info("Access profiles rejected by Drools in ORM: {} ", needToRemoveUAP);
+
         //remove the entry of user from map in case of empty if suspended is false
 
         if (!needToRemoveUAP.isEmpty()) {
