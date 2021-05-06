@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.BeforeEach;
-
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,12 +17,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
-
-import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 class BulkAssignmentOrchestratorTest {
@@ -34,10 +33,13 @@ class BulkAssignmentOrchestratorTest {
 
     private final RequestMappingService requestMappingService = mock(RequestMappingService.class);
 
+    private final PersistenceService persistenceService = mock(PersistenceService.class);
+
     @InjectMocks
     private final BulkAssignmentOrchestrator sut = new BulkAssignmentOrchestrator(parseRequestService,
             retrieveDataService,
-            requestMappingService);
+            requestMappingService,
+            persistenceService);
   
     @BeforeEach
     public void setUp() {

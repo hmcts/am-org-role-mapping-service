@@ -22,15 +22,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @SequenceGenerator(name = "job_id_seq", sequenceName = "job_id_seq", allocationSize = 1)
 @Entity(name = "refresh_jobs")
-public class RefreshJob {
+public class RefreshJobEntity {
 
     @Id
     @Column(name = "job_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "job_id_seq")
     private Long jobId;
 
-    @Column(name = "user_type", nullable = false)
-    private String userType;
+    @Column(name = "role_category", nullable = false)
+    private String roleCategory;
 
     @Column(name = "jurisdiction", nullable = false)
     private String jurisdiction;
@@ -38,17 +38,17 @@ public class RefreshJob {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @Column(name = "locked_by")
-    private String lockedBy;
+    @Column(name = "comments")
+    private String comments;
 
-    @Column(name = "unlock_at")
-    private LocalDateTime unlockAt;
-
-    @Column(name = "retries_count", nullable = false)
-    private Integer retries_count;
+    @Column(name = "user_id")
+    private String userId;
 
     @Column(name = "log")
     private String log;
+
+    @Column(name = "linked_job_id")
+    private Long linkedJobId;
 
     @CreationTimestamp
     @Column(name = "created", nullable = false)

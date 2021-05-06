@@ -76,16 +76,6 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
         return ldClient.boolVariation(flagName, user, false);
     }
 
-    public boolean isFlagEnabled(String flagName) {
-        LDUser user = new LDUser.Builder(environment)
-                .firstName(userName)
-                .lastName(USER)
-                .custom(SERVICE_NAME, "am_org_role_mapping_service")
-                .build();
-
-        return ldClient.boolVariation(flagName, user, false);
-    }
-
     public boolean isValidFlag(String flagName) {
         return ldClient.isFlagKnown(flagName);
     }

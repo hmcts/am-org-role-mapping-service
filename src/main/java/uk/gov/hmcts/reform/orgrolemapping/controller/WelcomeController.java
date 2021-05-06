@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FlagConfigs;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -45,8 +47,13 @@ public class WelcomeController {
     @GetMapping(value = "/welcome")
     public String welcome() {
         //Use the below statement for any given API to implement Launch Darkly.
-        return FlagConfigs.getFlagConfigs().get("get-ld-flag").toString();
-        //return "Welcome to Organisation Role Mapping Service";
+        return "Welcome to Organisation Role Mapping Service";
+    }
+
+    @GetMapping(value = "/refreshjobs")
+    public List<RefreshJobEntity> fetchRefreshJobsFromDB() {
+        List<RefreshJobEntity> response = bulkAssignmentOrchestrator.retrieveRefreshJobs("NEW");
+        return response;
     }
 
     @PostMapping(
@@ -74,7 +81,7 @@ public class WelcomeController {
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
         log.info(
                 "Execution time of createOrgMapping() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
