@@ -9,10 +9,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants;
+import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,6 +39,16 @@ class WelcomeControllerTest {
     @Test
     void index() {
         assertEquals("redirect:swagger-ui.html", sut.index());
+    }
+
+    @Test
+    void fetchRefreshJobsFromDBTest() {
+        RefreshJobEntity refreshEntity = RefreshJobEntity.builder().jobId(1L).status("NEW").build();
+        Mockito.when(bulkAssignmentOrchestrator.retrieveRefreshJobs(Mockito.any(String.class)))
+                .thenReturn(Arrays.asList(refreshEntity));
+        List<RefreshJobEntity> response = sut.fetchRefreshJobsFromDB();
+        assertEquals(1, response.get(0).getJobId());
+        assertEquals("NEW", response.get(0).getStatus());
     }
 
     @Test
