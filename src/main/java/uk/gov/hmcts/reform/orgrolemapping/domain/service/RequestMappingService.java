@@ -178,7 +178,7 @@ public class RequestMappingService {
 
         usersRoleAssignments
                 .forEach((k,v) -> finalResponse.add(updateCaseworkerRoleAssignments(k,
-                        v, failureResponseCount).getBody()));
+                        v, failureResponseCount)));
         log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
         log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);

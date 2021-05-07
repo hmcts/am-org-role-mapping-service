@@ -80,8 +80,8 @@ idam:
     secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:am_docker_secret}
     redirect_uri: ${ORG_ROLE_MAPPING_IDAM_REDIRECT_URI:http://localhost:4096/oauth2redirect}
     admin:
-      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
-      secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
+      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:orm.admin@hmcts.NET}
+      secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:Pa55word11}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
 
 testS2S:

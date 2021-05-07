@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
 
@@ -135,3 +136,4 @@ public class TopicConsumer {
 
 }
 
+*/

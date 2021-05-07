@@ -8,16 +8,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
 
@@ -42,19 +47,57 @@ public class RetrieveDataService {
 
 
     private final ParseRequestService parseRequestService;
-    private final CRDFeignClient crdFeignClient;
+    private final CRDService crdService;
 
 
     public Map<String, Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
 
-        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.getCaseworkerDetailsById(userRequest);
+        ResponseEntity<List<UserProfile>> responseEntity = crdService.fetchUserProfiles(userRequest);
 
         log.info(
                 "Execution time of CRD Response : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
         List<UserProfile> userProfiles = responseEntity.getBody();
+        Map<String, Set<UserAccessProfile>> usersAccessProfiles = buildUserAccessProfile(userRequest, startTime, userProfiles);
+        return usersAccessProfiles;
+    }
+
+
+    public Map<String, Set<UserAccessProfile>> getUserAccessProfile( ResponseEntity<List<UserProfilesResponse>> response) {
+
+        long startTime = System.currentTimeMillis();
+
+
+            log.info(
+                    "Execution time of CRD Response : {} ms",
+                    (Math.subtractExact(System.currentTimeMillis(), startTime))
+            );
+
+            //check the response if it's not null
+            List<UserProfilesResponse> userProfilesResponse = Objects.requireNonNull(response.getBody());
+
+            //Fetch the user profile from the response
+            List<UserProfile> userProfiles = new ArrayList<>();
+            userProfilesResponse.forEach(userResponse -> userResponse.getUserProfiles().
+                    forEach(o -> userProfiles.add(o)));
+
+
+            //Collect the userIds to build the UserRequest
+
+
+            UserRequest userRequest = UserRequest.builder().userIds(Collections.emptyList())
+                    .build();
+
+            return buildUserAccessProfile(userRequest, startTime, userProfiles);
+
+
+        }
+
+
+
+    private Map<String, Set<UserAccessProfile>> buildUserAccessProfile(UserRequest userRequest, long startTime, List<UserProfile> userProfiles) {
         if (!CollectionUtils.isEmpty(userProfiles)) {
             // no of userProfiles from CRD  responseEntity.getBody().size()
             log.info("Number of UserProfile received from CRD : {} ",
@@ -77,7 +120,7 @@ public class RetrieveDataService {
         // filter the valid userProfiles.
         List<UserProfile> validUserProfiles = requireNonNull(userProfiles).stream()
                 .filter(userProfile -> !invalidUserProfiles
-              .contains(userProfile)).collect(Collectors.toList());
+                        .contains(userProfile)).collect(Collectors.toList());
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
 
@@ -89,16 +132,16 @@ public class RetrieveDataService {
 
         Map<String, Integer> userAccessProfileCount = new HashMap<>();
         usersAccessProfiles.forEach((k, v) -> {
-            userAccessProfileCount.put(k, v.size());
-            log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
+                    userAccessProfileCount.put(k, v.size());
+                    log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
                             v);
-        }
+                }
         );
         log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 
         log.info(
                 "Execution time of retrieveCaseWorkerProfiles() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
         return usersAccessProfiles;
     }
