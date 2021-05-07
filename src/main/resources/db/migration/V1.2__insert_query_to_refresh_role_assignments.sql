@@ -1,4 +1,0 @@
--- Sample insert queries for refresh_jobs
---INSERT INTO public.refresh_jobs
---("role_category", jurisdiction, status, "comments", user_id, log, linked_job_id, created)
---VALUES('STAFF', 'IA', 'NEW', 'drool rule for IA version 1.0.0', '', '', 0, timezone('utc', now()));

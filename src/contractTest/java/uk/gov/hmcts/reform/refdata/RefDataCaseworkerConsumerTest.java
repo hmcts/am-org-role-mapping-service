@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -36,6 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991")
 @ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
 @TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 public class RefDataCaseworkerConsumerTest {
 
     @Autowired
