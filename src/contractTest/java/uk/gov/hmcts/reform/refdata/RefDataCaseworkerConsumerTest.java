@@ -38,7 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991")
 @ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
 @TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataCaseworkerConsumerTest {
 
     @Autowired
