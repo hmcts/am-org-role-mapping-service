@@ -24,6 +24,40 @@ services:
       - REFORM_SERVICE_NAME=am-org-role-mapping-service
       - REFORM_TEAM=am
       - REFORM_ENVIRONMENT=local
+      - ORG_ROLE_MAPPING_DB_HOST:am-org-role-mapping-database
+      - ORG_ROLE_MAPPING_DB_NAME:org_role_mapping
+      - ORG_ROLE_MAPPING_DB_PORT:5432
+      - ORG_ROLE_MAPPING_DB_USERNAME:am
+      - ORG_ROLE_MAPPING_DB_PASSWORD:am
     ports:
       - ${SERVER_PORT:-4098}:${SERVER_PORT:-4098}
+    networks:
+      - am-network
+    depends_on:
+      - am-org-role-mapping-database
+    links:
+      - am-org-role-mapping-database
 
+  am-org-role-mapping-database:
+    build:
+      context: docker/database
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      - ORG_ROLE_MAPPING_DB_USERNAME=am
+      - ORG_ROLE_MAPPING_DB_PASSWORD=am
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 5452:5432
+    networks:
+      - am-network
+    volumes:
+      - am-org-role-mapping-database-data:/var/lib/postgresql/am-org-role-mapping/data
+volumes:
+  am-org-role-mapping-database-data:
+
+networks:
+  am-network:
+    external: true

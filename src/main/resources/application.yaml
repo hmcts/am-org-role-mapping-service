@@ -48,6 +48,28 @@ spring:
     default-property-inclusion: NON_NULL
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  flyway.enabled: ${ENABLE_DB_MIGRATE:true}
+  flyway.locations: classpath:db/migration
+  datasource:
+    url: jdbc:postgresql://${ORG_ROLE_MAPPING_DB_HOST:localhost}:${ORG_ROLE_MAPPING_DB_PORT:5451}/${ORG_ROLE_MAPPING_DB_NAME:org_role_mapping}${ORG_ROLE_MAPPING_DB_OPTIONS:?stringtype=unspecified}
+    username: ${ORG_ROLE_MAPPING_DB_USERNAME:am}
+    password: ${ORG_ROLE_MAPPING_DB_PASSWORD:am}
+    properties:
+      charSet: UTFh-8
+    hikari:
+      maximumPoolSize: 10
+      poolName: AMHikariCP
+      maxLifetime: 90000
+      connectionTimeout: 10000
+      keepAliveTime: 60000
   security:
     oauth2:
       client:

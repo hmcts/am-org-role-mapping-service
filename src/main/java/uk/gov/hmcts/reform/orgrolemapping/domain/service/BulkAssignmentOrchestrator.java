@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +30,8 @@ public class BulkAssignmentOrchestrator {
 
     private final RequestMappingService requestMappingService;
 
+    private final PersistenceService persistenceService;
+
 
     public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
@@ -47,4 +51,7 @@ public class BulkAssignmentOrchestrator {
         return responseEntity;
     }
 
+    public List<RefreshJobEntity> retrieveRefreshJobs(String status) {
+        return persistenceService.retrieveRefreshJobs(status);
+    }
 }

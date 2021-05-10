@@ -1,0 +1,20 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.springframework.cloud:spring-cloud-contract-wiremock
+    versions:
+    - 3.0.2
+  - dependency-name: com.github.ben-manes.versions
+    versions:
+    - 0.38.0
+  - dependency-name: uk.gov.hmcts:befta-fw
+    versions:
+    - 20.2.0.rdm.8934.1
+  - dependency-name: org.amqphub.spring:amqp-10-jms-spring-boot-starter
+    versions:
+    - 2.4.3

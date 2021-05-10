@@ -34,3 +34,27 @@ resource "azurerm_key_vault_secret" "am_org-role-mapping_service_s2s_secret" {
   value         = data.azurerm_key_vault_secret.s2s_secret.value
   key_vault_id  = data.azurerm_key_vault.am_key_vault.id
 }
+
+module "org-role-mapping-database" {
+  source          = "git@github.com:hmcts/cnp-module-postgres?ref=master"
+  product         = join("-", [local.app_full_name, "postgres-db"])
+  location        = var.location
+  env             = var.env
+  subscription    = var.subscription
+  postgresql_user = var.postgresql_user
+  database_name   = var.database_name
+  storage_mb      = var.database_storage_mb
+  sku_name        = var.database_sku_name
+  sku_capacity    = var.database_sku_capacity
+  common_tags     = var.common_tags
+}
+
+////////////////////////////////
+// Populate Vault with DB info
+////////////////////////////////
+
+resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
+  name          = join("-", [var.component, "POSTGRES-PASS"])
+  value         = module.org-role-mapping-database.postgresql_password
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
