@@ -5,15 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -27,17 +29,21 @@ public class RefreshOrchestrator {
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
 
-
+    @SuppressWarnings("unchecked")
     public ResponseEntity<Object> refresh(String roleCategory,
                                           String jurisdiction,
                                           List<String> retryUserIds) {
 
         long startTime = System.currentTimeMillis();
 
+        int PAGE_SIZE = 2;
+        String SORT_DIRECTION = "ASC";
+        String SORT_COLUMN = "roleName";
+
 
         ResponseEntity<Object> responseEntity = null;
         Map<String, Set<UserAccessProfile>> userAccessProfiles;
-        List<String> userIds = new ArrayList<>();
+
 
         //1. Async implementation---done
         //2.Insert job status  in db
@@ -60,13 +66,13 @@ public class RefreshOrchestrator {
             ValidationUtil.compareRoleCategory(roleCategory);
 
             ResponseEntity<List<UserProfilesResponse>> response = crdService
-                    .fetchCaseworkerDetailsByServiceName(jurisdiction, 2, 1,
-                            "ASC", "roleName");
+                    .fetchCaseworkerDetailsByServiceName(jurisdiction, PAGE_SIZE, 1,
+                            SORT_DIRECTION, SORT_COLUMN);
 
 
-            // 2 step to findout the total number of records
+            // 2 step to find out the total number of records
             String total_records = response.getHeaders().getFirst("total_records");
-            int pageNumber = (Integer.parseInt(total_records) / 2);
+            int pageNumber = (Integer.parseInt(total_records) / PAGE_SIZE);
             Map<String, String> responseCode = new HashMap<>();
 
 
@@ -74,25 +80,28 @@ public class RefreshOrchestrator {
             for (int page = 1; page <= pageNumber; page++) {
                 ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = null;
                 userProfilesResponse = crdService
-                        .fetchCaseworkerDetailsByServiceName(jurisdiction, 2, page,
-                                "ASC", "roleName");
+                        .fetchCaseworkerDetailsByServiceName(jurisdiction, PAGE_SIZE, page,
+                                SORT_DIRECTION, SORT_COLUMN);
                 userAccessProfiles = retrieveDataService
                         .getUserAccessProfile(userProfilesResponse);
 
 
-
                 responseEntity = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
 
-                userProfilesResponse.getBody().forEach(userProfile-> userProfile.getUserProfiles()
-                        .forEach(o->userIds.add(o.getId())));
+                ((List<ResponseEntity>)
+                        Objects.requireNonNull(responseEntity.getBody())).forEach(entity -> {
+                    RoleAssignmentRequestResource resource = JacksonUtils
+                            .convertRoleAssignmentResource(entity.getBody());
 
-                userIds.forEach(userId->responseCode.put(userId,"200k"));
+                    responseCode.put(resource.getRoleAssignmentRequest()
+                            .getRequestedRoles().stream().findFirst().get().getActorId(), entity.getStatusCode().toString());
+                });
 
+
+                log.info("Status code map {} ", responseCode);
 
 
             }
-
-            //Create userAccessProfiles based upon roleId and service codes
 
 
         }

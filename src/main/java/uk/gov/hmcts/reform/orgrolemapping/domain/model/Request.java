@@ -28,4 +28,5 @@ public class Request {
     private Status status; //this will be set by RASS default = created
     private LocalDateTime created; //this will be set by RAS
     private String log; //this will be set in RAS based on drool validation rule name on individual assignments.
+    private String byPassOrgDroolRule;
 }
