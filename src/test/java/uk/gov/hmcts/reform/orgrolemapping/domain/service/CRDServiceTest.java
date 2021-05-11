@@ -20,7 +20,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
 
-public class CRDServiceTest {
+class CRDServiceTest {
 
 
     CRDFeignClient crdFeignClient = mock(CRDFeignClient.class);
