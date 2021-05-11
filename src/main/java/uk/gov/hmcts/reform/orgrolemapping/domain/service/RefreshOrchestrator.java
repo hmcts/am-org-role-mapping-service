@@ -60,14 +60,16 @@ public class RefreshOrchestrator {
             responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles);
 
             //build success and failure list
-            buildSuccessAndFailureBucket(responseCodeWithUserId, refreshJobEntity);
+            buildSuccessAndFailureBucket(responseCodeWithUserId, refreshJobEntity.isPresent() ? refreshJobEntity
+                    .get() : null);
 
 
         } else {
 
             // replace the records by service name api
             responseEntity = refreshJobByServiceName(
-                    responseCodeWithUserId, refreshJobEntity);
+                    responseCodeWithUserId, refreshJobEntity.isPresent() ? refreshJobEntity
+                            .get() : null);
 
 
         }
@@ -84,7 +86,7 @@ public class RefreshOrchestrator {
 
     private ResponseEntity<Object> refreshJobByServiceName(
             Map<String, String> responseCodeWithUserId,
-            Optional<RefreshJobEntity> refreshJobEntity) {
+            RefreshJobEntity refreshJobEntity) {
 
         int pageSize = 2;
         String sortDirection = "ASC";
@@ -92,13 +94,13 @@ public class RefreshOrchestrator {
         ResponseEntity<Object> responseEntity = null;
 
         //validate the role Category
-        ValidationUtil.compareRoleCategory(refreshJobEntity.isPresent() ? refreshJobEntity.get()
+        ValidationUtil.compareRoleCategory(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
                 .getRoleCategory() : "");
 
         //Call the CRD Service to retrieve the caseworker profiles base on service name
         ResponseEntity<List<UserProfilesResponse>> response = crdService
-                .fetchCaseworkerDetailsByServiceName(refreshJobEntity.isPresent() ? refreshJobEntity
-                                .get().getJurisdiction() : "", pageSize, 1,
+                .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
+                                .getJurisdiction() : "", pageSize, 1,
                         sortDirection, sortColumn);
 
 
@@ -111,7 +113,8 @@ public class RefreshOrchestrator {
         //call to CRD
         for (int page = 1; page <= pageNumber; page++) {
             ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = crdService
-                    .fetchCaseworkerDetailsByServiceName(refreshJobEntity.get().getJurisdiction(), pageSize, page,
+                    .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
+                                    .getJurisdiction() : "", pageSize, page,
                             sortDirection, sortColumn);
             Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                     .getUserAccessProfile(userProfilesResponse);
@@ -148,7 +151,7 @@ public class RefreshOrchestrator {
 
 
     private void buildSuccessAndFailureBucket(Map<String, String> responseCodeWithUserId,
-                                              Optional<RefreshJobEntity> refreshJobEntity) {
+                                              RefreshJobEntity refreshJobEntity) {
 
         List<String> successUserIds = new ArrayList<>();
         List<String> failureUserIds = new ArrayList<>();
@@ -166,21 +169,20 @@ public class RefreshOrchestrator {
     }
 
     private void updateJobStatus(List<String> successUserIds, List<String> failureUserIds,
-                                 Optional<RefreshJobEntity> refreshJobEntity) {
+                                 RefreshJobEntity refreshJobEntity) {
 
-        if (CollectionUtils.isNotEmpty(failureUserIds) && refreshJobEntity.isPresent()) {
-            RefreshJobEntity refreshJob = refreshJobEntity.get();
-            refreshJob.setStatus("ABORTED");
-            refreshJob.setUserIds(failureUserIds.toArray(new String[0]));
-            refreshJob.setCreated(LocalDateTime.now());
-            persistenceService.persistRefreshJob(refreshJob);
+        if (CollectionUtils.isNotEmpty(failureUserIds) && Objects.nonNull(refreshJobEntity)) {
+            refreshJobEntity.setStatus("ABORTED");
+            refreshJobEntity.setUserIds(failureUserIds.toArray(new String[0]));
+            refreshJobEntity.setCreated(LocalDateTime.now());
+            persistenceService.persistRefreshJob(refreshJobEntity);
 
         } else if (CollectionUtils.isEmpty(failureUserIds) && CollectionUtils.isNotEmpty(successUserIds)
-                && refreshJobEntity.isPresent()) {
-            RefreshJobEntity refreshJob = refreshJobEntity.get();
-            refreshJob.setStatus("COMPLETED");
-            refreshJob.setCreated(LocalDateTime.now());
-            persistenceService.persistRefreshJob(refreshJob);
+                && Objects.nonNull(refreshJobEntity)) {
+
+            refreshJobEntity.setStatus("COMPLETED");
+            refreshJobEntity.setCreated(LocalDateTime.now());
+            persistenceService.persistRefreshJob(refreshJobEntity);
         }
     }
 
