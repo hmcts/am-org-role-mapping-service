@@ -13,13 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -50,11 +47,6 @@ public class WelcomeController {
         return "Welcome to Organisation Role Mapping Service";
     }
 
-    @GetMapping(value = "/refreshjobs")
-    public List<RefreshJobEntity> fetchRefreshJobsFromDB() {
-        List<RefreshJobEntity> response = bulkAssignmentOrchestrator.retrieveRefreshJobs("NEW");
-        return response;
-    }
 
     @PostMapping(
             path = "/am/role-mapping/staff/users",
@@ -77,7 +69,7 @@ public class WelcomeController {
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
         log.debug("createOrgMapping");
-        log.info("Process has been Started for the userIds {}",userRequest.getUserIds());
+        log.info("Process has been Started for the userIds {}", userRequest.getUserIds());
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
         log.info(
                 "Execution time of createOrgMapping() : {} ms",

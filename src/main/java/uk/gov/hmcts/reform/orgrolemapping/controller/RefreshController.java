@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
@@ -52,11 +53,11 @@ public class RefreshController {
             )
     })
     @Async
-    public ResponseEntity<Object> refresh(@RequestParam String roleCategory,
-                                          @RequestParam String jurisdiction,
-                                          @RequestBody(required = false) List<String> retryUserIds) {
+    public ResponseEntity<Object> refresh(@RequestParam String jobId,
+                                          @RequestBody(required = false) UserRequest   userRequest)
+                                           {
 
-        return refreshOrchestrator.refresh(roleCategory, jurisdiction, retryUserIds);
+        return refreshOrchestrator.refresh(Long.parseLong(jobId),userRequest);
 
     }
 }

@@ -33,10 +33,10 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 @RunWith(MockitoJUnitRunner.class)
 class RetrieveDataServiceTest {
 
-    private final CRDFeignClient crdFeignClient = Mockito.mock(CRDFeignClient.class);
+    private final CRDService crdService = Mockito.mock(CRDService.class);
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
 
-    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdFeignClient);
+    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdService);
 
     @Test
     void retrieveCaseWorkerProfilesTest() {

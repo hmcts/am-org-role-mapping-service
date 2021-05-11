@@ -5,7 +5,7 @@ create table refresh_jobs(
 	jurisdiction text not null,
 	status text not null,
 	comments text,
-	user_id text,
+	user_ids _text NULL,
 	log text,
 	linked_job_id bigint,
 	created timestamp,
@@ -15,3 +15,9 @@ create table refresh_jobs(
 create sequence JOB_ID_SEQ;
 ALTER TABLE refresh_jobs ALTER COLUMN job_id
 SET DEFAULT nextval('JOB_ID_SEQ');
+
+INSERT INTO public.refresh_jobs
+(role_category, jurisdiction, status, "comments", user_ids, log, linked_job_id, created)
+VALUES('LEGAL_OPERATIONS', 'IAC', 'NEW', '', '{}', '', '0', '2021-05-10 14:53:48');
+
+

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 @Entity(name = "refresh_jobs")
 public class RefreshJobEntity {
 
+
     @Id
     @Column(name = "job_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "job_id_seq")
@@ -41,8 +43,9 @@ public class RefreshJobEntity {
     @Column(name = "comments")
     private String comments;
 
-    @Column(name = "user_id")
-    private String userId;
+    @Column(name = "user_ids")
+    @Type(type = "uk.gov.hmcts.reform.orgrolemapping.data.GenericArrayUserType")
+    private String[] userIds;
 
     @Column(name = "log")
     private String log;

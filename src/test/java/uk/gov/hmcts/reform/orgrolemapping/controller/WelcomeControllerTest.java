@@ -41,15 +41,7 @@ class WelcomeControllerTest {
         assertEquals("redirect:swagger-ui.html", sut.index());
     }
 
-    @Test
-    void fetchRefreshJobsFromDBTest() {
-        RefreshJobEntity refreshEntity = RefreshJobEntity.builder().jobId(1L).status("NEW").build();
-        Mockito.when(bulkAssignmentOrchestrator.retrieveRefreshJobs(Mockito.any(String.class)))
-                .thenReturn(Arrays.asList(refreshEntity));
-        List<RefreshJobEntity> response = sut.fetchRefreshJobsFromDB();
-        assertEquals(1, response.get(0).getJobId());
-        assertEquals("NEW", response.get(0).getStatus());
-    }
+
 
     @Test
     void welcome() {
