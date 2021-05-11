@@ -331,6 +331,7 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
     implementation 'commons-io:commons-io:2.8.0'
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
     implementation('io.netty:netty-buffer:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
