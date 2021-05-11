@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,21 +32,24 @@ public class CRDFeignClientFallback implements CRDFeignClient {
     }
 
     @Override
-    public  ResponseEntity<List<UserProfilesResponse>> getCaseworkerDetailsByServiceName(String ccd_service_names, Integer page_size,
-                                                                         Integer page_number, String sort_direction,
-                                                                         String sort_column) {
+    public ResponseEntity<List<UserProfilesResponse>> getCaseworkerDetailsByServiceName(String ccdServiceNames,
+                                                                                        Integer pageSize,
+                                                                                        Integer pageNumber,
+                                                                                        String sortDirection,
+                                                                                        String sortColumn) {
 
-       ResponseEntity<List<UserProfilesResponse>> responseEntity = ResponseEntity.ok(Arrays.asList(UserProfilesResponse.builder()
-                .serviceName(ccd_service_names).userProfiles(buildUserProfile( UserRequest.builder().userIds(
-                        Arrays.asList(UUID.randomUUID().toString(),UUID.randomUUID().toString()))
+        ResponseEntity<List<UserProfilesResponse>> responseEntity = ResponseEntity.ok(Arrays
+                .asList(UserProfilesResponse.builder()
+                .serviceName(ccdServiceNames).userProfiles(buildUserProfile(UserRequest.builder().userIds(
+                        Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()))
                         .build())).build()));
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add(
-                "total_records","4");
+                "total_records", "4");
 
         return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body(
-                responseEntity.getBody() );
+                responseEntity.getBody());
 
 
     }

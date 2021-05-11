@@ -3,14 +3,12 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -54,10 +50,9 @@ public class RefreshController {
     })
     @Async
     public ResponseEntity<Object> refresh(@RequestParam String jobId,
-                                          @RequestBody(required = false) UserRequest   userRequest)
-                                           {
+                                          @RequestBody(required = false) UserRequest userRequest) {
 
-        return refreshOrchestrator.refresh(Long.parseLong(jobId),userRequest);
+        return refreshOrchestrator.refresh(Long.parseLong(jobId), userRequest);
 
     }
 }

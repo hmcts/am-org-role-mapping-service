@@ -86,30 +86,32 @@ public class RefreshOrchestrator {
             Map<String, String> responseCodeWithUserId,
             Optional<RefreshJobEntity> refreshJobEntity) {
 
-        int PAGE_SIZE = 2;
-        String SORT_DIRECTION = "ASC";
-        String SORT_COLUMN = "roleName";
+        int pageSize = 2;
+        String sortDirection = "ASC";
+        String sortColumn = "roleName";
         ResponseEntity<Object> responseEntity = null;
 
         //validate the role Category
-        ValidationUtil.compareRoleCategory(refreshJobEntity.get().getRoleCategory());
+        ValidationUtil.compareRoleCategory(refreshJobEntity.isPresent() ? refreshJobEntity.get()
+                .getRoleCategory() : "");
 
         //Call the CRD Service to retrieve the caseworker profiles base on service name
         ResponseEntity<List<UserProfilesResponse>> response = crdService
-                .fetchCaseworkerDetailsByServiceName(refreshJobEntity.get().getJurisdiction(), PAGE_SIZE, 1,
-                        SORT_DIRECTION, SORT_COLUMN);
+                .fetchCaseworkerDetailsByServiceName(refreshJobEntity.get().getJurisdiction(), pageSize, 1,
+                        sortDirection, sortColumn);
 
 
         // 2 step to find out the total number of records
-        String total_records = response.getHeaders().getFirst("total_records");
-        int pageNumber = (Integer.parseInt(total_records) / PAGE_SIZE);
+        String totalRecords = response.getHeaders().getFirst("total_records");
+        assert totalRecords != null;
+        int pageNumber = (Integer.parseInt(totalRecords) / pageSize);
 
 
         //call to CRD
         for (int page = 1; page <= pageNumber; page++) {
             ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = crdService
-                    .fetchCaseworkerDetailsByServiceName(refreshJobEntity.get().getJurisdiction(), PAGE_SIZE, page,
-                            SORT_DIRECTION, SORT_COLUMN);
+                    .fetchCaseworkerDetailsByServiceName(refreshJobEntity.get().getJurisdiction(), pageSize, page,
+                            sortDirection, sortColumn);
             Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                     .getUserAccessProfile(userProfilesResponse);
 
@@ -130,12 +132,13 @@ public class RefreshOrchestrator {
 
         ((List<ResponseEntity>)
                 Objects.requireNonNull(responseEntity.getBody())).forEach(entity -> {
-            RoleAssignmentRequestResource resource = JacksonUtils
-                    .convertRoleAssignmentResource(entity.getBody());
+                    RoleAssignmentRequestResource resource = JacksonUtils
+                        .convertRoleAssignmentResource(entity.getBody());
 
-            responseCodeWithUserId.put(resource.getRoleAssignmentRequest()
-                    .getRequestedRoles().stream().findFirst().get().getActorId(), entity.getStatusCode().toString());
-        });
+                    responseCodeWithUserId.put(resource.getRoleAssignmentRequest()
+                        .getRequestedRoles().stream().findFirst().get().getActorId(), entity.getStatusCode()
+                            .toString());
+                });
 
 
         log.info("Status code map {} ", responseCodeWithUserId);

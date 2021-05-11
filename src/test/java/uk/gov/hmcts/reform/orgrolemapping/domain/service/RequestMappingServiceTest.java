@@ -72,11 +72,17 @@ class RequestMappingServiceTest {
                 JsonNode.class);
         assertEquals(1, resultNode.size());
         assertEquals("staff-organisational-role-mapping",
-                resultNode.get(0).get("roleRequest").get("process").asText());
+                resultNode.get(0).get("body").get("roleRequest").get("process")
+                        .asText());
         assertEquals("tribunal-caseworker",
-                resultNode.get(0).get("requestedRoles").get(0).get("roleName").asText());
+                resultNode.get(0).get("body").get("requestedRoles").get(0)
+                        .get("roleName")
+                        .asText());
+
         assertEquals(actorId,
-                resultNode.get(0).get("requestedRoles").get(0).get("actorId").asText());
+                resultNode.get(0).get("body").get("requestedRoles").get(0).get("actorId")
+                        .asText());
+
 
 
 
@@ -130,9 +136,11 @@ class RequestMappingServiceTest {
                 JsonNode.class);
         assertEquals(1, resultNode.size());
         assertEquals("staff-organisational-role-mapping",
-                resultNode.get(0).get("roleAssignmentResponse").get("roleRequest").get("process").asText());
+                resultNode.get(0).get("body").get("roleAssignmentResponse").get("roleRequest").get("process").asText());
         assertEquals("senior-tribunal-caseworker",
-                resultNode.get(0).get("roleAssignmentResponse").get("requestedRoles").get(0).get("roleName").asText());
+                resultNode.get(0).get("body").get("roleAssignmentResponse").get("requestedRoles").get(0)
+                        .get("roleName").asText()
+        );
 
     }
 

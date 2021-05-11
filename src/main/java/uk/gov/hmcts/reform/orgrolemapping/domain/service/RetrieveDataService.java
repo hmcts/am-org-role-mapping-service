@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,44 +59,42 @@ public class RetrieveDataService {
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
         List<UserProfile> userProfiles = responseEntity.getBody();
-        Map<String, Set<UserAccessProfile>> usersAccessProfiles = buildUserAccessProfile(userRequest, startTime, userProfiles);
-        return usersAccessProfiles;
+        return buildUserAccessProfile(userRequest,
+                startTime, userProfiles);
+
     }
 
 
-    public Map<String, Set<UserAccessProfile>> getUserAccessProfile( ResponseEntity<List<UserProfilesResponse>> response) {
+    public Map<String, Set<UserAccessProfile>> getUserAccessProfile(ResponseEntity<List<UserProfilesResponse>>
+                                                                            response) {
 
         long startTime = System.currentTimeMillis();
 
 
-            log.info(
-                    "Execution time of CRD Response : {} ms",
-                    (Math.subtractExact(System.currentTimeMillis(), startTime))
-            );
+        //check the response if it's not null
+        List<UserProfilesResponse> userProfilesResponse = Objects.requireNonNull(response.getBody());
 
-            //check the response if it's not null
-            List<UserProfilesResponse> userProfilesResponse = Objects.requireNonNull(response.getBody());
-
-            //Fetch the user profile from the response
-            List<UserProfile> userProfiles = new ArrayList<>();
-            userProfilesResponse.forEach(userResponse -> userResponse.getUserProfiles().
-                    forEach(o -> userProfiles.add(o)));
+        //Fetch the user profile from the response
+        List<UserProfile> userProfiles = new ArrayList<>();
+        userProfilesResponse.forEach(userResponse -> userResponse.getUserProfiles()
+                .forEach(o -> userProfiles.add(o)));
 
 
-            //Collect the userIds to build the UserRequest
+        //Collect the userIds to build the UserRequest
 
 
-            UserRequest userRequest = UserRequest.builder().userIds(Collections.emptyList())
-                    .build();
+        UserRequest userRequest = UserRequest.builder().userIds(Collections.emptyList())
+                .build();
 
-            return buildUserAccessProfile(userRequest, startTime, userProfiles);
-
-
-        }
+        return buildUserAccessProfile(userRequest, startTime, userProfiles);
 
 
+    }
 
-    private Map<String, Set<UserAccessProfile>> buildUserAccessProfile(UserRequest userRequest, long startTime, List<UserProfile> userProfiles) {
+
+    private Map<String, Set<UserAccessProfile>> buildUserAccessProfile(UserRequest userRequest,
+                                                                       long startTime,
+                                                                       List<UserProfile> userProfiles) {
         if (!CollectionUtils.isEmpty(userProfiles)) {
             // no of userProfiles from CRD  responseEntity.getBody().size()
             log.info("Number of UserProfile received from CRD : {} ",
@@ -132,10 +129,10 @@ public class RetrieveDataService {
 
         Map<String, Integer> userAccessProfileCount = new HashMap<>();
         usersAccessProfiles.forEach((k, v) -> {
-                    userAccessProfileCount.put(k, v.size());
-                    log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
+            userAccessProfileCount.put(k, v.size());
+            log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
                             v);
-                }
+        }
         );
         log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 

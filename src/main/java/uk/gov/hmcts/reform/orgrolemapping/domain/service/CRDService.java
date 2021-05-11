@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 
 import java.util.List;
@@ -27,12 +26,12 @@ public class CRDService {
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 3))
     public ResponseEntity<List<UserProfilesResponse>> fetchCaseworkerDetailsByServiceName(String serviceName,
-                                                                                          Integer page_size,
-                                                                                          Integer page_number,
-                                                                                          String sort_direction,
-                                                                                          String sort_column) {
-        return crdFeignClient.getCaseworkerDetailsByServiceName(serviceName, page_size,
-                page_number, sort_direction, sort_column);
+                                                                                          Integer pageSize,
+                                                                                          Integer pageNumber,
+                                                                                          String sortDirection,
+                                                                                          String sortColumn) {
+        return crdFeignClient.getCaseworkerDetailsByServiceName(serviceName, pageSize,
+                pageNumber, sortDirection, sortColumn);
 
     }
 

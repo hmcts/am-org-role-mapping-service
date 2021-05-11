@@ -9,7 +9,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -18,7 +17,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,13 +33,12 @@ class BulkAssignmentOrchestratorTest {
 
     private final RequestMappingService requestMappingService = mock(RequestMappingService.class);
 
-    private final PersistenceService persistenceService = mock(PersistenceService.class);
+
 
     @InjectMocks
     private final BulkAssignmentOrchestrator sut = new BulkAssignmentOrchestrator(parseRequestService,
             retrieveDataService,
-            requestMappingService,
-            persistenceService);
+            requestMappingService);
   
     @BeforeEach
     public void setUp() {
@@ -79,12 +76,5 @@ class BulkAssignmentOrchestratorTest {
                 .createCaseWorkerAssignments(Mockito.any());
     }
 
-    @Test
-    void retrieveRefreshJobsTest() {
-        RefreshJobEntity refreshEntity = RefreshJobEntity.builder().jobId(1L).status("NEW").build();
-        Mockito.when(persistenceService.retrieveRefreshJobs(Mockito.any()))
-                .thenReturn(Arrays.asList(refreshEntity));
-        List<RefreshJobEntity> response = sut.retrieveRefreshJobs("NEW");
-        assertNotNull(response);
-    }
+
 }
