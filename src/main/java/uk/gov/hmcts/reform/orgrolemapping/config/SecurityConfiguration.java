@@ -55,17 +55,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private static final String[] AUTH_WHITELIST = new String[]{
-        "/swagger-ui.html",
-        "/webjars/springfox-swagger-ui/**",
-        "/swagger-resources/**",
-        "/v2/**",
-        "/status/health",
-        "/welcome",
-        "/health/**",
-        "/health/liveness",
-        "/loggers/**",
-        "/",
-        "/favicon.ico"
+            "/swagger-ui.html",
+            "/webjars/springfox-swagger-ui/**",
+            "/swagger-resources/**",
+            "/v2/**",
+            "/status/health",
+            "/welcome",
+            "/health/**",
+            "/health/liveness",
+            "/loggers/**",
+            "/",
+            "/favicon.ico"
     };
 
 
