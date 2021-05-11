@@ -24,4 +24,6 @@ class JacksonUtilsTest {
     void getHashMapTypeReference() {
         assertNotNull(JacksonUtils.getHashMapTypeReference());
     }
+
+
 }
