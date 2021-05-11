@@ -65,9 +65,9 @@ public class GenericArrayUserType<T extends Serializable> implements UserType {
             return new String[0];
         }
 
-        Array array = resultSet.getArray(names[0]);
+        Array arr = resultSet.getArray(names[0]);
         @SuppressWarnings("unchecked")
-        T javaArray = (T) array.getArray();
+        T javaArray = (T) arr.getArray();
         return javaArray;
     }
 
@@ -75,14 +75,14 @@ public class GenericArrayUserType<T extends Serializable> implements UserType {
     public void nullSafeSet(PreparedStatement statement, Object value, int index,
                             SharedSessionContractImplementor sharedSessionContractImplementor)
             throws HibernateException, SQLException {
-        Connection connection = statement.getConnection();
+        Connection conn = statement.getConnection();
         if (value == null) {
             statement.setNull(index, SQL_TYPES[0]);
         } else {
             @SuppressWarnings("unchecked")
-            T castObject = (T) value;
-            Array array = connection.createArrayOf("text", (Object[]) castObject);
-            statement.setArray(index, array);
+            T obj = (T) value;
+            Array arr = conn.createArrayOf("text", (Object[]) obj);
+            statement.setArray(index, arr);
         }
     }
 

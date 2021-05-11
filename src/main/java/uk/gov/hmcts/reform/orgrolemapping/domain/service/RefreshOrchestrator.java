@@ -97,7 +97,8 @@ public class RefreshOrchestrator {
 
         //Call the CRD Service to retrieve the caseworker profiles base on service name
         ResponseEntity<List<UserProfilesResponse>> response = crdService
-                .fetchCaseworkerDetailsByServiceName(refreshJobEntity.get().getJurisdiction(), pageSize, 1,
+                .fetchCaseworkerDetailsByServiceName(refreshJobEntity.isPresent() ? refreshJobEntity
+                                .get().getJurisdiction() : "", pageSize, 1,
                         sortDirection, sortColumn);
 
 
@@ -130,7 +131,7 @@ public class RefreshOrchestrator {
             Set<UserAccessProfile>> userAccessProfiles) {
         ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
 
-        ((List<ResponseEntity>)
+        ((List<ResponseEntity<Object>>)
                 Objects.requireNonNull(responseEntity.getBody())).forEach(entity -> {
                     RoleAssignmentRequestResource resource = JacksonUtils
                         .convertRoleAssignmentResource(entity.getBody());
@@ -151,11 +152,11 @@ public class RefreshOrchestrator {
 
         List<String> successUserIds = new ArrayList<>();
         List<String> failureUserIds = new ArrayList<>();
-        responseCodeWithUserId.forEach((K, V) -> {
-            if (!V.equalsIgnoreCase("201 CREATED")) {
-                failureUserIds.add(K);
+        responseCodeWithUserId.forEach((k, v) -> {
+            if (!v.equalsIgnoreCase("201 CREATED")) {
+                failureUserIds.add(k);
             } else {
-                successUserIds.add(K);
+                successUserIds.add(k);
             }
 
         });

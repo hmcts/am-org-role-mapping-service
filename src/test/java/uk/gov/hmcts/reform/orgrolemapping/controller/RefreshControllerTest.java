@@ -1,4 +1,3 @@
-/*
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,10 +36,9 @@ class RefreshControllerTest {
         ResponseEntity<Object> response =
                 ResponseEntity.status(HttpStatus.CREATED).body(userRequest);
 
-        Mockito.when(refreshOrchestrator.refresh(any(),any(),any()))
+        Mockito.when(refreshOrchestrator.refresh(any(),any()))
                 .thenReturn(response);
 
-        assertEquals(response, sut.refresh(roleCategory, jurisdiction, retryUserIds));
+        assertEquals(response, sut.refresh("1", UserRequest.builder().build()));
     }
 }
-*/
