@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,20 +47,24 @@ class BulkAssignmentOrchestratorTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void createBulkAssignmentsRequestTest() {
 
         Mockito.when(retrieveDataService.retrieveCaseWorkerProfiles(Mockito.any()))
                 .thenReturn(TestDataBuilder.buildUserAccessProfileMap(false, false));
 
         Mockito.when(requestMappingService.createCaseWorkerAssignments(Mockito.any()))
-                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(AssignmentRequestBuilder
-                        .buildAssignmentRequest(false)));
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(Arrays.asList(ResponseEntity
+                        .ok(AssignmentRequestBuilder
+                        .buildAssignmentRequest(false)))));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        AssignmentRequest assignmentRequest = (AssignmentRequest) response.getBody();
+        List<AssignmentRequest> entity = (List<AssignmentRequest>) response.getBody();
+
+        AssignmentRequest assignmentRequest = entity.get(0);
         assert assignmentRequest != null;
         RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
         assertNotNull(response);

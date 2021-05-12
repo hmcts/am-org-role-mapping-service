@@ -570,7 +570,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
             JsonNode responseJsonNode = objectMapper.readValue(contentAsString,
                     JsonNode.class);
 
-            responseNode = responseJsonNode.get(0).get("body").get("roleAssignmentResponse");
+            responseNode = responseJsonNode.get(0).get("roleAssignmentResponse");
 
             assertEquals(requestStatus.toString(), responseNode.get("roleRequest").get("status").asText());
             assertEquals(roleAssignmentCount, responseNode.get("requestedRoles").size());
