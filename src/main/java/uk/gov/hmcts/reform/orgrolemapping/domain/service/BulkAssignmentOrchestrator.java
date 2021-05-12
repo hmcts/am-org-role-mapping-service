@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Slf4j
@@ -29,8 +32,7 @@ public class BulkAssignmentOrchestrator {
     private final RequestMappingService requestMappingService;
 
 
-
-
+    @SuppressWarnings("unchecked")
     public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
         //Extract and Validate received users List
@@ -46,7 +48,14 @@ public class BulkAssignmentOrchestrator {
                 "Execution time of createBulkAssignmentsRequest() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
-        return responseEntity;
+
+        List<Object> roleAssignmentResponses = new ArrayList<>();
+
+        ((List<ResponseEntity<Object>>)
+                Objects.requireNonNull(responseEntity.getBody())).forEach(entity ->
+            roleAssignmentResponses.add(entity.getBody()));
+
+        return ResponseEntity.ok(roleAssignmentResponses);
     }
 
 
