@@ -17,11 +17,6 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
     public static final String EMAIL_TEMPLATE = "ORM-func-test-user-%s@justice.gov.uk";
 
     @Override
-    public void doLoadTestData() {
-        // This method can be used to load any data during initialisation
-    }
-
-    @Override
     public Object calculateCustomValue(BackEndFunctionalTestScenarioContext scenarioContext, Object key) {
         //the docAMUrl is is referring the self link in PR
         switch (key.toString()) {
