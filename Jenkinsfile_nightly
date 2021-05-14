@@ -2,9 +2,15 @@
 
 properties([
   // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
-  pipelineTriggers([cron('21 01 * * *')])
-])
-
+  pipelineTriggers([cron('22 01 * * *')]),
+  parameters([
+          string(name: 'URL_TO_TEST', defaultValue: 'http://am-org-role-mapping-service-aat.service.core-compute-aat.internal',
+                  description: 'The URL you want to run these tests against'),
+          string(name: 'SecurityRules',
+                  defaultValue: 'http://raw.githubusercontent.com/hmcts/security-test-rules/master/conf/security-rules.conf',
+                  description: 'The URL you want to run these tests against'),
+  ])
+  ])
 @Library("Infrastructure")
 
 def type = "java"
@@ -62,7 +68,25 @@ withNightlyPipeline(type, product, component) {
   env.USER_PROFILE_URL= "https://rd-user-profile-api-pr-575.service.core-compute-preview.internal"
   env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
   env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
+
   overrideVaultEnvironments(vaultOverrides)
+  loadVaultSecrets(secrets)
 
   enableMutationTest()
+  enableFullFunctionalTest()
+
+  before('fullFunctionalTest') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+  }
+
+  after('build') {
+    stage("integration tests") {
+      sh "./gradlew integration"
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+    }
+  }
+
+  after('fullFunctionalTest') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
+  }
 }
