@@ -68,7 +68,6 @@ withNightlyPipeline(type, product, component) {
   env.USER_PROFILE_URL= "https://rd-user-profile-api-pr-575.service.core-compute-preview.internal"
   env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
   env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
-  //env.TEST_URL = "http://am-org-role-mapping-service-pr-169.service.core-compute-preview.internal"
 
   overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
