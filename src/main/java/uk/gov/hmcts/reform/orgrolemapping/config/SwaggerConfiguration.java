@@ -72,9 +72,9 @@ public class SwaggerConfiguration {
         return new ParameterBuilder()
             .name("user-id")
             .description(
-                    "User-id of the currently authenticated user. If provided will be used to populate the creator field "
-                            + "of a document and"
-                            + " will be used for authorisation.")
+                "User-id of the currently authenticated user. If provided will be used to populate the creator field "
+                        + "of a document and"
+                        + " will be used for authorisation.")
             .modelRef(new ModelRef("string"))
             .parameterType("header")
             .required(false)
