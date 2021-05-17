@@ -25,72 +25,72 @@ public class SwaggerConfiguration {
     @Bean
     public Docket apiV2() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("v2")
-                .select()
-                //.apis(RequestHandlerSelectors.basePackage(TestFileName.class.getPackage().getName()))
-                .build()
-                .useDefaultResponseMessages(false)
-                .apiInfo(apiV2Info())
-                .host(host)
-                .globalOperationParameters(Arrays.asList(
-                        headerServiceAuthorization(),
-                        headerAuthorization(),
-                        headerUserId(),
-                        headerUserRoles()
-                ));
+            .groupName("v2")
+            .select()
+            //.apis(RequestHandlerSelectors.basePackage(TestFileName.class.getPackage().getName()))
+            .build()
+            .useDefaultResponseMessages(false)
+            .apiInfo(apiV2Info())
+            .host(host)
+            .globalOperationParameters(Arrays.asList(
+                    headerServiceAuthorization(),
+                    headerAuthorization(),
+                    headerUserId(),
+                    headerUserRoles()
+            ));
     }
 
     private ApiInfo apiV2Info() {
         return new ApiInfoBuilder()
-                .title("Organisation Role Mapping Service")
-                .description("download, upload")
-                .version("2-beta")
-                .build();
+            .title("Organisation Role Mapping Service")
+            .description("download, upload")
+            .version("2-beta")
+            .build();
     }
 
     private Parameter headerServiceAuthorization() {
         return new ParameterBuilder()
-                .name("ServiceAuthorization")
-                .description("Valid Service-to-Service JWT token for a whitelisted micro-service")
-                .modelRef(new ModelRef("string"))
-                .parameterType("header")
-                .required(true)
-                .build();
+            .name("ServiceAuthorization")
+            .description("Valid Service-to-Service JWT token for a whitelisted micro-service")
+            .modelRef(new ModelRef("string"))
+            .parameterType("header")
+            .required(true)
+            .build();
     }
 
     private Parameter headerAuthorization() {
         return new ParameterBuilder()
-                .name("Authorization")
-                .description("Keyword `Bearer` followed by a valid IDAM user token")
-                .modelRef(new ModelRef("string"))
-                .parameterType("header")
-                .required(true)
-                .build();
+            .name("Authorization")
+            .description("Keyword `Bearer` followed by a valid IDAM user token")
+            .modelRef(new ModelRef("string"))
+            .parameterType("header")
+            .required(true)
+            .build();
     }
 
     private Parameter headerUserId() {
         return new ParameterBuilder()
-                .name("user-id")
-                .description(
-                        "User-id of the currently authenticated user. If provided will be used to populate the creator field "
-                                + "of a document and"
-                                + " will be used for authorisation.")
-                .modelRef(new ModelRef("string"))
-                .parameterType("header")
-                .required(false)
-                .build();
+            .name("user-id")
+            .description(
+                    "User-id of the currently authenticated user. If provided will be used to populate the creator field "
+                            + "of a document and"
+                            + " will be used for authorisation.")
+            .modelRef(new ModelRef("string"))
+            .parameterType("header")
+            .required(false)
+            .build();
     }
 
     private Parameter headerUserRoles() {
         return new ParameterBuilder()
-                .name("user-roles")
-                .description(
-                        "Comma-separated list of roles of the currently authenticated user. If provided will be used for "
-                                + "authorisation.")
-                .modelRef(new ModelRef("string"))
-                .parameterType("header")
-                .required(false)
-                .build();
+            .name("user-roles")
+            .description(
+                    "Comma-separated list of roles of the currently authenticated user. If provided will be used for "
+                            + "authorisation.")
+            .modelRef(new ModelRef("string"))
+            .parameterType("header")
+            .required(false)
+            .build();
     }
 
 }
