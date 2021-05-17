@@ -266,10 +266,6 @@ repositories {
 
 
 dependencies {
-//    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot)
-//    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot)
-//    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot)
-//    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot)
     compile(group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0')
 
     compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
@@ -277,28 +273,14 @@ dependencies {
 
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
-    // drools engine dependency
-//    compile(group: 'org.drools', name: 'drools-core', version: versions.drools) {
-//        exclude group: 'org.jsoup', module: 'jsoup'
-//    }
-//    compile(group: 'org.drools', name: 'drools-compiler', version: versions.drools) {
-//        exclude group: 'org.jsoup', module: 'jsoup'
-//    }
-//    compile(group: 'org.drools', name: 'drools-decisiontables', version: versions.drools) {
-//        exclude group: 'org.jsoup', module: 'jsoup'
-//    }
     compile(group: 'org.kie', name: 'kie-ci', version: versions.drools) {
         exclude group: 'org.jsoup', module: 'jsoup'
         exclude group: 'org.apache.ant', module: 'ant'
         exclude group: 'org.apache.ant', module: 'ant-launcher'
     }
 
-    //Added for Spring Security Implementation
-//    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot)
-
     //Added for S2S and User Authentication
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: versions.reformS2sClient
-//    compile group: 'javax.inject', name: 'javax.inject', version: '1'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
     compile group: 'io.springfox', name: 'springfox-spring-webmvc', version: versions.swagger2Version
@@ -324,10 +306,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-//    implementation "org.springframework.security:spring-security-web"
-//    implementation "org.springframework.security:spring-security-config"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
-//    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
     implementation 'commons-io:commons-io:2.8.0'
@@ -377,7 +356,6 @@ dependencies {
 
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
     testCompile('com.github.tomakehurst:wiremock-jre8:2.25.1')
-//    testCompile('org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE')
 
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
 
@@ -397,15 +375,12 @@ dependencies {
         exclude group: 'junit', module: 'junit'
     }
     testCompile 'com.github.hmcts:befta-fw:AM-1350-extend-befta-fw-SNAPSHOT'
-    //compile fileTree(dir: 'lib', include: 'befta-fw-5.11.0.jar')
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
-//
-//    testCompile(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
-//        exclude group: 'javascript', module: 'jquery'
-////    }
-//    testCompile group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
-//    testCompile group: 'io.cucumber', name: 'cucumber-junit', version: versions.cucumber
-//    testCompile group: 'io.github.openfeign', name: 'feign-jackson', version: versions.feign_jackson
+
+    testCompile(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
+        exclude group: 'javascript', module: 'jquery'
+       }
+    testCompile group: 'io.cucumber', name: 'cucumber-junit', version: versions.cucumber
 
     testCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     testCompile group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
