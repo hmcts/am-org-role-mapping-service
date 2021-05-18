@@ -261,7 +261,7 @@ repositories {
     jcenter()
     mavenCentral()
     maven {
-        url "https://dl.bintray.com/hmcts/hmcts-maven"
+        url 'https://jitpack.io'
     }
     maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
 }
@@ -311,7 +311,7 @@ dependencies {
 
     //Azure service bus libraries
     compile group: 'com.microsoft.azure', name: 'azure', version: '1.37.0'
-    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.4.0'
+    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'
     compile group: 'io.projectreactor', name: 'reactor-core', version: '3.4.0'
     compile group: 'com.azure', name: 'azure-core', version: '1.10.0'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
@@ -335,6 +335,9 @@ dependencies {
     implementation 'commons-io:commons-io:2.8.0'
 
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+    //Dependent on drools Jar. Can be removed CVE-2021-26291
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
     implementation('io.netty:netty-buffer:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
@@ -397,7 +400,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
-    testCompile group: 'uk.gov.hmcts', name: 'befta-fw', version: '5.11.0-RDM-9238.2'
+    testCompile 'com.github.hmcts:befta-fw:AM-1350-extend-befta-fw-SNAPSHOT'
     //compile fileTree(dir: 'lib', include: 'befta-fw-5.11.0.jar')
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
 
