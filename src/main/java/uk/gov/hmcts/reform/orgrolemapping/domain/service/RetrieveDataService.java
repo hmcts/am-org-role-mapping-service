@@ -76,8 +76,8 @@ public class RetrieveDataService {
 
         //Fetch the user profile from the response
         List<UserProfile> userProfiles = new ArrayList<>();
-        userProfilesResponse.forEach(userResponse -> userResponse.getUserProfiles()
-                .forEach(o -> userProfiles.add(o)));
+        userProfilesResponse.forEach(userResponse -> userProfiles.add(userResponse.getUserProfile()));
+
 
 
         //Collect the userIds to build the UserRequest

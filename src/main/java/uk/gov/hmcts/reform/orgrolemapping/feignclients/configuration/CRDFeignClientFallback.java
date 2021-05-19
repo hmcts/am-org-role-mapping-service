@@ -40,9 +40,9 @@ public class CRDFeignClientFallback implements CRDFeignClient {
 
         ResponseEntity<List<UserProfilesResponse>> responseEntity = ResponseEntity.ok(Arrays
                 .asList(UserProfilesResponse.builder()
-                .serviceName(ccdServiceNames).userProfiles(buildUserProfile(UserRequest.builder().userIds(
+                .serviceName(ccdServiceNames).userProfile(buildUserProfile(UserRequest.builder().userIds(
                         Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()))
-                        .build())).build()));
+                        .build()).get(0)).build()));
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add(

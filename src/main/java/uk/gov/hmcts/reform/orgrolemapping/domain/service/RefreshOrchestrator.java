@@ -88,9 +88,9 @@ public class RefreshOrchestrator {
             Map<String, String> responseCodeWithUserId,
             RefreshJobEntity refreshJobEntity) {
 
-        int pageSize = 2;
+        int pageSize = 20;
         String sortDirection = "ASC";
-        String sortColumn = "roleName";
+        String sortColumn = "";
         ResponseEntity<Object> responseEntity = null;
 
         //validate the role Category
@@ -100,7 +100,7 @@ public class RefreshOrchestrator {
         //Call the CRD Service to retrieve the caseworker profiles base on service name
         ResponseEntity<List<UserProfilesResponse>> response = crdService
                 .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                                .getJurisdiction() : "", pageSize, 1,
+                                .getJurisdiction() : "", pageSize, 0,
                         sortDirection, sortColumn);
 
 
@@ -111,7 +111,7 @@ public class RefreshOrchestrator {
 
 
         //call to CRD
-        for (int page = 1; page <= pageNumber; page++) {
+        for (int page = 0; page <= pageNumber; page++) {
             ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = crdService
                     .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
                                     .getJurisdiction() : "", pageSize, page,
