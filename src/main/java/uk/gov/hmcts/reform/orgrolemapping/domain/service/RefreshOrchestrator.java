@@ -88,7 +88,7 @@ public class RefreshOrchestrator {
             Map<String, String> responseCodeWithUserId,
             RefreshJobEntity refreshJobEntity) {
 
-        int pageSize = 20;
+        int pageSize = 4;
         String sortDirection = "ASC";
         String sortColumn = "";
         ResponseEntity<Object> responseEntity = null;
