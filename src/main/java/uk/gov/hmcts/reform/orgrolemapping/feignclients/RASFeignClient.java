@@ -7,19 +7,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RASFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RASFeignClientInterceptor;
 
 @FeignClient(value = "roleassignmentclient", url = "${feign.client.config.roleAssignmentApp.url}",
-             configuration = {FeignClientConfiguration.class, FeignClientInterceptor.class},
-             fallback = RASFeignClientFallback.class)
+        configuration = {FeignClientConfiguration.class, RASFeignClientInterceptor.class},
+        fallback = RASFeignClientFallback.class)
 
 public interface RASFeignClient {
 
     @GetMapping(value = "/")
     public String getServiceStatus();
 
-    @PostMapping (value = "/am/role-assignments", headers = "x-correlation-id")
+    @PostMapping(value = "/am/role-assignments", headers = "x-correlation-id")
     public ResponseEntity<Object> createRoleAssignment(@RequestBody AssignmentRequest assignmentRequest);
 
 }

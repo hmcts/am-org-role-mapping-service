@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 rule "iac_salaried_judge"
 when
-  $jap: JudicialAccessProfile(roleId == "84", contractTypeId == "5")
+  $jap: JudicialAccessProfile(roleId == "0")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));

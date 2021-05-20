@@ -157,11 +157,11 @@ public class AssignmentRequestBuilder {
         judicialProfile.getAppointments().forEach(appointment -> {
 
             JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder().build();
-            judicialAccessProfile.setUserId(judicialProfile.getElinkId());
+            judicialAccessProfile.setUserId(judicialProfile.getIdamId());
             judicialAccessProfile.setRoleId(appointment.getRoleId());
             judicialAccessProfile.setBeginTime(appointment.getStartDate().atZone(ZoneId.of("UTC")));
             judicialAccessProfile.setEndTime(appointment.getEndDate().atZone(ZoneId.of("UTC")));
-            judicialAccessProfile.setRegionId(appointment.getLocationDescEn());
+            judicialAccessProfile.setRegionId(appointment.getRegionId());
             judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
             judicialAccessProfile.setContractTypeId(appointment.getContractTypeId());
             judicialAccessProfile.setAuthorisations(authorisations);

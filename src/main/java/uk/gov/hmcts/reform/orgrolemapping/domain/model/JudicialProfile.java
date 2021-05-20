@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,11 +15,14 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JudicialProfile implements Serializable {
 
     @NonNull
-    private String elinkId;
+    private String elinksId;
+
+    private String idamId;
     private String personalCode;
     private String title;
     private String knownAs;
@@ -43,7 +45,8 @@ public class JudicialProfile implements Serializable {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Appointment implements Serializable {
 
         @NonNull
@@ -56,12 +59,16 @@ public class JudicialProfile implements Serializable {
         private String baseLocationId;
         private String courtName;
         private String bench;
+
         private String courtType;
         private String circuit;
         private String areaOfExpertise;
+        /*@NonNull
+        private String locationId;*/
+        //private String locationDescEn;
         @NonNull
-        private String locationId;
-        private String locationDescEn;
+        private String regionId;
+        private String regionDescEn;
         private String isPrincipalAppointment;
         @NonNull
         private LocalDateTime startDate;
@@ -76,7 +83,8 @@ public class JudicialProfile implements Serializable {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Authorisation implements Serializable {
         @NonNull
         private String authorisationId;

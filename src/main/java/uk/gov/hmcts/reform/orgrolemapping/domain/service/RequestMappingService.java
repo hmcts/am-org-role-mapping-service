@@ -188,8 +188,8 @@ public class RequestMappingService<T> {
         AtomicInteger failureResponseCount = new AtomicInteger();
 
         usersRoleAssignments
-                .forEach((k, v) -> finalResponse.add(updateProfileRoleAssignments(k,
-                        v, failureResponseCount, userType).getBody()));
+                .forEach((k, roleAssignments) -> finalResponse.add(updateProfileRoleAssignments(k,
+                        roleAssignments, failureResponseCount, userType).getBody()));
         log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
         log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);

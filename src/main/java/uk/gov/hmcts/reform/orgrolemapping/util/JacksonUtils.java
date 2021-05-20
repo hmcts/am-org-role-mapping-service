@@ -63,6 +63,20 @@ public class JacksonUtils {
     }
 
     public static JudicialProfile convertInJudicialProfile(Object from) {
+//        ObjectMapper MAPPER = new ObjectMapper()
+//                .registerModule(new JavaTimeModule())
+//                //.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+//                .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true)
+//                .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+//                .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+//        try {
+//            //new ObjectMapper().convertValue(from, JudicialProfile.class);
+//            JudicialProfile judicialProfile = MAPPER.convertValue(from, new TypeReference<>() {
+//            });
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return MAPPER.convertValue(from, new TypeReference<>() {
         });
     }

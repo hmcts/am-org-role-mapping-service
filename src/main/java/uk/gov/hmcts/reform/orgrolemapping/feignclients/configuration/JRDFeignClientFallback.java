@@ -23,7 +23,7 @@ public class JRDFeignClientFallback  implements JRDFeignClient {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> ResponseEntity<List<T>> getJudicialDetailsById(UserRequest userRequest) {
+    public <T> ResponseEntity<List<T>> getJudicialDetailsById(Integer pageSize, UserRequest userRequest) {
         return ResponseEntity.ok((List<T>) new ArrayList<>(buildJudicialProfile(userRequest,
                 "judicialProfileSample.json")));
     }

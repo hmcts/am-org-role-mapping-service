@@ -135,7 +135,7 @@ public class UserAccessProfileBuilder {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
                 JudicialProfile judicialProfile = objectMapper.readValue(inputStream, JudicialProfile.class);
-                judicialProfile.setElinkId(userId);
+                judicialProfile.setElinksId(userId);
                 judicialProfilesProfiles.add(judicialProfile);
 
 

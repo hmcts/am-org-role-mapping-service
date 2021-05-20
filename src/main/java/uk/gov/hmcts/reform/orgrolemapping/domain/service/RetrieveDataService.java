@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class RetrieveDataService {
 
     private final ParseRequestService parseRequestService;
     private final CRDFeignClient crdFeignClient;
-    private final JRDFeignClientFallback jrdFeignClient;
+    private final JRDFeignClient jrdFeignClient;
 
     @SuppressWarnings("unchecked")
     public Map<String, Set<?>> retrieveProfiles(UserRequest userRequest, UserType userType) {
@@ -69,12 +69,11 @@ public class RetrieveDataService {
             Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
 
         } else if (userType.equals(UserType.JUDICIAL)) {
-            response = jrdFeignClient.getJudicialDetailsById(userRequest);
-            Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
-
-
+            response = jrdFeignClient.getJudicialDetailsById(1000, userRequest);
+            Objects.requireNonNull(response.getBody()).forEach(o ->
+                    profiles.add(convertInJudicialProfile(o))
+            );
         }
-
         log.info(
                 "Execution time of  Response : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
@@ -101,7 +100,8 @@ public class RetrieveDataService {
             } else if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.JUDICIAL)) {
 
                 List<JudicialProfile> validJudicialProfiles = (List<JudicialProfile>) (Object) validProfiles;
-                validJudicialProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getElinkId(),
+
+                validJudicialProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getIdamId(),
                         convertProfileToJudicialAccessProfile(userProfile)));
             }
             Map<String, Integer> userAccessProfileCount = new HashMap<>();

@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -55,7 +56,7 @@ public class ParseRequestService implements ParseRequestBase {
                 caseWorkerProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));
             } else if (userType.equals(UserType.JUDICIAL)) {
                 List<JudicialProfile> judicialProfileList = profiles;
-                judicialProfileList.forEach(judicialProfile -> userProfileIds.add(judicialProfile.getElinkId()));
+                judicialProfileList.forEach(judicialProfile -> userProfileIds.add(judicialProfile.getElinksId()));
             }
             List<String> userIdsNotInCRDResponse = userRequest.getUserIds().stream().filter(userId -> !userProfileIds
                     .contains(userId)).collect(Collectors.toList());
@@ -117,7 +118,7 @@ public class ParseRequestService implements ParseRequestBase {
         profiles.forEach(userProfile -> {
             AtomicBoolean isInvalid = new AtomicBoolean(false);
             if (CollectionUtils.isEmpty(userProfile.getAppointments())) {
-                log.error("appointment is not available for the judicialProfile {} ", userProfile.getElinkId());
+                log.error("appointment is not available for the judicialProfile {} ", userProfile.getElinksId());
                 invalidJudicialProfiles.add(userProfile);
                 isInvalid.set(true);
             } else {
@@ -125,25 +126,31 @@ public class ParseRequestService implements ParseRequestBase {
                     if (StringUtils.isEmpty(appointment.getContractTypeId())
                             || StringUtils.isEmpty(appointment.getRoleId())
                             || StringUtils.isEmpty(appointment.getBaseLocationId())
-                            || StringUtils.isEmpty(appointment.getLocationId())
+                            //appointment.getLocationId
+                            || StringUtils.isEmpty(appointment.getRegionId())
 
                     ) {
                         log.error("appointment is not valid for the judicialProfile id {} having roleId {} ",
-                                userProfile.getElinkId(), appointment.getRoleId());
+                                userProfile.getElinksId(), appointment.getRoleId());
                         invalidJudicialProfiles.add(userProfile);
                         isInvalid.set(true);
                     }
                 });
             }
+            JudicialProfile.Authorisation jAuthorisation = JudicialProfile.Authorisation.builder()
+                    .authorisationId(UUID.randomUUID().toString())
+                    .jurisdiction("IAC")
+                    .build();
+            userProfile.setAuthorisations(List.of(jAuthorisation));
             if (CollectionUtils.isEmpty(userProfile.getAuthorisations())) {
-                log.error("The authorisation is not available for the judicialProfile {} ", userProfile.getElinkId());
+                log.error("The authorisation is not available for the judicialProfile {} ", userProfile.getElinksId());
                 invalidJudicialProfiles.add(userProfile);
                 isInvalid.set(true);
             } else {
                 userProfile.getAuthorisations().forEach(authorisation -> {
                     if (StringUtils.isEmpty(authorisation.getAuthorisationId())) {
                         log.error("The authorisation is not valid for the judicialProfile {} ",
-                                userProfile.getElinkId());
+                                userProfile.getElinksId());
                         invalidJudicialProfiles.add(userProfile);
                         isInvalid.set(true);
                     }
