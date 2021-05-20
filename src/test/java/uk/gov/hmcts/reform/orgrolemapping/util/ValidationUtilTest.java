@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
 import org.apache.poi.ss.formula.functions.T;
+import org.assertj.core.matcher.AssertionMatcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -93,6 +95,13 @@ class ValidationUtilTest {
         );
     }
 
+
+    @Test
+    void shouldThrow_IncorrectPatternValidateId() {
+        Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, "^[-a-zA-Z0-9]*$"));
+    }
+
     @Test
     void shouldValidate_CompareDateTime() {
         Assertions.assertDoesNotThrow(() ->
@@ -128,4 +137,16 @@ class ValidationUtilTest {
         );
     }
 
+    @Test
+    void shouldValidateTrue_CompareRoleCategory() {
+        String roleType = "Judicial";
+        ValidationUtil.compareRoleCategory(roleType);
+    }
+
+    @Test
+    void shouldThrow_BadRequestException_CompareRoleCategory() {
+        String roleType = "invalid";
+        Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.compareRoleCategory(roleType));
+    }
 }
