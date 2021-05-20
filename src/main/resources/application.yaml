@@ -96,15 +96,15 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        connectTimeout: 30000
+        readTimeout: 30000
         loggerLevel: FULL
       crdclient:
         url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
       roleAssignmentApp:
         url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
       jrdClient:
-        url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
+        url: http://rd-judicial-api-pr-110.service.core-compute-preview.internal
 
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
