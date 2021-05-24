@@ -100,7 +100,7 @@ public class JRDTopicConsumer {
                             }
                             log.info("    getLockToken......{}", message.getLockToken());
                         } else {
-                            log.info("The JRD feature flag is currently disabled. This message would be supressed");
+                            log.info("The JRD feature flag is currently disabled. This message would be suppressed");
                             return receiveClient.completeAsync(message.getLockToken());
                         }
 
