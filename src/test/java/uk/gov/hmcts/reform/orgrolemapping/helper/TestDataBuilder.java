@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
+import uk.gov.hmcts.reform.idam.client.models.User;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.InputStream;
@@ -194,5 +196,25 @@ public class TestDataBuilder {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static UserProfilesResponse buildUserProfilesResponse() {
+      return  UserProfilesResponse.builder()
+                .serviceName("ccd_service_name")
+                .userProfiles(buildListOfUserProfiles(
+                        true,
+                        true,
+                        "1",
+                        "1",
+                        "name1",
+                        "name2",
+                        true,
+                        true,
+                        false,
+                        true,
+                        "workArea1",
+                        "workArea2",
+                        false))
+                .build();
     }
 }
