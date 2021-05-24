@@ -310,7 +310,7 @@ dependencies {
     //Azure service bus libraries
     compile group: 'com.microsoft.azure', name: 'azure', version: '1.37.0'
     compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'
-    compile group: 'io.projectreactor', name: 'reactor-core', version: '3.4.0'
+    compile group: 'io.projectreactor', name: 'reactor-core', version: '3.4.6'
     compile group: 'com.azure', name: 'azure-core', version: '1.10.0'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
 
