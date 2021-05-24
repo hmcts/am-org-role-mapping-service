@@ -8,7 +8,6 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,29 +15,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.config.RefreshJobRowMapper;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -51,8 +41,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
 
     private static final String ACTOR_ID = "123e4567-e89b-42d3-a456-556642445612";
-    private static final String REFRESHJOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id " +
-            "FROM refresh_jobs";
+    private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id " +
+            "FROM refresh_jobs where job_id=?";
     private static final String AUTHORISED_SERVICE = "ccd_gw";
 
     private MockMvc mockMvc;
@@ -172,7 +162,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     private Integer getRefreshJobRecordsCount() {
-        return template.queryForObject(REFRESHJOB_RECORDS_QUERY, Integer.class);
+        return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, Integer.class);
     }
 
     @NotNull
@@ -186,6 +176,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     public RefreshJobEntity getRecordsFromRefreshJobTable(Long jobId) {
-        return template.queryForObject(REFRESHJOB_RECORDS_QUERY, new Object[]{jobId}, RefreshJobEntity.class);
+        return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, new Object[]{jobId},
+                new RefreshJobRowMapper());
     }
 }
