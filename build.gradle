@@ -209,13 +209,13 @@ sonarqube {
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
         property "sonar.exclusions",
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/*Application.java," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/*Swagger2SpringBoot.java," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/*GetSasToken.java," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/feignclients/configuration/**," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/model/**," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/servicebus/**," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/advice/exception/**"
+                        "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/*Swagger2SpringBoot.java," +
+                        "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/*GetSasToken.java," +
+                        "src/main/java/uk/gov/hmcts/reform/orgrolemapping/feignclients/configuration/**," +
+                        "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/model/**," +
+                        "src/main/java/uk/gov/hmcts/reform/orgrolemapping/servicebus/**," +
+                        "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**," +
+                        "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/advice/exception/**"
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
 }
@@ -261,7 +261,7 @@ repositories {
     jcenter()
     mavenCentral()
     maven {
-        url "https://dl.bintray.com/hmcts/hmcts-maven"
+        url 'https://jitpack.io'
     }
     maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
 }
@@ -311,7 +311,7 @@ dependencies {
 
     //Azure service bus libraries
     compile group: 'com.microsoft.azure', name: 'azure', version: '1.37.0'
-    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.4.0'
+    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'
     compile group: 'io.projectreactor', name: 'reactor-core', version: '3.4.0'
     compile group: 'com.azure', name: 'azure-core', version: '1.10.0'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
@@ -323,7 +323,7 @@ dependencies {
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.0'
     compile group: 'org.amqphub.spring', name: 'amqp-10-jms-spring-boot-starter', version: '2.3.9'
     compile group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '2.8.5'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.1'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.5'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation "org.springframework.security:spring-security-web"
@@ -335,6 +335,9 @@ dependencies {
     implementation 'commons-io:commons-io:2.8.0'
 
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+    //Dependent on drools Jar. Can be removed CVE-2021-26291
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
     implementation('io.netty:netty-buffer:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
@@ -397,7 +400,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
-    testCompile group: 'uk.gov.hmcts', name: 'befta-fw', version: '5.11.0-RDM-9238.2'
+    testCompile 'com.github.hmcts:befta-fw:AM-1350-extend-befta-fw-SNAPSHOT'
     //compile fileTree(dir: 'lib', include: 'befta-fw-5.11.0.jar')
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
 
@@ -487,7 +490,7 @@ def getCheckedOutGitCommitHash() {
 
 pact {
     broker {
-     pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
     }
     publish {
         pactDirectory = 'pacts'

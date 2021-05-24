@@ -54,18 +54,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.anonymousPaths = anonymousPaths;
     }
 
-    private static final String[] AUTH_WHITELIST = {
-        "/swagger-ui.html",
-        "/webjars/springfox-swagger-ui/**",
-        "/swagger-resources/**",
-        "/v2/**",
-        "/status/health",
-        "/welcome",
-        "/health/**",
-        "/health/liveness",
-        "/loggers/**",
-        "/send*",
-        "/"
+    private static final String[] AUTH_WHITELIST = new String[]{
+            "/swagger-ui.html",
+            "/webjars/springfox-swagger-ui/**",
+            "/swagger-resources/**",
+            "/v2/**",
+            "/status/health",
+            "/welcome",
+            "/health/**",
+            "/health/liveness",
+            "/loggers/**",
+            "/send*",
+            "/",
+            "/favicon.ico"
     };
 
 
