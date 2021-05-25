@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
@@ -57,12 +60,21 @@ public class RefreshOrchestrator {
             parseRequestService.validateUserRequest(userRequest);
             log.info("Validated userIds {}", userRequest.getUserIds());
 
-            //Create userAccessProfiles based upon userIds
-            Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
-                    .retrieveCaseWorkerProfiles(userRequest);
+            try {
+                //Create userAccessProfiles based upon userIds
+                Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
+                        .retrieveCaseWorkerProfiles(userRequest);
+                //prepare the response code
+                responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles);
+            } catch (FeignException.NotFound feignClientException) {
 
-            //prepare the response code
-            responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles);
+                log.info("Feign Exception :: {} ", feignClientException.contentUTF8());
+                responseCodeWithUserId.put(StringUtils.join(userRequest.getUserIds(), ","),
+                        HttpStatus.resolve(feignClientException.status()));
+
+
+            }
+
 
             //build success and failure list
             buildSuccessAndFailureBucket(responseCodeWithUserId, refreshJobEntity.isPresent() ? refreshJobEntity
@@ -102,29 +114,37 @@ public class RefreshOrchestrator {
         ValidationUtil.compareRoleCategory(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
                 .getRoleCategory() : "");
 
-        //Call to CRD Service to retrieve the total number of records in first call
-        ResponseEntity<List<UserProfilesResponse>> response = crdService
-                .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                                .getJurisdiction() : "", pageSize, 0,
-                        sortDirection, sortColumn);
-
-
-        // 2 step to find out the total number of records from header
-        String totalRecords = response.getHeaders().getFirst("total_records");
-        assert totalRecords != null;
-        int pageNumber = (Integer.parseInt(totalRecords) / pageSize);
-
-
-        //call to CRD
-        for (int page = 0; page < pageNumber; page++) {
-            ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = crdService
+        try {
+            //Call to CRD Service to retrieve the total number of records in first call
+            ResponseEntity<List<UserProfilesResponse>> response = crdService
                     .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                                    .getJurisdiction() : "", pageSize, page,
+                                    .getJurisdiction() : "", pageSize, 0,
                             sortDirection, sortColumn);
-            Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
-                    .getUserAccessProfile(userProfilesResponse);
 
-            responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles);
+
+            // 2 step to find out the total number of records from header
+            String totalRecords = response.getHeaders().getFirst("total_records");
+            assert totalRecords != null;
+            int pageNumber = (Integer.parseInt(totalRecords) / pageSize);
+
+
+            //call to CRD
+            for (int page = 0; page < pageNumber; page++) {
+                ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = crdService
+                        .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
+                                        .getJurisdiction() : "", pageSize, page,
+                                sortDirection, sortColumn);
+                Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
+                        .getUserAccessProfile(userProfilesResponse);
+
+                responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles);
+
+
+            }
+        } catch (FeignException.NotFound feignClientException) {
+
+            log.info("Feign Exception :: {} ", feignClientException.contentUTF8());
+            responseCodeWithUserId.put("", HttpStatus.resolve(feignClientException.status()));
 
 
         }
@@ -180,7 +200,7 @@ public class RefreshOrchestrator {
             refreshJobEntity.setStatus(ABORTED);
             refreshJobEntity.setUserIds(failureUserIds.toArray(new String[0]));
             refreshJobEntity.setCreated(LocalDateTime.now());
-            refreshJobEntity.setLog(String.format(FAILED_JOB,failureUserIds));
+            refreshJobEntity.setLog(String.format(FAILED_JOB, failureUserIds));
             persistenceService.persistRefreshJob(refreshJobEntity);
 
         } else if (CollectionUtils.isEmpty(failureUserIds) && CollectionUtils.isNotEmpty(successUserIds)
@@ -188,7 +208,7 @@ public class RefreshOrchestrator {
 
             refreshJobEntity.setStatus(COMPLETED);
             refreshJobEntity.setCreated(LocalDateTime.now());
-            refreshJobEntity.setLog(String.format(SUCCESS_JOB,successUserIds));
+            refreshJobEntity.setLog(String.format(SUCCESS_JOB, successUserIds));
             persistenceService.persistRefreshJob(refreshJobEntity);
         }
     }
