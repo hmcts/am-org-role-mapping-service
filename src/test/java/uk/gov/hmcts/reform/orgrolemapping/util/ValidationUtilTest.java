@@ -81,7 +81,7 @@ class ValidationUtilTest {
 
     @Test
     void shouldThrow_IncorrectDateFormat() {
-        String time = "2020-11-27T15:13:06.------070894";
+        String time = "--------------------";
         String time2 = LocalDateTime.now().minusDays(1L).toString();
         Assertions.assertThrows(BadRequestException.class, () ->
                 ValidationUtil.validateDateTime(time, time2)
