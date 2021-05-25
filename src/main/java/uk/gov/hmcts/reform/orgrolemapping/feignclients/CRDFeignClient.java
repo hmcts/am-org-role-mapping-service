@@ -27,7 +27,7 @@ public interface CRDFeignClient {
     @PostMapping(value = "/refdata/case-worker/users/fetchUsersById")
     ResponseEntity<List<UserProfile>> getCaseworkerDetailsById(UserRequest userRequest);
 
-    @GetMapping(value = "/refdata/case-worker/get-users-by-service-name")
+    @GetMapping(value = "/refdata/internal/staff/usersByServiceName")
     ResponseEntity<List<UserProfilesResponse>> getCaseworkerDetailsByServiceName(
                   @RequestParam(value = "ccd_service_names", required = true) String ccdServiceName,
                   @RequestParam(value = "page_size", required = false) Integer pageSize,
