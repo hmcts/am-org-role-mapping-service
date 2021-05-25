@@ -6,14 +6,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.User;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -216,5 +233,61 @@ public class TestDataBuilder {
                         "workArea2",
                         false))
                 .build();
+    }
+
+    public static AssignmentRequest buildAssignmentRequest(Status requestStatus, Status roleStatus,
+                                                           Boolean replaceExisting) throws IOException {
+        return new AssignmentRequest(buildRequest(requestStatus, replaceExisting),
+                buildRequestedRoleCollection(roleStatus));
+    }
+
+    public static Request buildRequest(Status status, Boolean replaceExisting) {
+        return Request.builder()
+                .id(UUID.fromString("ab4e8c21-27a0-4abd-aed8-810fdce22adb"))
+                .authenticatedUserId("4772dc44-268f-4d0c-8f83-f0fb662aac84")
+                .correlationId("38a90097-434e-47ee-8ea1-9ea2a267f51d")
+                .assignerId("123e4567-e89b-42d3-a456-556642445678")
+                .requestType(RequestType.CREATE)
+                .reference("p2")
+                .process(("p2"))
+                .replaceExisting(replaceExisting)
+                .status(status)
+                .created(ZonedDateTime.now())
+                .build();
+    }
+
+    public static Collection<RoleAssignment> buildRequestedRoleCollection(Status status) throws IOException {
+        Collection<RoleAssignment> requestedRoles = new ArrayList<>();
+        requestedRoles.add(buildRoleAssignment(status));
+        requestedRoles.add(buildRoleAssignment(status));
+        return requestedRoles;
+    }
+
+    public static RoleAssignment buildRoleAssignment(Status status) throws IOException {
+        ZonedDateTime timeStamp = ZonedDateTime.now(ZoneOffset.UTC);
+        return RoleAssignment.builder()
+                .id(UUID.fromString("9785c98c-78f2-418b-ab74-a892c3ccca9f"))
+                .actorId("21334a2b-79ce-44eb-9168-2d49a744be9c")
+                .actorIdType(ActorIdType.IDAM)
+                .roleType(RoleType.CASE)
+                .roleName("judge")
+                .classification(Classification.PUBLIC)
+                .grantType(GrantType.STANDARD)
+                .roleCategory(RoleCategory.JUDICIAL)
+                .readOnly(true)
+                .beginTime(timeStamp.plusDays(1))
+                .endTime(timeStamp.plusMonths(1))
+                .reference("reference")
+                .process(("process"))
+                .statusSequence(10)
+                .status(status)
+                .created(ZonedDateTime.now())
+                .authorisations(Collections.emptyList())
+                .build();
+    }
+
+    public static RoleAssignmentRequestResource buildRoleAssignmentRequestResource() throws IOException {
+        return new RoleAssignmentRequestResource(TestDataBuilder
+                .buildAssignmentRequest(Status.CREATE_REQUESTED, Status.APPROVED, true));
     }
 }

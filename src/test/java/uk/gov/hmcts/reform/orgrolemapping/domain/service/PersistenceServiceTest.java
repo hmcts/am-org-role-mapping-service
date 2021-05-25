@@ -30,4 +30,9 @@ class PersistenceServiceTest {
         Optional<RefreshJobEntity> response = sut.fetchRefreshJobById(1L);
         assertNotNull(response);
     }
+
+    @Test
+    void persistRefreshJobTest() {
+        RefreshJobEntity refreshEntity = RefreshJobEntity.builder().jobId(1L).status("NEW").build();
+    }
 }
