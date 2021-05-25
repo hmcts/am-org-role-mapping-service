@@ -101,7 +101,7 @@ class RefreshOrchestratorTest {
         List<UserProfilesResponse> userProfilesResponseList = new ArrayList<>();
         userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
         MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("total_records", "1");
+        headers.add("total_records", "4");
 
         ResponseEntity<List<UserProfilesResponse>> responseEntity
                 = new ResponseEntity<>(userProfilesResponseList,headers, HttpStatus.OK);
@@ -136,7 +136,7 @@ class RefreshOrchestratorTest {
 
         ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
 
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response);
     }
 }
