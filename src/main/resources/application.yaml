@@ -142,3 +142,6 @@ launchdarkly:
     key: ${LD_SDK_KEY:}
     environment: ${LAUNCH_DARKLY_ENV:pr}
     user: am-${LAUNCH_DARKLY_ENV:local}
+refresh:
+  Job:
+    update: ${REFRESH_JOB:LEGAL_OPERATIONS-IA-NEW-0}
