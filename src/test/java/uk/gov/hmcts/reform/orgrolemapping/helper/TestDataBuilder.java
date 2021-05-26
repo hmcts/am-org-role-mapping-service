@@ -195,8 +195,4 @@ public class TestDataBuilder {
             throw new RuntimeException(e);
         }
     }
-
-    public static UserRequest createUserRequest() {
-        return UserRequest.builder().userIds(List.of(id_1, id_2)).build();
-    }
 }
