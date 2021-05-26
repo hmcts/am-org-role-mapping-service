@@ -32,19 +32,16 @@ class PersistenceServiceTest {
         assertNotNull(response);
     }
 
-//    @Test
-//    void persistRefreshJobTest() {
-//        RefreshJobEntity refreshEntity = RefreshJobEntity.builder()
-//                .jobId(1L)
-//                .roleCategory("role")
-//                .jurisdiction("jurisdiction")
-//                .status("NEW")
-//                .created(LocalDateTime.now()).build();
-//        Mockito.when(refreshJobsRepository.findById(1L))
-//                .thenReturn(Optional.ofNullable(refreshEntity));
-//        assert refreshEntity != null;
-//        Mockito.when(refreshJobsRepository.save(refreshEntity))
-//                .thenReturn(refreshEntity);
-//        assertNotNull(refreshEntity);
-//    }
+    @Test
+    void persistRefreshJobTest() {
+        RefreshJobEntity refreshEntity = RefreshJobEntity.builder()
+                .jobId(1L)
+                .roleCategory("role")
+                .jurisdiction("jurisdiction")
+                .status("NEW")
+                .created(LocalDateTime.now()).build();
+        Mockito.when(refreshJobsRepository.save(refreshEntity))
+                .thenReturn(refreshEntity);
+        sut.persistRefreshJob(refreshEntity);
+    }
 }
