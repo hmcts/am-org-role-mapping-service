@@ -1,0 +1,43 @@
+{
+  "_guid_": "InsertJobForRefreshAPI",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Insert New Job",
+  "method": "POST",
+  "uri": "/am/test/job",
+  "specs": [
+    "to insert new job in ORM DB to initiate Refresh process"
+  ],
+  "users": {
+    "invokingUser": {
+      "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
+      "password": "[[$TEST_AM_CRD_USER1_BEFTA_PASSWORD]]"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "queryParams": {
+      "roleCategory": "LEGAL_OPERATIONS",
+      "jurisdiction": "IA"
+    },
+    "body": {
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "jobId" : "[[ANYTHING_PRESENT]]",
+      "roleCategory" : "LEGAL_OPERATIONS",
+      "jurisdiction" : "IA",
+      "status" : "NEW",
+      "created" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}

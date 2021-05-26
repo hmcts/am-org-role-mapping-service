@@ -1,0 +1,42 @@
+{
+  "_guid_": "FetchJobDetailsFromORM",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Fetch Job Details",
+  "method": "GET",
+  "uri": "/am/test/jobs/{jobId}",
+  "specs": [
+  "to fetch job details from ORM DB to validate Refresh process"
+],
+  "users": {
+    "invokingUser": {
+      "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
+      "password": "[[$TEST_AM_CRD_USER1_BEFTA_PASSWORD]]"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "pathVariables": {
+      "jobId": "${[scenarioContext][parentContext][childContexts][InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "jobId" : "[[ANYTHING_PRESENT]]",
+      "roleCategory" : "LEGAL_OPERATIONS",
+      "jurisdiction" : "IA",
+      "status" : "COMPLETED",
+      "userIds" : "[[ANYTHING_PRESENT]]",
+      "log" : "[[ANYTHING_PRESENT]]",
+      "created" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}

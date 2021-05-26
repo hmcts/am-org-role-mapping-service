@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-013",
+  "title": "must not refresh org roles for a job with non existent failed userIds",
+  "_extends_": "F-002_Test_Data_Base",
+
+  "specs": [
+    "contains an existing job details with suspended/nonexistent userIds"
+  ],
+  "request": {
+    "queryParams": {
+      "jobId": "${[scenarioContext][childContexts][InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+    },
+    "body": {
+      "userIds": ["33191043-fedd-4016-a5ab-a9e23e159b06" ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_202_Response",
+    "body" : null
+  }
+}

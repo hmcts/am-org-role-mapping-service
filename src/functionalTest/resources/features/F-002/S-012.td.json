@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-012",
+  "title": "must successfully refresh org roles for a job with failed userIds",
+  "_extends_": "F-002_Test_Data_Base",
+
+  "specs": [
+    "contains an existing job details with failed userIds from aborted job"
+  ],
+  "request": {
+    "queryParams": {
+      "jobId": "${[scenarioContext][childContexts][S-012_InsertJobWithNewStatusAndLinkedId][testData][actualResponse][body][jobId]}"
+    },
+    "body": {
+      "userIds": "${[scenarioContext][childContexts][S-012_InsertJobWithAbortedStatus][testData][actualResponse][body][userIds]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_202_Response",
+    "body" : null
+  }
+}
