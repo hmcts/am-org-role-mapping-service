@@ -9,7 +9,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -21,11 +20,8 @@ class RefreshControllerTest {
     @Mock
     private RefreshOrchestrator refreshOrchestrator;
 
-    @Mock
-    private PersistenceService persistenceService;
-
     @InjectMocks
-    private final RefreshController sut = new RefreshController(refreshOrchestrator, persistenceService);
+    private final RefreshController sut = new RefreshController(refreshOrchestrator);
 
     @BeforeEach
     public void setUp() {
