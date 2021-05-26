@@ -41,7 +41,7 @@ public class FeatureConditionEvaluatorTest {
     @Before
     public void initializeMocks() {
         launchDarklyMap = new HashMap<>();
-        launchDarklyMap.put("/welcome", "orm-base-flag");
+        launchDarklyMap.put("/am/role-mapping/refresh", "orm-refresh-role");
     }
 
     @InjectMocks
@@ -49,15 +49,15 @@ public class FeatureConditionEvaluatorTest {
 
     @Test
     public void getLaunchDarklyFlagName()  {
-        when(request.getRequestURI()).thenReturn("/welcome");
-        when(request.getMethod()).thenReturn("GET");
-        assertEquals("orm-base-flag",featureConditionEvaluator.getLaunchDarklyFlag(request));
+        when(request.getRequestURI()).thenReturn("/am/role-mapping/refresh");
+        when(request.getMethod()).thenReturn("POST");
+        assertEquals("orm-refresh-role",featureConditionEvaluator.getLaunchDarklyFlag(request));
     }
 
     @Test
     public void getPositiveResponseForFlag() throws Exception {
-        when(request.getRequestURI()).thenReturn("/welcome");
-        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURI()).thenReturn("/am/role-mapping/refresh");
+        when(request.getMethod()).thenReturn("POST");
         when(ldClient.boolVariation(any(), any(), anyBoolean())).thenReturn(true);
         when(ldClient.isFlagKnown(any())).thenReturn(true);
         Assertions.assertTrue(featureConditionEvaluator.preHandle(request, response, object));
@@ -65,8 +65,8 @@ public class FeatureConditionEvaluatorTest {
 
     @Test
     public void getNegativeResponseForFlag() {
-        when(request.getRequestURI()).thenReturn("/welcome");
-        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURI()).thenReturn("/am/role-mapping/refresh");
+        when(request.getMethod()).thenReturn("POST");
         when(ldClient.boolVariation(any(), any(), anyBoolean())).thenReturn(false);
         when(ldClient.isFlagKnown(any())).thenReturn(true);
         Assertions.assertThrows(ForbiddenException.class, () ->
@@ -77,7 +77,7 @@ public class FeatureConditionEvaluatorTest {
     @Test
     public void expectExceptionForNonRegisteredURI() {
         when(request.getRequestURI()).thenReturn("");
-        when(request.getMethod()).thenReturn("GET");
+        when(request.getMethod()).thenReturn("POST");
         Assertions.assertThrows(ForbiddenException.class, () ->
                 featureConditionEvaluator.preHandle(request, response, object)
         );
@@ -86,7 +86,7 @@ public class FeatureConditionEvaluatorTest {
     @Test
     public void expectExceptionForRequestMethod() {
         when(request.getRequestURI()).thenReturn("");
-        when(request.getMethod()).thenReturn("POST");
+        when(request.getMethod()).thenReturn("GET");
         Assertions.assertThrows(ForbiddenException.class, () ->
                 featureConditionEvaluator.preHandle(request, response, object)
         );
@@ -94,8 +94,8 @@ public class FeatureConditionEvaluatorTest {
 
     @Test
     public void expectExceptionForInvalidFlagName() {
-        when(request.getRequestURI()).thenReturn("/welcome");
-        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURI()).thenReturn("/am/role-mapping/refresh");
+        when(request.getMethod()).thenReturn("POST");
         when(ldClient.isFlagKnown(any())).thenReturn(false);
         Assertions.assertThrows(ResourceNotFoundException.class, () ->
             featureConditionEvaluator.preHandle(request, response, object)
