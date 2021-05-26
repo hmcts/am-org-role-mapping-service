@@ -1,4 +1,3 @@
-
 create table refresh_jobs(
 	job_id bigint not null,
 	role_category text not null,
@@ -15,7 +14,3 @@ create table refresh_jobs(
 create sequence JOB_ID_SEQ;
 ALTER TABLE refresh_jobs ALTER COLUMN job_id
 SET DEFAULT nextval('JOB_ID_SEQ');
-
-
-
-
