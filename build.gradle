@@ -215,6 +215,7 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/servicebus/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/ValidationUtil.java," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/service/**"
 
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
