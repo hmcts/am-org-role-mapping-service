@@ -114,7 +114,6 @@ integrationTest:
     url: "/"
 
 feign:
-
   client:
     config:
       default:
@@ -137,12 +136,6 @@ amqp:
   topic: ${AMQP_TOPIC_NAME:aat}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
-
-
-send-letter:
-  url: ${SEND_LETTER_SERVICE_BASEURL:http://localhost:4021}
-  enabled: ${SEND_LETTER_SERVICE_ENABLED:true}
-  maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
 
 launchdarkly:
   sdk:
