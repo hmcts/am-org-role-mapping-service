@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.io.IOException;
@@ -32,7 +31,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -89,7 +87,7 @@ class RefreshOrchestratorTest {
 
         Mockito.when(requestMappingService.createCaseWorkerAssignments(Mockito.any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                        .body(roleAssignmentRequestResourceList)));
+                        .body(Collections.emptyList())));
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(Mockito.any());
 

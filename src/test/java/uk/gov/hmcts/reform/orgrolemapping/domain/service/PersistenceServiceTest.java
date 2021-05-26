@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,8 +32,19 @@ class PersistenceServiceTest {
         assertNotNull(response);
     }
 
-    @Test
-    void persistRefreshJobTest() {
-        RefreshJobEntity refreshEntity = RefreshJobEntity.builder().jobId(1L).status("NEW").build();
-    }
+//    @Test
+//    void persistRefreshJobTest() {
+//        RefreshJobEntity refreshEntity = RefreshJobEntity.builder()
+//                .jobId(1L)
+//                .roleCategory("role")
+//                .jurisdiction("jurisdiction")
+//                .status("NEW")
+//                .created(LocalDateTime.now()).build();
+//        Mockito.when(refreshJobsRepository.findById(1L))
+//                .thenReturn(Optional.ofNullable(refreshEntity));
+//        assert refreshEntity != null;
+//        Mockito.when(refreshJobsRepository.save(refreshEntity))
+//                .thenReturn(refreshEntity);
+//        assertNotNull(refreshEntity);
+//    }
 }

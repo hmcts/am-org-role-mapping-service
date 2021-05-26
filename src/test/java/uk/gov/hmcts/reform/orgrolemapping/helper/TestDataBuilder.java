@@ -218,16 +218,16 @@ public class TestDataBuilder {
     public static UserProfilesResponse buildUserProfilesResponse() {
       return  UserProfilesResponse.builder()
                 .serviceName("ccd_service_name")
-                .userProfiles(buildListOfUserProfiles(
-                        true,
+                .userProfile(buildUserProfile(
+                        "1",
                         true,
                         "1",
                         "1",
-                        "name1",
-                        "name2",
+                        "roleName1",
+                        "roleName2",
                         true,
                         true,
-                        false,
+                        true,
                         true,
                         "workArea1",
                         "workArea2",
