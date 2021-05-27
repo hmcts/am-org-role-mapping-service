@@ -30,6 +30,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -81,6 +82,9 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     @MockBean
     private RequestMappingService requestMappingService;
+
+    @MockBean
+    private TopicConsumer topicConsumer;
 
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
