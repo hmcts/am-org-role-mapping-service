@@ -53,7 +53,8 @@ public class RefreshOrchestrator {
 
         //fetch the entity based on jobId
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
-
+        log.info("The refresh job retrieved from the DB:" + (refreshJobEntity.isPresent() ? refreshJobEntity
+                .get().getJobId() : null));
 
         if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
             //Extract and Validate received users List

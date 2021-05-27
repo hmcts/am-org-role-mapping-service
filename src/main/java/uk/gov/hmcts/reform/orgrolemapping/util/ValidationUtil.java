@@ -104,10 +104,10 @@ public class ValidationUtil {
         }
     }
 
-    public static void compareRoleCategory(String roleType) {
+    public static void compareRoleCategory(String roleCategoryFromJob) {
         boolean valid = false;
-        for (RoleCategory realRole : RoleCategory.values()) {
-            if (realRole.name().equalsIgnoreCase(roleType)) {
+        for (RoleCategory roleCategory : RoleCategory.values()) {
+            if (roleCategory.name().equalsIgnoreCase(roleCategoryFromJob)) {
                 valid = true;
                 break;
             }
