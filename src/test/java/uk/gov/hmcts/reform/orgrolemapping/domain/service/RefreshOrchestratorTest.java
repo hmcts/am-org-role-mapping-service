@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
+import feign.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -43,6 +46,7 @@ class RefreshOrchestratorTest {
     private final ParseRequestService parseRequestService = mock(ParseRequestService.class);
     private final CRDService crdService = mock(CRDService.class);
     private final PersistenceService persistenceService = mock(PersistenceService.class);
+    private final FeignException feignClientException = mock(FeignException.NotFound.class);
 
     @InjectMocks
     private final RefreshOrchestrator sut = new RefreshOrchestrator(
@@ -145,5 +149,23 @@ class RefreshOrchestratorTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response);
+    }
+
+    @Test
+    void refreshRoleAssignmentRecords_nullUserRequest_feignException() {
+
+        Mockito.when(persistenceService.fetchRefreshJobById(Mockito.any()))
+                .thenReturn(Optional.of(
+                        RefreshJobEntity.builder()
+                                .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .build()));
+
+        Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
+                Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any()))
+                .thenThrow(feignClientException);
+
+        ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+
+
     }
 }
