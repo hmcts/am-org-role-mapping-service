@@ -165,7 +165,21 @@ class RefreshOrchestratorTest {
                 .thenThrow(feignClientException);
 
         ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+    }
 
+    @Test
+    void refreshRoleAssignmentRecords_FeignException() {
+
+        Mockito.when(persistenceService.fetchRefreshJobById(Mockito.any()))
+                .thenReturn(Optional.of(
+                        RefreshJobEntity.builder().build()));
+
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(Mockito.any());
+        
+        Mockito.when(retrieveDataService.retrieveCaseWorkerProfiles(Mockito.any()))
+                .thenThrow(feignClientException);
+
+        ResponseEntity<Object> response = sut.refresh(1L, TestDataBuilder.buildUserRequest());
 
     }
 }
