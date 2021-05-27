@@ -68,7 +68,7 @@ public class RefreshOrchestrator {
                 responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles);
             } catch (FeignException.NotFound feignClientException) {
 
-                log.info("Feign Exception :: {} ", feignClientException.contentUTF8());
+                log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
                 responseCodeWithUserId.put(StringUtils.join(userRequest.getUserIds(), ","),
                         HttpStatus.resolve(feignClientException.status()));
 
@@ -143,7 +143,7 @@ public class RefreshOrchestrator {
             }
         } catch (FeignException.NotFound feignClientException) {
 
-            log.info("Feign Exception :: {} ", feignClientException.contentUTF8());
+            log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
             responseCodeWithUserId.put("", HttpStatus.resolve(feignClientException.status()));
 
 
