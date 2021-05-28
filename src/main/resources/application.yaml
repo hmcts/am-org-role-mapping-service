@@ -145,5 +145,12 @@ launchdarkly:
 refresh:
   Job:
     update: ${REFRESH_JOB:LEGAL_OPERATIONS-IA-NEW-0}
+    pageSize: ${REFRESH_JOB_PAGE_SIZE:2}
+    sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
+    sortColumn: ${REFRESH_JOB_SORT_COL:}
+
+
+
+
 
 logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}

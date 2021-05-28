@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,11 +50,12 @@ public class RefreshController {
                     message = V1.Error.INVALID_REQUEST
             )
     })
+    @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public ResponseEntity<Object> refresh(@RequestParam String jobId,
+    public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
-        refreshOrchestrator.validate(jobId, userRequest);
-        return refreshOrchestrator.refresh(Long.parseLong(jobId), userRequest);
+        refreshOrchestrator.validate(jobId,userRequest);
+        return refreshOrchestrator.refresh(jobId, userRequest);
 
     }
 }

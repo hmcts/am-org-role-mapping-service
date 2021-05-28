@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -44,8 +45,20 @@ public class RefreshOrchestrator {
     private final CRDService crdService;
     private final PersistenceService persistenceService;
 
-    public void validate(String jobId, UserRequest userRequest) {
-        parseRequestService.validateAndGetJobId(jobId);
+    @Value("${refresh.Job.pageSize}")
+    private String pageSize;
+
+    @Value("${refresh.Job.sortDirection}")
+    String sortDirection;
+
+    @Value("${refresh.Job.sortColumn}")
+    String sortColumn;
+
+    public void validate(Long jobId, UserRequest userRequest) {
+        if (jobId == null) {
+            throw new BadRequestException("Invalid JobId request");
+        }
+
 
         if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
             //Extract and Validate received users List
@@ -54,12 +67,14 @@ public class RefreshOrchestrator {
         }
     }
 
-    @Async
+
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
         long startTime = System.currentTimeMillis();
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
         ResponseEntity<Object> responseEntity = null;
+
+
 
         //fetch the entity based on jobId
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
@@ -102,9 +117,8 @@ public class RefreshOrchestrator {
     private ResponseEntity<Object> refreshJobByServiceName(Map<String, HttpStatus> responseCodeWithUserId,
             RefreshJobEntity refreshJobEntity) {
 
-        int pageSize = 2;
-        String sortDirection = "ASC";
-        String sortColumn = "";
+
+
         ResponseEntity<Object> responseEntity = null;
 
         //validate the role Category
@@ -113,25 +127,25 @@ public class RefreshOrchestrator {
         try {
             //Call to CRD Service to retrieve the total number of records in first call
             ResponseEntity<List<UserProfilesResponse>> response = crdService
-                    .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
-                            pageSize, 0,
+                    .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
+                                    .getJurisdiction() : "", Integer.parseInt(pageSize), 0,
                             sortDirection, sortColumn);
 
 
             // 2 step to find out the total number of records from header
             String totalRecords = response.getHeaders().getFirst("total_records");
             assert totalRecords != null;
-            int pageNumber = (Integer.parseInt(totalRecords) / pageSize);
+            int pageNumber = (Integer.parseInt(totalRecords) / Integer.parseInt(pageSize));
 
 
             //call to CRD
             for (int page = 0; page < pageNumber; page++) {
-                ResponseEntity<List<UserProfilesResponse>> userProfilesResponses = crdService
-                        .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
-                                pageSize, page,
+                ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = crdService
+                        .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
+                                        .getJurisdiction() : "", Integer.parseInt(pageSize), page,
                                 sortDirection, sortColumn);
                 Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
-                        .getUserAccessProfile(userProfilesResponses);
+                        .getUserAccessProfile(userProfilesResponse);
 
                 responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles);
             }

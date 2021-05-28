@@ -34,13 +34,7 @@ public class ParseRequestService {
                 ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, user));
     }
 
-    public Long validateAndGetJobId(String jobId) {
-        try {
-            return Long.parseLong(jobId);
-        } catch (NumberFormatException nfe) {
-            throw new BadRequestException("Invalid JobId request");
-        }
-    }
+
 
 
     public void validateUserProfiles(List<UserProfile> userProfiles, UserRequest userRequest,
