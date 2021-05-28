@@ -39,17 +39,17 @@ public class TopicPublisher {
             backoff = @Backoff(delay = 2000, multiplier = 3)
     )
     public void sendMessage(final String message) {
-        log.info("Sending message.");
+        log.debug("Sending message.");
         try {
             jmsTemplate.send(destination, (Session session) -> session.createTextMessage(message));
-            log.info("Message sent.");
+            log.debug("Message sent.");
         } catch (IllegalStateException e) {
             if (connectionFactory instanceof CachingConnectionFactory) {
-                log.info("Send failed, attempting to reset connection...");
+                log.debug("Send failed, attempting to reset connection...");
                 ((CachingConnectionFactory) connectionFactory).resetConnection();
-                log.info("Resending..");
+                log.debug("Resending..");
                 jmsTemplate.send(destination, (Session session) -> session.createTextMessage(message));
-                log.info("In catch, message sent.");
+                log.debug("In catch, message sent.");
             } else {
                 throw e;
             }

@@ -75,16 +75,16 @@ public class TopicConsumer {
     CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.info("    Calling registerMessageHandlerOnClient ");
+        log.debug("    Calling registerMessageHandlerOnClient ");
 
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
-                log.info("    Calling onMessageAsync.....{}", message);
+                log.debug("    Calling onMessageAsync.....{}", message);
                 List<byte[]> body = message.getMessageBody().getBinaryData();
                 try {
-                    log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
+                    log.debug("    Locked Until Utc : {}", message.getLockedUntilUtc());
                     log.info("    Delivery Count is : {}", message.getDeliveryCount());
                     AtomicBoolean result = new AtomicBoolean();
                     processMessage(body, result);
@@ -93,12 +93,12 @@ public class TopicConsumer {
                     }
 
 
-                    log.info("    getLockToken......{}", message.getLockToken());
+                    log.debug("    getLockToken......{}", message.getLockToken());
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
                     throw new InvalidRequest("Some Network issue");
                 }
-                log.info("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
+                log.debug("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
 
             }
@@ -120,7 +120,7 @@ public class TopicConsumer {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.info("    Parsing the message");
+        log.debug("    Parsing the message");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);
