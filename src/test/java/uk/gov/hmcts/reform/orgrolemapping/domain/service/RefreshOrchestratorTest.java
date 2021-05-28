@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
-import feign.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -81,7 +79,7 @@ class RefreshOrchestratorTest {
                 .build());
         userAccessProfiles.put("1", userAccessProfileSet);
 
-//        TODO - classCastException RoleAssignmentRequestResource to ResponseEntity
+        //      TODO - classCastException RoleAssignmentRequestResource to ResponseEntity
         List<RoleAssignmentRequestResource> roleAssignmentRequestResourceList = new ArrayList<>();
         roleAssignmentRequestResourceList.add(TestDataBuilder
                 .buildRoleAssignmentRequestResource());
@@ -119,9 +117,10 @@ class RefreshOrchestratorTest {
 
         Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
                 Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any()))
-        .thenReturn(responseEntity);
+                .thenReturn(responseEntity);
 
-        Mockito.doNothing().when(parseRequestService).validateUserRequest(Mockito.any());
+        Mockito.doNothing().when(parseRequestService)
+                .validateUserRequest(Mockito.any());
 
         Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
         Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();

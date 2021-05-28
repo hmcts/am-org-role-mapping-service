@@ -1,11 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
 import org.apache.poi.ss.formula.functions.T;
-import org.assertj.core.matcher.AssertionMatcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

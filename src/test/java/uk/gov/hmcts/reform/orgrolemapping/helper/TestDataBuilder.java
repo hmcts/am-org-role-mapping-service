@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
-import uk.gov.hmcts.reform.idam.client.models.User;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
@@ -21,7 +20,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
-import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -216,7 +214,7 @@ public class TestDataBuilder {
     }
 
     public static UserProfilesResponse buildUserProfilesResponse() {
-      return  UserProfilesResponse.builder()
+        return  UserProfilesResponse.builder()
                 .serviceName("ccd_service_name")
                 .userProfile(buildUserProfile(
                         "1",
