@@ -7,6 +7,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -42,9 +43,18 @@ public class RefreshOrchestrator {
     private final CRDService crdService;
     private final PersistenceService persistenceService;
 
+    public void validate(String jobId, UserRequest userRequest) {
+        parseRequestService.validateAndGetJobId(jobId);
 
+        if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
+            //Extract and Validate received users List
+            parseRequestService.validateUserRequest(userRequest);
+            log.info("Validated userIds {}", userRequest.getUserIds());
+        }
+    }
+
+    @Async
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
-
 
         long startTime = System.currentTimeMillis();
 
@@ -53,14 +63,8 @@ public class RefreshOrchestrator {
 
         //fetch the entity based on jobId
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
-        log.info("The refresh job retrieved from the DB:" + (refreshJobEntity.isPresent() ? refreshJobEntity
-                .get().getJobId() : null));
 
         if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
-            //Extract and Validate received users List
-            parseRequestService.validateUserRequest(userRequest);
-            log.info("Validated userIds {}", userRequest.getUserIds());
-
             try {
                 //Create userAccessProfiles based upon userIds
                 Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
@@ -69,18 +73,15 @@ public class RefreshOrchestrator {
                 responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles);
             } catch (FeignException.NotFound feignClientException) {
 
-                log.info("Feign Exception :: {} ", feignClientException.contentUTF8());
+                log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
                 responseCodeWithUserId.put(StringUtils.join(userRequest.getUserIds(), ","),
                         HttpStatus.resolve(feignClientException.status()));
 
-
             }
-
 
             //build success and failure list
             buildSuccessAndFailureBucket(responseCodeWithUserId, refreshJobEntity.isPresent() ? refreshJobEntity
                     .get() : null);
-
 
         } else {
 
@@ -144,7 +145,7 @@ public class RefreshOrchestrator {
             }
         } catch (FeignException.NotFound feignClientException) {
 
-            log.info("Feign Exception :: {} ", feignClientException.contentUTF8());
+            log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
             responseCodeWithUserId.put("", HttpStatus.resolve(feignClientException.status()));
 
 
@@ -165,8 +166,9 @@ public class RefreshOrchestrator {
                     RoleAssignmentRequestResource resource = JacksonUtils
                         .convertRoleAssignmentResource(entity.getBody());
 
+
                     responseCodeWithUserId.put(resource.getRoleAssignmentRequest()
-                        .getRequestedRoles().stream().findFirst().get().getActorId(), entity.getStatusCode()
+                        .getRequest().getReference(), entity.getStatusCode()
                     );
                 });
 

@@ -8,12 +8,15 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 class RefreshControllerTest {
 
@@ -39,5 +42,27 @@ class RefreshControllerTest {
                 .thenReturn(response);
 
         assertEquals(response, sut.refresh("1", UserRequest.builder().build()));
+    }
+
+    @Test
+    void refreshRoleAssignmentRecords_emptyJobId() {
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        doThrow(BadRequestException.class).when(refreshOrchestrator).validate(
+                "", userRequest);
+
+        assertThrows(BadRequestException.class, () ->
+                sut.refresh("", userRequest)
+        );
+    }
+
+    @Test
+    void refreshRoleAssignmentRecords_invalidJobId() {
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        doThrow(BadRequestException.class).when(refreshOrchestrator).validate(
+                "abc", userRequest);
+
+        assertThrows(BadRequestException.class, () ->
+                sut.refresh("abc", userRequest)
+        );
     }
 }

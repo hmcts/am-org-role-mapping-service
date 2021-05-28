@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
@@ -28,6 +29,25 @@ class ParseRequestServiceTest {
     @Test
     void validateUserRequestTest() {
         sut.validateUserRequest(TestDataBuilder.buildUserRequest());
+    }
+
+    @Test
+    void validateJobIdRequest() {
+        assertEquals(1, sut.validateAndGetJobId("1"));
+    }
+
+    @Test
+    void validateJobIdRequest_throwsBadRequestTest() {
+        assertThrows(BadRequestException.class, () ->
+                sut.validateAndGetJobId("abc")
+        );
+    }
+
+    @Test
+    void validateEmptyJobIdRequest_throwsBadRequestTest() {
+        assertThrows(BadRequestException.class, () ->
+                sut.validateAndGetJobId("")
+        );
     }
 
     @Test
