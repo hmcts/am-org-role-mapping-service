@@ -89,7 +89,7 @@ class RefreshOrchestratorTest {
 
         Mockito.when(requestMappingService.createCaseWorkerAssignments(Mockito.any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                        .body(roleAssignmentRequestResourceList)));
+                        .body(Collections.emptyList())));
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(Mockito.any());
 
