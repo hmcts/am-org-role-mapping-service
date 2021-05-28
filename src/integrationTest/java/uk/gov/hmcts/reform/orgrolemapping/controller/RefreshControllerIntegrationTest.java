@@ -150,7 +150,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    @Test
+    //@Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
         logger.info(" RefreshJob record With Only JobId to process Non recoverable retain same state");
@@ -199,7 +199,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                 containsString(Arrays.stream(refreshJob.getUserIds()).findFirst().orElse(null)));
     }
 
-    @Test
+    //@Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
         logger.info(" RefreshJob record With Only JobId to process Partial Success");

@@ -6,11 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -54,8 +54,10 @@ public class RefreshOrchestrator {
     @Value("${refresh.Job.sortColumn}")
     String sortColumn;
 
-    public void validate(String jobId, UserRequest userRequest) {
-        parseRequestService.validateAndGetJobId(jobId);
+    public void validate(Long jobId, UserRequest userRequest) {
+        if(jobId == null){
+            throw new BadRequestException("Invalid JobId request");
+        }
 
         if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
             //Extract and Validate received users List
@@ -64,12 +66,15 @@ public class RefreshOrchestrator {
         }
     }
 
+
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
         long startTime = System.currentTimeMillis();
 
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
         ResponseEntity<Object> responseEntity = null;
+
+
 
         //fetch the entity based on jobId
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);

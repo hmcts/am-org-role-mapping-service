@@ -31,24 +31,6 @@ class ParseRequestServiceTest {
         sut.validateUserRequest(TestDataBuilder.buildUserRequest());
     }
 
-    @Test
-    void validateJobIdRequest() {
-        assertEquals(1, sut.validateAndGetJobId("1"));
-    }
-
-    @Test
-    void validateJobIdRequest_throwsBadRequestTest() {
-        assertThrows(BadRequestException.class, () ->
-                sut.validateAndGetJobId("abc")
-        );
-    }
-
-    @Test
-    void validateEmptyJobIdRequest_throwsBadRequestTest() {
-        assertThrows(BadRequestException.class, () ->
-                sut.validateAndGetJobId("")
-        );
-    }
 
     @Test
     void validateUserRequest_throwsBadRequestTest() {
