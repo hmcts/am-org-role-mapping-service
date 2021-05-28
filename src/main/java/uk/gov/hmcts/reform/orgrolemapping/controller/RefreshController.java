@@ -52,10 +52,10 @@ public class RefreshController {
     })
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public ResponseEntity<Object> refresh(@RequestParam String jobId,
+    public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
 
-        return refreshOrchestrator.refresh(Long.parseLong(jobId), userRequest);
+        return refreshOrchestrator.refresh(jobId, userRequest);
 
     }
 }

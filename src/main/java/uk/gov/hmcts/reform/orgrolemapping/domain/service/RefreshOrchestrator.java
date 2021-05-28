@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,16 @@ public class RefreshOrchestrator {
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final PersistenceService persistenceService;
+
+
+    @Value("${refresh.Job.pageSize}")
+    private String pageSize;
+
+    @Value("${refresh.Job.sortDirection}")
+    String sortDirection;
+
+    @Value("${refresh.Job.sortColumn}")
+    String sortColumn;
 
 
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
@@ -105,9 +116,8 @@ public class RefreshOrchestrator {
             Map<String, HttpStatus> responseCodeWithUserId,
             RefreshJobEntity refreshJobEntity) {
 
-        int pageSize = 2;
-        String sortDirection = "ASC";
-        String sortColumn = "";
+
+
         ResponseEntity<Object> responseEntity = null;
 
         //validate the role Category
@@ -115,24 +125,25 @@ public class RefreshOrchestrator {
                 .getRoleCategory() : "");
 
         try {
+
             //Call to CRD Service to retrieve the total number of records in first call
             ResponseEntity<List<UserProfilesResponse>> response = crdService
                     .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                                    .getJurisdiction() : "", pageSize, 0,
+                                    .getJurisdiction() : "", Integer.parseInt(pageSize), 0,
                             sortDirection, sortColumn);
 
 
             // 2 step to find out the total number of records from header
             String totalRecords = response.getHeaders().getFirst("total_records");
             assert totalRecords != null;
-            int pageNumber = (Integer.parseInt(totalRecords) / pageSize);
+            int pageNumber = (Integer.parseInt(totalRecords) / Integer.parseInt(pageSize));
 
 
             //call to CRD
             for (int page = 0; page < pageNumber; page++) {
                 ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = crdService
                         .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                                        .getJurisdiction() : "", pageSize, page,
+                                        .getJurisdiction() : "", Integer.parseInt(pageSize), page,
                                 sortDirection, sortColumn);
                 Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                         .getUserAccessProfile(userProfilesResponse);

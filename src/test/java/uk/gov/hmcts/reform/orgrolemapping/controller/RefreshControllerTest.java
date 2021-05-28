@@ -39,6 +39,6 @@ class RefreshControllerTest {
         Mockito.when(refreshOrchestrator.refresh(any(),any()))
                 .thenReturn(response);
 
-        assertEquals(response, sut.refresh("1", UserRequest.builder().build()));
+        assertEquals(response, sut.refresh(1L, UserRequest.builder().build()));
     }
 }
