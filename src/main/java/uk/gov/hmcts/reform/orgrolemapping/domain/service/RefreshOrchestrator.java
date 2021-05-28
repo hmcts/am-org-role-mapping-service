@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
@@ -55,9 +54,10 @@ public class RefreshOrchestrator {
     String sortColumn;
 
     public void validate(Long jobId, UserRequest userRequest) {
-        if(jobId == null){
+        if (jobId == null) {
             throw new BadRequestException("Invalid JobId request");
         }
+
 
         if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
             //Extract and Validate received users List
