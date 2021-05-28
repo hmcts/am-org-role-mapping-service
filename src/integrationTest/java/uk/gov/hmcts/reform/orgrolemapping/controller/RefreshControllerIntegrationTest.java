@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -80,6 +81,9 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     @MockBean
     private CRDFeignClient crdFeignClient;
+
+    @Rule
+    public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator();
 
     @MockBean
     private RequestMappingService requestMappingService;
