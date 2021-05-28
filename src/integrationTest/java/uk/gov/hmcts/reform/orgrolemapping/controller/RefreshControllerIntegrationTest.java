@@ -125,6 +125,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertNotNull(refreshJob.getLog());
     }
 
+    @Ignore
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted() throws Exception {
