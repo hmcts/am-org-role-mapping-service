@@ -164,8 +164,9 @@ public class RefreshOrchestrator {
                     RoleAssignmentRequestResource resource = JacksonUtils
                         .convertRoleAssignmentResource(entity.getBody());
 
+
                     responseCodeWithUserId.put(resource.getRoleAssignmentRequest()
-                        .getRequestedRoles().stream().findFirst().get().getActorId(), entity.getStatusCode()
+                        .getRequest().getReference(), entity.getStatusCode()
                     );
                 });
 
