@@ -145,3 +145,5 @@ launchdarkly:
 refresh:
   Job:
     update: ${REFRESH_JOB:LEGAL_OPERATIONS-IA-NEW-0}
+
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
