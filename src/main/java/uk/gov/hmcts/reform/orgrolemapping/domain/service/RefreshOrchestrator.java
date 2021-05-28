@@ -127,8 +127,8 @@ public class RefreshOrchestrator {
         try {
             //Call to CRD Service to retrieve the total number of records in first call
             ResponseEntity<List<UserProfilesResponse>> response = crdService
-                    .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                                    .getJurisdiction() : "", Integer.parseInt(pageSize), 0,
+                    .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
+                            Integer.parseInt(pageSize), 0,
                             sortDirection, sortColumn);
 
 
@@ -141,8 +141,8 @@ public class RefreshOrchestrator {
             //call to CRD
             for (int page = 0; page < pageNumber; page++) {
                 ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = crdService
-                        .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                                        .getJurisdiction() : "", Integer.parseInt(pageSize), page,
+                        .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
+                                Integer.parseInt(pageSize), page,
                                 sortDirection, sortColumn);
                 Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                         .getUserAccessProfile(userProfilesResponse);
