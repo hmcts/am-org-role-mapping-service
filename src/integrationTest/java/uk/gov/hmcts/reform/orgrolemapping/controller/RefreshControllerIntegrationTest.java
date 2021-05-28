@@ -49,9 +49,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
@@ -63,7 +64,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
             + " comments, log FROM refresh_jobs where job_id=?";
-    private static final String AUTHORISED_SERVICE = "ccd_gw";
+    private static final String AUTHORISED_SERVICE = "orm_batch";
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String URL = "/am/role-mapping/refresh";
@@ -132,7 +133,31 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         Long jobId = 1L;
 
         mockCRDService();
-        mockRequestMappingServiceWithStatus(NOT_ACCEPTABLE);
+        mockRequestMappingServiceWithStatus(INTERNAL_SERVER_ERROR);
+
+        mockMvc.perform(post(URL)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .param("jobId", jobId.toString()))
+                .andExpect(status().is(202))
+                .andReturn();
+
+        Thread.sleep(1000);
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals(ABORTED, refreshJob.getStatus());
+        assertNotNull(refreshJob.getUserIds());
+        assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
+    public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
+        logger.info(" RefreshJob record With Only JobId to process Aborted");
+        Long jobId = 1L;
+
+        mockCRDService();
+        mockRequestMappingServiceWithStatus(INTERNAL_SERVER_ERROR);
 
         mockMvc.perform(post(URL)
                 .contentType(JSON_CONTENT_TYPE)
@@ -156,7 +181,32 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         Long jobId = 1L;
 
         mockCRDService();
-        mockRequestMappingServiceWithStatus(NOT_ACCEPTABLE);
+        mockRequestMappingServiceWithStatus(INTERNAL_SERVER_ERROR);
+
+        mockMvc.perform(post(URL)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .param("jobId", jobId.toString()))
+                .andExpect(status().is(202))
+                .andReturn();
+
+        Thread.sleep(1000);
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals(ABORTED, refreshJob.getStatus());
+        assertNotNull(refreshJob.getUserIds());
+        assertThat(refreshJob.getLog(),
+                containsString(Arrays.stream(refreshJob.getUserIds()).findFirst().orElse(null)));
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
+    public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
+        logger.info(" RefreshJob record With Only JobId to process Partial Success");
+        Long jobId = 1L;
+
+        mockCRDService();
+        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
 
         mockMvc.perform(post(URL)
                 .contentType(JSON_CONTENT_TYPE)
@@ -216,16 +266,6 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithOutJobID() throws Exception {
-        logger.info(" Refresh Job without mandatory jobId as a param");
-        mockMvc.perform(post(URL)
-                .contentType(CONTENT_TYPE)
-                .headers(getHttpHeaders()))
-                .andExpect(status().is(400))
-                .andReturn();
-    }
-
-    @Test
     public void shouldFailProcessRefreshRoleAssignmentsWithFailedUsersAndWithOutJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
@@ -233,6 +273,38 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                 .headers(getHttpHeaders())
                 .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
                 .andExpect(status().is(415))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithEmptyJobID() throws Exception {
+        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
+        mockMvc.perform(post(URL)
+                .contentType(CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .param("jobId", ""))
+                .andExpect(status().is(415))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithInvalidJobID() throws Exception {
+        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
+        mockMvc.perform(post(URL)
+                .contentType(CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .param("jobId", "abc"))
+                .andExpect(status().is(415))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithOutJobID() throws Exception {
+        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
+        mockMvc.perform(post(URL)
+                .contentType(CONTENT_TYPE)
+                .headers(getHttpHeaders()))
+                .andExpect(status().is(400))
                 .andReturn();
     }
 

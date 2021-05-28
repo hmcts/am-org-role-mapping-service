@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -39,7 +40,17 @@ public class RefreshOrchestrator {
     private final CRDService crdService;
     private final PersistenceService persistenceService;
 
+    public void validate(String jobId, UserRequest userRequest) {
+        parseRequestService.validateAndGetJobId(jobId);
 
+        if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
+            //Extract and Validate received users List
+            parseRequestService.validateUserRequest(userRequest);
+            log.info("Validated userIds {}", userRequest.getUserIds());
+        }
+    }
+
+    @Async
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
 
@@ -53,10 +64,6 @@ public class RefreshOrchestrator {
 
 
         if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
-            //Extract and Validate received users List
-            parseRequestService.validateUserRequest(userRequest);
-            log.info("Validated userIds {}", userRequest.getUserIds());
-
             //Create userAccessProfiles based upon userIds
             Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                     .retrieveCaseWorkerProfiles(userRequest);
