@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.reform.orgrolemapping.annotation.FeatureFlagToggle;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
@@ -100,6 +101,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete() throws Exception {
         logger.info(" RefreshJob record With Only JobId to process successful");
@@ -127,6 +129,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     @Ignore
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted() throws Exception {
         logger.info(" RefreshJob record With Only JobId to process Aborted");
@@ -152,6 +155,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     @Ignore
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
         logger.info(" RefreshJob record With Only JobId to process Non recoverable retain same state");
@@ -176,6 +180,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete() throws Exception {
         logger.info(" RefreshJob record With Only JobId to process Partial Success");
@@ -201,6 +206,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     @Ignore
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
         logger.info(" RefreshJob record With Only JobId to process Partial Success");
@@ -225,6 +231,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithFailedUsersToComplete() throws Exception {
         logger.info(" RefreshJob record With JobId and failed UserIds to process successful");
@@ -266,6 +273,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     public void shouldFailProcessRefreshRoleAssignmentsWithFailedUsersAndWithOutJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
@@ -277,6 +285,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     public void shouldFailProcessRefreshRoleAssignmentsWithEmptyJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
@@ -288,6 +297,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
@@ -300,6 +310,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     public void shouldFailProcessRefreshRoleAssignmentsWithOutJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
@@ -310,6 +321,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
         logger.info(" RefreshJob record With Only JobId to process fail");
@@ -332,6 +344,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
         logger.info(" RefreshJob record With JobId retry success third time to process successful");
