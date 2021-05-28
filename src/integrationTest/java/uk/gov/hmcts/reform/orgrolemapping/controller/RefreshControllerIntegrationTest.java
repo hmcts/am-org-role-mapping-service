@@ -42,13 +42,13 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -153,7 +153,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
-        logger.info(" RefreshJob record With Only JobId to process Aborted");
+        logger.info(" RefreshJob record With Only JobId to process Non recoverable retain same state");
         Long jobId = 1L;
 
         mockCRDService();
@@ -166,12 +166,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals(ABORTED, refreshJob.getStatus());
-        assertNotNull(refreshJob.getUserIds());
-        assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
+        assertEquals("NEW", refreshJob.getStatus());
+        assertNull(refreshJob.getUserIds());
+        assertNull(refreshJob.getLog());
     }
 
     @Test
@@ -269,10 +269,10 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void shouldFailProcessRefreshRoleAssignmentsWithFailedUsersAndWithOutJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
-                .contentType(CONTENT_TYPE)
+                .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
                 .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
-                .andExpect(status().is(415))
+                .andExpect(status().is(400))
                 .andReturn();
     }
 
@@ -280,10 +280,10 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void shouldFailProcessRefreshRoleAssignmentsWithEmptyJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
-                .contentType(CONTENT_TYPE)
+                .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
                 .param("jobId", ""))
-                .andExpect(status().is(415))
+                .andExpect(status().is(400))
                 .andReturn();
     }
 
@@ -291,10 +291,11 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
-                .contentType(CONTENT_TYPE)
+                .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
-                .param("jobId", "abc"))
-                .andExpect(status().is(415))
+                .param("jobId", "abc")
+                .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
+                .andExpect(status().is(400))
                 .andReturn();
     }
 
@@ -302,7 +303,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void shouldFailProcessRefreshRoleAssignmentsWithOutJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
-                .contentType(CONTENT_TYPE)
+                .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders()))
                 .andExpect(status().is(400))
                 .andReturn();
