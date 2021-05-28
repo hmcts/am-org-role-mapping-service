@@ -36,13 +36,11 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -166,12 +164,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        Thread.sleep(2000);
-        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        Thread.sleep(5000);
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals("NEW", refreshJob.getStatus());
-        assertNull(refreshJob.getUserIds());
-        assertNull(refreshJob.getLog());
+        logger.info(" -- Refresh Role Assignment record updated -- " + refreshJob.getStatus());
+        assertEquals("ABORTED", refreshJob.getStatus());
+        assertNotNull(refreshJob.getUserIds());
+        assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
 
     @Test
@@ -195,8 +193,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(ABORTED, refreshJob.getStatus());
         assertNotNull(refreshJob.getUserIds());
-        assertThat(refreshJob.getLog(),
-                containsString(Arrays.stream(refreshJob.getUserIds()).findFirst().orElse(null)));
+        assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
     }
 
     @Test
@@ -220,8 +217,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(ABORTED, refreshJob.getStatus());
         assertNotNull(refreshJob.getUserIds());
-        assertThat(refreshJob.getLog(),
-                containsString(Arrays.stream(refreshJob.getUserIds()).findFirst().orElse(null)));
+        assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
     }
 
     @Test
