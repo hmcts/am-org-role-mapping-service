@@ -101,7 +101,7 @@ public class MessagingConfig {
 
     @Bean
     public JmsListenerContainerFactory topicJmsListenerContainerFactory(ConnectionFactory connectionFactory) {
-        log.info("Creating JMSListenerContainer bean for topics..");
+        log.debug("Creating JMSListenerContainer bean for topics..");
         DefaultJmsListenerContainerFactory returnValue = new DefaultJmsListenerContainerFactory();
         returnValue.setConnectionFactory(connectionFactory);
         returnValue.setSubscriptionDurable(Boolean.TRUE);

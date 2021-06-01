@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -70,7 +71,6 @@ public class RefreshOrchestrator {
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
         long startTime = System.currentTimeMillis();
-
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
         ResponseEntity<Object> responseEntity = null;
 
@@ -78,6 +78,11 @@ public class RefreshOrchestrator {
 
         //fetch the entity based on jobId
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
+        if (Objects.isNull(refreshJobEntity)) {
+            throw new UnprocessableEntityException("Provided refresh job couldn't be retrieved.");
+        } else {
+            log.info("The refresh job retrieved from the DB:" + refreshJobEntity.get().getJobId());
+        }
 
         if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
             try {
@@ -95,31 +100,21 @@ public class RefreshOrchestrator {
             }
 
             //build success and failure list
-            buildSuccessAndFailureBucket(responseCodeWithUserId, refreshJobEntity.isPresent() ? refreshJobEntity
-                    .get() : null);
+            buildSuccessAndFailureBucket(responseCodeWithUserId, refreshJobEntity.get());
 
         } else {
-
             // replace the records by service name api
-            responseEntity = refreshJobByServiceName(
-                    responseCodeWithUserId, refreshJobEntity.isPresent() ? refreshJobEntity
-                            .get() : null);
-
-
+            responseEntity = refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity.get());
         }
 
 
-        log.info(
-                "Execution refresh() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
+        log.debug("Execution refresh() : {} ms",(Math.subtractExact(System.currentTimeMillis(), startTime)));
 
         return responseEntity;
     }
 
 
-    private ResponseEntity<Object> refreshJobByServiceName(
-            Map<String, HttpStatus> responseCodeWithUserId,
+    private ResponseEntity<Object> refreshJobByServiceName(Map<String, HttpStatus> responseCodeWithUserId,
             RefreshJobEntity refreshJobEntity) {
 
 
@@ -127,15 +122,13 @@ public class RefreshOrchestrator {
         ResponseEntity<Object> responseEntity = null;
 
         //validate the role Category
-        ValidationUtil.compareRoleCategory(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                .getRoleCategory() : "");
+        ValidationUtil.compareRoleCategory(refreshJobEntity.getRoleCategory());
 
         try {
-
             //Call to CRD Service to retrieve the total number of records in first call
             ResponseEntity<List<UserProfilesResponse>> response = crdService
-                    .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                                    .getJurisdiction() : "", Integer.parseInt(pageSize), 0,
+                    .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
+                            Integer.parseInt(pageSize), 0,
                             sortDirection, sortColumn);
 
 
@@ -148,22 +141,18 @@ public class RefreshOrchestrator {
             //call to CRD
             for (int page = 0; page < pageNumber; page++) {
                 ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = crdService
-                        .fetchCaseworkerDetailsByServiceName(Objects.nonNull(refreshJobEntity) ? refreshJobEntity
-                                        .getJurisdiction() : "", Integer.parseInt(pageSize), page,
+                        .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
+                                Integer.parseInt(pageSize), page,
                                 sortDirection, sortColumn);
                 Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                         .getUserAccessProfile(userProfilesResponse);
 
                 responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles);
-
-
             }
         } catch (FeignException.NotFound feignClientException) {
 
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
             responseCodeWithUserId.put("", HttpStatus.resolve(feignClientException.status()));
-
-
         }
 
         //build the success and failure list
@@ -181,14 +170,13 @@ public class RefreshOrchestrator {
                     RoleAssignmentRequestResource resource = JacksonUtils
                         .convertRoleAssignmentResource(entity.getBody());
 
-
                     responseCodeWithUserId.put(resource.getRoleAssignmentRequest()
                         .getRequest().getReference(), entity.getStatusCode()
                     );
                 });
 
 
-        log.info("Status code map {} ", responseCodeWithUserId);
+        log.info("Status code map from RAS {} ", responseCodeWithUserId);
         return responseEntity;
     }
 
