@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 
@@ -15,10 +16,11 @@ import static org.mockito.Mockito.mock;
 class PersistenceServiceTest {
 
     private final RefreshJobsRepository refreshJobsRepository = mock(RefreshJobsRepository.class);
+    private final FlagConfigRepository flagConfigRepository = mock(FlagConfigRepository.class);
 
     @InjectMocks
     private final PersistenceService sut = new PersistenceService(
-            refreshJobsRepository
+            refreshJobsRepository, flagConfigRepository
     );
 
 

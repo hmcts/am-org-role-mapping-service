@@ -28,6 +28,7 @@ security:
     - "/health"
     - "/actuator/**"
     - "/loggers/**"
+    - "/am/role-assignments/fetchFlagStatus"
     - "/swagger-ui.html"
     - "/swagger-resources/**"
     - "/v2/api-docs"
@@ -152,3 +153,7 @@ launchdarkly:
 refresh:
   Job:
     update: ${REFRESH_JOB:LEGAL_OPERATIONS-IA-NEW-0}
+dbFeature:
+  flags:
+    enable: ${DB_FEATURE_FLAG_ENABLE:iac_1_0}
+    disable: ${DB_FEATURE_FLAG_DISABLE:iac_1_1}
