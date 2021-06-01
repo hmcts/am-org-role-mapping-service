@@ -78,7 +78,7 @@ public class RefreshOrchestrator {
 
         //fetch the entity based on jobId
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
-        if (Objects.isNull(refreshJobEntity)) {
+        if (!refreshJobEntity.isPresent()) {
             throw new UnprocessableEntityException("Provided refresh job couldn't be retrieved.");
         } else {
             log.info("The refresh job retrieved from the DB:" + refreshJobEntity.get().getJobId());
