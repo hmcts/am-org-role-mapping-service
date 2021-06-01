@@ -17,11 +17,6 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
     public static final String EMAIL_TEMPLATE = "ORM-func-test-user-%s@justice.gov.uk";
 
     @Override
-    public void doLoadTestData() {
-        // This method can be used to load any data during initialisation
-    }
-
-    @Override
     public Object calculateCustomValue(BackEndFunctionalTestScenarioContext scenarioContext, Object key) {
         //the docAMUrl is is referring the self link in PR
         switch (key.toString()) {
@@ -30,9 +25,9 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
             case ("generateEmailId"):
                 return String.format(EMAIL_TEMPLATE, randomAlphanumeric(10)).toLowerCase();
             case ("waitForTime"):
-                logger.info("Sleeping for 30 seconds");
+                logger.info("Sleeping for 10 seconds");
                 try {
-                    Thread.sleep(30000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException exception) {
                     logger.info(exception.getMessage());
                 }
