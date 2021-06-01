@@ -4,7 +4,7 @@ Feature: Refresh Role Assignments for CRD users
   Background:
     Given an appropriate test context as detailed in the test data source
 
-  @S-011 @FeatureToggle(orm-refresh-role)
+  @S-011
   Scenario: must successfully refresh org roles for a job without failed userIds
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [InsertJobForRefreshAPI],
@@ -18,7 +18,7 @@ Feature: Refresh Role Assignments for CRD users
     And a successful call [to delete job details from ORM DB] as in [DeleteJobFromORMDB].
 
 
-  @S-012 @FeatureToggle(orm-refresh-role)
+  @S-012
   Scenario: must successfully refresh org roles for a job with failed userIds
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to insert new job with aborted status in ORM DB] as in [S-012_InsertJobWithAbortedStatus],
@@ -34,7 +34,7 @@ Feature: Refresh Role Assignments for CRD users
     And a successful call [to delete job details from ORM DB] as in [S-012_DeleteJobFromORMDB_2].
 
 
-  @S-013 @FeatureToggle(orm-refresh-role)
+  @S-013
   Scenario: must not refresh org roles for a job with non existent failed userIds
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [InsertJobForRefreshAPI],
