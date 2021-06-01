@@ -11,6 +11,7 @@ import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +40,8 @@ public class TopicConsumer {
     String host;
     @Value("${amqp.topic}")
     String topic;
+    @Value("${amqp.subscription}")
+    String subscription;
     @Value("${amqp.sharedAccessKeyName}")
     String sharedAccessKeyName;
     @Value("${amqp.sharedAccessKeyValue}")
@@ -70,16 +73,33 @@ public class TopicConsumer {
 
 
         log.info("End printing variables.");
-
+        String env = System.getenv("LAUNCH_DARKLY_ENV");
+        if (StringUtils.isNotEmpty(env) && env.toLowerCase().startsWith("pr")) {
+            host = getHostName();
+        }
         URI endpoint = new URI("sb://" + host);
+        log.info("Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        String destination = topic.concat("/subscriptions/").concat(subscription);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
-                topic,
+                destination,
                 sharedAccessKeyName,
                 sharedAccessKeyValue);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
+    }
+
+    private String getHostName() {
+        log.info("Getting Host Name");
+        String connectionString = System.getenv("SB_TOPIC_CONN_STRING");
+
+        log.info(String.valueOf(connectionString.indexOf("//")));
+        log.info(String.valueOf(connectionString.indexOf(".")));
+        log.info(connectionString.substring(connectionString.indexOf("//") + 2,
+                connectionString.indexOf(".")));
+        return connectionString.substring(connectionString.indexOf("//") + 2,
+                connectionString.indexOf(".")).concat(".servicebus.windows.net");
     }
 
     @Bean

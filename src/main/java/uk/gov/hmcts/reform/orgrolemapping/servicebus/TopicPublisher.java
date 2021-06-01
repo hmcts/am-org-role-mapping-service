@@ -21,16 +21,19 @@ public class TopicPublisher {
     //this going to be a temporary service required for local testing to simulate CRD side messages.
     private final JmsTemplate jmsTemplate;
 
-    private final String destination;
+    private final String topicName;
+    private final String subscription;
 
     private final ConnectionFactory connectionFactory;
 
     @Autowired
     public TopicPublisher(JmsTemplate jmsTemplate,
-                          @Value("${amqp.topic}") final String destination,
+                          @Value("${amqp.topic}") final String topicName,
+                          @Value("${amqp.subscription}") final String subscription,
                           ConnectionFactory connectionFactory) {
         this.jmsTemplate = jmsTemplate;
-        this.destination = destination;
+        this.topicName = topicName;
+        this.subscription = subscription;
         this.connectionFactory = connectionFactory;
     }
 
@@ -40,6 +43,7 @@ public class TopicPublisher {
     )
     public void sendMessage(final String message) {
         log.info("Sending message.");
+        String destination = topicName.concat("/subscriptions/").concat(subscription);
         try {
             jmsTemplate.send(destination, (Session session) -> session.createTextMessage(message));
             log.info("Message sent.");
@@ -48,7 +52,7 @@ public class TopicPublisher {
                 log.info("Send failed, attempting to reset connection...");
                 ((CachingConnectionFactory) connectionFactory).resetConnection();
                 log.info("Resending..");
-                jmsTemplate.send(destination, (Session session) -> session.createTextMessage(message));
+                jmsTemplate.send(topicName, (Session session) -> session.createTextMessage(message));
                 log.info("In catch, message sent.");
             } else {
                 throw e;
