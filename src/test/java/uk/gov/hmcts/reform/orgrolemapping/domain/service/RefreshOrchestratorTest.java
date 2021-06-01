@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -32,6 +33,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -85,7 +87,7 @@ class RefreshOrchestratorTest {
                 .build());
         userAccessProfiles.put("1", userAccessProfileSet);
 
-        //      TODO - classCastException RoleAssignmentRequestResource to ResponseEntity
+        //TODO - classCastException RoleAssignmentRequestResource to ResponseEntity
         List<RoleAssignmentRequestResource> roleAssignmentRequestResourceList = new ArrayList<>();
         roleAssignmentRequestResourceList.add(TestDataBuilder
                 .buildRoleAssignmentRequestResource());
@@ -185,6 +187,17 @@ class RefreshOrchestratorTest {
                 .thenThrow(feignClientException);
 
         ResponseEntity<Object> response = sut.refresh(1L, TestDataBuilder.buildUserRequest());
+    }
 
+    @Test
+    void nullJobIdTest_validate() {
+        assertThrows(BadRequestException.class,
+                () -> sut.validate(null, TestDataBuilder.buildUserRequest()));
+    }
+
+    @Test
+    void validateTest() {
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(Mockito.any());
+        sut.validate(1L, TestDataBuilder.buildUserRequest());
     }
 }
