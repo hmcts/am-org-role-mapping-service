@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -186,8 +185,7 @@ class RefreshOrchestratorTest {
 
     @Test
     void nullJobIdTest_validate() {
-        assertThrows(BadRequestException.class,
-                () -> sut.validate(null, TestDataBuilder.buildUserRequest()));
+        assertThrows(BadRequestException.class, () -> sut.validate(null, TestDataBuilder.buildUserRequest()));
     }
 
     @Test

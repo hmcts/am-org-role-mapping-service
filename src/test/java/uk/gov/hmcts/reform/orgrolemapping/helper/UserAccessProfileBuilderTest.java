@@ -55,7 +55,6 @@ class UserAccessProfileBuilderTest {
     @Test
     void buildUserProfile_BadRequestException() {
         UserRequest userProfiles = TestDataBuilder.buildBadUserRequest();
-        assertThrows(BadRequestException.class,
-                () -> UserAccessProfileBuilder.buildUserProfile(userProfiles, ""));
+        assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder.buildUserProfile(userProfiles, ""));
     }
 }
