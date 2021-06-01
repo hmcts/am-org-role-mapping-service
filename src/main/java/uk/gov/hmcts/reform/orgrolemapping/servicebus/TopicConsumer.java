@@ -65,6 +65,9 @@ public class TopicConsumer {
         log.info("SB_NAMESPACE :" + System.getenv("SB_NAMESPACE"));
         log.info("SB_SUB_NAME :" + System.getenv("SB_SUB_NAME"));
         log.info("SB_TOPIC_CONN_STRING :" + System.getenv("SB_TOPIC_CONN_STRING"));
+        log.info("AMQP_SUB_NAME :" + System.getenv("AMQP_SUB_NAME"));
+        log.info("AMQP_SHARED_ACCESS_KEY_VALUE :" + System.getenv("AMQP_SHARED_ACCESS_KEY_VALUE"));
+
 
         log.info("End printing variables.");
 
