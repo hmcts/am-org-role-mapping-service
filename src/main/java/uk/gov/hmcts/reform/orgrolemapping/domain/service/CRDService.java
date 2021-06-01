@@ -19,12 +19,12 @@ public class CRDService {
     //This class is reserved to extract the RAS response and play with the resource object.
     private final CRDFeignClient crdFeignClient;
 
-    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 3))
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<List<UserProfile>> fetchUserProfiles(UserRequest userRequest) {
         return crdFeignClient.getCaseworkerDetailsById(userRequest);
     }
 
-    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 3))
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 3))
     public ResponseEntity<List<UserProfilesResponse>> fetchCaseworkerDetailsByServiceName(String serviceName,
                                                                                           Integer pageSize,
                                                                                           Integer pageNumber,

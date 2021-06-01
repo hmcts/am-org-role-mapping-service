@@ -33,6 +33,15 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 }
                 logger.info("The nap is complete.");
                 return null;
+            case ("waitForTime20"):
+                logger.info("Sleeping for 20 seconds");
+                try {
+                    Thread.sleep(20000);
+                } catch (InterruptedException exception) {
+                    logger.info(exception.getMessage());
+                }
+                logger.info("The nap is complete.");
+                return null;
             case ("generateServiceBusToken"):
                 try {
                     return FunctionalTestUtils.getSaSToken("sb://"
