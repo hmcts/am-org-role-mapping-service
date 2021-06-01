@@ -60,6 +60,14 @@ public class TopicConsumer {
     @Bean
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
+        log.info("Printing env variables");
+        log.info("SB_ACCESS_KEY :" + System.getenv("SB_ACCESS_KEY"));
+        log.info("SB_NAMESPACE :" + System.getenv("SB_NAMESPACE"));
+        log.info("SB_SUB_NAME :" + System.getenv("SB_SUB_NAME"));
+        log.info("SB_TOPIC_CONN_STRING :" + System.getenv("SB_TOPIC_CONN_STRING"));
+
+        log.info("End printing variables.");
+
         URI endpoint = new URI("sb://" + host);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
