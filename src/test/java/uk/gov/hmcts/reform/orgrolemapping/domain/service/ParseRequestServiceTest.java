@@ -30,6 +30,7 @@ class ParseRequestServiceTest {
         sut.validateUserRequest(TestDataBuilder.buildUserRequest());
     }
 
+
     @Test
     void validateUserRequest_throwsBadRequestTest() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
