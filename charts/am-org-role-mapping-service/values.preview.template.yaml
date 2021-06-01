@@ -33,10 +33,9 @@ java:
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-pr-580.service.core-compute-preview.internal
     LAUNCH_DARKLY_ENV: pr
-    AMQP_SHARED_ACCESS_KEY_VALUE: "$(SB_TOPIC_CONN_STRING)"
-    AMQP_SUB_NAME: "$(SB_SUB_NAME)"
     AMQP_HOST: "$(SB_NAMESPACE)"
     SUBSCRIPTION_NAME: "$(SB_SUB_NAME)"
+    AMQP_TOPIC_NAME: rd-caseworker-topic
 
 servicebus:
   enabled: true
