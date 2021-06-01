@@ -35,7 +35,7 @@ Feature: Refresh Role Assignments for CRD users
 
 
   @S-013
-  Scenario: must not refresh org roles for a job with non existent failed userIds
+  Scenario: must set the refresh job to aborted for a non existent failed userIds
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [InsertJobForRefreshAPI],
     And the request [contains an existing job details with suspended/nonexistent userIds],
