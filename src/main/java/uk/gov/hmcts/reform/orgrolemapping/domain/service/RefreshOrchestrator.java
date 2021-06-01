@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -217,7 +217,7 @@ public class RefreshOrchestrator {
         if (CollectionUtils.isNotEmpty(failureUserIds) && Objects.nonNull(refreshJobEntity)) {
             refreshJobEntity.setStatus(ABORTED);
             refreshJobEntity.setUserIds(failureUserIds.toArray(new String[0]));
-            refreshJobEntity.setCreated(LocalDateTime.now());
+            refreshJobEntity.setCreated(ZonedDateTime.now());
             refreshJobEntity.setLog(String.format(FAILED_JOB, failureUserIds));
             persistenceService.persistRefreshJob(refreshJobEntity);
 
@@ -225,7 +225,7 @@ public class RefreshOrchestrator {
                 && Objects.nonNull(refreshJobEntity)) {
 
             refreshJobEntity.setStatus(COMPLETED);
-            refreshJobEntity.setCreated(LocalDateTime.now());
+            refreshJobEntity.setCreated(ZonedDateTime.now());
             refreshJobEntity.setLog(String.format(SUCCESS_JOB, successUserIds));
             persistenceService.persistRefreshJob(refreshJobEntity);
         }

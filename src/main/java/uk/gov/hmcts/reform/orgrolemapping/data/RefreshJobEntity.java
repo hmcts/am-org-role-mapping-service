@@ -14,7 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Builder(toBuilder = true)
 @Getter
@@ -55,6 +55,6 @@ public class RefreshJobEntity {
 
     @CreationTimestamp
     @Column(name = "created", nullable = false)
-    private LocalDateTime created;
+    private ZonedDateTime created;
 
 }

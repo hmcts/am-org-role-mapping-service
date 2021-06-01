@@ -49,7 +49,13 @@ class RefreshOrchestratorTest {
     @InjectMocks
     private final RefreshOrchestrator sut = new RefreshOrchestrator(
             retrieveDataService,
-            requestMappingService, parseRequestService, crdService, persistenceService);
+            requestMappingService,
+            parseRequestService,
+            crdService,
+            persistenceService,
+            "1",
+            "descending",
+            "1");
 
     @BeforeEach
     public void setUp() {

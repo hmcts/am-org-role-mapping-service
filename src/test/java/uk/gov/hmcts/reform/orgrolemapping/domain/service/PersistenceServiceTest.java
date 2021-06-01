@@ -7,7 +7,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,7 +39,7 @@ class PersistenceServiceTest {
                 .roleCategory("role")
                 .jurisdiction("jurisdiction")
                 .status("NEW")
-                .created(LocalDateTime.now()).build();
+                .created(ZonedDateTime.now()).build();
         Mockito.when(refreshJobsRepository.save(refreshEntity))
                 .thenReturn(refreshEntity);
         sut.persistRefreshJob(refreshEntity);
