@@ -87,11 +87,6 @@ class RefreshOrchestratorTest {
                 .build());
         userAccessProfiles.put("1", userAccessProfileSet);
 
-        //TODO - classCastException RoleAssignmentRequestResource to ResponseEntity
-        List<RoleAssignmentRequestResource> roleAssignmentRequestResourceList = new ArrayList<>();
-        roleAssignmentRequestResourceList.add(TestDataBuilder
-                .buildRoleAssignmentRequestResource());
-
         Mockito.when(retrieveDataService.retrieveCaseWorkerProfiles(Mockito.any()))
                 .thenReturn(userAccessProfiles);
 
