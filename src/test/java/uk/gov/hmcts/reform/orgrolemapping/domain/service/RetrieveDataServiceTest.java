@@ -77,7 +77,7 @@ class RetrieveDataServiceTest {
     void shouldReturnCaseWorkerProfile() {
 
         when(crdService.fetchUserProfiles(any())).thenReturn(ResponseEntity
-                .ok(buildUserProfile(buildUserRequest())));
+                .ok(buildUserProfile(buildUserRequest(), "userProfileSample.json")));
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
         Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
         assertNotNull(response);

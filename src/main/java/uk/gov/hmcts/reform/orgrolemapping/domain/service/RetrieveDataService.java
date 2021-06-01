@@ -54,37 +54,29 @@ public class RetrieveDataService {
 
         ResponseEntity<List<UserProfile>> responseEntity = crdService.fetchUserProfiles(userRequest);
 
-        log.info(
-                "Execution time of CRD Response : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
+        log.debug("Execution time of CRD Response : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime)));
+
         List<UserProfile> userProfiles = responseEntity.getBody();
-        return buildUserAccessProfile(userRequest,
-                startTime, userProfiles);
+        return buildUserAccessProfile(userRequest, startTime, userProfiles);
 
     }
 
 
     public Map<String, Set<UserAccessProfile>> getUserAccessProfile(ResponseEntity<List<UserProfilesResponse>>
-                                                                            response) {
+                                                                            userProfileResponsesEntity) {
 
         long startTime = System.currentTimeMillis();
 
-
         //check the response if it's not null
-        List<UserProfilesResponse> userProfilesResponse = Objects.requireNonNull(response.getBody());
+        List<UserProfilesResponse> userProfilesResponses = Objects.requireNonNull(userProfileResponsesEntity.getBody());
 
         //Fetch the user profile from the response
         List<UserProfile> userProfiles = new ArrayList<>();
-        userProfilesResponse.forEach(userResponse -> userProfiles.add(userResponse.getUserProfile()));
-
-
+        userProfilesResponses.forEach(userProfilesResponse -> userProfiles.add(userProfilesResponse.getUserProfile()));
 
         //Collect the userIds to build the UserRequest
-
-
-        UserRequest userRequest = UserRequest.builder().userIds(Collections.emptyList())
-                .build();
+        UserRequest userRequest = UserRequest.builder().userIds(Collections.emptyList()).build();
 
         return buildUserAccessProfile(userRequest, startTime, userProfiles);
 
@@ -136,10 +128,8 @@ public class RetrieveDataService {
         );
         log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 
-        log.info(
-                "Execution time of retrieveCaseWorkerProfiles() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
+        log.debug("Execution time of retrieveCaseWorkerProfiles() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime)));
         return usersAccessProfiles;
     }
 }

@@ -21,7 +21,6 @@ class RefreshControllerTest {
     @Mock
     private RefreshOrchestrator refreshOrchestrator;
 
-
     @InjectMocks
     private final RefreshController sut = new RefreshController(refreshOrchestrator);
 

@@ -115,7 +115,6 @@ integrationTest:
     url: "/"
 
 feign:
-
   client:
     config:
       default:
@@ -139,12 +138,6 @@ amqp:
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
 
-
-send-letter:
-  url: ${SEND_LETTER_SERVICE_BASEURL:http://localhost:4021}
-  enabled: ${SEND_LETTER_SERVICE_ENABLED:true}
-  maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
-
 launchdarkly:
   sdk:
     key: ${LD_SDK_KEY:}
@@ -165,3 +158,4 @@ dbFeature:
   flags:
     enable: ${DB_FEATURE_FLAG_ENABLE:iac_1_0}
     disable: ${DB_FEATURE_FLAG_DISABLE:iac_1_1}
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}

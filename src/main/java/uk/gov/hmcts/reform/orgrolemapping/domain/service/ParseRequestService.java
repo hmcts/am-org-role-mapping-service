@@ -43,17 +43,15 @@ public class ParseRequestService {
         if (Collections.isEmpty(userProfiles)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
-        if (userRequest.getUserIds().size() != userProfiles.size()) {
+        if (userRequest.getUserIds().size() > 0 && userRequest.getUserIds().size() != userProfiles.size()) {
             List<String> userProfileIds = new ArrayList<>();
 
             userProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));
             List<String> userIdsNotInCRDResponse = userRequest.getUserIds().stream().filter(userId -> !userProfileIds
                     .contains(userId)).collect(Collectors.toList());
 
-
             log.error("Some of the user profiles couldn't be found for the userIds {} in "
                     + "CRD Response", userIdsNotInCRDResponse);
-
         }
 
         userProfiles.forEach(userProfile -> {

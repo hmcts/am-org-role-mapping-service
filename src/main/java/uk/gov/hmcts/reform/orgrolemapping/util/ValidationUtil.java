@@ -45,7 +45,7 @@ public class ValidationUtil {
     }
 
     public static void validateDateTime(String strDate, String timeParam) {
-        LOG.info("validateDateTime");
+        LOG.debug("validateDateTime");
         if (strDate.length() < 16) {
             throw new BadRequestException(String.format(
                     "Incorrect date format %s",
@@ -58,7 +58,7 @@ public class ValidationUtil {
         try {
             javaDate = simpleDateFormat.parse(strDate);
             if (LOG.isInfoEnabled() && javaDate != null) {
-                LOG.info(javaDate.toString());
+                LOG.debug(javaDate.toString());
             }
         } catch (ParseException e) {
             throw new BadRequestException(String.format(
@@ -104,10 +104,10 @@ public class ValidationUtil {
         }
     }
 
-    public static void compareRoleCategory(String roleType) {
+    public static void compareRoleCategory(String roleCategoryFromJob) {
         boolean valid = false;
-        for (RoleCategory realRole : RoleCategory.values()) {
-            if (realRole.name().equalsIgnoreCase(roleType)) {
+        for (RoleCategory roleCategory : RoleCategory.values()) {
+            if (roleCategory.name().equalsIgnoreCase(roleCategoryFromJob)) {
                 valid = true;
                 break;
             }

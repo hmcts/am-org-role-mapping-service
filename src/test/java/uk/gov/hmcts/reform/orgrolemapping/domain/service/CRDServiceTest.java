@@ -56,7 +56,7 @@ class CRDServiceTest {
         ResponseEntity<List<UserProfilesResponse>> responseEntity = ResponseEntity.ok(Arrays
                 .asList(UserProfilesResponse.builder()
                         .serviceName("IAC").userProfile(buildUserProfile(
-                                userRequest).get(0)).build()));
+                                userRequest, "userProfileSample.json").get(0)).build()));
 
 
         Mockito.when(crdFeignClient.getCaseworkerDetailsByServiceName(any(), any(), any(), any(), any()))

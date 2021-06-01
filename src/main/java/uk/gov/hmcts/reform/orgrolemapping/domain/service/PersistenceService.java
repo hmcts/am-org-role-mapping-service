@@ -23,14 +23,15 @@ public class PersistenceService {
 
 
     public Optional<RefreshJobEntity> fetchRefreshJobById(Long jobId) {
-
         return refreshJobsRepository.findById(jobId);
     }
 
-    public void persistRefreshJob(RefreshJobEntity refreshJobEntity) {
+    public RefreshJobEntity persistRefreshJob(RefreshJobEntity refreshJobEntity) {
+        return refreshJobsRepository.save(refreshJobEntity);
+    }
 
-        refreshJobsRepository.save(refreshJobEntity);
-
+    public void deleteRefreshJob(RefreshJobEntity refreshJobEntity) {
+        refreshJobsRepository.delete(refreshJobEntity);
     }
 
     public boolean getStatusByParam(String flagName, String envName) {
