@@ -3,7 +3,7 @@
   "_extends_": "FetchJobDetailsFromORM",
   "expectedResponse": {
     "body": {
-      "status" : "NEW"
+      "status" : "ABORTED"
     }
   }
 }
