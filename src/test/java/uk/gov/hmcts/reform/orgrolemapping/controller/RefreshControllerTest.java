@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 class RefreshControllerTest {
@@ -39,6 +40,26 @@ class RefreshControllerTest {
         Mockito.when(refreshOrchestrator.refresh(any(),any()))
                 .thenReturn(response);
 
-        assertEquals(response, sut.refresh("1", UserRequest.builder().build()));
+        assertEquals(response, sut.refresh(1L, UserRequest.builder().build()));
+    }
+
+    @Test
+    void refreshRoleAssignmentRecords_emptyJobId() {
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+
+
+        assertThrows(NumberFormatException.class, () ->
+                sut.refresh(Long.valueOf(""), userRequest)
+        );
+    }
+
+    @Test
+    void refreshRoleAssignmentRecords_invalidJobId() {
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+
+
+        assertThrows(NumberFormatException.class, () ->
+                sut.refresh(Long.valueOf("abc"), userRequest)
+        );
     }
 }
