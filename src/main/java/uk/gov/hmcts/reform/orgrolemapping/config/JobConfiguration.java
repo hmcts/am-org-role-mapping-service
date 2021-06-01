@@ -9,7 +9,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Component
 @Slf4j
@@ -50,7 +50,7 @@ public class JobConfiguration implements CommandLineRunner {
                     .jurisdiction(jobAttributes[1])
                     .status(jobAttributes[2])
                     .linkedJobId(Long.valueOf(jobAttributes[3]))
-                    .created(LocalDateTime.now())
+                    .created(ZonedDateTime.now())
                     .build();
             persistJobDetail(refreshJobEntity);
         }

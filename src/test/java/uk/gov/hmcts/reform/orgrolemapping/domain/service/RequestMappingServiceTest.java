@@ -97,7 +97,7 @@ class RequestMappingServiceTest {
                 + ":\"0a677766-69f7-4add-994a-79966616ee50\",\"correlationId\":\"8f54ebd0-4226-4cac-a272-faf7bd88a3"
                 + "5d\",\"assignerId\":\"0a677766-69f7-4add-994a-79966616ee50\",\"requestType\":\"CREATE\",\"proces"
                 + "s\":\"staff-organisational-role-mapping\",\"reference\":\"123e4567-e89b-42d3-a456-556642445678\",\""
-                + "replaceExisting\":true,\"status\":\"REJECTED\",\"created\":\"2020-12-17T10:08:51.379677\",\"log\""
+                + "replaceExisting\":true,\"status\":\"REJECTED\",\"created\":\"2020-12-17T10:08:51Z\",\"log\""
                 + ":\"Request has been rejected due to following assignment Ids :[f1b514de-7a16-4482-951b-26121c447f5"
                 + "7, 657a7b75-2a85-4a01-80ce-74b08ac105cc]\"},\"requestedRoles\":[{\"id\":\"f1b514de-7a16-4482-95"
                 + "1b-26121c447f57\",\"actorIdType\":\"IDAM\",\"actorId\":\"123e4567-e89b-42d3-a456-55664244567"
@@ -105,7 +105,7 @@ class RequestMappingServiceTest {
                 + "UBLIC\",\"grantType\":\"STANDARD\",\"roleCategory\":\"LEGAL_OPERATIONS\",\"readOnly\":false,"
                 + "\"process\":\"s"
                 + "taff-organisational-role-mapping\",\"reference\":\"123e4567-e89b-42d3-a456-556642445678\",\"sta"
-                + "tus\":\"REJECTED\",\"created\":\"2020-12-17T10:08:51.379734\",\"log\":\"Create approved : sta"
+                + "tus\":\"REJECTED\",\"created\":\"2020-12-17T10:08:51Z\",\"log\":\"Create approved : sta"
                 + "ff_organisational_role_mapping_service_create\\nCreate not approved by any rule, hence rejected  "
                 + ": reject_unapproved_create_role_assignments\",\"attributes\":{\"primaryLocation\":null,\"jurisdi"
                 + "ction\":\"IA\"},\"notes\":null},{\"id\":\"657a7b75-2a85-4a01-80ce-74b08ac105cc\",\"actorIdTyp"
@@ -114,7 +114,7 @@ class RequestMappingServiceTest {
                 + "tegory\":\"LEGAL_OPERATIONS\",\"readOnly\":false,\"process\":\"staff-organisational-role-mapping\","
                 + "\"referenc"
                 + "e\":\"123e4567-e89b-42d3-a456-556642445678\",\"status\":\"REJECTED\",\"created\":\"2020-12-17T10:0"
-                + "8:51.379743\",\"log\":\"Create approved : staff_organisational_role_mapping_service_create\\nCreate"
+                + "8:51Z\",\"log\":\"Create approved : staff_organisational_role_mapping_service_create\\nCreate"
                 + " not approved by any rule, hence rejected  : reject_unapproved_create_role_assignments\",\"attribut"
                 + "es\":{\"primaryLocation\":null,\"jurisdiction\":\"IA\"},\"notes\":null}]}";
 
