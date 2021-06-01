@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cucumber.java.bs.A;
 import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
@@ -41,6 +42,7 @@ public class TestDataBuilder {
 
     private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     private static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
+    private static String id_3 = "invalid_id";
 
     private static final String PROCESS_ID = "staff-organisational-role-mapping";
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
@@ -63,6 +65,13 @@ public class TestDataBuilder {
         ArrayList<String> users = new ArrayList<>();
         users.add(id_1);
         users.add(id_2);
+        return UserRequest.builder().userIds(users).build();
+    }
+
+    public static UserRequest buildBadUserRequest() {
+        ArrayList<String> users = new ArrayList<>();
+        users.add(id_1);
+        users.add(id_3);
         return UserRequest.builder().userIds(users).build();
     }
 

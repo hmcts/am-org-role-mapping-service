@@ -97,14 +97,14 @@ public class UserAccessProfileBuilder {
     }
 
 
-    public static List<UserProfile> buildUserProfile(UserRequest userRequest) {
+    public static List<UserProfile> buildUserProfile(UserRequest userRequest, String resource) {
 
         Set<UserProfile> userProfiles = new LinkedHashSet<>();
 
 
         userRequest.getUserIds().forEach(userId -> {
             try (InputStream inputStream =
-                         CRDFeignClientFallback.class.getClassLoader().getResourceAsStream("userProfileSample.json")) {
+                         CRDFeignClientFallback.class.getClassLoader().getResourceAsStream(resource)) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.registerModule(new JavaTimeModule());
