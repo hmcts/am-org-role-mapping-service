@@ -14,7 +14,7 @@ public class LaunchDarklyConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(featureConditionEvaluator).addPathPatterns("/am/role-mapping/refresh");
+        registry.addInterceptor(featureConditionEvaluator).addPathPatterns("/welcome");
     }
 }
 
