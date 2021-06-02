@@ -42,5 +42,7 @@ public class Constants {
     public static final String INTEGER = "Integer";
     public static final String REQUEST_BODY = "Request body";
     public static final String SERVICE_AUTHORIZATION2 = "ServiceAuthorization";
+    public static final String ASB_PUBLISH_ERROR = "There was an error in communication with Azure Service Bus."
+            + " Please try again later.";
 
 }

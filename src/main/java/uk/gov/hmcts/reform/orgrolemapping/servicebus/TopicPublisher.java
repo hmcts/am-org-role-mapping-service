@@ -1,68 +1,77 @@
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
 
+import com.azure.messaging.servicebus.ServiceBusMessage;
+import com.azure.messaging.servicebus.ServiceBusMessageBatch;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import com.azure.messaging.servicebus.ServiceBusTransactionContext;
+import com.google.gson.Gson;
+import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jms.IllegalStateException;
-import org.springframework.jms.connection.CachingConnectionFactory;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Session;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class TopicPublisher {
-    //this going to be a temporary service required for local testing to simulate CRD side messages.
-    private final JmsTemplate jmsTemplate;
-
-    private final String topicName;
-    private final String subscription;
-
-    private final ConnectionFactory connectionFactory;
 
     @Autowired
-    public TopicPublisher(JmsTemplate jmsTemplate,
-                          @Value("${amqp.topic}") final String topicName,
-                          @Value("${amqp.subscription}") final String subscription,
-                          ConnectionFactory connectionFactory) {
-        this.jmsTemplate = jmsTemplate;
-        this.topicName = topicName;
-        this.subscription = subscription;
-        this.connectionFactory = connectionFactory;
+    private ServiceBusSenderClient serviceBusSenderClient;
+
+    public void sendMessage(@NotNull String userIds) {
+        ServiceBusTransactionContext transactionContext = null;
+
+        try {
+            transactionContext = serviceBusSenderClient.createTransaction();
+            publishMessageToTopic(userIds, serviceBusSenderClient, transactionContext);
+        } catch (Exception exception) {
+            if (Objects.nonNull(serviceBusSenderClient) && Objects.nonNull(transactionContext)) {
+                log.info("Could not publish the messages to ASB");
+                serviceBusSenderClient.rollbackTransaction(transactionContext);
+            }
+            throw new UnprocessableEntityException(Constants.ASB_PUBLISH_ERROR);
+        }
+        serviceBusSenderClient.commitTransaction(transactionContext);
+        log.info("Message published to service bus topic");
     }
 
-    @Retryable(
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 2000, multiplier = 3)
-    )
-    public void sendMessage(final String message) {
-        log.info("Sending message.");
-        String destination = topicName.concat("/subscriptions/").concat(subscription);
-        try {
-            jmsTemplate.send(destination, (Session session) -> session.createTextMessage(message));
-            log.info("Message sent.");
-        } catch (IllegalStateException e) {
-            if (connectionFactory instanceof CachingConnectionFactory) {
-                log.info("Send failed, attempting to reset connection...");
-                ((CachingConnectionFactory) connectionFactory).resetConnection();
-                log.info("Resending..");
-                jmsTemplate.send(topicName, (Session session) -> session.createTextMessage(message));
-                log.info("In catch, message sent.");
-            } else {
-                throw e;
+    private void publishMessageToTopic(String userIds,
+                                       ServiceBusSenderClient serviceBusSenderClient,
+                                       ServiceBusTransactionContext transactionContext) {
+        log.info("Started publishing to topic::");
+        ServiceBusMessageBatch messageBatch = serviceBusSenderClient.createMessageBatch();
+        List<ServiceBusMessage> serviceBusMessages = new ArrayList<>();
+
+        serviceBusMessages.add(new ServiceBusMessage(new Gson().toJson(userIds)));
+
+        for (ServiceBusMessage message : serviceBusMessages) {
+            if (messageBatch.tryAddMessage(message)) {
+                continue;
             }
+
+            // The batch is full, so we create a new batch and send the batch.
+            serviceBusSenderClient.sendMessages(messageBatch, transactionContext);
+
+            // create a new batch
+            messageBatch = serviceBusSenderClient.createMessageBatch();
+
+            // Add that message that we couldn't before.
+            if (!messageBatch.tryAddMessage(message)) {
+                log.error("Message is too large for an empty batch. Skipping. Max size: {}",
+                        messageBatch.getMaxSizeInBytes());
+            }
+        }
+
+        if (messageBatch.getCount() > 0) {
+            serviceBusSenderClient.sendMessages(messageBatch, transactionContext);
+            log.info("Sent a batch of messages to the topic");
         }
     }
 
-    @Recover
-    public void recoverMessage(Throwable ex) throws Throwable {
-        log.error("TopicPublisher.recover(): Send message failed with exception: ", ex);
-        throw ex;
-    }
 }

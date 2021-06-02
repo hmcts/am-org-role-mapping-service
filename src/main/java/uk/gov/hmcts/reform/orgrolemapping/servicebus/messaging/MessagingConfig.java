@@ -1,112 +1,69 @@
 package uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging;
 
 
-
+import com.azure.core.amqp.AmqpRetryOptions;
+import com.azure.messaging.servicebus.ServiceBusClientBuilder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.qpid.jms.JmsConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
-import org.springframework.jms.config.JmsListenerContainerFactory;
-import org.springframework.jms.connection.CachingConnectionFactory;
-import org.springframework.jms.core.JmsTemplate;
+import org.springframework.stereotype.Service;
 
-import javax.jms.ConnectionFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-
-@Configuration
+@Service
 @Slf4j
 public class MessagingConfig {
 
-    @Bean
-    public String jmsUrlString(@Value("${amqp.host}") final String host) {
-        return String.format("amqps://%1s?amqp.idleTimeout=3600000",host);
-    }
+    @Value("${amqp.host}")
+    String host;
+    @Value("${amqp.topic}")
+    String topic;
+    @Value("${amqp.sharedAccessKeyName}")
+    String sharedAccessKeyName;
+    @Value("${amqp.sharedAccessKeyValue}")
+    String sharedAccessKeyValue;
 
     @Bean
-    public ConnectionFactory jmsConnectionFactory(@Value("${spring.application.name}") final String clientId,
-                                                  @Value("${amqp.sharedAccessKeyName}") final String username,
-                                                  @Value("${amqp.sharedAccessKeyValue}") final String password,
-                                                  @Autowired final String jmsUrlString,
-                                                  @Autowired(required = false) final SSLContext jmsSslContext) {
-        JmsConnectionFactory jmsConnectionFactory = new JmsConnectionFactory(jmsUrlString);
-        jmsConnectionFactory.setUsername(username);
-        jmsConnectionFactory.setPassword(password);
-        jmsConnectionFactory.setClientID(clientId);
-        jmsConnectionFactory.setReceiveLocalOnly(true);
-        if (jmsSslContext != null) {
-            jmsConnectionFactory.setSslContext(jmsSslContext);
+    public ServiceBusSenderClient getServiceBusSenderClient() {
+        log.info("Getting the ServiceBusSenderClient");
+        String env = System.getenv("LAUNCH_DARKLY_ENV");
+        log.info("Getting the ServiceBusSenderClient . Env is: " + env);
+        if (StringUtils.isNotEmpty(env) && env.toLowerCase().startsWith("pr")) {
+            sharedAccessKeyValue = System.getenv("SB_ACCESS_KEY");
+            topic = System.getenv("SB_NAMESPACE");
+
+            host = getHostName();
+            log.info("sharedAccessKeyValue : " + sharedAccessKeyValue);
+            log.info("host : " + getHostName());
+            log.info("Topic Name is :" + topic);
+            if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
+                throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");
+            }
         }
+        String connectionString = "Endpoint=sb://"
+                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
+        log.info("Connection String is: " + connectionString);
+        log.info("Topic Name is " + topic);
 
-        return new CachingConnectionFactory(jmsConnectionFactory);
+        return new ServiceBusClientBuilder()
+                .connectionString(connectionString)
+                .retryOptions(new AmqpRetryOptions())
+                .sender()
+                .topicName(topic)
+                .buildClient();
     }
 
-    @Bean
-    public SSLContext jmsSslContext(@Value("${amqp.trustAllCerts}") final boolean trustAllCerts)
-            throws NoSuchAlgorithmException, KeyManagementException {
-
-        if (trustAllCerts) {
-            // https://stackoverflow.com/a/2893932
-            // DO NOT USE THIS IN PRODUCTION!
-            TrustManager[] trustCerts = getTrustManagers();
-
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustCerts, new SecureRandom());
-
-            return sc;
+    public static String getHostName() {
+        log.info("Getting Host Name");
+        String connectionString = System.getenv("SB_TOPIC_CONN_STRING");
+        if (StringUtils.isEmpty(connectionString)) {
+            throw new IllegalArgumentException("The Host Name is empty");
         }
-        return null;
+        log.info(String.valueOf(connectionString.indexOf("//")));
+        log.info(String.valueOf(connectionString.indexOf(".")));
+        log.info(connectionString.substring(connectionString.indexOf("//") + 2,
+                connectionString.indexOf(".")));
+        return connectionString.substring(connectionString.indexOf("//") + 2,
+                connectionString.indexOf(".")).concat(".servicebus.windows.net");
     }
-
-    /*
-     * DO NOT USE THIS IN PRODUCTION!
-     * This was only used for testing unverified ssl certs locally!
-     */
-    @Deprecated
-    private TrustManager[] getTrustManagers() {
-        return new TrustManager[]{
-            new X509TrustManager() {
-                    @Override
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-
-                    @Override
-                    public void checkClientTrusted(
-                            X509Certificate[] certs, String authType) {
-                    }
-
-                    @Override
-                    public void checkServerTrusted(
-                            X509Certificate[] certs, String authType) {
-                    }
-                }
-        };
-    }
-
-    @Bean
-    public JmsTemplate jmsTemplate(ConnectionFactory jmsConnectionFactory) {
-        JmsTemplate returnValue = new JmsTemplate();
-        returnValue.setConnectionFactory(jmsConnectionFactory);
-        return returnValue;
-    }
-
-    @Bean
-    public JmsListenerContainerFactory topicJmsListenerContainerFactory(ConnectionFactory connectionFactory) {
-        log.info("Creating JMSListenerContainer bean for topics..");
-        DefaultJmsListenerContainerFactory returnValue = new DefaultJmsListenerContainerFactory();
-        returnValue.setConnectionFactory(connectionFactory);
-        returnValue.setSubscriptionDurable(Boolean.TRUE);
-        returnValue.setErrorHandler(new JmsErrorHandler());
-        return returnValue;
-    }
-
 }

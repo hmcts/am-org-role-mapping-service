@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -75,7 +76,7 @@ public class TopicConsumer {
         log.info("End printing variables.");
         String env = System.getenv("LAUNCH_DARKLY_ENV");
         if (StringUtils.isNotEmpty(env) && env.toLowerCase().startsWith("pr")) {
-            host = getHostName();
+            host = MessagingConfig.getHostName();
         }
         URI endpoint = new URI("sb://" + host);
         log.info("Destination is " + topic.concat("/subscriptions/").concat(subscription));
@@ -88,18 +89,6 @@ public class TopicConsumer {
                 sharedAccessKeyValue);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
-    }
-
-    private String getHostName() {
-        log.info("Getting Host Name");
-        String connectionString = System.getenv("SB_TOPIC_CONN_STRING");
-
-        log.info(String.valueOf(connectionString.indexOf("//")));
-        log.info(String.valueOf(connectionString.indexOf(".")));
-        log.info(connectionString.substring(connectionString.indexOf("//") + 2,
-                connectionString.indexOf(".")));
-        return connectionString.substring(connectionString.indexOf("//") + 2,
-                connectionString.indexOf(".")).concat(".servicebus.windows.net");
     }
 
     @Bean
