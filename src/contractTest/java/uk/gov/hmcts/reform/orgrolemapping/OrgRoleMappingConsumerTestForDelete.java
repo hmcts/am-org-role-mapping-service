@@ -21,10 +21,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig;
 
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -42,6 +43,9 @@ public class OrgRoleMappingConsumerTestForDelete {
 
     @MockBean
     TopicConsumer topicConsumer;
+
+    @MockBean
+    MessagingConfig messagingConfig;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {

@@ -26,12 +26,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig;
+
+import java.util.Map;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -46,6 +47,9 @@ public class OrgRoleMappingConsumerTestForGetActorById {
 
     @MockBean
     TopicConsumer topicConsumer;
+
+    @MockBean
+    MessagingConfig messagingConfig;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
