@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.reform.orgrolemapping.annotation.FeatureFlagToggle;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
@@ -80,6 +82,9 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @MockBean
     private CRDFeignClient crdFeignClient;
 
+    @Rule
+    public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator();
+
     @MockBean
     private RequestMappingService requestMappingService;
 
@@ -100,6 +105,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    @FeatureFlagToggle(flagEnabled = true)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete() throws Exception {
         logger.info(" RefreshJob record With Only JobId to process successful");
