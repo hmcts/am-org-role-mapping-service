@@ -5,7 +5,6 @@ import com.launchdarkly.sdk.server.LDClient;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
@@ -28,11 +27,11 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     @Autowired
     private LDClient ldClient;
 
-    @Value("${launchdarkly.sdk.environment}")
-    private String environment = "pr";
+    /*@Value("${launchdarkly.sdk.environment}")
+    private String environment;*/
 
-    @Value("${launchdarkly.sdk.user}")
-    private String userName = "am-user";
+    /*@Value("${launchdarkly.sdk.user}")
+    private String userName;*/
 
     private static final HashMap<String, String> getRequestMap = new HashMap<>();
     private static final HashMap<String, String> postRequestMap = new HashMap<>();
@@ -67,8 +66,8 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     }
 
     public boolean isFlagEnabled(String serviceName, String flagName) {
-        LDUser user = new LDUser.Builder(environment)
-                .firstName(userName)
+        LDUser user = new LDUser.Builder("xaadaddasdsa")
+                //.firstName(userName)
                 .lastName(USER)
                 .custom(SERVICE_NAME, serviceName)
                 .build();
