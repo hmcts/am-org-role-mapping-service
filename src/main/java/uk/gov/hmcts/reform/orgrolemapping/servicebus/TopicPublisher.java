@@ -47,7 +47,7 @@ public class TopicPublisher {
         log.info("Started publishing to topic::");
         ServiceBusMessageBatch messageBatch = serviceBusSenderClient.createMessageBatch();
         List<ServiceBusMessage> serviceBusMessages = new ArrayList<>();
-
+        log.info("UserIds is " + userIds);
         serviceBusMessages.add(new ServiceBusMessage(new Gson().toJson(userIds)));
 
         for (ServiceBusMessage message : serviceBusMessages) {
