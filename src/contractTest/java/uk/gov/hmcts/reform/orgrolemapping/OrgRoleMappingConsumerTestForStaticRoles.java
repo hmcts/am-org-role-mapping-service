@@ -8,6 +8,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.google.common.collect.Maps;
 import groovy.util.logging.Slf4j;
 import net.serenitybdd.rest.SerenityRest;
@@ -49,6 +50,9 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
 
     @MockBean
     MessagingConfig messagingConfig;
+
+    @MockBean
+    ServiceBusSenderClient serviceBusSenderClient;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {

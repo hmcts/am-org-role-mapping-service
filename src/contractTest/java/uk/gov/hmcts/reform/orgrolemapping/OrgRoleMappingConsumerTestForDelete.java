@@ -7,6 +7,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -46,6 +47,9 @@ public class OrgRoleMappingConsumerTestForDelete {
 
     @MockBean
     MessagingConfig messagingConfig;
+
+    @MockBean
+    ServiceBusSenderClient serviceBusSenderClient;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
