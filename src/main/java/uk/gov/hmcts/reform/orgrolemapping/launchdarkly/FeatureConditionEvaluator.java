@@ -29,10 +29,10 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     private LDClient ldClient;
 
     @Value("${launchdarkly.sdk.environment}")
-    private final String environment;
+    private String environment = "pr";
 
     @Value("${launchdarkly.sdk.user}")
-    private final String userName;
+    private String userName = "am-user";
 
     private static final HashMap<String, String> getRequestMap = new HashMap<>();
     private static final HashMap<String, String> postRequestMap = new HashMap<>();
