@@ -27,12 +27,6 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     @Autowired
     private LDClient ldClient;
 
-    /*@Value("${launchdarkly.sdk.environment}")
-    private String environment;*/
-
-    /*@Value("${launchdarkly.sdk.user}")
-    private String userName;*/
-
     private static final HashMap<String, String> getRequestMap = new HashMap<>();
     private static final HashMap<String, String> postRequestMap = new HashMap<>();
     private static final HashMap<String, String> deleteRequestMap = new HashMap<>();
