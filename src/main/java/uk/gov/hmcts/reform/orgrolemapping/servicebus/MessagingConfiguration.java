@@ -27,14 +27,10 @@ public class MessagingConfiguration {
     @Value("${amqp.subscription}")
     String subscription;
 
-    public MessagingConfiguration() {
-        setVariablesForPreviewEnv();
-    }
-
     @Bean
     public ServiceBusSenderClient getServiceBusSenderClient() {
         log.info("Getting the ServiceBusSenderClient");
-
+        setVariablesForPreviewEnv();
         String connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
         log.info("Connection String is: " + connectionString);
