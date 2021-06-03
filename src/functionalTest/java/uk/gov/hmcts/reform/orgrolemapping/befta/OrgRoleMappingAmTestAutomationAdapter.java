@@ -25,9 +25,9 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
             case ("generateEmailId"):
                 return String.format(EMAIL_TEMPLATE, randomAlphanumeric(10)).toLowerCase();
             case ("waitForTime"):
-                logger.info("Sleeping for 5 seconds");
+                logger.info("Sleeping for 15 seconds");
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(15000);
                 } catch (InterruptedException exception) {
                     logger.info(exception.getMessage());
                 }
