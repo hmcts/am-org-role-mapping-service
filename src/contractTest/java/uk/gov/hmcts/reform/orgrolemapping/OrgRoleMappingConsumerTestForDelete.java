@@ -21,8 +21,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import java.io.IOException;
 
@@ -44,6 +45,9 @@ public class OrgRoleMappingConsumerTestForDelete {
 
     @MockBean
     TopicConsumer topicConsumer;
+
+    @MockBean
+    TopicPublisher topicPublisher;
 
     @MockBean
     MessagingConfiguration messagingConfiguration;
