@@ -1,14 +1,16 @@
-/*
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,7 +27,7 @@ class DroolCaseMappingTest extends DroolBase {
     void shouldReturnOneSeniorCaseWorker() {
 
         //Execute Kie session
-        buildExecuteKieSession();
+        buildExecuteKieSession(getFeatureFlags());
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -41,7 +43,6 @@ class DroolCaseMappingTest extends DroolBase {
 
     }
 
-
     @Test
     void shouldReturnOneCaseWorker() {
 
@@ -55,7 +56,7 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession();
+        buildExecuteKieSession(getFeatureFlags());
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -85,7 +86,7 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession();
+        buildExecuteKieSession(getFeatureFlags());
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -116,7 +117,7 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession();
+        buildExecuteKieSession(getFeatureFlags());
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -141,7 +142,7 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession();
+        buildExecuteKieSession(getFeatureFlags());
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -166,7 +167,7 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession();
+        buildExecuteKieSession(getFeatureFlags());
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -179,5 +180,10 @@ class DroolCaseMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
 
     }
+
+    @NotNull
+    private List<FeatureFlag> getFeatureFlags() {
+        return Arrays.asList(FeatureFlag.builder().flagName("iac_1_0").status(true).build(),
+                FeatureFlag.builder().flagName("iac_1_1").status(false).build());
+    }
 }
-*/

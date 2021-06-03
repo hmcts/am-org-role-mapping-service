@@ -1,4 +1,3 @@
-/*
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,6 +37,9 @@ class RequestMappingServiceTest {
     @Mock
     private SecurityUtils securityUtils;
 
+    @Mock
+    PersistenceService persistenceService;
+
     @InjectMocks
     RequestMappingService requestMappingService;
 
@@ -46,7 +48,7 @@ class RequestMappingServiceTest {
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();
         this.kieSession = kieContainer.newStatelessKieSession("org-role-mapping-validation-session");
-        requestMappingService = new RequestMappingService(roleAssignmentService, kieSession,
+        requestMappingService = new RequestMappingService("pr", persistenceService, roleAssignmentService, kieSession,
                 securityUtils);
         MockitoAnnotations.initMocks(this);
     }
@@ -59,7 +61,8 @@ class RequestMappingServiceTest {
         Mockito.when(roleAssignmentService.createRoleAssignment(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
                         .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
-
+        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+                .thenReturn(true);
         ResponseEntity<Object> responseEntity =
                 requestMappingService.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                         false));
@@ -124,10 +127,11 @@ class RequestMappingServiceTest {
                 .thenThrow(feignClientException);
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
+        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+                .thenReturn(true);
         ResponseEntity<Object> responseEntity =
                 requestMappingService.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                         false));
-
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
@@ -155,7 +159,8 @@ class RequestMappingServiceTest {
                 .thenThrow(feignClientException);
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
-
+        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+                .thenReturn(true);
         ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(
                 TestDataBuilder.buildUserAccessProfileMap(false, false));
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -171,4 +176,3 @@ class RequestMappingServiceTest {
 
     }
 }
-*/
