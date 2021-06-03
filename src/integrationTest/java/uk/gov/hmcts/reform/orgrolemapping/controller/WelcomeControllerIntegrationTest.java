@@ -41,7 +41,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfig;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
@@ -114,7 +114,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @MockBean
     private TopicConsumer topicConsumer;
 
-    @MockBean
+    @MockBean(value = MessagingConfig.class)
     private MessagingConfig messagingConfig;
 
     @MockBean

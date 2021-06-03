@@ -11,9 +11,7 @@ import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -22,7 +20,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,18 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class TopicConsumer {
-
-    @Value("${amqp.host}")
-    String host;
-    @Value("${amqp.topic}")
-    String topic;
-    @Value("${amqp.subscription}")
-    String subscription;
-    @Value("${amqp.sharedAccessKeyName}")
-    String sharedAccessKeyName;
-    @Value("${amqp.sharedAccessKeyValue}")
-    String sharedAccessKeyValue;
+public class TopicConsumer extends MessagingConfig {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
@@ -64,22 +50,10 @@ public class TopicConsumer {
     @Bean
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        log.info("Printing env variables");
-        log.info("SB_ACCESS_KEY :" + System.getenv("SB_ACCESS_KEY"));
-        log.info("SB_NAMESPACE :" + System.getenv("SB_NAMESPACE"));
-        log.info("SB_SUB_NAME :" + System.getenv("SB_SUB_NAME"));
-        log.info("SB_TOPIC_CONN_STRING :" + System.getenv("SB_TOPIC_CONN_STRING"));
-        log.info("AMQP_SUB_NAME :" + System.getenv("AMQP_SUB_NAME"));
-        log.info("AMQP_SHARED_ACCESS_KEY_VALUE :" + System.getenv("AMQP_SHARED_ACCESS_KEY_VALUE"));
 
-
-        log.info("End printing variables.");
-        String env = System.getenv("LAUNCH_DARKLY_ENV");
-        if (StringUtils.isNotEmpty(env) && env.toLowerCase().startsWith("pr")) {
-            host = MessagingConfig.getHostName();
-        }
         URI endpoint = new URI("sb://" + host);
         log.info("Destination is " + topic.concat("/subscriptions/").concat(subscription));
+
         String destination = topic.concat("/subscriptions/").concat(subscription);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(

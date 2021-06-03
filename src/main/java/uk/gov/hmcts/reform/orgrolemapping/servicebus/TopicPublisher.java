@@ -5,7 +5,6 @@ import com.azure.messaging.servicebus.ServiceBusMessage;
 import com.azure.messaging.servicebus.ServiceBusMessageBatch;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.azure.messaging.servicebus.ServiceBusTransactionContext;
-import com.google.gson.Gson;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-public class TopicPublisher {
+public class TopicPublisher extends MessagingConfig {
 
     @Autowired
     private ServiceBusSenderClient serviceBusSenderClient;
@@ -44,11 +43,11 @@ public class TopicPublisher {
     private void publishMessageToTopic(String userIds,
                                        ServiceBusSenderClient serviceBusSenderClient,
                                        ServiceBusTransactionContext transactionContext) {
-        log.info("Started publishing to topic::");
+        log.info("Started publishing to topic:: {}", topic);
         ServiceBusMessageBatch messageBatch = serviceBusSenderClient.createMessageBatch();
         List<ServiceBusMessage> serviceBusMessages = new ArrayList<>();
         log.info("UserIds is " + userIds);
-        serviceBusMessages.add(new ServiceBusMessage(new Gson().toJson(userIds)));
+        serviceBusMessages.add(new ServiceBusMessage(userIds));
 
         for (ServiceBusMessage message : serviceBusMessages) {
             if (messageBatch.tryAddMessage(message)) {
@@ -70,7 +69,7 @@ public class TopicPublisher {
 
         if (messageBatch.getCount() > 0) {
             serviceBusSenderClient.sendMessages(messageBatch, transactionContext);
-            log.info("Sent a batch of messages to the topic");
+            log.info("Sent a batch of messages to the topic ::{}", topic);
         }
     }
 

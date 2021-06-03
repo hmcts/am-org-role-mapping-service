@@ -3,16 +3,16 @@ java:
   ingressHost: ${SERVICE_FQDN}
   
   secrets:
-    SB_ACCESS_KEY:
+    AMQP_SHARED_ACCESS_KEY_VALUE:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: primaryKey
-    SB_NAMESPACE:
+    AMQP_HOST:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: namespaceName
     SB_TOPIC_CONN_STRING:
       secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
       key: connectionString
-    SB_SUB_NAME:
+    SUBSCRIPTION_NAME:
       secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
       key: subscriptionName
       
@@ -33,9 +33,8 @@ java:
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-pr-580.service.core-compute-preview.internal
     LAUNCH_DARKLY_ENV: pr
-    AMQP_HOST: "$(SB_NAMESPACE)"
-    SUBSCRIPTION_NAME: "$(SB_SUB_NAME)"
     AMQP_TOPIC_NAME: rd-caseworker-topic
+    AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
 
 servicebus:
   enabled: true
