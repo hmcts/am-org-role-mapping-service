@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Primary
 @Service(value = "MessagingConfiguration")
 @Slf4j
-public class MessagingConfig {
+public class MessagingConfiguration {
 
     @Value("${amqp.host}")
     String host;

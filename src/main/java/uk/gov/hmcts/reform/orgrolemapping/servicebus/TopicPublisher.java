@@ -18,7 +18,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-public class TopicPublisher extends MessagingConfig {
+public class TopicPublisher extends MessagingConfiguration {
 
     @Autowired
     private ServiceBusSenderClient serviceBusSenderClient;

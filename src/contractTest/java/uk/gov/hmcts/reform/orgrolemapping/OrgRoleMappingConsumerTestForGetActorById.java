@@ -27,7 +27,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfig;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
 
 import java.util.Map;
 
@@ -50,7 +50,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
     TopicConsumer topicConsumer;
 
     @MockBean
-    MessagingConfig messagingConfig;
+    MessagingConfiguration messagingConfiguration;
 
     @MockBean
     ServiceBusSenderClient serviceBusSenderClient;
