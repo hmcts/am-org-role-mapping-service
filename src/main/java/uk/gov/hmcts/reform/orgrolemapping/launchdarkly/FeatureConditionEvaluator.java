@@ -41,6 +41,8 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     static {
         //Get Map
         getRequestMap.put("/welcome", "orm-base-flag");
+        //post Map
+        postRequestMap.put("/am/role-mapping/refresh", "orm-refresh-role");
     }
 
     @Override
@@ -89,6 +91,10 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
                 }
                 break;
             case POST:
+                if (postRequestMap.get(uri) != null) {
+                    return postRequestMap.get(uri);
+                }
+                break;
             case DELETE:
                 break;
 
