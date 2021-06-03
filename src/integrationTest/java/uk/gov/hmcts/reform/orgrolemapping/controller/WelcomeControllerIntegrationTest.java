@@ -42,6 +42,7 @@ import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
@@ -113,6 +114,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @MockBean
     private TopicConsumer topicConsumer;
+
+    @MockBean
+    private TopicPublisher topicPublisher;
 
     @MockBean(value = MessagingConfiguration.class)
     private MessagingConfiguration messagingConfiguration;
