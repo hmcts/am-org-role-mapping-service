@@ -68,6 +68,7 @@ public class MessagingConfiguration {
             sharedAccessKeyValue = System.getenv("AMQP_SHARED_ACCESS_KEY_VALUE");
             host = getHostName();
             subscription = System.getenv("SUBSCRIPTION_NAME");
+            topic = System.getenv("AMQP_TOPIC_NAME");
             log.info("sharedAccessKeyValue : " + sharedAccessKeyValue);
             log.info("host : " + getHostName());
             log.info("Topic Name is :" + topic);
