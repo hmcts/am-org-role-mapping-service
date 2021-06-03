@@ -1,0 +1,21 @@
+package validationrules.test;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.logMsg;
+
+rule "role_assignment"
+salience 1000
+when
+	$ra: RoleAssignment()
+then
+	logMsg("We have role assignment created for role : " + $ra.getRoleName() + " : " + $ra);
+end;
+
+rule "user_access_profile"
+salience 1000
+when
+	$up: UserAccessProfile()
+then
+	logMsg("We have a user access profile " + $f.getId() + " : " + $up);
+end;
+
