@@ -9,7 +9,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 @SpringBootApplication
 @EnableFeignClients(clients = {
-    CRDFeignClient.class
+        CRDFeignClient.class
 })
 public class RefDataCaseworkerConsumerApplication {
 
