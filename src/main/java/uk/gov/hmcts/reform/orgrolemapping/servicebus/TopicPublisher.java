@@ -8,6 +8,8 @@ import com.azure.messaging.servicebus.ServiceBusTransactionContext;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
@@ -23,6 +25,10 @@ public class TopicPublisher extends MessagingConfiguration {
     @Autowired
     private ServiceBusSenderClient serviceBusSenderClient;
 
+    @Retryable(
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 2000, multiplier = 3)
+    )
     public void sendMessage(@NotNull String userIds) {
         ServiceBusTransactionContext transactionContext = null;
 
