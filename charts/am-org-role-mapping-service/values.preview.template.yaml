@@ -9,9 +9,6 @@ java:
     AMQP_HOST:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: namespaceName
-    SB_TOPIC_CONN_STRING:
-      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
-      key: connectionString
     SUBSCRIPTION_NAME:
       secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
       key: subscriptionName
@@ -35,9 +32,6 @@ java:
     LAUNCH_DARKLY_ENV: pr
     AMQP_TOPIC_NAME: rd-caseworker-topic
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
-    AMQP_HOST: "$(AMQP_HOST)"
-    SUBSCRIPTION_NAME: "$(SUBSCRIPTION_NAME)"
-    AMQP_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
 
 servicebus:
   enabled: true
