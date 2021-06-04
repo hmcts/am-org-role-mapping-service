@@ -190,7 +190,8 @@ public class RequestMappingService {
                     .build();
             featureFlags.add(featureFlag);
         }
-        featureFlags.forEach(a -> log.info("featureFlag values.....{}   ", a.getFlagName() + " - " + a.isStatus()));
+        featureFlags.forEach(a -> log.debug("featureFlag values from db.....{}   ", a.getFlagName()
+                + " - " + a.isStatus()));
         return featureFlags;
     }
 
@@ -281,5 +282,12 @@ public class RequestMappingService {
             Boolean status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
             droolFlagStates.put(featureFlagEnum.getValue(), status);
         }
+    }
+
+    /**
+     * This utility method is used to capture the log in drools.
+     */
+    public static void logMsg(final String message) {
+        log.debug(message);
     }
 }

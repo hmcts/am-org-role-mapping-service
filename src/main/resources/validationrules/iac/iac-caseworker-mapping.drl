@@ -13,13 +13,13 @@ import java.util.Map
 import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 rule "iac_senior_tribunal_caseworker"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.getIAC_1_0.getValue())
   $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
 then
-   System.out.println("Drool rule for iac_senior_tribunal_caseworker for IAC_1_0 :");
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
@@ -35,6 +35,7 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
+      logMsg("Rule : iac_senior_tribunal_caseworker");
 end;
 
 rule "iac_tribunal_caseworker"
@@ -42,7 +43,6 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.getIAC_1_0.getValue())
   $up: UserAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
 then
-     System.out.println("Drool rule for iac_tribunal_caseworker for IAC_1_0 :");
      Map<String,JsonNode> attr = new HashMap<>();
      attr.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
      attr.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
@@ -58,14 +58,14 @@ then
       .readOnly       (false)
       .attributes(attr)
       .build());
+      logMsg("Rule : iac_tribunal_caseworker");
 end;
 
-rule "iac_senior_tribunal_caseworker_new"
+rule "iac_senior_tribunal_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.getIAC_1_1.getValue())
-  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA2", !suspended)
+  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
 then
-   System.out.println("Drool rule for iac_senior_tribunal_caseworker for IAC_1_1 :");
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
@@ -81,14 +81,14 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
+      logMsg("Rule : iac_senior_tribunal_caseworker_v11");
 end;
 
-rule "iac_tribunal_caseworker_new"
+rule "iac_tribunal_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.getIAC_1_1.getValue())
-  $up: UserAccessProfile(roleId == "2", serviceCode == "BFA2", !suspended)
+  $up: UserAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
 then
-   System.out.println("Drool rule for iac_tribunal_caseworker for IAC_1_1 :");
    Map<String,JsonNode> attr = new HashMap<>();
      attr.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
      attr.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
@@ -104,4 +104,5 @@ then
       .readOnly       (false)
       .attributes(attr)
       .build());
+      logMsg("Rule : iac_tribunal_caseworker_v11");
 end;

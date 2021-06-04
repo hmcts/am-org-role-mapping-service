@@ -27,7 +27,7 @@ class DroolCaseMappingTest extends DroolBase {
     void shouldReturnOneSeniorCaseWorker() {
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags());
+        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -56,7 +56,7 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags());
+        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -86,7 +86,7 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags());
+        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -117,7 +117,7 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags());
+        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -142,7 +142,7 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags());
+        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -167,7 +167,165 @@ class DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags());
+        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+
+    }
+
+    @Test
+    void shouldReturnOneSeniorCaseWorkerForNewRule() {
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals(usersAccessProfiles.keySet().iterator().next(),roleAssignments.get(0).getActorId());
+
+    }
+
+    @Test
+    void shouldReturnOneCaseWorkerForNewRule() {
+
+        allProfiles.forEach(userAccessProfile -> {
+            if (userAccessProfile.getRoleId().equals("2")) {
+                userAccessProfile.setServiceCode("BFA1");
+            } else {
+                userAccessProfile.setServiceCode("BFA2");
+            }
+
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(1,roleAssignments.size());
+        assertEquals("tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
+                roleAssignments.get(0).getActorId());
+
+
+    }
+
+    @Test
+    void shouldReturnBothCaseWorkerForNewRule() {
+
+        allProfiles.forEach(userAccessProfile -> {
+            if (userAccessProfile.getRoleId().equals("2")) {
+                userAccessProfile.setServiceCode("BFA1");
+            }
+
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(2,roleAssignments.size());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
+                roleAssignments.get(0).getActorId());
+        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
+                roleAssignments.get(1).getActorId());
+
+    }
+
+    @Test
+    void shouldReturnZeroCaseWorkerWrongServiceCodeForNewRule() {
+
+        allProfiles.forEach(userAccessProfile -> {
+            if (userAccessProfile.getRoleId().equals("1")) {
+                userAccessProfile.setServiceCode("BFA2");
+            }
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+
+    }
+
+    @Test
+    void shouldReturnZeroCaseWorkerWrongRoleIdForNewRule() {
+
+        allProfiles.forEach(userAccessProfile -> {
+            userAccessProfile.setRoleId("5");
+            if (userAccessProfile.getServiceCode().equals("BFA2")) {
+                userAccessProfile.setServiceCode("BFA1");
+            }
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+
+    }
+
+    @Test
+    void shouldReturnZeroCaseWorkerWrongFlagForNewRule() {
+
+        allProfiles.forEach(userAccessProfile -> {
+            userAccessProfile.setSuspended(true);
+            if (userAccessProfile.getServiceCode().equals("BFA2")) {
+                userAccessProfile.setServiceCode("BFA1");
+            }
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -182,8 +340,7 @@ class DroolCaseMappingTest extends DroolBase {
     }
 
     @NotNull
-    private List<FeatureFlag> getFeatureFlags() {
-        return Arrays.asList(FeatureFlag.builder().flagName("iac_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("iac_1_1").status(false).build());
+    private List<FeatureFlag> getFeatureFlags(String flagName, Boolean status) {
+        return Arrays.asList(FeatureFlag.builder().flagName(flagName).status(status).build());
     }
 }
