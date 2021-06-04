@@ -30,12 +30,12 @@ public class MessagingConfiguration {
 
     @Bean
     public ServiceBusSenderClient getServiceBusSenderClient() {
-        log.info("Getting the ServiceBusSenderClient");
+        log.debug("Getting the ServiceBusSenderClient");
         logServiceBusVariables();
         String connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
-        log.info("Connection String is: " + connectionString);
-        log.info("Topic Name is " + topic);
+        log.debug("Connection String is: " + connectionString);
+        log.debug("Topic Name is " + topic);
 
         return new ServiceBusClientBuilder()
                 .connectionString(connectionString)
@@ -47,18 +47,18 @@ public class MessagingConfiguration {
 
 
     public void logServiceBusVariables() {
-        log.info("Env is: " + environment);
+        log.debug("Env is: " + environment);
         if (environment.toLowerCase().startsWith("pr")) {
             host = System.getenv("AMQP_HOST").concat(".servicebus.windows.net");
             sharedAccessKeyValue = System.getenv("AMQP_SHARED_ACCESS_KEY_VALUE");
             subscription = System.getenv("SUBSCRIPTION_NAME");
 
-            log.info("sharedAccessKeyName : " + sharedAccessKeyName);
-            log.info("sharedAccessKeyvalue : " + sharedAccessKeyValue);
-            log.info("subscription Name is :" + subscription);
-            log.info("host : " + host);
-            log.info("Topic Name is :" + topic);
-            log.info("subscription Name is :" + subscription);
+            log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
+            log.debug("sharedAccessKeyvalue : " + sharedAccessKeyValue);
+            log.debug("subscription Name is :" + subscription);
+            log.debug("host : " + host);
+            log.debug("Topic Name is :" + topic);
+            log.debug("subscription Name is :" + subscription);
 
             if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
                 throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");
