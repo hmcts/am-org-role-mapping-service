@@ -54,7 +54,6 @@ public class MessagingConfiguration {
             subscription = System.getenv("SUBSCRIPTION_NAME");
 
             log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
-            log.debug("sharedAccessKeyvalue : " + sharedAccessKeyValue);
             log.debug("subscription Name is :" + subscription);
             log.debug("host : " + host);
             log.debug("Topic Name is :" + topic);
