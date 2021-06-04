@@ -47,17 +47,14 @@ public class MessagingConfiguration {
 
 
     public void logServiceBusVariables() {
-        log.info("Env is: " + environment);
-        if (StringUtils.isNotEmpty(environment) && environment.toLowerCase().startsWith("pr")) {
-            log.info("Setting env variables for the preview.");
-            log.info("sharedAccessKeyValue : " + sharedAccessKeyValue);
-            log.info("sharedAccessKeyName : " + sharedAccessKeyName);
-            log.info("host : " + host);
-            log.info("Topic Name is :" + topic);
+        log.debug("Env is: " + environment);
+        log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
+        log.debug("host : " + host);
+        log.debug("Topic Name is :" + topic);
 
-            if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
-                throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");
-            }
+        if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
+            throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");
         }
+
     }
 }
