@@ -3,13 +3,13 @@ java:
   ingressHost: ${SERVICE_FQDN}
   
   secrets:
-    AMQP_SHARED_ACCESS_KEY_VALUE:
+    AMQP_SHARED_ACCESS_KEY_VALUE_PR:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: primaryKey
-    AMQP_HOST:
+    AMQP_HOST_PR:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: namespaceName
-    SUBSCRIPTION_NAME:
+    SUBSCRIPTION_NAME_PR:
       secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
       key: subscriptionName
       
@@ -32,6 +32,9 @@ java:
     LAUNCH_DARKLY_ENV: pr
     AMQP_TOPIC_NAME: rd-caseworker-topic
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
+    AMQP_HOST: "$(AMQP_HOST_PR)"
+    SUBSCRIPTION_NAME: "$(SUBSCRIPTION_NAME_PR)"
+    AMQP_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE_PR)"
 
 servicebus:
   enabled: true
