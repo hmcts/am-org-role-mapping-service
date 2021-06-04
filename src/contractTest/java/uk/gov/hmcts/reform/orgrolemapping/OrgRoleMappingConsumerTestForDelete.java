@@ -7,6 +7,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -20,11 +21,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -42,6 +45,15 @@ public class OrgRoleMappingConsumerTestForDelete {
 
     @MockBean
     TopicConsumer topicConsumer;
+
+    @MockBean
+    TopicPublisher topicPublisher;
+
+    @MockBean
+    MessagingConfiguration messagingConfiguration;
+
+    @MockBean
+    ServiceBusSenderClient serviceBusSenderClient;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {

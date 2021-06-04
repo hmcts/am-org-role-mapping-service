@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.befta.DefaultTestAutomationAdapter;
 import uk.gov.hmcts.befta.player.BackEndFunctionalTestScenarioContext;
-import uk.gov.hmcts.befta.util.EnvironmentVariableUtils;
 
 import java.util.UUID;
 
@@ -33,18 +32,6 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 }
                 logger.info("The nap is complete.");
                 return null;
-            case ("generateServiceBusToken"):
-                try {
-                    return FunctionalTestUtils.getSaSToken("sb://"
-                                    + EnvironmentVariableUtils.getRequiredVariable("AMQP_HOST"),
-                            "SendAndListenSharedAccessKey",
-                            EnvironmentVariableUtils.getRequiredVariable("AMQP_SHARED_ACCESS_KEY_VALUE"));
-                } catch (Exception e) {
-                    logger.warn(e.getMessage());
-                }
-                return null;
-            /*case("getUserIdFromFile"):
-                return FunctionalTestUtils.getUserIdFromFile("SingleUserId.json");*/
             default:
                 return super.calculateCustomValue(scenarioContext, key);
         }
