@@ -47,16 +47,18 @@ public class MessagingConfiguration {
 
 
     public void logServiceBusVariables() {
-        log.debug("Env is: " + environment);
+        log.info("Env is: " + environment);
         if (environment.toLowerCase().startsWith("pr")) {
             host = System.getenv("AMQP_HOST").concat(".servicebus.windows.net");
             sharedAccessKeyValue = System.getenv("AMQP_SHARED_ACCESS_KEY_VALUE");
             subscription = System.getenv("SUBSCRIPTION_NAME");
 
-            log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
-            log.debug("host : " + host);
-            log.debug("Topic Name is :" + topic);
-            log.debug("subscription Name is :" + subscription);
+            log.info("sharedAccessKeyName : " + sharedAccessKeyName);
+            log.info("sharedAccessKeyvalue : " + sharedAccessKeyValue);
+            log.info("subscription Name is :" + subscription);
+            log.info("host : " + host);
+            log.info("Topic Name is :" + topic);
+            log.info("subscription Name is :" + subscription);
 
             if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
                 throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");
