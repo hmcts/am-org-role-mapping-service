@@ -3,8 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.launchdarkly;
 import com.launchdarkly.sdk.LDUser;
 import com.launchdarkly.sdk.server.LDClient;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 @Component
-@AllArgsConstructor
 public class FeatureConditionEvaluator implements HandlerInterceptor {
 
     public static final String USER = "user";
@@ -24,8 +23,10 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     public static final String POST = "POST";
     public static final String DELETE = "DELETE";
 
-    @Autowired
     private LDClient ldClient;
+
+    private final String environment;
+    private final String userName;
 
     private static final HashMap<String, String> getRequestMap = new HashMap<>();
     private static final HashMap<String, String> postRequestMap = new HashMap<>();
@@ -34,6 +35,15 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     static {
         //Get Map
         getRequestMap.put("/welcome", "orm-base-flag");
+    }
+
+    @Autowired
+    public FeatureConditionEvaluator(@Autowired LDClient ldClient,
+                                     @Value("${launchdarkly.sdk.environment}") String environment,
+                                     @Value("${launchdarkly.sdk.user}") String userName) {
+        this.ldClient = ldClient;
+        this.environment = environment;
+        this.userName = userName;
     }
 
     @Override
@@ -60,8 +70,8 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     }
 
     public boolean isFlagEnabled(String serviceName, String flagName) {
-        LDUser user = new LDUser.Builder("xaadaddasdsa")
-                //.firstName(userName)
+        LDUser user = new LDUser.Builder(environment)
+                .firstName(userName)
                 .lastName(USER)
                 .custom(SERVICE_NAME, serviceName)
                 .build();
