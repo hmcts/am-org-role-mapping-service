@@ -1,6 +1,6 @@
 {
   "_guid_": "S-013",
-  "title": "must not refresh org roles for a job with non existent failed userIds",
+  "title": "must set the refresh job to aborted for a non existent failed userIds",
   "_extends_": "F-002_Test_Data_Base",
 
   "specs": [

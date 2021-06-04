@@ -146,7 +146,7 @@ launchdarkly:
 refresh:
   Job:
     update: ${REFRESH_JOB:LEGAL_OPERATIONS-IA-NEW-0}
-    pageSize: ${REFRESH_JOB_PAGE_SIZE:2}
+    pageSize: ${REFRESH_JOB_PAGE_SIZE:100}
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
 

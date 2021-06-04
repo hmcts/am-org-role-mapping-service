@@ -135,7 +135,10 @@ public class RefreshOrchestrator {
             // 2 step to find out the total number of records from header
             String totalRecords = response.getHeaders().getFirst("total_records");
             assert totalRecords != null;
-            int pageNumber = (Integer.parseInt(totalRecords) / Integer.parseInt(pageSize));
+            double pageNumber = 0;
+            if (Integer.parseInt(pageSize) > 0) {
+                pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
+            }
 
 
             //call to CRD
