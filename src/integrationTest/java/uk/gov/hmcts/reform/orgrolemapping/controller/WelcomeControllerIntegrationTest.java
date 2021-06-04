@@ -118,7 +118,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @MockBean
     private TopicPublisher topicPublisher;
 
-    @MockBean(value = MessagingConfiguration.class)
+    @MockBean
     private MessagingConfiguration messagingConfiguration;
 
     @MockBean

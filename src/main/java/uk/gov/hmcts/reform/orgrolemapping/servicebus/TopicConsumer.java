@@ -50,7 +50,6 @@ public class TopicConsumer extends MessagingConfiguration {
     @Bean
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        setVariablesForPreviewEnv();
         URI endpoint = new URI("sb://" + host);
         log.info("Destination is " + topic.concat("/subscriptions/").concat(subscription));
 
