@@ -5,8 +5,6 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
-import java.sql.Array;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,7 +63,7 @@ public class GenericArrayUserType<T extends Serializable> implements UserType {
             return new String[0];
         }
 
-        Array arr = resultSet.getArray(names[0]);
+        var arr = resultSet.getArray(names[0]);
         @SuppressWarnings("unchecked")
         T javaArray = (T) arr.getArray();
         return javaArray;
@@ -75,13 +73,13 @@ public class GenericArrayUserType<T extends Serializable> implements UserType {
     public void nullSafeSet(PreparedStatement statement, Object value, int index,
                             SharedSessionContractImplementor sharedSessionContractImplementor)
             throws HibernateException, SQLException {
-        Connection conn = statement.getConnection();
+        var conn = statement.getConnection();
         if (value == null) {
             statement.setNull(index, SQL_TYPES[0]);
         } else {
             @SuppressWarnings("unchecked")
             T obj = (T) value;
-            Array arr = conn.createArrayOf("text", (Object[]) obj);
+            var arr = conn.createArrayOf("text", (Object[]) obj);
             statement.setArray(index, arr);
         }
     }

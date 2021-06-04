@@ -32,6 +32,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
@@ -166,6 +167,7 @@ class RefreshOrchestratorTest {
                 .thenThrow(feignClientException);
 
         ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+        assertNull(response);
     }
 
     @Test

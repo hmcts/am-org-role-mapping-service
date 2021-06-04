@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.idam.client.OAuth2Configuration;
 import uk.gov.hmcts.reform.idam.client.models.TokenRequest;
-import uk.gov.hmcts.reform.idam.client.models.TokenResponse;
 import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 
@@ -58,7 +57,7 @@ public class IdamRepository {
     @Cacheable(value = "token")
     public UserInfo getUserInfo(String jwtToken) {
         if (cacheType != null && !cacheType.equals("none")) {
-            CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("token");
+            var caffeineCache = (CaffeineCache) cacheManager.getCache("token");
             com.github.benmanes.caffeine.cache.Cache<Object, Object> nativeCache = requireNonNull(caffeineCache)
                     .getNativeCache();
             log.debug("generating Bearer Token, current size of cache: {}", nativeCache.estimatedSize());
@@ -72,7 +71,7 @@ public class IdamRepository {
 
     public ResponseEntity<List<Object>> searchUserByUserId(String jwtToken, String userId) {
         try {
-            String url = String.format("%s/api/v1/users?query=%s", idamUrl, userId);
+            var url = String.format("%s/api/v1/users?query=%s", idamUrl, userId);
             ResponseEntity<List<Object>> response = restTemplate.exchange(
                     url,
                     GET,
@@ -91,14 +90,14 @@ public class IdamRepository {
     }
 
     public static HttpHeaders getHttpHeaders(String jwtToken) {
-        HttpHeaders headers = new HttpHeaders();
+        var headers = new HttpHeaders();
         headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken);
         return headers;
     }
 
     @Cacheable(value = "token")
     public String getUserToken() {
-        TokenRequest tokenRequest = new TokenRequest(
+        var tokenRequest = new TokenRequest(
                 oauth2Configuration.getClientId(),
                 oauth2Configuration.getClientSecret(),
                 "password",
@@ -109,7 +108,7 @@ public class IdamRepository {
                 "4",
                 ""
         );
-        TokenResponse tokenResponse = idamApi.generateOpenIdToken(tokenRequest);
+        var tokenResponse = idamApi.generateOpenIdToken(tokenRequest);
         return tokenResponse.accessToken;
     }
 

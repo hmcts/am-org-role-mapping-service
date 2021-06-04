@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 
@@ -13,6 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
+@RunWith(MockitoJUnitRunner.class)
 class PersistenceServiceTest {
 
     private final RefreshJobsRepository refreshJobsRepository = mock(RefreshJobsRepository.class);
@@ -43,5 +46,6 @@ class PersistenceServiceTest {
         Mockito.when(refreshJobsRepository.save(refreshEntity))
                 .thenReturn(refreshEntity);
         sut.persistRefreshJob(refreshEntity);
+        assertNotNull(refreshEntity);
     }
 }
