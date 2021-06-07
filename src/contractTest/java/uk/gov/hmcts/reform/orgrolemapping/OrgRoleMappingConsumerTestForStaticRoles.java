@@ -73,7 +73,6 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
     @MockBean
     ServiceBusSenderClient serviceBusSenderClient;
 
-
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);

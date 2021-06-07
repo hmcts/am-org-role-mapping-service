@@ -141,7 +141,7 @@ amqp:
 launchdarkly:
   sdk:
     key: ${LD_SDK_KEY:}
-    environment: ${LAUNCH_DARKLY_ENV:pr}
+    environment: ${LAUNCH_DARKLY_ENV:local}
     user: am-${LAUNCH_DARKLY_ENV:local}
 refresh:
   Job:

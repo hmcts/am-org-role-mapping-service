@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -22,15 +23,16 @@ public class JobConfiguration implements CommandLineRunner {
     private FeatureConditionEvaluator featureConditionEvaluator;
 
 
-    @Value("${refresh.job.update}")
+
     private String jobDetail;
 
 
 
-
+    @Autowired
     public JobConfiguration(RefreshJobsRepository refreshJobsRepository,
-                            FeatureConditionEvaluator featureConditionEvaluator,
-                            String jobDetail) {
+                            @Value("${refresh.job.update}") String jobDetail,
+                            FeatureConditionEvaluator featureConditionEvaluator
+                            ) {
         this.refreshJobsRepository = refreshJobsRepository;
         this.featureConditionEvaluator = featureConditionEvaluator;
         this.jobDetail = jobDetail;

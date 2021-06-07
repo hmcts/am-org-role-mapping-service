@@ -34,7 +34,7 @@ public class MessagingConfiguration {
         logServiceBusVariables();
         String connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
-        log.debug("Connection String is: " + connectionString);
+
         log.debug("Topic Name is " + topic);
 
         return new ServiceBusClientBuilder()
