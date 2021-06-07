@@ -123,4 +123,4 @@ launchdarkly:
     user: am-${LAUNCH_DARKLY_ENV:local}
 
 
-logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:DEBUG}
