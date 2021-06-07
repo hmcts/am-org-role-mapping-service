@@ -8,6 +8,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.google.common.collect.Maps;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
@@ -30,7 +31,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
@@ -60,6 +64,15 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
 
     @Autowired
     DataSource dataSource;
+    @MockBean
+    TopicPublisher topicPublisher;
+
+    @MockBean
+    MessagingConfiguration messagingConfiguration;
+
+    @MockBean
+    ServiceBusSenderClient serviceBusSenderClient;
+
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -67,7 +80,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
     }
 
     @After
-    public void teardown() {
+    void teardown() {
         Executor.closeIdleConnections();
     }
 

@@ -12,7 +12,6 @@ import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -33,16 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class TopicConsumer {
-
-    @Value("${amqp.host}")
-    String host;
-    @Value("${amqp.topic}")
-    String topic;
-    @Value("${amqp.sharedAccessKeyName}")
-    String sharedAccessKeyName;
-    @Value("${amqp.sharedAccessKeyValue}")
-    String sharedAccessKeyValue;
+public class TopicConsumer extends MessagingConfiguration {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
@@ -60,11 +50,15 @@ public class TopicConsumer {
     @Bean
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
+        logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
+        log.debug("Destination is " + topic.concat("/subscriptions/").concat(subscription));
+
+        String destination = topic.concat("/subscriptions/").concat(subscription);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
-                topic,
+                destination,
                 sharedAccessKeyName,
                 sharedAccessKeyValue);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));

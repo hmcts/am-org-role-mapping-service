@@ -134,6 +134,7 @@ amqp:
   sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
   sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:test}
   topic: ${AMQP_TOPIC_NAME:aat}
+  subscription: ${SUBSCRIPTION_NAME:subscriptionName}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
 
