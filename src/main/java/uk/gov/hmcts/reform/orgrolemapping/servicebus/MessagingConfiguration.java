@@ -48,7 +48,7 @@ public class MessagingConfiguration {
 
     public void logServiceBusVariables() {
         log.debug("Env is: " + environment);
-        if (environment.toLowerCase().startsWith("pr")) {
+        if (environment.equalsIgnoreCase("pr")) {
             host = System.getenv("AMQP_HOST").concat(".servicebus.windows.net");
             sharedAccessKeyValue = System.getenv("AMQP_SHARED_ACCESS_KEY_VALUE");
             subscription = System.getenv("SUBSCRIPTION_NAME");
