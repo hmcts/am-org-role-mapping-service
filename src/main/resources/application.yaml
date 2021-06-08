@@ -37,7 +37,7 @@ security:
     - "/error"
     - "/favicon.ico"
   authorisedRoles:
-  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org_role_mapping_service,am_role_assignment_service}
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service}
 
 spring:
   application:
@@ -138,6 +138,12 @@ amqp:
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
 
+
+send-letter:
+  url: ${SEND_LETTER_SERVICE_BASEURL:http://localhost:4021}
+  enabled: ${SEND_LETTER_SERVICE_ENABLED:true}
+  maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
+
 launchdarkly:
   sdk:
     key: ${LD_SDK_KEY:}
@@ -154,4 +160,4 @@ refresh:
 
 
 
-logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:DEBUG}
