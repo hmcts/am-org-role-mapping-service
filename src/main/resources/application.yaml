@@ -38,7 +38,7 @@ security:
     - "/error"
     - "/favicon.ico"
   authorisedRoles:
-  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org_role_mapping_service,am_role_assignment_service}
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service}
 
 spring:
   application:
@@ -135,13 +135,20 @@ amqp:
   sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
   sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:test}
   topic: ${AMQP_TOPIC_NAME:aat}
+  subscription: ${SUBSCRIPTION_NAME:subscriptionName}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
+
+
+send-letter:
+  url: ${SEND_LETTER_SERVICE_BASEURL:http://localhost:4021}
+  enabled: ${SEND_LETTER_SERVICE_ENABLED:true}
+  maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
 
 launchdarkly:
   sdk:
     key: ${LD_SDK_KEY:}
-    environment: ${LAUNCH_DARKLY_ENV:pr}
+    environment: ${LAUNCH_DARKLY_ENV:local}
     user: am-${LAUNCH_DARKLY_ENV:local}
 refresh:
   Job:
@@ -159,3 +166,4 @@ dbFeature:
     enable: ${DB_FEATURE_FLAG_ENABLE:iac_1_0}
     disable: ${DB_FEATURE_FLAG_DISABLE:iac_1_1}
 logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:DEBUG}

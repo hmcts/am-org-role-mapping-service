@@ -57,6 +57,7 @@ public class RequestMappingService {
     private StatelessKieSession kieSession;
     private SecurityUtils securityUtils;
 
+
     /**
      * For each caseworker represented in the map, determine what the role assignments should be,
      * and update them in the role assignment service.
@@ -277,6 +278,12 @@ public class RequestMappingService {
         return responseEntity;
     }
 
+    /**
+     * This utility method is used to capture the log in drools.
+     */
+    public static void logMsg(final String message) {
+        log.debug(message);
+    }
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
             Boolean status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
@@ -284,10 +291,4 @@ public class RequestMappingService {
         }
     }
 
-    /**
-     * This utility method is used to capture the log in drools.
-     */
-    public static void logMsg(final String message) {
-        log.debug(message);
-    }
 }

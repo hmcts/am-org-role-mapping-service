@@ -35,7 +35,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -86,8 +85,6 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @MockBean
     private RequestMappingService requestMappingService;
 
-    @MockBean
-    private TopicConsumer topicConsumer;
 
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;

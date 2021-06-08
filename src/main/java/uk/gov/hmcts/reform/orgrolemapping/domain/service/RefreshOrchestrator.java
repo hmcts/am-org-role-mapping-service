@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class RefreshOrchestrator {
 
     private final RetrieveDataService retrieveDataService;
@@ -45,14 +44,31 @@ public class RefreshOrchestrator {
     private final CRDService crdService;
     private final PersistenceService persistenceService;
 
-    @Value("${refresh.Job.pageSize}")
-    private String pageSize;
 
-    @Value("${refresh.Job.sortDirection}")
-    String sortDirection;
+    String pageSize;
 
-    @Value("${refresh.Job.sortColumn}")
-    String sortColumn;
+
+    private String sortDirection;
+
+
+    private String sortColumn;
+
+    @Autowired
+    public RefreshOrchestrator(RetrieveDataService retrieveDataService, RequestMappingService requestMappingService,
+                               ParseRequestService parseRequestService,
+                               CRDService crdService, PersistenceService persistenceService,
+                               @Value("${refresh.Job.pageSize}") String pageSize,
+                               @Value("${refresh.Job.sortDirection}") String sortDirection,
+                               @Value("${refresh.Job.sortColumn}") String sortColumn) {
+        this.retrieveDataService = retrieveDataService;
+        this.requestMappingService = requestMappingService;
+        this.parseRequestService = parseRequestService;
+        this.crdService = crdService;
+        this.persistenceService = persistenceService;
+        this.pageSize = pageSize;
+        this.sortDirection = sortDirection;
+        this.sortColumn = sortColumn;
+    }
 
     public void validate(Long jobId, UserRequest userRequest) {
         if (jobId == null) {

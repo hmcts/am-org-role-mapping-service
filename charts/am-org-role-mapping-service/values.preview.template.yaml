@@ -1,6 +1,18 @@
 java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+
+  secrets:
+    AMQP_SHARED_ACCESS_KEY_VALUE:
+      secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
+      key: primaryKey
+    AMQP_HOST:
+      secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
+      key: namespaceName
+    SUBSCRIPTION_NAME:
+      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
+      key: subscriptionName
+
   keyVaults:
     am:
       secrets:
@@ -11,12 +23,18 @@ java:
         - orm-IDAM-CLIENT-SECRET
         - orm-IDAM-ADMIN-SECRET
         - caseworker-topic-primary-send-listen-shared-access-key
+
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    AMQP_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}/subscriptions/rd-caseworker-subscription-aat-refresh
+    CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-pr-580.service.core-compute-preview.internal
     LAUNCH_DARKLY_ENV: pr
+    AMQP_TOPIC_NAME: rd-caseworker-topic
+    AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
+    AMQP_HOST: "$(AMQP_HOST)"
+    SUBSCRIPTION_NAME: "$(SUBSCRIPTION_NAME)"
+    AMQP_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
     ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql"
     ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
     ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
@@ -29,3 +47,12 @@ java:
     postgresqlPassword: org_role_mapping
     postgresqlDatabase: org_role_mapping
     postgresqlPort: 5432
+servicebus:
+  enabled: true
+  teamName: RD
+  resourceGroup: rd-aks
+  serviceplan: standard
+  setup:
+    topics:
+      - name: rd-caseworker-topic
+        subscriptionNeeded: yes

@@ -3,6 +3,7 @@ java:
   ingressHost: am-org-role-mapping-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   applicationPort: 4098
   aadIdentityName: am
+
   keyVaults:
     am:
       secrets:
@@ -26,7 +27,8 @@ java:
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
     AMQP_HOST: rd-servicebus-{{ .Values.global.environment }}.servicebus.windows.net
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
-    AMQP_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}/subscriptions/rd-caseworker-subscription-{{ .Values.global.environment }}
+    AMQP_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}
+    SUBSCRIPTION_NAME: rd-caseworker-subscription-{{ .Values.global.environment }}
     TRUST_ALL_CERTS: "true"
     ORG_ROLE_MAPPING_IDAM_ADMIN_USERID: orm.admin@hmcts.NET
     ORG_ROLE_MAPPING_DB_PORT: 5432
@@ -35,3 +37,5 @@ java:
     ORG_ROLE_MAPPING_DB_USERNAME: am@am-org-role-mapping-service-postgres-db-{{ .Values.global.environment }}
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified&sslmode=require"
     REFRESH_JOB: LEGAL_OPERATIONS-IA-NEW-0
+servicebus:
+  enabled: false
