@@ -36,8 +36,6 @@ class RefreshControllerTest {
         ResponseEntity<Object> response =
                 ResponseEntity.status(HttpStatus.CREATED).body(userRequest);
 
-        //      Mockito.when(refreshOrchestrator.validate(any(), any()))
-        //              .thenReturn();
         Mockito.when(refreshOrchestrator.refresh(any(),any()))
                 .thenReturn(response);
 
