@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
@@ -16,6 +18,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 
@@ -25,9 +29,33 @@ class ParseRequestServiceTest {
 
     ParseRequestService sut = new ParseRequestService();
 
+    HashSet<UserProfile> invalidProfiles;
+    HashSet<UserProfile> invalidProfilesSpy;
+
+    AtomicInteger atomicInteger;
+    AtomicInteger spyInteger;
+
+    @BeforeEach
+    public void setUp() {
+        invalidProfiles = new HashSet<>();
+        invalidProfilesSpy = Mockito.spy(invalidProfiles);
+        atomicInteger = new AtomicInteger(1);
+        spyInteger = Mockito.spy(atomicInteger);
+    }
+
     @Test
     void validateUserRequestTest() {
-        sut.validateUserRequest(TestDataBuilder.buildUserRequest());
+        String id1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
+        String id2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
+
+        List<String> userIds = new ArrayList<>();
+        userIds.add(id1);
+        userIds.add(id2);
+        UserRequest userRequest = UserRequest.builder().userIds(userIds).build();
+        UserRequest userRequestSpy = Mockito.spy(userRequest);
+        sut.validateUserRequest(userRequestSpy);
+
+        Mockito.verify(userRequestSpy, Mockito.times(2)).getUserIds();
     }
 
 
@@ -45,7 +73,10 @@ class ParseRequestServiceTest {
     void validateUserProfilesTest() {
         sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false),
-                TestDataBuilder.buildUserRequest(), new AtomicInteger(),new HashSet<>());
+                TestDataBuilder.buildUserRequest(), spyInteger, invalidProfilesSpy);
+
+        verify(spyInteger, Mockito.times(0)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(0)).add(any(UserProfile.class));
     }
 
     @Test
@@ -54,7 +85,10 @@ class ParseRequestServiceTest {
                 ROLE_NAME_STCW, ROLE_NAME_TCW, false, true, false, true, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         userRequest.getUserIds().add("testUser");
-        sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger(),new HashSet<>());
+        sut.validateUserProfiles(userProfiles, userRequest, spyInteger, invalidProfilesSpy);
+
+        verify(spyInteger, Mockito.times(2)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(2)).add(any(UserProfile.class));
     }
 
     @Test
@@ -62,7 +96,10 @@ class ParseRequestServiceTest {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, false, "1", "2", false);
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger(),new HashSet<>());
+        sut.validateUserProfiles(userProfiles, userRequest, spyInteger, invalidProfilesSpy);
+
+        verify(spyInteger, Mockito.times(2)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(2)).add(any(UserProfile.class));
 
     }
 
@@ -70,9 +107,13 @@ class ParseRequestServiceTest {
     void validateUserProfiles_throwsBadRequest_noRolesTest() {
         List<UserProfile> userProfiles = TestDataBuilder.buildListOfUserProfiles(true, false, "1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false);
+        //set first profiles roles to empty
         userProfiles.get(0).setRole(new ArrayList<>());
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger(),new HashSet<>());
+        sut.validateUserProfiles(userProfiles, userRequest, spyInteger, invalidProfilesSpy);
+
+        verify(spyInteger, Mockito.times(1)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(1)).add(any(UserProfile.class));
 
     }
 
@@ -83,7 +124,10 @@ class ParseRequestServiceTest {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
 
-        sut.validateUserProfiles(userProfiles, userRequest, new AtomicInteger(),new HashSet<>());
+        sut.validateUserProfiles(userProfiles, userRequest, spyInteger, invalidProfilesSpy);
+
+        verify(spyInteger, Mockito.times(2)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(2)).add(any(UserProfile.class));
 
     }
 

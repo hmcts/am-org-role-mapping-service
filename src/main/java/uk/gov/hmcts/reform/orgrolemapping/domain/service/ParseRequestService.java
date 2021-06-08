@@ -56,32 +56,30 @@ public class ParseRequestService {
 
         userProfiles.forEach(userProfile -> {
             boolean isInvalid = false;
+            long primaryLocationCount = userProfile.getBaseLocation().stream()
+                    .filter(UserProfile.BaseLocation::isPrimary)
+                    .count();
+
             if (CollectionUtils.isEmpty(userProfile.getBaseLocation())) {
                 log.error("The base location is not available for the userProfile {} ", userProfile.getId());
-                invalidUserProfiles.add(userProfile);
+                isInvalid = true;
+            }
+            if (primaryLocationCount != 1) {
+                log.error("The userProfile {} has {} primary location(s), only 1 is allowed",
+                        userProfile.getId(), primaryLocationCount);
                 isInvalid = true;
             }
             if (CollectionUtils.isEmpty(userProfile.getWorkArea())) {
                 log.error("The work area is not available for the userProfile {} ", userProfile.getId());
-                invalidUserProfiles.add(userProfile);
                 isInvalid = true;
             }
             if (CollectionUtils.isEmpty(userProfile.getRole())) {
                 log.error("The role is not available for the userProfile {} ", userProfile.getId());
-                invalidUserProfiles.add(userProfile);
-                isInvalid = true;
-            }
-            long primaryLocationCount = userProfile.getBaseLocation().stream()
-                    .filter(UserProfile.BaseLocation::isPrimary)
-                    .count();
-            if (primaryLocationCount != 1) {
-                log.error("The userProfile {} has {} primary location(s), only 1 is allowed",
-                        userProfile.getId(), primaryLocationCount);
-                invalidUserProfiles.add(userProfile);
                 isInvalid = true;
             }
             if (isInvalid) {
                 invalidUserProfilesCount.getAndIncrement();
+                invalidUserProfiles.add(userProfile);
             }
         });
 
