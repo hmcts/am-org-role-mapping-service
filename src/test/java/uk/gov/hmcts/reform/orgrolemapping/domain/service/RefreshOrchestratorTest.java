@@ -157,7 +157,6 @@ class RefreshOrchestratorTest {
 
     @Test
     void refreshRoleAssignmentRecords_nullUserRequest_feignException() {
-        //TODO
         Mockito.when(persistenceService.fetchRefreshJobById(any()))
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
@@ -168,22 +167,12 @@ class RefreshOrchestratorTest {
                 any(), any(), any(), any(), any()))
                 .thenThrow(feignClientException);
 
-        sut.refresh(1L, UserRequest.builder().build());
-    }
+        UserRequest userRequestSpy = Mockito.spy(UserRequest.builder().build());
 
-    @Test
-    void refreshRoleAssignmentRecords_FeignException() {
-        //TODO
-        Mockito.when(persistenceService.fetchRefreshJobById(any()))
-                .thenReturn(Optional.of(
-                        RefreshJobEntity.builder().build()));
+        sut.refresh(1L, userRequestSpy);
 
-        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
-
-        Mockito.when(retrieveDataService.retrieveCaseWorkerProfiles(any()))
-                .thenThrow(feignClientException);
-
-        sut.refresh(1L, TestDataBuilder.buildUserRequest());
+        verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+        verify(userRequestSpy, Mockito.times(1)).getUserIds();
     }
 
     @Test
@@ -215,8 +204,6 @@ class RefreshOrchestratorTest {
 
     @Test
     void refreshJobByServiceName() {
-        Map<String, HttpStatus> stringHttpStatusMap = new HashMap<>();
-        stringHttpStatusMap.put("1234", HttpStatus.CREATED);
 
         List<UserProfilesResponse> userProfilesResponseList = new ArrayList<>();
         userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
@@ -238,7 +225,42 @@ class RefreshOrchestratorTest {
                 RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
         RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
 
-        sut.refreshJobByServiceName(stringHttpStatusMap, refreshJobEntitySpy);
+        Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+        responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+        Map<String, HttpStatus> responseCodeWithUserIdSpy = Mockito.spy(responseCodeWithUserId);
+
+        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy);
+
+        verify(responseCodeWithUserIdSpy, Mockito.times(4)).entrySet();
+
+        verify(refreshJobEntitySpy, Mockito.times(1)).getRoleCategory();
+        verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
+        verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
+        verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
+        verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+    }
+
+    @Test
+    void refreshJobByServiceName_FeignException() {
+        Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+        responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+        Map<String, HttpStatus> responseCodeWithUserIdSpy = Mockito.spy(responseCodeWithUserId);
+
+        Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
+                any(), any(), any(), any(), any()))
+                .thenThrow(feignClientException);
+
+        Mockito.when(requestMappingService.createCaseWorkerAssignments(any()))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK)
+                        .body(Collections.emptyList())));
+
+        RefreshJobEntity refreshJobEntity =
+                RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
+        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+
+        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy);
+
+        verify(responseCodeWithUserIdSpy, Mockito.times(1)).put(any(), any());
 
         verify(refreshJobEntitySpy, Mockito.times(1)).getRoleCategory();
         verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
@@ -276,7 +298,7 @@ class RefreshOrchestratorTest {
     }
 
     @Test
-    void buildSuccessAndFailureBucket() {
+    void buildSuccessAndFailureBucket_Success() {
 
         Map<String, HttpStatus> responseEntityMap = new HashMap<>();
         responseEntityMap.put("1234", HttpStatus.CREATED);
@@ -293,7 +315,7 @@ class RefreshOrchestratorTest {
     }
 
     @Test
-    void buildSuccessAndFailureBucket_() {
+    void buildSuccessAndFailureBucket_Failure() {
 
         Map<String, HttpStatus> responseEntityMap = new HashMap<>();
         responseEntityMap.put("1234", HttpStatus.CONFLICT);
