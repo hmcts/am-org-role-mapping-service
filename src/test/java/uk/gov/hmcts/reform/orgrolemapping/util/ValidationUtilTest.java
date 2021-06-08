@@ -69,6 +69,14 @@ class ValidationUtilTest {
     }
 
     @Test
+    void shouldNotThrow_ValidateDateTimeLength() {
+        Assertions.assertDoesNotThrow(() ->
+                ValidationUtil.validateDateTime("2021-11-27T15:12",
+                        "2021-11-27T15:12")
+        );
+    }
+
+    @Test
     void shouldThrow_cannotBePriorToCurrentDate() {
         String time = LocalDateTime.now().minusDays(1L).toString();
         String time2 = LocalDateTime.now().minusDays(1L).toString();
