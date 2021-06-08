@@ -190,7 +190,7 @@ public class RequestMappingService {
         // Print response code  of RAS for each userID
         ResponseEntity<Object> responseEntity = updateRoleAssignments(STAFF_ORGANISATIONAL_ROLE_MAPPING,
                 userId, roleAssignments);
-        if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
+        if (!responseEntity.getStatusCode().equals(HttpStatus.CREATED)) {
             failureResponseCount.getAndIncrement();
         }
 
@@ -244,5 +244,11 @@ public class RequestMappingService {
         return responseEntity;
     }
 
+    /**
+     * This utility method is used to capture the log in drools.
+     */
+    public static void logMsg(final String message) {
+        log.debug(message);
+    }
 
 }

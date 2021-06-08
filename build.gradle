@@ -191,13 +191,13 @@ pitest {
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig',
                        'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
                        'uk.gov.hmcts.reform.orgrolemapping.domain.model.*',
-                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.*']
+                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.*',
+                       '*UserAccessProfileBuilder*', '*AssignmentRequestBuilder*', '*TestController*']
     threads = 15
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
     mutationThreshold = 40
 }
-
 
 sonarqube {
     properties {
@@ -216,7 +216,10 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/ValidationUtil.java," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/service/**"
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/service/**," +
+                "**UserAccessProfileBuilder.java," +
+                "**AssignmentRequestBuilder.java," +
+                "**TestController.java"
 
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
@@ -316,10 +319,11 @@ dependencies {
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
 
     //Azure service bus libraries
-    compile group: 'com.microsoft.azure', name: 'azure', version: '1.37.0'
     compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.16.0'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
+
     compile group: 'io.projectreactor', name: 'reactor-core', version: '3.4.0'
-    compile group: 'com.azure', name: 'azure-core', version: '1.10.0'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
 
     compile group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
@@ -327,7 +331,6 @@ dependencies {
     compile group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.2.2'
     compile group: 'com.google.guava', name: 'guava', version: '30.1-jre'
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.0'
-    compile group: 'org.amqphub.spring', name: 'amqp-10-jms-spring-boot-starter', version: '2.3.9'
     compile group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '2.8.5'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.1'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'

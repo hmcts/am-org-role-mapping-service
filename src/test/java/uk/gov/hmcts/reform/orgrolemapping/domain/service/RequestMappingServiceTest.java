@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
@@ -24,6 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RunWith(MockitoJUnitRunner.class)
 class RequestMappingServiceTest {
@@ -38,14 +43,14 @@ class RequestMappingServiceTest {
     private SecurityUtils securityUtils;
 
     @InjectMocks
-    RequestMappingService requestMappingService;
+    RequestMappingService sut;
 
     @BeforeEach
     public void setUp() {
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();
         this.kieSession = kieContainer.newStatelessKieSession("org-role-mapping-validation-session");
-        requestMappingService = new RequestMappingService(roleAssignmentService, kieSession,
+        sut = new RequestMappingService(roleAssignmentService, kieSession,
                 securityUtils);
         MockitoAnnotations.initMocks(this);
     }
@@ -60,7 +65,7 @@ class RequestMappingServiceTest {
                         .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
 
         ResponseEntity<Object> responseEntity =
-                requestMappingService.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
+                sut.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                         false));
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -124,7 +129,7 @@ class RequestMappingServiceTest {
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
         ResponseEntity<Object> responseEntity =
-                requestMappingService.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
+                sut.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                         false));
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -155,7 +160,7 @@ class RequestMappingServiceTest {
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
 
-        ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(
+        ResponseEntity<Object> responseEntity = sut.createCaseWorkerAssignments(
                 TestDataBuilder.buildUserAccessProfileMap(false, false));
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -165,8 +170,39 @@ class RequestMappingServiceTest {
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);
         assertEquals(1, resultNode.size());
+    }
 
+    @Test
+    void updateCaseworkerRoleAssignments() throws IOException {
 
+        AtomicInteger atomicInteger = new AtomicInteger(1);
+        AtomicInteger spyInteger = Mockito.spy(atomicInteger);
 
+        Mockito.when(roleAssignmentService.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(HttpStatus.CREATED));
+
+        ResponseEntity<Object> responseEntity = sut.updateCaseworkerRoleAssignments(
+                "1",
+                TestDataBuilder.buildRequestedRoleCollection(Status.CREATED),
+                spyInteger);
+
+        assertNotNull(responseEntity);
+    }
+
+    @Test
+    void updateCaseworkerRoleAssignments_Failure() throws IOException {
+
+        AtomicInteger atomicInteger = new AtomicInteger(1);
+        AtomicInteger spyInteger = Mockito.spy(atomicInteger);
+
+        Mockito.when(roleAssignmentService.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(HttpStatus.CONFLICT));
+
+        sut.updateCaseworkerRoleAssignments(
+                "1",
+                TestDataBuilder.buildRequestedRoleCollection(Status.CREATED),
+                spyInteger);
+
+        verify(spyInteger, Mockito.times(1)).getAndIncrement();
     }
 }

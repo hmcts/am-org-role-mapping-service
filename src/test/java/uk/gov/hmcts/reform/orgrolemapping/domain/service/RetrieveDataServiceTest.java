@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -105,4 +106,17 @@ class RetrieveDataServiceTest {
         assertTrue(response.isEmpty());
     }
 
+    @Test
+    void getUserAccessProfile() {
+
+        List<UserProfilesResponse> userProfilesResponses = new ArrayList<>();
+        userProfilesResponses.add(TestDataBuilder.buildUserProfilesResponse());
+        userProfilesResponses.add(TestDataBuilder.buildUserProfilesResponse());
+        ResponseEntity<List<UserProfilesResponse>> responseEntity
+                = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
+
+        Map<String, Set<UserAccessProfile>> response = sut.getUserAccessProfile(responseEntity);
+        assertNotNull(response);
+        assertEquals(4, response.get("1").size());
+    }
 }

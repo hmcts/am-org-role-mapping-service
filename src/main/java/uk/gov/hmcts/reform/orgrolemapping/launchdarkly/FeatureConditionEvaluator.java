@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.launchdarkly;
 import com.launchdarkly.sdk.LDUser;
 import com.launchdarkly.sdk.server.LDClient;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 @Component
-@AllArgsConstructor
 public class FeatureConditionEvaluator implements HandlerInterceptor {
 
     public static final String USER = "user";
@@ -25,13 +23,9 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     public static final String POST = "POST";
     public static final String DELETE = "DELETE";
 
-    @Autowired
     private LDClient ldClient;
 
-    @Value("${launchdarkly.sdk.environment}")
     private final String environment;
-
-    @Value("${launchdarkly.sdk.user}")
     private final String userName;
 
     private static final HashMap<String, String> getRequestMap = new HashMap<>();
@@ -41,6 +35,17 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     static {
         //Get Map
         getRequestMap.put("/welcome", "orm-base-flag");
+        //post Map
+        postRequestMap.put("/am/role-mapping/refresh", "orm-refresh-role");
+    }
+
+    @Autowired
+    public FeatureConditionEvaluator(@Autowired LDClient ldClient,
+                                     @Value("${launchdarkly.sdk.environment}") String environment,
+                                     @Value("${launchdarkly.sdk.user}") String userName) {
+        this.ldClient = ldClient;
+        this.environment = environment;
+        this.userName = userName;
     }
 
     @Override
@@ -89,6 +94,10 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
                 }
                 break;
             case POST:
+                if (postRequestMap.get(uri) != null) {
+                    return postRequestMap.get(uri);
+                }
+                break;
             case DELETE:
                 break;
 

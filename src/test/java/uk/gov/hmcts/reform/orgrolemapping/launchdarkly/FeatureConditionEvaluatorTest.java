@@ -45,7 +45,8 @@ public class FeatureConditionEvaluatorTest {
     }
 
     @InjectMocks
-    FeatureConditionEvaluator featureConditionEvaluator = new FeatureConditionEvaluator(ldClient, "dev", "username");
+    FeatureConditionEvaluator featureConditionEvaluator =
+            new FeatureConditionEvaluator(ldClient, "dev", "username");
 
     @Test
     public void getLaunchDarklyFlagName()  {
