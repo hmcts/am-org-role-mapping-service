@@ -67,14 +67,11 @@ public class RefreshOrchestrator {
         }
     }
 
-
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
         long startTime = System.currentTimeMillis();
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
         ResponseEntity<Object> responseEntity = null;
-
-
 
         //fetch the entity based on jobId
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
@@ -114,7 +111,7 @@ public class RefreshOrchestrator {
     }
 
 
-    private ResponseEntity<Object> refreshJobByServiceName(Map<String, HttpStatus> responseCodeWithUserId,
+    protected ResponseEntity<Object> refreshJobByServiceName(Map<String, HttpStatus> responseCodeWithUserId,
             RefreshJobEntity refreshJobEntity) {
 
 
@@ -161,7 +158,7 @@ public class RefreshOrchestrator {
     }
 
     @SuppressWarnings("unchecked")
-    private ResponseEntity<Object> prepareResponseCodes(Map<String, HttpStatus> responseCodeWithUserId, Map<String,
+    protected ResponseEntity<Object> prepareResponseCodes(Map<String, HttpStatus> responseCodeWithUserId, Map<String,
             Set<UserAccessProfile>> userAccessProfiles) {
         ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
 
@@ -175,13 +172,12 @@ public class RefreshOrchestrator {
                     );
                 });
 
-
         log.info("Status code map from RAS {} ", responseCodeWithUserId);
         return responseEntity;
     }
 
 
-    private void buildSuccessAndFailureBucket(Map<String, HttpStatus> responseCodeWithUserId,
+    protected void buildSuccessAndFailureBucket(Map<String, HttpStatus> responseCodeWithUserId,
                                               RefreshJobEntity refreshJobEntity) {
 
         List<String> successUserIds = new ArrayList<>();
@@ -199,7 +195,7 @@ public class RefreshOrchestrator {
         updateJobStatus(successUserIds, failureUserIds, refreshJobEntity);
     }
 
-    private void updateJobStatus(List<String> successUserIds, List<String> failureUserIds,
+    protected void updateJobStatus(List<String> successUserIds, List<String> failureUserIds,
                                  RefreshJobEntity refreshJobEntity) {
 
         if (CollectionUtils.isNotEmpty(failureUserIds) && Objects.nonNull(refreshJobEntity)) {

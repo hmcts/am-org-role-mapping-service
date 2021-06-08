@@ -191,13 +191,13 @@ pitest {
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig',
                        'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
                        'uk.gov.hmcts.reform.orgrolemapping.domain.model.*',
-                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.*']
+                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.*',
+                       '*UserAccessProfileBuilder*', '*AssignmentRequestBuilder*', '*TestController*']
     threads = 15
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
     mutationThreshold = 40
 }
-
 
 sonarqube {
     properties {
@@ -216,7 +216,10 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/ValidationUtil.java," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/service/**"
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/service/**," +
+                "**UserAccessProfileBuilder.java," +
+                "**AssignmentRequestBuilder.java," +
+                "**TestController.java"
 
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
