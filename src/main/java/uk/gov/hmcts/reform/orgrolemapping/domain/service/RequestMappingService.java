@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
@@ -11,6 +12,7 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,19 +44,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @Slf4j
 @AllArgsConstructor
+@NoArgsConstructor
 public class RequestMappingService {
 
     @Value("${launchdarkly.sdk.environment}")
     private String environment;
 
+    @Autowired
     private PersistenceService persistenceService;
 
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
     public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
     public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
+
+    @Autowired
     private RoleAssignmentService roleAssignmentService;
+
+    @Autowired
     private StatelessKieSession kieSession;
+
+    @Autowired
     private SecurityUtils securityUtils;
 
 
@@ -284,6 +294,7 @@ public class RequestMappingService {
     public static void logMsg(final String message) {
         log.debug(message);
     }
+
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
             Boolean status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
