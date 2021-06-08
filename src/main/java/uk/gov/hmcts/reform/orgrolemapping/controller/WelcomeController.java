@@ -70,10 +70,8 @@ public class WelcomeController {
         log.debug("createOrgMapping");
         log.info("Process has been Started for the userIds {}",userRequest.getUserIds());
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
-        log.info(
-                "Execution time of createOrgMapping() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
-        );
+        log.debug("Execution time of createOrgMapping() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime)));
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
