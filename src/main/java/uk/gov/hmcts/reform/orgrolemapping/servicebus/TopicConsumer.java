@@ -12,7 +12,6 @@ import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -33,16 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class TopicConsumer {
-
-    @Value("${amqp.host}")
-    String host;
-    @Value("${amqp.topic}")
-    String topic;
-    @Value("${amqp.sharedAccessKeyName}")
-    String sharedAccessKeyName;
-    @Value("${amqp.sharedAccessKeyValue}")
-    String sharedAccessKeyValue;
+public class TopicConsumer extends MessagingConfiguration {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
@@ -60,11 +50,15 @@ public class TopicConsumer {
     @Bean
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
+        logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
+        log.debug("Destination is " + topic.concat("/subscriptions/").concat(subscription));
+
+        String destination = topic.concat("/subscriptions/").concat(subscription);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
-                topic,
+                destination,
                 sharedAccessKeyName,
                 sharedAccessKeyValue);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
@@ -75,16 +69,16 @@ public class TopicConsumer {
     CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.info("    Calling registerMessageHandlerOnClient ");
+        log.debug("    Calling registerMessageHandlerOnClient ");
 
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
-                log.info("    Calling onMessageAsync.....{}", message);
+                log.debug("    Calling onMessageAsync.....{}", message);
                 List<byte[]> body = message.getMessageBody().getBinaryData();
                 try {
-                    log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
+                    log.debug("    Locked Until Utc : {}", message.getLockedUntilUtc());
                     log.info("    Delivery Count is : {}", message.getDeliveryCount());
                     AtomicBoolean result = new AtomicBoolean();
                     processMessage(body, result);
@@ -93,12 +87,12 @@ public class TopicConsumer {
                     }
 
 
-                    log.info("    getLockToken......{}", message.getLockToken());
+                    log.debug("    getLockToken......{}", message.getLockToken());
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
                     throw new InvalidRequest("Some Network issue");
                 }
-                log.info("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
+                log.debug("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
 
             }
@@ -120,7 +114,7 @@ public class TopicConsumer {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.info("    Parsing the message");
+        log.debug("    Parsing the message");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);

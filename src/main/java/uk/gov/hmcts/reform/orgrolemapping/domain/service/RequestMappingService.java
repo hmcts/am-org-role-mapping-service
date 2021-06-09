@@ -59,10 +59,8 @@ public class RequestMappingService {
         Map<String, List<RoleAssignment>> usersRoleAssignments = getCaseworkerRoleAssignments(usersAccessProfiles);
         // The response body is a list of ....???....
         ResponseEntity<Object> responseEntity = updateCaseworkersRoleAssignments(usersRoleAssignments);
-        log.info(
-                "Execution time of createCaseWorkerAssignments() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
-        );
+        log.debug("Execution time of createCaseWorkerAssignments() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(),startTime)));
         return responseEntity;
 
     }
@@ -228,10 +226,9 @@ public class RequestMappingService {
 
         try {
             responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
-            log.info(
-                "Execution time of updateRoleAssignments() : {} ms",
-                    (Math.subtractExact(System.currentTimeMillis(),startTime))
-            );
+            log.debug("Execution time of updateRoleAssignments() : {} ms",
+                    (Math.subtractExact(System.currentTimeMillis(),startTime)));
+
         } catch (FeignException.FeignClientException feignClientException) {
             log.error("Handling FeignClientException UnprocessableEntity: " + feignClientException.getMessage());
 
@@ -249,5 +246,11 @@ public class RequestMappingService {
         return responseEntity;
     }
 
+    /**
+     * This utility method is used to capture the log in drools.
+     */
+    public static void logMsg(final String message) {
+        log.debug(message);
+    }
 
 }

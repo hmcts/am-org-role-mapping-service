@@ -50,10 +50,9 @@ public class RetrieveDataService {
 
         ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.getCaseworkerDetailsById(userRequest);
 
-        log.info(
-                "Execution time of CRD Response : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
-        );
+        log.debug("Execution time of CRD Response : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime)));
+
         List<UserProfile> userProfiles = responseEntity.getBody();
         if (!CollectionUtils.isEmpty(userProfiles)) {
             // no of userProfiles from CRD  responseEntity.getBody().size()
@@ -77,7 +76,7 @@ public class RetrieveDataService {
         // filter the valid userProfiles.
         List<UserProfile> validUserProfiles = requireNonNull(userProfiles).stream()
                 .filter(userProfile -> !invalidUserProfiles
-              .contains(userProfile)).collect(Collectors.toList());
+                        .contains(userProfile)).collect(Collectors.toList());
 
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
 
@@ -96,10 +95,8 @@ public class RetrieveDataService {
         );
         log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 
-        log.info(
-                "Execution time of retrieveCaseWorkerProfiles() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
-        );
+        log.debug("Execution time of retrieveCaseWorkerProfiles() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime)));
         return usersAccessProfiles;
     }
 }

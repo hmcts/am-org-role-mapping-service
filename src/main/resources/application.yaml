@@ -37,7 +37,7 @@ security:
     - "/error"
     - "/favicon.ico"
   authorisedRoles:
-  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org_role_mapping_service,am_role_assignment_service}
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service}
 
 spring:
   application:
@@ -73,7 +73,7 @@ idam:
     microservice: am_org_role_mapping_service
     url: ${IDAM_S2S_URL:http://localhost:4502}
   s2s-authorised:
-    services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:ccd_gw,am_role_assignment_service,am_org_role_mapping_service}
+    services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:am_role_assignment_service,am_org_role_mapping_service}
   api.url: ${IDAM_USER_URL:http://localhost:5000}
   client:
     id: ${ORM_IDAM_CLIENT_ID:am_docker}
@@ -92,7 +92,6 @@ integrationTest:
     url: "/"
 
 feign:
-
   client:
     config:
       default:
@@ -113,17 +112,15 @@ amqp:
   sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
   sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:test}
   topic: ${AMQP_TOPIC_NAME:aat}
+  subscription: ${SUBSCRIPTION_NAME:subscriptionName}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
-
-
-send-letter:
-  url: ${SEND_LETTER_SERVICE_BASEURL:http://localhost:4021}
-  enabled: ${SEND_LETTER_SERVICE_ENABLED:true}
-  maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
 
 launchdarkly:
   sdk:
     key: ${LD_SDK_KEY:}
     environment: ${LAUNCH_DARKLY_ENV:pr}
     user: am-${LAUNCH_DARKLY_ENV:local}
+
+
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:DEBUG}
