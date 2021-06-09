@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.mock;
@@ -49,10 +50,23 @@ public class FeatureConditionEvaluatorTest {
             new FeatureConditionEvaluator(ldClient, "dev", "username");
 
     @Test
-    public void getLaunchDarklyFlagName()  {
+    public void getLaunchDarklyFlagName_Get()  {
         when(request.getRequestURI()).thenReturn("/welcome");
         when(request.getMethod()).thenReturn("GET");
         assertEquals("orm-base-flag",featureConditionEvaluator.getLaunchDarklyFlag(request));
+    }
+
+    @Test
+    public void getLaunchDarklyFlagName_Post()  {
+        when(request.getRequestURI()).thenReturn("/am/role-mapping/refresh");
+        when(request.getMethod()).thenReturn("POST");
+        assertEquals("orm-refresh-role",featureConditionEvaluator.getLaunchDarklyFlag(request));
+    }
+
+    @Test
+    public void getLaunchDarklyFlagName_Delete()  {
+        when(request.getMethod()).thenReturn("DELETE");
+        assertNull(featureConditionEvaluator.getLaunchDarklyFlag(request));
     }
 
     @Test
