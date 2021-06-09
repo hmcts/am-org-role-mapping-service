@@ -185,14 +185,14 @@ pitest {
     testPlugin = "junit5"
     targetClasses = ['uk.gov.hmcts.reform.*']
     excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication',
-                       'uk.gov.hmcts.reform.orgrolemapping.util.Swagger2SpringBoot',
                        'uk.gov.hmcts.reform.orgrolemapping.util.GetSasToken',
                        'uk.gov.hmcts.reform.orgrolemapping.config.*',
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig',
                        'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
                        'uk.gov.hmcts.reform.orgrolemapping.domain.model.*',
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.*',
-                       '*UserAccessProfileBuilder*', '*AssignmentRequestBuilder*', '*TestController*']
+                       '*UserAccessProfileBuilder*', '*AssignmentRequestBuilder*', '*TestController*',
+                       '*Swagger2SpringBoot*']
     threads = 15
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
