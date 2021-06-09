@@ -17,24 +17,23 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @RunWith(MockitoJUnitRunner.class)
 class RequestMappingServiceTest {
@@ -62,8 +61,7 @@ class RequestMappingServiceTest {
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();
         this.kieSession = kieContainer.newStatelessKieSession("org-role-mapping-validation-session");
-        sut = new RequestMappingService(roleAssignmentService, kieSession,
-        requestMappingService = new RequestMappingService("pr", persistenceService, roleAssignmentService, kieSession,
+        sut = new RequestMappingService("pr", persistenceService, roleAssignmentService, kieSession,
                 securityUtils);
         MockitoAnnotations.initMocks(this);
     }
@@ -176,8 +174,6 @@ class RequestMappingServiceTest {
                 .thenReturn(content);
         Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
                 .thenReturn(true);
-        ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(
-
         ResponseEntity<Object> responseEntity = sut.createCaseWorkerAssignments(
                 TestDataBuilder.buildUserAccessProfileMap(false, false));
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -239,9 +235,9 @@ class RequestMappingServiceTest {
         droolFlagStates.put(FeatureFlagEnum.getIAC_1_0.getValue(), true);
         try (MockedStatic<DBFlagConfigurtion> theMock = Mockito.mockStatic(DBFlagConfigurtion.class)) {
             theMock.when(() -> dbFlagConfigurtion.getDroolFlagStates()).thenReturn(droolFlagStates);
-            ReflectionTestUtils.setField(requestMappingService, "environment", "prod");
+            ReflectionTestUtils.setField(sut, "environment", "prod");
             ResponseEntity<Object> responseEntity =
-                    requestMappingService.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
+                    sut.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                             false));
 
             assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
