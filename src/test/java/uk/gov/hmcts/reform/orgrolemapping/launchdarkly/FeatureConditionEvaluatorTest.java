@@ -4,6 +4,8 @@ import com.launchdarkly.sdk.server.LDClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -115,6 +117,30 @@ public class FeatureConditionEvaluatorTest {
         Assertions.assertThrows(ResourceNotFoundException.class, () ->
             featureConditionEvaluator.preHandle(request, response, object)
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "/welcome,GET,orm-base-flag",
+            "/am/role-mapping/refresh,POST,orm-refresh-role",
+    })
+    void getLdFlagGetCase(String url, String method, String flag) {
+        when(request.getRequestURI()).thenReturn(url);
+        when(request.getMethod()).thenReturn(method);
+        String flagName = featureConditionEvaluator.getLaunchDarklyFlag(request);
+        Assertions.assertEquals(flag, flagName);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "GET",
+            "POST",
+    })
+    void getLdFlagCase(String method) {
+        when(request.getRequestURI()).thenReturn("/am/dummy");
+        when(request.getMethod()).thenReturn(method);
+        String flagName = featureConditionEvaluator.getLaunchDarklyFlag(request);
+        Assertions.assertNull(flagName);
     }
 
 }
