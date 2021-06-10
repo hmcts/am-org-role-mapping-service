@@ -216,7 +216,6 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/util/ValidationUtil.java," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/service/**," +
                 "**UserAccessProfileBuilder.java," +
                 "**AssignmentRequestBuilder.java," +
                 "**TestController.java"
