@@ -30,7 +30,6 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
 
     private static final HashMap<String, String> getRequestMap = new HashMap<>();
     private static final HashMap<String, String> postRequestMap = new HashMap<>();
-    private static final HashMap<String, String> deleteRequestMap = new HashMap<>();
 
     static {
         //Get Map
