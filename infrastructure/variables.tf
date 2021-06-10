@@ -81,11 +81,6 @@ variable "database_name" {
   default = "org_role_mapping"
 }
 
-variable "data_store_max_pool_size" {
-  type    = string
-  default = "48"
-}
-
 variable "database_sku_name" {
   type    = string
   default = "GP_Gen5_2"
