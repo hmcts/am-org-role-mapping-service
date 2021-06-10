@@ -145,7 +145,7 @@ launchdarkly:
     user: am-${LAUNCH_DARKLY_ENV:local}
 refresh:
   Job:
-    update: ${REFRESH_JOB:LEGAL_OPERATIONS-IA-NEW-0}
+    update: ${REFRESH_JOB:}
     pageSize: ${REFRESH_JOB_PAGE_SIZE:100}
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
