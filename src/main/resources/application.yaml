@@ -37,7 +37,7 @@ security:
     - "/error"
     - "/favicon.ico"
   authorisedRoles:
-  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org_role_mapping_service,am_role_assignment_service}
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service}
 
 spring:
   application:
@@ -50,7 +50,7 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         jdbc:
@@ -95,15 +95,15 @@ idam:
     microservice: am_org_role_mapping_service
     url: ${IDAM_S2S_URL:http://localhost:4502}
   s2s-authorised:
-    services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:ccd_gw,am_role_assignment_service,am_org_role_mapping_service,am_role_assignment_refresh_batch}
+    services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:am_role_assignment_service,am_org_role_mapping_service,am_role_assignment_refresh_batch}
   api.url: ${IDAM_USER_URL:http://localhost:5000}
   client:
     id: ${ORM_IDAM_CLIENT_ID:am_docker}
     secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:am_docker_secret}
     redirect_uri: ${ORG_ROLE_MAPPING_IDAM_REDIRECT_URI:http://localhost:4096/oauth2redirect}
     admin:
-      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:orm.admin@hmcts.NET}
-      secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:Pa55word11}
+      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
+      secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
 
 testS2S:
@@ -134,23 +134,20 @@ amqp:
   sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
   sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:test}
   topic: ${AMQP_TOPIC_NAME:aat}
+  subscription: ${SUBSCRIPTION_NAME:subscriptionName}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}
 
 launchdarkly:
   sdk:
     key: ${LD_SDK_KEY:}
-    environment: ${LAUNCH_DARKLY_ENV:pr}
+    environment: ${LAUNCH_DARKLY_ENV:local}
     user: am-${LAUNCH_DARKLY_ENV:local}
 refresh:
   Job:
     update: ${REFRESH_JOB:LEGAL_OPERATIONS-IA-NEW-0}
-    pageSize: ${REFRESH_JOB_PAGE_SIZE:2}
+    pageSize: ${REFRESH_JOB_PAGE_SIZE:100}
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
 
-
-
-
-
-logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:DEBUG}

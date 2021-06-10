@@ -40,6 +40,9 @@ class RefreshControllerTest {
                 .thenReturn(response);
 
         assertEquals(response, sut.refresh(1L, UserRequest.builder().build()));
+
+        Mockito.verify(refreshOrchestrator, Mockito.times(1))
+                .validate(any(), any());
     }
 
     @Test

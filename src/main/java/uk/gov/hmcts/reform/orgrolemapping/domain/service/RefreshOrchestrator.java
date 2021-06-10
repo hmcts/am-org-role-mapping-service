@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class RefreshOrchestrator {
 
     private final RetrieveDataService retrieveDataService;
@@ -45,14 +44,31 @@ public class RefreshOrchestrator {
     private final CRDService crdService;
     private final PersistenceService persistenceService;
 
-    @Value("${refresh.Job.pageSize}")
-    private String pageSize;
 
-    @Value("${refresh.Job.sortDirection}")
-    String sortDirection;
+    String pageSize;
 
-    @Value("${refresh.Job.sortColumn}")
-    String sortColumn;
+
+    private String sortDirection;
+
+
+    private String sortColumn;
+
+    @Autowired
+    public RefreshOrchestrator(RetrieveDataService retrieveDataService, RequestMappingService requestMappingService,
+                               ParseRequestService parseRequestService,
+                               CRDService crdService, PersistenceService persistenceService,
+                               @Value("${refresh.Job.pageSize}") String pageSize,
+                               @Value("${refresh.Job.sortDirection}") String sortDirection,
+                               @Value("${refresh.Job.sortColumn}") String sortColumn) {
+        this.retrieveDataService = retrieveDataService;
+        this.requestMappingService = requestMappingService;
+        this.parseRequestService = parseRequestService;
+        this.crdService = crdService;
+        this.persistenceService = persistenceService;
+        this.pageSize = pageSize;
+        this.sortDirection = sortDirection;
+        this.sortColumn = sortColumn;
+    }
 
     public void validate(Long jobId, UserRequest userRequest) {
         if (jobId == null) {
@@ -67,14 +83,11 @@ public class RefreshOrchestrator {
         }
     }
 
-
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
         long startTime = System.currentTimeMillis();
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
         ResponseEntity<Object> responseEntity = null;
-
-
 
         //fetch the entity based on jobId
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
@@ -114,7 +127,7 @@ public class RefreshOrchestrator {
     }
 
 
-    private ResponseEntity<Object> refreshJobByServiceName(Map<String, HttpStatus> responseCodeWithUserId,
+    protected ResponseEntity<Object> refreshJobByServiceName(Map<String, HttpStatus> responseCodeWithUserId,
             RefreshJobEntity refreshJobEntity) {
 
 
@@ -135,7 +148,10 @@ public class RefreshOrchestrator {
             // 2 step to find out the total number of records from header
             String totalRecords = response.getHeaders().getFirst("total_records");
             assert totalRecords != null;
-            int pageNumber = (Integer.parseInt(totalRecords) / Integer.parseInt(pageSize));
+            double pageNumber = 0;
+            if (Integer.parseInt(pageSize) > 0) {
+                pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
+            }
 
 
             //call to CRD
@@ -161,7 +177,7 @@ public class RefreshOrchestrator {
     }
 
     @SuppressWarnings("unchecked")
-    private ResponseEntity<Object> prepareResponseCodes(Map<String, HttpStatus> responseCodeWithUserId, Map<String,
+    protected ResponseEntity<Object> prepareResponseCodes(Map<String, HttpStatus> responseCodeWithUserId, Map<String,
             Set<UserAccessProfile>> userAccessProfiles) {
         ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
 
@@ -175,13 +191,12 @@ public class RefreshOrchestrator {
                     );
                 });
 
-
         log.info("Status code map from RAS {} ", responseCodeWithUserId);
         return responseEntity;
     }
 
 
-    private void buildSuccessAndFailureBucket(Map<String, HttpStatus> responseCodeWithUserId,
+    protected void buildSuccessAndFailureBucket(Map<String, HttpStatus> responseCodeWithUserId,
                                               RefreshJobEntity refreshJobEntity) {
 
         List<String> successUserIds = new ArrayList<>();
@@ -199,7 +214,7 @@ public class RefreshOrchestrator {
         updateJobStatus(successUserIds, failureUserIds, refreshJobEntity);
     }
 
-    private void updateJobStatus(List<String> successUserIds, List<String> failureUserIds,
+    protected void updateJobStatus(List<String> successUserIds, List<String> failureUserIds,
                                  RefreshJobEntity refreshJobEntity) {
 
         if (CollectionUtils.isNotEmpty(failureUserIds) && Objects.nonNull(refreshJobEntity)) {

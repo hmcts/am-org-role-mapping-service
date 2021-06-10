@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
@@ -16,6 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,7 +34,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -39,6 +42,8 @@ import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -48,12 +53,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 
@@ -83,8 +85,18 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @MockBean
     private RequestMappingService requestMappingService;
 
+
     @MockBean
-    private TopicConsumer topicConsumer;
+    private FeatureConditionEvaluator featureConditionEvaluation;
+
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
+
+
+
 
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
@@ -93,10 +105,15 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     );
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         template = new JdbcTemplate(ds);
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         MockitoAnnotations.initMocks(this);
+        doReturn(authentication).when(securityContext).getAuthentication();
+        SecurityContextHolder.setContext(securityContext);
+        doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
+        MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
+
     }
 
     @Test
@@ -125,7 +142,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertNotNull(refreshJob.getLog());
     }
 
-    @Ignore
+
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted() throws Exception {
@@ -133,7 +150,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         Long jobId = 1L;
 
         mockCRDService();
-        mockRequestMappingServiceWithStatus(INTERNAL_SERVER_ERROR);
+        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
 
         mockMvc.perform(post(URL)
                 .contentType(JSON_CONTENT_TYPE)
@@ -150,7 +167,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    @Ignore
+
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
@@ -158,7 +175,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         Long jobId = 1L;
 
         mockCRDService();
-        mockRequestMappingServiceWithStatus(INTERNAL_SERVER_ERROR);
+        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
 
         mockMvc.perform(post(URL)
                 .contentType(JSON_CONTENT_TYPE)
@@ -182,7 +199,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         Long jobId = 1L;
 
         mockCRDService();
-        mockRequestMappingServiceWithStatus(INTERNAL_SERVER_ERROR);
+        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
 
         mockMvc.perform(post(URL)
                 .contentType(JSON_CONTENT_TYPE)
@@ -199,7 +216,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    @Ignore
+
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {

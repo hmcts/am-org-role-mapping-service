@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -101,7 +102,6 @@ public class TestDataBuilder {
         userAccessProfiles.put(id_2, buildUserAccessProfileSet(suspended1, suspended2));
         return userAccessProfiles;
     }
-
 
     public static UserProfile.BaseLocation buildBaseLocation(boolean primaryLocation) {
         return UserProfile.BaseLocation.builder().primary(primaryLocation)
@@ -295,5 +295,17 @@ public class TestDataBuilder {
     public static RoleAssignmentRequestResource buildRoleAssignmentRequestResource() throws IOException {
         return new RoleAssignmentRequestResource(TestDataBuilder
                 .buildAssignmentRequest(Status.CREATE_REQUESTED, Status.APPROVED, true));
+    }
+
+    public static RefreshJobEntity buildRefreshJobEntity() {
+        return new RefreshJobEntity().toBuilder()
+                .jurisdiction("Jurisdiction")
+                .roleCategory(RoleCategory.JUDICIAL.name())
+                .jobId(7L)
+                .created(ZonedDateTime.now())
+                .linkedJobId(1L)
+                .status(Status.CREATED.name())
+                .userIds(new String[]{"1234"})
+                .build();
     }
 }

@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -122,6 +123,15 @@ public class GenericArrayUserTypeTest {
         assertFalse(sut.equals(str1, str2));
         assertEquals(str1.equals(str2), sut.equals(str1, str2));
         assertNotNull(str1);
+        assertNotNull(str2);
+    }
+
+    @Test
+    public void executeEquals_null() throws HibernateException {
+        Object str1 = null;
+        Object str2 = "Not Null";
+        assertFalse(sut.equals(str1, str2));
+        assertNull(str1);
         assertNotNull(str2);
     }
 

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -9,9 +10,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
@@ -26,11 +30,19 @@ import java.util.Properties;
 public abstract class BaseTest {
     protected static final ObjectMapper mapper = new ObjectMapper();
 
+    @MockBean
+    ServiceBusSenderClient serviceBusSenderClient;
+
+    @MockBean
+    TopicPublisher topicPublisher;
+
+    @MockBean
+    TopicConsumer topicConsumer;
+
     @BeforeClass
     public static void init() {
         mapper.registerModule(new JavaTimeModule());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
         // Force re-initialisation of base types for each test suite
     }
 
