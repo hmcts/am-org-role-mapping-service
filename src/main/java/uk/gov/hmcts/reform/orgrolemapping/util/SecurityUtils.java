@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRoles;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
@@ -42,7 +43,7 @@ public class SecurityUtils {
     }
 
     public HttpHeaders authorizationHeaders() {
-        final var headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.add(SERVICE_AUTHORIZATION, authTokenGenerator.generate());
         headers.add("user-id", getUserId());
         headers.add("user-roles", getUserRolesHeader());
@@ -67,7 +68,7 @@ public class SecurityUtils {
     }
 
     public UserRoles getUserRoles() {
-        var userInfo = jwtGrantedAuthoritiesConverter.getUserInfo();
+        UserInfo userInfo = jwtGrantedAuthoritiesConverter.getUserInfo();
         return UserRoles.builder()
                 .uid(userInfo.getUid())
                 .roles(userInfo.getRoles())
@@ -78,7 +79,7 @@ public class SecurityUtils {
     public String getUserToken() {
         if (SecurityContextHolder.getContext() != null
                 && SecurityContextHolder.getContext().getAuthentication() != null) {
-            var jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             return jwt.getTokenValue();
         } else {
             return idamRepository.getUserToken();
@@ -95,7 +96,7 @@ public class SecurityUtils {
 
 
     public String getServiceName() {
-        var servletRequestAttributes =
+        ServletRequestAttributes servletRequestAttributes =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
 
         if (servletRequestAttributes != null

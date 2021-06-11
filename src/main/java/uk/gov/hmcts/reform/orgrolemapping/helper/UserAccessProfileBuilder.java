@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -102,13 +103,13 @@ public class UserAccessProfileBuilder {
 
 
         userRequest.getUserIds().forEach(userId -> {
-            try (var inputStream =
+            try (InputStream inputStream =
                          CRDFeignClientFallback.class.getClassLoader().getResourceAsStream(resource)) {
                 assert inputStream != null;
-                var objectMapper = new ObjectMapper();
+                ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.registerModule(new JavaTimeModule());
                 objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
-                var userProfile = objectMapper.readValue(inputStream, UserProfile.class);
+                UserProfile userProfile = objectMapper.readValue(inputStream, UserProfile.class);
                 userProfile.setId(userId);
                 userProfiles.add(userProfile);
 

@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -77,7 +78,7 @@ public class AssignmentRequestBuilder {
     }
 
     public static JsonNode buildAttributesFromFile(String fileName) {
-        try (var inputStream =
+        try (InputStream inputStream =
                      AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream(fileName)) {
             assert inputStream != null;
             return new ObjectMapper().readValue(inputStream, new TypeReference<>() {
@@ -107,7 +108,7 @@ public class AssignmentRequestBuilder {
 
         userProfile.getRole().forEach(role ->
             userProfile.getWorkArea().forEach(workArea -> {
-                var userAccessProfile = new UserAccessProfile();
+                UserAccessProfile userAccessProfile = new UserAccessProfile();
                 userAccessProfile.setId(userProfile.getId());
                 userAccessProfile.setSuspended(userProfile.isSuspended());
                 userProfile.getBaseLocation().forEach(baseLocation -> {
