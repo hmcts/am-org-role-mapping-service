@@ -146,7 +146,7 @@ launchdarkly:
 refresh:
   Job:
     update: ${REFRESH_JOB:}
-    pageSize: ${REFRESH_JOB_PAGE_SIZE:100}
+    pageSize: ${REFRESH_JOB_PAGE_SIZE:400}
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
 
