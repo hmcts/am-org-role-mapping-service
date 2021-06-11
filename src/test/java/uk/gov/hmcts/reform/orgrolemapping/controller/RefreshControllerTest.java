@@ -36,12 +36,13 @@ class RefreshControllerTest {
         ResponseEntity<Object> response =
                 ResponseEntity.status(HttpStatus.CREATED).body(userRequest);
 
-        //      Mockito.when(refreshOrchestrator.validate(any(), any()))
-        //              .thenReturn();
         Mockito.when(refreshOrchestrator.refresh(any(),any()))
                 .thenReturn(response);
 
         assertEquals(response, sut.refresh(1L, UserRequest.builder().build()));
+
+        Mockito.verify(refreshOrchestrator, Mockito.times(1))
+                .validate(any(), any());
     }
 
     @Test
