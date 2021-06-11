@@ -120,7 +120,7 @@ feign:
       default:
         connectTimeout: 5000
         readTimeout: 5000
-        loggerLevel: basic
+        loggerLevel: FULL
       crdclient:
         url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
       roleAssignmentApp:
@@ -157,3 +157,4 @@ dbFeature:
     disable: ${DB_FEATURE_FLAG_DISABLE:}
 
 logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:DEBUG}
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
