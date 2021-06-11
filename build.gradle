@@ -41,7 +41,7 @@ def versions = [
         sonarPitest    : '0.5',
         springBoot     : '2.3.11.RELEASE',
         springHystrix  : '2.1.1.RELEASE',
-        swagger2Version: '3.0.0',
+        swagger2Version: '2.10.5',
         pact_version   : '4.1.7',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
@@ -185,19 +185,19 @@ pitest {
     testPlugin = "junit5"
     targetClasses = ['uk.gov.hmcts.reform.*']
     excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication',
-                       'uk.gov.hmcts.reform.orgrolemapping.util.Swagger2SpringBoot',
                        'uk.gov.hmcts.reform.orgrolemapping.util.GetSasToken',
                        'uk.gov.hmcts.reform.orgrolemapping.config.*',
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig',
                        'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
                        'uk.gov.hmcts.reform.orgrolemapping.domain.model.*',
-                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.*']
+                       'uk.gov.hmcts.reform.orgrolemapping.servicebus.*',
+                       '*UserAccessProfileBuilder*', '*AssignmentRequestBuilder*', '*TestController*',
+                       '*Swagger2SpringBoot*']
     threads = 15
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
     mutationThreshold = 40
 }
-
 
 sonarqube {
     properties {
@@ -213,7 +213,11 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/feignclients/configuration/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/model/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/servicebus/**," +
-                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**"
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
+                "**UserAccessProfileBuilder.java," +
+                "**TestController.java"
+
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
 }
@@ -271,9 +275,12 @@ dependencies {
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot)
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot)
     compile(group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0')
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
 
     compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
     compile group: 'org.json', name: 'json', version: '20200518'
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
 
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
@@ -293,6 +300,7 @@ dependencies {
         exclude group: 'org.apache.ant', module: 'ant-launcher'
     }
 
+    compile group: 'org.flywaydb', name: 'flyway-core', version: '5.2.4'
     //Added for Spring Security Implementation
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot)
 
@@ -322,7 +330,9 @@ dependencies {
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.0'
     compile group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '2.8.5'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.1'
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation "org.springframework.security:spring-security-web"
     implementation "org.springframework.security:spring-security-config"

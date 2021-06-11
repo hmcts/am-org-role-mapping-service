@@ -47,6 +47,7 @@ public class WelcomeController {
         return "Welcome to Organisation Role Mapping Service";
     }
 
+
     @PostMapping(
             path = "/am/role-mapping/staff/users",
             produces = V1.MediaType.MAP_ASSIGNMENTS,
@@ -68,7 +69,7 @@ public class WelcomeController {
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
         log.debug("createOrgMapping");
-        log.info("Process has been Started for the userIds {}",userRequest.getUserIds());
+        log.info("Process has been Started for the userIds {}", userRequest.getUserIds());
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest);
         log.debug("Execution time of createOrgMapping() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));

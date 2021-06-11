@@ -1,0 +1,11 @@
+{
+  "_guid_": "F-002_Test_Data_Base",
+  "_extends_": "F-002-Base-Root",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Refresh API",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+  "method": "POST",
+  "uri": "/am/role-mapping/refresh"
+}

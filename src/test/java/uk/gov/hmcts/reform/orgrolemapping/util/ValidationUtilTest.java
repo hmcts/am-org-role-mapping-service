@@ -69,6 +69,14 @@ class ValidationUtilTest {
     }
 
     @Test
+    void shouldNotThrow_ValidateDateTimeLength() {
+        Assertions.assertDoesNotThrow(() ->
+                ValidationUtil.validateDateTime("2021-11-27T15:12",
+                        "2021-11-27T15:12")
+        );
+    }
+
+    @Test
     void shouldThrow_cannotBePriorToCurrentDate() {
         String time = LocalDateTime.now().minusDays(1L).toString();
         String time2 = LocalDateTime.now().minusDays(1L).toString();
@@ -79,7 +87,7 @@ class ValidationUtilTest {
 
     @Test
     void shouldThrow_IncorrectDateFormat() {
-        String time = "2020-11-27T15:13:06.------070894";
+        String time = "--------------------";
         String time2 = LocalDateTime.now().minusDays(1L).toString();
         Assertions.assertThrows(BadRequestException.class, () ->
                 ValidationUtil.validateDateTime(time, time2)
@@ -91,6 +99,13 @@ class ValidationUtilTest {
         Assertions.assertThrows(BadRequestException.class, () ->
                 ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, "")
         );
+    }
+
+
+    @Test
+    void shouldThrow_IncorrectPatternValidateId() {
+        Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, "^[-a-zA-Z0-9]*$"));
     }
 
     @Test
@@ -128,4 +143,16 @@ class ValidationUtilTest {
         );
     }
 
+    @Test
+    void shouldValidateTrue_CompareRoleCategory() {
+        String roleType = "Judicial";
+        ValidationUtil.compareRoleCategory(roleType);
+    }
+
+    @Test
+    void shouldThrow_BadRequestException_CompareRoleCategory() {
+        String roleType = "invalid";
+        Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.compareRoleCategory(roleType));
+    }
 }
