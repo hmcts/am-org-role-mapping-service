@@ -33,11 +33,10 @@ public class SwaggerConfiguration {
             .apiInfo(apiV2Info())
             .host(host)
             .globalOperationParameters(Arrays.asList(
-                    headerServiceAuthorization(),
-                    headerAuthorization(),
-                    headerUserId(),
-                    headerUserRoles()
-            ));
+                headerServiceAuthorization(),
+                headerAuthorization()
+
+                                                    ));
     }
 
     private ApiInfo apiV2Info() {
@@ -73,8 +72,8 @@ public class SwaggerConfiguration {
             .name("user-id")
             .description(
                 "User-id of the currently authenticated user. If provided will be used to populate the creator field "
-                        + "of a document and"
-                        + " will be used for authorisation.")
+                + "of a document and"
+                + " will be used for authorisation.")
             .modelRef(new ModelRef("string"))
             .parameterType("header")
             .required(false)
@@ -85,8 +84,8 @@ public class SwaggerConfiguration {
         return new ParameterBuilder()
             .name("user-roles")
             .description(
-                    "Comma-separated list of roles of the currently authenticated user. If provided will be used for "
-                            + "authorisation.")
+                "Comma-separated list of roles of the currently authenticated user. If provided will be used for "
+                + "authorisation.")
             .modelRef(new ModelRef("string"))
             .parameterType("header")
             .required(false)

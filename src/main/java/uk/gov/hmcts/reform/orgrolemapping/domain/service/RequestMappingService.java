@@ -129,10 +129,8 @@ public class RequestMappingService {
     private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
         long startTime = System.currentTimeMillis();
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
-        log.info(
-                "Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
-        );
+        log.debug("Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(),startTime)));
         return roleAssignments;
     }
 
@@ -176,7 +174,7 @@ public class RequestMappingService {
 
         usersRoleAssignments
                 .forEach((k,v) -> finalResponse.add(updateCaseworkerRoleAssignments(k,
-                        v, failureResponseCount).getBody()));
+                        v, failureResponseCount)));
         log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
         log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
@@ -192,7 +190,7 @@ public class RequestMappingService {
         // Print response code  of RAS for each userID
         ResponseEntity<Object> responseEntity = updateRoleAssignments(STAFF_ORGANISATIONAL_ROLE_MAPPING,
                 userId, roleAssignments);
-        if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
+        if (!responseEntity.getStatusCode().equals(HttpStatus.CREATED)) {
             failureResponseCount.getAndIncrement();
         }
 

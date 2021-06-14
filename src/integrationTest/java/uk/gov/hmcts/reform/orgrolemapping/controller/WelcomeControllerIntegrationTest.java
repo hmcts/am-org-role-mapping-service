@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,9 +39,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClient
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
@@ -112,17 +108,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Autowired
     private WelcomeController welcomeController;
 
-    @MockBean
-    private TopicConsumer topicConsumer;
 
-    @MockBean
-    private TopicPublisher topicPublisher;
-
-    @MockBean
-    private MessagingConfiguration messagingConfiguration;
-
-    @MockBean
-    private ServiceBusSenderClient serviceBusSenderClient;
 
     private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
     private static final String RAS_ONE_USER_MULTI_ROLE = "RASOneUserMultiRole";

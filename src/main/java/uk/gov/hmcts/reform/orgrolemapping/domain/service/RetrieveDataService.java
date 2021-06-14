@@ -8,16 +8,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
 
@@ -42,18 +46,47 @@ public class RetrieveDataService {
 
 
     private final ParseRequestService parseRequestService;
-    private final CRDFeignClient crdFeignClient;
+    private final CRDService crdService;
 
 
     public Map<String, Set<UserAccessProfile>> retrieveCaseWorkerProfiles(UserRequest userRequest) {
         long startTime = System.currentTimeMillis();
 
-        ResponseEntity<List<UserProfile>> responseEntity = crdFeignClient.getCaseworkerDetailsById(userRequest);
+        ResponseEntity<List<UserProfile>> responseEntity = crdService.fetchUserProfiles(userRequest);
 
         log.debug("Execution time of CRD Response : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
         List<UserProfile> userProfiles = responseEntity.getBody();
+        return buildUserAccessProfile(userRequest, startTime, userProfiles);
+
+    }
+
+
+    public Map<String, Set<UserAccessProfile>> getUserAccessProfile(ResponseEntity<List<UserProfilesResponse>>
+                                                                            userProfileResponsesEntity) {
+
+        long startTime = System.currentTimeMillis();
+
+        //check the response if it's not null
+        List<UserProfilesResponse> userProfilesResponses = Objects.requireNonNull(userProfileResponsesEntity.getBody());
+
+        //Fetch the user profile from the response
+        List<UserProfile> userProfiles = new ArrayList<>();
+        userProfilesResponses.forEach(userProfilesResponse -> userProfiles.add(userProfilesResponse.getUserProfile()));
+
+        //Collect the userIds to build the UserRequest
+        UserRequest userRequest = UserRequest.builder().userIds(Collections.emptyList()).build();
+
+        return buildUserAccessProfile(userRequest, startTime, userProfiles);
+
+
+    }
+
+
+    private Map<String, Set<UserAccessProfile>> buildUserAccessProfile(UserRequest userRequest,
+                                                                       long startTime,
+                                                                       List<UserProfile> userProfiles) {
         if (!CollectionUtils.isEmpty(userProfiles)) {
             // no of userProfiles from CRD  responseEntity.getBody().size()
             log.info("Number of UserProfile received from CRD : {} ",

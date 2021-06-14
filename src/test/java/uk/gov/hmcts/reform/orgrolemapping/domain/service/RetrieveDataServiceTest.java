@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
@@ -33,15 +33,16 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 @RunWith(MockitoJUnitRunner.class)
 class RetrieveDataServiceTest {
 
-    private final CRDFeignClient crdFeignClient = Mockito.mock(CRDFeignClient.class);
+    private final CRDService crdService = Mockito.mock(CRDService.class);
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
 
-    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdFeignClient);
+    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdService);
 
     @Test
     void retrieveCaseWorkerProfilesTest() {
 
-        when(crdFeignClient.getCaseworkerDetailsById(TestDataBuilder.buildUserRequest()))
+
+        when(crdService.fetchUserProfiles(TestDataBuilder.buildUserRequest()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder
                         .buildListOfUserProfiles(false, false,"1", "2",
                         ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)));
@@ -50,8 +51,8 @@ class RetrieveDataServiceTest {
 
         assertEquals(1, result.size());
 
-        Mockito.verify(crdFeignClient, Mockito.times(1))
-                .getCaseworkerDetailsById(any(UserRequest.class));
+        Mockito.verify(crdService, Mockito.times(1))
+                .fetchUserProfiles(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any(),any());
     }
@@ -59,7 +60,7 @@ class RetrieveDataServiceTest {
     @Test
     void retrieveInvalidCaseWorkerProfilesTest() {
 
-        when(crdFeignClient.getCaseworkerDetailsById(any()))
+        when(crdService.fetchUserProfiles(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(
                         TestDataBuilder.buildListOfUserProfiles(true, false, "1",
                                 "2", ROLE_NAME_STCW, ROLE_NAME_TCW, false, true,
@@ -76,8 +77,8 @@ class RetrieveDataServiceTest {
     @Test
     void shouldReturnCaseWorkerProfile() {
 
-        when(crdFeignClient.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
-                .ok(buildUserProfile(buildUserRequest())));
+        when(crdService.fetchUserProfiles(any())).thenReturn(ResponseEntity
+                .ok(buildUserProfile(buildUserRequest(), "userProfileSample.json")));
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(),any());
         Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
         assertNotNull(response);
@@ -98,11 +99,24 @@ class RetrieveDataServiceTest {
     @Test
     void shouldReturnZeroCaseWorkerProfile() {
         List<UserProfile> userProfiles = new ArrayList<>();
-        when(crdFeignClient.getCaseworkerDetailsById(any())).thenReturn(ResponseEntity
+        when(crdService.fetchUserProfiles(any())).thenReturn(ResponseEntity
                 .ok(userProfiles));
         Map<String, Set<UserAccessProfile>> response = sut.retrieveCaseWorkerProfiles(buildUserRequest());
         assertNotNull(response);
         assertTrue(response.isEmpty());
     }
 
+    @Test
+    void getUserAccessProfile() {
+
+        List<UserProfilesResponse> userProfilesResponses = new ArrayList<>();
+        userProfilesResponses.add(TestDataBuilder.buildUserProfilesResponse());
+        userProfilesResponses.add(TestDataBuilder.buildUserProfilesResponse());
+        ResponseEntity<List<UserProfilesResponse>> responseEntity
+                = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
+
+        Map<String, Set<UserAccessProfile>> response = sut.getUserAccessProfile(responseEntity);
+        assertNotNull(response);
+        assertEquals(4, response.get("1").size());
+    }
 }

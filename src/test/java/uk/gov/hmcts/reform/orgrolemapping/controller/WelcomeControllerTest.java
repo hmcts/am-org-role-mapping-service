@@ -22,10 +22,11 @@ class WelcomeControllerTest {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     @Mock
-    private TopicPublisher topicPublisher;
+    private TopicPublisher topicPublisherMock;
+
 
     @InjectMocks
-    private final WelcomeController sut = new WelcomeController(topicPublisher, bulkAssignmentOrchestrator);
+    private final WelcomeController sut = new WelcomeController(topicPublisherMock, bulkAssignmentOrchestrator);
 
     @BeforeEach
     public void setUp() {
@@ -36,6 +37,8 @@ class WelcomeControllerTest {
     void index() {
         assertEquals("redirect:swagger-ui.html", sut.index());
     }
+
+
 
     @Test
     void welcome() {
@@ -67,5 +70,14 @@ class WelcomeControllerTest {
     void errorConstantTest() {
         assertEquals(202, ErrorConstants.ACCEPTED.getErrorCode());
         assertEquals("Accepted", ErrorConstants.ACCEPTED.getErrorMessage());
+    }
+
+    @Test
+    void testSend() {
+        ResponseEntity<Object> response =
+                ResponseEntity.status(HttpStatus.OK).body("{}");
+        assertEquals(response, sut.send("{}"));
+        Mockito.verify(topicPublisherMock, Mockito.times(1))
+                .sendMessage(Mockito.any());
     }
 }

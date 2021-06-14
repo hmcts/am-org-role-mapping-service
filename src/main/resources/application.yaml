@@ -48,6 +48,28 @@ spring:
     default-property-inclusion: NON_NULL
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  flyway.enabled: ${ENABLE_DB_MIGRATE:true}
+  flyway.locations: classpath:db/migration
+  datasource:
+    url: jdbc:postgresql://${ORG_ROLE_MAPPING_DB_HOST:localhost}:${ORG_ROLE_MAPPING_DB_PORT:5451}/${ORG_ROLE_MAPPING_DB_NAME:org_role_mapping}${ORG_ROLE_MAPPING_DB_OPTIONS:?stringtype=unspecified}
+    username: ${ORG_ROLE_MAPPING_DB_USERNAME:am}
+    password: ${ORG_ROLE_MAPPING_DB_PASSWORD:am}
+    properties:
+      charSet: UTFh-8
+    hikari:
+      maximumPoolSize: 10
+      poolName: AMHikariCP
+      maxLifetime: 90000
+      connectionTimeout: 10000
+      keepAliveTime: 60000
   security:
     oauth2:
       client:
@@ -73,7 +95,7 @@ idam:
     microservice: am_org_role_mapping_service
     url: ${IDAM_S2S_URL:http://localhost:4502}
   s2s-authorised:
-    services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:am_role_assignment_service,am_org_role_mapping_service}
+    services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:am_role_assignment_service,am_org_role_mapping_service,am_role_assignment_refresh_batch}
   api.url: ${IDAM_USER_URL:http://localhost:5000}
   client:
     id: ${ORM_IDAM_CLIENT_ID:am_docker}
@@ -97,7 +119,7 @@ feign:
       default:
         connectTimeout: 5000
         readTimeout: 5000
-        loggerLevel: FULL
+        loggerLevel: BASIC
       crdclient:
         url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
       roleAssignmentApp:
@@ -119,8 +141,13 @@ amqp:
 launchdarkly:
   sdk:
     key: ${LD_SDK_KEY:}
-    environment: ${LAUNCH_DARKLY_ENV:pr}
+    environment: ${LAUNCH_DARKLY_ENV:local}
     user: am-${LAUNCH_DARKLY_ENV:local}
+refresh:
+  Job:
+    update: ${REFRESH_JOB:}
+    pageSize: ${REFRESH_JOB_PAGE_SIZE:400}
+    sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
+    sortColumn: ${REFRESH_JOB_SORT_COL:}
 
-
-logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:DEBUG}
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
