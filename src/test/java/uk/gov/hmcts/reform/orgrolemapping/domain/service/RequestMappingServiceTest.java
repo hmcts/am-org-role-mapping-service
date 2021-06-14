@@ -232,7 +232,7 @@ class RequestMappingServiceTest {
                 .thenReturn(true);
 
         ConcurrentHashMap<String, Boolean> droolFlagStates = new ConcurrentHashMap<>();
-        droolFlagStates.put(FeatureFlagEnum.getIAC_1_0.getValue(), true);
+        droolFlagStates.put(FeatureFlagEnum.IAC_1_0.getValue(), true);
         try (MockedStatic<DBFlagConfigurtion> theMock = Mockito.mockStatic(DBFlagConfigurtion.class)) {
             theMock.when(() -> dbFlagConfigurtion.getDroolFlagStates()).thenReturn(droolFlagStates);
             ReflectionTestUtils.setField(sut, "environment", "prod");

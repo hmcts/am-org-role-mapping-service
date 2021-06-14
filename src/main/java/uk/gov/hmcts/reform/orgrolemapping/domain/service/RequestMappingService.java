@@ -194,10 +194,10 @@ public class RequestMappingService {
             getFlagValuesFromDB(droolFlagStates);
         }
 
-        for (String flag : droolFlagStates.keySet()) {
-            FeatureFlag featureFlag = FeatureFlag.builder()
-                    .flagName(flag)
-                    .status(droolFlagStates.get(flag))
+        for (Map.Entry<String, Boolean> flag : droolFlagStates.entrySet()) {
+            var featureFlag = FeatureFlag.builder()
+                    .flagName(flag.getKey())
+                    .status(flag.getValue())
                     .build();
             featureFlags.add(featureFlag);
         }
