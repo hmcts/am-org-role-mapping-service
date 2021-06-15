@@ -48,5 +48,6 @@ public class Constants {
     public static final String COMPLETED = "COMPLETED";
     public static final String FAILED_JOB = "Job is failed for userIds ::  %s ";
     public static final String SUCCESS_JOB = "Job is success for userIds ::  %s ";
+    public static final String LAUNCH_DARKLY_ENV = "LAUNCH_DARKLY_ENV";
 
 }
