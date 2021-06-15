@@ -48,7 +48,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class RefDataCaseworkerConsumerTest {
 
     private static final String CRD_GET_USERS_BY_SERVICE = "/refdata/internal/staff/usersByServiceName";
-    private static final String USERS_BY_SERVICE_QUERY = "ccd_service_names=CMC&page_size=20&page_number=1&"
+    private static final String USERS_BY_SERVICE_QUERY = "ccd_service_names=IA&page_size=20&page_number=1&"
             + "sort_direction=ASC&sort_column=caseWorkerId";
 
     @Autowired
@@ -109,9 +109,9 @@ public class RefDataCaseworkerConsumerTest {
     @PactTestFor(pactMethod = "getCaseworkersByServiceNamePact")
     public void verifyCaseworkersByServiceName() {
         ResponseEntity<List<UserProfilesResponse>> caseWorkerProfiles =
-                crdFeignClient.getCaseworkerDetailsByServiceName("CMC",20,1,
+                crdFeignClient.getCaseworkerDetailsByServiceName("IA",20,1,
                         "ASC", "caseWorkerId");
-        assertThat(caseWorkerProfiles.getBody().get(0).getServiceName(), equalTo("CMC"));
+        assertThat(caseWorkerProfiles.getBody().get(0).getServiceName(), equalTo("IA"));
 
     }
 
@@ -158,7 +158,7 @@ public class RefDataCaseworkerConsumerTest {
 
         return newJsonArray(o -> {
             o.object(ob -> ob
-                    .stringType("ccd_service_name", "CMC")
+                    .stringType("ccd_service_name", "IA")
                     .object("staff_profile", s -> s
                             .stringType("first_name","Sam")
                             .stringType("last_name","Manuel")
@@ -174,7 +174,6 @@ public class RefDataCaseworkerConsumerTest {
                                     .booleanType("is_primary", true)
                             )
                             .minArrayLike("work_area", 1, r -> r
-                                    .stringType("area_of_work", "1")
                                     .stringType("service_code", "BFA1")
                             )
                     ));
