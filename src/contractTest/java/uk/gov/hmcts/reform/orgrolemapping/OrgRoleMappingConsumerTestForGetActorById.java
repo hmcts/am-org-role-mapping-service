@@ -30,8 +30,6 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
-import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.Map;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
