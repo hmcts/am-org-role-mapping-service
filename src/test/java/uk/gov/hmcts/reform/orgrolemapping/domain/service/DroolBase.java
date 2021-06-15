@@ -7,6 +7,7 @@ import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -43,7 +44,7 @@ public abstract class DroolBase {
 
     }
 
-    void buildExecuteKieSession() {
+    void buildExecuteKieSession(List<FeatureFlag> featureFlags) {
         // Sequence of processing for executing the rules:
         //   1. add all the profiles
         //   2. fire all the rules
@@ -52,6 +53,7 @@ public abstract class DroolBase {
 
         commands = new ArrayList<>();
         commands.add(CommandFactory.newInsertElements(allProfiles));
+        commands.add(CommandFactory.newInsertElements(featureFlags));
         commands.add(CommandFactory.newFireAllRules());
         commands.add(CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME));
 
