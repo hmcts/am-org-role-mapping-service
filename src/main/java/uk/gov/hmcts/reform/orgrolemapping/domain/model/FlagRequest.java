@@ -1,14 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.Value;
 
 @Value
 @Builder
-@AllArgsConstructor
-@Getter
 public class FlagRequest {
 
     private String flagName;

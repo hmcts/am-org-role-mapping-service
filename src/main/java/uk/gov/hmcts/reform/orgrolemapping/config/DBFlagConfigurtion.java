@@ -4,14 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfig;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
+@Configuration
 @Slf4j
 public class DBFlagConfigurtion implements CommandLineRunner {
 

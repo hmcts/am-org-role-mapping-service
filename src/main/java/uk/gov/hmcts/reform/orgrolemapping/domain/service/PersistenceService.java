@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfig;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
@@ -36,7 +37,7 @@ public class PersistenceService {
 
     public boolean getStatusByParam(String flagName, String envName) {
         if (StringUtils.isEmpty(envName)) {
-            envName = System.getenv("LAUNCH_DARKLY_ENV");
+            envName = System.getenv(Constants.LAUNCH_DARKLY_ENV);
         }
         return flagConfigRepository.findByFlagNameAndEnv(flagName, envName).getStatus();
     }
