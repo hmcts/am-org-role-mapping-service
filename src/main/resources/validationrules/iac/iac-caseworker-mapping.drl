@@ -11,9 +11,13 @@ import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.util.HashMap
 import java.util.Map
 import com.fasterxml.jackson.databind.JsonNode;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 rule "iac_senior_tribunal_caseworker"
 when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
   $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -31,10 +35,58 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
+      logMsg("Rule : iac_senior_tribunal_caseworker");
 end;
 
 rule "iac_tribunal_caseworker"
 when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
+  $up: UserAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
+then
+     Map<String,JsonNode> attr = new HashMap<>();
+     attr.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+     attr.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType    (ActorIdType.IDAM)
+      .actorId        ($up.getId())
+      .roleCategory   (RoleCategory.LEGAL_OPERATIONS)
+      .roleType       (RoleType.ORGANISATION)
+      .roleName       ("tribunal-caseworker")
+      .grantType      (GrantType.STANDARD)
+      .classification (Classification.PUBLIC)
+      .readOnly       (false)
+      .attributes(attr)
+      .build());
+      logMsg("Rule : iac_tribunal_caseworker");
+end;
+
+rule "iac_senior_tribunal_caseworker_v11"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
+  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("senior-tribunal-caseworker")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : iac_senior_tribunal_caseworker_v11");
+end;
+
+rule "iac_tribunal_caseworker_v11"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: UserAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attr = new HashMap<>();
@@ -52,4 +104,5 @@ then
       .readOnly       (false)
       .attributes(attr)
       .build());
+      logMsg("Rule : iac_tribunal_caseworker_v11");
 end;

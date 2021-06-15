@@ -28,6 +28,7 @@ security:
     - "/health"
     - "/actuator/**"
     - "/loggers/**"
+    - "/am/role-assignments/fetchFlagStatus"
     - "/swagger-ui.html"
     - "/swagger-resources/**"
     - "/v2/api-docs"
@@ -150,4 +151,8 @@ refresh:
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
 
+dbFeature:
+  flags:
+    enable: ${DB_FEATURE_FLAG_ENABLE:}
+    disable: ${DB_FEATURE_FLAG_DISABLE:}
 logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
