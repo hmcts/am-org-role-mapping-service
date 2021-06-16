@@ -30,13 +30,14 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
 
     private static final HashMap<String, String> getRequestMap = new HashMap<>();
     private static final HashMap<String, String> postRequestMap = new HashMap<>();
-    private static final HashMap<String, String> deleteRequestMap = new HashMap<>();
 
     static {
         //Get Map
         getRequestMap.put("/welcome", "orm-base-flag");
         //post Map
         postRequestMap.put("/am/role-mapping/refresh", "orm-refresh-role");
+        getRequestMap.put("/am/role-assignments/fetchFlagStatus","get-db-drools-flag");
+        postRequestMap.put("/am/role-assignments/createFeatureFlag","get-db-drools-flag");
     }
 
     @Autowired
@@ -98,9 +99,6 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
                     return postRequestMap.get(uri);
                 }
                 break;
-            case DELETE:
-                break;
-
             default:
         }
         return null;
