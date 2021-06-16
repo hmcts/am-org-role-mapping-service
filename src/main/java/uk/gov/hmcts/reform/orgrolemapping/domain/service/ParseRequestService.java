@@ -43,7 +43,8 @@ public class ParseRequestService {
         if (Collections.isEmpty(userProfiles)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
-        if (userRequest.getUserIds().size() > 0 && userRequest.getUserIds().size() != userProfiles.size()) {
+        if (CollectionUtils.isNotEmpty(userRequest.getUserIds())
+                && userRequest.getUserIds().size() != userProfiles.size()) {
             List<String> userProfileIds = new ArrayList<>();
 
             userProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));

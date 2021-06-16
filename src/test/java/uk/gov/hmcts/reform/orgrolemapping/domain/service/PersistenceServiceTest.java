@@ -62,7 +62,7 @@ class PersistenceServiceTest {
                 .roleCategory("role")
                 .jurisdiction("jurisdiction")
                 .status("NEW")
-                .created(ZonedDateTime.now()).build();;
+                .created(ZonedDateTime.now()).build();
         sut.deleteRefreshJob(refreshEntity);
         verify(refreshJobsRepository, Mockito.times(1)).delete(Mockito.any());
     }

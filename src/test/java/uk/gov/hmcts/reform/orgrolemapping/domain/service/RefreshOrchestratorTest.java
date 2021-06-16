@@ -32,7 +32,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -152,7 +151,6 @@ class RefreshOrchestratorTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response);
-
     }
 
     @Test
@@ -177,8 +175,14 @@ class RefreshOrchestratorTest {
 
     @Test
     void nullJobIdTest_validate() {
-        UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        assertThrows(BadRequestException.class, () -> sut.validate(null, userRequest));
+        StringBuilder builder = new StringBuilder();
+        builder.append("uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException: ");
+        builder.append("Invalid JobId request");
+        try {
+            sut.validate(null, TestDataBuilder.buildUserRequest());
+        } catch (BadRequestException e) {
+            assertEquals(builder.toString(), e.toString());
+        }
     }
 
     @Test
