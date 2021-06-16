@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
 
 class ValidationUtilTest {
@@ -147,6 +148,7 @@ class ValidationUtilTest {
     void shouldValidateTrue_CompareRoleCategory() {
         String roleType = "Judicial";
         ValidationUtil.compareRoleCategory(roleType);
+        assertNotNull(roleType);
     }
 
     @Test

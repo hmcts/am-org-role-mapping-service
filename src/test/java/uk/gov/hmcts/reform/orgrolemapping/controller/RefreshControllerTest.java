@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 class RefreshControllerTest {
@@ -48,20 +47,24 @@ class RefreshControllerTest {
     @Test
     void refreshRoleAssignmentRecords_emptyJobId() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        String nfe = "java.lang.NumberFormatException: For input string: \"\"";
 
-
-        assertThrows(NumberFormatException.class, () ->
-                sut.refresh(Long.valueOf(""), userRequest)
-        );
+        try {
+            sut.refresh(Long.valueOf(""), userRequest);
+        } catch (NumberFormatException e) {
+            assertEquals(nfe, e.toString());
+        }
     }
 
     @Test
     void refreshRoleAssignmentRecords_invalidJobId() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        String nfe = "java.lang.NumberFormatException: For input string: \"abc\"";
 
-
-        assertThrows(NumberFormatException.class, () ->
-                sut.refresh(Long.valueOf("abc"), userRequest)
-        );
+        try {
+            sut.refresh(Long.valueOf("abc"), userRequest);
+        } catch (NumberFormatException e) {
+            assertEquals(nfe, e.toString());
+        }
     }
 }
