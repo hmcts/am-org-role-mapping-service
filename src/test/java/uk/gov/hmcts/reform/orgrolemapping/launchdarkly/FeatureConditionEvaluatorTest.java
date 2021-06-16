@@ -1,9 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.launchdarkly;
 
 import com.launchdarkly.sdk.server.LDClient;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FeatureConditionEvaluatorTest {
+class FeatureConditionEvaluatorTest {
 
     @Mock
     LDClient ldClient = mock(LDClient.class);
@@ -41,7 +41,7 @@ public class FeatureConditionEvaluatorTest {
 
     Object object = new Object();
 
-    @Before
+    @BeforeEach
     public void initializeMocks() {
         launchDarklyMap = new HashMap<>();
         launchDarklyMap.put("/welcome", "orm-base-flag");
