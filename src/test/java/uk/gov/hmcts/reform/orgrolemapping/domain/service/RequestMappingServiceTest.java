@@ -11,24 +11,29 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
+
+import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @RunWith(MockitoJUnitRunner.class)
 class RequestMappingServiceTest {
@@ -42,6 +47,12 @@ class RequestMappingServiceTest {
     @Mock
     private SecurityUtils securityUtils;
 
+    @Mock
+    PersistenceService persistenceService;
+
+    @Mock
+    DBFlagConfigurtion dbFlagConfigurtion;
+
     @InjectMocks
     RequestMappingService sut;
 
@@ -50,7 +61,7 @@ class RequestMappingServiceTest {
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();
         this.kieSession = kieContainer.newStatelessKieSession("org-role-mapping-validation-session");
-        sut = new RequestMappingService(roleAssignmentService, kieSession,
+        sut = new RequestMappingService("pr", persistenceService, roleAssignmentService, kieSession,
                 securityUtils);
         MockitoAnnotations.initMocks(this);
     }
@@ -63,7 +74,8 @@ class RequestMappingServiceTest {
         Mockito.when(roleAssignmentService.createRoleAssignment(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
                         .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
-
+        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+                .thenReturn(true);
         ResponseEntity<Object> responseEntity =
                 sut.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                         false));
@@ -128,10 +140,11 @@ class RequestMappingServiceTest {
                 .thenThrow(feignClientException);
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
+        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+                .thenReturn(true);
         ResponseEntity<Object> responseEntity =
                 sut.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                         false));
-
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
@@ -159,7 +172,8 @@ class RequestMappingServiceTest {
                 .thenThrow(feignClientException);
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
-
+        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+                .thenReturn(true);
         ResponseEntity<Object> responseEntity = sut.createCaseWorkerAssignments(
                 TestDataBuilder.buildUserAccessProfileMap(false, false));
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -204,5 +218,48 @@ class RequestMappingServiceTest {
                 spyInteger);
 
         verify(spyInteger, Mockito.times(1)).getAndIncrement();
+    }
+
+    @Test
+    void createCaseWorkerAssignmentsForProdEnv() {
+
+        final String actorId = "123e4567-e89b-42d3-a456-556642445612";
+
+        Mockito.when(roleAssignmentService.createRoleAssignment(any()))
+                .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
+                        .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
+        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "prod"))
+                .thenReturn(true);
+
+        ConcurrentHashMap<String, Boolean> droolFlagStates = new ConcurrentHashMap<>();
+        droolFlagStates.put(FeatureFlagEnum.IAC_1_0.getValue(), true);
+        try (MockedStatic<DBFlagConfigurtion> theMock = Mockito.mockStatic(DBFlagConfigurtion.class)) {
+            theMock.when(() -> dbFlagConfigurtion.getDroolFlagStates()).thenReturn(droolFlagStates);
+            ReflectionTestUtils.setField(sut, "environment", "prod");
+            ResponseEntity<Object> responseEntity =
+                    sut.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
+                            false));
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertNotNull(responseEntity.getBody());
+
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
+                    JsonNode.class);
+            assertEquals(1, resultNode.size());
+            assertEquals("staff-organisational-role-mapping",
+                    resultNode.get(0).get("body").get("roleRequest").get("process")
+                            .asText());
+            assertEquals("tribunal-caseworker",
+                    resultNode.get(0).get("body").get("requestedRoles").get(0)
+                            .get("roleName")
+                            .asText());
+            assertEquals(actorId,
+                    resultNode.get(0).get("body").get("requestedRoles").get(0).get("actorId")
+                            .asText());
+            Mockito.verify(roleAssignmentService, Mockito.times(1))
+                    .createRoleAssignment(any());
+        }
     }
 }
