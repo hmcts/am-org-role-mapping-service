@@ -318,7 +318,7 @@ dependencies {
     //Azure service bus libraries
     compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'
     implementation group: 'com.azure', name: 'azure-core', version: '1.16.0'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.3'
 
     compile group: 'io.projectreactor', name: 'reactor-core', version: '3.4.0'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
