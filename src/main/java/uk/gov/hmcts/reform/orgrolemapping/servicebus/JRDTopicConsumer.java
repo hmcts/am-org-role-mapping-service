@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
-
 import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageHandler;
@@ -13,7 +12,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -21,7 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -35,26 +33,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class JRDTopicConsumer {
-
-    @Autowired
-    private FeatureConditionEvaluator featureConditionEvaluator;
-
-    @Value("${aws-consumer.host}")
-    String host;
-    @Value("${aws-consumer.jrd.subscription}")
-    String subscription;
-    @Value("${aws-consumer.sharedAccessKeyName}")
-    String username;
-    @Value("${aws-consumer.jrd.sharedAccessKeyValue}")
-    String password;
+public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
-
     private OrmDeserializer deserializer;
 
+    @Autowired
+    private RoleAssignmentService roleAssignmentService;
+
     public JRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                         OrmDeserializer deserializer) {
+                            OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
 
@@ -64,51 +52,53 @@ public class JRDTopicConsumer {
     @Qualifier("jrdConsumer")
     public SubscriptionClient getSubscriptionClient1() throws URISyntaxException, ServiceBusException,
             InterruptedException {
+        logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
+        log.debug("JRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+
+        String destination = topic.concat("/subscriptions/").concat(subscription);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
-                subscription,
-                username,
-                password);
+                destination,
+                sharedAccessKeyName,
+                sharedAccessKeyValue);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
 
     @Bean
-    CompletableFuture<Void> registerMessageHandlerOnJRDClient(@Autowired @Qualifier("jrdConsumer")
-                                                                      SubscriptionClient receiveClient)
+    @Qualifier("jrdConsumer")
+    CompletableFuture<Void> registerJRDMessageHandlerOnClient(@Autowired @Qualifier("jrdConsumer")
+                                                                   SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.info("    Calling registerMessageHandlerOnJRDClient ");
+        log.debug("    Calling registerMessageHandlerOnClient in JRD ");
 
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
-                log.info("    Calling onMessageAsync.....{}", message);
-                    List<byte[]> body = message.getMessageBody().getBinaryData();
-                    try {
-                        log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
-                        log.info("    Delivery Count is : {}", message.getDeliveryCount());
-                        AtomicBoolean result = new AtomicBoolean();
-                        if (featureConditionEvaluator.isFlagEnabled("am_org_role_mapping_service",
-                                "orm-jrd-org-role")) {
-                            processMessage(body, result);
-                            if (result.get()) {
-                                return receiveClient.completeAsync(message.getLockToken());
-                            }
-                            log.info("    getLockToken......{}", message.getLockToken());
-                        } else {
-                            log.info("The JRD feature flag is currently disabled. This message would be suppressed");
-                            return receiveClient.completeAsync(message.getLockToken());
-                        }
-
-                    } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
-                        throw new InvalidRequest("Some Network issue");
+                log.debug("    Calling onMessageAsync in JRD.....{}", message);
+                List<byte[]> body = message.getMessageBody().getBinaryData();
+                try {
+                    log.debug("    Locked Until Utc : {}", message.getLockedUntilUtc());
+                    log.info("    Delivery Count is : {}", message.getDeliveryCount());
+                    AtomicBoolean result = new AtomicBoolean();
+                    processMessage(body, result);
+                    if (result.get()) {
+                        return receiveClient.completeAsync(message.getLockToken());
                     }
-                log.info("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
+
+
+                    log.debug("    getLockToken......{}", message.getLockToken());
+
+                } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
+                    throw new InvalidRequest("Some Network issue");
+                }
+                log.debug("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
+
             }
 
             public void notifyException(Throwable throwable, ExceptionPhase exceptionPhase) {
@@ -128,7 +118,7 @@ public class JRDTopicConsumer {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.info("    Parsing the message on JRD Consumer");
+        log.debug("    Parsing the message in JRD");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
@@ -143,4 +133,3 @@ public class JRDTopicConsumer {
 
 
 }
-

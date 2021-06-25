@@ -30,10 +30,10 @@ class RoleAssignmentServiceTest {
     @Test
     void testGetServiceStatus() {
         Mockito.when(rasFeignClient.getServiceStatus())
-                .thenReturn("Okay!");
+                .thenReturn("UP");
         String serviceStatus = sut.getServiceStatus();
         assertNotNull(serviceStatus);
-        assertEquals("Okay!", serviceStatus);
+        assertEquals("UP", serviceStatus);
     }
 
 }

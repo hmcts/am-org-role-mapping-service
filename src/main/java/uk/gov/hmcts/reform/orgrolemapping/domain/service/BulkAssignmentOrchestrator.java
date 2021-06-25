@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
+
 import java.util.Map;
 import java.util.Set;
 
@@ -28,14 +29,13 @@ public class BulkAssignmentOrchestrator {
 
     private final RequestMappingService requestMappingService;
 
+
     @SuppressWarnings("unchecked")
-    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest,UserType userType) {
+    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest, UserType userType) {
         long startTime = System.currentTimeMillis();
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
         log.info("Validated userIds {}", userRequest.getUserIds());
-
-
         //Create userAccessProfiles based upon roleId and service codes
         Map<String, Set<?>> userAccessProfiles = retrieveDataService
                 .retrieveProfiles(userRequest, userType);

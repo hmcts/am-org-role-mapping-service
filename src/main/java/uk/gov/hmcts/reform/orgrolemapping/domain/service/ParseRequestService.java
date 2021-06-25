@@ -47,7 +47,8 @@ public class ParseRequestService implements ParseRequestBase {
         if (Collections.isEmpty(profiles)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
-        if (userRequest.getUserIds().size() != profiles.size()) {
+        if (CollectionUtils.isNotEmpty(userRequest.getUserIds())
+                && userRequest.getUserIds().size() != profiles.size()) {
             List<String> userProfileIds = new ArrayList<>();
 
             if (userType.equals(UserType.CASEWORKER)) {

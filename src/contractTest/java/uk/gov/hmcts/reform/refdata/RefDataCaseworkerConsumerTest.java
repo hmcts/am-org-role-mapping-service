@@ -9,16 +9,24 @@ import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
@@ -38,10 +46,25 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 @PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991")
 @ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
 @TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataCaseworkerConsumerTest {
+
+    private static final String CRD_GET_USERS_BY_SERVICE = "/refdata/internal/staff/usersByServiceName";
+    private static final String USERS_BY_SERVICE_QUERY = "ccd_service_names=IA&page_size=20&page_number=1&"
+            + "sort_direction=ASC&sort_column=caseWorkerId";
 
     @Autowired
     CRDFeignClient crdFeignClient;
+
+    @BeforeEach
+    public void setUpEachTest() throws InterruptedException {
+        Thread.sleep(2000);
+    }
+
+    @After
+    void teardown() {
+        Executor.closeIdleConnections();
+    }
 
     @Pact(provider = "referenceData_caseworkerRefUsers", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact generatePactFragment(PactDslWithProvider builder) throws JSONException,
@@ -59,6 +82,21 @@ public class RefDataCaseworkerConsumerTest {
             .toPact();
     }
 
+    @Pact(provider = "referenceData_caseworkerRefUsers", consumer = "accessMgmt_orgRoleMapping")
+    public RequestResponsePact getCaseworkersByServiceNamePact(PactDslWithProvider builder) throws JSONException {
+
+        return builder
+                .given("A list of staff profiles for CRD request by service names")
+                .uponReceiving("A request for caseworkers by serviceName")
+                .path(CRD_GET_USERS_BY_SERVICE)
+                .query(USERS_BY_SERVICE_QUERY)
+                .method(HttpMethod.GET.toString())
+                .willRespondWith()
+                .status(HttpStatus.OK.value())
+                .body(buildCaseworkerListWithService())
+                .toPact();
+    }
+
     @Test
     @PactTestFor(pactMethod = "generatePactFragment")
     public void verifyCaseworkersFetch() {
@@ -69,6 +107,16 @@ public class RefDataCaseworkerConsumerTest {
         Objects.requireNonNull(response.getBody()).forEach(o -> caseWorkerProfiles.add(convertInCaseWorkerProfile(o)));
 
         assertThat(caseWorkerProfiles.get(0).getEmailId(), equalTo("sam.manuel@gmail.com"));
+
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "getCaseworkersByServiceNamePact")
+    public void verifyCaseworkersByServiceName() {
+        ResponseEntity<List<UserProfilesResponse>> caseWorkerProfiles =
+                crdFeignClient.getCaseworkerDetailsByServiceName("IA",20,1,
+                        "ASC", "caseWorkerId");
+        assertThat(caseWorkerProfiles.getBody().get(0).getServiceName(), equalTo("IA"));
 
     }
 
@@ -108,6 +156,32 @@ public class RefDataCaseworkerConsumerTest {
                     .stringType("service_code", "BFA1")
                 )
             );
+        }).build();
+    }
+
+    private DslPart buildCaseworkerListWithService() {
+
+        return newJsonArray(o -> {
+            o.object(ob -> ob
+                    .stringType("ccd_service_name", "IA")
+                    .object("staff_profile", s -> s
+                            .stringType("first_name","Sam")
+                            .stringType("last_name","Manuel")
+                            .stringType("email_id", "sam.manuel@gmail.com")
+                            .numberType("region_id", 1)
+                            .stringType("region", "National")
+                            .stringType("user_type", "HMCTS")
+                            .stringMatcher("suspended", "true|false", "true")
+                            .numberType("user_type_id", 1)
+                            .minArrayLike("role", 1, r -> r
+                                    .stringType("role_id", "1")
+                                    .stringType("role", "senior-tribunal-caseworker")
+                                    .booleanType("is_primary", true)
+                            )
+                            .minArrayLike("work_area", 1, r -> r
+                                    .stringType("service_code", "BFA1")
+                            )
+                    ));
         }).build();
     }
 }

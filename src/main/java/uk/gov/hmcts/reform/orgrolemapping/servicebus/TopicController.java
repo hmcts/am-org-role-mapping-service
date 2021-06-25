@@ -29,7 +29,7 @@ public class TopicController {
     @PostMapping(value = "/send2CRD")
     public ResponseEntity<String> send2CRD(@RequestBody PublishCaseWorkerData body) {
         log.info("Sending message 2 CRD topic");
-        crdTopicPublisher.sendMessage(body);
+        //crdTopicPublisher.sendMessage(body);
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 
@@ -37,7 +37,7 @@ public class TopicController {
     @PostMapping(value = "/send2JRD")
     public ResponseEntity<String> send2JRD(@RequestBody PublishCaseWorkerData body) {
         log.info("Sending message 2 JRD topic");
-        jrdTopicPublisher.sendMessage(body);
+        //jrdTopicPublisher.sendMessage(body);
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 

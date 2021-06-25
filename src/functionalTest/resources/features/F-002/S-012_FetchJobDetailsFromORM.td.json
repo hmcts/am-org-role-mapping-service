@@ -1,0 +1,14 @@
+{
+  "_guid_": "S-012_FetchJobDetailsFromORM",
+  "_extends_": "FetchJobDetailsFromORM",
+  "request": {
+    "pathVariables": {
+      "jobId": "${[scenarioContext][parentContext][childContexts][S-012_InsertJobWithNewStatusAndLinkedId][testData][actualResponse][body][jobId]}"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "linkedJobId" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}

@@ -34,9 +34,8 @@ public class SwaggerConfiguration {
             .host(host)
             .globalOperationParameters(Arrays.asList(
                 headerServiceAuthorization(),
-                headerAuthorization(),
-                headerUserId(),
-                headerUserRoles()
+                headerAuthorization()
+
                                                     ));
     }
 

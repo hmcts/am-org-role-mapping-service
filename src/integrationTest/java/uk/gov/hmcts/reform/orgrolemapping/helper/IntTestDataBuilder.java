@@ -168,4 +168,25 @@ public class IntTestDataBuilder {
         return userAccessProfiles;
     }
 
+    /*public static List<UserProfilesResponse> buildListOfUserProfilesResponse(String service,
+                                                                     boolean multiRole,
+                                                                     String roleId1,
+                                                                     String roleId2,
+                                                                     String roleName1,
+                                                                     String roleName2,
+                                                                     boolean enableLocationList,
+                                                                     boolean primaryLocation1,
+                                                                     boolean primaryLocation2,
+                                                                     boolean enableWorkAreaList,
+                                                                     String workArea1,
+                                                                     String workArea2,
+                                                                     boolean suspended) {
+        List<UserProfilesResponse> userProfiles = new ArrayList<>();
+        UserProfile profile = buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
+                enableLocationList, primaryLocation1, primaryLocation2,
+                enableWorkAreaList, workArea1, workArea2, suspended);
+
+        userProfiles.add(UserProfilesResponse.builder().serviceName(service).userProfile(profile).build());
+        return userProfiles;
+    }*/
 }

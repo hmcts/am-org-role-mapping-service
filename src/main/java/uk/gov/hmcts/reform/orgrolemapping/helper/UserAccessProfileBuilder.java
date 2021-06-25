@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.InputStream;
@@ -110,6 +111,31 @@ public class UserAccessProfileBuilder {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
                 CaseWorkerProfile caseWorkerProfile = objectMapper.readValue(inputStream, CaseWorkerProfile.class);
+                caseWorkerProfile.setId(userId);
+                caseWorkerProfiles.add(caseWorkerProfile);
+
+
+            } catch (Exception e) {
+                throw new BadRequestException("Either the user request is not valid or sample json is missing.");
+            }
+
+
+        });
+        return new ArrayList<>(caseWorkerProfiles);
+    }
+
+    public static List<UserProfile> buildUserAccessProfile(UserRequest userRequest, String resource) {
+
+        Set<UserProfile> caseWorkerProfiles = new LinkedHashSet<>();
+
+
+        userRequest.getUserIds().forEach(userId -> {
+            try (InputStream inputStream =
+                         UserAccessProfileBuilder.class.getClassLoader()
+                                 .getResourceAsStream(resource)) {
+                assert inputStream != null;
+                ObjectMapper objectMapper = getObjectMapper();
+                UserProfile caseWorkerProfile = objectMapper.readValue(inputStream, UserProfile.class);
                 caseWorkerProfile.setId(userId);
                 caseWorkerProfiles.add(caseWorkerProfile);
 

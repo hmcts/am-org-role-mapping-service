@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import lombok.NoArgsConstructor;
-import net.serenitybdd.rest.SerenityRest;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.Before;
@@ -12,10 +14,10 @@ import org.junit.jupiter.api.Tag;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 
@@ -41,6 +43,12 @@ public class SmokeTest {
     @MockBean
     private JRDTopicConsumer jrdTopicConsumer;
 
+    @MockBean
+    private TopicPublisher topicPublisher;
+
+    @MockBean
+    private CRDMessagingConfiguration crdMessagingConfiguration;
+
     @Rule
     public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator(this);
 
@@ -55,7 +63,7 @@ public class SmokeTest {
     @FeatureFlagToggle("orm-base-flag")
     public void should_receive_response_for_welcomeAPI() {
 
-        String targetInstance = config.getOrgRoleMappingUrl() + "/welcome";
+        String targetInstance = config.getOrgRoleMappingUrl();
         RestAssured.useRelaxedHTTPSValidation();
 
         Response response = SerenityRest

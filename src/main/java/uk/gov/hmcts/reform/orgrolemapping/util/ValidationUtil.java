@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -44,7 +45,7 @@ public class ValidationUtil {
     }
 
     public static void validateDateTime(String strDate, String timeParam) {
-        LOG.info("validateDateTime");
+        LOG.debug("validateDateTime");
         if (strDate.length() < 16) {
             throw new BadRequestException(String.format(
                     "Incorrect date format %s",
@@ -57,7 +58,7 @@ public class ValidationUtil {
         try {
             javaDate = simpleDateFormat.parse(strDate);
             if (LOG.isInfoEnabled() && javaDate != null) {
-                LOG.info(javaDate.toString());
+                LOG.debug(javaDate.toString());
             }
         } catch (ParseException e) {
             throw new BadRequestException(String.format(
@@ -100,6 +101,19 @@ public class ValidationUtil {
             throw new BadRequestException(
                     String.format("The input parameter: \"%s\", does not comply with the required pattern",
                             inputString));
+        }
+    }
+
+    public static void compareRoleCategory(String roleCategoryFromJob) {
+        boolean valid = false;
+        for (RoleCategory roleCategory : RoleCategory.values()) {
+            if (roleCategory.name().equalsIgnoreCase(roleCategoryFromJob)) {
+                valid = true;
+                break;
+            }
+        }
+        if (!valid) {
+            throw new BadRequestException("The roleCategory parameter supplied is not valid");
         }
     }
 

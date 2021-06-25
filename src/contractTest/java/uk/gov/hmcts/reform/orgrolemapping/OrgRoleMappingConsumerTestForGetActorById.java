@@ -8,11 +8,13 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.google.common.collect.Maps;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,12 +29,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+
+import java.util.Map;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -50,6 +54,15 @@ public class OrgRoleMappingConsumerTestForGetActorById {
 
     @MockBean
     JRDTopicConsumer jrdTopicConsumer;
+
+    @MockBean
+    TopicPublisher topicPublisher;
+
+    @MockBean
+    CRDMessagingConfiguration crdMessagingConfiguration;
+
+    @MockBean
+    ServiceBusSenderClient serviceBusSenderClient;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -78,7 +91,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
 
     @Test
     @PactTestFor(pactMethod = "executeGetActorByIdAndGet200")
-    void getActorByIdAndGet200Test(MockServer mockServer) {
+    void getActorByIdAndGet200Test(MockServer mockServer) throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()

@@ -28,6 +28,7 @@ security:
     - "/health"
     - "/actuator/**"
     - "/loggers/**"
+    - "/am/role-assignments/fetchFlagStatus"
     - "/swagger-ui.html"
     - "/swagger-resources/**"
     - "/v2/api-docs"
@@ -37,7 +38,7 @@ security:
     - "/error"
     - "/favicon.ico"
   authorisedRoles:
-  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:ccd_gw,am_org_role_mapping_service,am_role_assignment_service}
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service}
 
 spring:
   application:
@@ -48,6 +49,28 @@ spring:
     default-property-inclusion: NON_NULL
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  flyway.enabled: ${ENABLE_DB_MIGRATE:true}
+  flyway.locations: classpath:db/migration
+  datasource:
+    url: jdbc:postgresql://${ORG_ROLE_MAPPING_DB_HOST:localhost}:${ORG_ROLE_MAPPING_DB_PORT:5451}/${ORG_ROLE_MAPPING_DB_NAME:org_role_mapping}${ORG_ROLE_MAPPING_DB_OPTIONS:?stringtype=unspecified}
+    username: ${ORG_ROLE_MAPPING_DB_USERNAME:am}
+    password: ${ORG_ROLE_MAPPING_DB_PASSWORD:am}
+    properties:
+      charSet: UTFh-8
+    hikari:
+      maximumPoolSize: 10
+      poolName: AMHikariCP
+      maxLifetime: 90000
+      connectionTimeout: 10000
+      keepAliveTime: 60000
   security:
     oauth2:
       client:
@@ -73,7 +96,7 @@ idam:
     microservice: am_org_role_mapping_service
     url: ${IDAM_S2S_URL:http://localhost:4502}
   s2s-authorised:
-    services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:ccd_gw,am_role_assignment_service,am_org_role_mapping_service}
+    services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:am_role_assignment_service,am_org_role_mapping_service,am_role_assignment_refresh_batch}
   api.url: ${IDAM_USER_URL:http://localhost:5000}
   client:
     id: ${ORM_IDAM_CLIENT_ID:am_docker}
@@ -92,13 +115,12 @@ integrationTest:
     url: "/"
 
 feign:
-
   client:
     config:
       default:
         connectTimeout: 5000
         readTimeout: 5000
-        loggerLevel: FULL
+        loggerLevel: BASIC
       crdclient:
         url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
       roleAssignmentApp:
@@ -111,23 +133,32 @@ swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
 roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 
-aws-consumer:
+amqp:
   host: ${AMQP_HOST:test}
-  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:SendAndListenSharedAccessKey}
-  # DO NOT SET THIS 'true' IN PRODUCTION!
-  trustAllCerts: ${TRUST_ALL_CERTS:true}
-  maxRetryAttempts: ${MAX_RETRY_ATTEMPTS:3}
+  sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
   crd:
-    sharedAccessKeyValue: ${CRD_SHARED_ACCESS_KEY_VALUE:test}
+    sharedAccessKeyValue: ${AMQP_CRD_SHARED_ACCESS_KEY_VALUE:test}
     topic: ${CRD_TOPIC_NAME:test}
     subscription: ${CRD_SUBSCRIPTION_NAME:test}
   jrd:
-    sharedAccessKeyValue: ${JRD_SHARED_ACCESS_KEY_VALUE:test}
+    sharedAccessKeyValue: ${AMQP_JRD_SHARED_ACCESS_KEY_VALUE:test}
     topic: ${JRD_TOPIC_NAME:test}
     subscription: ${JRD_SUBSCRIPTION_NAME:test}
 
 launchdarkly:
   sdk:
     key: ${LD_SDK_KEY:}
-    environment: ${LAUNCH_DARKLY_ENV:pr}
+    environment: ${LAUNCH_DARKLY_ENV:local}
     user: am-${LAUNCH_DARKLY_ENV:local}
+refresh:
+  Job:
+    update: ${REFRESH_JOB:}
+    pageSize: ${REFRESH_JOB_PAGE_SIZE:400}
+    sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
+    sortColumn: ${REFRESH_JOB_SORT_COL:}
+
+dbFeature:
+  flags:
+    enable: ${DB_FEATURE_FLAG_ENABLE:}
+    disable: ${DB_FEATURE_FLAG_DISABLE:}
+logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:DEBUG}
