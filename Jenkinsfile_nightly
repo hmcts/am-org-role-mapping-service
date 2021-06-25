@@ -53,7 +53,9 @@ withNightlyPipeline(type, product, component) {
   /*enableSlackNotifications('#am-org-role-mapping-service-builds')*/
 
   env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
+  env.IDAM_API_URL_BASE = "https://idam-api.aat.platform.hmcts.net"
   env.IDAM_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
+  env.S2S_URL_BASE = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
   env.BEFTA_S2S_CLIENT_ID = "am_org_role_mapping_service"
   env.OAUTH2_REDIRECT_URI = "http://am-role-assignment-service-aat.service.core-compute-aat.internal/oauth2redirect"
   env.OAUTH2_CLIENT_ID = "am_role_assignment"
@@ -67,7 +69,6 @@ withNightlyPipeline(type, product, component) {
   env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
   env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
   env.CRD_URL = "http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal"
-  env.USER_PROFILE_URL= "https://rd-user-profile-api-pr-575.service.core-compute-preview.internal"
   env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
   env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
   env.TEST_URL = "http://am-org-role-mapping-service-aat.service.core-compute-aat.internal"
