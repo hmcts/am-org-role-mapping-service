@@ -8,27 +8,43 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.google.common.collect.Maps;
+import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
+import javax.annotation.PreDestroy;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Map;
+import java.util.Properties;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 import static org.junit.Assert.assertNotNull;
@@ -49,6 +65,17 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
 
     @MockBean
     JRDTopicConsumer jrdTopicConsumer;
+
+    @Autowired
+    DataSource dataSource;
+    @MockBean
+    TopicPublisher topicPublisher;
+
+    @MockBean
+    CRDMessagingConfiguration crdMessagingConfiguration;
+
+    @MockBean
+    ServiceBusSenderClient serviceBusSenderClient;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -94,7 +121,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
 
     @Test
     @PactTestFor(pactMethod = "executeGetListOfRolesAndGet200")
-    void getListOfRolesAndGet200Test(MockServer mockServer) {
+    void getListOfRolesAndGet200Test(MockServer mockServer) throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()
@@ -140,5 +167,37 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
         headers.add("ServiceAuthorization", "Bearer " + "1234");
         headers.add("Authorization", "Bearer " + "2345");
         return headers;
+    }
+
+    @TestConfiguration
+    static class Configuration {
+        Connection connection;
+
+        @Bean
+        public EmbeddedPostgres embeddedPostgres() throws IOException {
+            return EmbeddedPostgres
+                    .builder()
+                    .setPort(0)
+                    .start();
+        }
+
+        @Bean
+        public DataSource dataSource() throws IOException, SQLException {
+            final EmbeddedPostgres pg = embeddedPostgres();
+
+            final Properties props = new Properties();
+            // Instruct JDBC to accept JSON string for JSONB
+            props.setProperty("stringtype", "unspecified");
+            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres", "postgres"), props);
+            return new SingleConnectionDataSource(connection, true);
+        }
+
+        @PreDestroy
+        public void contextDestroyed() throws IOException, SQLException {
+            if (connection != null) {
+                connection.close();
+            }
+            embeddedPostgres().close();
+        }
     }
 }

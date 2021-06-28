@@ -13,7 +13,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -21,6 +20,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -34,22 +34,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class CRDTopicConsumer {
-
-    @Value("${aws-consumer.host}")
-    String host;
-    @Value("${aws-consumer.crd.subscription}")
-    String subscription;
-    @Value("${aws-consumer.sharedAccessKeyName}")
-    String username;
-    @Value("${aws-consumer.crd.sharedAccessKeyValue}")
-    String password;
+public class CRDTopicConsumer extends CRDMessagingConfiguration {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
 
+    @Autowired
+    private RoleAssignmentService roleAssignmentService;
+
     public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                            OrmDeserializer deserializer) {
+                         OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
 
@@ -59,32 +53,37 @@ public class CRDTopicConsumer {
     @Qualifier("crdConsumer")
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
+        logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
+        log.debug("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+
+        String destination = topic.concat("/subscriptions/").concat(subscription);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
-                subscription,
-                username,
-                password);
+                destination,
+                sharedAccessKeyName,
+                sharedAccessKeyValue);
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
 
     @Bean
-    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
+    @Qualifier("crdConsumer")
+    CompletableFuture<Void> registerCRDMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.info("    Calling registerMessageHandlerOnClient ");
+        log.debug("    Calling registerMessageHandlerOnClient in CRD ");
 
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
-                log.info("    Calling onMessageAsync.....{}", message);
+                log.debug("    Calling onMessageAsync in CRD.....{}", message);
                 List<byte[]> body = message.getMessageBody().getBinaryData();
                 try {
-                    log.info("    Locked Until Utc : {}", message.getLockedUntilUtc());
+                    log.debug("    Locked Until Utc : {}", message.getLockedUntilUtc());
                     log.info("    Delivery Count is : {}", message.getDeliveryCount());
                     AtomicBoolean result = new AtomicBoolean();
                     processMessage(body, result);
@@ -93,12 +92,12 @@ public class CRDTopicConsumer {
                     }
 
 
-                    log.info("    getLockToken......{}", message.getLockToken());
+                    log.debug("    getLockToken......{}", message.getLockToken());
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
                     throw new InvalidRequest("Some Network issue");
                 }
-                log.info("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
+                log.debug("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
 
             }
@@ -120,7 +119,7 @@ public class CRDTopicConsumer {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.info("    Parsing the message on CRD Consumer");
+        log.debug("    Parsing the message in CRD");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,

@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging;
 
 import lombok.extern.slf4j.Slf4j;
@@ -92,3 +93,4 @@ public class MessagingConfig {
     }
 
 }
+*/

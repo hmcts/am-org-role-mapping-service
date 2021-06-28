@@ -7,14 +7,15 @@ import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_QUERY_NAME;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
@@ -22,10 +23,10 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingSe
 public abstract class DroolBase {
 
     StatelessKieSession kieSession;
-    Map<String, Set<CaseWorkerAccessProfile>> usersAccessProfiles;
+    Map<String, Set<UserAccessProfile>> usersAccessProfiles;
     List<Command<?>> commands;
     ExecutionResults results;
-    Set<CaseWorkerAccessProfile> allProfiles;
+    Set<UserAccessProfile> allProfiles;
 
     @BeforeEach
     public void setUp() {
@@ -43,7 +44,7 @@ public abstract class DroolBase {
 
     }
 
-    void buildExecuteKieSession() {
+    void buildExecuteKieSession(List<FeatureFlag> featureFlags) {
         // Sequence of processing for executing the rules:
         //   1. add all the profiles
         //   2. fire all the rules
@@ -52,6 +53,7 @@ public abstract class DroolBase {
 
         commands = new ArrayList<>();
         commands.add(CommandFactory.newInsertElements(allProfiles));
+        commands.add(CommandFactory.newInsertElements(featureFlags));
         commands.add(CommandFactory.newFireAllRules());
         commands.add(CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME));
 

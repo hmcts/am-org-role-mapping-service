@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
@@ -11,14 +12,19 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
@@ -33,21 +39,34 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
 @AllArgsConstructor
+@NoArgsConstructor
 public class RequestMappingService<T> {
 
+    @Value("${launchdarkly.sdk.environment}")
+    private String environment;
+
+    @Autowired
+    private PersistenceService persistenceService;
 
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
     public static final String JUDICIAL_ORGANISATIONAL_ROLE_MAPPING = "judicial-organisational-role-mapping";
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
     public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
     public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
+
+    @Autowired
     private RoleAssignmentService roleAssignmentService;
+
+    @Autowired
     private StatelessKieSession kieSession;
+
+    @Autowired
     private SecurityUtils securityUtils;
 
 
@@ -63,10 +82,9 @@ public class RequestMappingService<T> {
                 userType);
         // The response body is a list of ....???....
         ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleAssignments, userType);
-        log.info(
-                "Execution time of createCaseWorkerAssignments() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
+        log.debug("Execution time of createCaseWorkerAssignments() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(),startTime)));
+
         return responseEntity;
 
     }
@@ -77,7 +95,7 @@ public class RequestMappingService<T> {
      */
     @SuppressWarnings("unchecked")
     private Map<String, List<RoleAssignment>> getProfileRoleAssignments(Map<String,
-            Set<T>> usersAccessProfiles,UserType userType) {
+            Set<T>> usersAccessProfiles, UserType userType) {
 
         // Create a map to hold the role assignments for each user.
         Map<String, List<RoleAssignment>> usersRoleAssignments = new HashMap<>();
@@ -140,10 +158,9 @@ public class RequestMappingService<T> {
     private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles) {
         long startTime = System.currentTimeMillis();
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
-        log.info(
-                "Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
+        log.debug("Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(),startTime)));
+
         return roleAssignments;
     }
 
@@ -161,6 +178,8 @@ public class RequestMappingService<T> {
         //      (into a variable populated by the results of a query defined in the rules).
         List<Command<?>> commands = new ArrayList<>();
         commands.add(CommandFactory.newInsertElements(allProfiles));
+        List<FeatureFlag> featureFlags = getDBFeatureFlags();
+        commands.add(CommandFactory.newInsertElements(featureFlags));
         commands.add(CommandFactory.newFireAllRules());
         commands.add(CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME));
 
@@ -174,6 +193,29 @@ public class RequestMappingService<T> {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
         return roleAssignments;
+    }
+
+    private List<FeatureFlag> getDBFeatureFlags() {
+        List<FeatureFlag> featureFlags = new ArrayList<>();
+        Map<String, Boolean> droolFlagStates = new ConcurrentHashMap<>();
+        // building the LDFeature Flag
+        if (environment.equals("prod")) {
+            droolFlagStates = DBFlagConfigurtion.getDroolFlagStates();
+        } else {
+            // fetch the latest value from db for lower env
+            getFlagValuesFromDB(droolFlagStates);
+        }
+
+        for (Map.Entry<String, Boolean> flag : droolFlagStates.entrySet()) {
+            var featureFlag = FeatureFlag.builder()
+                    .flagName(flag.getKey())
+                    .status(flag.getValue())
+                    .build();
+            featureFlags.add(featureFlag);
+        }
+        featureFlags.forEach(a -> log.debug("featureFlag values from db.....{}   ", a.getFlagName()
+                + " - " + a.isStatus()));
+        return featureFlags;
     }
 
     /**
@@ -247,10 +289,9 @@ public class RequestMappingService<T> {
 
         try {
             responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
-            log.info(
-                    "Execution time of updateRoleAssignments() : {} ms",
-                    (Math.subtractExact(System.currentTimeMillis(), startTime))
-            );
+            log.debug("Execution time of updateRoleAssignments() : {} ms",
+                    (Math.subtractExact(System.currentTimeMillis(),startTime)));
+
         } catch (FeignException.FeignClientException feignClientException) {
             log.error("Handling FeignClientException UnprocessableEntity: " + feignClientException.getMessage());
 
@@ -268,5 +309,18 @@ public class RequestMappingService<T> {
         return responseEntity;
     }
 
+    /**
+     * This utility method is used to capture the log in drools.
+     */
+    public static void logMsg(final String message) {
+        log.debug(message);
+    }
+
+    private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {
+        for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
+            Boolean status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
+            droolFlagStates.put(featureFlagEnum.getValue(), status);
+        }
+    }
 
 }

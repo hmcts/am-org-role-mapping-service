@@ -138,6 +138,9 @@ public class AssignmentRequestBuilder {
                 })
         );
 
+        log.debug("Execution time of convertUserProfileToUserAccessProfile() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(),startTime)));
+        //return userAccessProfiles;
         log.info(
                 "Execution time of convertUserProfileToUserAccessProfile() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
