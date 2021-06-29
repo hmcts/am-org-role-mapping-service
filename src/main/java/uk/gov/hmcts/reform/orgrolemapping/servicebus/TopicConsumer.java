@@ -94,7 +94,6 @@ public class TopicConsumer extends MessagingConfiguration {
                 }
                 log.debug("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
-
             }
 
             public void notifyException(Throwable throwable, ExceptionPhase exceptionPhase) {
