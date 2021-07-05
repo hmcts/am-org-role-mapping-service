@@ -31,6 +31,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
@@ -144,12 +145,112 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
                         .stringType(name, "tribunal-caseworker")
                         .stringType(label, "Tribunal Caseworker")
                         .stringType(description, "Tribunal caseworker")
-                        .stringType(category, "LEGAL_OPERATIONS"))
+                        .stringType(category, RoleCategory.LEGAL_OPERATIONS.name()))
                 .object(role -> role
                         .stringType(name, "senior-tribunal-caseworker")
                         .stringType(label, "Senior Tribunal Caseworker")
                         .stringType(description, "Senior Tribunal caseworker")
-                        .stringType(category, "LEGAL_OPERATIONS"))
+                        .stringType(category, RoleCategory.LEGAL_OPERATIONS.name()))
+                .object(role -> role
+                        .stringType(name, "petitioner's-solicitor")
+                        .stringType(label, "Petitioner's Solicitor")
+                        .stringType(description, "Petitioner's Solicitor")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "respondent's-solicitor")
+                        .stringType(label, "Respondent's Solicitor")
+                        .stringType(description, "Respondent's Solicitor")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "barrister")
+                        .stringType(label, "Barrister")
+                        .stringType(description, "Barrister")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "cafcass-solicitor")
+                        .stringType(label, "Cafcass Solicitor")
+                        .stringType(description, "Cafcass Solicitor")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "external-professional-solicitor")
+                        .stringType(label, "External Professional Solicitor")
+                        .stringType(description, "External Professional Solicitorv")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "la-barrister")
+                        .stringType(label, "LA Barrister")
+                        .stringType(description, "LA Barrister")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "managing-local-authority")
+                        .stringType(label, "Managing Local Authority")
+                        .stringType(description, "Managing Local Authority")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "la-solicitor")
+                        .stringType(label, "LA solicitor")
+                        .stringType(description, "LA solicitor")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor")
+                        .stringType(label, "Solicitor")
+                        .stringType(description, "Solicitor")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-a")
+                        .stringType(label, "Solicitor A")
+                        .stringType(description, "Solicitor A")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-b")
+                        .stringType(label, "Solicitor B")
+                        .stringType(description, "Solicitor B")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-c")
+                        .stringType(label, "Solicitor C")
+                        .stringType(description, "Solicitor C")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-d")
+                        .stringType(label, "Solicitor D")
+                        .stringType(description, "Solicitor D")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-e")
+                        .stringType(label, "Solicitor E")
+                        .stringType(description, "Solicitor E")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-f")
+                        .stringType(label, "Solicitor F")
+                        .stringType(description, "Solicitor F")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-g")
+                        .stringType(label, "Solicitor G")
+                        .stringType(description, "Solicitor G")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-h")
+                        .stringType(label, "Solicitor H")
+                        .stringType(description, "Solicitor H")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-i")
+                        .stringType(label, "Solicitor I")
+                        .stringType(description, "Solicitor I")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "solicitor-j")
+                        .stringType(label, "Solicitor J")
+                        .stringType(description, "Solicitor J")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
+                .object(role -> role
+                        .stringType(name, "legal-representative")
+                        .stringType(label, "Legal Representative")
+                        .stringType(description, "Legal Representative")
+                        .stringType(category, RoleCategory.PROFESSIONAL.name()))
         ).build();
     }
 
