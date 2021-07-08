@@ -10,11 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 
 class WelcomeControllerTest {
 
@@ -38,8 +40,6 @@ class WelcomeControllerTest {
         assertEquals("redirect:swagger-ui.html", sut.index());
     }
 
-
-
     @Test
     void welcome() {
         assertEquals("Welcome to Organisation Role Mapping Service", sut.welcome());
@@ -52,7 +52,8 @@ class WelcomeControllerTest {
         ResponseEntity<Object> response =
                 ResponseEntity.status(HttpStatus.CREATED).body(userRequest);
 
-        Mockito.when(bulkAssignmentOrchestrator.createBulkAssignmentsRequest(Mockito.any(UserRequest.class)))
+        Mockito.when(bulkAssignmentOrchestrator.createBulkAssignmentsRequest(Mockito.any(UserRequest.class),
+                eq(UserType.CASEWORKER)))
                 .thenReturn(response);
 
         assertEquals(response, sut.createOrgMapping(userRequest));

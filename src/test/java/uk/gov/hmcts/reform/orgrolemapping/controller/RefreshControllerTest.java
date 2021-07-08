@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -68,3 +69,4 @@ class RefreshControllerTest {
         }
     }
 }
+*/

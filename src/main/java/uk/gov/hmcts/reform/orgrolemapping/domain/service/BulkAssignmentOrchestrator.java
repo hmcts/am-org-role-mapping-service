@@ -4,13 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 @Slf4j
@@ -33,28 +31,24 @@ public class BulkAssignmentOrchestrator {
 
 
     @SuppressWarnings("unchecked")
-    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest) {
+    public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest, UserType userType) {
         long startTime = System.currentTimeMillis();
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
         log.info("Validated userIds {}", userRequest.getUserIds());
         //Create userAccessProfiles based upon roleId and service codes
-        Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
-                .retrieveCaseWorkerProfiles(userRequest);
+        Map<String, Set<?>> userAccessProfiles = retrieveDataService
+                .retrieveProfiles(userRequest, userType);
 
         //call the requestMapping service to determine role name and create role assignment requests
-        ResponseEntity<Object> responseEntity = requestMappingService.createCaseWorkerAssignments(userAccessProfiles);
-        log.debug("Execution time of createBulkAssignmentsRequest() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime)));
+        ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
 
-        List<Object> roleAssignmentResponses = new ArrayList<>();
 
-        ((List<ResponseEntity<Object>>)
-                Objects.requireNonNull(responseEntity.getBody())).forEach(entity ->
-            roleAssignmentResponses.add(entity.getBody()));
-
-        return ResponseEntity.ok(roleAssignmentResponses);
+        log.info(
+                "Execution time of createBulkAssignmentsRequest() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
+        );
+        return responseEntity;
     }
-
 
 }

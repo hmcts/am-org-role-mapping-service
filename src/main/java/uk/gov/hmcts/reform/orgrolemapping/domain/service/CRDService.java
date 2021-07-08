@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 
 import java.util.List;
 
@@ -17,7 +17,8 @@ import java.util.List;
 public class CRDService {
 
     //This class is reserved to extract the RAS response and play with the resource object.
-    private final CRDFeignClient crdFeignClient;
+    //private final CRDFeignClient crdFeignClient;
+    private final CRDFeignClientFallback crdFeignClient;
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<List<UserProfile>> fetchUserProfiles(UserRequest userRequest) {

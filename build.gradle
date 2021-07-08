@@ -217,7 +217,7 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
                 "**UserAccessProfileBuilder.java," +
                 "**TestController.java"
-
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/advice/exception/**"
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
 }
@@ -342,6 +342,8 @@ dependencies {
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
     implementation 'commons-io:commons-io:2.8.0'
 
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
@@ -394,7 +396,7 @@ dependencies {
     pitest 'org.pitest:pitest-junit5-plugin:0.12'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.4.6'
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: '3.6.28'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
@@ -408,7 +410,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
-    testImplementation 'com.github.hmcts:befta-fw:fix-env-extend-befta-fw-SNAPSHOT'
+    testCompile 'com.github.hmcts:befta-fw:AM-1350-extend-befta-fw-SNAPSHOT'
     //compile fileTree(dir: 'lib', include: 'befta-fw-5.11.0.jar')
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
 

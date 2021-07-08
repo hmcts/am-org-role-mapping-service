@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RASFeignClientFallback;
 
 @FeignClient(value = "roleassignmentclient", url = "${feign.client.config.roleAssignmentApp.url}",
-             configuration = FeignClientConfiguration.class,
+             configuration = {FeignClientConfiguration.class, FeignClientInterceptor.class},
              fallback = RASFeignClientFallback.class)
 
 public interface RASFeignClient {

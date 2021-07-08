@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import io.swagger.annotations.ApiOperation;
@@ -59,3 +60,4 @@ public class RefreshController {
 
     }
 }
+*/

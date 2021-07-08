@@ -13,29 +13,29 @@ import org.springframework.stereotype.Service;
 @Primary
 @Service
 @Slf4j
-public class MessagingConfiguration {
+public class JRDMessagingConfiguration {
 
     @Value("${amqp.host}")
     String host;
-    @Value("${amqp.topic}")
-    String topic;
     @Value("${amqp.sharedAccessKeyName}")
     String sharedAccessKeyName;
-    @Value("${amqp.sharedAccessKeyValue}")
+    @Value("${amqp.jrd.topic}")
+    String topic;
+    @Value("${amqp.jrd.sharedAccessKeyValue}")
     String sharedAccessKeyValue;
-    @Value("${amqp.subscription}")
+    @Value("${amqp.jrd.subscription}")
     String subscription;
     @Value("${launchdarkly.sdk.environment}")
     String environment;
 
     @Bean
     public ServiceBusSenderClient getServiceBusSenderClient() {
-        log.debug("Getting the ServiceBusSenderClient");
+        log.debug("Getting the ServiceBusSenderClient in JRD");
         logServiceBusVariables();
         String connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
 
-        log.debug("Topic Name is " + topic);
+        log.debug("JRD Topic Name is " + topic);
 
         return new ServiceBusClientBuilder()
                 .connectionString(connectionString)

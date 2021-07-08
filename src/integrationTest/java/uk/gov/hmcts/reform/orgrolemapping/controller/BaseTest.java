@@ -12,9 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import javax.annotation.PreDestroy;
@@ -35,9 +34,6 @@ public abstract class BaseTest {
 
     @MockBean
     TopicPublisher topicPublisher;
-
-    @MockBean
-    TopicConsumer topicConsumer;
 
     @BeforeClass
     public static void init() {

@@ -16,9 +16,10 @@ import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.After;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import javax.annotation.PreDestroy;
@@ -60,7 +61,10 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
     private static final String RAS_GET_LIST_ROLES_URL = "/am/role-assignments/roles";
 
     @MockBean
-    TopicConsumer topicConsumer;
+    CRDTopicConsumer topicConsumer;
+
+    @MockBean
+    JRDTopicConsumer jrdTopicConsumer;
 
     @Autowired
     DataSource dataSource;
@@ -68,7 +72,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
     TopicPublisher topicPublisher;
 
     @MockBean
-    MessagingConfiguration messagingConfiguration;
+    CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
     ServiceBusSenderClient serviceBusSenderClient;
@@ -117,7 +121,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
 
     @Test
     @PactTestFor(pactMethod = "executeGetListOfRolesAndGet200")
-    void getListOfRolesAndGet200Test(MockServer mockServer) {
+    void getListOfRolesAndGet200Test(MockServer mockServer) throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()
@@ -150,6 +154,11 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
                         .stringType(label, "Senior Tribunal Caseworker")
                         .stringType(description, "Senior Tribunal caseworker")
                         .stringType(category, "LEGAL_OPERATIONS"))
+                .object(role -> role
+                        .stringType(name, "salaried-judge")
+                        .stringType(label, "salaried-judge")
+                        .stringType(description, "Judicial office holder able to do judicial case work")
+                        .stringType(category, "JUDICIAL"))
         ).build();
     }
 

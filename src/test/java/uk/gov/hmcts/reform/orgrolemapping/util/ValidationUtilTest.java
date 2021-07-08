@@ -78,6 +78,14 @@ class ValidationUtilTest {
     }
 
     @Test
+    void shouldValidate_ValidateDateTime_ParseException() {
+        String dateAfter =  LocalDateTime.now().plusDays(2L).toString();
+        Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.validateDateTime("20201127T1512345", dateAfter)
+        );
+    }
+
+    @Test
     void shouldThrow_cannotBePriorToCurrentDate() {
         String time = LocalDateTime.now().minusDays(1L).toString();
         String time2 = LocalDateTime.now().minusDays(1L).toString();
@@ -110,6 +118,13 @@ class ValidationUtilTest {
     }
 
     @Test
+    void shouldThrow_DoesNotMatchPatternId() {
+        Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.validateId(NUMBER_TEXT_HYPHEN_PATTERN, "req@@2")
+        );
+    }
+
+    @Test
     void shouldValidate_CompareDateTime() {
         Assertions.assertDoesNotThrow(() ->
                 ValidationUtil.validateDateTime(LocalDateTime.now().plusDays(1L).toString(),
@@ -130,9 +145,11 @@ class ValidationUtilTest {
     void shouldThrow_EndTimeBeforeCreateTime() {
         String previousDate = LocalDateTime.now().minusDays(1L).toString();
         String futureDate = LocalDateTime.now().plusDays(1L).toString();
-        Assertions.assertThrows(BadRequestException.class, () ->
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class, () ->
                 ValidationUtil.compareDateOrder(futureDate, previousDate)
         );
+        Assertions.assertTrue(exception.getLocalizedMessage().contains(String.format(
+                "The end time: %s takes place before the current time:", previousDate)));
     }
 
     @Test

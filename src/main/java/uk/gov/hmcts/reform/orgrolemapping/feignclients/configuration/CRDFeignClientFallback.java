@@ -4,7 +4,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserAccessProfile;
 
 @Component
 public class CRDFeignClientFallback implements CRDFeignClient {
@@ -27,8 +27,10 @@ public class CRDFeignClientFallback implements CRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<List<UserProfile>> getCaseworkerDetailsById(UserRequest userRequest) {
-        return ResponseEntity.ok(new ArrayList<>(buildUserProfile(userRequest, "userProfileSample.json")));
+    @SuppressWarnings("unchecked")
+    public <T> ResponseEntity<List<T>> getCaseworkerDetailsById(UserRequest userRequest) {
+        return ResponseEntity.ok((List<T>) new ArrayList<>(buildUserProfile(userRequest, "userProfileSample.json")));
+
     }
 
     @Override
@@ -40,7 +42,7 @@ public class CRDFeignClientFallback implements CRDFeignClient {
 
         ResponseEntity<List<UserProfilesResponse>> responseEntity = ResponseEntity.ok(Arrays
                 .asList(UserProfilesResponse.builder()
-                .serviceName(ccdServiceNames).userProfile(buildUserProfile(UserRequest.builder().userIds(
+                .serviceName(ccdServiceNames).userProfile(buildUserAccessProfile(UserRequest.builder().userIds(
                         Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()))
                         .build(), "userProfileSample.json").get(0)).build()));
 

@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
@@ -236,3 +237,4 @@ public class RefreshOrchestrator {
 
 
 }
+*/

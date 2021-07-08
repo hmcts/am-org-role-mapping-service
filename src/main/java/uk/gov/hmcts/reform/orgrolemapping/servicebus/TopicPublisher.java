@@ -20,7 +20,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-public class TopicPublisher extends MessagingConfiguration {
+public class TopicPublisher extends CRDMessagingConfiguration {
 
     @Autowired
     private ServiceBusSenderClient serviceBusSenderClient;

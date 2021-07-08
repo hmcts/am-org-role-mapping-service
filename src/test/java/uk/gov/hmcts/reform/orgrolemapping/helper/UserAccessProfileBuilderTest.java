@@ -2,14 +2,14 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.List;
 
 class UserAccessProfileBuilderTest {
 
@@ -43,7 +43,7 @@ class UserAccessProfileBuilderTest {
 
     @Test
     void buildUserProfiles() {
-        List<UserProfile> userProfiles =
+        List<CaseWorkerProfile> userProfiles =
                 UserAccessProfileBuilder.buildUserProfile(
                         TestDataBuilder.buildUserRequest(), "userProfileSample.json");
         assertNotNull(userProfiles);

@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
@@ -22,10 +21,10 @@ import java.util.List;
 public interface CRDFeignClient {
 
     @GetMapping(value = "/")
-    public String getServiceStatus();
+    String getServiceStatus();
 
     @PostMapping(value = "/refdata/case-worker/users/fetchUsersById")
-    ResponseEntity<List<UserProfile>> getCaseworkerDetailsById(UserRequest userRequest);
+    <T> ResponseEntity<List<T>> getCaseworkerDetailsById(UserRequest userRequest);
 
     @GetMapping(value = "/refdata/internal/staff/usersByServiceName")
     ResponseEntity<List<UserProfilesResponse>> getCaseworkerDetailsByServiceName(

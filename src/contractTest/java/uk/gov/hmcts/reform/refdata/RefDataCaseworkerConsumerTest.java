@@ -25,17 +25,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -98,10 +100,13 @@ public class RefDataCaseworkerConsumerTest {
     @Test
     @PactTestFor(pactMethod = "generatePactFragment")
     public void verifyCaseworkersFetch() {
+        ResponseEntity<List<Object>> response = null;
+        List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
 
-        ResponseEntity<List<UserProfile>> caseWorkerProfiles =
-            crdFeignClient.getCaseworkerDetailsById(buildUserRequest());
-        assertThat(caseWorkerProfiles.getBody().get(0).getEmailId(), equalTo("sam.manuel@gmail.com"));
+        response = crdFeignClient.getCaseworkerDetailsById(buildUserRequest());
+        Objects.requireNonNull(response.getBody()).forEach(o -> caseWorkerProfiles.add(convertInCaseWorkerProfile(o)));
+
+        assertThat(caseWorkerProfiles.get(0).getEmailId(), equalTo("sam.manuel@gmail.com"));
 
     }
 
