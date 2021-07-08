@@ -51,6 +51,9 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     private static final String ACTOR_ID = "234873";
     private static final String RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL = "/am/role-assignments/query";
     private static final String TRIBUNAL_CASEWORKER = "tribunal-caseworker";
+    public static final String SERVICE = "application/vnd.uk.gov.hmcts.role-assignment-service";
+    public static final String POST_ASSIGNMENTS = SERVICE
+            + ".post-assignment-query-request+json;charset=UTF-8;version=2.0";
 
     @MockBean
     TopicConsumer topicConsumer;
@@ -208,7 +211,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 .uponReceiving("RAS takes s2s/auth token and returns advanced search query results")
                 .path(RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
                 .method(HttpMethod.POST.toString())
-                .body(createRoleAssignmentRequestAdvancedSearchQuery(), String.valueOf(ContentType.JSON))
+                .body(createRoleAssignmentRequestAdvancedSearchQuery(), String.valueOf(POST_ASSIGNMENTS))
                 .willRespondWith()
                 .status(HttpStatus.OK.value())
                 .headers(getResponseHeaders())
