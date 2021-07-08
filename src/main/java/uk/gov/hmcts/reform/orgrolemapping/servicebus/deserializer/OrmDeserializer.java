@@ -22,7 +22,6 @@ public class OrmDeserializer implements Deserializer<UserRequest> {
         try {
             String message = mapper.writeValueAsString(mapper.readValue(messageBody.get(0), Object.class));
             return mapper.readValue(message, UserRequest.class);
-
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not deserialize the received message", e);
         }

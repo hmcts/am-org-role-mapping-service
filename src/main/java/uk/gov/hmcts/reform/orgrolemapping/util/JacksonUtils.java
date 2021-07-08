@@ -11,10 +11,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.HashMap;
+import java.util.Map;
 
 @Named
 @Singleton
@@ -27,17 +29,13 @@ public class JacksonUtils {
 
     public static final ObjectMapper MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-        .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true)
-        .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
-        .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+            .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true)
+            .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+            .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
 
 
 
-
-
-
-
-    public static HashMap<String, JsonNode> convertValue(Object from) {
+    public static Map<String, JsonNode> convertValue(Object from) {
         return MAPPER.convertValue(from, new TypeReference<HashMap<String, JsonNode>>() {
         });
     }
@@ -55,6 +53,11 @@ public class JacksonUtils {
     public static final TypeReference<HashMap<String, JsonNode>> getHashMapTypeReference() {
         return new TypeReference<HashMap<String, JsonNode>>() {
         };
+    }
+
+    public static RoleAssignmentRequestResource convertRoleAssignmentResource(Object from) {
+        return MAPPER.convertValue(from, new TypeReference<>() {
+        });
     }
 
     public static CaseWorkerProfile convertInCaseWorkerProfile(Object from) {

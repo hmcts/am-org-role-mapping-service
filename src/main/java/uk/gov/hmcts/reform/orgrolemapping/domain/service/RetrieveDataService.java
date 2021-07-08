@@ -10,7 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
 
 import java.util.ArrayList;
@@ -50,13 +50,16 @@ public class RetrieveDataService {
 
 
     private final ParseRequestService parseRequestService;
-    private final CRDFeignClient crdFeignClient;
+    private final CRDFeignClientFallback crdFeignClient;
     private final JRDFeignClientFallback jrdFeignClient;
+
+    private final CRDService crdService;
 
     @SuppressWarnings("unchecked")
     public Map<String, Set<?>> retrieveProfiles(UserRequest userRequest, UserType userType) {
         long startTime = System.currentTimeMillis();
 
+        //ResponseEntity<List<UserProfile>> responseEntity = crdService.fetchUserProfiles(userRequest);
         AtomicInteger invalidUserProfilesCount = new AtomicInteger();
         Set<Object> invalidProfiles = new HashSet<>();
         Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
@@ -75,10 +78,18 @@ public class RetrieveDataService {
 
         }
 
-        log.info(
-                "Execution time of  Response : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
+        log.debug(
+                "Execution time of CRD Response : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(),startTime))
         );
+        /*List<UserProfile> userProfiles = responseEntity.getBody();
+        if (!CollectionUtils.isEmpty(userProfiles)) {
+            // no of userProfiles from CRD  responseEntity.getBody().size()
+            log.info("Number of UserProfile received from CRD : {} ",
+                    userProfiles.size());
+        } else {
+            log.info("Number of UserProfile received from CRD : {} ", 0);
+        }*/
 
         if (response != null && !CollectionUtils.isEmpty(profiles)) {
             // no of userProfiles from  responseEntity.getBody().size()
@@ -119,11 +130,11 @@ public class RetrieveDataService {
             }
 
         } else {
-            log.info("Number of UserProfile received from upstream : {} ", 0);
+            log.debug("Number of UserProfile received from upstream : {} ", 0);
         }
 
 
-        log.info(
+        log.debug(
                 "Execution time of retrieveProfiles() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );

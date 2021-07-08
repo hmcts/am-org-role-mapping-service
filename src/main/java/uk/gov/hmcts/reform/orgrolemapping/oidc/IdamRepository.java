@@ -64,7 +64,7 @@ public class IdamRepository {
             CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("token");
             com.github.benmanes.caffeine.cache.Cache<Object, Object> nativeCache = requireNonNull(caffeineCache)
                     .getNativeCache();
-            log.info("generating Bearer Token, current size of cache: {}", nativeCache.estimatedSize());
+            log.debug("generating Bearer Token, current size of cache: {}", nativeCache.estimatedSize());
         }
         return idamApi.retrieveUserInfo(BEARER + jwtToken);
     }
@@ -87,7 +87,7 @@ public class IdamRepository {
                 return response;
             }
         } catch (Exception exception) {
-            log.info(exception.getMessage());
+            log.error(exception.getMessage());
             throw exception;
         }
         return null;

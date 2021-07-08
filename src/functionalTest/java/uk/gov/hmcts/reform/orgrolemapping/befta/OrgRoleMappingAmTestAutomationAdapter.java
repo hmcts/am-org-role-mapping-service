@@ -25,15 +25,16 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
             case ("generateEmailId"):
                 return String.format(EMAIL_TEMPLATE, randomAlphanumeric(10)).toLowerCase();
             case ("waitForTime"):
-                logger.info("Sleeping for 10 seconds");
+                logger.info("Sleeping for 5 seconds");
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException exception) {
                     logger.info(exception.getMessage());
                 }
                 logger.info("The nap is complete.");
                 return null;
-            case ("generateServiceBusToken"):
+            case ("waitForTime20"):
+                logger.info("Sleeping for 20 seconds");
                 try {
                     return FunctionalTestUtils.getSaSToken("sb://"
                                     + EnvironmentVariableUtils.getRequiredVariable("AMQP_HOST"),
@@ -52,9 +53,8 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 } catch (Exception e) {
                     logger.warn(e.getMessage());
                 }
+                logger.info("The nap is complete.");
                 return null;
-            /*case("getUserIdFromFile"):
-                return FunctionalTestUtils.getUserIdFromFile("SingleUserId.json");*/
             default:
                 return super.calculateCustomValue(scenarioContext, key);
         }
