@@ -214,7 +214,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 .body(createRoleAssignmentRequestAdvancedSearchQuery(), String.valueOf(POST_ASSIGNMENTS))
                 .willRespondWith()
                 .status(HttpStatus.OK.value())
-                .headers(getResponseHeaders())
+                .headers(getResponseHeadersV2())
                 .body(createRoleAssignmentResponseAdvancedSearchQuery())
                 .toPact();
     }
@@ -227,7 +227,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
-                        .contentType(ContentType.JSON)
+                        .contentType(POST_ASSIGNMENTS)
                         .body(createRoleAssignmentRequestAdvancedSearchQuery())
                         .post(mockServer.getUrl() + RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
                         .then()
@@ -441,6 +441,13 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
         responseHeaders.put("Content-Type",
                 "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;"
                         + "charset=UTF-8;version=1.0");
+        return responseHeaders;
+    }
+
+    @NotNull
+    private Map<String, String> getResponseHeadersV2() {
+        Map<String, String> responseHeaders = Maps.newHashMap();
+        responseHeaders.put("Content-Type", POST_ASSIGNMENTS);
         return responseHeaders;
     }
 
