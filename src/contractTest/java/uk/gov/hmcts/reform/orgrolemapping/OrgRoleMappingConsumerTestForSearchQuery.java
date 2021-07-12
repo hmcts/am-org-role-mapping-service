@@ -196,10 +196,9 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 .toPact();
     }
 
-    //TODO
     private String createRoleAssignmentRequestAdvancedSearchQuery() {
 
-        return "{\"queryRequests\":[{\"actorId\":\"234873\"},{\"roleName\": \"tribunal-caseworker\"}]}";
+        return "{\"queryRequests\":[{\"actorId\":[\"234873\"]},{\"roleName\": [\"tribunal-caseworker\"]}]}";
 
     }
 
@@ -211,7 +210,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 .uponReceiving("RAS takes s2s/auth token and returns advanced search query results")
                 .path(RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
                 .method(HttpMethod.POST.toString())
-                .body(createRoleAssignmentRequestAdvancedSearchQuery(), String.valueOf(POST_ASSIGNMENTS))
+                .body(createRoleAssignmentRequestAdvancedSearchQuery(), POST_ASSIGNMENTS)
                 .willRespondWith()
                 .status(HttpStatus.OK.value())
                 .headers(getResponseHeadersV2())
