@@ -49,6 +49,7 @@ import java.util.Map;
 public class OrgRoleMappingConsumerTestForSearchQuery {
 
     private static final String ACTOR_ID = "234873";
+    private static final String ACTOR_ID_ADV = "14a21569-eb80-4681-b62c-6ae2ed069e5f";
     private static final String RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL = "/am/role-assignments/query";
     private static final String TRIBUNAL_CASEWORKER = "tribunal-caseworker";
     public static final String SERVICE = "application/vnd.uk.gov.hmcts.role-assignment-service";
@@ -198,7 +199,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
 
     private String createRoleAssignmentRequestAdvancedSearchQuery() {
 
-        return "{\"queryRequests\":[{\"actorId\":[\"234873\"]},{\"roleName\": [\"tribunal-caseworker\"]}]}";
+        return "{\"queryRequests\":[{\"actorId\":[\"14a21569-eb80-4681-b62c-6ae2ed069e5f\"]},{\"roleName\": [\"tribunal-caseworker\"]}]}";
 
     }
 
@@ -235,7 +236,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
         JSONObject jsonResponse = new JSONObject(actualResponseBody);
         JSONArray roleAssignmentResponse = (JSONArray) jsonResponse.get("roleAssignmentResponse");
         JSONObject first = (JSONObject) roleAssignmentResponse.get(0);
-        assertThat(first.get("actorId"), equalTo(ACTOR_ID));
+        assertThat(first.get("actorId"), equalTo(ACTOR_ID_ADV));
     }
 
     @Test
@@ -366,7 +367,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 .object(ob -> ob
                         .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
                         .stringValue("actorIdType", "IDAM")
-                        .stringValue("actorId", ACTOR_ID)
+                        .stringValue("actorId", ACTOR_ID_ADV)
                         .stringValue("roleType", "ORGANISATION")
                         .stringValue("roleName", "senior-tribunal-caseworker")
                         .stringValue("classification", "PRIVATE")
@@ -379,7 +380,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 ).object(obj -> obj
                         .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
                         .stringValue("actorIdType", "IDAM")
-                        .stringValue("actorId", ACTOR_ID)
+                        .stringValue("actorId", ACTOR_ID_ADV)
                         .stringValue("roleType", "ORGANISATION")
                         .stringValue("roleName", TRIBUNAL_CASEWORKER)
                         .stringValue("classification", "PRIVATE")
