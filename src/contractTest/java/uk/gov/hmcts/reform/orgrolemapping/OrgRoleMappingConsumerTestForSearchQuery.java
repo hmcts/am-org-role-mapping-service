@@ -199,7 +199,8 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
 
     private String createRoleAssignmentRequestAdvancedSearchQuery() {
 
-        return "{\"queryRequests\":[{\"actorId\":[\"14a21569-eb80-4681-b62c-6ae2ed069e5f\"]},{\"roleName\": [\"tribunal-caseworker\"]}]}";
+        return "{\"queryRequests\":[{\"actorId\":[\"14a21569-eb80-4681-b62c-6ae2ed069e5f\"]},"
+                + "{\"roleName\": [\"tribunal-caseworker\"]}]}";
 
     }
 
