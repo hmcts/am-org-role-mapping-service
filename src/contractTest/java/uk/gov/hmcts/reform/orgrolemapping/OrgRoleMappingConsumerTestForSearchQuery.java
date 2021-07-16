@@ -29,16 +29,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
-
-import java.io.IOException;
-import java.util.Map;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.Map;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
@@ -50,7 +49,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class OrgRoleMappingConsumerTestForSearchQuery {
 
     private static final String ACTOR_ID = "234873";
+    private static final String ACTOR_ID_ADV = "14a21569-eb80-4681-b62c-6ae2ed069e5f";
     private static final String RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL = "/am/role-assignments/query";
+    private static final String TRIBUNAL_CASEWORKER = "tribunal-caseworker";
+    public static final String SERVICE = "application/vnd.uk.gov.hmcts.role-assignment-service";
+    public static final String POST_ASSIGNMENTS = SERVICE
+            + ".post-assignment-query-request+json;charset=UTF-8;version=2.0";
 
     @MockBean
     TopicConsumer topicConsumer;
@@ -82,8 +86,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     }
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
-    public RequestResponsePact executeSearchQueryRoleAssignmentAndGet200(PactDslWithProvider builder)
-            throws IOException {
+    public RequestResponsePact executeSearchQueryRoleAssignmentAndGet200(PactDslWithProvider builder) {
 
         return builder
                 .given("A list of role assignments for the search query")
@@ -105,8 +108,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     }
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
-    public RequestResponsePact executeSearchQueryRoleAssignmentByRoleNameAndGet200(PactDslWithProvider builder)
-            throws IOException {
+    public RequestResponsePact executeSearchQueryRoleAssignmentByRoleNameAndGet200(PactDslWithProvider builder) {
 
         return builder
                 .given("A list of role assignments for the search query by role name")
@@ -131,8 +133,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     }
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
-    public RequestResponsePact executeSearchQueryRoleAssignmentByAttributesAndGet200(PactDslWithProvider builder)
-            throws IOException {
+    public RequestResponsePact executeSearchQueryRoleAssignmentByAttributesAndGet200(PactDslWithProvider builder) {
 
         return builder
                 .given("A list of role assignments for the search query by attributes")
@@ -164,7 +165,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeSearchQueryRoleAssignmentMultipleRoleAssignmentsAndGet200(
-            PactDslWithProvider builder) throws IOException {
+            PactDslWithProvider builder) {
 
         return builder
                 .given("A list of multiple role assignments for the search query")
@@ -181,7 +182,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeSearchQueryRoleAssignmentEmptyCollectionAndGet200(
-        PactDslWithProvider builder) throws IOException {
+            PactDslWithProvider builder) {
 
         return builder
                 .given("An empty list of role assignments for the search query")
@@ -196,10 +197,53 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                 .toPact();
     }
 
+    private String createRoleAssignmentRequestAdvancedSearchQuery() {
+
+        return "{\"queryRequests\":[{\"actorId\":[\"14a21569-eb80-4681-b62c-6ae2ed069e5f\"]},"
+                + "{\"roleName\": [\"tribunal-caseworker\"]}]}";
+
+    }
+
+    @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
+    public RequestResponsePact executeAdvancedSearchQueryRoleAssignmentAndGet200(PactDslWithProvider builder) {
+
+        return builder
+                .given("A list of role assignments for the advanced search query")
+                .uponReceiving("RAS takes s2s/auth token and returns advanced search query results")
+                .path(RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
+                .method(HttpMethod.POST.toString())
+                .body(createRoleAssignmentRequestAdvancedSearchQuery(), POST_ASSIGNMENTS)
+                .willRespondWith()
+                .status(HttpStatus.OK.value())
+                .headers(getResponseHeadersV2())
+                .body(createRoleAssignmentResponseAdvancedSearchQuery())
+                .toPact();
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "executeAdvancedSearchQueryRoleAssignmentAndGet200")
+    void getAdvancedSearchQueryResultsAndGet200Test(MockServer mockServer)
+            throws JSONException {
+        String actualResponseBody =
+                SerenityRest
+                        .given()
+                        .headers(getHttpHeaders())
+                        .contentType(POST_ASSIGNMENTS)
+                        .body(createRoleAssignmentRequestAdvancedSearchQuery())
+                        .post(mockServer.getUrl() + RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL)
+                        .then()
+                        .log().all().extract().asString();
+
+        JSONObject jsonResponse = new JSONObject(actualResponseBody);
+        JSONArray roleAssignmentResponse = (JSONArray) jsonResponse.get("roleAssignmentResponse");
+        JSONObject first = (JSONObject) roleAssignmentResponse.get(0);
+        assertThat(first.get("actorId"), equalTo(ACTOR_ID_ADV));
+    }
+
     @Test
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentAndGet200")
     void getSearchQueryResultsByActorIdAndGet200Test(MockServer mockServer)
-            throws JSONException, IOException {
+            throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()
@@ -211,15 +255,15 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                         .log().all().extract().asString();
 
         JSONObject jsonResponse = new JSONObject(actualResponseBody);
-        JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
-        JSONObject first = (JSONObject)roleAssignmentResponse.get(0);
+        JSONArray roleAssignmentResponse = (JSONArray) jsonResponse.get("roleAssignmentResponse");
+        JSONObject first = (JSONObject) roleAssignmentResponse.get(0);
         assertThat(first.get("actorId"), equalTo(ACTOR_ID));
     }
 
     @Test
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByRoleNameAndGet200")
     void getSearchQueryResultsByRoleNameAndGet200Test(MockServer mockServer)
-            throws JSONException, IOException {
+            throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()
@@ -231,15 +275,15 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                         .log().all().extract().asString();
 
         JSONObject jsonResponse = new JSONObject(actualResponseBody);
-        JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
-        JSONObject first = (JSONObject)roleAssignmentResponse.get(0);
+        JSONArray roleAssignmentResponse = (JSONArray) jsonResponse.get("roleAssignmentResponse");
+        JSONObject first = (JSONObject) roleAssignmentResponse.get(0);
         assertThat(first.get("roleName"), equalTo("senior-tribunal-caseworker"));
     }
 
     @Test
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByAttributesAndGet200")
     void getSearchQueryResultsByAttributesAndGet200Test(MockServer mockServer)
-            throws JSONException, IOException {
+            throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()
@@ -251,8 +295,8 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                         .log().all().extract().asString();
 
         JSONObject jsonResponse = new JSONObject(actualResponseBody);
-        JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
-        JSONObject first = (JSONObject)roleAssignmentResponse.get(0);
+        JSONArray roleAssignmentResponse = (JSONArray) jsonResponse.get("roleAssignmentResponse");
+        JSONObject first = (JSONObject) roleAssignmentResponse.get(0);
         JSONObject attributes = (JSONObject) first.get("attributes");
         assertThat(attributes.get("primaryLocation"), equalTo("500A2S"));
         assertThat(attributes.get("jurisdiction"), equalTo("IA"));
@@ -261,7 +305,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     @Test
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentMultipleRoleAssignmentsAndGet200")
     void getSearchQueryResultsMultipleRoleAssignmentsAndGet200Test(MockServer mockServer)
-            throws JSONException, IOException {
+            throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()
@@ -273,9 +317,9 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                         .log().all().extract().asString();
 
         JSONObject jsonResponse = new JSONObject(actualResponseBody);
-        JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
+        JSONArray roleAssignmentResponse = (JSONArray) jsonResponse.get("roleAssignmentResponse");
 
-        JSONObject first = (JSONObject)roleAssignmentResponse.get(0);
+        JSONObject first = (JSONObject) roleAssignmentResponse.get(0);
         assertThat(first.get("actorId"), equalTo("ca93ea54-c219-4c6d-add6-e687a0f1f5f7"));
         /*JSONObject second = (JSONObject)roleAssignmentResponse.get(1);
         assertThat(second.get("actorId"), equalTo("fa4c86ba-289c-4227-b924-13f55929047c"));*/
@@ -284,7 +328,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     @Test
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentEmptyCollectionAndGet200")
     void getSearchQueryResultsEmptyListOfRoleAssignmentsAndGet200Test(MockServer mockServer)
-            throws JSONException, IOException {
+            throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()
@@ -297,17 +341,81 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                         .log().all().extract().asString();
 
         JSONObject jsonResponse = new JSONObject(actualResponseBody);
-        JSONArray roleAssignmentResponse = (JSONArray)jsonResponse.get("roleAssignmentResponse");
+        JSONArray roleAssignmentResponse = (JSONArray) jsonResponse.get("roleAssignmentResponse");
         assertThat(roleAssignmentResponse.length(), equalTo(0));
     }
 
     private DslPart createRoleAssignmentResponseSearchQuery() {
-        return newJsonBody(o -> o
-            .minArrayLike("roleAssignmentResponse", 1, 1,
-                roleAssignmentResponse -> roleAssignmentResponse
-                            .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+        return newJsonBody(o -> o.minArrayLike("roleAssignmentResponse", 1, 1,
+            roleAssignmentResponse -> roleAssignmentResponse
+                                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                                .stringValue("actorIdType", "IDAM")
+                                .stringValue("actorId", ACTOR_ID)
+                                .stringValue("roleType", "ORGANISATION")
+                                .stringValue("roleName", "senior-tribunal-caseworker")
+                                .stringValue("classification", "PRIVATE")
+                                .stringValue("grantType", "STANDARD")
+                                .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                                .booleanValue("readOnly", false)
+                                .object("attributes", attribute -> attribute
+                                        .stringType("jurisdiction", "IA")
+                                        .stringType("primaryLocation", "500A2S"))
+                )).build();
+    }
+
+    private DslPart createRoleAssignmentResponseAdvancedSearchQuery() {
+        return newJsonBody(o -> o.array("roleAssignmentResponse", rar -> rar
+                .object(ob -> ob
+                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                        .stringValue("actorIdType", "IDAM")
+                        .stringValue("actorId", ACTOR_ID_ADV)
+                        .stringValue("roleType", "ORGANISATION")
+                        .stringValue("roleName", "senior-tribunal-caseworker")
+                        .stringValue("classification", "PRIVATE")
+                        .stringValue("grantType", "STANDARD")
+                        .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                        .booleanValue("readOnly", false)
+                        .object("attributes", attribute -> attribute
+                                .stringType("jurisdiction", "IA")
+                                .stringType("primaryLocation", "500A2S"))
+                ).object(obj -> obj
+                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                        .stringValue("actorIdType", "IDAM")
+                        .stringValue("actorId", ACTOR_ID_ADV)
+                        .stringValue("roleType", "ORGANISATION")
+                        .stringValue("roleName", TRIBUNAL_CASEWORKER)
+                        .stringValue("classification", "PRIVATE")
+                        .stringValue("grantType", "STANDARD")
+                        .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                        .booleanValue("readOnly", false)
+                        .object("attributes", attribute -> attribute
+                                .stringType("jurisdiction", "IA")
+                                .stringType("primaryLocation", "500A2S"))
+                )))
+                .build();
+    }
+
+    private DslPart createRoleAssignmentResponseSearchQueryMultipleRoleAssignments() {
+        return newJsonBody(o -> o.minArrayLike("roleAssignmentResponse", 2, 2,
+            roleAssignmentResponse -> roleAssignmentResponse
+                    .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
+                    .stringValue("actorIdType", "IDAM")
+                    .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
+                    .stringValue("roleType", "ORGANISATION")
+                    .stringValue("roleName", "senior-tribunal-caseworker")
+                    .stringValue("classification", "PRIVATE")
+                    .stringValue("grantType", "STANDARD")
+                    .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                    .booleanValue("readOnly", false)
+                    .object("attributes", attribute -> attribute
+                            .stringType("jurisdiction", "IA")
+                            .stringType("primaryLocation", "219ASA"))
+                )
+                .minArrayLike("roleAssignmentResponse", 2, 2,
+                    roleAssignmentResponse -> roleAssignmentResponse
+                            .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
                             .stringValue("actorIdType", "IDAM")
-                            .stringValue("actorId", ACTOR_ID)
+                            .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
                             .stringValue("roleType", "ORGANISATION")
                             .stringValue("roleName", "senior-tribunal-caseworker")
                             .stringValue("classification", "PRIVATE")
@@ -316,48 +424,14 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
                             .booleanValue("readOnly", false)
                             .object("attributes", attribute -> attribute
                                     .stringType("jurisdiction", "IA")
-                                    .stringType("primaryLocation", "500A2S"))
-            )).build();
-    }
-
-    private DslPart createRoleAssignmentResponseSearchQueryMultipleRoleAssignments() {
-        return newJsonBody(o -> o
-                .minArrayLike("roleAssignmentResponse", 2, 2,
-                    roleAssignmentResponse -> roleAssignmentResponse
-                                .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
-                                .stringValue("actorIdType", "IDAM")
-                                .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
-                                .stringValue("roleType", "ORGANISATION")
-                                .stringValue("roleName", "senior-tribunal-caseworker")
-                                .stringValue("classification", "PRIVATE")
-                                .stringValue("grantType", "STANDARD")
-                                .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                                .booleanValue("readOnly", false)
-                                .object("attributes", attribute -> attribute
-                                        .stringType("jurisdiction", "IA")
-                                        .stringType("primaryLocation", "219ASA"))
-                )
-                .minArrayLike("roleAssignmentResponse", 2, 2,
-                        roleAssignmentResponse -> roleAssignmentResponse
-                                .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
-                                .stringValue("actorIdType", "IDAM")
-                                .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
-                                .stringValue("roleType", "ORGANISATION")
-                                .stringValue("roleName", "senior-tribunal-caseworker")
-                                .stringValue("classification", "PRIVATE")
-                                .stringValue("grantType", "STANDARD")
-                                .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                                .booleanValue("readOnly", false)
-                                .object("attributes", attribute -> attribute
-                                        .stringType("jurisdiction", "IA")
-                                        .stringType("primaryLocation", "219ASA"))
+                                    .stringType("primaryLocation", "219ASA"))
                 )
         ).build();
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryEmptyCollection() {
         return newJsonBody(o -> o
-                .minArrayLike("roleAssignmentResponse", 0, 0,ar -> {
+                .minArrayLike("roleAssignmentResponse", 0, 0, ar -> {
                 })
         ).build();
     }
@@ -368,6 +442,13 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
         responseHeaders.put("Content-Type",
                 "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;"
                         + "charset=UTF-8;version=1.0");
+        return responseHeaders;
+    }
+
+    @NotNull
+    private Map<String, String> getResponseHeadersV2() {
+        Map<String, String> responseHeaders = Maps.newHashMap();
+        responseHeaders.put("Content-Type", POST_ASSIGNMENTS);
         return responseHeaders;
     }
 
