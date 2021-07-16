@@ -342,6 +342,9 @@ dependencies {
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
     implementation 'commons-io:commons-io:2.8.0'
 
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.8'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '10.0.8'
+
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
