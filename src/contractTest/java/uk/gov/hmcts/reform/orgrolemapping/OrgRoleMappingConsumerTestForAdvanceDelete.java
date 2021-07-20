@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
 import au.com.dius.pact.consumer.MockServer;
-import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -9,16 +8,10 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
-import com.google.common.collect.Maps;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
-import org.apache.http.client.fluent.Request;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,14 +26,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
-
-import java.io.IOException;
-import java.util.Map;
-
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -102,7 +87,6 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete {
                 .body(createRoleAssignmentRequestAdvanceDelete(), String.valueOf(ContentType.JSON))
                 .willRespondWith()
                 .status(HttpStatus.OK.value())
-                .headers(getResponseHeaders())
                 .toPact();
     }
 
@@ -118,19 +102,8 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete {
                         .body(createRoleAssignmentRequestAdvanceDelete())
                         .post(mockServer.getUrl() + RAS_ADVANCE_DELETE)
                         .then()
+                        .statusCode(200)
                         .log().all().extract().asString();
-
-//        JSONObject jsonResponse = new JSONObject(actualResponseBody);
-//        JSONArray roleAssignmentResponse = (JSONArray) jsonResponse.get("roleAssignmentResponse");
-//        JSONObject first = (JSONObject) roleAssignmentResponse.get(0);
-//        assertThat(first.get("actorId"), equalTo(ACTOR_ID_ADV));
-    }
-
-    @NotNull
-    private Map<String, String> getResponseHeaders() {
-        Map<String, String> responseHeaders = Maps.newHashMap();
-        responseHeaders.put("Content-Type", DELETE_ASSIGNMENTS);
-        return responseHeaders;
     }
 
     private HttpHeaders getHttpHeaders() {
