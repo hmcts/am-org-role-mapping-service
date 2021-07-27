@@ -341,6 +341,9 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
     implementation 'commons-io:commons-io:2.8.0'
+    //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090:
+    // To be cleaned up later
+    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
 
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.8'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.50'
