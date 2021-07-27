@@ -9,7 +9,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.InputStream;
@@ -124,9 +123,9 @@ public class UserAccessProfileBuilder {
         return new ArrayList<>(caseWorkerProfiles);
     }
 
-    public static List<UserProfile> buildUserAccessProfile(UserRequest userRequest, String resource) {
+    public static List<CaseWorkerProfile> buildUserAccessProfile(UserRequest userRequest, String resource) {
 
-        Set<UserProfile> caseWorkerProfiles = new LinkedHashSet<>();
+        Set<CaseWorkerProfile> caseWorkerProfiles = new LinkedHashSet<>();
 
 
         userRequest.getUserIds().forEach(userId -> {
@@ -135,7 +134,7 @@ public class UserAccessProfileBuilder {
                                  .getResourceAsStream(resource)) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
-                UserProfile caseWorkerProfile = objectMapper.readValue(inputStream, UserProfile.class);
+                CaseWorkerProfile caseWorkerProfile = objectMapper.readValue(inputStream, CaseWorkerProfile.class);
                 caseWorkerProfile.setId(userId);
                 caseWorkerProfiles.add(caseWorkerProfile);
 

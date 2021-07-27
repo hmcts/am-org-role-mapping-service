@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-011_DeleteDataForRoleAssignments02",
+  "_guid_": "S-021_DeleteDataForRoleAssignments01",
   "productName": "Role Assignment Service",
   "operationName": "Delete Role Assignments by Process",
   "method": "DELETE",
@@ -22,7 +22,7 @@
     },
     "pathVariables": {
       "process": "judicial-organisational-role-mapping",
-      "reference":"${[scenarioContext][testData][request][body][userIds][1]}"
+      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
     },
     "body": {
       "_extends_": "JRDSingleUserId"

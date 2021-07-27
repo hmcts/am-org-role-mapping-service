@@ -26,7 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
@@ -113,7 +113,7 @@ public class RefDataCaseworkerConsumerTest {
     @Test
     @PactTestFor(pactMethod = "getCaseworkersByServiceNamePact")
     public void verifyCaseworkersByServiceName() {
-        ResponseEntity<List<UserProfilesResponse>> caseWorkerProfiles =
+        ResponseEntity<List<CaseWorkerProfilesResponse>> caseWorkerProfiles =
                 crdFeignClient.getCaseworkerDetailsByServiceName("IA",20,1,
                         "ASC", "caseWorkerId");
         assertThat(caseWorkerProfiles.getBody().get(0).getServiceName(), equalTo("IA"));

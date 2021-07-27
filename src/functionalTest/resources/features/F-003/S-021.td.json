@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-011",
+  "_guid_": "S-021",
   "title": "must successfully create judicial role mapping for a multiple user having single role",
-  "_extends_": "F-002_Test_Data_Base",
+  "_extends_": "F-003_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
   ],
@@ -9,7 +9,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-011_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
+      "actorId": "${[scenarioContext][childContexts][S-021_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
     }
   },
   "expectedResponse": {
@@ -21,7 +21,7 @@
           "actorIdType": "IDAM",
           "actorId": "[[ANYTHING_PRESENT]]",
           "roleType": "ORGANISATION",
-          "roleName": "salaried-judge",
+          "roleName": "judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -42,7 +42,7 @@
           "actorIdType": "IDAM",
           "actorId": "[[ANYTHING_PRESENT]]",
           "roleType": "ORGANISATION",
-          "roleName": "salaried-judge",
+          "roleName": "judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",

@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-012_InsertJobWithAbortedStatus",
+  "_guid_": "S-022_InsertJobWithAbortedStatus",
   "_extends_": "InsertJobForRefreshAPI",
   "specs": [
     "to insert new job with aborted status in ORM DB"

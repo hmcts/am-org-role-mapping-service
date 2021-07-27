@@ -231,7 +231,7 @@ public class RequestMappingService<T> {
 
         usersRoleAssignments
                 .forEach((k, v) -> finalResponse.add(updateProfileRoleAssignments(k,
-                        v, failureResponseCount, userType).getBody()));
+                        v, failureResponseCount, userType)));
         log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
         log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
@@ -313,7 +313,7 @@ public class RequestMappingService<T> {
      * This utility method is used to capture the log in drools.
      */
     public static void logMsg(final String message) {
-        log.debug(message);
+        log.info(message);
     }
 
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {

@@ -3,7 +3,7 @@
   "productName": "Azure Service Bus",
   "operationName": "Push User Ids to Azure Service Bus",
   "method": "POST",
-  "uri": "https://{{AMQP_HOST}}/{{JRD_PUBLISHER_TOPIC}}/messages",
+  "uri": "https://{{AMQP_HOST}}/{{JRD_TOPIC_NAME}}/messages",
   "specs": [
     "to publish existing JRD user ids to topic"
   ],

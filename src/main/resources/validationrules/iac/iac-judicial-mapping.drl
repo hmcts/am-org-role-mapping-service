@@ -27,7 +27,7 @@ then
       .actorId($jap.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("salaried-judge")
+      .roleName("judge")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)

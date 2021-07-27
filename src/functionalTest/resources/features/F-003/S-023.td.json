@@ -1,19 +1,23 @@
 {
-  "_guid_": "S-012",
-  "title": "must successfully create judicial role mapping for a user having multiple roles",
-  "_extends_": "F-002_Test_Data_Base",
+  "_guid_": "S-023",
+  "title": "must successfully generate duplicate records message",
+  "_extends_": "F-003_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
   ],
-  "method": "POST",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
   "request": {
-    "body": {
-      "actorId": "${[scenarioContext][childContexts][S-012_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
+    "pathVariables": {
+      "actorId": "5648ff72-4bee-4b2a-9ab1-4d5257243891"
     }
   },
+
   "expectedResponse": {
     "_extends_": "Common_200_Response",
+    "headers": {
+      "_extends_": "Common_200_Response_Headers",
+      "ETag" : "W/\"6\""
+    },
     "body": {
       "roleAssignmentResponse": [
         {
@@ -21,7 +25,7 @@
           "actorIdType": "IDAM",
           "actorId": "[[ANYTHING_PRESENT]]",
           "roleType": "ORGANISATION",
-          "roleName": "salaried-judge",
+          "roleName": "judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",

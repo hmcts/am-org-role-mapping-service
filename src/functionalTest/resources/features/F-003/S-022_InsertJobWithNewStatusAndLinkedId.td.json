@@ -1,12 +1,12 @@
 {
-  "_guid_": "S-012_InsertJobWithNewStatusAndLinkedId",
+  "_guid_": "S-022_InsertJobWithNewStatusAndLinkedId",
   "_extends_": "InsertJobForRefreshAPI",
   "specs": [
     "to insert new job with linked Ids in ORM DB"
   ],
   "request": {
     "queryParams": {
-      "linkedJobId": "${[scenarioContext][parentContext][childContexts][S-012_InsertJobWithAbortedStatus][testData][actualResponse][body][jobId]}"
+      "linkedJobId": "${[scenarioContext][parentContext][childContexts][S-022_InsertJobWithAbortedStatus][testData][actualResponse][body][jobId]}"
     }
   },
   "expectedResponse": {

@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -51,8 +50,8 @@ class ParseRequestServiceTest {
                         JudicialProfile.class);
     }
 
-    HashSet<UserProfile> invalidProfiles;
-    HashSet<UserProfile> invalidProfilesSpy;
+    HashSet<CaseWorkerProfile> invalidProfiles;
+    HashSet<CaseWorkerProfile> invalidProfilesSpy;
 
     AtomicInteger atomicInteger;
     AtomicInteger spyInteger;
@@ -107,7 +106,7 @@ class ParseRequestServiceTest {
                 TestDataBuilder.buildUserRequest(), new AtomicInteger(),new HashSet<>(), UserType.CASEWORKER);
 
         verify(spyInteger, Mockito.times(0)).getAndIncrement();
-        verify(invalidProfilesSpy, Mockito.times(0)).add(any(UserProfile.class));
+        verify(invalidProfilesSpy, Mockito.times(0)).add(any(CaseWorkerProfile.class));
 
     }
 

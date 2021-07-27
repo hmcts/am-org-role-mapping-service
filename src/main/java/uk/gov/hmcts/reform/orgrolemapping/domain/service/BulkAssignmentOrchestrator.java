@@ -8,7 +8,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Slf4j
@@ -48,7 +51,13 @@ public class BulkAssignmentOrchestrator {
                 "Execution time of createBulkAssignmentsRequest() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
-        return responseEntity;
+        List<Object> roleAssignmentResponses = new ArrayList<>();
+
+        ((List<ResponseEntity<Object>>)
+                Objects.requireNonNull(responseEntity.getBody())).forEach(entity ->
+                roleAssignmentResponses.add(entity.getBody()));
+
+        return ResponseEntity.ok(roleAssignmentResponses);
     }
 
 }

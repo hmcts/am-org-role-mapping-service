@@ -8,12 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,16 +50,14 @@ public class RetrieveDataService {
 
 
     private final ParseRequestService parseRequestService;
-    private final CRDFeignClientFallback crdFeignClient;
-    private final JRDFeignClientFallback jrdFeignClient;
-
     private final CRDService crdService;
+    private final JRDService jrdService;
 
     @SuppressWarnings("unchecked")
     public Map<String, Set<?>> retrieveProfiles(UserRequest userRequest, UserType userType) {
         long startTime = System.currentTimeMillis();
 
-        //ResponseEntity<List<UserProfile>> responseEntity = crdService.fetchUserProfiles(userRequest);
+
         AtomicInteger invalidUserProfilesCount = new AtomicInteger();
         Set<Object> invalidProfiles = new HashSet<>();
         Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
@@ -67,12 +65,12 @@ public class RetrieveDataService {
         List<Object> profiles = new ArrayList<>();
 
         if (userType.equals(UserType.CASEWORKER)) {
-            response = crdFeignClient.getCaseworkerDetailsById(userRequest);
+            response = crdService.fetchUserProfiles(userRequest);
 
             Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
 
         } else if (userType.equals(UserType.JUDICIAL)) {
-            response = jrdFeignClient.getJudicialDetailsById(userRequest);
+            response = jrdService.fetchJudicialProfiles(userRequest);
             Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
 
 
@@ -80,17 +78,55 @@ public class RetrieveDataService {
 
         log.debug(
                 "Execution time of CRD Response : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime))
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
-        /*List<UserProfile> userProfiles = responseEntity.getBody();
-        if (!CollectionUtils.isEmpty(userProfiles)) {
-            // no of userProfiles from CRD  responseEntity.getBody().size()
-            log.info("Number of UserProfile received from CRD : {} ",
-                    userProfiles.size());
-        } else {
-            log.info("Number of UserProfile received from CRD : {} ", 0);
-        }*/
+        getAccessProfile(userRequest, userType, invalidUserProfilesCount, invalidProfiles, usersAccessProfiles,
+                response, profiles);
 
+
+        log.info(
+                "Execution time of retrieveProfiles() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime))
+        );
+        return usersAccessProfiles;
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Set<?>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
+                                                                     userProfileResponsesEntity, UserType userType) {
+
+
+        //check the response if it's not null
+        List<CaseWorkerProfilesResponse> caseWorkerProfilesRespons = (List<CaseWorkerProfilesResponse>)
+                (List<?>) Objects
+                .requireNonNull(userProfileResponsesEntity.getBody());
+
+        //Fetch the user profile from the response
+        List<Object> userProfiles = new ArrayList<>();
+        caseWorkerProfilesRespons.forEach(caseWorkerProfilesResponse -> userProfiles.add(caseWorkerProfilesResponse
+                .getUserProfile()));
+
+        //Collect the userIds to build the UserRequest
+        UserRequest userRequest = UserRequest.builder().userIds(Collections.emptyList()).build();
+
+        AtomicInteger invalidUserProfilesCount = new AtomicInteger();
+        Set<Object> invalidProfiles = new HashSet<>();
+        Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
+
+
+        getAccessProfile(userRequest, userType, invalidUserProfilesCount, invalidProfiles,
+                usersAccessProfiles, userProfileResponsesEntity, userProfiles);
+
+
+        return usersAccessProfiles;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getAccessProfile(UserRequest userRequest, UserType userType, AtomicInteger invalidUserProfilesCount,
+                                  Set<Object> invalidProfiles, Map<String, Set<?>> usersAccessProfiles,
+                                  ResponseEntity<List<Object>> response,
+                                  List<Object> profiles) {
         if (response != null && !CollectionUtils.isEmpty(profiles)) {
             // no of userProfiles from  responseEntity.getBody().size()
             log.info("Number of Profile received from upstream : {} ",
@@ -117,10 +153,10 @@ public class RetrieveDataService {
             }
             Map<String, Integer> userAccessProfileCount = new HashMap<>();
             usersAccessProfiles.forEach((k, v) -> {
-                userAccessProfileCount.put(k, v.size());
-                log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
+                    userAccessProfileCount.put(k, v.size());
+                    log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
                                 v);
-            }
+                }
             );
             log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
 
@@ -130,16 +166,8 @@ public class RetrieveDataService {
             }
 
         } else {
-            log.debug("Number of UserProfile received from upstream : {} ", 0);
+            log.info("Number of UserProfile received from upstream : {} ", 0);
         }
-
-
-        log.debug(
-                "Execution time of retrieveProfiles() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
-        return usersAccessProfiles;
     }
-
 
 }

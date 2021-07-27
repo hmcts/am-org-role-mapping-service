@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-014",
+  "_guid_": "S-024",
   "title": "should not create role assignments when role id and contract type are not 84 and 5",
-  "_extends_": "F-002_Test_Data_Base",
+  "_extends_": "F-003_Test_Data_Base",
   "specs": [
     "contains the JRD user role id is not 84",
     "contains the JRD user contract type is not 5",
@@ -11,7 +11,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-014_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
+      "actorId": "${[scenarioContext][childContexts][S-024_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
     }
   },
   "expectedResponse": {

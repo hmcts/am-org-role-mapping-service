@@ -5,7 +5,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import java.util.ArrayList;
 import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.util.HashMap
@@ -18,7 +18,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "iac_senior_tribunal_caseworker"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
-  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
+  $up: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -41,7 +41,7 @@ end;
 rule "iac_tribunal_caseworker"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
-  $up: UserAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
+  $up: CaseWorkerAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
 then
      Map<String,JsonNode> attr = new HashMap<>();
      attr.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -64,7 +64,7 @@ end;
 rule "iac_senior_tribunal_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
+  $up: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -87,7 +87,7 @@ end;
 rule "iac_tribunal_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: UserAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
+  $up: CaseWorkerAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attr = new HashMap<>();
      attr.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
