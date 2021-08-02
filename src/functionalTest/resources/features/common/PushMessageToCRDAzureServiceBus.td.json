@@ -1,0 +1,27 @@
+{
+  "_guid_": "PushMessageToCRDAzureServiceBus",
+  "productName": "Azure Service Bus",
+  "operationName": "Push User Ids to Azure Service Bus",
+  "method": "POST",
+  "uri": "https://{{AMQP_HOST}}/{{CRD_TOPIC_NAME}}/messages",
+  "specs": [
+     "to publish an existing CRD user ids to topic"
+  ],
+  "request": {
+    "headers": {
+      "Authorization": "${[scenarioContext][customValues][generateCRDServiceBusToken]}",
+      "Content-Type": "application/json"
+    },
+    "body": {
+
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body" : null
+  }
+}

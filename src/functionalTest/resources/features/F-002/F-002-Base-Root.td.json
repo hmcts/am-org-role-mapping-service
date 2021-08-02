@@ -1,13 +1,5 @@
 {
-  "_guid_": "PushMessageToAzureServiceBus",
-  "productName": "Azure Service Bus",
-  "operationName": "Push User Ids to Azure Service Bus",
-  "method": "POST",
-  "uri": "/send",
-  "specs": [
-    "to publish the user ids to topic",
-    "to publish an existing CRD user ids to topic"
-  ],
+  "_guid_": "F-002-Base-Root",
   "users": {
     "invokingUser": {
       "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
@@ -19,18 +11,13 @@
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
       "Content-Type": "application/json"
-    },
-    "body": {
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "headers": {
       "Content-Length": "[[ANYTHING_PRESENT]]",
       "Content-Type": "application/json"
-    },
-    "body": {
-      "__plainTextValue__": "{}"
     }
   }
 }
+

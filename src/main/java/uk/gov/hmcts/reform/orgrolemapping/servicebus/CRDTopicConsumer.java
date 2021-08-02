@@ -124,7 +124,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
                     UserType.CASEWORKER);
-            log.info("----Role Assignment Service Response {}", response.getStatusCode());
+            log.info("----Role Assignment Service Response CRD  {}", response.getStatusCode());
             result.set(Boolean.TRUE);
         } catch (Exception e) {
             log.error("Exception from RAS service : {}", e.getMessage());

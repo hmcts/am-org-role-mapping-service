@@ -27,17 +27,17 @@ public class TopicController {
 
     //This method is reserved for ASB topic testing. Need to be removed later.
     @PostMapping(value = "/send2CRD")
-    public ResponseEntity<String> send2CRD(@RequestBody PublishCaseWorkerData body) {
+    public ResponseEntity<String> send2CRD(@RequestBody String body) {
         log.info("Sending message 2 CRD topic");
-        //crdTopicPublisher.sendMessage(body);
+        crdTopicPublisher.sendMessage(body);
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 
     //This method is reserved for ASB topic testing. Need to be removed later.
     @PostMapping(value = "/send2JRD")
-    public ResponseEntity<String> send2JRD(@RequestBody PublishCaseWorkerData body) {
+    public ResponseEntity<String> send2JRD(@RequestBody String body) {
         log.info("Sending message 2 JRD topic");
-        //jrdTopicPublisher.sendMessage(body);
+        jrdTopicPublisher.sendMessage(body);
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 

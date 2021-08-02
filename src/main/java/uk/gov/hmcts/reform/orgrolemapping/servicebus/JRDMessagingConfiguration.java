@@ -7,10 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-@Primary
+
 @Service
 @Slf4j
 public class JRDMessagingConfiguration {
@@ -28,7 +27,7 @@ public class JRDMessagingConfiguration {
     @Value("${launchdarkly.sdk.environment}")
     String environment;
 
-    @Bean
+    @Bean("jrdPublisher")
     public ServiceBusSenderClient getServiceBusSenderClient() {
         log.debug("Getting the ServiceBusSenderClient in JRD");
         logServiceBusVariables();

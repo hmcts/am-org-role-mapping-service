@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-012_InsertJobWithAbortedStatus",
+  "_extends_": "InsertJobForRefreshAPI",
+  "specs": [
+    "to insert new job with aborted status in ORM DB"
+  ],
+  "request": {
+    "queryParams": {
+      "status": "ABORTED"
+    },
+    "body": {
+      "userIds" : ["33191043-fedd-4016-a5ab-a9e23e159b06"]
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "status" : "ABORTED",
+      "userIds" : ["33191043-fedd-4016-a5ab-a9e23e159b06" ]
+    }
+  }
+}

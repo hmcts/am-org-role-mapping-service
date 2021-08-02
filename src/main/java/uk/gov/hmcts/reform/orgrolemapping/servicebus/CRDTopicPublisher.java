@@ -7,6 +7,7 @@ import com.azure.messaging.servicebus.ServiceBusTransactionContext;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Objects;
 public class CRDTopicPublisher extends CRDMessagingConfiguration {
 
     @Autowired
+    @Qualifier("crdPublisher")
     private ServiceBusSenderClient serviceBusSenderClient;
 
     @Retryable(
@@ -48,7 +50,7 @@ public class CRDTopicPublisher extends CRDMessagingConfiguration {
     private void publishMessageToTopic(String userIds,
                                        ServiceBusSenderClient serviceBusSenderClient,
                                        ServiceBusTransactionContext transactionContext) {
-        log.info("Started publishing to topic:: {}", topic);
+        log.info("Started publishing to topic:: in CRD {}", topic);
         ServiceBusMessageBatch messageBatch = serviceBusSenderClient.createMessageBatch();
         List<ServiceBusMessage> serviceBusMessages = new ArrayList<>();
         log.info("UserIds is " + userIds);

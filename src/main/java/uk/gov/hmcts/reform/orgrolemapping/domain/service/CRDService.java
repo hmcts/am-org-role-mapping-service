@@ -6,7 +6,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class CRDService {
 
     //This class is reserved to extract the RAS response and play with the resource object.
 
-    private final CRDFeignClientFallback crdFeignClient;
+    private final CRDFeignClient crdFeignClient;
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public <T> ResponseEntity<List<T>> fetchUserProfiles(UserRequest userRequest) {

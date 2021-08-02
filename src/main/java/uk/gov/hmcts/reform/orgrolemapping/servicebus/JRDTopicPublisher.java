@@ -7,8 +7,10 @@ import com.azure.messaging.servicebus.ServiceBusTransactionContext;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
@@ -19,9 +21,10 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-public class JRDTopicPublisher extends CRDMessagingConfiguration {
+public class JRDTopicPublisher extends JRDMessagingConfiguration {
 
     @Autowired
+    @Qualifier("jrdPublisher")
     private ServiceBusSenderClient serviceBusSenderClient;
 
     @Retryable(
@@ -48,7 +51,7 @@ public class JRDTopicPublisher extends CRDMessagingConfiguration {
     private void publishMessageToTopic(String userIds,
                                        ServiceBusSenderClient serviceBusSenderClient,
                                        ServiceBusTransactionContext transactionContext) {
-        log.info("Started publishing to topic:: {}", topic);
+        log.info("Started publishing to topic in JRD:: {}", topic);
         ServiceBusMessageBatch messageBatch = serviceBusSenderClient.createMessageBatch();
         List<ServiceBusMessage> serviceBusMessages = new ArrayList<>();
         log.info("UserIds is " + userIds);
