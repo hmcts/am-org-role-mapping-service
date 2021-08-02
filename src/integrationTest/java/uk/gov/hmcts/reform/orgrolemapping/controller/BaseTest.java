@@ -14,7 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
@@ -32,8 +32,7 @@ public abstract class BaseTest {
     @MockBean
     ServiceBusSenderClient serviceBusSenderClient;
 
-    @MockBean
-    TopicPublisher topicPublisher;
+
 
     @BeforeClass
     public static void init() {
