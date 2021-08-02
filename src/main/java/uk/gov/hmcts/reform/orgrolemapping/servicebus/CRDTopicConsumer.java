@@ -91,7 +91,6 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
                         return receiveClient.completeAsync(message.getLockToken());
                     }
 
-
                     log.debug("    getLockToken......{}", message.getLockToken());
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
@@ -99,7 +98,6 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
                 }
                 log.debug("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
-
             }
 
             public void notifyException(Throwable throwable, ExceptionPhase exceptionPhase) {
