@@ -7,12 +7,13 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
@@ -89,29 +90,29 @@ public class TestDataBuilder {
         return UserRequest.builder().userIds(users).build();
     }
 
-    public static UserAccessProfile buildUserAccessProfile1(boolean suspended) {
-        return UserAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
+    public static CaseWorkerAccessProfile buildUserAccessProfile1(boolean suspended) {
+        return CaseWorkerAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
                 .primaryLocationId("123456").primaryLocationName("south-east").roleId("1")
                 .serviceCode("BFA1").roleName(ROLE_NAME_STCW).build();
     }
 
-    public static UserAccessProfile buildUserAccessProfile2(boolean suspended) {
-        return UserAccessProfile.builder().id(id_2).suspended(suspended).areaOfWorkId("London")
+    public static CaseWorkerAccessProfile buildUserAccessProfile2(boolean suspended) {
+        return CaseWorkerAccessProfile.builder().id(id_2).suspended(suspended).areaOfWorkId("London")
                 .primaryLocationId("123457").primaryLocationName("south-east").roleId("2")
                 .serviceCode("BFA2").roleName(ROLE_NAME_TCW).build();
     }
 
-    public static Set<UserAccessProfile> buildUserAccessProfileSet(boolean suspended1, boolean suspended2) {
-        Set<UserAccessProfile> caseWorkerAccessProfileSet = new HashSet<>();
+    public static Set<CaseWorkerAccessProfile> buildUserAccessProfileSet(boolean suspended1, boolean suspended2) {
+        Set<CaseWorkerAccessProfile> caseWorkerAccessProfileSet = new HashSet<>();
         caseWorkerAccessProfileSet.add(buildUserAccessProfile1(suspended1));
         caseWorkerAccessProfileSet.add(buildUserAccessProfile2(suspended2));
         return caseWorkerAccessProfileSet;
     }
 
-    public static Map<String, Set<UserAccessProfile>> buildUserAccessProfileMap(boolean suspended1,
+    public static Map<String, Set<CaseWorkerAccessProfile>> buildUserAccessProfileMap(boolean suspended1,
                                                                                 boolean suspended2) {
 
-        HashMap<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
+        HashMap<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
         userAccessProfiles.put(id_1, buildUserAccessProfileSet(suspended1, suspended2));
         userAccessProfiles.put(id_2, buildUserAccessProfileSet(suspended1, suspended2));
         return userAccessProfiles;
@@ -223,30 +224,7 @@ public class TestDataBuilder {
         return caseWorkerProfiles;
     }
 
-    /*public static List<UserProfile> buildListOfUserAccessProfiles(boolean multiProfiles,
-                                                                  boolean multiRole,
-                                                                  String roleId1,
-                                                                  String roleId2,
-                                                                  String roleName1,
-                                                                  String roleName2,
-                                                                  boolean enableLocationList,
-                                                                  boolean primaryLocation1,
-                                                                  boolean primaryLocation2,
-                                                                  boolean enableWorkAreaList,
-                                                                  String workArea1,
-                                                                  String workArea2,
-                                                                  boolean suspended) {
-        List<UserProfile> caseWorkerProfiles = new ArrayList<>();
-        caseWorkerProfiles.add(buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
-                enableLocationList, primaryLocation1, primaryLocation2,
-                enableWorkAreaList, workArea1, workArea2, suspended));
-        if (multiProfiles) {
-            caseWorkerProfiles.add(buildUserProfile(id_2, multiRole, roleId1, roleId2, roleName1, roleName2,
-                    enableLocationList, primaryLocation1, primaryLocation2,
-                    enableWorkAreaList, workArea1, workArea2, suspended));
-        }
-        return caseWorkerProfiles;
-    }*/
+
 
     public static JsonNode buildAttributesFromFile() {
         try (InputStream inputStream =
@@ -261,8 +239,8 @@ public class TestDataBuilder {
         }
     }
 
-    /*public static UserProfilesResponse buildUserProfilesResponse() {
-        return  UserProfilesResponse.builder()
+    public static CaseWorkerProfilesResponse buildUserProfilesResponse() {
+        return  CaseWorkerProfilesResponse.builder()
                 .serviceName("ccd_service_name")
                 .userProfile(buildUserProfile(
                         "1",
@@ -279,7 +257,7 @@ public class TestDataBuilder {
                         "workArea2",
                         false))
                 .build();
-    }*/
+    }
 
 
     public static AssignmentRequest buildAssignmentRequest(Status requestStatus, Status roleStatus,

@@ -166,7 +166,7 @@ public class RequestMappingService<T> {
 
     @NotNull
     @SuppressWarnings("unchecked")
-    private List<RoleAssignment> getRoleAssignments(Map<String, Set<T>> usersAccessProfiles) {
+     List<RoleAssignment> getRoleAssignments(Map<String, Set<T>> usersAccessProfiles) {
         // Combine all the user profiles into a single collection for the rules engine.
         Set<T> allProfiles = new HashSet<>();
         usersAccessProfiles.forEach((k, v) -> allProfiles.addAll(v));

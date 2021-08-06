@@ -110,7 +110,7 @@ class ParseRequestServiceTest {
 
     }
 
-    /*@Test
+    @Test
     void validateUserProfiles_throwsBadRequest_noBaseLocationTest() {
         List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true,
                 false, "1", "2",
@@ -122,11 +122,11 @@ class ParseRequestServiceTest {
         sut.validateUserProfiles(caseWorkerProfiles, userRequest, mockInteger, new HashSet<>(),
                 UserType.CASEWORKER);
         Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
-        verify(spyInteger, Mockito.times(2)).getAndIncrement();
-        verify(invalidProfilesSpy, Mockito.times(2)).add(any(UserProfile.class));
-    }*/
+        verify(spyInteger, Mockito.times(0)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(0)).add(any(CaseWorkerProfile.class));
+    }
 
-    /*@Test
+    @Test
     void validateUserProfiles_throwsBadRequest_noWorkAreaTest() {
         List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true,
                 false, "1", "2",
@@ -135,11 +135,11 @@ class ParseRequestServiceTest {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         sut.validateUserProfiles(caseWorkerProfiles, userRequest, mockInteger,new HashSet<>(),
                 UserType.CASEWORKER);
-        verify(spyInteger, Mockito.times(2)).getAndIncrement();
-        verify(invalidProfilesSpy, Mockito.times(2)).add(any(UserProfile.class));
-    }*/
+        verify(spyInteger, Mockito.times(0)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(0)).add(any(CaseWorkerProfile.class));
+    }
 
-    /*@Test
+    @Test
     void validateUserProfiles_throwsBadRequest_noRolesTest() {
         List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true,
                 false, "1", "2",
@@ -150,8 +150,8 @@ class ParseRequestServiceTest {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         sut.validateUserProfiles(caseWorkerProfiles, userRequest, mockInteger,new HashSet<>(),
                 UserType.CASEWORKER);
-        verify(spyInteger, Mockito.times(1)).getAndIncrement();
-        verify(invalidProfilesSpy, Mockito.times(1)).add(any(UserProfile.class));
+        verify(spyInteger, Mockito.times(0)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(0)).add(any(CaseWorkerProfile.class));
     }
 
     @Test
@@ -166,9 +166,9 @@ class ParseRequestServiceTest {
         sut.validateUserProfiles(caseWorkerProfiles, userRequest, mockInteger,new HashSet<>(),
                 UserType.CASEWORKER);
         Mockito.verify(mockInteger, Mockito.times(2)).getAndIncrement();
-        verify(spyInteger, Mockito.times(2)).getAndIncrement();
-        verify(invalidProfilesSpy, Mockito.times(2)).add(any(UserProfile.class));
-    }*/
+        verify(spyInteger, Mockito.times(0)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(0)).add(any(CaseWorkerProfile.class));
+    }
 
     @Test
     void validateUserProfiles_throwsResourceNotFound_noProfilesTest() {

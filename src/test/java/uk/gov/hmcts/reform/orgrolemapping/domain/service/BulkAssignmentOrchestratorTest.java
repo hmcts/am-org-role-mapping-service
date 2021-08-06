@@ -18,12 +18,15 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_SJ;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 
 @RunWith(MockitoJUnitRunner.class)
 class BulkAssignmentOrchestratorTest {
@@ -44,7 +47,7 @@ class BulkAssignmentOrchestratorTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    /*@Test
+    @Test
     @SuppressWarnings("unchecked")
     void createBulkAssignmentsRequestTest() {
 
@@ -52,10 +55,12 @@ class BulkAssignmentOrchestratorTest {
 
         doReturn(TestDataBuilder.buildUserAccessProfileMap(false, false)).when(retrieveDataService)
                 .retrieveProfiles(Mockito.any(),Mockito.any());
+        List<ResponseEntity<Object>> responseEntities = new ArrayList<>();
+        responseEntities.add(ResponseEntity.ok(AssignmentRequestBuilder
+                .buildAssignmentRequest(false)));
 
         Mockito.when(requestMappingService.createAssignments(Mockito.any(), Mockito.any()))
-                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(AssignmentRequestBuilder
-                        .buildAssignmentRequest(false)));
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
                 UserType.CASEWORKER);
@@ -79,8 +84,7 @@ class BulkAssignmentOrchestratorTest {
                 .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
         Mockito.verify(requestMappingService, Mockito.times(1))
                 .createAssignments(Mockito.any(),Mockito.any());
-    }*/
-
+    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -88,22 +92,26 @@ class BulkAssignmentOrchestratorTest {
 
         doReturn(TestDataBuilder.buildJudicialAccessProfileMap()).when(retrieveDataService)
                 .retrieveProfiles(Mockito.any(),Mockito.any());
+        List<ResponseEntity<Object>> responseEntities = new ArrayList<>();
+        responseEntities.add(ResponseEntity.ok(AssignmentRequestBuilder
+                .buildJudicialAssignmentRequest(false)));
 
         Mockito.when(requestMappingService.createAssignments(Mockito.any(), Mockito.any()))
-                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(AssignmentRequestBuilder
-                        .buildJudicialAssignmentRequest(false)));
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
                 UserType.JUDICIAL);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        AssignmentRequest assignmentRequest = (AssignmentRequest) response.getBody();
-        assert assignmentRequest != null;
-        RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
+
+        List<AssignmentRequest> assignmentRequests = (List<AssignmentRequest>) response.getBody();
+        assert assignmentRequests != null;
+
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("salaried-judge", roleAssignment.getRoleName());
+        RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequests.get(0).getRequestedRoles()).get(0);
+        assertEquals(ROLE_NAME_SJ, roleAssignment.getRoleName());
         assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, roleAssignment.getRoleCategory());
 

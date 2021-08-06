@@ -35,7 +35,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import java.util.Map;
 
@@ -63,8 +62,7 @@ public class OrgRoleMappingConsumerTestForCreate {
     @MockBean
     JRDTopicConsumer jrdTopicConsumer;
 
-    @MockBean
-    TopicPublisher topicPublisher;
+
 
     @MockBean
     CRDMessagingConfiguration crdMessagingConfiguration;

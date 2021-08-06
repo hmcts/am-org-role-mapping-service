@@ -1,4 +1,4 @@
-/*
+
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -28,6 +29,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -92,11 +94,12 @@ class RequestMappingServiceTest {
                 JsonNode.class);
         assertEquals(1, resultNode.size());
         assertEquals("staff-organisational-role-mapping",
-                resultNode.get(0).get("roleRequest").get("process").asText());
+                resultNode.get(0).get("body").get("roleRequest").get("process")
+                        .asText());
         assertEquals("tribunal-caseworker",
-                resultNode.get(0).get("requestedRoles").get(0).get("roleName").asText());
+                resultNode.get(0).get("body").get("requestedRoles").get(0).get("roleName").asText());
         assertEquals(actorId,
-                resultNode.get(0).get("requestedRoles").get(0).get("actorId").asText());
+                resultNode.get(0).get("body").get("requestedRoles").get(0).get("actorId").asText());
 
 
 
@@ -144,9 +147,8 @@ class RequestMappingServiceTest {
                 sut.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                         false),UserType.CASEWORKER);
 
-                */
-/*sut.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
-                        false));*//*
+
+
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -190,6 +192,7 @@ class RequestMappingServiceTest {
         assertEquals(1, resultNode.size());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void updateCaseworkerRoleAssignments() throws IOException {
 
@@ -199,14 +202,15 @@ class RequestMappingServiceTest {
         Mockito.when(roleAssignmentService.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CREATED));
 
-        ResponseEntity<Object> responseEntity = sut.updateCaseworkerRoleAssignments(
+        ResponseEntity<Object> responseEntity = sut.updateProfileRoleAssignments(
                 "1",
                 TestDataBuilder.buildRequestedRoleCollection(Status.CREATED),
-                spyInteger);
+                spyInteger,UserType.CASEWORKER);
 
         assertNotNull(responseEntity);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void updateCaseworkerRoleAssignments_Failure() throws IOException {
 
@@ -216,14 +220,15 @@ class RequestMappingServiceTest {
         Mockito.when(roleAssignmentService.createRoleAssignment(any()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.CONFLICT));
 
-        sut.updateCaseworkerRoleAssignments(
+        sut.updateProfileRoleAssignments(
                 "1",
                 TestDataBuilder.buildRequestedRoleCollection(Status.CREATED),
-                spyInteger);
+                spyInteger,UserType.CASEWORKER);
 
         verify(spyInteger, Mockito.times(1)).getAndIncrement();
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void createCaseWorkerAssignmentsForProdEnv() {
 
@@ -240,30 +245,18 @@ class RequestMappingServiceTest {
         try (MockedStatic<DBFlagConfigurtion> theMock = Mockito.mockStatic(DBFlagConfigurtion.class)) {
             theMock.when(() -> dbFlagConfigurtion.getDroolFlagStates()).thenReturn(droolFlagStates);
             ReflectionTestUtils.setField(sut, "environment", "prod");
-            ResponseEntity<Object> responseEntity =
-                    sut.createCaseWorkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
+            List<RoleAssignment> response =
+                    sut.getRoleAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                             false));
 
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            assertNotNull(responseEntity.getBody());
+            assertNotNull(response);
+            assertEquals(1, response.size());
+            assertEquals("senior-tribunal-caseworker",
+                    response.get(0)
+                            .getRoleName());
+            assertNotNull(
+                    response.get(0).getActorId());
 
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
-                    JsonNode.class);
-            assertEquals(1, resultNode.size());
-            assertEquals("staff-organisational-role-mapping",
-                    resultNode.get(0).get("body").get("roleRequest").get("process")
-                            .asText());
-            assertEquals("tribunal-caseworker",
-                    resultNode.get(0).get("body").get("requestedRoles").get(0)
-                            .get("roleName")
-                            .asText());
-            assertEquals(actorId,
-                    resultNode.get(0).get("body").get("requestedRoles").get(0).get("actorId")
-                            .asText());
-            Mockito.verify(roleAssignmentService, Mockito.times(1))
-                    .createRoleAssignment(any());
         }
 
 
@@ -282,7 +275,7 @@ class RequestMappingServiceTest {
                         .body(AssignmentRequestBuilder.buildJudicialAssignmentRequest(false)));
 
         ResponseEntity<Object> responseEntity =
-                requestMappingService.createAssignments(TestDataBuilder.buildJudicialAccessProfileMap(),
+                sut.createAssignments(TestDataBuilder.buildJudicialAccessProfileMap(),
                         UserType.JUDICIAL);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -294,16 +287,18 @@ class RequestMappingServiceTest {
                 JsonNode.class);
         assertEquals(2, resultNode.size());
         assertEquals("judicial-organisational-role-mapping",
-                resultNode.get(0).get("roleRequest").get("process").asText());
-        assertEquals("salaried-judge",
-                resultNode.get(0).get("requestedRoles").get(0).get("roleName").asText());
+                resultNode.get(0).get("body").get("roleRequest").get("process").asText());
+        assertEquals("judge",
+                resultNode.get(0).get("body").get("requestedRoles").get(0).get("roleName").asText());
         assertEquals(actorId,
-                resultNode.get(0).get("requestedRoles").get(0).get("actorId").asText());
+                resultNode.get(0).get("body").get("requestedRoles").get(0).get("actorId").asText());
 
 
 
         Mockito.verify(roleAssignmentService, Mockito.times(2))
                 .createRoleAssignment(any());
     }
+
 }
-*/
+
+

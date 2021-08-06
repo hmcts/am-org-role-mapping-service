@@ -40,7 +40,7 @@ public class AssignmentRequestBuilder {
     public static final String PROCESS_ID = "staff-organisational-role-mapping";
     public static final String JUDICIAL_PROCESS_ID = "judicial-organisational-role-mapping";
     public static final String ROLE_NAME_TCW = "tribunal-caseworker";
-    public static final String ROLE_NAME_SJ = "salaried-judge";
+    public static final String ROLE_NAME_SJ = "judge";
     public static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
 
     private AssignmentRequestBuilder() {

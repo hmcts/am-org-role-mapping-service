@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 
@@ -43,8 +42,6 @@ public class SmokeTest {
     @MockBean
     private JRDTopicConsumer jrdTopicConsumer;
 
-    @MockBean
-    private TopicPublisher topicPublisher;
 
     @MockBean
     private CRDMessagingConfiguration crdMessagingConfiguration;

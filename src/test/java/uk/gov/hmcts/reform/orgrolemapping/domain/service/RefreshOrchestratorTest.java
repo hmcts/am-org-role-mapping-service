@@ -1,4 +1,3 @@
-/*
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
@@ -15,10 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.io.IOException;
@@ -34,12 +34,13 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 class RefreshOrchestratorTest {
-
 
 
     private final RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
@@ -65,18 +66,15 @@ class RefreshOrchestratorTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void refreshRoleAssignmentRecords() throws IOException {
 
-        Mockito.when(persistenceService.fetchRefreshJobById(any()))
-                .thenReturn(Optional.of(
-                RefreshJobEntity.builder().build()));
-
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
 
-        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
-        Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(UserAccessProfile.builder()
+        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
+        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
                 .id("1")
                 .roleId("1")
                 .roleName("roleName")
@@ -88,14 +86,20 @@ class RefreshOrchestratorTest {
                 .build());
         userAccessProfiles.put("1", userAccessProfileSet);
 
-        Mockito.when(retrieveDataService.retrieveCaseWorkerProfiles(any()))
+        Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
                 .thenReturn(userAccessProfiles);
 
-        Mockito.when(requestMappingService.createCaseWorkerAssignments(any()))
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(Collections.emptyList())));
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        Mockito.when(persistenceService.fetchRefreshJobById(any()))
+                .thenReturn(Optional.of(
+                        RefreshJobEntity.builder()
+                                .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .build()));
 
         ResponseEntity<Object> response = sut.refresh(1L, TestDataBuilder.buildUserRequest());
 
@@ -103,6 +107,7 @@ class RefreshOrchestratorTest {
         assertNotNull(response);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void refreshRoleAssignmentRecords_nullUserRequest() {
 
@@ -111,24 +116,24 @@ class RefreshOrchestratorTest {
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
                                 .build()));
-        List<UserProfilesResponse> userProfilesResponseList = new ArrayList<>();
+        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
         userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add("total_records", "4");
 
-        ResponseEntity<List<UserProfilesResponse>> responseEntity
-                = new ResponseEntity<>(userProfilesResponseList,headers, HttpStatus.OK);
+        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
+                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
 
-        Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
-                any(), any(), any(), any(), any()))
-                .thenReturn(responseEntity);
+
+        doReturn(responseEntity).when(crdService)
+                .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
 
         Mockito.doNothing().when(parseRequestService)
                 .validateUserRequest(any());
 
-        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
-        Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(UserAccessProfile.builder()
+        Map<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
+        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
                 .id("1")
                 .roleId("1")
                 .roleName("roleName")
@@ -140,10 +145,10 @@ class RefreshOrchestratorTest {
                 .build());
         userAccessProfiles.put("1", userAccessProfileSet);
 
-        Mockito.when(retrieveDataService.retrieveCaseWorkerProfiles(any()))
-                .thenReturn(userAccessProfiles);
+        doReturn(userAccessProfiles).when(retrieveDataService)
+                .retrieveProfiles(any(), eq(UserType.CASEWORKER));
 
-        Mockito.when(requestMappingService.createCaseWorkerAssignments(any()))
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
@@ -207,24 +212,24 @@ class RefreshOrchestratorTest {
         Mockito.verify(parseRequestService, Mockito.times(0)).validateUserRequest(any());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void refreshJobByServiceName() {
 
-        List<UserProfilesResponse> userProfilesResponseList = new ArrayList<>();
+        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
         userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add("total_records", "4");
 
-        ResponseEntity<List<UserProfilesResponse>> responseEntity
-                = new ResponseEntity<>(userProfilesResponseList,headers, HttpStatus.OK);
+        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
+                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
 
-        Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
-                any(), any(), any(), any(), any()))
-                .thenReturn(responseEntity);
 
-        Mockito.when(requestMappingService.createCaseWorkerAssignments(any()))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                        .body(Collections.emptyList())));
+        doReturn(responseEntity).when(crdService)
+                .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         RefreshJobEntity refreshJobEntity =
                 RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
@@ -234,7 +239,7 @@ class RefreshOrchestratorTest {
         responseCodeWithUserId.put("1234", HttpStatus.CREATED);
         Map<String, HttpStatus> responseCodeWithUserIdSpy = Mockito.spy(responseCodeWithUserId);
 
-        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy);
+        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy, UserType.CASEWORKER);
 
         verify(responseCodeWithUserIdSpy, Mockito.times(4)).entrySet();
 
@@ -245,6 +250,8 @@ class RefreshOrchestratorTest {
         verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
     }
 
+
+    @SuppressWarnings("unchecked")
     @Test
     void refreshJobByServiceName_FeignException() {
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
@@ -255,15 +262,14 @@ class RefreshOrchestratorTest {
                 any(), any(), any(), any(), any()))
                 .thenThrow(feignClientException);
 
-        Mockito.when(requestMappingService.createCaseWorkerAssignments(any()))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                        .body(Collections.emptyList())));
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         RefreshJobEntity refreshJobEntity =
                 RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
         RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
 
-        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy);
+        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy, UserType.CASEWORKER);
 
         verify(responseCodeWithUserIdSpy, Mockito.times(1)).put(any(), any());
 
@@ -274,14 +280,15 @@ class RefreshOrchestratorTest {
         verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void prepareResponseCodes() {
         Map<String, HttpStatus> responseEntityMap = new HashMap<>();
         responseEntityMap.put("1234", HttpStatus.CREATED);
 
-        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
-        Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(UserAccessProfile.builder()
+        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
+        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
                 .id("1")
                 .roleId("1")
                 .roleName("roleName")
@@ -293,10 +300,11 @@ class RefreshOrchestratorTest {
                 .build());
         userAccessProfiles.put("1", userAccessProfileSet);
 
-        Mockito.when(requestMappingService.createCaseWorkerAssignments(any()))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                        .body(Collections.EMPTY_LIST)));
-        ResponseEntity<Object> result = sut.prepareResponseCodes(responseEntityMap, userAccessProfiles);
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+
+        ResponseEntity<Object> result = sut.prepareResponseCodes(responseEntityMap, userAccessProfiles,
+                UserType.CASEWORKER);
         assertNotNull(result);
         assertNotNull(result.getBody());
 
@@ -370,4 +378,3 @@ class RefreshOrchestratorTest {
 
     }
 }
-*/

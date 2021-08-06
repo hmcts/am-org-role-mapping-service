@@ -35,7 +35,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
@@ -68,8 +67,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
 
     @Autowired
     DataSource dataSource;
-    @MockBean
-    TopicPublisher topicPublisher;
+
 
     @MockBean
     CRDMessagingConfiguration crdMessagingConfiguration;

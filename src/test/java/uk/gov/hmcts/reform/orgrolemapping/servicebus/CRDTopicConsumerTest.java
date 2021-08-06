@@ -1,8 +1,7 @@
-/*
+
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
 import com.microsoft.azure.servicebus.SubscriptionClient;
-import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -12,8 +11,8 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserialize
 
 import java.util.concurrent.CompletableFuture;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CRDTopicConsumerTest {
 
@@ -33,25 +32,26 @@ class CRDTopicConsumerTest {
         sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
     }
 
-    //@Test
+    @Test
     void getSubscriptionClientThrowsServiceBusException() {
         sut.host = "http://test.com";
-        sut.username = "test";
-        sut.password = "test";
         sut.subscription = "test";
+        sut.environment = "pr";
+        sut.topic = "test1";
 
-        assertThrows(ServiceBusException.class, () ->  sut.getSubscriptionClient());
+
+        assertThrows(IllegalArgumentException.class, () -> sut.getSubscriptionClient());
 
     }
 
 
     @Test
     void registerMessageHandlerOnClientTest() throws Exception {
-        CompletableFuture<Void> voidCompletableFuture = sut.registerMessageHandlerOnClient(
+        CompletableFuture<Void> voidCompletableFuture = sut.registerCRDMessageHandlerOnClient(
                 subscriptionClient);
         assertNull(voidCompletableFuture);
     }
 
 
 }
-*/
+
