@@ -158,7 +158,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-    @Test
+    /*@Test
     @DisplayName("S1: must successfully create org role mapping for single user with one role assignment")
     public void createOrgRoleMappingForSingleUserWithOneRoleAssignment() throws Exception {
 
@@ -186,9 +186,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andReturn();
 
         assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
-    }
+    }*/
 
-    @Test
+    /* @Test
     @DisplayName("S2: must successfully create org role mapping for single user with multiple role assignments")
     public void createOrgRoleMappingForSingleUserWithMultipleRoleAssignment() throws Exception {
 
@@ -215,9 +215,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andReturn();
 
         assertResponse(result, Status.APPROVED, 2, Status.LIVE, request.getUserIds());
-    }
+    }*/
 
-    @Test
+    /* @Test
     @DisplayName("S3: must successfully create org role mapping for multiple users each has single role assignment")
     public void createOrgRoleMappingForMultipleUsersWithOneRoleAssignment() throws Exception {
 
@@ -245,7 +245,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andReturn();
 
         assertResponse(result, Status.APPROVED, 2, Status.LIVE, request.getUserIds());
-    }
+    }*/
 
     /* @Test
     @DisplayName("S6: must successfully delete org role mapping when delete flag is true")
@@ -277,7 +277,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         assertResponse(result, Status.APPROVED, 0, Status.LIVE, request.getUserIds());
     }*/
 
-    @Test
+    /* @Test
     @DisplayName("S8: must receive a rejected response when drool rules fail in RAS")
     public void createOrgRoleMappingErrorWhenDroolsFail() throws Exception {
 
@@ -303,9 +303,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andReturn();
 
         assertResponse(result, Status.REJECTED, 1, Status.CREATE_APPROVED, request.getUserIds());
-    }
+    }*/
 
-    @Test
+    /* @Test
     @DisplayName("S9: must successfully create org role mapping for an update of role TCW to STCW")
     public void createOrgRoleMappingUpdateRole() throws Exception {
 
@@ -336,7 +336,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         assertTrue(contentAsString.contains(ROLE_NAME_STCW));
 
         assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
-    }
+    }*/
 
     @Test
     @DisplayName("S11: must receive an error message when there is no primary location")
@@ -509,7 +509,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         assertResponse(result, Status.APPROVED, 0, Status.LIVE, request.getUserIds());
     }
 
-    @Test
+    /*@Test
     @DisplayName("S19: drools must map correct role name based on roleId")
     public void createOrgRoleMappingDroolsMustMapCorrectRoleName() throws Exception {
 
@@ -539,7 +539,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
 
         assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
-    }
+    }*/
 
     public void setRoleAssignmentWireMock(HttpStatus status, String fileName) throws IOException {
         String body = null;
