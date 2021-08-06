@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +32,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import java.util.Map;
 
@@ -70,7 +74,20 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
+    JRDMessagingConfiguration jrdMessagingConfiguration;
+
+    @MockBean
+    JRDTopicPublisher jrdPublisher;
+    @MockBean
+    CRDTopicPublisher crdPublisher;
+
+    @MockBean
+    @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
+
+    @MockBean
+    @Qualifier("jrdPublisher")
+    ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {

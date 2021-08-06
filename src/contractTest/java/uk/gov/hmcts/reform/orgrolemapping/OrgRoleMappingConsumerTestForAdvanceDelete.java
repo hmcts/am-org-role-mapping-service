@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -63,7 +64,12 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete {
     CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
+    @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
+
+    @MockBean
+    @Qualifier("jrdPublisher")
+    ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
