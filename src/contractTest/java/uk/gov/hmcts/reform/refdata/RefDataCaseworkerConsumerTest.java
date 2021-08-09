@@ -38,6 +38,7 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfileResponse;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -116,7 +117,8 @@ public class RefDataCaseworkerConsumerTest {
         ResponseEntity<List<CaseWorkerProfilesResponse>> caseWorkerProfiles =
                 crdFeignClient.getCaseworkerDetailsByServiceName("IA",20,1,
                         "ASC", "caseWorkerId");
-        assertThat(caseWorkerProfiles.getBody().get(0).getServiceName(), equalTo("IA"));
+
+        assertThat(convertInCaseWorkerProfileResponse(caseWorkerProfiles.getBody().get(0)).getServiceName(), equalTo("IA"));
 
     }
 

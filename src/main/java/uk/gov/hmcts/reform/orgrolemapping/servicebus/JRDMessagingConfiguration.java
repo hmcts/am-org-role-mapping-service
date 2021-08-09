@@ -8,11 +8,12 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.context.annotation.Primary;
 
 
 @Configuration
 @Slf4j
+@Primary
 public class JRDMessagingConfiguration {
 
     @Value("${amqp.host}")
