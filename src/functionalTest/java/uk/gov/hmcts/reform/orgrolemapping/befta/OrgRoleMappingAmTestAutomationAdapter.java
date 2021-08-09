@@ -47,7 +47,7 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                     return FunctionalTestUtils.getSaSToken("sb://"
                                     + EnvironmentVariableUtils.getRequiredVariable("AMQP_HOST"),
                             "SendAndListenSharedAccessKey",
-                            EnvironmentVariableUtils.getRequiredVariable("CRD_SHARED_ACCESS_KEY_VALUE"));
+                            EnvironmentVariableUtils.getRequiredVariable("AMQP_CRD_SHARED_ACCESS_KEY_VALUE"));
                 } catch (Exception e) {
                     logger.warn(e.getMessage());
                 }
@@ -57,7 +57,7 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                     return FunctionalTestUtils.getSaSToken("sb://"
                            + EnvironmentVariableUtils.getRequiredVariable("AMQP_HOST"),
                            "SendAndListenSharedAccessKey",
-                            EnvironmentVariableUtils.getRequiredVariable("JRD_SHARED_ACCESS_KEY_VALUE"));
+                            EnvironmentVariableUtils.getRequiredVariable("AMQP_JRD_SHARED_ACCESS_KEY_VALUE"));
                 } catch (Exception e) {
                     logger.warn(e.getMessage());
                 }

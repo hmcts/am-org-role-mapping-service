@@ -45,7 +45,7 @@ def secrets = [
                 secret('test-am-crd-user1-befta', 'TEST_AM_CRD_USER1_BEFTA'),
                 secret('test-am-crd-user1-befta-password', 'TEST_AM_CRD_USER1_BEFTA_PASSWORD'),
                 secret('caseworker-topic-primary-send-listen-shared-access-key', 'CRD_SHARED_ACCESS_KEY_VALUE'),
-                secret('judicial-topic-primary-send-listen-shared-access-key', 'JRD_SHARED_ACCESS_KEY_VALUE')
+                secret('judicial-topic-primary-send-listen-shared-access-key', 'AMQP_JRD_SHARED_ACCESS_KEY_VALUE')
         ]
 ]
 
