@@ -3,10 +3,7 @@ java:
   ingressHost: ${SERVICE_FQDN}
 
   secrets:
-    AMQP_CRD_SHARED_ACCESS_KEY_VALUE:
-      secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
-      key: primaryKey
-    AMQP_JRD_SHARED_ACCESS_KEY_VALUE:
+    AMQP_SHARED_ACCESS_KEY_VALUE:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: primaryKey
     AMQP_HOST:
@@ -38,8 +35,8 @@ java:
     AMQP_HOST: "$(AMQP_HOST)"
     CRD_SUBSCRIPTION_NAME: "$(CRD_SUBSCRIPTION_NAME)"
     JRD_SUBSCRIPTION_NAME: "$(JRD_SUBSCRIPTION_NAME)"
-    AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_CRD_SHARED_ACCESS_KEY_VALUE)"
-    AMQP_JRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_JRD_SHARED_ACCESS_KEY_VALUE)"
+    AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
+    AMQP_JRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
     ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql"
     ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
     ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
