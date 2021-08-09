@@ -45,7 +45,6 @@ java:
     ORG_ROLE_MAPPING_DB_PASSWORD: "{{ .Values.postgresql.postgresqlPassword}}"
     ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.postgresqlPort}}"
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
-    APPLICATION_LOGGING_LEVEL: DEBUG
   postgresql:
     enabled: true
     postgresqlUsername: org_role_mapping

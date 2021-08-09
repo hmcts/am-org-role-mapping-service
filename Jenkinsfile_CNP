@@ -78,7 +78,7 @@ env.JRD_PUBLISHER_TOPIC = "rd-judicial-topic-aat"
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
     env.LAUNCH_DARKLY_ENV = "pr"
-    env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-pr-733.service.core-compute-preview.internal"
+    env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-preview.internal"
   }
   else if(env.BRANCH_NAME == 'master') {
     env.LAUNCH_DARKLY_ENV = "aat"
