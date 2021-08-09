@@ -77,9 +77,13 @@ env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-co
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
     env.LAUNCH_DARKLY_ENV = "pr"
+    env.CRD_TOPIC_NAME = "rd-caseworker-topic"
+    env.JRD_TOPIC_NAME = "rd-judicial-topic"
   }
   else if(env.BRANCH_NAME == 'master') {
     env.LAUNCH_DARKLY_ENV = "aat"
+    env.CRD_TOPIC_NAME = "rd-caseworker-topic-aat"
+    env.JRD_TOPIC_NAME = "rd-judicial-topic-aat"
   }
   else {
     env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
