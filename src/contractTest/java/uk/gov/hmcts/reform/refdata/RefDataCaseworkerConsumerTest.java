@@ -118,7 +118,8 @@ public class RefDataCaseworkerConsumerTest {
                 crdFeignClient.getCaseworkerDetailsByServiceName("IA",20,1,
                         "ASC", "caseWorkerId");
 
-        assertThat(convertInCaseWorkerProfileResponse(caseWorkerProfiles.getBody().get(0)).getServiceName(), equalTo("IA"));
+        assertThat(convertInCaseWorkerProfileResponse(caseWorkerProfiles.getBody().get(0))
+                .getServiceName(), equalTo("IA"));
 
     }
 
