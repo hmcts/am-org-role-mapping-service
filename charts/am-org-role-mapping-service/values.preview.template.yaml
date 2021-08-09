@@ -9,8 +9,11 @@ java:
     AMQP_HOST:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: namespaceName
-    SUBSCRIPTION_NAME:
+    CRD_SUBSCRIPTION_NAME:
       secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
+      key: subscriptionName
+    JRD_SUBSCRIPTION_NAME:
+      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-judicial-topic
       key: subscriptionName
 
   keyVaults:
@@ -30,10 +33,10 @@ java:
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-aat.service.core-compute-aat.internal
     LAUNCH_DARKLY_ENV: pr
-    AMQP_TOPIC_NAME: rd-caseworker-topic
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "$(AMQP_HOST)"
-    SUBSCRIPTION_NAME: "$(SUBSCRIPTION_NAME)"
+    CRD_SUBSCRIPTION_NAME: "$(CRD_SUBSCRIPTION_NAME)"
+    JRD_SUBSCRIPTION_NAME: "$(JRD_SUBSCRIPTION_NAME)"
     AMQP_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
     ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql"
     ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
@@ -56,5 +59,5 @@ servicebus:
     topics:
       - name: rd-caseworker-topic
         subscriptionNeeded: yes
-    CRD_SUBSCRIPTION_NAME: rd-caseworker-topic-{{ .Values.global.environment }}/subscriptions/am-orm-preview-functional-test
-    JRD_SUBSCRIPTION_NAME: rd-judicial-topic-{{ .Values.global.environment }}/subscriptions/am-orm-judicial-preview-functional-test
+      - name: rd-judicial-topic
+        subscriptionNeeded: yes

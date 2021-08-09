@@ -52,7 +52,7 @@ public class JRDMessagingConfiguration {
         if (environment.equalsIgnoreCase("pr")) {
             host = System.getenv("AMQP_HOST").concat(".servicebus.windows.net");
             sharedAccessKeyValue = System.getenv("AMQP_SHARED_ACCESS_KEY_VALUE");
-            subscription = System.getenv("SUBSCRIPTION_NAME");
+            subscription = System.getenv("JRD_SUBSCRIPTION_NAME");
 
             log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
             log.debug("subscription Name is :" + subscription);
