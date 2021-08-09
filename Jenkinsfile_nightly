@@ -70,7 +70,8 @@ withNightlyPipeline(type, product, component) {
   env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
   env.CRD_URL = "http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal"
   env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
-  env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
+  env.CRD_TOPIC_NAME = "rd-caseworker-topic-aat"
+  env.JRD_TOPIC_NAME = "rd-judicial-topic-aat"
   env.TEST_URL = "http://am-org-role-mapping-service-aat.service.core-compute-aat.internal"
 
   overrideVaultEnvironments(vaultOverrides)

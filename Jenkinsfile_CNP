@@ -71,19 +71,18 @@ env.USER_PROFILE_URL= "https://rd-user-profile-api-pr-575.service.core-compute-p
 // Vars for Kubernetes PACT
 env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
 env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
-env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
+env.CRD_TOPIC_NAME = "rd-caseworker-topic-aat"
+env.JRD_TOPIC_NAME = "rd-judicial-topic-aat"
 env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
 
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
     env.LAUNCH_DARKLY_ENV = "pr"
-    env.CRD_TOPIC_NAME = "rd-caseworker-topic"
-    env.JRD_TOPIC_NAME = "rd-judicial-topic"
+
   }
   else if(env.BRANCH_NAME == 'master') {
     env.LAUNCH_DARKLY_ENV = "aat"
-    env.CRD_TOPIC_NAME = "rd-caseworker-topic-aat"
-    env.JRD_TOPIC_NAME = "rd-judicial-topic-aat"
+
   }
   else {
     env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
