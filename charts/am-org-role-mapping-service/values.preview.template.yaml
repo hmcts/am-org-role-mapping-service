@@ -7,8 +7,8 @@ java:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: primaryKey
     AMQP_JRD_SHARED_ACCESS_KEY_VALUE:
-          secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
-          key: primaryKey
+      secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
+      key: primaryKey
     AMQP_HOST:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: namespaceName
