@@ -3,9 +3,12 @@ java:
   ingressHost: ${SERVICE_FQDN}
 
   secrets:
-    AMQP_SHARED_ACCESS_KEY_VALUE:
+    AMQP_CRD_SHARED_ACCESS_KEY_VALUE:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: primaryKey
+    AMQP_JRD_SHARED_ACCESS_KEY_VALUE:
+          secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
+          key: primaryKey
     AMQP_HOST:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: namespaceName
@@ -37,13 +40,15 @@ java:
     AMQP_HOST: "$(AMQP_HOST)"
     CRD_SUBSCRIPTION_NAME: "$(CRD_SUBSCRIPTION_NAME)"
     JRD_SUBSCRIPTION_NAME: "$(JRD_SUBSCRIPTION_NAME)"
-    AMQP_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
+    AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_CRD_SHARED_ACCESS_KEY_VALUE)"
+    AMQP_JRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_JRD_SHARED_ACCESS_KEY_VALUE)"
     ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql"
     ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
     ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
     ORG_ROLE_MAPPING_DB_PASSWORD: "{{ .Values.postgresql.postgresqlPassword}}"
     ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.postgresqlPort}}"
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
+    APPLICATION_LOGGING_LEVEL: DEBUG
   postgresql:
     enabled: true
     postgresqlUsername: org_role_mapping

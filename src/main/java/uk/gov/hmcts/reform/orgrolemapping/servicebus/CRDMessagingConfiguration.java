@@ -51,7 +51,7 @@ public class CRDMessagingConfiguration {
         log.debug("Env is: " + environment);
         if (environment.equalsIgnoreCase("pr")) {
             host = System.getenv("AMQP_HOST").concat(".servicebus.windows.net");
-            sharedAccessKeyValue = System.getenv("AMQP_SHARED_ACCESS_KEY_VALUE");
+            sharedAccessKeyValue = System.getenv("AMQP_CRD_SHARED_ACCESS_KEY_VALUE");
             subscription = System.getenv("CRD_SUBSCRIPTION_NAME");
 
             log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
