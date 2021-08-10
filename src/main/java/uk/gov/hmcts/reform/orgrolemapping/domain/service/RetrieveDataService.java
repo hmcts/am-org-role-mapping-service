@@ -1,14 +1,15 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
@@ -64,16 +65,21 @@ public class RetrieveDataService {
         Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
         ResponseEntity<List<Object>> response = null;
         List<Object> profiles = new ArrayList<>();
+        try {
+            if (userType.equals(UserType.CASEWORKER)) {
+                response = crdService.fetchUserProfiles(userRequest);
 
-        if (userType.equals(UserType.CASEWORKER)) {
-            response = crdService.fetchUserProfiles(userRequest);
+                Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
 
-            Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
+            } else if (userType.equals(UserType.JUDICIAL)) {
+                response = jrdService.fetchJudicialProfiles(userRequest);
+                Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
 
-        } else if (userType.equals(UserType.JUDICIAL)) {
-            response = jrdService.fetchJudicialProfiles(userRequest);
-            Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
 
+            }
+        } catch (FeignException.NotFound feignClientException) {
+
+            log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
 
         }
 
@@ -98,8 +104,8 @@ public class RetrieveDataService {
                                                                      userProfileResponsesEntity, UserType userType) {
         //check the response if it's not null
         List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
-                 Objects
-                .requireNonNull(convertListInCaseWorkerProfileResponse(userProfileResponsesEntity.getBody()));
+                Objects
+                        .requireNonNull(convertListInCaseWorkerProfileResponse(userProfileResponsesEntity.getBody()));
 
         //Fetch the user profile from the response
         List<Object> userProfiles = new ArrayList<>();
