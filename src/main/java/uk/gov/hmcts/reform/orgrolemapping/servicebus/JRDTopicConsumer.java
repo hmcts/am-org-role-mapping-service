@@ -118,12 +118,12 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.debug("    Parsing the message in JRD");
+        log.info("    Parsing the message in JRD");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
                     UserType.JUDICIAL);
-            log.info("----Role Assignment Service Response {}", response.getStatusCode());
+            log.info("----Role Assignment Service Response JRD {}", response.getStatusCode());
             result.set(Boolean.TRUE);
         } catch (Exception e) {
             log.error("Exception from RAS service : {}", e.getMessage());
