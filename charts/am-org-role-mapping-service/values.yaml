@@ -25,6 +25,7 @@ java:
     AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES: ccd_gw,am_org_role_mapping_service,am_role_assignment_service
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    JUDICIAL_REF_APP_URL: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
 
     AMQP_HOST: rd-servicebus-{{ .Values.global.environment }}.servicebus.windows.net
