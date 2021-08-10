@@ -46,7 +46,7 @@ public class BulkAssignmentOrchestrator {
             userAccessProfiles = retrieveDataService
                     .retrieveProfiles(userRequest, userType);
         } catch (FeignException.NotFound feignClientException) {
-
+            log.error("UserId is not available :: {}  ", userRequest.getUserIds());
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
             
 
