@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
@@ -46,9 +47,8 @@ public class BulkAssignmentOrchestrator {
             userAccessProfiles = retrieveDataService
                     .retrieveProfiles(userRequest, userType);
         } catch (FeignException.NotFound feignClientException) {
-            log.error("UserId is not available :: {}  ", userRequest.getUserIds());
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
-            
+            throw new ResourceNotFoundException("UserId is not available :: " + userRequest.getUserIds());
 
         }
 
