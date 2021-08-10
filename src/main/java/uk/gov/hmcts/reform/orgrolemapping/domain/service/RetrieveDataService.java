@@ -78,6 +78,7 @@ public class RetrieveDataService {
 
             }
         } catch (FeignException.NotFound feignClientException) {
+            log.error("User id is not available :: " + userRequest.getUserIds());
 
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
 
