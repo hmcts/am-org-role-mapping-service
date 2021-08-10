@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
-import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -65,24 +64,19 @@ public class RetrieveDataService {
         Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
         ResponseEntity<List<Object>> response = null;
         List<Object> profiles = new ArrayList<>();
-        try {
-            if (userType.equals(UserType.CASEWORKER)) {
-                response = crdService.fetchUserProfiles(userRequest);
 
-                Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
+        if (userType.equals(UserType.CASEWORKER)) {
+            log.info("Calling CRD Service");
+            response = crdService.fetchUserProfiles(userRequest);
 
-            } else if (userType.equals(UserType.JUDICIAL)) {
-                response = jrdService.fetchJudicialProfiles(userRequest);
-                Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
+            Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
 
-
-            }
-        } catch (FeignException.NotFound feignClientException) {
-            log.error("User id is not available :: " + userRequest.getUserIds());
-
-            log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
-
+        } else if (userType.equals(UserType.JUDICIAL)) {
+            log.info("Calling JRD Service");
+            response = jrdService.fetchJudicialProfiles(userRequest);
+            Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
         }
+
 
         log.debug(
                 "Execution time of CRD Response : {} ms",

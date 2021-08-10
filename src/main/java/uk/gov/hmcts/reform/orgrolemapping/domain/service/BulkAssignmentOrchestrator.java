@@ -1,12 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +35,22 @@ public class BulkAssignmentOrchestrator {
 
     @SuppressWarnings("unchecked")
     public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest, UserType userType) {
-        long startTime = System.currentTimeMillis();
+
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
         log.info("Validated userIds {}", userRequest.getUserIds());
+        long startTime = System.currentTimeMillis();
+        Map<String, Set<?>> userAccessProfiles = null;
         //Create userAccessProfiles based upon roleId and service codes
-        Map<String, Set<?>> userAccessProfiles = retrieveDataService
-                .retrieveProfiles(userRequest, userType);
+        try {
+            userAccessProfiles = retrieveDataService
+                    .retrieveProfiles(userRequest, userType);
+        } catch (FeignException.NotFound feignClientException) {
+
+            log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
+            
+
+        }
 
         //call the requestMapping service to determine role name and create role assignment requests
         ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
