@@ -96,7 +96,6 @@ public class RetrieveDataService {
     @SuppressWarnings("unchecked")
     public Map<String, Set<?>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
                                                                      userProfileResponsesEntity, UserType userType) {
-        log.info("Response entity Object  :: " + userProfileResponsesEntity);
         //check the response if it's not null
         List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
                  Objects
