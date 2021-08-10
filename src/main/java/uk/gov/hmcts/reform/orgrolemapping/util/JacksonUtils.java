@@ -16,7 +16,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestReso
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Named
@@ -69,6 +71,16 @@ public class JacksonUtils {
     public static CaseWorkerProfilesResponse convertInCaseWorkerProfileResponse(Object from) {
         return MAPPER.convertValue(from, new TypeReference<>() {
         });
+    }
+
+    public static List<CaseWorkerProfilesResponse> convertListInCaseWorkerProfileResponse(List<Object> from) {
+        List<CaseWorkerProfilesResponse> caseWorkerProfilesResponses = new ArrayList<>();
+        for (Object obj : from) {
+            caseWorkerProfilesResponses.add(MAPPER.convertValue(obj, new TypeReference<CaseWorkerProfilesResponse>() {
+            }));
+        }
+
+        return caseWorkerProfilesResponses;
     }
 
     public static JudicialProfile convertInJudicialProfile(Object from) {

@@ -28,6 +28,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInCaseWorkerProfileResponse;
 
 @Service
 @Slf4j
@@ -95,17 +96,15 @@ public class RetrieveDataService {
     @SuppressWarnings("unchecked")
     public Map<String, Set<?>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
                                                                      userProfileResponsesEntity, UserType userType) {
-
-        log.info("Response entity result from CRD Refresh Api :: " + userProfileResponsesEntity.getBody());
         log.info("Response entity Object  :: " + userProfileResponsesEntity);
         //check the response if it's not null
-        List<CaseWorkerProfilesResponse> caseWorkerProfilesRespons = (List<CaseWorkerProfilesResponse>)
-                (List<?>) Objects
-                .requireNonNull(userProfileResponsesEntity.getBody());
+        List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
+                 Objects
+                .requireNonNull(convertListInCaseWorkerProfileResponse(userProfileResponsesEntity.getBody()));
 
         //Fetch the user profile from the response
         List<Object> userProfiles = new ArrayList<>();
-        caseWorkerProfilesRespons.forEach(caseWorkerProfilesResponse -> userProfiles.add(caseWorkerProfilesResponse
+        caseWorkerProfilesResponse.forEach(cwpr -> userProfiles.add(cwpr
                 .getUserProfile()));
 
         //Collect the userIds to build the UserRequest
