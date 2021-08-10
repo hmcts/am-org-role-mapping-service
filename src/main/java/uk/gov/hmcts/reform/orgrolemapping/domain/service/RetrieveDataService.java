@@ -96,7 +96,8 @@ public class RetrieveDataService {
     public Map<String, Set<?>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
                                                                      userProfileResponsesEntity, UserType userType) {
 
-
+        log.info("Response entity result from CRD Refresh Api :: " + userProfileResponsesEntity.getBody());
+        log.info("Response entity Object  :: " + userProfileResponsesEntity);
         //check the response if it's not null
         List<CaseWorkerProfilesResponse> caseWorkerProfilesRespons = (List<CaseWorkerProfilesResponse>)
                 (List<?>) Objects
