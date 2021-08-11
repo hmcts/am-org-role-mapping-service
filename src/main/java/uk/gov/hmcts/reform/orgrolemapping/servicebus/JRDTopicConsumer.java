@@ -54,7 +54,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
             InterruptedException {
         logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
-        log.debug("JRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        log.info("JRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
 
         String destination = topic.concat("/subscriptions/").concat(subscription);
 
@@ -73,7 +73,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.debug("    Calling registerMessageHandlerOnClient in JRD ");
+        log.info("    Calling registerMessageHandlerOnClient in JRD ");
 
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message

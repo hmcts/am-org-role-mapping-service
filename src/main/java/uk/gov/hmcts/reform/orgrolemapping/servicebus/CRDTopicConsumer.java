@@ -55,7 +55,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
             InterruptedException {
         logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
-        log.debug("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        log.info("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
 
         String destination = topic.concat("/subscriptions/").concat(subscription);
 
@@ -117,7 +117,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.debug("    Parsing the message in CRD");
+        log.info("    Parsing the message in CRD");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
