@@ -122,7 +122,7 @@ feign:
         readTimeout: 5000
         loggerLevel: BASIC
       crdclient:
-        url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
+        url: http://rd-caseworker-ref-api-pr-349.service.core-compute-preview.internal/
       roleAssignmentApp:
         url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 
