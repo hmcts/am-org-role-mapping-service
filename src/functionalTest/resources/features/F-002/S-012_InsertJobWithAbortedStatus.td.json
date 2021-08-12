@@ -9,13 +9,13 @@
       "status": "ABORTED"
     },
     "body": {
-      "userIds" : ["33191043-fedd-4016-a5ab-a9e23e159b06"]
+      "userIds" : ["57e6de44-3efc-42d8-a1d8-63f32577d560"]
     }
   },
   "expectedResponse": {
     "body": {
       "status" : "ABORTED",
-      "userIds" : ["33191043-fedd-4016-a5ab-a9e23e159b06" ]
+      "userIds" : ["57e6de44-3efc-42d8-a1d8-63f32577d560" ]
     }
   }
 }
