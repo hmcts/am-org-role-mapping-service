@@ -76,6 +76,7 @@ public class WelcomeController {
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
+
     //This method is reserved for ASB topic testing. Need to be removed later.
     @PostMapping(value = "/send")
     public ResponseEntity<String> send(@RequestBody String body) {
