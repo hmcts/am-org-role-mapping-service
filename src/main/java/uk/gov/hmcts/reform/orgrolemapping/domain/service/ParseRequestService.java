@@ -56,7 +56,7 @@ public class ParseRequestService implements ParseRequestBase {
                 userProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));
             } else if (userType.equals(UserType.JUDICIAL)) {
                 List<JudicialProfile> judicialProfileList = profiles;
-                judicialProfileList.forEach(judicialProfile -> userProfileIds.add(judicialProfile.getElinkId()));
+                judicialProfileList.forEach(judicialProfile -> userProfileIds.add(judicialProfile.getIdamId()));
             }
             List<String> userIdsNotInCRDResponse = userRequest.getUserIds().stream().filter(userId -> !userProfileIds
                     .contains(userId)).collect(Collectors.toList());
@@ -118,7 +118,7 @@ public class ParseRequestService implements ParseRequestBase {
         profiles.forEach(userProfile -> {
             AtomicBoolean isInvalid = new AtomicBoolean(false);
             if (CollectionUtils.isEmpty(userProfile.getAppointments())) {
-                log.error("appointment is not available for the judicialProfile {} ", userProfile.getElinkId());
+                log.error("appointment is not available for the judicialProfile {} ", userProfile.getIdamId());
                 invalidJudicialProfiles.add(userProfile);
                 isInvalid.set(true);
             } else {
@@ -130,21 +130,21 @@ public class ParseRequestService implements ParseRequestBase {
 
                     ) {
                         log.error("appointment is not valid for the judicialProfile id {} having roleId {} ",
-                                userProfile.getElinkId(), appointment.getRoleId());
+                                userProfile.getIdamId(), appointment.getRoleId());
                         invalidJudicialProfiles.add(userProfile);
                         isInvalid.set(true);
                     }
                 });
             }
             if (CollectionUtils.isEmpty(userProfile.getAuthorisations())) {
-                log.error("The authorisation is not available for the judicialProfile {} ", userProfile.getElinkId());
+                log.error("The authorisation is not available for the judicialProfile {} ", userProfile.getIdamId());
                 invalidJudicialProfiles.add(userProfile);
                 isInvalid.set(true);
             } else {
                 userProfile.getAuthorisations().forEach(authorisation -> {
                     if (StringUtils.isEmpty(authorisation.getAuthorisationId())) {
                         log.error("The authorisation is not valid for the judicialProfile {} ",
-                                userProfile.getElinkId());
+                                userProfile.getIdamId());
                         invalidJudicialProfiles.add(userProfile);
                         isInvalid.set(true);
                     }

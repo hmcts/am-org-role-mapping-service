@@ -20,7 +20,7 @@ import java.util.List;
 public class JudicialProfile implements Serializable {
 
     @NonNull
-    private String elinkId;
+    private String idamId;
     private String personalCode;
     private String title;
     private String knownAs;

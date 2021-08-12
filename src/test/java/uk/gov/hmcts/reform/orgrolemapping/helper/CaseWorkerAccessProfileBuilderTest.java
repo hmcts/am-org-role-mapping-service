@@ -67,8 +67,8 @@ class CaseWorkerAccessProfileBuilderTest {
                         "judicialProfileSample.json");
         assertNotNull(judicialProfiles);
         assertEquals(2, judicialProfiles.size());
-        assertEquals(id_1, judicialProfiles.get(0).getElinkId());
-        assertEquals(id_2, judicialProfiles.get(1).getElinkId());
+        assertEquals(id_1, judicialProfiles.get(0).getIdamId());
+        assertEquals(id_2, judicialProfiles.get(1).getIdamId());
     }
 
     @Test
