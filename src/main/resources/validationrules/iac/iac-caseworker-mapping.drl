@@ -15,6 +15,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
+/*
+ * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker"
+ * and "tribunal-case-worker" as version IAC_1_0
+ */
 rule "iac_senior_tribunal_caseworker"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
@@ -61,28 +65,10 @@ then
       logMsg("Rule : iac_tribunal_caseworker");
 end;
 
-rule "iac_senior_tribunal_caseworker_v11"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("senior-tribunal-caseworker")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : iac_senior_tribunal_caseworker_v11");
-end;
+/*
+ * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker", "tribunal-case-worker", "case-allocator"
+ *  and "task-supervisor" as version IAC_1_1. The STCW role would be deprecated later.
+ */
 
 rule "iac_tribunal_caseworker_v11"
 when
@@ -105,4 +91,196 @@ then
       .attributes(attr)
       .build());
       logMsg("Rule : iac_tribunal_caseworker_v11");
+end;
+
+rule "iac_senior_tribunal_caseworker_v11"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
+  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended,
+                         caseAllocatorFlag != "Y", taskSupervisorFlag != "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("senior-tribunal-caseworker")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+  insert(
+        RoleAssignment.builder()
+        .actorIdType(ActorIdType.IDAM)
+        .actorId($up.getId())
+        .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+        .roleType(RoleType.ORGANISATION)
+        .roleName("tribunal-caseworker")
+        .grantType(GrantType.STANDARD)
+        .classification(Classification.PUBLIC)
+        .readOnly(false)
+        .attributes(attribute)
+        .build());
+      logMsg("Rule : iac_senior_tribunal_caseworker_v11 - created 2 roles {STCW,TCW}");
+end;
+
+rule "iac_case_allocator_caseworker_v11"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
+  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended,
+                         caseAllocatorFlag == "Y", taskSupervisorFlag != "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("senior-tribunal-caseworker")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+  insert(
+        RoleAssignment.builder()
+        .actorIdType(ActorIdType.IDAM)
+        .actorId($up.getId())
+        .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+        .roleType(RoleType.ORGANISATION)
+        .roleName("tribunal-caseworker")
+        .grantType(GrantType.STANDARD)
+        .classification(Classification.PUBLIC)
+        .readOnly(false)
+        .attributes(attribute)
+        .build());
+      logMsg("Rule : iac_case_allocator_caseworker_v11 - created 3 roles {STCW,TCW,CS}");
+end;
+
+rule "iac_task_supervisor_caseworker_v11"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
+  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended
+                         caseAllocatorFlag != "Y", taskSupervisorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("senior-tribunal-caseworker")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+  insert(
+        RoleAssignment.builder()
+        .actorIdType(ActorIdType.IDAM)
+        .actorId($up.getId())
+        .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+        .roleType(RoleType.ORGANISATION)
+        .roleName("tribunal-caseworker")
+        .grantType(GrantType.STANDARD)
+        .classification(Classification.PUBLIC)
+        .readOnly(false)
+        .attributes(attribute)
+        .build());
+      logMsg("Rule : iac_case_allocator_caseworker_v11 - created 3 roles {STCW,TCW,TS}");
+end;
+
+rule "iac_case_allocator_and_task_supervisor_caseworker_v11"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
+  $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended
+                         caseAllocatorFlag != "Y", taskSupervisorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("senior-tribunal-caseworker")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+  insert(
+        RoleAssignment.builder()
+        .actorIdType(ActorIdType.IDAM)
+        .actorId($up.getId())
+        .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+        .roleType(RoleType.ORGANISATION)
+        .roleName("tribunal-caseworker")
+        .grantType(GrantType.STANDARD)
+        .classification(Classification.PUBLIC)
+        .readOnly(false)
+        .attributes(attribute)
+        .build());
+      logMsg("Rule : iac_case_allocator_and_task_supervisor_caseworker_v11 - created 4 roles {STCW,TCW,CS,TS}");
 end;
