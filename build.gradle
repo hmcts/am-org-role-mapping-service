@@ -270,11 +270,16 @@ repositories {
 
 
 dependencies {
-    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot)
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.glassfish', module: 'jakarta.el'
+    }
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot)
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot)
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot)
-    compile(group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0')
+    implementation (group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0') {
+        exclude group: 'org.glassfish', module: 'jakarta.el'
+    }
+    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.1'
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
 
