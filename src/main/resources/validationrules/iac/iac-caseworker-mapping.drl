@@ -229,7 +229,7 @@ rule "iac_case_allocator_and_task_supervisor_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: UserAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended
-                         caseAllocatorFlag != "Y", taskSupervisorFlag == "Y")
+                         caseAllocatorFlag == "Y", taskSupervisorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
