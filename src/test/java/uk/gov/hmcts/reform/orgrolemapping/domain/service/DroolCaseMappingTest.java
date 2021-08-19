@@ -255,13 +255,14 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2,roleAssignments.size());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
-        assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals(3,roleAssignments.size());
+        assertEquals("tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(0).getActorId());
-        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(1).getActorId());
+        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
+                roleAssignments.get(0).getActorId());
 
     }
 
