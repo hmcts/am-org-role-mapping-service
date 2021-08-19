@@ -128,7 +128,7 @@ feign:
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
-roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
+roleAssignmentAppUrl: http://am-role-assignment-service-pr-920.service.core-compute-preview.internal
 
 amqp:
   host: ${AMQP_HOST:test}
