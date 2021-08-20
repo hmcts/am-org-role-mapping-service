@@ -124,11 +124,11 @@ feign:
       crdclient:
         url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
       roleAssignmentApp:
-        url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
+        url: http://am-role-assignment-service-pr-920.service.core-compute-preview.internal
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
-roleAssignmentAppUrl: http://am-role-assignment-service-pr-920.service.core-compute-preview.internal
+roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 
 amqp:
   host: ${AMQP_HOST:test}
