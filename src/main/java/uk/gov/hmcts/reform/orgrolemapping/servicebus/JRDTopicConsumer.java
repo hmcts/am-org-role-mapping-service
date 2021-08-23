@@ -54,7 +54,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
             InterruptedException {
         logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
-        log.info("JRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        log.debug("JRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
 
         String destination = topic.concat("/subscriptions/").concat(subscription);
 

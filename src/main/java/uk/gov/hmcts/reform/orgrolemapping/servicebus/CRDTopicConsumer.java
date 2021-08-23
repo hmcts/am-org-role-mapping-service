@@ -55,7 +55,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
             InterruptedException {
         logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
-        log.info("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        log.debug("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
 
         String destination = topic.concat("/subscriptions/").concat(subscription);
 

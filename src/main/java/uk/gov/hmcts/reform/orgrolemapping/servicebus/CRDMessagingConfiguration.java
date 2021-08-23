@@ -54,11 +54,11 @@ public class CRDMessagingConfiguration {
             sharedAccessKeyValue = System.getenv("AMQP_CRD_SHARED_ACCESS_KEY_VALUE");
             subscription = System.getenv("CRD_SUBSCRIPTION_NAME");
 
-            log.info("sharedAccessKeyName : " + sharedAccessKeyName);
-            log.info("subscription Name is :" + subscription);
-            log.info("host : " + host);
-            log.info("Topic Name is :" + topic);
-            log.info("subscription Name is :" + subscription);
+            log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
+            log.debug("subscription Name is :" + subscription);
+            log.debug("host : " + host);
+            log.debug("Topic Name is :" + topic);
+            log.debug("subscription Name is :" + subscription);
 
             if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
                 throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");

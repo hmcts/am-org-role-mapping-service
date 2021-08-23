@@ -53,7 +53,7 @@ public class CRDTopicPublisher extends CRDMessagingConfiguration {
         log.info("Started publishing to topic:: in CRD {}", topic);
         ServiceBusMessageBatch messageBatch = serviceBusSenderClient.createMessageBatch();
         List<ServiceBusMessage> serviceBusMessages = new ArrayList<>();
-        log.info("UserIds is " + userIds);
+        log.debug("UserIds is " + userIds);
         serviceBusMessages.add(new ServiceBusMessage(userIds));
 
         for (ServiceBusMessage message : serviceBusMessages) {
