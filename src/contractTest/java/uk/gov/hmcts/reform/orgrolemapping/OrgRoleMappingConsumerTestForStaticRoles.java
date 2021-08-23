@@ -1,18 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
-import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
-import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.RequestResponsePact;
-import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.google.common.collect.Maps;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
-import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -29,11 +24,11 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
@@ -50,7 +45,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
-import static org.junit.Assert.assertNotNull;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
@@ -102,22 +96,6 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "am_roleAssignment_getRoles", consumer = "accessMgmt_orgRoleMapping")
-    public RequestResponsePact executeGetListOfRolesAndGet200(PactDslWithProvider builder) {
-
-        return builder
-                .given("A list of roles are available in role assignment service")
-                .uponReceiving("RAS takes s2s/auth token and returns list of roles")
-                .path(RAS_GET_LIST_ROLES_URL)
-                .method(HttpMethod.GET.toString())
-                .willRespondWith()
-                .status(HttpStatus.OK.value())
-                .headers(getResponseHeaders())
-                .body(createRolesResponse())
-                .toPact();
-    }
-
-
     @NotNull
     private Map<String, String> getResponseHeaders() {
         Map<String, String> responseHeaders = Maps.newHashMap();
@@ -132,20 +110,6 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
         responseHeaders.put("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments"
                + "+json");
         return responseHeaders;
-    }
-
-    @Test
-    @PactTestFor(pactMethod = "executeGetListOfRolesAndGet200")
-    void getListOfRolesAndGet200Test(MockServer mockServer) throws JSONException {
-        String actualResponseBody =
-                SerenityRest
-                        .given()
-                        .headers(getHttpHeaders())
-                        .get(mockServer.getUrl() + RAS_GET_LIST_ROLES_URL)
-                        .then()
-                        .log().all().extract().asString();
-        JSONArray jsonArray = new JSONArray(actualResponseBody);
-        assertNotNull(jsonArray);
     }
 
     private DslPart createRolesResponse() {
@@ -169,11 +133,6 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
                         .stringType(label, "Senior Tribunal Caseworker")
                         .stringType(description, "Senior Tribunal caseworker")
                         .stringType(category, "LEGAL_OPERATIONS"))
-                .object(role -> role
-                        .stringType(name, "salaried-judge")
-                        .stringType(label, "salaried-judge")
-                        .stringType(description, "Judicial office holder able to do judicial case work")
-                        .stringType(category, "JUDICIAL"))
         ).build();
     }
 
