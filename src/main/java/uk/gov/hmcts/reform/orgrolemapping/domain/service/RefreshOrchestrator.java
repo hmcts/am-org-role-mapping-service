@@ -102,14 +102,14 @@ public class RefreshOrchestrator {
             try {
                 //Create userAccessProfiles based upon userIds
 
-                if (refreshJobEntity.isPresent() && refreshJobEntity.get().getRoleCategory()
+                if (refreshJobEntity.get().getRoleCategory()
                         .equals(RoleCategory.LEGAL_OPERATIONS.name())) {
                     userAccessProfiles = retrieveDataService
                             .retrieveProfiles(userRequest, UserType.CASEWORKER);
                     //prepare the response code
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.CASEWORKER);
-                } else if (refreshJobEntity.isPresent() && refreshJobEntity.get().getRoleCategory()
+                } else if (refreshJobEntity.get().getRoleCategory()
                         .equals(RoleCategory.JUDICIAL.name())) {
                     userAccessProfiles = retrieveDataService
                             .retrieveProfiles(userRequest, UserType.JUDICIAL);
@@ -131,7 +131,7 @@ public class RefreshOrchestrator {
         } else {
             // replace the records by service name api
             responseEntity = refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity.get(),
-                    refreshJobEntity.isPresent() && refreshJobEntity.get().getRoleCategory()
+                     refreshJobEntity.get().getRoleCategory()
                             .equals(RoleCategory.LEGAL_OPERATIONS.name()) ? UserType.CASEWORKER : UserType.JUDICIAL);
         }
 
