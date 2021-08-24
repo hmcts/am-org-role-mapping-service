@@ -136,26 +136,31 @@ public class ParseRequestService implements ParseRequestBase {
                     }
                 });
             }
-            if (CollectionUtils.isEmpty(userProfile.getAuthorisations())) {
-                log.error("The authorisation is not available for the judicialProfile {} ", userProfile.getIdamId());
-                invalidJudicialProfiles.add(userProfile);
-                isInvalid.set(true);
-            } else {
-                userProfile.getAuthorisations().forEach(authorisation -> {
-                    if (StringUtils.isEmpty(authorisation.getAuthorisationId())) {
-                        log.error("The authorisation is not valid for the judicialProfile {} ",
-                                userProfile.getIdamId());
-                        invalidJudicialProfiles.add(userProfile);
-                        isInvalid.set(true);
-                    }
-                });
-            }
+            checkUserAuthorisations(invalidJudicialProfiles, userProfile, isInvalid);
 
 
             if (isInvalid.get()) {
                 invalidUserProfilesCount.getAndIncrement();
             }
         });
+    }
+
+    private void checkUserAuthorisations(Set<Object> invalidJudicialProfiles, JudicialProfile userProfile,
+                                         AtomicBoolean isInvalid) {
+        if (CollectionUtils.isEmpty(userProfile.getAuthorisations())) {
+            log.error("The authorisation is not available for the judicialProfile {} ", userProfile.getIdamId());
+            invalidJudicialProfiles.add(userProfile);
+            isInvalid.set(true);
+        } else {
+            userProfile.getAuthorisations().forEach(authorisation -> {
+                if (StringUtils.isEmpty(authorisation.getAuthorisationId())) {
+                    log.error("The authorisation is not valid for the judicialProfile {} ",
+                            userProfile.getIdamId());
+                    invalidJudicialProfiles.add(userProfile);
+                    isInvalid.set(true);
+                }
+            });
+        }
     }
 
 
