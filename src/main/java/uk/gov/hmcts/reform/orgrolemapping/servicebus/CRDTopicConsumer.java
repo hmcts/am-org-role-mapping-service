@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -39,8 +38,6 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
 
-    @Autowired
-    private RoleAssignmentService roleAssignmentService;
 
     public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
                          OrmDeserializer deserializer) {

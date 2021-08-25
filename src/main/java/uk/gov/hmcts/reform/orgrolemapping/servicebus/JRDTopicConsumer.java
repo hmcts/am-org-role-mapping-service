@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -39,7 +39,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
     private OrmDeserializer deserializer;
 
     @Autowired
-    private RoleAssignmentService roleAssignmentService;
+    private FeatureConditionEvaluator featureConditionEvaluator;
 
     public JRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
                             OrmDeserializer deserializer) {
@@ -85,13 +85,19 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                     log.debug("    Locked Until Utc : {}", message.getLockedUntilUtc());
                     log.info("    Delivery Count is : {}", message.getDeliveryCount());
                     AtomicBoolean result = new AtomicBoolean();
-                    processMessage(body, result);
-                    if (result.get()) {
+                    if (featureConditionEvaluator.isFlagEnabled("am_org_role_mapping_service",
+                            "orm-jrd-org-role")) {
+                        processMessage(body, result);
+                        if (result.get()) {
+                            return receiveClient.completeAsync(message.getLockToken());
+                        }
+
+
+                        log.debug("    getLockToken......{}", message.getLockToken());
+                    } else {
+                        log.info("The JRD feature flag is currently disabled. This message would be supressed");
                         return receiveClient.completeAsync(message.getLockToken());
                     }
-
-
-                    log.debug("    getLockToken......{}", message.getLockToken());
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
                     throw new InvalidRequest("Some Network issue");
