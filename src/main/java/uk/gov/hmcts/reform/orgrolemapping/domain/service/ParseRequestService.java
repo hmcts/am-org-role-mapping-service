@@ -24,7 +24,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT
 
 @Service
 @Slf4j
-public class ParseRequestService implements ParseRequestBase {
+public class ParseRequestService implements ParseRequestBase<Object> {
     //1. This will parse the list of userIds and validate them.
     //2. This will parse and validate the user details received from CRD
 
