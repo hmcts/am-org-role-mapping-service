@@ -15,7 +15,7 @@
   "expectedResponse": {
     "body": {
       "status" : "ABORTED",
-      "userIds" : ["33191043-fedd-4016-a5ab-a9e23e159b06"]
+      "userIds" : ["33191043-fedd-4016-a5ab-a9e23e159b06" ]
     }
   }
 }
