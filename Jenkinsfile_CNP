@@ -72,7 +72,7 @@ env.CRD_URL = "http://rd-caseworker-ref-api-aat.service.core-compute-aat.interna
 env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
 env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
 env.PUBLISHER_TOPIC = "rd-caseworker-topic-aat"
-env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
+env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-pr-920.service.core-compute-preview.internal"
 
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
