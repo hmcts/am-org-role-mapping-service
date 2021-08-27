@@ -70,7 +70,6 @@ public class RefDataCaseworkerConsumerTest {
     @Pact(provider = "referenceData_caseworkerRefUsers", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact generatePactFragment(PactDslWithProvider builder) throws JSONException,
         JsonProcessingException {
-
         return builder
             .given("A list of users for CRD request")
             .uponReceiving("A request for caseworkers")
