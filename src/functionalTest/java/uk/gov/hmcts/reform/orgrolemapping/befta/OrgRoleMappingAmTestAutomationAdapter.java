@@ -34,9 +34,9 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 logger.info("The nap is complete.");
                 return null;
             case ("waitForTime20"):
-                logger.info("Sleeping for 20 seconds");
+                logger.info("Sleeping for 26 seconds");
                 try {
-                    Thread.sleep(25000);
+                    Thread.sleep(26000);
                 } catch (InterruptedException exception) {
                     logger.info(exception.getMessage());
                 }
