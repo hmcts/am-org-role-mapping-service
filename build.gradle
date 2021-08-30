@@ -419,7 +419,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
-    testImplementation 'com.github.hmcts:befta-fw:fix-env-extend-befta-fw-SNAPSHOT'
+    testImplementation 'com.github.hmcts:befta-fw:8.3.2'
     //compile fileTree(dir: 'lib', include: 'befta-fw-5.11.0.jar')
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
 
