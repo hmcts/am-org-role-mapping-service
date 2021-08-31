@@ -371,7 +371,7 @@ dependencies {
     implementation('io.netty:netty-handler:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver:4.1.63.Final') {
+    implementation('io.netty:netty-resolver:4.1.67.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
     implementation('io.netty:netty-transport:4.1.63.Final') {
@@ -405,7 +405,7 @@ dependencies {
     pitest 'org.pitest:pitest-junit5-plugin:0.12'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.12.4'
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: '3.6.28'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
