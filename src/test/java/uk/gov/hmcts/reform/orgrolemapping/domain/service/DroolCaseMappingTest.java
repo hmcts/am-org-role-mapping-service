@@ -259,9 +259,9 @@ class DroolCaseMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(3,roleAssignments.size());
-        assertEquals("case-allocator",roleAssignments.get(0).getRoleName());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
-        assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -298,12 +298,12 @@ class DroolCaseMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(6,roleAssignments.size());
-        assertEquals("case-allocator",roleAssignments.get(0).getRoleName());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(3).getRoleName());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(4).getRoleName());
-        assertEquals("tribunal-caseworker",roleAssignments.get(5).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
+        assertEquals("case-allocator",roleAssignments.get(4).getRoleName());
+        assertEquals("case-allocator",roleAssignments.get(5).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -336,9 +336,9 @@ class DroolCaseMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(3,roleAssignments.size());
-        assertEquals("task-supervisor",roleAssignments.get(0).getRoleName());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
-        assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -375,12 +375,12 @@ class DroolCaseMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(6,roleAssignments.size());
-        assertEquals("task-supervisor",roleAssignments.get(0).getRoleName());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(3).getRoleName());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(4).getRoleName());
-        assertEquals("tribunal-caseworker",roleAssignments.get(5).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
+        assertEquals("task-supervisor",roleAssignments.get(4).getRoleName());
+        assertEquals("task-supervisor",roleAssignments.get(5).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -415,15 +415,16 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4,roleAssignments.size());
-        assertEquals("tribunal-caseworker",roleAssignments.get(0).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(2).getRoleName());
-        assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
+        assertEquals(5,roleAssignments.size());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
+        assertEquals("case-allocator",roleAssignments.get(3).getRoleName());
+        assertEquals("task-supervisor",roleAssignments.get(4).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(1).getActorId());
-        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(0).getActorId());
+        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
+                roleAssignments.get(2).getActorId());
     }
 
     @Test
@@ -454,10 +455,10 @@ class DroolCaseMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4,roleAssignments.size());
-        assertEquals("case-allocator",roleAssignments.get(0).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(1).getRoleName());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(2).getRoleName());
-        assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
+        assertEquals("task-supervisor",roleAssignments.get(3).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -494,14 +495,14 @@ class DroolCaseMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(8,roleAssignments.size());
-        assertEquals("case-allocator",roleAssignments.get(0).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(1).getRoleName());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(2).getRoleName());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(4).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(5).getRoleName());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(6).getRoleName());
-        assertEquals("tribunal-caseworker",roleAssignments.get(7).getRoleName());
+        assertEquals("case-allocator",roleAssignments.get(5).getRoleName());
+        assertEquals("task-supervisor",roleAssignments.get(6).getRoleName());
+        assertEquals("task-supervisor",roleAssignments.get(7).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -528,13 +529,13 @@ class DroolCaseMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(3,roleAssignments.size());
-        assertEquals("tribunal-caseworker",roleAssignments.get(0).getRoleName());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(1).getActorId());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
-                roleAssignments.get(0).getActorId());
+                roleAssignments.get(2).getActorId());
 
     }
 
