@@ -80,7 +80,7 @@ spring:
         registration:
           oidc:
             client-id: microservicekey-am-role-assignment-service
-            client-secret: ${AM_ROLE_ASSIGNMENT_SERVICE_SECRET:AAAAAAAAAAAAAAAA}
+            client-secret: ${AM_ROLE_ASSIGNMENT_SERVICE_SECRET:}
   cache:
     type: ${ENABLE_CACHE:}
     cache-names: token
@@ -92,7 +92,7 @@ oidc.issuer: ${OIDC_ISSUER_URL:https://forgerock-am.service.core-compute-idam-aa
 idam:
   s2s-auth:
     # AAAAAAAAAAAAAAAA
-    totp_secret: ${AM_ORG_ROLE_MAPPING_SERVICE_SECRET:AAAAAAAAAAAAAAAA}
+    totp_secret: ${AM_ORG_ROLE_MAPPING_SERVICE_SECRET:}
     microservice: am_org_role_mapping_service
     url: ${IDAM_S2S_URL:http://localhost:4502}
   s2s-authorised:
@@ -100,7 +100,7 @@ idam:
   api.url: ${IDAM_USER_URL:http://localhost:5000}
   client:
     id: ${ORM_IDAM_CLIENT_ID:am_docker}
-    secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:am_docker_secret}
+    secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:}
     redirect_uri: ${ORG_ROLE_MAPPING_IDAM_REDIRECT_URI:http://localhost:4096/oauth2redirect}
     admin:
       userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
