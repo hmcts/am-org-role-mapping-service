@@ -102,9 +102,9 @@ then
       .actorId($joh.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("senior-judge")
+      .roleName("hmcts-judiciary")
       .grantType(GrantType.BASIC)
-      .classification(Classification.PUBLIC)
+      .classification(Classification.PRIVATE)
       .readOnly(true)
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime())
@@ -166,9 +166,6 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal,
-                                                                      decision-making-work, applications,
-                                                                      access-requests"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -202,9 +199,6 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal,
-                                                                      decision-making-work, applications,
-                                                                      access-requests"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
