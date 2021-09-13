@@ -69,7 +69,8 @@ public class JudicialProfile implements Serializable {
         private LocalDateTime endDate;
         private String activeFlag;
         private LocalDateTime extractedDate;
-        private String appointmentId;
+        private String appointment;
+        private String appointmentType;
     }
 
     @Data

@@ -24,5 +24,6 @@ public class JudicialAccessProfile implements Serializable {
     private String  baseLocationId;
     private String  contractTypeId;
     private String appointmentId;
+    private String serviceCode;
 
 }

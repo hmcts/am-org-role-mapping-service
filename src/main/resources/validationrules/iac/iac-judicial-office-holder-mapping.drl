@@ -39,4 +39,33 @@ then
       .build());
 end;
 
+/***************************************************************************
+/* Logging is missing in these drool rules pleas add the same for every rule*
+/***************************************************************************
 
+/*
+ * "IAC President of Tribunals" business role can be assign to Judicial Office holder by existing JudicialAccessProfile
+ *  having values from JRD response
+
+ */
+
+
+rule "iac_president_of_tribunals_joh"
+when
+  $jap: JudicialAccessProfile(appointmentId == "President of Tribunal", serviceCode == "BFA1",
+  ( endDate ==null || endDate.compareTo(new Date()) >= 0))
+then
+
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office($jap.getAppointment())
+      .jurisdiction("IA")
+      .authorisations($jap.getAuthorisations())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .build());
+
+end;
