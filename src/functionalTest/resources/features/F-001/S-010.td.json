@@ -29,7 +29,7 @@
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "primaryLocation": "574546",
             "jurisdiction": "IA"
           }
         },
@@ -45,7 +45,39 @@
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "primaryLocation": "574546",
+            "jurisdiction": "IA"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "[[ANYTHING_PRESENT]]",
+          "roleType": "ORGANISATION",
+          "roleName": "[[ANYTHING_PRESENT]]",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "574546",
+            "jurisdiction": "IA"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "[[ANYTHING_PRESENT]]",
+          "roleType": "ORGANISATION",
+          "roleName": "[[ANYTHING_PRESENT]]",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "574546",
             "jurisdiction": "IA"
           }
         }
