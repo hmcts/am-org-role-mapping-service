@@ -61,8 +61,8 @@ spring:
   flyway.locations: classpath:db/migration
   datasource:
     url: jdbc:postgresql://${ORG_ROLE_MAPPING_DB_HOST:localhost}:${ORG_ROLE_MAPPING_DB_PORT:5451}/${ORG_ROLE_MAPPING_DB_NAME:org_role_mapping}${ORG_ROLE_MAPPING_DB_OPTIONS:?stringtype=unspecified}
-    username: ${ORG_ROLE_MAPPING_DB_USERNAME:am}
-    password: ${ORG_ROLE_MAPPING_DB_PASSWORD:am}
+    username: ${ORG_ROLE_MAPPING_DB_USERNAME:}
+    password: ${ORG_ROLE_MAPPING_DB_PASSWORD:}
     properties:
       charSet: UTFh-8
     hikari:
@@ -133,7 +133,7 @@ roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 amqp:
   host: ${AMQP_HOST:test}
   sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
-  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:test}
+  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:}
   topic: ${AMQP_TOPIC_NAME:aat}
   subscription: ${SUBSCRIPTION_NAME:subscriptionName}
   # DO NOT SET THIS 'true' IN PRODUCTION!
