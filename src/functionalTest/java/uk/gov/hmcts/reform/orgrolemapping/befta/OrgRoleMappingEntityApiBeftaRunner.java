@@ -6,6 +6,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.befta.BeftaMain;
+import uk.gov.hmcts.befta.TestAutomationConfig;
 
 
 @RunWith(Cucumber.class)
@@ -19,7 +20,8 @@ public class OrgRoleMappingEntityApiBeftaRunner {
 
     @BeforeClass
     public static void setUp() {
-        BeftaMain.setUp(new OrgRoleMappingAmTestAutomationAdapter());
+        BeftaMain.setUp(TestAutomationConfig.INSTANCE, new OrgRoleMappingAmTestAutomationAdapter(),
+                        new OrmDefaultMultiSourceFeatureToggleService());
     }
 
     @AfterClass
