@@ -75,6 +75,12 @@ public class TestDataBuilder {
         return UserRequest.builder().userIds(users).build();
     }
 
+    public static UserAccessProfile buildUserAccessProfile(String roleId, boolean suspended) {
+        return UserAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
+                .primaryLocationId("123456").primaryLocationName("south-east").roleId(roleId)
+                .serviceCode("BFA1").roleName(ROLE_NAME_STCW).build();
+    }
+
     public static UserAccessProfile buildUserAccessProfile1(boolean suspended) {
         return UserAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
                 .primaryLocationId("123456").primaryLocationName("south-east").roleId("1")
