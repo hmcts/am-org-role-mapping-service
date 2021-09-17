@@ -35,7 +35,7 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .attributes(attribute)
-      .authorisations($jap.getAuthorisations())
+      .authorisations($jap.getTicketCodes())
       .build());
 end;
 
@@ -58,8 +58,8 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal,
-                                                                      decision-making-work, applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal," +
+                                                                     "decision-making-work, applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -73,7 +73,7 @@ then
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime())
       .attributes(attribute)
-      .authorisations($joh.getAuthorisations())
+      .authorisations($joh.getTicketCodes())
       .build());
 end;
 
@@ -93,9 +93,11 @@ then
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
-   $joh.getOffice() == "IAC Tribunal Judge (Fee-Paid)" ?
-                    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid")) :
-                    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   if($joh.getOffice().equals("IAC Tribunal Judge (Fee-Paid)")) {
+      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   } else {
+      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -109,7 +111,7 @@ then
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime())
       .attributes(attribute)
-      .authorisations($joh.getAuthorisations())
+      .authorisations($joh.getTicketCodes())
       .build());
 end;
 
@@ -129,9 +131,8 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal,
-                                                                      decision-making-work, applications,
-                                                                      access-requests"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal," +
+                                                      "decision-making-work, applications,access-requests"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -145,7 +146,7 @@ then
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime())
       .attributes(attribute)
-      .authorisations($joh.getAuthorisations())
+      .authorisations($joh.getTicketCodes())
       .build());
 end;
 
@@ -179,7 +180,7 @@ then
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime())
       .attributes(attribute)
-      .authorisations($joh.getAuthorisations())
+      .authorisations($joh.getTicketCodes())
       .build());
 end;
 
@@ -212,7 +213,7 @@ then
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime())
       .attributes(attribute)
-      .authorisations($joh.getAuthorisations())
+      .authorisations($joh.getTicketCodes())
       .build());
 end;
 
@@ -234,11 +235,13 @@ then
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
-   $joh.getOffice() == "IAC Tribunal Judge (Fee-Paid)" ?
-                    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid")) :
-                    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal,
-                                                                      decision-making-work, applications));
+   if($joh.getOffice().equals("IAC Tribunal Judge (Fee-Paid)")) {
+         attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+      } else {
+         attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+      }
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal," +
+                                                                    "decision-making-work, applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -252,7 +255,7 @@ then
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime())
       .attributes(attribute)
-      .authorisations($joh.getAuthorisations())
+      .authorisations($joh.getTicketCodes())
       .build());
 end;
 
@@ -272,8 +275,8 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal,
-                                                                      decision-making-work, applications));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal," +
+                                                                    "decision-making-work, applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -287,6 +290,6 @@ then
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime())
       .attributes(attribute)
-      .authorisations($joh.getAuthorisations())
+      .authorisations($joh.getTicketCodes())
       .build());
 end;

@@ -98,9 +98,9 @@ class AssignmentRequestBuilderTest {
                 assertNotNull(appointment.getRegionId());
                 assertNotNull(appointment.getBaseLocationId());
                 assertNotNull(appointment.getContractTypeId());
-                assertNotNull(appointment.getAuthorisations());
-                assertEquals(3, appointment.getAuthorisations().size());
-                assertNotNull(appointment.getAppointmentId());
+                assertNotNull(appointment.getTicketCodes());
+                assertEquals(3, appointment.getTicketCodes().size());
+                assertNotNull(appointment.getAppointment());
             }
         );
         assertEquals(2, judicialAccessProfiles.size());

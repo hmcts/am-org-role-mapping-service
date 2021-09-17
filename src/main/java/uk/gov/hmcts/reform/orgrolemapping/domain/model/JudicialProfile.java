@@ -39,53 +39,7 @@ public class JudicialProfile implements Serializable {
     private List<Authorisation> authorisations;
     private String userType;
 
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class Appointment implements Serializable {
 
-        @NonNull
-        private String roleId;
-        private String roleDescEn;
-        @NonNull
-        private String contractTypeId;
-        private String contractTypeDescEn;
-        @NonNull
-        private String baseLocationId;
-        private String courtName;
-        private String bench;
-        private String courtType;
-        private String circuit;
-        private String areaOfExpertise;
-        @NonNull
-        private String locationId;
-        private String locationDescEn;
-        private String isPrincipalAppointment;
-        @NonNull
-        private LocalDateTime startDate;
-        @NonNull
-        private LocalDateTime endDate;
-        private String activeFlag;
-        private LocalDateTime extractedDate;
-        private String appointment;
-        private String appointmentType;
-    }
 
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class Authorisation implements Serializable {
-        @NonNull
-        private String authorisationId;
-        private String jurisdiction;
-        private LocalDateTime startDate;
-        private LocalDateTime endDate;
-        private LocalDateTime createdDate;
-        private LocalDateTime lastUpdatedDate;
-        private String lowerLevel;
-    }
+
 }

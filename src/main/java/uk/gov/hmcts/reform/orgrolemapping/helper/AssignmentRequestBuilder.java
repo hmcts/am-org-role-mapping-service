@@ -24,6 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.io.InputStream;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -154,8 +155,14 @@ public class AssignmentRequestBuilder {
         Set<JudicialAccessProfile> judicialAccessProfiles = new HashSet<>();
 
         List<String> authorisations = new ArrayList<>();
-        judicialProfile.getAuthorisations().forEach(authorisation -> authorisations.add(authorisation
-                .getAuthorisationId()));
+        judicialProfile.getAuthorisations().forEach(authorisation -> {
+            authorisations.add(authorisation
+                    .getTicketCode());
+                    authorisation.setUserId(judicialProfile.getIdamId());
+        }
+        );
+
+
 
         judicialProfile.getAppointments().forEach(appointment -> {
 
@@ -165,10 +172,13 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setBeginTime(appointment.getStartDate().atZone(ZoneId.of("UTC")));
             judicialAccessProfile.setEndTime(appointment.getEndDate().atZone(ZoneId.of("UTC")));
             judicialAccessProfile.setRegionId(appointment.getLocationDescEn());
-            judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
+            judicialAccessProfile.setBaseLocationId(appointment.getEpimmsId());
             judicialAccessProfile.setContractTypeId(appointment.getContractTypeId());
-            judicialAccessProfile.setAuthorisations(authorisations);
-            judicialAccessProfile.setAppointmentId(appointment.getAppointmentId());
+            judicialAccessProfile.setTicketCodes(!authorisations.isEmpty()?authorisations: Arrays.asList("BFA1-01"));
+            judicialAccessProfile.setAppointment(appointment.getAppointment());
+            judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
+            judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
+            judicialAccessProfile.setServiceCode(appointment.getServiceCode());
             judicialAccessProfiles.add(judicialAccessProfile);
 
         });

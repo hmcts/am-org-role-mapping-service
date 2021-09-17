@@ -283,9 +283,9 @@ class ParseRequestServiceTest {
 
     @Test
     void judicialValidationTest_NoAuthorisationId() {
-        judicialProfile.getAuthorisations().get(0).setAuthorisationId("");
-        judicialProfile.getAuthorisations().get(1).setAuthorisationId("");
-        judicialProfile.getAuthorisations().get(2).setAuthorisationId("");
+        judicialProfile.getAuthorisations().get(0).setTicketCode("");
+        judicialProfile.getAuthorisations().get(1).setTicketCode("");
+        judicialProfile.getAuthorisations().get(2).setTicketCode("");
 
         sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 judicialUser,

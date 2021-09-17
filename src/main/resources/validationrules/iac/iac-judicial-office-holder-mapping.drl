@@ -7,11 +7,15 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import java.util.ArrayList;
 import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.util.HashMap
 import java.util.Map
 import com.fasterxml.jackson.databind.JsonNode;
+import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+
 
 rule "iac_salaried_judge"
 when
@@ -35,7 +39,7 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .attributes(attribute)
-      .authorisations($jap.getAuthorisations())
+      .authorisations($jap.getTicketCodes())
       .build());
 end;
 
@@ -52,20 +56,56 @@ end;
 
 rule "iac_president_of_tribunals_joh"
 when
-  $jap: JudicialAccessProfile(appointmentId == "President of Tribunal", serviceCode == "BFA1",
-  ( endDate ==null || endDate.compareTo(new Date()) >= 0))
+  $jap: JudicialAccessProfile(appointment == "President of Tribunal", serviceCode == "BFA1",
+ (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
 then
 
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office($jap.getAppointment())
+      .office("IAC President of Tribunals")
       .jurisdiction("IA")
-      .authorisations($jap.getAuthorisations())
+      .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
       .build());
+
+end;
+
+rule "load_authorisations_for_non_iac_appointment"
+when
+  $jap: JudicialAccessProfile($id : userId, serviceCode == null)
+  not Authorisation(userId == $id, serviceCode == "BFA1")
+then
+
+  for (Authorisation authorisation : $jap.getAuthorisations()) {
+        if(authorisation.getServiceCode().equals("BAF1"))
+          insert(authorisation);
+      }
+
+end;
+
+rule "iac_president_of_tribunals_joh_with_authorisation"
+when
+  $jap: JudicialAccessProfile(appointment == "President of Tribunal", serviceCode == null,
+   (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
+
+  Authorisation(userId == $jap.getUserId(), serviceCode == "BFA1",
+  (endDate == null || endDate.compareTo(LocalDateTime.now()) >= 0))
+  not JudicialOfficeHolder(office == "IAC President of Tribunals")
+then
+ insert(
+       JudicialOfficeHolder.builder()
+       .userId($jap.getUserId())
+       .office("IAC President of Tribunals")
+       .jurisdiction("IA")
+       .ticketCodes($jap.getTicketCodes())
+       .beginTime($jap.getBeginTime())
+       .endTime($jap.getEndTime())
+       .regionId($jap.getRegionId())
+       .baseLocationId($jap.getBaseLocationId())
+       .build());
 
 end;

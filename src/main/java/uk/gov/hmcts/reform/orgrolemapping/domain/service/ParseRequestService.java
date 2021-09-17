@@ -153,7 +153,7 @@ public class ParseRequestService implements ParseRequestBase<Object> {
             isInvalid.set(true);
         } else {
             userProfile.getAuthorisations().forEach(authorisation -> {
-                if (StringUtils.isEmpty(authorisation.getAuthorisationId())) {
+                if (StringUtils.isEmpty(authorisation.getTicketCode())) {
                     log.error("The authorisation is not valid for the judicialProfile {} ",
                             userProfile.getIdamId());
                     invalidJudicialProfiles.add(userProfile);
