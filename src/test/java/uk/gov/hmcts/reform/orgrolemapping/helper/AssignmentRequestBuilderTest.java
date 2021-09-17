@@ -85,8 +85,8 @@ class AssignmentRequestBuilderTest {
         JudicialProfile judicialProfile =
                 objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
                 JudicialProfile.class);
-        judicialProfile.getAppointments().get(0).setAppointmentId("1");
-        judicialProfile.getAppointments().get(1).setAppointmentId("2");
+        judicialProfile.getAppointments().get(0).setAppointment("1");
+        judicialProfile.getAppointments().get(1).setAppointment("2");
         Set<JudicialAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 

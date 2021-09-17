@@ -157,8 +157,8 @@ public class AssignmentRequestBuilder {
         List<String> authorisations = new ArrayList<>();
         judicialProfile.getAuthorisations().forEach(authorisation -> {
             authorisations.add(authorisation
-                    .getTicketCode());
-                    authorisation.setUserId(judicialProfile.getIdamId());
+                .getTicketCode());
+                authorisation.setUserId(judicialProfile.getIdamId());
         }
         );
 
@@ -174,7 +174,7 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setRegionId(appointment.getLocationDescEn());
             judicialAccessProfile.setBaseLocationId(appointment.getEpimmsId());
             judicialAccessProfile.setContractTypeId(appointment.getContractTypeId());
-            judicialAccessProfile.setTicketCodes(!authorisations.isEmpty()?authorisations: Arrays.asList("BFA1-01"));
+            judicialAccessProfile.setTicketCodes(!authorisations.isEmpty() ? authorisations : Arrays.asList("BFA1-01"));
             judicialAccessProfile.setAppointment(appointment.getAppointment());
             judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
             judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
