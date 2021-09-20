@@ -15,6 +15,9 @@ import java.util.Map
 import com.fasterxml.jackson.databind.JsonNode;
 import java.time.ZonedDateTime;
 import java.time.LocalDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 
 rule "iac_salaried_judge"
@@ -41,11 +44,10 @@ then
       .attributes(attribute)
       .authorisations($jap.getTicketCodes())
       .build());
+      logMsg("Rule : iac_salaried_judge");
 end;
 
-/***************************************************************************
-/* Logging is missing in these drool rules pleas add the same for every rule*
-/***************************************************************************
+
 
 /*
  * "IAC President of Tribunals" business role can be assign to Judicial Office holder by existing JudicialAccessProfile
@@ -56,6 +58,7 @@ end;
 
 rule "iac_president_of_tribunals_joh"
 when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
   $jap: JudicialAccessProfile(appointment == "President of Tribunal", serviceCode == "BFA1",
  (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
 then
@@ -71,11 +74,13 @@ then
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
       .build());
+      logMsg("Rule : iac_president_of_tribunals_joh");
 
 end;
 
 rule "load_authorisations_for_non_iac_appointment"
 when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
   $jap: JudicialAccessProfile($id : userId, serviceCode == null)
   not Authorisation(userId == $id, serviceCode == "BFA1")
 then
@@ -84,11 +89,13 @@ then
         if(authorisation.getServiceCode().equals("BAF1"))
           insert(authorisation);
       }
+      logMsg("Rule : load_authorisations_for_non_iac_appointment");
 
 end;
 
 rule "iac_president_of_tribunals_joh_with_authorisation"
 when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
   $jap: JudicialAccessProfile(appointment == "President of Tribunal", serviceCode == null,
    (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
 
@@ -107,5 +114,6 @@ then
        .regionId($jap.getRegionId())
        .baseLocationId($jap.getBaseLocationId())
        .build());
+       logMsg("Rule : iac_president_of_tribunals_joh_with_authorisation");
 
 end;

@@ -154,7 +154,7 @@ public class AssignmentRequestBuilder {
 
         Set<JudicialAccessProfile> judicialAccessProfiles = new HashSet<>();
 
-        List<String> authorisations = new ArrayList<>();
+        Set<String> authorisations = new HashSet<>();
         judicialProfile.getAuthorisations().forEach(authorisation -> {
             authorisations.add(authorisation
                 .getTicketCode());
@@ -162,6 +162,10 @@ public class AssignmentRequestBuilder {
         }
         );
 
+        //check ticket code BAF-01 if not then add explicit as per business requirement.
+        if(authorisations.isEmpty() || !authorisations.contains("BFA1-01")){
+            authorisations.add("BFA1-01");
+        }
 
 
         judicialProfile.getAppointments().forEach(appointment -> {
@@ -174,7 +178,7 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setRegionId(appointment.getLocationDescEn());
             judicialAccessProfile.setBaseLocationId(appointment.getEpimmsId());
             judicialAccessProfile.setContractTypeId(appointment.getContractTypeId());
-            judicialAccessProfile.setTicketCodes(!authorisations.isEmpty() ? authorisations : Arrays.asList("BFA1-01"));
+            judicialAccessProfile.setTicketCodes(List.copyOf(authorisations));
             judicialAccessProfile.setAppointment(appointment.getAppointment());
             judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
             judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
