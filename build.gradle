@@ -402,7 +402,7 @@ dependencies {
 
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
 
-    pitest 'org.pitest:pitest-junit5-plugin:0.12'
+    pitest 'org.pitest:pitest-junit5-plugin:0.15'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.12.4'
