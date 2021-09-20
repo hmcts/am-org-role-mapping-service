@@ -10,6 +10,8 @@ public class OrgRoleMappingAmBeftaMain {
 
     public static void main(String[] args) {
 
-        BeftaMain.main(args, new OrgRoleMappingAmTestAutomationAdapter());
+        //BeftaMain.main(args, new OrgRoleMappingAmTestAutomationAdapter());
+        BeftaMain.main(args, TestAutomationConfig.INSTANCE, new OrgRoleMappingAmTestAutomationAdapter(),
+                OrmDefaultMultiSourceFeatureToggleService.INSTANCE);
     }
 }
