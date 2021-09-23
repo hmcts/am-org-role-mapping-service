@@ -97,6 +97,7 @@ rule "iac_tribunal_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: UserAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended)
+  not RoleAssignment(actorId == $up.getId(), roleName == "tribunal-caseworker")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -121,6 +122,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: UserAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended,
                          caseAllocatorFlag == "Y")
+  not RoleAssignment(actorId == $up.getId(), roleName == "case-allocator")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -146,6 +148,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: UserAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended,
                          taskSupervisorFlag == "Y")
+  not RoleAssignment(actorId == $up.getId(), roleName == "task-supervisor")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -171,6 +174,8 @@ rule "iac_hmcts-legal-operations_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: UserAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended)
+  not RoleAssignment(actorId == $up.getId(), roleName == "hmcts-legal-operations")
+
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
