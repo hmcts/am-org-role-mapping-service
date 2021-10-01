@@ -15,7 +15,7 @@ management:
     enabled: false
   endpoints:
     health:
-      sensitive: false
+      sensitive: true
     web:
       base-path: /
       exposure:
