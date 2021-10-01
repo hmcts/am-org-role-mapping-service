@@ -450,7 +450,7 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
-                roleAssignments.get(1).getActorId());
+                roleAssignments.get(2).getActorId());
     }
 
     @Test
@@ -575,9 +575,9 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(4).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(0).getActorId());
-        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(1).getActorId());
+        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
+                roleAssignments.get(2).getActorId());
 
     }
 
