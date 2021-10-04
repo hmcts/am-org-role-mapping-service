@@ -12,10 +12,10 @@ management:
         time-to-live: 5s
       show-details: "always"
   security:
-    enabled: false
+    enabled: true
   endpoints:
     health:
-      sensitive: false
+      sensitive: true
     web:
       base-path: /
       exposure:
