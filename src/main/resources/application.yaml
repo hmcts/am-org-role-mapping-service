@@ -12,7 +12,7 @@ management:
         time-to-live: 5s
       show-details: "always"
   security:
-    enabled: false
+    enabled: true
   endpoints:
     health:
       sensitive: true
