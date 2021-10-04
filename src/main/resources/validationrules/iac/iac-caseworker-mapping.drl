@@ -173,7 +173,6 @@ when
   $up: UserAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
