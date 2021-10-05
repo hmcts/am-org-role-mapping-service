@@ -27,6 +27,8 @@ public class UserProfile implements Serializable {
     private String userTypeId;
     private String userType;
     private boolean suspended;
+    private String caseAllocator;
+    private String taskSupervisor;
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
     private LocalDateTime createdTime;
     //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
