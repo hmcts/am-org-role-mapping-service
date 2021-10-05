@@ -121,7 +121,8 @@ public class AssignmentRequestBuilder {
                 userAccessProfile.setServiceCode(workArea.getServiceCode());
                 userAccessProfile.setRoleId(role.getRoleId());
                 userAccessProfile.setRoleName(role.getRoleName());
-
+                userAccessProfile.setCaseAllocatorFlag(userProfile.getCaseAllocator());
+                userAccessProfile.setTaskSupervisorFlag(userProfile.getTaskSupervisor());
                 userAccessProfiles.add(userAccessProfile);
             })
         );
