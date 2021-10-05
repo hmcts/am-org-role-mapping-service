@@ -8,9 +8,10 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -225,8 +226,10 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(1,roleAssignments.size());
+        assertEquals(2,roleAssignments.size());
         assertEquals("tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(1).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(1).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -258,10 +261,12 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3,roleAssignments.size());
+        assertEquals(4,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(3).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -297,13 +302,19 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6,roleAssignments.size());
+        assertEquals(8,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(4).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
         assertEquals("case-allocator",roleAssignments.get(5).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(5).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(6).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -335,10 +346,13 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3,roleAssignments.size());
+        assertEquals(4,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(2).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(3).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -374,13 +388,19 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6,roleAssignments.size());
+        assertEquals(8,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(4).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
         assertEquals("task-supervisor",roleAssignments.get(5).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(5).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(6).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -415,12 +435,18 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(5,roleAssignments.size());
+        assertEquals(7,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(3).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals("task-supervisor",roleAssignments.get(4).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(5).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(5).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(6).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
@@ -454,11 +480,15 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4,roleAssignments.size());
+        assertEquals(5,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(2).getRoleCategory());
         assertEquals("task-supervisor",roleAssignments.get(3).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(4).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -494,15 +524,23 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(8,roleAssignments.size());
+        assertEquals(10,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(4).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
         assertEquals("case-allocator",roleAssignments.get(5).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(5).getRoleCategory());
         assertEquals("task-supervisor",roleAssignments.get(6).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
         assertEquals("task-supervisor",roleAssignments.get(7).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(8).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(8).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(9).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(9).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
     }
@@ -528,10 +566,14 @@ class DroolCaseMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3,roleAssignments.size());
+        assertEquals(5,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(3).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
+        assertEquals("hmcts-legal-operations",roleAssignments.get(4).getRoleName());
+        assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(1).getActorId());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
@@ -567,7 +609,7 @@ class DroolCaseMappingTest extends DroolBase {
     void shouldReturnZeroCaseWorkerWrongRoleIdForNewRule() {
 
         allProfiles.forEach(userAccessProfile -> {
-            userAccessProfile.setRoleId("5");
+            userAccessProfile.setRoleId("11");
             if (userAccessProfile.getServiceCode().equals("BFA2")) {
                 userAccessProfile.setServiceCode("BFA1");
             }
@@ -615,6 +657,6 @@ class DroolCaseMappingTest extends DroolBase {
 
     @NotNull
     private List<FeatureFlag> getFeatureFlags(String flagName, Boolean status) {
-        return Arrays.asList(FeatureFlag.builder().flagName(flagName).status(status).build());
+        return Collections.singletonList(FeatureFlag.builder().flagName(flagName).status(status).build());
     }
 }
