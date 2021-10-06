@@ -239,9 +239,4 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
-
-    @NotNull
-    private List<FeatureFlag> getFeatureFlags(String flagName, Boolean status) {
-        return Collections.singletonList(FeatureFlag.builder().flagName(flagName).status(status).build());
-    }
 }

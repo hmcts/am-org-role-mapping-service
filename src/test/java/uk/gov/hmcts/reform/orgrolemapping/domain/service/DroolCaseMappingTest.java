@@ -8,6 +8,7 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 import java.util.ArrayList;
@@ -41,7 +42,8 @@ class DroolCaseMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals(usersAccessProfiles.keySet().iterator().next(),roleAssignments.get(0).getActorId());
-
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -72,8 +74,8 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals("tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(0).getActorId());
-
-
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -103,8 +105,12 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(1).getActorId());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
 
     }
 
@@ -199,7 +205,8 @@ class DroolCaseMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals(usersAccessProfiles.keySet().iterator().next(),roleAssignments.get(0).getActorId());
-
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -232,6 +239,8 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(1).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(0).getActorId());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -269,6 +278,11 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -317,6 +331,15 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -355,6 +378,11 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -403,6 +431,15 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -451,6 +488,13 @@ class DroolCaseMappingTest extends DroolBase {
                 roleAssignments.get(0).getActorId());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(2).getActorId());
+
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -491,6 +535,11 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -543,6 +592,15 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(9).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -578,6 +636,13 @@ class DroolCaseMappingTest extends DroolBase {
                 roleAssignments.get(1).getActorId());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(2).getActorId());
+
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, routine_work, decision_making_work, applications",
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
 
     }
 
@@ -655,8 +720,75 @@ class DroolCaseMappingTest extends DroolBase {
 
     }
 
-    @NotNull
-    private List<FeatureFlag> getFeatureFlags(String flagName, Boolean status) {
-        return Collections.singletonList(FeatureFlag.builder().flagName(flagName).status(status).build());
+    @Test
+    void shouldReturnTwoHearingCentreAdmin() {
+
+        allProfiles.forEach(userAccessProfile -> {
+            userAccessProfile.setRoleId("3");
+            if (userAccessProfile.getServiceCode().equals("BFA2")) {
+                userAccessProfile.setServiceCode("BFA1");
+            }
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals("hmcts-admin",roleAssignments.get(0).getRoleName());
+        assertEquals("hmcts-admin",roleAssignments.get(1).getRoleName());
+        assertEquals("hearing-centre-admin",roleAssignments.get(2).getRoleName());
+        assertEquals("hearing-centre-admin",roleAssignments.get(3).getRoleName());
+
+        assertEquals(usersAccessProfiles.keySet().iterator().next(),roleAssignments.get(0).getActorId());
+
+        assertEquals("hearing_work, upper_tribunal, routine_work",
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, upper_tribunal, routine_work",
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
+
+    @Test
+    void shouldReturnTwoNationalBusinessCentreCaseWorker() {
+
+        allProfiles.forEach(userAccessProfile -> {
+            userAccessProfile.setRoleId("8");
+            if (userAccessProfile.getServiceCode().equals("BFA2")) {
+                userAccessProfile.setServiceCode("BFA1");
+            }
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals("hmcts-admin",roleAssignments.get(0).getRoleName());
+        assertEquals("hmcts-admin",roleAssignments.get(1).getRoleName());
+        assertEquals("national-business-centre",roleAssignments.get(2).getRoleName());
+        assertEquals("national-business-centre",roleAssignments.get(3).getRoleName());
+
+        assertEquals(usersAccessProfiles.keySet().iterator().next(),roleAssignments.get(0).getActorId());
+
+        assertEquals("hearing_work, upper_tribunal, routine_work",
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals("hearing_work, upper_tribunal, routine_work",
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
+    }
+
 }
