@@ -65,7 +65,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         "/health/liveness",
         "/loggers/**",
         "/",
-        "/favicon.ico"
+        "/favicon.ico",
+        "/am/role-mapping/fetchFlagStatus"
     };
 
 
