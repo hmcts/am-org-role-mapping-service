@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -337,14 +338,26 @@ public class TestDataBuilder {
     }
 
     public static JudicialAccessProfile buildJudicialAccessProfile() {
-        return JudicialAccessProfile.builder().userId(id_1).roleId("8")
-                .baseLocationId("south-east")
+        return JudicialAccessProfile.builder().userId(id_1).roleId("84")
+                .contractTypeId("5")
                 .build();
     }
 
     public static Set<JudicialAccessProfile> buildJudicialAccessProfileSet() {
         Set<JudicialAccessProfile> judicialAccessProfileSet = new HashSet<>();
         judicialAccessProfileSet.add(buildJudicialAccessProfile());
+
+        return judicialAccessProfileSet;
+    }
+
+    public static JudicialOfficeHolder buildJudicialOfficeHolder() {
+        return JudicialOfficeHolder.builder().userId(id_1)
+                .build();
+    }
+
+    public static Set<JudicialOfficeHolder> buildJudicialOfficeHolderSet() {
+        Set<JudicialOfficeHolder> judicialAccessProfileSet = new HashSet<>();
+        judicialAccessProfileSet.add(buildJudicialOfficeHolder());
 
         return judicialAccessProfileSet;
     }
