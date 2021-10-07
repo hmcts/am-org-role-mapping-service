@@ -19,6 +19,7 @@ Feature: Create Role Assignments for Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments01],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments02].
 
+
   @S-005
   Scenario: should not create role assignments when user primary work location is false
     Given a user with [an active IDAM profile with full permissions],
