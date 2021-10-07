@@ -267,7 +267,7 @@ end;
 
 
 
-rule "iac_CTSC_caseworker_v11"
+rule "iac_ctsc_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: UserAccessProfile(roleId in ("9","10"), serviceCode == "BFA1", !suspended)
@@ -281,13 +281,13 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.ADMIN)
       .roleType(RoleType.ORGANISATION)
-      .roleName("CTSC")
+      .roleName("ctsc")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : iac_CTSC_caseworker_v11");
+      logMsg("Rule : iac_ctsc_caseworker_v11");
 end;
 
 
