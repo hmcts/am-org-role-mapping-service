@@ -122,7 +122,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
         });
         IntStream.range(2, 4).forEach(id -> {
-            assertEquals("CTSC",roleAssignments.get(id).getRoleName());
+            assertEquals("ctsc",roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
         });
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
@@ -170,7 +170,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
         IntStream.range(14, 15).forEach(id -> {
-            assertEquals("CTSC", roleAssignments.get(id).getRoleName());
+            assertEquals("ctsc", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
         IntStream.range(16, 23).forEach(id -> {
