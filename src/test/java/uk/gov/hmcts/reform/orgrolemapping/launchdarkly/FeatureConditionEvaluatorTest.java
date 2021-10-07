@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.launchdarkly;
 
 import com.launchdarkly.sdk.server.LDClient;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -51,39 +50,54 @@ class FeatureConditionEvaluatorTest {
     FeatureConditionEvaluator featureConditionEvaluator =
             new FeatureConditionEvaluator(ldClient, "dev", "username");
 
-    @Test
-    public void getLaunchDarklyFlagName_Get()  {
-        when(request.getRequestURI()).thenReturn("/welcome");
-        when(request.getMethod()).thenReturn("GET");
-        assertEquals("orm-base-flag",featureConditionEvaluator.getLaunchDarklyFlag(request));
+    @ParameterizedTest
+    @CsvSource({
+            "/welcome,GET,orm-base-flag"
+    })
+    void getLaunchDarklyFlagName_Get(String url, String method, String flag)  {
+        when(request.getRequestURI()).thenReturn(url);
+        when(request.getMethod()).thenReturn(method);
+        assertEquals(flag,featureConditionEvaluator.getLaunchDarklyFlag(request));
     }
 
-    @Test
-    public void getLaunchDarklyFlagName_Post()  {
-        when(request.getRequestURI()).thenReturn("/am/role-mapping/refresh");
-        when(request.getMethod()).thenReturn("POST");
-        assertEquals("orm-refresh-role",featureConditionEvaluator.getLaunchDarklyFlag(request));
+    @ParameterizedTest
+    @CsvSource({
+            "/am/role-mapping/refresh,POST,orm-refresh-role"
+    })
+    void getLaunchDarklyFlagName_Post(String url, String method, String flag)  {
+        when(request.getRequestURI()).thenReturn(url);
+        when(request.getMethod()).thenReturn(method);
+        assertEquals(flag,featureConditionEvaluator.getLaunchDarklyFlag(request));
     }
 
-    @Test
-    public void getLaunchDarklyFlagName_Delete()  {
-        when(request.getMethod()).thenReturn("DELETE");
+    @ParameterizedTest
+    @CsvSource({
+            "/welcome,DELETE,orm-base-flag"
+    })
+    void getLaunchDarklyFlagName_Delete(String url, String method, String flag)  {
+        when(request.getMethod()).thenReturn(method);
         assertNull(featureConditionEvaluator.getLaunchDarklyFlag(request));
     }
 
-    @Test
-    public void getPositiveResponseForFlag() throws Exception {
-        when(request.getRequestURI()).thenReturn("/welcome");
-        when(request.getMethod()).thenReturn("GET");
+    @ParameterizedTest
+    @CsvSource({
+            "/welcome,GET,orm-base-flag"
+    })
+    void getPositiveResponseForFlag(String url, String method, String flag) throws Exception {
+        when(request.getRequestURI()).thenReturn(url);
+        when(request.getMethod()).thenReturn(method);
         when(ldClient.boolVariation(any(), any(), anyBoolean())).thenReturn(true);
         when(ldClient.isFlagKnown(any())).thenReturn(true);
         Assertions.assertTrue(featureConditionEvaluator.preHandle(request, response, object));
     }
 
-    @Test
-    public void getNegativeResponseForFlag() {
-        when(request.getRequestURI()).thenReturn("/welcome");
-        when(request.getMethod()).thenReturn("GET");
+    @ParameterizedTest
+    @CsvSource({
+            "/welcome,GET,orm-base-flag"
+    })
+    void getNegativeResponseForFlag(String url, String method, String flag) {
+        when(request.getRequestURI()).thenReturn(url);
+        when(request.getMethod()).thenReturn(method);
         when(ldClient.boolVariation(any(), any(), anyBoolean())).thenReturn(false);
         when(ldClient.isFlagKnown(any())).thenReturn(true);
         Assertions.assertThrows(ForbiddenException.class, () ->
@@ -91,31 +105,53 @@ class FeatureConditionEvaluatorTest {
         );
     }
 
-    @Test
-    public void expectExceptionForNonRegisteredURI() {
-        when(request.getRequestURI()).thenReturn("");
-        when(request.getMethod()).thenReturn("GET");
+    @ParameterizedTest
+    @CsvSource({
+            ",GET,orm-base-flag"
+    })
+    void expectExceptionForNonRegisteredURI(String url, String method, String flag) {
+        when(request.getRequestURI()).thenReturn(url);
+        when(request.getMethod()).thenReturn(method);
         Assertions.assertThrows(ForbiddenException.class, () ->
                 featureConditionEvaluator.preHandle(request, response, object)
         );
     }
 
-    @Test
-    public void expectExceptionForRequestMethod() {
-        when(request.getRequestURI()).thenReturn("");
-        when(request.getMethod()).thenReturn("POST");
+    @ParameterizedTest
+    @CsvSource({
+            ",POST,orm-base-flag"
+    })
+    void expectExceptionForRequestMethod(String url, String method, String flag) {
+        when(request.getRequestURI()).thenReturn(url);
+        when(request.getMethod()).thenReturn(method);
         Assertions.assertThrows(ForbiddenException.class, () ->
                 featureConditionEvaluator.preHandle(request, response, object)
         );
     }
 
-    @Test
-    public void expectExceptionForInvalidFlagName() {
-        when(request.getRequestURI()).thenReturn("/welcome");
-        when(request.getMethod()).thenReturn("GET");
+    @ParameterizedTest
+    @CsvSource({
+            "/welcome,GET,orm-base-flag"
+    })
+    void expectExceptionForInvalidFlagName(String url, String method, String flag) {
+        when(request.getRequestURI()).thenReturn(url);
+        when(request.getMethod()).thenReturn(method);
         when(ldClient.isFlagKnown(any())).thenReturn(false);
         Assertions.assertThrows(ResourceNotFoundException.class, () ->
             featureConditionEvaluator.preHandle(request, response, object)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "/url,GET,orm-base-flag"
+    })
+    void getLdFlagGetCaseNullUrlForbidden(String url, String method, String flag) {
+        url = null;
+        when(request.getRequestURI()).thenReturn(url);
+        when(request.getMethod()).thenReturn(method);
+        Assertions.assertThrows(ForbiddenException.class, () ->
+                featureConditionEvaluator.preHandle(request, response, object)
         );
     }
 
