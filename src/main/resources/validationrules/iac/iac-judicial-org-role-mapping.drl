@@ -18,7 +18,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 
 rule "iac_test_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile(roleId == "84", contractTypeId == "5")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -55,7 +55,7 @@ end;
 
 rule "iac_senior_judge_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC President of Tribunals", "IAC Resident Judge"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -91,7 +91,7 @@ end;
 
 rule "iac_hmcts_judiciary_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC President of Tribunals", "IAC Resident Judge",
                                         "IAC Designated Immigration Judge", "IAC Assistant Resident Judge",
                                         "IAC Tribunal Judge (Salaried)", "IAC Tribunal Judge (Fee-Paid)"))
@@ -131,7 +131,7 @@ end;
 
 rule "iac_leadership_judge_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Judge",
                                         "IAC Designated Immigration Judge"))
 then
@@ -168,7 +168,7 @@ end;
 
 rule "iac_case_allocator_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Judge",
                                         "IAC Designated Immigration Judge", "IAC President of Tribunals",
                                         "IAC Tribunal Judge (Salaried)"))
@@ -204,7 +204,7 @@ end;
 
 rule "iac_task_supervisor_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Judge",
                                         "IAC Designated Immigration Judge"))
 then
@@ -241,7 +241,7 @@ end;
 
 rule "iac_judge_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Judge",
                                         "IAC Designated Immigration Judge", "IAC President of Tribunals",
                                         "IAC Tribunal Judge (Salaried)", "IAC Tribunal Judge (Fee-Paid)"))
@@ -284,7 +284,7 @@ end;
 
 rule "iac_fee_paid_judge_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Tribunal Judge (Fee-Paid)"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
