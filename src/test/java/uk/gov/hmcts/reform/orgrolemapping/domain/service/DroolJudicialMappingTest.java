@@ -17,6 +17,9 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialMappingTest extends DroolJudicialBase {
 
+    String workTypes = "hearing-work, upper-tribunal, decision-making-work, applications";
+    String workTypesAccess = "hearing-work, upper-tribunal, decision-making-work, applications, access-requests";
+
     @Test
     void shouldReturnJudge() {
 
@@ -34,6 +37,8 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1,roleAssignments.size());
         assertEquals("judge",roleAssignments.get(0).getRoleName());
+        assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
     }
 
     @Test
@@ -60,6 +65,18 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals("hmcts-judiciary",roleAssignments.get(1).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
         assertEquals("judge",roleAssignments.get(3).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
+        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(3).getAttributes().get("contractType").asText());
+        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(3).getAttributes().get("workTypes").asText());
+
+
     }
 
     @Test
@@ -88,6 +105,21 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals("case-allocator",roleAssignments.get(3).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(4).getRoleName());
         assertEquals("judge",roleAssignments.get(5).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(5).getActorId());
+        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(3).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(4).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(5).getAttributes().get("contractType").asText());
+        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals(workTypesAccess, roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(5).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -115,6 +147,19 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(3).getRoleName());
         assertEquals("judge",roleAssignments.get(4).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
+        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(3).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(4).getAttributes().get("contractType").asText());
+        assertEquals(workTypesAccess, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(4).getAttributes().get("workTypes").asText());
+
     }
 
     @Test
@@ -142,6 +187,19 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(3).getRoleName());
         assertEquals("judge",roleAssignments.get(4).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
+        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(3).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(4).getAttributes().get("contractType").asText());
+        assertEquals(workTypesAccess, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(4).getAttributes().get("workTypes").asText());
+
     }
 
     @Test
@@ -167,6 +225,13 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
         assertEquals("judge",roleAssignments.get(2).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -192,6 +257,14 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
         assertEquals("judge",roleAssignments.get(1).getRoleName());
         assertEquals("fee-paid-judge",roleAssignments.get(2).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals("FEE-PAID", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("FEE-PAID", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("FEE-PAID", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals(workTypes, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
     }
 
 }
