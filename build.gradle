@@ -427,7 +427,7 @@ dependencies {
     }
     testImplementation 'com.github.hmcts:befta-fw:8.4.0'
     //compile fileTree(dir: 'lib', include: 'befta-fw-5.11.0.jar')
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.0.4'
 
     testCompile(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
         exclude group: 'javascript', module: 'jquery'
