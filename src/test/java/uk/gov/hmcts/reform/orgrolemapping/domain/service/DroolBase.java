@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
@@ -12,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,11 @@ public abstract class DroolBase {
         // Run the rules
         results = kieSession.execute(CommandFactory.newBatchExecution(commands));
 
+    }
+
+    @NotNull
+    protected List<FeatureFlag> getFeatureFlags(String flagName, Boolean status) {
+        return Collections.singletonList(FeatureFlag.builder().flagName(flagName).status(status).build());
     }
 
 }
