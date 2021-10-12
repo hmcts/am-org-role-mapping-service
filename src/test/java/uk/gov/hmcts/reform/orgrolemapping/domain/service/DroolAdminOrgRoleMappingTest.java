@@ -1,13 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -271,10 +269,5 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-    }
-
-    @NotNull
-    private List<FeatureFlag> getFeatureFlags(String flagName, Boolean status) {
-        return Collections.singletonList(FeatureFlag.builder().flagName(flagName).status(status).build());
     }
 }
