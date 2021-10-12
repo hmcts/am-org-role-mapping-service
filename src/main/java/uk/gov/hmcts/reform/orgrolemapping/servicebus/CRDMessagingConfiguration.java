@@ -32,7 +32,7 @@ public class CRDMessagingConfiguration {
     @Bean("crdPublisher")
     public ServiceBusSenderClient getServiceBusSenderClient() {
         log.debug("Getting the ServiceBusSenderClient in CRD");
-        logServiceBusVariables();
+        //logServiceBusVariables();
         String connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
 

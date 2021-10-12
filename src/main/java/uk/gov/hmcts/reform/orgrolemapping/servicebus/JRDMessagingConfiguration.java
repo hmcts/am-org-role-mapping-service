@@ -32,7 +32,7 @@ public class JRDMessagingConfiguration {
     @Bean("jrdPublisher")
     public ServiceBusSenderClient getServiceBusSenderClient() {
         log.debug("Getting the ServiceBusSenderClient in JRD");
-        logServiceBusVariables();
+        //logServiceBusVariables();
         String connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
 
