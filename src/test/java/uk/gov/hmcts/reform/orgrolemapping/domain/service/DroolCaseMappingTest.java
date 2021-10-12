@@ -39,8 +39,6 @@ class DroolCaseMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals(usersAccessProfiles.keySet().iterator().next(),roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -71,8 +69,6 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals("tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -102,13 +98,8 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(1).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
-
     }
 
     @Test
@@ -202,8 +193,6 @@ class DroolCaseMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals(usersAccessProfiles.keySet().iterator().next(),roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -277,8 +266,6 @@ class DroolCaseMappingTest extends DroolBase {
                 roleAssignments.get(0).getActorId());
 
         assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
@@ -330,10 +317,6 @@ class DroolCaseMappingTest extends DroolBase {
                 roleAssignments.get(0).getActorId());
 
         assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
                 roleAssignments.get(3).getAttributes().get("workTypes").asText());
@@ -376,8 +359,6 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
 
-        assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
@@ -429,10 +410,6 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
 
-        assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
@@ -487,8 +464,6 @@ class DroolCaseMappingTest extends DroolBase {
                 roleAssignments.get(2).getActorId());
 
         assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
@@ -533,8 +508,6 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
 
-        assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
@@ -591,10 +564,6 @@ class DroolCaseMappingTest extends DroolBase {
                 roleAssignments.get(0).getActorId());
 
         assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
                 roleAssignments.get(3).getAttributes().get("workTypes").asText());
@@ -634,8 +603,6 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(2).getActorId());
 
-        assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
