@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -25,6 +24,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingSe
 @RunWith(MockitoJUnitRunner.class)
 class DroolAdminOrgRoleMappingTest extends DroolBase {
 
+    private String workTypes = "hearing_work, upper_tribunal, routine_work";
 
     @Test
     void shouldReturnHearingCentreAdminAndAdminOrgRolesForRoleId_3_to_5() {
@@ -55,6 +55,12 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+        assertEquals(workTypes,
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(4).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(5).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -86,6 +92,12 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+        assertEquals(workTypes,
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(4).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(5).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -117,6 +129,10 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+        assertEquals(workTypes,
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -170,6 +186,23 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+
+        assertEquals(workTypes,
+                roleAssignments.get(8).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(9).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(10).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(11).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(12).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(13).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(14).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes,
+                roleAssignments.get(15).getAttributes().get("workTypes").asText());
     }
 
     @Test
