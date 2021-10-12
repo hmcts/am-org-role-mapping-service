@@ -59,7 +59,8 @@ public class CRDMessagingConfiguration {
 
             String hostName = System.getenv("AMQP_HOST");
             log.debug("host : " + hostName);
-            if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(hostName) || StringUtils.isEmpty(topic)) {
+            if (StringUtils.isEmpty(sharedAccessKeyValue)
+                    || StringUtils.isEmpty(hostName) || StringUtils.isEmpty(topic)) {
                 throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");
             }
         }
