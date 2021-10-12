@@ -50,17 +50,17 @@ public class CRDMessagingConfiguration {
     public void logServiceBusVariables() {
         log.debug("Env is: " + environment);
         if (environment.equalsIgnoreCase("pr")) {
-            host = System.getenv("AMQP_HOST").concat(".servicebus.windows.net");
+            String hostName = System.getenv("AMQP_HOST").concat(".servicebus.windows.net");
             sharedAccessKeyValue = System.getenv("AMQP_CRD_SHARED_ACCESS_KEY_VALUE");
             subscription = System.getenv("CRD_SUBSCRIPTION_NAME");
 
             log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
             log.debug("subscription Name is :" + subscription);
-            log.debug("host : " + host);
+            log.debug("host : " + hostName);
             log.debug("Topic Name is :" + topic);
             log.debug("subscription Name is :" + subscription);
 
-            if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
+            if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(hostName) || StringUtils.isEmpty(topic)) {
                 throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");
             }
         }
