@@ -50,7 +50,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
     @Qualifier("crdConsumer")
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        //logServiceBusVariables();
+        logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
         log.debug("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
 

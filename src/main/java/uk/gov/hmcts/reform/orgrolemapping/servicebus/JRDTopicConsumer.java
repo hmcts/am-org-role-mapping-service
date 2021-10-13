@@ -52,7 +52,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
     @Qualifier("jrdConsumer")
     public SubscriptionClient getSubscriptionClient1() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        //logServiceBusVariables();
+        logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
         log.debug("JRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
 

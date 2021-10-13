@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 
 
 @Configuration
@@ -32,7 +33,7 @@ public class CRDMessagingConfiguration {
     @Bean("crdPublisher")
     public ServiceBusSenderClient getServiceBusSenderClient() {
         log.debug("Getting the ServiceBusSenderClient in CRD");
-        //logServiceBusVariables();
+        logServiceBusVariables();
         String connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
 
@@ -57,10 +58,13 @@ public class CRDMessagingConfiguration {
             log.debug("Topic Name is :" + topic);
             log.debug("subscription Name is :" + subscription);
 
-            String hostName = System.getenv("AMQP_HOST");
-            log.debug("host : " + hostName);
+            host = System.getenv("AMQP_HOST");
+            if (!host.contains(Constants.SERVICEBUS_DOMAIN)) {
+                host = host.concat(Constants.SERVICEBUS_DOMAIN);
+            }
+            log.debug("host : " + host);
             if (StringUtils.isEmpty(sharedAccessKeyValue)
-                    || StringUtils.isEmpty(hostName) || StringUtils.isEmpty(topic)) {
+                    || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
                 throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");
             }
         }
