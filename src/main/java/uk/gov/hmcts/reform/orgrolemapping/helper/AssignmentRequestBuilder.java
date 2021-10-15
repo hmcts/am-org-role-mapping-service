@@ -133,7 +133,8 @@ public class AssignmentRequestBuilder {
                     caseWorkerAccessProfile.setServiceCode(workArea.getServiceCode());
                     caseWorkerAccessProfile.setRoleId(role.getRoleId());
                     caseWorkerAccessProfile.setRoleName(role.getRoleName());
-
+                    caseWorkerAccessProfile.setCaseAllocatorFlag(caseWorkerProfile.getCaseAllocator());
+                    caseWorkerAccessProfile.setTaskSupervisorFlag(caseWorkerProfile.getTaskSupervisor());
                     caseWorkerAccessProfiles.add(caseWorkerAccessProfile);
                 })
         );

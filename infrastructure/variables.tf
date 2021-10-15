@@ -33,40 +33,6 @@ variable "common_tags" {
   type =  map(string)
 }
 
-variable "appinsights_instrumentation_key" {
-  type    = string
-  default = ""
-}
-
-variable "root_logging_level" {
-  type    = string
-  default = "INFO"
-}
-
-variable "log_level_spring_web" {
-  type    = string
-  default = "INFO"
-}
-
-variable "team_name" {
-  type    = string
-  default = "AM"
-}
-
-variable "managed_identity_object_id" {
-  type    = string
-  default = ""
-}
-
-variable "enable_ase" {
-  type    = bool
-  default = false
-}
-
-variable "deployment_namespace" {
-  type = string
-}
-
 ////////////////////////////////
 // Database
 ////////////////////////////////
