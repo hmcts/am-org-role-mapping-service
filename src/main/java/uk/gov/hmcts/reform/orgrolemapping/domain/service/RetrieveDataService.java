@@ -148,7 +148,7 @@ public class RetrieveDataService {
             } else if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.JUDICIAL)) {
 
                 List<JudicialProfile> validJudicialProfiles = (List<JudicialProfile>) (Object) validProfiles;
-                validJudicialProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getIdamId(),
+                validJudicialProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getSidamId(),
                         convertProfileToJudicialAccessProfile(userProfile)));
             }
             Map<String, Integer> userAccessProfileCount = new HashMap<>();

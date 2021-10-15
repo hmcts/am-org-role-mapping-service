@@ -10,6 +10,7 @@ import lombok.NonNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,31 +20,22 @@ import java.time.LocalDateTime;
 public  class Appointment implements Serializable {
 
     @NonNull
-    private String roleId;
-    private String roleDescEn;
-    @NonNull
-    private String contractTypeId;
-    private String contractTypeDescEn;
-    @NonNull
     private String baseLocationId;
+    private String epimmsId;
     private String courtName;
-    private String bench;
-    private String courtType;
-    private String circuit;
-    private String areaOfExpertise;
+    private String cftRegionID;
+    private String cftRegion;
     @NonNull
     private String locationId;
-    private String locationDescEn;
+    private String location;
     private String isPrincipalAppointment;
-    @NonNull
-    private LocalDateTime startDate;
-    @NonNull
-    private LocalDateTime endDate;
-    private String activeFlag;
-    private LocalDateTime extractedDate;
     private String appointment;
     private String appointmentType;
     private String serviceCode;
-    private String epimmsId;
+    @NonNull
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private List<String> roles;
+
 
 }

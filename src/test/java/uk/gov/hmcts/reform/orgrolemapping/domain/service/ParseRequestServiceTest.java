@@ -207,15 +207,12 @@ class ParseRequestServiceTest {
 
     @Test
     void judicialValidationTest_noContractTypeId() {
-        judicialProfile.getAppointments().get(0).setContractTypeId("");
-        judicialProfile.getAppointments().get(1).setContractTypeId("");
-
         sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 TestDataBuilder.buildUserRequestIndividual(),
                 mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
-        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+        Mockito.verify(mockInteger, Mockito.times(0)).getAndIncrement();
     }
 
     @Test
@@ -258,15 +255,12 @@ class ParseRequestServiceTest {
 
     @Test
     void judicialValidationTest_NoAppointmentRoleId() {
-        judicialProfile.getAppointments().get(0).setRoleId("");
-        judicialProfile.getAppointments().get(1).setRoleId("");
-
         sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 judicialUser,
                 mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
-        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+        Mockito.verify(mockInteger, Mockito.times(0)).getAndIncrement();
     }
 
     @Test

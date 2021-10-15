@@ -26,6 +26,8 @@ public class JudicialAccessProfile implements Serializable {
     private String appointment;
     private String serviceCode;
     private String appointmentType;
+    private String primaryLocationId;
     private List<Authorisation> authorisations;
+    private List<String> roles;
 
 }

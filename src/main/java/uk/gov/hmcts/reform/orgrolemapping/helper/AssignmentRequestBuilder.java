@@ -24,7 +24,6 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.io.InputStream;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -155,34 +154,38 @@ public class AssignmentRequestBuilder {
         Set<JudicialAccessProfile> judicialAccessProfiles = new HashSet<>();
 
         Set<String> authorisations = new HashSet<>();
-        judicialProfile.getAuthorisations().forEach(authorisation -> {
-            authorisations.add(authorisation
-                .getTicketCode());
-                authorisation.setUserId(judicialProfile.getIdamId());
+        if(judicialProfile.getAuthorisations() != null) {
+            judicialProfile.getAuthorisations().forEach(authorisation -> {
+                        authorisations.add(authorisation
+                                .getTicketCode());
+                        authorisation.setUserId(judicialProfile.getSidamId());
+                    }
+            );
         }
-        );
 
         //check ticket code BAF-01 if not then add explicit as per business requirement.
-        if(authorisations.isEmpty() || !authorisations.contains("BFA1-01")){
-            authorisations.add("BFA1-01");
+        if(authorisations.isEmpty() || !authorisations.contains("373")){
+            authorisations.add("373");
         }
 
 
         judicialProfile.getAppointments().forEach(appointment -> {
 
             JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder().build();
-            judicialAccessProfile.setUserId(judicialProfile.getIdamId());
-            judicialAccessProfile.setRoleId(appointment.getRoleId());
+            judicialAccessProfile.setUserId(judicialProfile.getSidamId());
+            judicialAccessProfile.setRoles(appointment.getRoles());
             judicialAccessProfile.setBeginTime(appointment.getStartDate().atZone(ZoneId.of("UTC")));
-            judicialAccessProfile.setEndTime(appointment.getEndDate().atZone(ZoneId.of("UTC")));
-            judicialAccessProfile.setRegionId(appointment.getLocationDescEn());
+            judicialAccessProfile.setEndTime(appointment.getEndDate() != null?appointment.getEndDate()
+                    .atZone(ZoneId.of("UTC")):null);
+            judicialAccessProfile.setRegionId(appointment.getLocationId());
             judicialAccessProfile.setBaseLocationId(appointment.getEpimmsId());
-            judicialAccessProfile.setContractTypeId(appointment.getContractTypeId());
             judicialAccessProfile.setTicketCodes(List.copyOf(authorisations));
             judicialAccessProfile.setAppointment(appointment.getAppointment());
             judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
             judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
             judicialAccessProfile.setServiceCode(appointment.getServiceCode());
+            judicialAccessProfile.setPrimaryLocationId(appointment.getIsPrincipalAppointment()
+                    .equalsIgnoreCase("true")?appointment.getEpimmsId():"");
             judicialAccessProfiles.add(judicialAccessProfile);
 
         });

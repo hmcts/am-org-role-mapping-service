@@ -17,14 +17,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public  class Authorisation implements Serializable {
-    @NonNull
+
     private String ticketCode;
     private String jurisdiction;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private LocalDateTime createdDate;
-    private LocalDateTime lastUpdatedDate;
-    private String lowerLevel;
+    private String ticketDescription;
     private String serviceCode;
     private String userId;
 }

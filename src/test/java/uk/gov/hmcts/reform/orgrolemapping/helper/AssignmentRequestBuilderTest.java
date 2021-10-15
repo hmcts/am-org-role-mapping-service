@@ -92,14 +92,12 @@ class AssignmentRequestBuilderTest {
 
         judicialAccessProfiles.forEach(appointment -> {
                 assertNotNull(appointment.getUserId());
-                assertNotNull(appointment.getRoleId());
                 assertNotNull(appointment.getBeginTime());
                 assertNotNull(appointment.getEndTime());
                 assertNotNull(appointment.getRegionId());
                 assertNotNull(appointment.getBaseLocationId());
-                assertNotNull(appointment.getContractTypeId());
                 assertNotNull(appointment.getTicketCodes());
-                assertEquals(3, appointment.getTicketCodes().size());
+                assertEquals(1, appointment.getTicketCodes().size());
                 assertNotNull(appointment.getAppointment());
             }
         );

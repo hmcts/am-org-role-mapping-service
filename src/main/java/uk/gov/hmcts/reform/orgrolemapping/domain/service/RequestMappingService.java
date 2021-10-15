@@ -17,10 +17,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -41,6 +43,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.JudicialRolesEnum.ASSISTANT_RESIDENT_JUDGE;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.JudicialRolesEnum.DESIGNATED_IMMIGRATION_JUDGE;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.JudicialRolesEnum.RESIDENT_IMMIGRATION_JUDGE;
 
 @Service
 @Slf4j
@@ -108,11 +114,13 @@ public class RequestMappingService<T> {
         // Add each role assignment to the results map.
         roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
 
-        if (userType.equals(UserType.CASEWORKER)) {
+
             // if List<RoleAssignment> is empty in case of suspended false in corresponding
             // user access profile then remove
             // entry of userProfile from usersRoleAssignments map
             List<String> needToRemoveUAP = new ArrayList<>();
+
+        if (userType.equals(UserType.CASEWORKER)) {
 
             //Identify the user with empty List<RoleAssignment> in case of suspended is false.
             usersRoleAssignments.forEach((k, v) -> {
@@ -125,6 +133,15 @@ public class RequestMappingService<T> {
                 }
 
             });
+        } else if(userType.equals(UserType.JUDICIAL)){
+            //Identify the user with empty List<RoleAssignment> in case of suspended is false.
+            usersRoleAssignments.forEach((k, v) -> {
+                if (v.isEmpty()) {
+                        needToRemoveUAP.add(k);
+                    }
+            });
+
+        }
 
             //remove the entry of user from map in case of empty if suspended is false
             log.info("Count of rejected access profiles in ORM : {} ", needToRemoveUAP.size());
@@ -135,7 +152,7 @@ public class RequestMappingService<T> {
                 needToRemoveUAP.forEach(usersRoleAssignments::remove);
             }
 
-        }
+
 
 
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
@@ -314,6 +331,26 @@ public class RequestMappingService<T> {
      */
     public static void logMsg(final String message) {
         log.info(message);
+    }
+
+    public static boolean rolesValidation( List<String> roles,String roleName) {
+        if(!CollectionUtils.isEmpty(roles) && roles.contains(roleName)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean rolesValidation( List<String> roles) {
+        if(!CollectionUtils.isEmpty(roles) && !roles.contains(RESIDENT_IMMIGRATION_JUDGE)){
+            return true;
+        } else if(!CollectionUtils.isEmpty(roles) && !roles.contains(DESIGNATED_IMMIGRATION_JUDGE)) {
+            return true;
+        }else if(!CollectionUtils.isEmpty(roles) && !roles.contains(ASSISTANT_RESIDENT_JUDGE)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {

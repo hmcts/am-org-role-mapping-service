@@ -41,7 +41,7 @@ class WelcomeControllerTest {
         assertEquals("Welcome to Organisation Role Mapping Service", sut.welcome());
     }
 
-    @Test
+    /*@Test
     void createOrgMappingTest() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
@@ -53,7 +53,7 @@ class WelcomeControllerTest {
                 .thenReturn(response);
 
         assertEquals(response, sut.createOrgMapping(userRequest));
-    }
+    }*/
 
     @Test
     void functionalSleepTest() throws InterruptedException {
