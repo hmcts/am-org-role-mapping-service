@@ -113,7 +113,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
-      .attributes(attr)
+      .attributes(attribute)
       .build());
       logMsg("Rule : iac_tribunal_caseworker_v11");
 end;

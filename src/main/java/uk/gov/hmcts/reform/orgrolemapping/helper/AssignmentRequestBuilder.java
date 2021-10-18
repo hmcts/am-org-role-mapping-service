@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -22,6 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -210,6 +213,18 @@ public class AssignmentRequestBuilder {
         Collection<RoleAssignment> requestedRoles = new ArrayList<>();
         requestedRoles.add(buildJudicialRoleAssignment());
         return requestedRoles;
+    }
+
+    public static boolean validateAuthorisation(List<Authorisation> authorisations){
+
+        if(!CollectionUtils.isEmpty(authorisations)) {
+            return authorisations.stream().anyMatch(authorisation -> authorisation.getServiceCode()
+                    .equals("BFA1") && (authorisation.getEndDate() == null
+                    || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
+
+        } else{
+            return false;
+        }
     }
 
     public static RoleAssignment buildJudicialRoleAssignment() {

@@ -19,20 +19,20 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public  class Appointment implements Serializable {
 
-    @NonNull
+
     private String baseLocationId;
     private String epimmsId;
     private String courtName;
     private String cftRegionID;
     private String cftRegion;
-    @NonNull
+
     private String locationId;
     private String location;
     private String isPrincipalAppointment;
     private String appointment;
     private String appointmentType;
     private String serviceCode;
-    @NonNull
+
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<String> roles;

@@ -18,10 +18,11 @@
       "cft_region": "North",
       "is_principal_appointment": "TRUE",
       "start_date": "2020-04-28T16:00:49",
-      "roles": ["Pool of Judges"],
       "appointment": "Employment Judge",
-      "appointment_type": "Salaried"
-      }
+      "appointment_type": "Salaried",
+      "service_code": "BFA1"
+    }
+
 
 
 
@@ -34,8 +35,15 @@
       "ticket_description": "Welsh",
       "start_date": "2022-04-28T16:00:49",
       "service_code": "BFA1",
+      "ticket_code": "373",
+      "end_date": "2022-04-28T16:00:49"
+    },
+    {
+      "jurisdiction": "Languages",
+      "ticket_description": "Welsh",
+      "start_date": "2022-04-28T16:00:49",
+      "service_code": "BFA1",
       "ticket_code": "373"
-
     }
 
     ]
