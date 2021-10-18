@@ -18,7 +18,24 @@
       "cft_region": "North",
       "is_principal_appointment": "TRUE",
       "start_date": "2020-04-28T16:00:49",
+      "end_date": "2022-04-28T16:00:49",
       "appointment": "Employment Judge",
+      "appointment_type": "Salaried",
+      "service_code": "BFA1"
+    },
+    {
+
+      "base_location_id": "1351",
+      "epimms_id": "839746",
+      "court_name": "string",
+      "location_id": "north-east",
+      "location": "north-east",
+      "cft_region_id": "2",
+      "cft_region": "North",
+      "is_principal_appointment": "TRUE",
+      "start_date": "2020-04-28T16:00:49",
+      "end_date": "2022-04-28T16:00:49",
+      "appointment": "Tribunal",
       "appointment_type": "Salaried",
       "service_code": "BFA1"
     }
