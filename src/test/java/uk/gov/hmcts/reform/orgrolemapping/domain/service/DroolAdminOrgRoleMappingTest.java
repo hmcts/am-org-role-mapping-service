@@ -5,8 +5,8 @@ import org.junit.runner.RunWith;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -227,7 +227,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     void shouldNotReturnAdminOrgRolesForRoleId_3_to_10_with_BFA2() {
         allProfiles.clear();
         IntStream.range(3, 11).forEach(roleId -> {
-            UserAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "", false);
+            CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "", false);
             profile.setServiceCode("BFA2");
             allProfiles.add(profile);
         });

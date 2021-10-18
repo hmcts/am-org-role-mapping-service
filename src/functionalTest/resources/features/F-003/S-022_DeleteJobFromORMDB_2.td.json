@@ -1,0 +1,9 @@
+{
+  "_guid_": "S-022_DeleteJobFromORMDB_2",
+  "_extends_": "DeleteJobFromORMDB",
+  "request": {
+    "pathVariables": {
+      "jobId": "${[scenarioContext][parentContext][childContexts][S-022_InsertJobWithAbortedStatus][testData][actualResponse][body][jobId]}"
+    }
+  }
+}

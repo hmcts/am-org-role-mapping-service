@@ -9,8 +9,11 @@ java:
     AMQP_HOST:
       secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
       key: namespaceName
-    SUBSCRIPTION_NAME:
+    CRD_SUBSCRIPTION_NAME:
       secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
+      key: subscriptionName
+    JRD_SUBSCRIPTION_NAME:
+      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-judicial-topic
       key: subscriptionName
 
   keyVaults:
@@ -22,19 +25,21 @@ java:
         - orm-IDAM-CLIENT-ID
         - orm-IDAM-CLIENT-SECRET
         - orm-IDAM-ADMIN-SECRET
-        - caseworker-topic-primary-send-listen-shared-access-key
-
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
+    JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-aat.service.core-compute-aat.internal
     LAUNCH_DARKLY_ENV: pr
-    AMQP_TOPIC_NAME: rd-caseworker-topic
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "$(AMQP_HOST)"
-    SUBSCRIPTION_NAME: "$(SUBSCRIPTION_NAME)"
-    AMQP_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
+    CRD_SUBSCRIPTION_NAME: "$(CRD_SUBSCRIPTION_NAME)"
+    JRD_SUBSCRIPTION_NAME: "$(JRD_SUBSCRIPTION_NAME)"
+    CRD_TOPIC_NAME: rd-caseworker-topic
+    JRD_TOPIC_NAME: rd-judicial-topic
+    AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
+    AMQP_JRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
     ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql"
     ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
     ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
@@ -55,4 +60,6 @@ servicebus:
   setup:
     topics:
       - name: rd-caseworker-topic
+        subscriptionNeeded: yes
+      - name: rd-judicial-topic
         subscriptionNeeded: yes

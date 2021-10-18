@@ -1,0 +1,45 @@
+{
+  "_guid_": "S-024",
+  "title": "should not create role assignments when role id and contract type are not 84 and 5",
+  "_extends_": "F-003_Test_Data_Base",
+  "specs": [
+    "contains the JRD user role id is not 84",
+    "contains the JRD user contract type is not 5",
+    "contains the actorIds of the user just published"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "body": {
+      "actorId": "${[scenarioContext][childContexts][S-024_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [{
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "88630cbd-89e0-4675-82be-0f21dbf26b28",
+        "roleType" : "ORGANISATION",
+        "roleName" : "judge",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "JUDICIAL",
+        "readOnly" : false,
+        "beginTime" : "2020-04-28T16:00:49Z",
+        "endTime" : "2020-04-28T16:00:49Z",
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "baseLocation" : "1351",
+          "contractType" : "SALARIED",
+          "jurisdiction" : "IA",
+          "region" : "north-east"
+        },
+        "authorisations" : [ "52149", "52150", "52151" ]
+      }
+
+      ]
+    }
+  }
+}

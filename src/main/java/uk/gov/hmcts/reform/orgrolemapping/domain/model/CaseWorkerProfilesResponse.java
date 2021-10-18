@@ -12,9 +12,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class UserProfilesResponse implements Serializable {
+public class CaseWorkerProfilesResponse implements Serializable {
     @JsonProperty(value = "ccd_service_name")
     private String serviceName;
     @JsonProperty(value = "staff_profile")
-    private UserProfile userProfile;
+    private CaseWorkerProfile userProfile;
 }

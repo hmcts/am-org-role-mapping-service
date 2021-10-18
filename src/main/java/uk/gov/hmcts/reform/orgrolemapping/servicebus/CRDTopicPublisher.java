@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
-
 import com.azure.messaging.servicebus.ServiceBusMessage;
 import com.azure.messaging.servicebus.ServiceBusMessageBatch;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
@@ -8,6 +7,7 @@ import com.azure.messaging.servicebus.ServiceBusTransactionContext;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Service
 @Slf4j
-public class TopicPublisher extends MessagingConfiguration {
+@Service
+public class CRDTopicPublisher extends CRDMessagingConfiguration {
 
     @Autowired
+    @Qualifier("crdPublisher")
     private ServiceBusSenderClient serviceBusSenderClient;
 
     @Retryable(
@@ -49,10 +50,10 @@ public class TopicPublisher extends MessagingConfiguration {
     private void publishMessageToTopic(String userIds,
                                        ServiceBusSenderClient serviceBusSenderClient,
                                        ServiceBusTransactionContext transactionContext) {
-        log.info("Started publishing to topic:: {}", topic);
+        log.info("Started publishing to topic:: in CRD {}", topic);
         ServiceBusMessageBatch messageBatch = serviceBusSenderClient.createMessageBatch();
         List<ServiceBusMessage> serviceBusMessages = new ArrayList<>();
-        log.info("UserIds is " + userIds);
+        log.debug("UserIds is " + userIds);
         serviceBusMessages.add(new ServiceBusMessage(userIds));
 
         for (ServiceBusMessage message : serviceBusMessages) {
@@ -78,5 +79,5 @@ public class TopicPublisher extends MessagingConfiguration {
             log.info("Sent a batch of messages to the topic ::{}", topic);
         }
     }
-
 }
+
