@@ -93,7 +93,8 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "574546",
-            "jurisdiction": "IA"
+            "jurisdiction": "IA",
+            "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
           }
         }
       ]
