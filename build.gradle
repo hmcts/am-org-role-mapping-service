@@ -223,7 +223,7 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
                 "**UserAccessProfileBuilder.java," +
                 "**TestController.java"
-
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/advice/exception/**"
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
 }
@@ -331,7 +331,7 @@ dependencies {
     implementation group: 'com.azure', name: 'azure-core', version: '1.16.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
 
-    compile group: 'io.projectreactor', name: 'reactor-core', version: '3.4.0'
+    compile group: 'io.projectreactor', name: 'reactor-core', version: '3.4.11'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
 
     compile group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
@@ -358,6 +358,8 @@ dependencies {
 
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.8'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.50'
+
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
