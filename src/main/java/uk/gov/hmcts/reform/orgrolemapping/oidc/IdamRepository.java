@@ -12,6 +12,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
@@ -56,6 +58,7 @@ public class IdamRepository {
     }
 
     @Cacheable(value = "token")
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 3))
     public UserInfo getUserInfo(String jwtToken) {
         if (cacheType != null && !cacheType.equals("none")) {
             CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("token");

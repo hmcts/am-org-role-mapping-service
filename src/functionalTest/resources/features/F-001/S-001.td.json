@@ -8,7 +8,7 @@
   ],
   "request": {
     "pathVariables": {
-      "actorId": "${[scenarioContext][childContexts][PushMessageToAzureServiceBus][testData][request][body][userIds][0]}"
+      "actorId": "${[scenarioContext][childContexts][PushMessageToCRDAzureServiceBus][testData][request][body][userIds][0]}"
     }
   },
   "expectedResponse": {

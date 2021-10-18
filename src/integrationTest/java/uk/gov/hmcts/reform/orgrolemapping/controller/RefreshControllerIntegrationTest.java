@@ -1,3 +1,4 @@
+/*
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.jetbrains.annotations.NotNull;
@@ -376,7 +377,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertNotNull(refreshJob.getLog());
     }
 
-    @NotNull
+    */
+/*@NotNull
     private ResponseEntity<List<UserProfilesResponse>> buildUserProfileResponse() {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("total_records", "2");
@@ -385,7 +387,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         ROLE_NAME_TCW, true, true, false,
                         true, "BFA1", "BFA2", false),
                 headers, HttpStatus.OK);
-    }
+    }*//*
+
 
     private void mockCRDService() {
         ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = buildUserProfileResponse();
@@ -427,4 +430,4 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, new Object[]{jobId}, rm);
     }
 
-}
+}*/

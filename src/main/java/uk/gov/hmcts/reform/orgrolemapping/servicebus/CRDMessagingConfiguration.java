@@ -7,35 +7,37 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 
-@Primary
-@Service
+
+@Configuration
 @Slf4j
-public class MessagingConfiguration {
+@Primary
+public class CRDMessagingConfiguration {
 
     @Value("${amqp.host}")
     String host;
-    @Value("${amqp.topic}")
-    String topic;
     @Value("${amqp.sharedAccessKeyName}")
     String sharedAccessKeyName;
-    @Value("${amqp.sharedAccessKeyValue}")
+    @Value("${amqp.crd.topic}")
+    String topic;
+    @Value("${amqp.crd.sharedAccessKeyValue}")
     String sharedAccessKeyValue;
-    @Value("${amqp.subscription}")
+    @Value("${amqp.crd.subscription}")
     String subscription;
     @Value("${launchdarkly.sdk.environment}")
     String environment;
 
-    @Bean
+    @Bean("crdPublisher")
     public ServiceBusSenderClient getServiceBusSenderClient() {
-        log.debug("Getting the ServiceBusSenderClient");
+        log.debug("Getting the ServiceBusSenderClient in CRD");
         logServiceBusVariables();
         String connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
 
-        log.debug("Topic Name is " + topic);
+        log.info("CRD Topic Name is " + topic);
 
         return new ServiceBusClientBuilder()
                 .connectionString(connectionString)
@@ -49,17 +51,20 @@ public class MessagingConfiguration {
     public void logServiceBusVariables() {
         log.debug("Env is: " + environment);
         if (environment.equalsIgnoreCase("pr")) {
-            host = System.getenv("AMQP_HOST").concat(".servicebus.windows.net");
-            sharedAccessKeyValue = System.getenv("AMQP_SHARED_ACCESS_KEY_VALUE");
-            subscription = System.getenv("SUBSCRIPTION_NAME");
-
+            sharedAccessKeyValue = System.getenv("AMQP_CRD_SHARED_ACCESS_KEY_VALUE");
+            subscription = System.getenv("CRD_SUBSCRIPTION_NAME");
             log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
             log.debug("subscription Name is :" + subscription);
-            log.debug("host : " + host);
             log.debug("Topic Name is :" + topic);
             log.debug("subscription Name is :" + subscription);
 
-            if (StringUtils.isEmpty(sharedAccessKeyValue) || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
+            host = System.getenv("AMQP_HOST");
+            if (!host.contains(Constants.SERVICEBUS_DOMAIN)) {
+                host = host.concat(Constants.SERVICEBUS_DOMAIN);
+            }
+            log.debug("host : " + host);
+            if (StringUtils.isEmpty(sharedAccessKeyValue)
+                    || StringUtils.isEmpty(host) || StringUtils.isEmpty(topic)) {
                 throw new IllegalArgumentException("The Host, Topic Name or Shared Access Key is not available.");
             }
         }

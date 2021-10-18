@@ -223,7 +223,7 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
                 "**UserAccessProfileBuilder.java," +
                 "**TestController.java"
-
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/advice/exception/**"
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
 }
@@ -358,6 +358,8 @@ dependencies {
 
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.8'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.50'
+
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'

@@ -1,12 +1,12 @@
 {
-  "_guid_": "PushMessageToAzureServiceBus",
+  "_guid_": "PushMessageToJRDAzureServiceBus",
   "productName": "Azure Service Bus",
   "operationName": "Push User Ids to Azure Service Bus",
   "method": "POST",
-  "uri": "/send",
+  "uri": "/send2JRD",
   "specs": [
     "to publish the user ids to topic",
-    "to publish an existing CRD user ids to topic"
+    "to publish existing JRD user ids to topic"
   ],
   "users": {
     "invokingUser": {

@@ -14,21 +14,27 @@ import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
+
 
 import java.util.Map;
 
@@ -48,16 +54,31 @@ public class OrgRoleMappingConsumerTestForGetActorById {
     private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
 
     @MockBean
-    TopicConsumer topicConsumer;
+    CRDTopicConsumer topicConsumer;
 
     @MockBean
-    TopicPublisher topicPublisher;
+    JRDTopicConsumer jrdTopicConsumer;
+
+
 
     @MockBean
-    MessagingConfiguration messagingConfiguration;
+    CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
+    JRDMessagingConfiguration jrdMessagingConfiguration;
+
+    @MockBean
+    JRDTopicPublisher jrdPublisher;
+    @MockBean
+    CRDTopicPublisher crdPublisher;
+
+    @MockBean
+    @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
+
+    @MockBean
+    @Qualifier("jrdPublisher")
+    ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -86,7 +107,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
 
     @Test
     @PactTestFor(pactMethod = "executeGetActorByIdAndGet200")
-    void getActorByIdAndGet200Test(MockServer mockServer) {
+    void getActorByIdAndGet200Test(MockServer mockServer) throws JSONException {
         String actualResponseBody =
                 SerenityRest
                         .given()

@@ -19,13 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -45,7 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestMappingService {
+public class RequestMappingService<T> {
 
     @Value("${launchdarkly.sdk.environment}")
     private String environment;
@@ -54,6 +55,7 @@ public class RequestMappingService {
     private PersistenceService persistenceService;
 
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
+    public static final String JUDICIAL_ORGANISATIONAL_ROLE_MAPPING = "judicial-organisational-role-mapping";
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
     public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
     public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
@@ -72,14 +74,17 @@ public class RequestMappingService {
      * For each caseworker represented in the map, determine what the role assignments should be,
      * and update them in the role assignment service.
      */
-    public ResponseEntity<Object> createCaseWorkerAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+    @SuppressWarnings("unchecked")
+    public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles, UserType userType) {
         long startTime = System.currentTimeMillis();
         // Get the role assignments for each caseworker in the input profiles.
-        Map<String, List<RoleAssignment>> usersRoleAssignments = getCaseworkerRoleAssignments(usersAccessProfiles);
+        Map<String, List<RoleAssignment>> usersRoleAssignments = getProfileRoleAssignments(usersAccessProfiles,
+                userType);
         // The response body is a list of ....???....
-        ResponseEntity<Object> responseEntity = updateCaseworkersRoleAssignments(usersRoleAssignments);
+        ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleAssignments, userType);
         log.debug("Execution time of createCaseWorkerAssignments() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(),startTime)));
+
         return responseEntity;
 
     }
@@ -88,8 +93,9 @@ public class RequestMappingService {
      * Apply the role assignment mapping rules to determine what the role assignments should be
      * for each caseworker represented in the map.
      */
-    private Map<String, List<RoleAssignment>> getCaseworkerRoleAssignments(Map<String,
-            Set<UserAccessProfile>> usersAccessProfiles) {
+    @SuppressWarnings("unchecked")
+    private Map<String, List<RoleAssignment>> getProfileRoleAssignments(Map<String,
+            Set<T>> usersAccessProfiles, UserType userType) {
 
         // Create a map to hold the role assignments for each user.
         Map<String, List<RoleAssignment>> usersRoleAssignments = new HashMap<>();
@@ -102,34 +108,39 @@ public class RequestMappingService {
         // Add each role assignment to the results map.
         roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
 
-        // if List<RoleAssignment> is empty in case of suspended false in corresponding user access profile then remove
-        // entry of userProfile from usersRoleAssignments map
-        List<String> needToRemoveUAP = new ArrayList<>();
+        if (userType.equals(UserType.CASEWORKER)) {
+            // if List<RoleAssignment> is empty in case of suspended false in corresponding
+            // user access profile then remove
+            // entry of userProfile from usersRoleAssignments map
+            List<String> needToRemoveUAP = new ArrayList<>();
 
-        //Identify the user with empty List<RoleAssignment> in case of suspended is false.
-        usersRoleAssignments.forEach((k, v) -> {
-            if (v.isEmpty()) {
-                Set<UserAccessProfile> accessProfiles = usersAccessProfiles.get(k);
-                if (!Objects.requireNonNull(accessProfiles.stream().findFirst().orElse(null)).isSuspended()) {
-                    needToRemoveUAP.add(k);
+            //Identify the user with empty List<RoleAssignment> in case of suspended is false.
+            usersRoleAssignments.forEach((k, v) -> {
+                if (v.isEmpty()) {
+                    Set<CaseWorkerAccessProfile> accessProfiles = (Set<CaseWorkerAccessProfile>) usersAccessProfiles
+                            .get(k);
+                    if (!Objects.requireNonNull(accessProfiles.stream().findFirst().orElse(null)).isSuspended()) {
+                        needToRemoveUAP.add(k);
+                    }
                 }
+
+            });
+
+            //remove the entry of user from map in case of empty if suspended is false
+            log.info("Count of rejected access profiles in ORM : {} ", needToRemoveUAP.size());
+            log.info("Access profiles rejected by Drools in ORM: {} ", needToRemoveUAP);
+
+            //remove the entry of user from map in case of empty if suspended is false
+            if (!needToRemoveUAP.isEmpty()) {
+                needToRemoveUAP.forEach(usersRoleAssignments::remove);
             }
 
-        });
-
-        log.info("Count of rejected access profiles in ORM : {} ", needToRemoveUAP.size());
-        log.info("Access profiles rejected by Drools in ORM: {} ", needToRemoveUAP);
-
-        //remove the entry of user from map in case of empty if suspended is false
-
-        if (!needToRemoveUAP.isEmpty()) {
-            needToRemoveUAP.forEach(usersRoleAssignments::remove);
         }
 
 
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
         //print usersRoleAssignments
-        usersRoleAssignments.forEach((k,v) -> {
+        usersRoleAssignments.forEach((k, v) -> {
             roleAssignmentsCount.put(k, v.size());
             log.debug("UserId {} having the RoleAssignments created by the drool  {}  ", k,
                     v);
@@ -138,25 +149,26 @@ public class RequestMappingService {
         log.info("Count of RoleAssignments corresponding to the UserId ::{}  ", roleAssignmentsCount);
 
 
-
         return usersRoleAssignments;
     }
 
     /**
      * Run the mapping rules to generate all the role assignments each caseworker represented in the map.
      */
-    private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+    private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles) {
         long startTime = System.currentTimeMillis();
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
         log.debug("Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(),startTime)));
+
         return roleAssignments;
     }
 
     @NotNull
-    private List<RoleAssignment> getRoleAssignments(Map<String, Set<UserAccessProfile>> usersAccessProfiles) {
+    @SuppressWarnings("unchecked")
+     List<RoleAssignment> getRoleAssignments(Map<String, Set<T>> usersAccessProfiles) {
         // Combine all the user profiles into a single collection for the rules engine.
-        Set<UserAccessProfile> allProfiles = new HashSet<>();
+        Set<T> allProfiles = new HashSet<>();
         usersAccessProfiles.forEach((k, v) -> allProfiles.addAll(v));
 
         // Sequence of processing for executing the rules:
@@ -211,14 +223,15 @@ public class RequestMappingService {
      * Note that some caseworker IDs may have empty role assignment collections.
      * This is OK - these caseworkers have been deleted (or just don't have any appointments which map to roles).
      */
-    ResponseEntity<Object> updateCaseworkersRoleAssignments(Map<String, List<RoleAssignment>> usersRoleAssignments) {
+    ResponseEntity<Object> updateProfilesRoleAssignments(Map<String, List<RoleAssignment>> usersRoleAssignments,
+                                                         UserType userType) {
         //prepare an empty list of responses
         List<Object> finalResponse = new ArrayList<>();
         AtomicInteger failureResponseCount = new AtomicInteger();
 
         usersRoleAssignments
-                .forEach((k,v) -> finalResponse.add(updateCaseworkerRoleAssignments(k,
-                        v, failureResponseCount)));
+                .forEach((k, v) -> finalResponse.add(updateProfileRoleAssignments(k,
+                        v, failureResponseCount, userType)));
         log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
         log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
@@ -228,17 +241,25 @@ public class RequestMappingService {
      * Update a single caseworker's role assignments, using the staff organisational role mapping process ID
      * and the user's ID as the process and reference values.
      */
-    ResponseEntity<Object> updateCaseworkerRoleAssignments(String userId, Collection<RoleAssignment> roleAssignments,
-                                                           AtomicInteger failureResponseCount) {
+    ResponseEntity<Object> updateProfileRoleAssignments(String userId, Collection<RoleAssignment> roleAssignments,
+                                                        AtomicInteger failureResponseCount, UserType userType) {
+
+        ResponseEntity<Object> responseEntity = null;
 
         // Print response code  of RAS for each userID
-        ResponseEntity<Object> responseEntity = updateRoleAssignments(STAFF_ORGANISATIONAL_ROLE_MAPPING,
-                userId, roleAssignments);
-        if (!responseEntity.getStatusCode().equals(HttpStatus.CREATED)) {
+        if (userType.equals(UserType.CASEWORKER)) {
+            responseEntity = updateRoleAssignments(STAFF_ORGANISATIONAL_ROLE_MAPPING,
+                    userId, roleAssignments);
+        } else if (userType.equals(UserType.JUDICIAL)) {
+            responseEntity = updateRoleAssignments(JUDICIAL_ORGANISATIONAL_ROLE_MAPPING,
+                    userId, roleAssignments);
+        }
+        if (responseEntity != null && responseEntity.getStatusCode() != HttpStatus.CREATED) {
             failureResponseCount.getAndIncrement();
         }
 
-        log.info("Role Assignment Service response status : {} for the userId {} :", responseEntity
+        log.info("Role Assignment Service response status : {} for the userId {} :", Objects
+                .requireNonNull(responseEntity)
                 .getStatusCode(), userId);
 
         return responseEntity;
@@ -292,7 +313,7 @@ public class RequestMappingService {
      * This utility method is used to capture the log in drools.
      */
     public static void logMsg(final String message) {
-        log.debug(message);
+        log.info(message);
     }
 
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {

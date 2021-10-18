@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,9 +23,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.MessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
@@ -49,18 +53,33 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
     private static final String RAS_GET_LIST_ROLES_URL = "/am/role-assignments/roles";
 
     @MockBean
-    TopicConsumer topicConsumer;
+    CRDTopicConsumer topicConsumer;
+
+    @MockBean
+    JRDTopicConsumer jrdTopicConsumer;
 
     @Autowired
     DataSource dataSource;
-    @MockBean
-    TopicPublisher topicPublisher;
+
 
     @MockBean
-    MessagingConfiguration messagingConfiguration;
+    CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
+    JRDMessagingConfiguration jrdMessagingConfiguration;
+
+    @MockBean
+    JRDTopicPublisher jrdPublisher;
+    @MockBean
+    CRDTopicPublisher crdPublisher;
+
+    @MockBean
+    @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
+
+    @MockBean
+    @Qualifier("jrdPublisher")
+    ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {

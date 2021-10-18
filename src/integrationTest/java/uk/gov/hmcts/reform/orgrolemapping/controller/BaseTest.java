@@ -8,14 +8,14 @@ import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.TopicPublisher;
+import org.springframework.test.context.junit4.SpringRunner;
+
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
@@ -31,13 +31,14 @@ public abstract class BaseTest {
     protected static final ObjectMapper mapper = new ObjectMapper();
 
     @MockBean
+    @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
 
     @MockBean
-    TopicPublisher topicPublisher;
+    @Qualifier("jrdPublisher")
+    ServiceBusSenderClient serviceBusSenderClientJrd;
 
-    @MockBean
-    TopicConsumer topicConsumer;
+
 
     @BeforeClass
     public static void init() {
