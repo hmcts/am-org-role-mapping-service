@@ -341,7 +341,7 @@ dependencies {
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.0'
     compile group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '2.8.5'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.1'
-    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.3'
 
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -360,7 +360,7 @@ dependencies {
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.50'
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
-    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.3'
 
     implementation('io.netty:netty-buffer:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
