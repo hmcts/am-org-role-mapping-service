@@ -143,7 +143,7 @@ public class AssignmentRequestBuilder {
         );
 
         log.debug("Execution time of convertUserProfileToUserAccessProfile() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime)));
+                (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
         log.info(
                 "Execution time of convertUserProfileToUserAccessProfile() : {} ms",
@@ -153,22 +153,22 @@ public class AssignmentRequestBuilder {
     }
 
     public static Set<JudicialAccessProfile> convertProfileToJudicialAccessProfile(JudicialProfile
-                                                                                               judicialProfile) {
+                                                                                           judicialProfile) {
 
         Set<JudicialAccessProfile> judicialAccessProfiles = new HashSet<>();
 
         Set<String> authorisations = new HashSet<>();
-        if(judicialProfile.getAuthorisations() != null) {
+        if (judicialProfile.getAuthorisations() != null) {
             judicialProfile.getAuthorisations().forEach(authorisation -> {
-                        authorisations.add(authorisation
+                    authorisations.add(authorisation
                                 .getTicketCode());
-                        authorisation.setUserId(judicialProfile.getSidamId());
-                    }
+                    authorisation.setUserId(judicialProfile.getSidamId());
+                }
             );
         }
 
         //check ticket code BAF-01 if not then add explicit as per business requirement.
-        if(authorisations.isEmpty() || !authorisations.contains("373")){
+        if (authorisations.isEmpty() || !authorisations.contains("373")) {
             authorisations.add("373");
         }
 
@@ -179,8 +179,8 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setUserId(judicialProfile.getSidamId());
             judicialAccessProfile.setRoles(appointment.getRoles());
             judicialAccessProfile.setBeginTime(appointment.getStartDate().atZone(ZoneId.of("UTC")));
-            judicialAccessProfile.setEndTime(appointment.getEndDate() != null?appointment.getEndDate()
-                    .atZone(ZoneId.of("UTC")):null);
+            judicialAccessProfile.setEndTime(appointment.getEndDate() != null ? appointment.getEndDate()
+                    .atZone(ZoneId.of("UTC")) : null);
             judicialAccessProfile.setRegionId(appointment.getLocationId());
             judicialAccessProfile.setBaseLocationId(appointment.getEpimmsId());
             judicialAccessProfile.setTicketCodes(List.copyOf(authorisations));
@@ -189,7 +189,7 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
             judicialAccessProfile.setServiceCode(appointment.getServiceCode());
             judicialAccessProfile.setPrimaryLocationId(appointment.getIsPrincipalAppointment()
-                    .equalsIgnoreCase("true")?appointment.getEpimmsId():"");
+                    .equalsIgnoreCase("true") ? appointment.getEpimmsId() : "");
             judicialAccessProfiles.add(judicialAccessProfile);
 
         });
@@ -215,14 +215,14 @@ public class AssignmentRequestBuilder {
         return requestedRoles;
     }
 
-    public static boolean validateAuthorisation(List<Authorisation> authorisations){
+    public static boolean validateAuthorisation(List<Authorisation> authorisations) {
 
-        if(!CollectionUtils.isEmpty(authorisations)) {
+        if (!CollectionUtils.isEmpty(authorisations)) {
             return authorisations.stream().anyMatch(authorisation -> authorisation.getServiceCode()
                     .equals("BFA1") && (authorisation.getEndDate() == null
                     || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
 
-        } else{
+        } else {
             return false;
         }
     }

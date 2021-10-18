@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -29,4 +28,4 @@ public class JudicialProfile implements Serializable {
     private String emailId;
     private List<Appointment> appointments;
     private List<Authorisation> authorisations;
- }
+}
