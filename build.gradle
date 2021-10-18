@@ -223,7 +223,7 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
                 "**UserAccessProfileBuilder.java," +
                 "**TestController.java"
-
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/advice/exception/**"
         property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     }
 }
@@ -359,6 +359,8 @@ dependencies {
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.8'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.50'
 
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
@@ -403,7 +405,7 @@ dependencies {
     }
 
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
-    testCompile('com.github.tomakehurst:wiremock-jre8:2.30.0')
+    testCompile('com.github.tomakehurst:wiremock-jre8:2.31.0')
     testCompile('org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE')
 
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
