@@ -107,7 +107,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void setUp() throws Exception {
         template = new JdbcTemplate(ds);
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
@@ -240,7 +240,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    //@Test
+    @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithFailedUsersToComplete() throws Exception {
         logger.info(" RefreshJob record With JobId and failed UserIds to process successful");
@@ -254,7 +254,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertEquals(ABORTED, linkedJob.getStatus());
         assertNotEquals(0, linkedJob.getUserIds().length);
 
-        mockCRDService();
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2",
+                        ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2",
+                        false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
         mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
 
         mockMvc.perform(post(URL)
