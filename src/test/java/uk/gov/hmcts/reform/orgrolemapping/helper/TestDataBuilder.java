@@ -351,9 +351,7 @@ public class TestDataBuilder {
                 .beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1))
                 .endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1))
                 .baseLocationId("1")
-                .appointmentId("2")
                 .regionId("3")
-                .authorisations(Collections.singletonList("Auth"))
                 .build();
     }
 
@@ -369,9 +367,7 @@ public class TestDataBuilder {
                 .userId(id_2)
                 .beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1))
                 .endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1))
-                .authorisations(Collections.emptyList())
                 .baseLocationId("1")
-                .primaryLocationId("2")
                 .regionId("3")
                 .build();
     }
