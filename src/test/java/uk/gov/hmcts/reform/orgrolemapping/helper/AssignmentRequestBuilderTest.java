@@ -97,7 +97,7 @@ class AssignmentRequestBuilderTest {
                 assertNotNull(appointment.getRegionId());
                 assertNotNull(appointment.getBaseLocationId());
                 assertNotNull(appointment.getTicketCodes());
-                assertEquals(1, appointment.getTicketCodes().size());
+                assertEquals(2, appointment.getTicketCodes().size());
                 assertNotNull(appointment.getAppointment());
             }
         );
