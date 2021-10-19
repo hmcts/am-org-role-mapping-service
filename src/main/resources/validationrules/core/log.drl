@@ -1,6 +1,7 @@
 package validationrules.core;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 rule "role_assignment"
@@ -11,10 +12,18 @@ then
    logMsg("We have role assignment created for role : " + $ra.getRoleName() + " : " + $ra);
 end;
 
-rule "user_access_profile"
+rule "caseworker_access_profile"
 salience 1000
 when
-  $up: UserAccessProfile()
+  $cap: CaseWorkerAccessProfile()
 then
-   logMsg("We have a user access profile " + $up.getId() + " : " + $up);
+   logMsg("We have a case worker access profile " + $cap.getId() + " : " + $cap);
+end;
+
+rule "judicial_access_profile"
+salience 1000
+when
+  $jap: JudicialAccessProfile()
+then
+   logMsg("We have a judicial access profile " + $jap.getUserId() + " : " + $jap);
 end;

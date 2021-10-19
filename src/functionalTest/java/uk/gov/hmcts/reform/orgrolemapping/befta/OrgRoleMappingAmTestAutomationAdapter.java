@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.befta.DefaultTestAutomationAdapter;
 import uk.gov.hmcts.befta.player.BackEndFunctionalTestScenarioContext;
+import uk.gov.hmcts.befta.util.EnvironmentVariableUtils;
 
 import java.util.UUID;
 
@@ -33,11 +34,32 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 logger.info("The nap is complete.");
                 return null;
             case ("waitForTime20"):
-                logger.info("Sleeping for 20 seconds");
+                logger.info("Sleeping for 26 seconds");
                 try {
-                    Thread.sleep(20000);
+                    Thread.sleep(26000);
                 } catch (InterruptedException exception) {
                     logger.info(exception.getMessage());
+                }
+                logger.info("The nap is complete.");
+                return null;
+            case ("generateCRDServiceBusToken"):
+                try {
+                    return FunctionalTestUtils.getSaSToken("sb://"
+                                    + EnvironmentVariableUtils.getRequiredVariable("AMQP_HOST"),
+                            "SendAndListenSharedAccessKey",
+                            EnvironmentVariableUtils.getRequiredVariable("AMQP_CRD_SHARED_ACCESS_KEY_VALUE"));
+                } catch (Exception e) {
+                    logger.warn(e.getMessage());
+                }
+                return null;
+            case ("generateJRDServiceBusToken"):
+                try {
+                    return FunctionalTestUtils.getSaSToken("sb://"
+                           + EnvironmentVariableUtils.getRequiredVariable("AMQP_HOST"),
+                           "SendAndListenSharedAccessKey",
+                            EnvironmentVariableUtils.getRequiredVariable("AMQP_JRD_SHARED_ACCESS_KEY_VALUE"));
+                } catch (Exception e) {
+                    logger.warn(e.getMessage());
                 }
                 logger.info("The nap is complete.");
                 return null;

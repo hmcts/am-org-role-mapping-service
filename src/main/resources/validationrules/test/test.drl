@@ -1,0 +1,33 @@
+package validationrules.test;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+
+
+rule "judicial_access_profile"
+salience 1000
+when
+	$jap: JudicialAccessProfile()
+then
+	System.err.println("We have judicial access profile " + $jap);
+end;
+
+rule "caseworker_access_profile"
+salience 1000
+when
+	$cap: CaseWorkerAccessProfile()
+then
+	System.err.println("We have caseworker access profile " + $cap);
+end;
+
+rule "role_assignment"
+salience 1000
+when
+	$ra: RoleAssignment()
+then
+	System.err.println("We have role assignment " + $ra.getStatus() + " : " + $ra);
+end;
+
+
+
+

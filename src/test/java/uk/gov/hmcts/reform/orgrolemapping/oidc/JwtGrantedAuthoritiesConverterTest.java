@@ -95,4 +95,10 @@ class JwtGrantedAuthoritiesConverterTest {
         return Jwt.withTokenValue("token_value").header("head", "head")
                 .claim(tokenName, ACCESS_TOKEN).build();
     }
+
+    @Test
+    void returnUserInfo() {
+        sut.getUserInfo();
+        assertEquals(null, userInfo);
+    }
 }

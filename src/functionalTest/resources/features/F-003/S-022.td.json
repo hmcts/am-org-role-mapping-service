@@ -1,0 +1,43 @@
+{
+  "_guid_": "S-022",
+  "title": "must successfully create judicial role mapping for a user having multiple roles",
+  "_extends_": "F-003_Test_Data_Base",
+  "specs": [
+    "contains the actorIds of the user just published"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "body": {
+      "actorId": "${[scenarioContext][childContexts][S-022_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "[[ANYTHING_PRESENT]]",
+          "roleType": "ORGANISATION",
+          "roleName": "judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "baseLocation" : "[[ANYTHING_PRESENT]]",
+            "contractType" : "SALARIED",
+            "jurisdiction" : "IA",
+            "region" : "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        }
+      ]
+    }
+  }
+}

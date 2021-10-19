@@ -125,6 +125,9 @@ feign:
         url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
       roleAssignmentApp:
         url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
+      jrdClient:
+        url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
+
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
@@ -132,11 +135,14 @@ roleAssignmentAppUrl: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
 amqp:
   host: ${AMQP_HOST:test}
   sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
-  sharedAccessKeyValue: ${AMQP_SHARED_ACCESS_KEY_VALUE:}
-  topic: ${AMQP_TOPIC_NAME:aat}
-  subscription: ${SUBSCRIPTION_NAME:subscriptionName}
-  # DO NOT SET THIS 'true' IN PRODUCTION!
-  trustAllCerts: ${TRUST_ALL_CERTS:true}
+  crd:
+    sharedAccessKeyValue: ${AMQP_CRD_SHARED_ACCESS_KEY_VALUE:test}
+    topic: ${CRD_TOPIC_NAME:test}
+    subscription: ${CRD_SUBSCRIPTION_NAME:test}
+  jrd:
+    sharedAccessKeyValue: ${AMQP_JRD_SHARED_ACCESS_KEY_VALUE:test}
+    topic: ${JRD_TOPIC_NAME:test}
+    subscription: ${JRD_SUBSCRIPTION_NAME:test}
 
 launchdarkly:
   sdk:

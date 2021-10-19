@@ -12,13 +12,14 @@ import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -32,15 +33,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class TopicConsumer extends MessagingConfiguration {
+public class CRDTopicConsumer extends CRDMessagingConfiguration {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
 
-    @Autowired
-    private RoleAssignmentService roleAssignmentService;
 
-    public TopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
+    public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
                          OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
@@ -48,11 +47,12 @@ public class TopicConsumer extends MessagingConfiguration {
     }
 
     @Bean
+    @Qualifier("crdConsumer")
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
         logServiceBusVariables();
         URI endpoint = new URI("sb://" + host);
-        log.debug("Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        log.debug("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
 
         String destination = topic.concat("/subscriptions/").concat(subscription);
 
@@ -66,16 +66,18 @@ public class TopicConsumer extends MessagingConfiguration {
     }
 
     @Bean
-    CompletableFuture<Void> registerMessageHandlerOnClient(@Autowired SubscriptionClient receiveClient)
+    @Qualifier("crdConsumer")
+    CompletableFuture<Void> registerCRDMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
+                                                                   SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.debug("    Calling registerMessageHandlerOnClient ");
+        log.debug("    Calling registerMessageHandlerOnClient in CRD ");
 
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
-                log.debug("    Calling onMessageAsync.....{}", message);
+                log.debug("    Calling onMessageAsync in CRD.....{}", message);
                 List<byte[]> body = message.getMessageBody().getBinaryData();
                 try {
                     log.debug("    Locked Until Utc : {}", message.getLockedUntilUtc());
@@ -112,11 +114,12 @@ public class TopicConsumer extends MessagingConfiguration {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.debug("    Parsing the message");
+        log.info("    Parsing the message in CRD");
         UserRequest request = deserializer.deserialize(body);
         try {
-            ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request);
-            log.info("----Role Assignment Service Response {}", response.getStatusCode());
+            ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
+                    UserType.CASEWORKER);
+            log.info("----Role Assignment Service Response CRD  {}", response.getStatusCode());
             result.set(Boolean.TRUE);
         } catch (Exception e) {
             log.error("Exception from RAS service : {}", e.getMessage());
