@@ -4,18 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
 
 class WelcomeControllerTest {
 
@@ -41,7 +36,7 @@ class WelcomeControllerTest {
         assertEquals("Welcome to Organisation Role Mapping Service", sut.welcome());
     }
 
-    @Test
+    /*@Test
     void createOrgMappingTest() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
@@ -53,7 +48,7 @@ class WelcomeControllerTest {
                 .thenReturn(response);
 
         assertEquals(response, sut.createOrgMapping(userRequest));
-    }
+    }*/
 
     @Test
     void functionalSleepTest() throws InterruptedException {

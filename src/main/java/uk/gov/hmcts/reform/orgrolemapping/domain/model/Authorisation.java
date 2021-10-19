@@ -6,26 +6,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.io.Serializable;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class JudicialProfile implements Serializable {
+public  class Authorisation implements Serializable {
 
-    @NonNull
-    private String sidamId;
-    private String objectId;
-    private String knownAs;
-    private String surname;
-    private String fullName;
-    private String postNominals;
-    private String emailId;
-    private List<Appointment> appointments;
-    private List<Authorisation> authorisations;
+    private String ticketCode;
+    private String jurisdiction;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private String ticketDescription;
+    private String serviceCode;
+    private String userId;
 }

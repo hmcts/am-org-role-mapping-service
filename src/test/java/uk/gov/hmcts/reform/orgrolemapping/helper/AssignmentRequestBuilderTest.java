@@ -85,22 +85,20 @@ class AssignmentRequestBuilderTest {
         JudicialProfile judicialProfile =
                 objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
                 JudicialProfile.class);
-        judicialProfile.getAppointments().get(0).setAppointmentId("1");
-        judicialProfile.getAppointments().get(1).setAppointmentId("2");
+        judicialProfile.getAppointments().get(0).setAppointment("1");
+        judicialProfile.getAppointments().get(1).setAppointment("2");
         Set<JudicialAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 
         judicialAccessProfiles.forEach(appointment -> {
                 assertNotNull(appointment.getUserId());
-                assertNotNull(appointment.getRoleId());
                 assertNotNull(appointment.getBeginTime());
                 assertNotNull(appointment.getEndTime());
                 assertNotNull(appointment.getRegionId());
                 assertNotNull(appointment.getBaseLocationId());
-                assertNotNull(appointment.getContractTypeId());
-                assertNotNull(appointment.getAuthorisations());
-                assertEquals(3, appointment.getAuthorisations().size());
-                assertNotNull(appointment.getAppointmentId());
+                assertNotNull(appointment.getTicketCodes());
+                assertEquals(1, appointment.getTicketCodes().size());
+                assertNotNull(appointment.getAppointment());
             }
         );
         assertEquals(2, judicialAccessProfiles.size());

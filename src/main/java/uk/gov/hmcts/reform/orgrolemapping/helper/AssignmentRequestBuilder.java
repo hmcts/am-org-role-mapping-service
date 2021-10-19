@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -22,6 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -133,13 +136,14 @@ public class AssignmentRequestBuilder {
                     caseWorkerAccessProfile.setServiceCode(workArea.getServiceCode());
                     caseWorkerAccessProfile.setRoleId(role.getRoleId());
                     caseWorkerAccessProfile.setRoleName(role.getRoleName());
-
+                    caseWorkerAccessProfile.setCaseAllocatorFlag(caseWorkerProfile.getCaseAllocator());
+                    caseWorkerAccessProfile.setTaskSupervisorFlag(caseWorkerProfile.getTaskSupervisor());
                     caseWorkerAccessProfiles.add(caseWorkerAccessProfile);
                 })
         );
 
         log.debug("Execution time of convertUserProfileToUserAccessProfile() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(),startTime)));
+                (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
         log.info(
                 "Execution time of convertUserProfileToUserAccessProfile() : {} ms",
@@ -149,26 +153,43 @@ public class AssignmentRequestBuilder {
     }
 
     public static Set<JudicialAccessProfile> convertProfileToJudicialAccessProfile(JudicialProfile
-                                                                                               judicialProfile) {
+                                                                                           judicialProfile) {
 
         Set<JudicialAccessProfile> judicialAccessProfiles = new HashSet<>();
 
-        List<String> authorisations = new ArrayList<>();
-        judicialProfile.getAuthorisations().forEach(authorisation -> authorisations.add(authorisation
-                .getAuthorisationId()));
+        Set<String> authorisations = new HashSet<>();
+        if (judicialProfile.getAuthorisations() != null) {
+            judicialProfile.getAuthorisations().forEach(authorisation -> {
+                    authorisations.add(authorisation
+                                .getTicketCode());
+                    authorisation.setUserId(judicialProfile.getSidamId());
+                }
+            );
+        }
+
+        //check ticket code BAF-01 if not then add explicit as per business requirement.
+        if (authorisations.isEmpty() || !authorisations.contains("373")) {
+            authorisations.add("373");
+        }
+
 
         judicialProfile.getAppointments().forEach(appointment -> {
 
             JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder().build();
-            judicialAccessProfile.setUserId(judicialProfile.getIdamId());
-            judicialAccessProfile.setRoleId(appointment.getRoleId());
+            judicialAccessProfile.setUserId(judicialProfile.getSidamId());
+            judicialAccessProfile.setRoles(appointment.getRoles());
             judicialAccessProfile.setBeginTime(appointment.getStartDate().atZone(ZoneId.of("UTC")));
-            judicialAccessProfile.setEndTime(appointment.getEndDate().atZone(ZoneId.of("UTC")));
-            judicialAccessProfile.setRegionId(appointment.getLocationDescEn());
-            judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
-            judicialAccessProfile.setContractTypeId(appointment.getContractTypeId());
-            judicialAccessProfile.setAuthorisations(authorisations);
-            judicialAccessProfile.setAppointmentId(appointment.getAppointmentId());
+            judicialAccessProfile.setEndTime(appointment.getEndDate() != null ? appointment.getEndDate()
+                    .atZone(ZoneId.of("UTC")) : null);
+            judicialAccessProfile.setRegionId(appointment.getLocationId());
+            judicialAccessProfile.setBaseLocationId(appointment.getEpimmsId());
+            judicialAccessProfile.setTicketCodes(List.copyOf(authorisations));
+            judicialAccessProfile.setAppointment(appointment.getAppointment());
+            judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
+            judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
+            judicialAccessProfile.setServiceCode(appointment.getServiceCode());
+            judicialAccessProfile.setPrimaryLocationId(appointment.getIsPrincipalAppointment()
+                    .equalsIgnoreCase("true") ? appointment.getEpimmsId() : "");
             judicialAccessProfiles.add(judicialAccessProfile);
 
         });
@@ -192,6 +213,18 @@ public class AssignmentRequestBuilder {
         Collection<RoleAssignment> requestedRoles = new ArrayList<>();
         requestedRoles.add(buildJudicialRoleAssignment());
         return requestedRoles;
+    }
+
+    public static boolean validateAuthorisation(List<Authorisation> authorisations) {
+
+        if (!CollectionUtils.isEmpty(authorisations)) {
+            return authorisations.stream().anyMatch(authorisation -> authorisation.getServiceCode()
+                    .equals("BFA1") && (authorisation.getEndDate() == null
+                    || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
+
+        } else {
+            return false;
+        }
     }
 
     public static RoleAssignment buildJudicialRoleAssignment() {
