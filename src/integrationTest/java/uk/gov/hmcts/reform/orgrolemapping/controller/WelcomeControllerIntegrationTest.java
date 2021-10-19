@@ -76,7 +76,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Mock
     private SecurityContext securityContext;
 
-    @Mock
+    @MockBean
     private SecurityUtils securityUtils;
 
     @MockBean
