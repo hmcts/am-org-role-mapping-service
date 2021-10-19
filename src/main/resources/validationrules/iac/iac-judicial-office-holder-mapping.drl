@@ -22,6 +22,7 @@ then
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($jap.getRegionId()));
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($jap.getBaseLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("SALARIED"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)

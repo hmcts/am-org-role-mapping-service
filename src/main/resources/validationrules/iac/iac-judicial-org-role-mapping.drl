@@ -32,6 +32,7 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("SALARIED"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
                                                                      "decision-making-work, applications"));
   insert(
@@ -67,6 +68,7 @@ then
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
    if($joh.getOffice().equals("IAC Tribunal Judge (Fee-Paid)")) {
       attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("FEE-PAID"));
    } else {
@@ -105,6 +107,7 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("SALARIED"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
                                                       "decision-making-work, applications, access-requests"));
   insert(
@@ -141,6 +144,7 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("SALARIED"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -174,6 +178,7 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("SALARIED"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -209,6 +214,7 @@ then
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
    if($joh.getOffice().equals("IAC Tribunal Judge (Fee-Paid)")) {
          attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("FEE-PAID"));
       } else {
@@ -249,6 +255,7 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("FEE-PAID"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
                                                                     "decision-making-work, applications"));
   insert(
