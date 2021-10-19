@@ -27,7 +27,6 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
