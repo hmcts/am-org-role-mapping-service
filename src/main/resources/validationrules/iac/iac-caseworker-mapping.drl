@@ -27,6 +27,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -47,9 +48,10 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
   $up: UserAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
 then
-     Map<String,JsonNode> attr = new HashMap<>();
-     attr.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-     attr.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+     Map<String,JsonNode> attribute = new HashMap<>();
+     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+     attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+     attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType    (ActorIdType.IDAM)
@@ -60,7 +62,7 @@ then
       .grantType      (GrantType.STANDARD)
       .classification (Classification.PUBLIC)
       .readOnly       (false)
-      .attributes(attr)
+      .attributes(attribute)
       .build());
       logMsg("Rule : iac_tribunal_caseworker");
 end;
@@ -79,6 +81,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, routine_work, decision_making_work, applications"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -103,6 +106,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, routine_work, decision_making_work, applications"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -127,6 +131,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -152,6 +157,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("N"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -176,6 +182,7 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("N"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -202,6 +209,7 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("N"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -228,6 +236,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -254,6 +263,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -280,6 +290,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -306,6 +317,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -330,6 +342,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("N"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)

@@ -30,7 +30,8 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "574546",
-            "jurisdiction": "IA"
+            "jurisdiction": "IA",
+            "substantive": "Y"
           }
         },
         {
@@ -45,7 +46,8 @@
           "readOnly" : true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "primaryLocation" : "574546"
+            "primaryLocation" : "574546",
+            "substantive": "N"
           }
         },
         {
@@ -61,7 +63,8 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "574546",
-            "jurisdiction": "IA"
+            "jurisdiction": "IA",
+            "substantive": "Y"
           }
         },
         {
@@ -77,7 +80,8 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "574546",
-            "jurisdiction": "IA"
+            "jurisdiction": "IA",
+            "substantive": "N"
           }
         },
         {
@@ -93,7 +97,8 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "574546",
-            "jurisdiction": "IA"
+            "jurisdiction": "IA",
+            "substantive": "Y"
           }
         }
       ]
