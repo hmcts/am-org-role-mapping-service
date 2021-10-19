@@ -51,7 +51,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -91,7 +91,7 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -128,7 +128,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -164,7 +164,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -199,7 +199,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -239,7 +239,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -276,7 +276,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
