@@ -64,6 +64,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 @TestPropertySource(properties = { "dbFeature.flags.enable=iac_jrd_1_0"})
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
