@@ -29,7 +29,8 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA"
+            "jurisdiction": "IA",
+            "substantive": "[[ANYTHING_PRESENT]]"
           }
         },
         {
@@ -45,7 +46,8 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA"
+            "jurisdiction": "IA",
+            "substantive": "[[ANYTHING_PRESENT]]"
           }
         }
       ]
