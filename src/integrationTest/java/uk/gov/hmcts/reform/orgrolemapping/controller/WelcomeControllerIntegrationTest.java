@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -63,7 +64,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+@TestPropertySource(properties = { "dbFeature.flags.enable=iac_jrd_1_0"})
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
