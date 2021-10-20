@@ -93,7 +93,6 @@ then
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
-      .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : iac_hmcts_judiciary_org_role");
 end;
