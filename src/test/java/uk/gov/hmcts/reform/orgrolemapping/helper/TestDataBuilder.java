@@ -7,6 +7,7 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
@@ -351,7 +352,10 @@ public class TestDataBuilder {
                 .beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1))
                 .endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1))
                 .baseLocationId("1")
+                .appointment("2")
                 .regionId("3")
+                .authorisations(Collections.singletonList(
+                        Authorisation.builder().userId(id_1).serviceCode("BFA1").build()))
                 .build();
     }
 
@@ -368,6 +372,7 @@ public class TestDataBuilder {
                 .beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1))
                 .endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1))
                 .baseLocationId("1")
+                .primaryLocation("2")
                 .regionId("3")
                 .build();
     }
