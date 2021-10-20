@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.9")
-        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.0'
+        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.0'
     }
 }
 
@@ -33,12 +33,10 @@ apply plugin: 'io.spring.dependency-management'
 def versions = [
         junit          : '5.5.0',
         lombok         : '1.18.6',
-        gradlePitest   : '1.3.0',
-        pitest         : '1.4.2',
+        pitest         : '1.7.2',
         reformLogging  : '5.1.1',
         reformS2sClient: '3.1.2',
         serenity       : '2.1.0',
-        sonarPitest    : '0.5',
         springBoot     : '2.3.11.RELEASE',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
@@ -187,7 +185,7 @@ jacoco {
 }
 
 pitest {
-    pitestVersion = "1.5.2"
+    pitestVersion = "1.7.2"
     testPlugin = "junit5"
     targetClasses = ['uk.gov.hmcts.reform.*']
     excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication',
@@ -385,7 +383,7 @@ dependencies {
     implementation('io.netty:netty-transport:4.1.63.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-epoll:4.1.63.Final') {
+    implementation('io.netty:netty-transport-native-epoll:4.1.69.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
     implementation('io.netty:netty-transport-native-kqueue:4.1.63.Final') {
@@ -410,7 +408,7 @@ dependencies {
 
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
 
-    pitest 'org.pitest:pitest-junit5-plugin:0.12'
+    pitest 'org.pitest:pitest-junit5-plugin:0.15'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.12.4'
