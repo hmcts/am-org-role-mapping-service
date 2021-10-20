@@ -47,9 +47,9 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
   $up: CaseWorkerAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
 then
-     Map<String,JsonNode> attr = new HashMap<>();
-     attr.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-     attr.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+     Map<String,JsonNode> attribute = new HashMap<>();
+     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+     attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -60,7 +60,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
-      .attributes(attr)
+      .attributes(attribute)
       .build());
       logMsg("Rule : iac_tribunal_caseworker");
 end;
