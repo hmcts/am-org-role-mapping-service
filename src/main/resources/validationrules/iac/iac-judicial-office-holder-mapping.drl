@@ -189,13 +189,6 @@ when
   $jap: JudicialAccessProfile(appointment == "President of Tribunal", (serviceCode == null || serviceCode != "BFA1"),
    (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),validateAuthorisation(authorisations))
 then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($jap.getRegionId()));
-   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($jap.getBaseLocationId()));
-   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("SALARIED"));
-   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
-
  insert(
        JudicialOfficeHolder.builder()
        .userId($jap.getUserId())
