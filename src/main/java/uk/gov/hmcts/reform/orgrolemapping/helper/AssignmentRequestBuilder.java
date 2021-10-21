@@ -218,8 +218,8 @@ public class AssignmentRequestBuilder {
     public static boolean validateAuthorisation(List<Authorisation> authorisations) {
 
         if (!CollectionUtils.isEmpty(authorisations)) {
-            return authorisations.stream().anyMatch(authorisation -> authorisation.getServiceCode()
-                    .equals("BFA1") && (authorisation.getEndDate() == null
+            return authorisations.stream().anyMatch(authorisation -> "BFA1".equals(authorisation.getServiceCode())
+                    && (authorisation.getEndDate() == null
                     || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
 
         } else {
