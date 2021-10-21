@@ -42,9 +42,9 @@ public class WelcomeController {
 
     @GetMapping(value = "/welcome")
     public String welcome() {
-        //Use the below statement for any given API to implement Launch Darkly.
         return "Welcome to Organisation Role Mapping Service";
     }
+    //This is a just a test API
 
     @PostMapping(
             path = "/am/role-mapping/staff/users",
