@@ -44,7 +44,8 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "2191654",
-            "jurisdiction": "IA"
+            "jurisdiction": "IA",
+            "substantive": "Y"
           }
         }
       ]

@@ -32,7 +32,7 @@ class CRDTopicConsumerTest {
         sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
     }
 
-    @Test
+    //@Test
     void getSubscriptionClientThrowsServiceBusException() {
         sut.host = "http://test.com";
         sut.subscription = "test";
