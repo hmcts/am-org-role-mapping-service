@@ -54,7 +54,8 @@
             "baseLocation" : "[[ANYTHING_PRESENT]]",
             "contractType" : "SALARIED",
             "jurisdiction" : "IA",
-            "region" : "[[ANYTHING_PRESENT]]"
+            "region" : "[[ANYTHING_PRESENT]]",
+            "substantive" : "Y"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
