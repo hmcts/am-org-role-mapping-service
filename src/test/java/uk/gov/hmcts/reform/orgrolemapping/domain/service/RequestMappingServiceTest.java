@@ -281,21 +281,7 @@ class RequestMappingServiceTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
-                JsonNode.class);
-        assertEquals(2, resultNode.size());
-        assertEquals("judicial-organisational-role-mapping",
-                resultNode.get(0).get("body").get("roleRequest").get("process").asText());
-        assertEquals("judge",
-                resultNode.get(0).get("body").get("requestedRoles").get(0).get("roleName").asText());
-        assertEquals(actorId,
-                resultNode.get(0).get("body").get("requestedRoles").get(0).get("actorId").asText());
-
-
-
-        Mockito.verify(roleAssignmentService, Mockito.times(2))
+        Mockito.verify(roleAssignmentService, Mockito.times(0))
                 .createRoleAssignment(any());
     }
 

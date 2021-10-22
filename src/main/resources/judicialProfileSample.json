@@ -36,7 +36,7 @@
       "start_date": "2020-04-28T16:00:49",
       "end_date": "2022-04-28T16:00:49",
       "appointment": "Tribunal",
-      "appointment_type": "Salaried",
+      "appointment_type": "fee paid",
       "service_code": "BFA1"
     }
 
@@ -61,6 +61,13 @@
       "start_date": "2022-04-28T16:00:49",
       "service_code": "BFA1",
       "ticket_code": "373"
+    },
+    {
+      "jurisdiction": "Languages",
+      "ticket_description": "Welsh",
+      "start_date": "2022-04-28T16:00:49",
+      "service_code": "BFA2",
+      "ticket_code": "374"
     }
 
     ]

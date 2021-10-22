@@ -15,13 +15,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
-
-
-
-/***************************************************************************
-/* Logging is missing in these drool rules pleas add the same for every rule*
-/***************************************************************************
-
 /*
  * IAC "senior-judge" org role can be created by any existing judicial office holder having
  * "IAC President of Tribunals" or "IAC Resident Immigration Judge" business role.
@@ -34,8 +27,6 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
@@ -51,7 +42,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -71,10 +62,6 @@ when
                                         "IAC Tribunal Judge (Salaried)", "IAC Tribunal Judge (Fee-Paid)"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    if($joh.getOffice().equals("IAC Tribunal Judge (Fee-Paid)")) {
       attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    } else {
@@ -91,9 +78,8 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
-      .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : iac_hmcts_judiciary_org_role");
 end;
@@ -111,8 +97,6 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
@@ -128,7 +112,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -149,8 +133,6 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
   insert(
@@ -164,7 +146,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -184,8 +166,6 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
   insert(
@@ -199,7 +179,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -222,8 +202,6 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
@@ -239,7 +217,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
@@ -259,8 +237,6 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getBaseLocationId()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
@@ -276,7 +252,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime())
+      .endTime($joh.getEndTime().plusDays(1))
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());

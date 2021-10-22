@@ -272,7 +272,7 @@ class ParseRequestServiceTest {
                 mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
-        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+        Mockito.verify(mockInteger, Mockito.times(0)).getAndIncrement();
     }
 
     @Test
@@ -286,7 +286,7 @@ class ParseRequestServiceTest {
                 mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
-        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+        Mockito.verify(mockInteger, Mockito.times(0)).getAndIncrement();
     }
 
 }
