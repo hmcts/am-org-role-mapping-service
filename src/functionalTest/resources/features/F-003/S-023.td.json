@@ -38,7 +38,7 @@
             "contractType" : "SALARIED",
             "jurisdiction" : "IA",
             "region" : "[[ANYTHING_PRESENT]]",
-            "substantive": "Y"
+            "substantive" : "Y"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
