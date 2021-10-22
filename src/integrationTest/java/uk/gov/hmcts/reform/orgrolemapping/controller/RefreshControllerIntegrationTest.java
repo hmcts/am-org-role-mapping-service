@@ -1,11 +1,9 @@
-/*
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +28,7 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
@@ -109,7 +107,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void setUp() throws Exception {
         template = new JdbcTemplate(ds);
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
@@ -256,15 +254,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertEquals(ABORTED, linkedJob.getStatus());
         assertNotEquals(0, linkedJob.getUserIds().length);
 
-        // Mock for the CRD Service
-        Mockito.when(crdFeignClient.getCaseworkerDetailsById(any()))
-                .thenReturn(new ResponseEntity<>(
-                        IntTestDataBuilder.buildListOfUserProfiles(false, false, "1",
-                                "2", ROLE_NAME_STCW, ROLE_NAME_TCW,true, true,
-                                false,true, "BFA1", "BFA2",
-                                false),
-                        HttpStatus.OK));
-        mockCRDService();
+        doReturn(new ResponseEntity<>(IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2",
+                        ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2",
+                        false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
         mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
 
         mockMvc.perform(post(URL)
@@ -377,9 +372,9 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertNotNull(refreshJob.getLog());
     }
 
-    */
-/*@NotNull
-    private ResponseEntity<List<UserProfilesResponse>> buildUserProfileResponse() {
+
+    @NotNull
+    private ResponseEntity<List<CaseWorkerProfilesResponse>> buildUserProfileResponse() {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("total_records", "2");
         return new ResponseEntity<>(IntTestDataBuilder
@@ -387,20 +382,21 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         ROLE_NAME_TCW, true, true, false,
                         true, "BFA1", "BFA2", false),
                 headers, HttpStatus.OK);
-    }*//*
+    }
 
 
     private void mockCRDService() {
-        ResponseEntity<List<UserProfilesResponse>> userProfilesResponse = buildUserProfileResponse();
+        ResponseEntity<List<CaseWorkerProfilesResponse>> userProfilesResponse = buildUserProfileResponse();
         doReturn(userProfilesResponse).when(crdFeignClient).getCaseworkerDetailsByServiceName(
                 anyString(), anyInt(), anyInt(), anyString(), anyString());
     }
 
+    @SuppressWarnings("unchecked")
     private void mockRequestMappingServiceWithStatus(HttpStatus status) {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
                 new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
                         false))))))
-                .when(requestMappingService).createCaseWorkerAssignments(any());
+                .when(requestMappingService).createAssignments(any(), any());
     }
 
     @NotNull
@@ -430,4 +426,4 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, new Object[]{jobId}, rm);
     }
 
-}*/
+}
