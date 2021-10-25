@@ -33,6 +33,7 @@ import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
@@ -183,7 +184,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -212,7 +213,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -242,7 +243,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -272,7 +273,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -300,7 +301,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -330,7 +331,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -361,7 +362,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -390,7 +391,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -418,7 +419,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -447,7 +448,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -475,7 +476,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(400))
                 .andReturn();
@@ -504,7 +505,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -533,7 +534,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -559,19 +560,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         .withStatus(returnHttpStatus)
                 ));
 
-        List<String> userRequestList = Arrays.asList(
-                UUID.randomUUID().toString(), UUID.randomUUID().toString()
-        );
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        //this stub is overruled by the mocking of its bean at the top of this test class
-        crdClient.stubFor(WireMock.post(urlEqualTo("/refdata/case-worker/users/fetchUsersById"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(mapper.writeValueAsString(new CRDFeignClientFallback()
-                                .getCaseworkerDetailsById(new UserRequest(userRequestList)).getBody()))
-                        .withStatus(returnHttpStatus)
-                ));
+
     }
 
     private String readJsonFromFile(String fileName) throws IOException {
@@ -612,10 +601,11 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         }
     }
 
-    private HttpHeaders getHttpHeaders() {
+    private HttpHeaders getHttpHeaders(String userType) {
         HttpHeaders headers = new HttpHeaders();
         String authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
         headers.set("Authorization", "Bearer " + authorisation);
+        headers.set("userType",userType );
         headers.setContentType(MediaType.APPLICATION_JSON);
         String s2SToken = MockUtils.generateDummyS2SToken("am_org_role_mapping_service");
         headers.add("ServiceAuthorization", "Bearer " + s2SToken);
