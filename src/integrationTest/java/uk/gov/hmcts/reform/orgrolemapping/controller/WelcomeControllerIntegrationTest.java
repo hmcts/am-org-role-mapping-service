@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.codehaus.plexus.util.StringUtils;
@@ -67,7 +66,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
 
 
-@TestPropertySource(properties = { "dbFeature.flags.enable=iac_jrd_1_0"})
+@TestPropertySource(properties = {"dbFeature.flags.enable=iac_jrd_1_0"})
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
@@ -136,7 +135,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     UserRequest userRequest;
-    List<JudicialProfile>  judicialProfiles;
+    List<JudicialProfile> judicialProfiles;
 
     @Before
     public void setUp() throws Exception {
@@ -156,10 +155,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         );
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         doReturn(true).when(featureConditionEvaluator).preHandle(any(), any(), any());
-         userRequest = UserRequest.builder().userIds(Arrays.asList("4dc7dd3c-3fb5-4611-bbde-5101a97681e2"))
+        userRequest = UserRequest.builder().userIds(Arrays.asList("4dc7dd3c-3fb5-4611-bbde-5101a97681e2"))
                 .build();
 
-         judicialProfiles =  new ArrayList<>(buildJudicialProfile(userRequest,
+        judicialProfiles = new ArrayList<>(buildJudicialProfile(userRequest,
                 "judicialProfileSample.json"));
     }
 
@@ -178,7 +177,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @DisplayName("S1: must successfully create org role mapping for single user with one role assignment")
     public void createOrgRoleMappingForSingleUserWithOneRoleAssignment() throws Exception {
-
 
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
@@ -237,7 +235,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Test
     @DisplayName("S3: must successfully create org role mapping for multiple users each has single role assignment")
     public void createOrgRoleMappingForMultipleUsersWithOneRoleAssignment() throws Exception {
-
 
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
@@ -325,7 +322,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Test
     @DisplayName("S9: must successfully create org role mapping for an update of role TCW to STCW")
     public void createOrgRoleMappingUpdateRole() throws Exception {
-
 
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
@@ -628,7 +624,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         judicialProfiles.get(0).getAppointments().remove(1);
         judicialProfiles.get(0).getAppointments().forEach(appointment ->
-            appointment.setRoles(Arrays.asList("Assistant Resident Judge"))
+                appointment.setRoles(Arrays.asList("Assistant Resident Judge"))
         );
 
         doReturn(ResponseEntity.ok(judicialProfiles))
@@ -749,7 +745,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         HttpHeaders headers = new HttpHeaders();
         String authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
         headers.set("Authorization", "Bearer " + authorisation);
-        headers.set("userType",userType );
+        headers.set("userType", userType);
         headers.setContentType(MediaType.APPLICATION_JSON);
         String s2SToken = MockUtils.generateDummyS2SToken("am_org_role_mapping_service");
         headers.add("ServiceAuthorization", "Bearer " + s2SToken);

@@ -66,7 +66,8 @@ public class WelcomeController {
             )
     })
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest,
-                                                   @RequestHeader(value = "userType", required = true) UserType userType) {
+                                                   @RequestHeader(value = "userType", required = true)
+                                                           UserType userType) {
         long startTime = System.currentTimeMillis();
         log.debug("createOrgMapping");
         log.info("Process has been Started for the userIds {}", userRequest.getUserIds());
