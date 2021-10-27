@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -129,7 +130,7 @@ class RetrieveDataServiceTest {
                 JudicialProfile.class);
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
-                .when(jrdService).fetchJudicialProfiles(TestDataBuilder.buildUserRequest());
+                .when(jrdService).fetchJudicialProfiles(TestDataBuilder.buildRefreshRoleRequest());
 
 
         Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
@@ -137,7 +138,7 @@ class RetrieveDataServiceTest {
         assertEquals(1, result.size());
 
         Mockito.verify(jrdService, Mockito.times(1))
-                .fetchJudicialProfiles(any(UserRequest.class));
+                .fetchJudicialProfiles(any(RefreshRoleRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any(), any(), any());
     }
@@ -146,7 +147,7 @@ class RetrieveDataServiceTest {
     void shouldReturnJudicialProfile() {
 
         doReturn(ResponseEntity
-                .ok(buildJudicialProfile(buildUserRequest(),
+                .ok(buildJudicialProfile(TestDataBuilder.buildRefreshRoleRequest(),
                         "judicialProfileSample.json"))).when(jrdService).fetchJudicialProfiles(any());
 
 

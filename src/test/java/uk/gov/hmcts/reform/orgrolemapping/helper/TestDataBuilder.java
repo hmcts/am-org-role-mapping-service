@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -68,6 +69,13 @@ public class TestDataBuilder {
         users.add(id_1);
         users.add(id_2);
         return UserRequest.builder().userIds(users).build();
+    }
+
+    public static RefreshRoleRequest buildRefreshRoleRequest() {
+        ArrayList<String> users = new ArrayList<>();
+        users.add(id_1);
+        users.add(id_2);
+        return RefreshRoleRequest.builder().sidamIds(users).build();
     }
 
     public static UserRequest buildBadUserRequest() {

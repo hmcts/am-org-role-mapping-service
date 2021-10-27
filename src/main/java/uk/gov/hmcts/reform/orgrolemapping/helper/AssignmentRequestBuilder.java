@@ -178,9 +178,9 @@ public class AssignmentRequestBuilder {
             JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder().build();
             judicialAccessProfile.setUserId(judicialProfile.getSidamId());
             judicialAccessProfile.setRoles(appointment.getRoles());
-            judicialAccessProfile.setBeginTime(appointment.getStartDate().atZone(ZoneId.of("UTC")));
+            judicialAccessProfile.setBeginTime(appointment.getStartDate().atStartOfDay(ZoneId.of("UTC")));
             judicialAccessProfile.setEndTime(appointment.getEndDate() != null ? appointment.getEndDate()
-                    .atZone(ZoneId.of("UTC")) : null);
+                    .atStartOfDay(ZoneId.of("UTC")) : null);
             judicialAccessProfile.setRegionId(appointment.getLocationId());
             judicialAccessProfile.setBaseLocationId(appointment.getEpimmsId());
             judicialAccessProfile.setTicketCodes(List.copyOf(authorisations));
@@ -188,7 +188,7 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
             judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
             judicialAccessProfile.setServiceCode(appointment.getServiceCode());
-            judicialAccessProfile.setPrimaryLocationId(appointment.getIsPrincipalAppointment()
+            judicialAccessProfile.setPrimaryLocationId(appointment.getIsPrincipleAppointment()
                     .equalsIgnoreCase("true") ? appointment.getEpimmsId() : "");
             judicialAccessProfiles.add(judicialAccessProfile);
 

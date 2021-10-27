@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ public class JRDFeignClientFallback  implements JRDFeignClient {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> ResponseEntity<List<T>> getJudicialDetailsById(UserRequest userRequest) {
-        return ResponseEntity.ok((List<T>) new ArrayList<>(buildJudicialProfile(userRequest,
+    public <T> ResponseEntity<List<T>> getJudicialDetailsById(RefreshRoleRequest refreshRoleRequest) {
+        return ResponseEntity.ok((List<T>) new ArrayList<>(buildJudicialProfile(refreshRoleRequest,
                 "judicialProfileSample.json")));
     }
 }

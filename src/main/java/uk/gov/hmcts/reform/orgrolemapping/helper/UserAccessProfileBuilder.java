@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.Setter;
@@ -10,6 +9,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.InputStream;
@@ -149,12 +149,12 @@ public class UserAccessProfileBuilder {
         return new ArrayList<>(caseWorkerProfiles);
     }
 
-    public static List<JudicialProfile> buildJudicialProfile(UserRequest userRequest, String resource) {
+    public static List<JudicialProfile> buildJudicialProfile(RefreshRoleRequest userRequest, String resource) {
 
         Set<JudicialProfile> judicialProfilesProfiles = new LinkedHashSet<>();
 
 
-        userRequest.getUserIds().forEach(userId -> {
+        userRequest.getSidamIds().forEach(userId -> {
             try (InputStream inputStream =
                          UserAccessProfileBuilder.class.getClassLoader()
                                  .getResourceAsStream(resource)) {
@@ -178,7 +178,7 @@ public class UserAccessProfileBuilder {
     private static ObjectMapper getObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
+        //objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return objectMapper;
 

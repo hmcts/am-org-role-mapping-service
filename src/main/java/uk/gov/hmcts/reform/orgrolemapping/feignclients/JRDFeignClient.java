@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
@@ -20,5 +20,5 @@ public interface JRDFeignClient {
     public String getServiceStatus();
 
     @PostMapping(value = "/refdata/judicial/users")
-    public <T> ResponseEntity<List<T>> getJudicialDetailsById(UserRequest userRequest);
+    public <T> ResponseEntity<List<T>> getJudicialDetailsById(RefreshRoleRequest userRequest);
 }

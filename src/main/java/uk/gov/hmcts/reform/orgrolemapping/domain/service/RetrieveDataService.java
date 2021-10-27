@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
@@ -73,7 +74,8 @@ public class RetrieveDataService {
 
         } else if (userType.equals(UserType.JUDICIAL)) {
             log.info("Calling JRD Service");
-            response = jrdService.fetchJudicialProfiles(userRequest);
+            response = jrdService.fetchJudicialProfiles(RefreshRoleRequest.builder().sidamIds(userRequest.getUserIds())
+                    .build());
             Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
         }
 
