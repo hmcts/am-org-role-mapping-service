@@ -51,7 +51,7 @@ def secrets = [
 ]
 
 // Configure branches to sync with master branch
-def branchesToSync = ['demo', 'perftest']
+def branchesToSync = ['demo', 'perftest', 'ithc']
 
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
@@ -75,7 +75,8 @@ env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
 env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
 env.CRD_TOPIC_NAME = "rd-caseworker-topic-aat"
 env.JRD_TOPIC_NAME = "rd-judicial-topic-aat"
-env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-pr-1008.service.core-compute-preview.internal"
+env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
+env.JUDICIAL_REF_APP_URL = "http://rd-judicial-api-pr-174.service.core-compute-preview.internal"
 
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
