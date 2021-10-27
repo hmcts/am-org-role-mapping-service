@@ -74,7 +74,7 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "N",
-            "contractType" : "Fee-Paid"
+            "contractType" : "[[ANYTHING_PRESENT]]"
           }
         },
         {
@@ -92,7 +92,7 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "N",
-            "contractType" : "Salaried"
+            "contractType" : "[[ANYTHING_PRESENT]]"
           }
         },
         {
