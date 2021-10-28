@@ -61,7 +61,7 @@
             "contractType" : "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,decision-making-work,applications"
+            "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -119,7 +119,7 @@
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
+            "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
