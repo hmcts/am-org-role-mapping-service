@@ -1,12 +1,16 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,6 +150,29 @@ public class IntTestDataBuilder {
                     enableWorkAreaList, workArea1, workArea2, suspended));
         }
         return caseWorkerProfiles;
+    }
+
+    public static JudicialProfile buildJudicialProfile(String id, String appointment, String appointmentType,
+                                                       LocalDate appEndDate, String serviceCode, String ticket,
+                                                       String authServiceCode, LocalDateTime authEndDate) {
+        return JudicialProfile.builder()
+                .sidamId(id)
+                .fullName("James Bond").emailId("007@MI6.gov")
+                .appointments(buildListOfAppointments(appointment, appointmentType, appEndDate, serviceCode))
+                .authorisations(buildListOfAuthorisations(authServiceCode, ticket, authEndDate))
+                .build();
+    }
+
+    public static List<Appointment> buildListOfAppointments(String appointment, String appointmentType,
+                                                            LocalDate endDate, String serviceCode) {
+        return List.of(Appointment.builder().appointment(appointment).appointmentType(appointmentType)
+                .serviceCode(serviceCode).startDate(LocalDate.now().minusMonths(1)).endDate(endDate)
+                .isPrincipleAppointment("true").baseLocationId("base").locationId("location").build());
+    }
+
+    public static List<Authorisation> buildListOfAuthorisations(String serviceCode, String ticket,
+                                                                LocalDateTime endDate) {
+        return List.of(Authorisation.builder().ticketCode(ticket).endDate(endDate).serviceCode(serviceCode).build());
     }
 
     public static CaseWorkerAccessProfile buildUserAccessProfile(boolean suspended) {
