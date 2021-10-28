@@ -219,7 +219,7 @@ public class AssignmentRequestBuilder {
 
         if (!CollectionUtils.isEmpty(authorisations)) {
             return authorisations.stream().anyMatch(authorisation -> "BFA1".equals(authorisation.getServiceCode())
-                    && (authorisation.getEndDate() == null
+                     && (authorisation.getEndDate() == null
                     || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
 
         } else {

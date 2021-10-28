@@ -38,6 +38,7 @@ Feature: F-003 : Create Role Assignments for Judicial Users
           Given a user with [an active IDAM profile with full permissions],
           And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023_DeleteDataForRoleAssignments01],
           And a successful call [to publish existing JRD user ids to topic] as in [S-023_PushMessageToAzureServiceBus],
+          And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
           And a successful call [to publish existing JRD user ids to topic] as in [S-023_PushMessageToAzureServiceBus],
           And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
           And the request [contains the actorIds of the user just published],
