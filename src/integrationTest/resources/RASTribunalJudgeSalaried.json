@@ -1,0 +1,100 @@
+{
+  "links": [],
+  "roleAssignmentResponse": {
+    "roleRequest": {
+      "id": "74a6d2f5-6428-46da-b35a-d61a512b2900",
+      "authenticatedUserId": "03423d8d-b003-46ae-ab7a-32118f7fd9f3",
+      "correlationId": "200feed7-6a83-42ad-84bf-6fef187a4379",
+      "assignerId": "03423d8d-b003-46ae-ab7a-32118f7fd9f3",
+      "requestType": "CREATE",
+      "process": "judicial-organisational-role-mapping",
+      "reference": "4dc7dd3c-3fb5-4611-bbde-5101a97681e2",
+      "replaceExisting": true,
+      "status": "APPROVED",
+      "created": "2021-10-25T13:56:33.07224Z",
+      "log": "Request has been approved",
+      "byPassOrgDroolRule": false
+    },
+    "requestedRoles": [
+      {
+        "id": "2057f8cd-51f4-4b7a-a148-6b1ed8c73a8a",
+        "actorIdType": "IDAM",
+        "actorId": "4dc7dd3c-3fb5-4611-bbde-5101a97681e2",
+        "roleType": "ORGANISATION",
+        "roleName": "hmcts-judiciary",
+        "classification": "PRIVATE",
+        "grantType": "BASIC",
+        "roleCategory": "JUDICIAL",
+        "readOnly": true,
+        "beginTime": "2020-04-28T16:00:49Z",
+        "endTime": "2022-04-29T16:00:49Z",
+        "process": "judicial-organisational-role-mapping",
+        "reference": "4dc7dd3c-3fb5-4611-bbde-5101a97681e2",
+        "status": "LIVE",
+        "created": "2021-10-25T13:56:33.072743Z",
+        "log": "Create requested with replace: true\nCreate approved : staff_organisational_role_mapping_service_create\nApproved : validate_role_assignment_against_patterns",
+        "attributes": {
+          "contractType": "Salaried",
+          "substantive": "N"
+        }
+      },
+      {
+        "id": "f5a9557c-00bd-4f7e-bf6d-bd6ac0994e00",
+        "actorIdType": "IDAM",
+        "actorId": "4dc7dd3c-3fb5-4611-bbde-5101a97681e2",
+        "roleType": "ORGANISATION",
+        "roleName": "case-allocator",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "JUDICIAL",
+        "readOnly": false,
+        "beginTime": "2020-04-28T16:00:49Z",
+        "endTime": "2022-04-29T16:00:49Z",
+        "process": "judicial-organisational-role-mapping",
+        "reference": "4dc7dd3c-3fb5-4611-bbde-5101a97681e2",
+        "status": "LIVE",
+        "created": "2021-10-25T13:56:33.072758Z",
+        "log": "Create requested with replace: true\nCreate approved : staff_organisational_role_mapping_service_create\nApproved : validate_role_assignment_against_patterns",
+        "attributes": {
+          "primaryLocation": "839746",
+          "contractType": "Salaried",
+          "jurisdiction": "IA",
+          "substantive": "Y"
+        },
+        "authorisations": [
+          "374",
+          "373"
+        ]
+      },
+      {
+        "id": "87232d61-1aa8-4941-b5f8-20d2c105732b",
+        "actorIdType": "IDAM",
+        "actorId": "4dc7dd3c-3fb5-4611-bbde-5101a97681e2",
+        "roleType": "ORGANISATION",
+        "roleName": "judge",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "JUDICIAL",
+        "readOnly": false,
+        "beginTime": "2020-04-28T16:00:49Z",
+        "endTime": "2022-04-29T16:00:49Z",
+        "process": "judicial-organisational-role-mapping",
+        "reference": "4dc7dd3c-3fb5-4611-bbde-5101a97681e2",
+        "status": "LIVE",
+        "created": "2021-10-25T13:56:33.072766Z",
+        "log": "Create requested with replace: true\nCreate approved : staff_organisational_role_mapping_service_create\nApproved : validate_role_assignment_against_patterns",
+        "attributes": {
+          "primaryLocation": "839746",
+          "contractType": "Salaried",
+          "jurisdiction": "IA",
+          "workTypes": "hearing-work,upper-tribunal,decision-making-work,applications",
+          "substantive": "Y"
+        },
+        "authorisations": [
+          "374",
+          "373"
+        ]
+      }
+    ]
+  }
+}
