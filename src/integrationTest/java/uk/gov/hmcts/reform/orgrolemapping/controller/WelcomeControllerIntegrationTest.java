@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.codehaus.plexus.util.StringUtils;
@@ -32,11 +31,11 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
@@ -50,11 +49,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -67,9 +64,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
 
 
-@TestPropertySource(properties = { "dbFeature.flags.enable=iac_jrd_1_0"})
+@TestPropertySource(properties = {"dbFeature.flags.enable=iac_jrd_1_0"})
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
@@ -126,6 +124,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private WelcomeController welcomeController;
 
     private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
+    private static final String RAS_RESPONSE_TRIBUNAL_JUDGE_FEE_PAID = "RASTribunalJudgeFeePaid";
+    private static final String RAS_RESPONSE_TRIBUNAL_JUDGE_SALARIED_PAID = "RASTribunalJudgeSalaried";
+    private static final String RAS_RESPONSE_ASSISTANT_RESIDENT_JUDGE_ROLES = "RASAssistantResidentJudgeRoles";
     private static final String RAS_ONE_USER_MULTI_ROLE = "RASOneUserMultiRole";
     private static final String RAS_MULTI_USER_ONE_ROLE = "RASMultiUserOneRole";
     private static final String RAS_DELETE_FLAG_TRUE = "RASDeleteFlagTrue";
@@ -134,6 +135,8 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
+    UserRequest userRequest;
+    List<JudicialProfile> judicialProfiles;
 
     @Before
     public void setUp() throws Exception {
@@ -153,6 +156,11 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         );
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         doReturn(true).when(featureConditionEvaluator).preHandle(any(), any(), any());
+        userRequest = UserRequest.builder().userIds(Arrays.asList("4dc7dd3c-3fb5-4611-bbde-5101a97681e2"))
+                .build();
+
+        judicialProfiles = new ArrayList<>(buildJudicialProfile(RefreshRoleRequest.builder()
+                        .sidamIds(userRequest.getUserIds()).build(),"judicialProfileSample.json"));
     }
 
     @Test
@@ -172,7 +180,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     public void createOrgRoleMappingForSingleUserWithOneRoleAssignment() throws Exception {
 
 
-
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2",
                         ROLE_NAME_STCW, ROLE_NAME_TCW,
@@ -189,7 +196,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -215,10 +222,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_MULTI_ROLE);
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -229,7 +236,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Test
     @DisplayName("S3: must successfully create org role mapping for multiple users each has single role assignment")
     public void createOrgRoleMappingForMultipleUsersWithOneRoleAssignment() throws Exception {
-
 
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
@@ -245,10 +251,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_MULTI_USER_ONE_ROLE);
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -275,10 +281,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DELETE_FLAG_TRUE);
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -303,10 +309,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DROOL_RULE_FAIL);
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -317,7 +323,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Test
     @DisplayName("S9: must successfully create org role mapping for an update of role TCW to STCW")
     public void createOrgRoleMappingUpdateRole() throws Exception {
-
 
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
@@ -333,10 +338,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_UPDATE_ROLE_TCW_STCW);
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -364,10 +369,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -393,10 +398,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -421,10 +426,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -450,10 +455,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -481,7 +486,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(400))
                 .andReturn();
@@ -504,31 +509,18 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
-
-        mockJrdAPI(request.getUserIds().get(0));
-
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DELETE_FLAG_TRUE);
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
 
         assertResponse(result, Status.APPROVED, 0, Status.LIVE, request.getUserIds());
-    }
-
-    private void mockJrdAPI(String userId) {
-        List<JudicialProfile> judicialProfiles = new ArrayList<>();
-        JudicialProfile profile = IntTestDataBuilder.buildJudicialProfile(userId,
-                "President of Tribunal", "fee paid", LocalDate.now().plusDays(2),
-                "BFA1","373",null, null);
-        judicialProfiles.add(profile);
-        doReturn(new ResponseEntity<>(judicialProfiles, HttpStatus.OK)).when(jrdFeignClient)
-                .getJudicialDetailsById(any());
     }
 
     @Test
@@ -549,10 +541,10 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_ONE_ROLE);
-        mockJrdAPI(request.getUserIds().get(0));
+
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
+                .headers(getHttpHeaders("CASEWORKER"))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -561,6 +553,137 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
 
         assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
+    }
+
+    /*
+        IT FOR JRD Scenarios Start from here
+     */
+
+    @Test
+    @DisplayName("S20: drools must map correct roles name based on appointments & appointment type")
+    public void createOrgRolesForIACTribunalJudge_FeePaidThroughMapping() throws Exception {
+
+
+        judicialProfiles.get(0).getAppointments().remove(0);
+
+        doReturn(ResponseEntity.ok(judicialProfiles))
+                .when(jrdFeignClient).getJudicialDetailsById(any());
+
+
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_TRIBUNAL_JUDGE_FEE_PAID);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders("JUDICIAL"))
+                .content(mapper.writeValueAsBytes(userRequest)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("hmcts-judiciary"));
+        assertTrue(contentAsString.contains("fee-paid-judge"));
+
+        assertResponse(result, Status.APPROVED, 2, Status.LIVE, userRequest.getUserIds());
+    }
+
+    @Test
+    @DisplayName("S21: drools must map the correct roles based on default lower level for tribunal judge salaried")
+    public void createOrgRolesForIACTribunalJudge_SalariedThroughMapping() throws Exception {
+
+
+        judicialProfiles.get(0).getAppointments().remove(1);
+
+        doReturn(ResponseEntity.ok(judicialProfiles))
+                .when(jrdFeignClient).getJudicialDetailsById(any());
+
+
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_TRIBUNAL_JUDGE_SALARIED_PAID);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders("JUDICIAL"))
+                .content(mapper.writeValueAsBytes(userRequest)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("hmcts-judiciary"));
+        assertTrue(contentAsString.contains("case-allocator"));
+        assertTrue(contentAsString.contains("judge"));
+
+        assertResponse(result, Status.APPROVED, 3, Status.LIVE, userRequest.getUserIds());
+    }
+
+    @Test
+    @DisplayName("S22: drool must map the correct roles based on IACAssistantResidentJudge Role ")
+    public void createOrgRolesForIACAssistantResidentJudgeRolesThroughMapping() throws Exception {
+
+
+        judicialProfiles.get(0).getAppointments().remove(1);
+        judicialProfiles.get(0).getAppointments().forEach(appointment ->
+                appointment.setRoles(Arrays.asList("Assistant Resident Judge"))
+        );
+
+        doReturn(ResponseEntity.ok(judicialProfiles))
+                .when(jrdFeignClient).getJudicialDetailsById(any());
+
+
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_ASSISTANT_RESIDENT_JUDGE_ROLES);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders("JUDICIAL"))
+                .content(mapper.writeValueAsBytes(userRequest)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("hmcts-judiciary"));
+        assertTrue(contentAsString.contains("case-allocator"));
+        assertTrue(contentAsString.contains("judge"));
+        assertTrue(contentAsString.contains("leadership-judge"));
+        assertTrue(contentAsString.contains("task-supervisor"));
+
+        assertResponse(result, Status.APPROVED, 5, Status.LIVE, userRequest.getUserIds());
+    }
+
+
+    @Test
+    @DisplayName("S23: drools must map the correct roles  based on iac authorisations for Tribunal Judge fee-paid")
+    public void createOrgRolesForTribunalJudge_FeePaidByIacAuthorisation() throws Exception {
+
+
+        judicialProfiles.get(0).getAppointments().remove(0);
+        judicialProfiles.get(0).getAppointments().forEach(appointment ->
+                appointment.setServiceCode(null)
+        );
+
+        doReturn(ResponseEntity.ok(judicialProfiles))
+                .when(jrdFeignClient).getJudicialDetailsById(any());
+
+
+        logger.info(" createOrgRoleMappingTest...");
+        String uri = "/am/role-mapping/staff/users";
+        setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_TRIBUNAL_JUDGE_FEE_PAID);
+
+        MvcResult result = mockMvc.perform(post(uri)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders("JUDICIAL"))
+                .content(mapper.writeValueAsBytes(userRequest)))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains("hmcts-judiciary"));
+        assertTrue(contentAsString.contains("fee-paid-judge"));
+
+        assertResponse(result, Status.APPROVED, 2, Status.LIVE, userRequest.getUserIds());
     }
 
     public void setRoleAssignmentWireMock(HttpStatus status, String fileName) throws IOException {
@@ -578,19 +701,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         .withStatus(returnHttpStatus)
                 ));
 
-        List<String> userRequestList = Arrays.asList(
-                UUID.randomUUID().toString(), UUID.randomUUID().toString()
-        );
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        //this stub is overruled by the mocking of its bean at the top of this test class
-        crdClient.stubFor(WireMock.post(urlEqualTo("/refdata/case-worker/users/fetchUsersById"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(mapper.writeValueAsString(new CRDFeignClientFallback()
-                                .getCaseworkerDetailsById(new UserRequest(userRequestList)).getBody()))
-                        .withStatus(returnHttpStatus)
-                ));
+
     }
 
     private String readJsonFromFile(String fileName) throws IOException {
@@ -631,10 +742,11 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         }
     }
 
-    private HttpHeaders getHttpHeaders() {
+    private HttpHeaders getHttpHeaders(String userType) {
         HttpHeaders headers = new HttpHeaders();
         String authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
         headers.set("Authorization", "Bearer " + authorisation);
+        headers.set("userType", userType);
         headers.setContentType(MediaType.APPLICATION_JSON);
         String s2SToken = MockUtils.generateDummyS2SToken("am_org_role_mapping_service");
         headers.add("ServiceAuthorization", "Bearer " + s2SToken);
