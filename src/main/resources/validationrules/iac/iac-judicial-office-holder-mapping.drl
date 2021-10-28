@@ -426,7 +426,7 @@ when
   $jap: JudicialAccessProfile(serviceCode == "BFA1",
    (appointment != "President of Tribunal"
    && appointment != "Tribunal Judge" ),
-   appointmentType not in ("Salaried","SPTW"),
+   appointmentType == "fee paid",
    (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
    (roles == null || (
       !roles.contains("Resident Immigration Judge") &&
