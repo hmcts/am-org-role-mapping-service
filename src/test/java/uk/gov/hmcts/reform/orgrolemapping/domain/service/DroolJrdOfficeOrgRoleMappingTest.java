@@ -7,7 +7,6 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.JudicialRolesEnum;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
@@ -323,11 +322,10 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
     @Test
     void shouldReturnImmigrationJudicialRoles_withIAC() {
-
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setRoles(List.of(JudicialRolesEnum.ASSISTANT_RESIDENT_JUDGE.getValue(),
-                    JudicialRolesEnum.RESIDENT_IMMIGRATION_JUDGE.getValue(),
-                    JudicialRolesEnum.DESIGNATED_IMMIGRATION_JUDGE.getValue()));
+            judicialAccessProfile.setRoles(List.of("Assistant Resident Judge",
+                    "Resident Immigration Judge",
+                    "Designated Immigration Judge"));
             judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode("BFA1");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
@@ -371,9 +369,9 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
     void shouldReturnImmigrationJudicialRoles_withAuthorisation() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setRoles(List.of(JudicialRolesEnum.ASSISTANT_RESIDENT_JUDGE.getValue(),
-                    JudicialRolesEnum.RESIDENT_IMMIGRATION_JUDGE.getValue(),
-                    JudicialRolesEnum.DESIGNATED_IMMIGRATION_JUDGE.getValue()));
+            judicialAccessProfile.setRoles(List.of("Assistant Resident Judge",
+                    "Resident Immigration Judge",
+                    "Designated Immigration Judge"));
             judicialAccessProfile.setAppointmentType("fee paid");
         });
 
@@ -593,8 +591,9 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("President of Tribunal");
             judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.setRoles(List.of(JudicialRolesEnum.RESIDENT_IMMIGRATION_JUDGE.getValue()));
+            judicialAccessProfile.setRoles(List.of("Resident Immigration Judge"));
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+
         });
 
 
