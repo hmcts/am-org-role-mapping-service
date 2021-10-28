@@ -1,9 +1,0 @@
-{
-  "_guid_": "S-023_FetchJobDetailsFromORM",
-  "_extends_": "FetchJobDetailsFromORM",
-  "expectedResponse": {
-    "body": {
-      "status" : "ABORTED"
-    }
-  }
-}
