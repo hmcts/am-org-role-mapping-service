@@ -118,7 +118,7 @@ public class TestDataBuilder {
     }
 
     public static Map<String, Set<CaseWorkerAccessProfile>> buildUserAccessProfileMap(boolean suspended1,
-                                                                                      boolean suspended2) {
+                                                                                boolean suspended2) {
 
         HashMap<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
         userAccessProfiles.put(id_1, buildUserAccessProfileSet(suspended1, suspended2));

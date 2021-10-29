@@ -51,6 +51,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -177,6 +178,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @DisplayName("S1: must successfully create org role mapping for single user with one role assignment")
     public void createOrgRoleMappingForSingleUserWithOneRoleAssignment() throws Exception {
+
 
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
@@ -322,6 +324,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Test
     @DisplayName("S9: must successfully create org role mapping for an update of role TCW to STCW")
     public void createOrgRoleMappingUpdateRole() throws Exception {
+
 
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
