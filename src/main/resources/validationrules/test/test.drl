@@ -2,7 +2,7 @@ package validationrules.test;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 
 
 rule "judicial_access_profile"
@@ -10,7 +10,7 @@ salience 1000
 when
 	$jap: JudicialAccessProfile()
 then
-	System.err.println("We have judicial access profile " + $jap);
+	System.err.println("We have judicial access profile with appointment  " + $jap.getAppointment() + " : " + $jap);
 end;
 
 rule "caseworker_access_profile"
@@ -18,7 +18,7 @@ salience 1000
 when
 	$cap: CaseWorkerAccessProfile()
 then
-	System.err.println("We have caseworker access profile " + $cap);
+	System.err.println("We have caseworker access profile with roleId  " + $cap.getRoleId() + " : " + $cap);
 end;
 
 rule "role_assignment"
@@ -29,12 +29,12 @@ then
 	System.err.println("We have role assignment " + $ra.getStatus() + " : " + $ra);
 end;
 
-rule "authorisation"
+rule "judicial_office_holder"
 salience 1000
 when
-	$auth: Authorisation()
+	$joh: JudicialOfficeHolder()
 then
-	System.err.println("We have a authorisation  "  + $auth);
+	System.err.println("We have a judicialOfficeHolder with role  " + $joh.getOffice() + " : " + $joh);
 end;
 
 
