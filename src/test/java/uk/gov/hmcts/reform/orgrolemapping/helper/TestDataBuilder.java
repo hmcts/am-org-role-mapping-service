@@ -118,7 +118,7 @@ public class TestDataBuilder {
     }
 
     public static Map<String, Set<CaseWorkerAccessProfile>> buildUserAccessProfileMap(boolean suspended1,
-                                                                                boolean suspended2) {
+                                                                                      boolean suspended2) {
 
         HashMap<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
         userAccessProfiles.put(id_1, buildUserAccessProfileSet(suspended1, suspended2));
@@ -345,17 +345,20 @@ public class TestDataBuilder {
     }
 
     public static JudicialAccessProfile buildJudicialAccessProfile() {
-        return JudicialAccessProfile.builder()
-                .userId(id_1)
-                .roleId("84")
-                .contractTypeId("5")
-                .beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1))
-                .endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1))
-                .baseLocationId("1")
-                .appointment("2")
-                .regionId("3")
-                .authorisations(Collections.singletonList(
-                        Authorisation.builder().userId(id_1).serviceCode("BFA1").build()))
+        JudicialAccessProfile.JudicialAccessProfileBuilder builder = JudicialAccessProfile.builder();
+        builder.userId(id_1);
+        builder.roleId("84");
+        builder.contractTypeId("5");
+        builder.beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1));
+        builder.endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1));
+        builder.baseLocationId("1");
+        builder.primaryLocationId("primary location");
+        builder.appointment("2");
+        builder.regionId("3");
+        builder.ticketCodes(List.of("375"));
+        builder.authorisations(Collections.singletonList(
+                Authorisation.builder().userId(id_1).serviceCode("BFA1").build()));
+        return builder
                 .build();
     }
 
