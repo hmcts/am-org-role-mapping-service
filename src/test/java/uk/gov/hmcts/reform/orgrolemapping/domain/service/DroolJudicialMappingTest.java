@@ -17,8 +17,9 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialMappingTest extends DroolBase {
 
-    String workTypes = "hearing-work, upper-tribunal, decision-making-work, applications";
-    String workTypesAccess = "hearing-work, upper-tribunal, decision-making-work, applications, access-requests";
+    String workTypes = "hearing-work,upper-tribunal,decision-making-work,applications";
+    String workTypesFP = "hearing-work,decision-making-work,applications";
+    String workTypesAccess = "hearing-work,upper-tribunal,decision-making-work,applications,access-requests";
 
     @Test
     void shouldReturnPresidentRoles() {
@@ -239,7 +240,7 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals(workTypes, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
 }

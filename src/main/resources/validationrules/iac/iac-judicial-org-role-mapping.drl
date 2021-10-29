@@ -29,8 +29,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
-                                                                     "decision-making-work, applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work,upper-tribunal," +
+                                                                     "decision-making-work,applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -99,8 +99,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
-                                                      "decision-making-work, applications, access-requests"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work,upper-tribunal," +
+                                                      "decision-making-work,applications,access-requests"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -204,8 +204,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
-                                                                    "decision-making-work, applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work,upper-tribunal," +
+                                                                    "decision-making-work,applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -239,8 +239,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work, upper-tribunal, " +
-                                                                    "decision-making-work, applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work," +
+                                                                      "decision-making-work,applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
