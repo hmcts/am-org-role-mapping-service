@@ -358,7 +358,8 @@ public class TestDataBuilder {
         builder.ticketCodes(List.of("375"));
         builder.authorisations(Collections.singletonList(
                 Authorisation.builder().userId(id_1).serviceCode("BFA1").build()));
-        return builder.build();
+        return builder
+                .build();
     }
 
     public static Set<JudicialAccessProfile> buildJudicialAccessProfileSet() {
