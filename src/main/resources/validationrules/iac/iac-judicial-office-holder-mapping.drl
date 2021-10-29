@@ -18,24 +18,21 @@ import java.time.ZonedDateTime;
 import java.time.LocalDateTime;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.JudicialRolesEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
 
 /*
  * "IAC President of Tribunals" business role can be assign to Judicial Office holder by existing JudicialAccessProfile
- *  having values from JRD response
-
+ *  having following values from JRD user profile response.
  */
-
 
 rule "iac_president_of_tribunals_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
-  $jap: JudicialAccessProfile(appointment == "President of Tribunal", serviceCode == "BFA1",
- (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
+   $jap: JudicialAccessProfile(appointment == "President of Tribunal",
+                               serviceCode == "BFA1",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
 then
-
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
@@ -50,17 +47,20 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : iac_president_of_tribunals_joh");
-
 end;
 
-
+/*
+ * "IAC Tribunal Judge (Salaried)" business role can be assign to Judicial Office holder by existing JudicialAccessProfile
+ *  having following values from JRD user profile response.
+ */
 rule "iac_tribunal_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
-  $jap: JudicialAccessProfile(appointment == "Tribunal Judge", appointmentType in ("Salaried","SPTW"), serviceCode == "BFA1",
- (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
+   $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
+                               appointmentType in ("Salaried","SPTW"),
+                               serviceCode == "BFA1",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
 then
-
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
@@ -75,15 +75,20 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : iac_tribunal_judge_salaried_joh");
-
 end;
 
+/*
+ * "IAC Tribunal Judge (Fee-Paid)" business role can be assign to Judicial Office holder by existing JudicialAccessProfile
+ *  having following values from JRD user profile response.
+ */
 
-rule "iac_tribunal_judge_Fee_Paid_joh"
+rule "iac_tribunal_judge_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
-  $jap: JudicialAccessProfile(appointment == "Tribunal Judge", appointmentType == "fee paid", serviceCode == "BFA1",
- (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
+   $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
+                               appointmentType == "fee paid",
+                               serviceCode == "BFA1",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -98,21 +103,21 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_tribunal_judge_Fee_Paid_joh");
-
+      logMsg("Rule : iac_tribunal_judge_fee_paid_joh");
 end;
 
-
+/*
+ * "IAC Resident Immigration Judge" business role can be assign to Judicial Office holder by existing JudicialAccessProfile
+ *  having following values from JRD user profile response.
+ */
 
 rule "iac_resident_immigration_judge_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
-  $jap: JudicialAccessProfile(serviceCode == "BFA1",
- (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
- (roles !=null && roles.contains(JudicialRolesEnum.RESIDENT_IMMIGRATION_JUDGE.getValue())))
-
+   $jap: JudicialAccessProfile(serviceCode == "BFA1",
+                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                              (roles !=null && roles.contains("Resident Immigration Judge")))
 then
-
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
@@ -129,13 +134,17 @@ then
       logMsg("Rule : iac_resident_immigration_judge_joh");
 end;
 
+/*
+ * "IAC Assistant Resident Judge" business role can be assign to Judicial Office holder by existing JudicialAccessProfile
+ *  having following values from JRD user profile response.
+ */
+
 rule "iac_assistant_resident_judge_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
-  $jap: JudicialAccessProfile(serviceCode == "BFA1",
- (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
- (roles !=null && roles.contains(JudicialRolesEnum.ASSISTANT_RESIDENT_JUDGE.getValue())))
-
+   $jap: JudicialAccessProfile(serviceCode == "BFA1",
+                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                              (roles !=null && roles.contains("Assistant Resident Judge")))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -153,14 +162,17 @@ then
       logMsg("Rule : iac_assistant_resident_judge_joh");
  end;
 
+/*
+ * "IAC Designated Immigration Judge" business role can be assign to Judicial Office holder by existing JudicialAccessProfile
+ *  having following values from JRD user profile response.
+ */
 
 rule "iac_designated_immigration_judge_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
-  $jap: JudicialAccessProfile(serviceCode == "BFA1",
- (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
- (roles !=null && roles.contains(JudicialRolesEnum.DESIGNATED_IMMIGRATION_JUDGE.getValue())))
-
+   $jap: JudicialAccessProfile(serviceCode == "BFA1",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (roles !=null && roles.contains("Designated Immigration Judge")))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -182,20 +194,14 @@ end;
  * Authorisation start from here when appointment is non iac.
  */
 
-
 rule "iac_president_of_tribunals_joh_with_authorisation"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
-  $jap: JudicialAccessProfile(appointment == "President of Tribunal", (serviceCode == null || serviceCode != "BFA1"),
-   (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),validateAuthorisation(authorisations))
+  $jap: JudicialAccessProfile(appointment == "President of Tribunal",
+                             (serviceCode == null || serviceCode != "BFA1"),
+                             (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                             validateAuthorisation(authorisations))
 then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($jap.getRegionId()));
-   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($jap.getBaseLocationId()));
-   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("SALARIED"));
-   attribute.put("substantive", JacksonUtils.convertObjectIntoJsonNode("Y"));
-
  insert(
        JudicialOfficeHolder.builder()
        .userId($jap.getUserId())
@@ -216,10 +222,12 @@ end;
 rule "iac_tribunal_judge_salaried_joh_with_authorisation"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
-  $jap: JudicialAccessProfile(appointment == "Tribunal Judge", appointmentType in ("Salaried","SPTW"), (serviceCode == null || serviceCode != "BFA1"),
- (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),validateAuthorisation(authorisations))
+   $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
+                               appointmentType in ("Salaried","SPTW"),
+                               (serviceCode == null || serviceCode != "BFA1"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations))
 then
-
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
@@ -234,15 +242,16 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : iac_tribunal_judge_salaried_joh_with_authorisation");
-
 end;
 
-rule "iac_tribunal_judge_Fee_Paid_joh_with_authorisation"
+rule "iac_tribunal_judge_fee_paid_joh_with_authorisation"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
-  $jap: JudicialAccessProfile(appointment == "Tribunal Judge", appointmentType == "fee paid", (serviceCode == null || serviceCode != "BFA1"),
- (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),validateAuthorisation(authorisations))
-
+   $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
+                               appointmentType == "fee paid",
+                               (serviceCode == null || serviceCode != "BFA1"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -257,16 +266,16 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_tribunal_judge_Fee_Paid_joh_with_authorisation");
-
+      logMsg("Rule : iac_tribunal_judge_fee_paid_joh_with_authorisation");
 end;
 
 rule "iac_resident_immigration_judge_joh_with_authorisation"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
-   (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-   (roles !=null && roles.contains(JudicialRolesEnum.RESIDENT_IMMIGRATION_JUDGE.getValue())),validateAuthorisation(authorisations))
+                             (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                             (roles !=null && roles.contains("Resident Immigration Judge")),
+                             validateAuthorisation(authorisations))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -288,9 +297,9 @@ rule "iac_assistant_resident_judge_joh_with_authorisation"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
-   (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-   (roles !=null && roles.contains(JudicialRolesEnum.ASSISTANT_RESIDENT_JUDGE.getValue())),validateAuthorisation(authorisations))
-
+                             (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                             (roles !=null && roles.contains("Assistant Resident Judge")),
+                             validateAuthorisation(authorisations))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -312,9 +321,9 @@ rule "iac_designated_immigration_judge_joh_with_authorisation"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
-   (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-   (roles !=null && roles.contains(JudicialRolesEnum.DESIGNATED_IMMIGRATION_JUDGE.getValue())),
-   validateAuthorisation(authorisations))
+                             (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                             (roles !=null && roles.contains("Designated Immigration Judge")),
+                             validateAuthorisation(authorisations))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -338,15 +347,14 @@ salience -900
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
-   (appointment != "President of Tribunal"
-   && appointment != "Tribunal Judge" ),
-   appointmentType in ("Salaried","SPTW"),
-   (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-   (roles == null || (
-      !roles.contains("Resident Immigration Judge") &&
-      !roles.contains("Assistant Resident Judge") &&
-      !roles.contains("Designated Immigration Judge"))),
-   validateAuthorisation(authorisations))
+                             (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
+                             appointmentType in ("Salaried","SPTW"),
+                             (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                             (roles == null || (
+                              !roles.contains("Resident Immigration Judge") &&
+                              !roles.contains("Assistant Resident Judge") &&
+                              !roles.contains("Designated Immigration Judge"))),
+                             validateAuthorisation(authorisations))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -369,15 +377,13 @@ salience -900
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
-   (appointment != "President of Tribunal"
-   && appointment != "Tribunal Judge" ),
-   appointmentType == "fee paid",
-   (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-   (roles == null || (
-      !roles.contains("Resident Immigration Judge") &&
-      !roles.contains("Assistant Resident Judge") &&
-      !roles.contains("Designated Immigration Judge"))),
-   validateAuthorisation(authorisations))
+                             (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
+                              appointmentType == "fee paid",
+                             (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                             (roles == null || (!roles.contains("Resident Immigration Judge") &&
+                              !roles.contains("Assistant Resident Judge") &&
+                              !roles.contains("Designated Immigration Judge"))),
+                              validateAuthorisation(authorisations))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -400,15 +406,13 @@ salience -900
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile(serviceCode == "BFA1",
-   (appointment != "President of Tribunal"
-   && appointment != "Tribunal Judge" ),
-   appointmentType in ("Salaried","SPTW"),
-   (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-   (roles == null || (
-      !roles.contains("Resident Immigration Judge") &&
-      !roles.contains("Assistant Resident Judge") &&
-      !roles.contains("Designated Immigration Judge"))))
-
+                             (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
+                              appointmentType in ("Salaried","SPTW"),
+                             (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                             (roles == null || (
+                              !roles.contains("Resident Immigration Judge") &&
+                              !roles.contains("Assistant Resident Judge") &&
+                              !roles.contains("Designated Immigration Judge"))))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -431,14 +435,13 @@ salience -900
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile(serviceCode == "BFA1",
-   (appointment != "President of Tribunal"
-   && appointment != "Tribunal Judge" ),
-   appointmentType == "fee paid",
-   (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-   (roles == null || (
-      !roles.contains("Resident Immigration Judge") &&
-      !roles.contains("Assistant Resident Judge") &&
-      !roles.contains("Designated Immigration Judge"))))
+                             (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
+                              appointmentType == "fee paid",
+                             (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                             (roles == null || (
+                                  !roles.contains("Resident Immigration Judge") &&
+                                  !roles.contains("Assistant Resident Judge") &&
+                                  !roles.contains("Designated Immigration Judge"))))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -455,7 +458,3 @@ then
        .build());
        logMsg("Rule : iac_default_tribunal_judge_fee_paid_joh_with_iac_appointment_based_on_roles_and_appointment");
 end;
-
-
-
-

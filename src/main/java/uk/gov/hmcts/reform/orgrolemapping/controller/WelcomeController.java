@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -42,9 +43,9 @@ public class WelcomeController {
 
     @GetMapping(value = "/welcome")
     public String welcome() {
-        //Use the below statement for any given API to implement Launch Darkly.
         return "Welcome to Organisation Role Mapping Service";
     }
+    //This is a just a test API
 
     @PostMapping(
             path = "/am/role-mapping/staff/users",
@@ -64,12 +65,14 @@ public class WelcomeController {
                     message = V1.Error.INVALID_REQUEST
             )
     })
-    public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest,
+                                                   @RequestHeader(value = "userType", required = true)
+                                                           UserType userType) {
         long startTime = System.currentTimeMillis();
         log.debug("createOrgMapping");
         log.info("Process has been Started for the userIds {}", userRequest.getUserIds());
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest,
-                UserType.JUDICIAL);
+                userType);
         log.debug("Execution time of createOrgMapping() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());

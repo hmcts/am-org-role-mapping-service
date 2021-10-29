@@ -4,6 +4,7 @@ import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -38,7 +39,17 @@ public abstract class BaseTest {
     @Qualifier("jrdPublisher")
     ServiceBusSenderClient serviceBusSenderClientJrd;
 
+    @MockBean(name = "jrdConsumer")
+    private SubscriptionClient jrdConsumer;
 
+    @MockBean(name = "crdConsumer")
+    private SubscriptionClient crdConsumer;
+
+    @MockBean(name = "getSubscriptionClient")
+    private SubscriptionClient getSubscriptionClient;
+
+    @MockBean(name = "getSubscriptionClient1")
+    private SubscriptionClient getSubscriptionClient1;
 
     @BeforeClass
     public static void init() {

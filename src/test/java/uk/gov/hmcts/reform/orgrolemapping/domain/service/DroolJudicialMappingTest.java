@@ -15,31 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolJudicialMappingTest extends DroolJudicialBase {
+class DroolJudicialMappingTest extends DroolBase {
 
     String workTypes = "hearing-work, upper-tribunal, decision-making-work, applications";
     String workTypesAccess = "hearing-work, upper-tribunal, decision-making-work, applications, access-requests";
-
-    @Test
-    void shouldReturnJudge() {
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true), true);
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1,roleAssignments.size());
-        assertEquals("judge",roleAssignments.get(0).getRoleName());
-        assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
-    }
 
     @Test
     void shouldReturnPresidentRoles() {
@@ -49,7 +28,7 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true), false);
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -69,10 +48,10 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(3).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
         assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
         assertEquals(workTypes, roleAssignments.get(3).getAttributes().get("workTypes").asText());
 
@@ -83,11 +62,11 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
     void shouldReturnResidentJudgeRoles() {
 
         judicialOfficeHolders.forEach(judicialOfficeHolder -> {
-            judicialOfficeHolder.setOffice("IAC Resident Judge");
+            judicialOfficeHolder.setOffice("IAC Resident Immigration Judge");
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true), false);
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -111,12 +90,12 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(5).getActorId());
-        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(3).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(4).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(5).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(4).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(5).getAttributes().get("contractType").asText());
         assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
         assertEquals(workTypesAccess, roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes, roleAssignments.get(5).getAttributes().get("workTypes").asText());
@@ -130,7 +109,7 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true), false);
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -152,11 +131,11 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
-        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(3).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(4).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(4).getAttributes().get("contractType").asText());
         assertEquals(workTypesAccess, roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes, roleAssignments.get(4).getAttributes().get("workTypes").asText());
 
@@ -170,7 +149,7 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true), false);
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -192,11 +171,11 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
-        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(3).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(4).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(4).getAttributes().get("contractType").asText());
         assertEquals(workTypesAccess, roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes, roleAssignments.get(4).getAttributes().get("workTypes").asText());
 
@@ -210,7 +189,7 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true), false);
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -228,9 +207,9 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals("SALARIED", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("SALARIED", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
         assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
     }
 
@@ -242,7 +221,7 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true), false);
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -253,18 +232,14 @@ class DroolJudicialMappingTest extends DroolJudicialBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
+        assertEquals(2, roleAssignments.size());
         assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
-        assertEquals("judge",roleAssignments.get(1).getRoleName());
-        assertEquals("fee-paid-judge",roleAssignments.get(2).getRoleName());
+        assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals("FEE-PAID", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("FEE-PAID", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("FEE-PAID", roleAssignments.get(2).getAttributes().get("contractType").asText());
+        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals(workTypes, roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
     }
 
 }
