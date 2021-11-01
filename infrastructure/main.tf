@@ -49,6 +49,7 @@ module "org-role-mapping-database" {
   sku_name        = var.database_sku_name
   sku_capacity    = var.database_sku_capacity
   common_tags     = var.common_tags
+  postgresql_version = "9.6"
 }
 
 ////////////////////////////////
