@@ -325,6 +325,15 @@ public class RequestMappingService<T> {
         log.info(message);
     }
 
+    /**
+     * This utility method is used to capture the log in drools.
+     */
+    public static List<String> addAndGetTicketCodes(List<String> existingTicketCodes, String newTicketCode) {
+        List<String> updatedTicketCodes = new ArrayList<>();
+        updatedTicketCodes.addAll(existingTicketCodes);
+        updatedTicketCodes.add(newTicketCode);
+        return updatedTicketCodes;
+    }
 
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
