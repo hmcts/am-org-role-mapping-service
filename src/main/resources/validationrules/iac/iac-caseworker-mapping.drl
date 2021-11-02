@@ -52,14 +52,14 @@ then
      attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
-      .actorIdType    (ActorIdType.IDAM)
-      .actorId        ($up.getId())
-      .roleCategory   (RoleCategory.LEGAL_OPERATIONS)
-      .roleType       (RoleType.ORGANISATION)
-      .roleName       ("tribunal-caseworker")
-      .grantType      (GrantType.STANDARD)
-      .classification (Classification.PUBLIC)
-      .readOnly       (false)
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("tribunal-caseworker")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
       .attributes(attribute)
       .build());
       logMsg("Rule : iac_tribunal_caseworker");

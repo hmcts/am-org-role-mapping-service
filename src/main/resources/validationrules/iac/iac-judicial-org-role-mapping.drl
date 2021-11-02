@@ -1,0 +1,260 @@
+package validationrules.iac;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import java.util.ArrayList;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+/*
+ * IAC "senior-judge" org role can be created by any existing judicial office holder having
+ * "IAC President of Tribunals" or "IAC Resident Immigration Judge" business role.
+ */
+
+rule "iac_senior_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("IAC President of Tribunals", "IAC Resident Immigration Judge"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work,upper-tribunal," +
+                                                                     "decision-making-work,applications"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("senior-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : iac_senior_judge_org_role");
+end;
+
+/*
+ * IAC "hmcts-judiciary" org role can be created by any existing judicial office holder having
+ * "IAC President of Tribunals" or "IAC Resident Immigration Judge" business role.
+ */
+
+rule "iac_hmcts_judiciary_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("IAC President of Tribunals", "IAC Resident Immigration Judge",
+                                        "IAC Designated Immigration Judge", "IAC Assistant Resident Judge",
+                                        "IAC Tribunal Judge (Salaried)", "IAC Tribunal Judge (Fee-Paid)"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   if($joh.getOffice().equals("IAC Tribunal Judge (Fee-Paid)")) {
+      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   } else {
+      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   }
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hmcts-judiciary")
+      .grantType(GrantType.BASIC)
+      .classification(Classification.PRIVATE)
+      .readOnly(true)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : iac_hmcts_judiciary_org_role");
+end;
+
+/*
+ * IAC "leadership-judge" org role can be created by any existing judicial office holder having
+ * "IAC Assistant Resident Judge" or "IAC Resident Immigration Judge"  or "IAC Designated Immigration Judge" business role.
+ */
+
+rule "iac_leadership_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Immigration Judge",
+                                        "IAC Designated Immigration Judge"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work,upper-tribunal," +
+                                                      "decision-making-work,applications,access-requests"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("leadership-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : iac_leadership_judge_org_role");
+end;
+
+/*
+ * IAC "case-allocator" org role can be created by any existing judicial office holder having
+ * "IAC Assistant Resident Judge" or "IAC Resident Immigration Judge"  or "IAC Designated Immigration Judge" business role.
+ */
+
+rule "iac_case_allocator_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Immigration Judge",
+                                        "IAC Designated Immigration Judge", "IAC President of Tribunals",
+                                        "IAC Tribunal Judge (Salaried)"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : iac_case_allocator_org_role");
+end;
+
+/*
+ * IAC "task-supervisor" org role can be created by any existing judicial office holder having
+ * "IAC Assistant Resident Judge" or "IAC Resident Immigration Judge"  or "IAC Designated Immigration Judge" business role.
+ */
+
+rule "iac_task_supervisor_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Immigration Judge",
+                                        "IAC Designated Immigration Judge"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : iac_task_supervisor_org_role");
+end;
+
+
+/*
+ * IAC "judge" org role can be created by any existing judicial office holder having
+ * "IAC Assistant Resident Judge" or "IAC Resident Immigration Judge"  or "IAC Designated Immigration Judge" or
+ * "IAC President of Tribunals" or "IAC Tribunal Judge (Salaried)" business role.
+ */
+
+rule "iac_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Immigration Judge",
+                                        "IAC Designated Immigration Judge", "IAC President of Tribunals",
+                                        "IAC Tribunal Judge (Salaried)"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work,upper-tribunal," +
+                                                                    "decision-making-work,applications"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : iac_judge_org_role");
+end;
+
+/*
+ * IAC "fee-paid-judge" org role can be created by any existing judicial office holder having
+ * "IAC Assistant Resident Judge" or "IAC Resident Judge"  or "IAC Designated Immigration Judge" or
+ * "IAC President of Tribunals" or "IAC Tribunal Judge (Salaried)" business role.
+ */
+
+rule "iac_fee_paid_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("IAC Tribunal Judge (Fee-Paid)"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing-work," +
+                                                                      "decision-making-work,applications"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("fee-paid-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : iac_fee_paid_judge_org_role");
+end;

@@ -1,88 +1,74 @@
 {
-  "idam_id": "37395",
-  "personal_code": "EMP37395",
-  "title": "Magistrate",
+  "sidam_id": "37395",
+  "object_id": "37395",
   "known_as": "Joe",
   "surname": "Bloggs",
   "full_name": "Joe Bloggs",
   "post_nominals": "Miss",
-  "contract_type_id": "1",
-  "work_pattern": "Fee Paid Judiciary 5 Days Mon - Fri",
   "email_id": "EMP62506@ejudiciary.net",
-  "joining_date": "2020-04-28T16:00:49",
-  "last_working_date": "2020-04-28T16:00:49",
-  "extracted_date": "2020-04-28T16:00:49",
-  "active_flag": "TRUE",
   "appointments": [
     {
-      "role_id": "84",
-      "role_desc_en": "Magistrate",
-      "contract_type_id": "5",
-      "contract_type_desc_en": "Salaried",
+
       "base_location_id": "1351",
+      "epimms_id": "839746",
       "court_name": "string",
-      "bench": "Alnwick",
-      "court_type": "Northumbria",
-      "circuit": "Gwynedd",
-      "area_of_expertise": "string",
-      "location_id": "1",
-      "location_desc_en": "north-east",
+      "location_id": "north-east",
+      "location": "north-east",
+      "cft_region_id": "2",
+      "cft_region": "North",
       "is_principal_appointment": "TRUE",
       "start_date": "2020-04-28T16:00:49",
-      "end_date": "2020-04-28T16:00:49",
-      "active_flag": "TRUE",
-      "extracted_date": "2020-04-28T16:00:49"
+      "end_date": "2022-04-28T16:00:49",
+      "appointment": "Employment Judge",
+      "appointment_type": "Salaried",
+      "service_code": "BFA1"
     },
     {
-      "role_id": "85",
-      "role_desc_en": "Magistrate",
-      "contract_type_id": "5",
-      "contract_type_desc_en": "Salaried",
+
       "base_location_id": "1351",
+      "epimms_id": "839746",
       "court_name": "string",
-      "bench": "Alnwick",
-      "court_type": "Northumbria",
-      "circuit": "Gwynedd",
-      "area_of_expertise": "string",
-      "location_id": "1",
-      "location_desc_en": "north-east",
+      "location_id": "north-east",
+      "location": "north-east",
+      "cft_region_id": "2",
+      "cft_region": "North",
       "is_principal_appointment": "TRUE",
       "start_date": "2020-04-28T16:00:49",
-      "end_date": "2020-04-28T16:00:49",
-      "active_flag": "TRUE",
-      "extracted_date": "2020-04-28T16:00:49"
+      "end_date": "2022-04-28T16:00:49",
+      "appointment": "Tribunal Judge",
+      "appointment_type": "fee paid",
+      "service_code": "BFA1"
     }
+
+
+
+
+
   ],
   "authorisations": [
-    {
-      "authorisation_id": "52149",
-      "jurisdiction": "Languages",
-      "lower_level": "Welsh",
-      "start_date": "2020-04-28T16:00:49",
-      "end_date": "2020-04-28T16:00:49",
-      "created_date": "2020-04-28T16:00:49",
-      "last_updated_date": "2020-04-28T16:00:49"
 
+    {
+      "jurisdiction": "Languages",
+      "ticket_description": "Welsh",
+      "start_date": "2022-04-28T16:00:49",
+      "service_code": "BFA1",
+      "ticket_code": "373",
+      "end_date": "2022-04-28T16:00:49"
     },
     {
-      "authorisation_id": "52150",
       "jurisdiction": "Languages",
-      "lower_level": "Welsh",
-      "start_date": "2020-04-28T16:00:49",
-      "end_date": "2020-04-28T16:00:49",
-      "created_date": "2020-04-28T16:00:49",
-      "last_updated_date": "2020-04-28T16:00:49"
-
+      "ticket_description": "Welsh",
+      "start_date": "2022-04-28T16:00:49",
+      "service_code": "BFA1",
+      "ticket_code": "373"
     },
     {
-      "authorisation_id": "52151",
       "jurisdiction": "Languages",
-      "lower_level": "Welsh",
-      "start_date": "2020-04-28T16:00:49",
-      "end_date": "2020-04-28T16:00:49",
-      "created_date": "2020-04-28T16:00:49",
-      "last_updated_date": "2020-04-28T16:00:49"
-
+      "ticket_description": "Welsh",
+      "start_date": "2022-04-28T16:00:49",
+      "service_code": "BFA2",
+      "ticket_code": "374"
     }
-  ]
+
+    ]
 }
