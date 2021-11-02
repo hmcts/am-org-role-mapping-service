@@ -162,6 +162,45 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
     }
 
     @Test
+    @DisplayName("Scenario 4: IAC Judge with Non IAC Auth")
+    void iacJudgeWithoutIacAuth() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("Tribunal Judge");
+            judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setServiceCode("BFA1");
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BAA03"));
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(3, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge"));
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+    }
+
+    @Test
     void shouldReturnTribunalJudgeSalariedRoles_withAuthorisation() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
