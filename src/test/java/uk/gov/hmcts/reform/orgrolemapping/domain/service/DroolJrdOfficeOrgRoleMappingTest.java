@@ -720,7 +720,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
     }
 
     @Test
-    @DisplayName("Scenario 3b: ")
+    @DisplayName("Scenario 3b: Tribunal Judge Salaried")
     void shouldReturnTribunalJudgeSalariedRoles_withIAC() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
@@ -761,6 +761,59 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
+    }
+
+    @Test
+    @DisplayName("Scenario 5: Employment Judge Fees Paid Without Service Code.")
+    void shouldReturnEmploymentFeePaidJudgeRoles_withAuthorisation() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("Tribunal Judge");
+            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setServiceCode(null);
+        });
+
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment("Employment Judge");
+        profile.setAppointmentType("fee paid");
+        profile.setServiceCode(null);
+        judicialAccessProfiles.add(profile);
+
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("BFA1").build(),
+                        Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("SSCS").build(),
+                        Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("Dummy").build()
+                )));
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(4, roleAssignments.size());
+        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-judge", roleAssignments.get(1).getRoleName());
+        assertEquals("hmcts-judiciary", roleAssignments.get(2).getRoleName());
+        assertEquals("fee-paid-judge", roleAssignments.get(3).getRoleName());
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     //Missing Scenarios
