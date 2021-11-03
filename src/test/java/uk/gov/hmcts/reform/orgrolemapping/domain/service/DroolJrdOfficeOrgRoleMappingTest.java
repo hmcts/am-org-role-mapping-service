@@ -12,8 +12,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -242,8 +240,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
     }
 
-    //@Test
-    //This test looks buggy
+    @Test
     @DisplayName("Scenario 1, 3a : should return Tribunal FeePaid Judge roles with IAC")
     void shouldReturnTribunalFeePaidJudgeRoles_withIAC() {
 
@@ -251,9 +248,11 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
-            //This should not be a failure.
-            judicialAccessProfile.setEndTime(ZonedDateTime.now(ZoneOffset.UTC).minusMonths(1));
+
+            judicialAccessProfile.getAuthorisations().forEach(a -> {
+                a.setServiceCode("BFA1");
+                a.setEndDate(LocalDateTime.now().minusMonths(10));
+            });
         });
 
         //Execute Kie session
@@ -267,7 +266,6 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         }
 
         //assertion
-        //We should get 2 assignments here.
         assertFalse(roleAssignments.isEmpty());
         assertEquals(2, roleAssignments.size());
         assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
@@ -873,20 +871,20 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
     }
 
-    //@Test
+    @Test
     @DisplayName("Scenario 7: Missing Service Code in one appointment.")
-    //Failing test
+        //Failing test
     void missingServiceCodeInOneAppointment() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("Fee Paid");
+            judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode("BFA1");
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Employment Judge");
-        profile.setAppointmentType("Fee Paid");
+        profile.setAppointmentType("fee paid");
         profile.setServiceCode(null);
         judicialAccessProfiles.add(profile);
 
@@ -907,11 +905,11 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "hmcts-judiciary", "fee-paid-judge"));
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary", "fee-paid-judge"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
