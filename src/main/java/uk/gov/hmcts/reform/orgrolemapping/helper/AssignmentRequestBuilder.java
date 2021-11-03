@@ -162,7 +162,7 @@ public class AssignmentRequestBuilder {
             judicialProfile.getAuthorisations().forEach(authorisation -> {
                     authorisations.add(authorisation
                                 .getTicketCode());
-                    authorisation.setUserId(judicialProfile.getSidamId());
+                    //authorisation.setUserId(judicialProfile.getSidamId());
                 }
             );
         }
@@ -188,7 +188,7 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
             judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
             judicialAccessProfile.setServiceCode(appointment.getServiceCode());
-            judicialAccessProfile.setPrimaryLocationId(appointment.getIsPrincipleAppointment()
+            judicialAccessProfile.setPrimaryLocationId(appointment.getIsPrincipalAppointment()
                     .equalsIgnoreCase("true") ? appointment.getEpimmsId() : "");
             judicialAccessProfiles.add(judicialAccessProfile);
 

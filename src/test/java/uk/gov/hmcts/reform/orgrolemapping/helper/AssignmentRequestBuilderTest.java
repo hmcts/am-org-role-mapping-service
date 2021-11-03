@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
@@ -9,7 +7,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,9 +16,9 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 
@@ -86,11 +83,7 @@ class AssignmentRequestBuilderTest {
 
     @Test
     void convertUserProfileToJudicialAccessProfile() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile judicialProfile =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                JudicialProfile.class);
+        JudicialProfile judicialProfile = TestDataBuilder. buildJudicialProfile();
         judicialProfile.getAppointments().get(0).setAppointment("1");
         judicialProfile.getAppointments().get(1).setAppointment("2");
         Set<JudicialAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
@@ -142,11 +135,8 @@ class AssignmentRequestBuilderTest {
 
     @Test
     void convertUserProfileToJudicialAccessProfileWitoutAuthorisation() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile judicialProfile =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
+
+        JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
         judicialProfile.getAppointments().get(0).setAppointment("1");
         judicialProfile.getAppointments().get(1).setAppointment("2");
         judicialProfile.setAuthorisations(null);

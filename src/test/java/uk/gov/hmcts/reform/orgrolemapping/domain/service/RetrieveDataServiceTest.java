@@ -1,8 +1,6 @@
 
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -18,7 +16,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,10 +121,7 @@ class RetrieveDataServiceTest {
 
     @Test
     void retrieveJudicialProfilesTest() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile profile = objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                JudicialProfile.class);
+        JudicialProfile profile = TestDataBuilder.buildJudicialProfile();
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
                 .when(jrdService).fetchJudicialProfiles(TestDataBuilder.buildRefreshRoleRequest());

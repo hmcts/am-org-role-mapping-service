@@ -20,5 +20,4 @@ public  class Authorisation implements Serializable {
     private LocalDateTime endDate;
     private String ticketDescription;
     private String serviceCode;
-    private String userId;
 }

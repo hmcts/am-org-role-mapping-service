@@ -1,64 +1,66 @@
 {
-  "sidamId": "44862987-4b00-e2e7-4ff8-281b87f16bf9",
-  "objectId": "44862987-4b00-e2e7-4ff8-281b87f16bf9",
-  "knownAs": "KnownAs",
-  "surname": "Surname",
-  "fullName": "Full Name",
-  "postNominals": "Test Test1",
-  "emailId": "abc@gmail.com",
+  "sidam_id": "37395",
+  "object_id": "37395",
+  "known_as": "Joe",
+  "surname": "Bloggs",
+  "full_name": "Joe Bloggs",
+  "post_nominals": "Miss",
+  "email_id": "EMP62506@ejudiciary.net",
   "appointments": [
     {
-      "baseLocationId": "1029",
-      "epimmsId": "839746",
-      "courtName": "Health, Education and Social Care",
-      "regionId": "1",
-      "regionDescEn": "National",
-      "regionDescCy": "",
-      "locationId": "1029",
-      "location": "First Tier Tribunal",
-      "isPrincipleAppointment": "true",
-      "appointment": "Employment Judge",
-      "appointmentType": "Salaried",
-      "serviceCode": "BFA1",
-      "roles": ["2"],
-      "startDate": "1995-03-27",
-      "endDate": "2021-12-01"
-    },{
-      "baseLocationId": "1351",
-      "epimmsId": "839746",
-      "courtName": "string",
-      "locationId": "north-east",
+      "base_location_id": "1351",
+      "epimms_id": "839746",
+      "court_name": "string",
+      "location_id": "north-east",
       "location": "north-east",
-      "regionId": "2",
-      "regionDescEn": "North",
-      "isPrincipleAppointment": "TRUE",
-      "startDate": "2020-04-28T16:00:49",
-      "endDate": "2022-04-28T16:00:49",
+      "cft_region_id": "2",
+      "cft_region": "North",
+      "is_principal_appointment": "TRUE",
+      "start_date": "2020-04-28T16:00:49",
+      "end_date": "2022-04-28T16:00:49",
+      "appointment": "Employment Judge",
+      "appointment_type": "Salaried",
+      "service_code": "BFA1"
+    },
+    {
+      "base_location_id": "1351",
+      "epimms_id": "839746",
+      "court_name": "string",
+      "location_id": "north-east",
+      "location": "north-east",
+      "cft_region_id": "2",
+      "cft_region": "North",
+      "is_principal_appointment": "TRUE",
+      "start_date": "2020-04-28T16:00:49",
+      "end_date": "2022-04-28T16:00:49",
       "appointment": "Tribunal Judge",
-      "appointmentType": "fee paid",
-      "serviceCode": "BFA1"
+      "appointment_type": "fee paid",
+      "service_code": "BFA1"
     }
   ],
   "authorisations": [
     {
-      "jurisdiction": "Authorisation Magistrate",
-      "ticketDescription": "Family Court",
-      "ticketCode": "373",
-      "startDate": null,
-      "endDate": "2040-04-18T00:00"
+      "jurisdiction": "Languages",
+      "ticket_description": "Welsh",
+      "start_date": "2022-04-28T16:00:49",
+      "service_code": "BFA1",
+      "ticket_code": "373",
+      "end_date": "2022-04-28T16:00:49"
     },
     {
       "jurisdiction": "Languages",
-      "ticketDescription": "Welsh",
-      "startDate": "2022-04-28T16:00:49",
-      "serviceCode": "BFA1",
-      "ticketCode": "373"
-    }, {
+      "ticket_description": "Welsh",
+      "start_date": "2022-04-28T16:00:49",
+      "service_code": "BFA1",
+      "ticket_code": "373"
+    },
+    {
       "jurisdiction": "Languages",
-      "ticketDescription": "Welsh",
-      "startDate": "2022-04-28T16:00:49",
-      "serviceCode": "BFA2",
-      "ticketCode": "374"
+      "ticket_description": "Welsh",
+      "start_date": "2022-04-28T16:00:49",
+      "service_code": "BFA2",
+      "ticket_code": "374"
     }
+
   ]
 }
