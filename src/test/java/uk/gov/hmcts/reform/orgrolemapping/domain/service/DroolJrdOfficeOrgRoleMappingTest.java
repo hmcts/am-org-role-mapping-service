@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -814,6 +815,61 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             }
         });
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+    }
+
+    @Test
+    @DisplayName("Scenario 6: Tribunal Judge SPTW Without Service Code.")
+    //Not Working
+    void shouldReturnTribunalJudgeSptw_withAuthorisation() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("Tribunal Judge");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
+            judicialAccessProfile.setServiceCode(null);
+        });
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment("Tribunal Judge");
+        profile.setAppointmentType("SPTW");
+        profile.setServiceCode(null);
+        judicialAccessProfiles.add(profile);
+
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
+                                .endDate(LocalDateTime.now().minusMonths(5)).build(),
+                        Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
+                                .build(),
+                        Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("SSCS").build(),
+                        Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("Dummy").build()
+                )));
+
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(5, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "judge", "hmcts-judiciary",
+                        "case-allocator"));
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
     }
 
     //Missing Scenarios
