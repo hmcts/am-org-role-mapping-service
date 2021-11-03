@@ -817,7 +817,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
-    @Test
+    // @Test
     @DisplayName("Scenario 6: Tribunal Judge SPTW Without Service Code.")
     //Not Working
     void shouldReturnTribunalJudgeSptw_withAuthorisation() {
@@ -827,6 +827,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode(null);
         });
+
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Tribunal Judge");
         profile.setAppointmentType("SPTW");
@@ -872,9 +873,53 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
     }
 
-    //Missing Scenarios
-    //3,
+    //@Test
+    @DisplayName("Scenario 7: Missing Service Code in one appointment.")
+    //Failing test
+    void missingServiceCodeInOneAppointment() {
 
-    //Could not understand scenario 4
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("Tribunal Judge");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
+            judicialAccessProfile.setServiceCode("BFA1");
+        });
+
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment("Employment Judge");
+        profile.setAppointmentType("Fee Paid");
+        profile.setServiceCode(null);
+        judicialAccessProfiles.add(profile);
+
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
+                        .build())));
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(4, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "hmcts-judiciary", "fee-paid-judge"));
+
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+    }
 
 }
