@@ -355,7 +355,7 @@ public class TestDataBuilder {
         builder.primaryLocationId("primary location");
         builder.appointment("2");
         builder.regionId("3");
-        builder.ticketCodes(List.of("375"));
+        builder.ticketCodes(List.of("373"));
         builder.authorisations(Collections.singletonList(
                 Authorisation.builder().userId(id_1).serviceCode("BFA1").build()));
         return builder

@@ -77,7 +77,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -194,7 +194,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -235,7 +235,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -279,7 +279,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -316,7 +316,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -360,7 +360,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -406,7 +406,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -448,7 +448,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -486,7 +486,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -524,7 +524,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -564,7 +564,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -604,7 +604,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -640,6 +640,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("President of Tribunal");
             judicialAccessProfile.setServiceCode("BFA1");
             judicialAccessProfile.setRoles(List.of("Resident Immigration Judge"));
+            judicialAccessProfile.setTicketCodes(List.of("375"));
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
 
         });
@@ -810,7 +811,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[375, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });

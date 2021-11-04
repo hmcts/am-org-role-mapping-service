@@ -176,7 +176,7 @@ class AssignmentRequestBuilderTest {
             assertNotNull(appointment.getRegionId());
             assertNotNull(appointment.getBaseLocationId());
             assertNotNull(appointment.getTicketCodes());
-            assertEquals(1, appointment.getTicketCodes().size());
+            assertEquals(0, appointment.getTicketCodes().size());
             assertNotNull(appointment.getAppointment());
         });
         assertEquals(2, judicialAccessProfiles.size());
@@ -203,7 +203,7 @@ class AssignmentRequestBuilderTest {
             assertNotNull(appointment.getRegionId());
             assertNotNull(appointment.getBaseLocationId());
             assertNotNull(appointment.getTicketCodes());
-            assertEquals(2, appointment.getTicketCodes().size());
+            assertEquals(1, appointment.getTicketCodes().size());
             assertNotNull(appointment.getAppointment());
         });
         assertEquals(2, judicialAccessProfiles.size());
