@@ -74,7 +74,7 @@ public class RetrieveDataService {
 
         } else if (userType.equals(UserType.JUDICIAL)) {
             log.info("Calling JRD Service");
-            response = jrdService.fetchJudicialProfiles(RefreshRoleRequest.builder().sidamIds(userRequest.getUserIds())
+            response = jrdService.fetchJudicialProfiles(RefreshRoleRequest.builder().objectIds(userRequest.getUserIds())
                     .build());
             Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
         }

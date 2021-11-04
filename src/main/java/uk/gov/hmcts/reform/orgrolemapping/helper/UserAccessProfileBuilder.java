@@ -155,7 +155,7 @@ public class UserAccessProfileBuilder {
         Set<JudicialProfile> judicialProfilesProfiles = new LinkedHashSet<>();
 
 
-        userRequest.getSidamIds().forEach(userId -> {
+        userRequest.getObjectIds().forEach(userId -> {
             try (InputStream inputStream =
                          UserAccessProfileBuilder.class.getClassLoader()
                                  .getResourceAsStream(resource)) {

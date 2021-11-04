@@ -79,7 +79,7 @@ public class TestDataBuilder {
         ArrayList<String> users = new ArrayList<>();
         users.add(id_1);
         users.add(id_2);
-        return RefreshRoleRequest.builder().sidamIds(users).build();
+        return RefreshRoleRequest.builder().objectIds(users).build();
     }
 
     public static UserRequest buildBadUserRequest() {

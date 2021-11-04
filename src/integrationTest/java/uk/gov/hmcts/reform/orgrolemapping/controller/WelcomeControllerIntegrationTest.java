@@ -160,7 +160,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
 
         judicialProfiles = new ArrayList<>(buildJudicialProfile(RefreshRoleRequest.builder()
-                        .sidamIds(userRequest.getUserIds()).build(),"judicialProfileSample.json"));
+                        .objectIds(userRequest.getUserIds()).build(),"judicialProfileSample.json"));
     }
 
     @Test
