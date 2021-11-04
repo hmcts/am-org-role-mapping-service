@@ -9,10 +9,12 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
@@ -75,13 +77,6 @@ public class TestDataBuilder {
         return UserRequest.builder().userIds(users).build();
     }
 
-    public static RefreshRoleRequest buildRefreshRoleRequest() {
-        ArrayList<String> users = new ArrayList<>();
-        users.add(id_1);
-        users.add(id_2);
-        return RefreshRoleRequest.builder().objectIds(users).build();
-    }
-
     public static UserRequest buildBadUserRequest() {
         ArrayList<String> users = new ArrayList<>();
         users.add(id_1);
@@ -128,7 +123,7 @@ public class TestDataBuilder {
     }
 
     public static Map<String, Set<CaseWorkerAccessProfile>> buildUserAccessProfileMap(boolean suspended1,
-                                                                                boolean suspended2) {
+                                                                                      boolean suspended2) {
 
         HashMap<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
         userAccessProfiles.put(id_1, buildUserAccessProfileSet(suspended1, suspended2));
@@ -355,8 +350,20 @@ public class TestDataBuilder {
     }
 
     public static JudicialAccessProfile buildJudicialAccessProfile() {
-        return JudicialAccessProfile.builder().userId(id_1).roleId("8")
-                .baseLocationId("south-east")
+        JudicialAccessProfile.JudicialAccessProfileBuilder builder = JudicialAccessProfile.builder();
+        builder.userId(id_1);
+        builder.roleId("84");
+        builder.contractTypeId("5");
+        builder.beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1));
+        builder.endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1));
+        builder.baseLocationId("1");
+        builder.primaryLocationId("primary location");
+        builder.appointment("2");
+        builder.regionId("3");
+        builder.ticketCodes(List.of("373"));
+        builder.authorisations(Collections.singletonList(
+                Authorisation.builder().serviceCode("BFA1").build()));
+        return builder
                 .build();
     }
 
@@ -365,6 +372,31 @@ public class TestDataBuilder {
         judicialAccessProfileSet.add(buildJudicialAccessProfile());
 
         return judicialAccessProfileSet;
+    }
+
+    public static JudicialOfficeHolder buildJudicialOfficeHolder() {
+        return JudicialOfficeHolder.builder()
+                .userId(id_2)
+                .beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1))
+                .endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1))
+                .baseLocationId("1")
+                .primaryLocation("2")
+                .regionId("3")
+                .build();
+    }
+
+    public static Set<JudicialOfficeHolder> buildJudicialOfficeHolderSet() {
+        Set<JudicialOfficeHolder> judicialAccessProfileSet = new HashSet<>();
+        judicialAccessProfileSet.add(buildJudicialOfficeHolder());
+
+        return judicialAccessProfileSet;
+    }
+
+    public static RefreshRoleRequest buildRefreshRoleRequest() {
+        ArrayList<String> users = new ArrayList<>();
+        users.add(id_1);
+        users.add(id_2);
+        return RefreshRoleRequest.builder().objectIds(users).build();
     }
 
     public static JudicialProfile buildJudicialProfile() throws IOException {

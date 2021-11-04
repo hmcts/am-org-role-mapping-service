@@ -283,6 +283,7 @@ dependencies {
     implementation (group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0') {
         exclude group: 'org.glassfish', module: 'jakarta.el'
     }
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.12'
     implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.1'
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
@@ -353,7 +354,6 @@ dependencies {
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090:
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
-
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.12'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.54'
 

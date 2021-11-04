@@ -1,6 +1,6 @@
 {
   "_guid_": "S-021",
-  "title": "must successfully create judicial role mapping for a multiple user having single role",
+  "title": "must successfully create judicial role mapping for multiple users having single role",
   "_extends_": "F-003_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
@@ -76,7 +76,7 @@
             "contractType" : "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,decision-making-work,applications"
+            "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -98,7 +98,7 @@
             "contractType" : "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,decision-making-work,applications"
+            "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -191,7 +191,7 @@
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
+            "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -213,7 +213,7 @@
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
+            "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }

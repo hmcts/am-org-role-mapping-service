@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.lang.String;
 import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.util.HashMap
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.addAndGetTicketCodes;
 import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
 
 /*
@@ -38,7 +40,7 @@ then
       .userId($jap.getUserId())
       .office("IAC President of Tribunals")
       .jurisdiction("IA")
-      .ticketCodes($jap.getTicketCodes())
+      .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
@@ -66,7 +68,7 @@ then
       .userId($jap.getUserId())
       .office("IAC Tribunal Judge (Salaried)")
       .jurisdiction("IA")
-      .ticketCodes($jap.getTicketCodes())
+      .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
@@ -95,7 +97,7 @@ then
       .userId($jap.getUserId())
       .office("IAC Tribunal Judge (Fee-Paid)")
       .jurisdiction("IA")
-      .ticketCodes($jap.getTicketCodes())
+      .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
@@ -123,7 +125,7 @@ then
       .userId($jap.getUserId())
       .office("IAC Resident Immigration Judge")
       .jurisdiction("IA")
-      .ticketCodes($jap.getTicketCodes())
+      .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
@@ -151,7 +153,7 @@ then
       .userId($jap.getUserId())
       .office("IAC Assistant Resident Judge")
       .jurisdiction("IA")
-      .ticketCodes($jap.getTicketCodes())
+      .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
@@ -179,7 +181,7 @@ then
       .userId($jap.getUserId())
       .office("IAC Designated Immigration Judge")
       .jurisdiction("IA")
-      .ticketCodes($jap.getTicketCodes())
+      .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
@@ -207,7 +209,7 @@ then
        .userId($jap.getUserId())
        .office("IAC President of Tribunals")
        .jurisdiction("IA")
-       .ticketCodes($jap.getTicketCodes())
+       .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
        .beginTime($jap.getBeginTime())
        .endTime($jap.getEndTime())
        .regionId($jap.getRegionId())
@@ -233,7 +235,7 @@ then
       .userId($jap.getUserId())
       .office("IAC Tribunal Judge (Salaried)")
       .jurisdiction("IA")
-      .ticketCodes($jap.getTicketCodes())
+      .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
@@ -258,7 +260,7 @@ then
       .userId($jap.getUserId())
       .office("IAC Tribunal Judge (Fee-Paid)")
       .jurisdiction("IA")
-      .ticketCodes($jap.getTicketCodes())
+      .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
@@ -282,7 +284,7 @@ then
        .userId($jap.getUserId())
        .office("IAC Resident Immigration Judge")
        .jurisdiction("IA")
-       .ticketCodes($jap.getTicketCodes())
+       .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
        .beginTime($jap.getBeginTime())
        .endTime($jap.getEndTime())
        .regionId($jap.getRegionId())
@@ -306,7 +308,7 @@ then
        .userId($jap.getUserId())
        .office("IAC Assistant Resident Judge")
        .jurisdiction("IA")
-       .ticketCodes($jap.getTicketCodes())
+       .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
        .beginTime($jap.getBeginTime())
        .endTime($jap.getEndTime())
        .regionId($jap.getRegionId())
@@ -330,7 +332,7 @@ then
        .userId($jap.getUserId())
        .office("IAC Designated Immigration Judge")
        .jurisdiction("IA")
-       .ticketCodes($jap.getTicketCodes())
+       .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
        .beginTime($jap.getBeginTime())
        .endTime($jap.getEndTime())
        .regionId($jap.getRegionId())
@@ -361,7 +363,7 @@ then
        .userId($jap.getUserId())
        .office("IAC Tribunal Judge (Salaried)")
        .jurisdiction("IA")
-       .ticketCodes($jap.getTicketCodes())
+       .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
        .beginTime($jap.getBeginTime())
        .endTime($jap.getEndTime())
        .regionId($jap.getRegionId())
@@ -390,7 +392,7 @@ then
        .userId($jap.getUserId())
        .office("IAC Tribunal Judge (Fee-Paid)")
        .jurisdiction("IA")
-       .ticketCodes($jap.getTicketCodes())
+       .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
        .beginTime($jap.getBeginTime())
        .endTime($jap.getEndTime())
        .regionId($jap.getRegionId())
@@ -419,7 +421,7 @@ then
        .userId($jap.getUserId())
        .office("IAC Tribunal Judge (Salaried)")
        .jurisdiction("IA")
-       .ticketCodes($jap.getTicketCodes())
+       .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
        .beginTime($jap.getBeginTime())
        .endTime($jap.getEndTime())
        .regionId($jap.getRegionId())
@@ -448,7 +450,7 @@ then
        .userId($jap.getUserId())
        .office("IAC Tribunal Judge (Fee-Paid)")
        .jurisdiction("IA")
-       .ticketCodes($jap.getTicketCodes())
+       .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
        .beginTime($jap.getBeginTime())
        .endTime($jap.getEndTime())
        .regionId($jap.getRegionId())

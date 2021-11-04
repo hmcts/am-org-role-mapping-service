@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -106,7 +105,7 @@ class AssignmentRequestBuilderTest {
     @Test
     void validateIACAuthorisation()  {
 
-        assertTrue(AssignmentRequestBuilder.validateAuthorisation(Arrays.asList(Authorisation.builder()
+        assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BFA1")
                 .endDate(LocalDateTime.now().plusDays(1)).build())));
     }
@@ -128,9 +127,26 @@ class AssignmentRequestBuilderTest {
     @Test
     void validateNonIACAuthorisation()  {
 
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(Arrays.asList(Authorisation.builder()
+        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BFA2")
                 .endDate(LocalDateTime.now().plusDays(1)).build())));
+    }
+
+
+    @Test
+    void validateAuthorisation_inValidEndDate() {
+        Authorisation authorisation = Authorisation.builder()
+                .endDate(LocalDateTime.now().minusDays(2))
+                .serviceCode("BFA2")
+                .build();
+        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation));
+        assertFalse(isValidAuthorisation);
+    }
+
+    @Test
+    void validateAuthorisation_emptyList() {
+        boolean authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of());
+        assertFalse(authorisation);
     }
 
     @Test
@@ -144,16 +160,38 @@ class AssignmentRequestBuilderTest {
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 
         judicialAccessProfiles.forEach(appointment -> {
-                assertNotNull(appointment.getUserId());
-                assertNotNull(appointment.getBeginTime());
-                assertNotNull(appointment.getEndTime());
-                assertNotNull(appointment.getRegionId());
-                assertNotNull(appointment.getBaseLocationId());
-                assertNotNull(appointment.getTicketCodes());
-                assertEquals(1, appointment.getTicketCodes().size());
-                assertNotNull(appointment.getAppointment());
-            }
-        );
+            assertNotNull(appointment.getUserId());
+            assertNotNull(appointment.getBeginTime());
+            assertNotNull(appointment.getEndTime());
+            assertNotNull(appointment.getRegionId());
+            assertNotNull(appointment.getBaseLocationId());
+            assertNotNull(appointment.getTicketCodes());
+            assertEquals(0, appointment.getTicketCodes().size());
+            assertNotNull(appointment.getAppointment());
+        });
+        assertEquals(2, judicialAccessProfiles.size());
+    }
+
+    @Test
+    void convertUserProfileToJudicialAccessProfileWithDiffTicketCode() throws IOException {
+        JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
+        judicialProfile.getAppointments().get(0).setAppointment("1");
+        judicialProfile.getAppointments().get(0).setEndDate(null);
+        judicialProfile.getAppointments().get(0).setIsPrincipalAppointment("False");
+        judicialProfile.getAppointments().get(1).setAppointment("2");
+        judicialProfile.setAuthorisations(List.of(Authorisation.builder().ticketCode("374").build()));
+        Set<JudicialAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
+                .convertProfileToJudicialAccessProfile(judicialProfile);
+
+        judicialAccessProfiles.forEach(appointment -> {
+            assertNotNull(appointment.getUserId());
+            assertNotNull(appointment.getBeginTime());
+            assertNotNull(appointment.getRegionId());
+            assertNotNull(appointment.getBaseLocationId());
+            assertNotNull(appointment.getTicketCodes());
+            assertEquals(1, appointment.getTicketCodes().size());
+            assertNotNull(appointment.getAppointment());
+        });
         assertEquals(2, judicialAccessProfiles.size());
     }
 }

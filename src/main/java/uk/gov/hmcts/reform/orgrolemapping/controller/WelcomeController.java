@@ -30,10 +30,7 @@ public class WelcomeController {
     @Autowired
     public WelcomeController(
             BulkAssignmentOrchestrator bulkAssignmentOrchestrator) {
-
-
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
-
     }
 
     @GetMapping(value = "/swagger")
@@ -45,7 +42,7 @@ public class WelcomeController {
     public String welcome() {
         return "Welcome to Organisation Role Mapping Service";
     }
-    //This is a just a test API
+    //This is just a test API
 
     @PostMapping(
             path = "/am/role-mapping/staff/users",
@@ -58,7 +55,7 @@ public class WelcomeController {
             @ApiResponse(
                     code = 200,
                     message = "OK",
-                    response = Object.class //need to replace with resource class
+                    response = Object.class
             ),
             @ApiResponse(
                     code = 400,
@@ -66,7 +63,7 @@ public class WelcomeController {
             )
     })
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest,
-                                                   @RequestHeader(value = "userType", required = true)
+                                                   @RequestHeader(value = "userType")
                                                            UserType userType) {
         long startTime = System.currentTimeMillis();
         log.debug("createOrgMapping");

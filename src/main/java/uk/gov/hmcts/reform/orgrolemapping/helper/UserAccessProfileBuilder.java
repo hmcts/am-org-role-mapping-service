@@ -9,11 +9,14 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.InputStream;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -173,6 +176,28 @@ public class UserAccessProfileBuilder {
 
         });
         return new ArrayList<>(judicialProfilesProfiles);
+    }
+
+    //JRDFeignClientFallback object for testing jud office holder roles
+    public static List<JudicialOfficeHolder> buildJudicialOfficeHolder(UserRequest userRequest) {
+
+        Set<JudicialOfficeHolder> judicialOfficeHolders = new LinkedHashSet<>();
+
+
+        userRequest.getUserIds().forEach(userId -> {
+            JudicialOfficeHolder judicialProfile =
+                    JudicialOfficeHolder.builder()
+                            .userId(userId)
+                            .office("IAC President of Tribunals")
+                            .beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1))
+                            .endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1))
+                            .baseLocationId("1")
+                            .regionId("3")
+                            .build();
+            judicialOfficeHolders.add(judicialProfile);
+        });
+
+        return new ArrayList<>(judicialOfficeHolders);
     }
 
     @NotNull
