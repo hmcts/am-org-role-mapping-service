@@ -16,8 +16,8 @@
       "cft_region_id": "2",
       "cft_region": "North",
       "is_principal_appointment": "TRUE",
-      "start_date": "2020-04-28T16:00:49",
-      "end_date": "2022-04-28T16:00:49",
+      "start_date": "2020-04-28",
+      "end_date": "2022-04-28",
       "appointment": "Employment Judge",
       "appointment_type": "Salaried",
       "service_code": "BFA1"
@@ -31,10 +31,10 @@
       "cft_region_id": "2",
       "cft_region": "North",
       "is_principal_appointment": "TRUE",
-      "start_date": "2020-04-28T16:00:49",
-      "end_date": "2022-04-28T16:00:49",
+      "start_date": "2020-04-28",
+      "end_date": "2022-04-28",
       "appointment": "Tribunal Judge",
-      "appointment_type": "fee paid",
+      "appointment_type": "Fee Paid",
       "service_code": "BFA1"
     }
   ],
