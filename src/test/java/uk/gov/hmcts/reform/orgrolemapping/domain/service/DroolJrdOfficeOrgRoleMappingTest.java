@@ -252,6 +252,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
             judicialAccessProfile.getAuthorisations().forEach(a -> {
                 a.setServiceCode("BFA1");
+                a.setStartDate(LocalDateTime.now().minusMonths(20));
                 a.setEndDate(LocalDateTime.now().minusMonths(10));
             });
         });
