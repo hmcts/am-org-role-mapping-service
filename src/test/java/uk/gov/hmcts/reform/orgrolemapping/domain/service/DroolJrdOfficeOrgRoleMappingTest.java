@@ -815,14 +815,13 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
-    // @Test
+    @Test
     @DisplayName("Scenario 6: Tribunal Judge SPTW Without Service Code.")
-    //Not Working
     void shouldReturnTribunalJudgeSptw_withAuthorisation() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("Fee Paid");
+            judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode(null);
         });
 
@@ -860,7 +859,6 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                         "case-allocator"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
@@ -873,7 +871,6 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
     @Test
     @DisplayName("Scenario 7: Missing Service Code in one appointment.")
-        //Failing test
     void missingServiceCodeInOneAppointment() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
