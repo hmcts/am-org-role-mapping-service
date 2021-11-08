@@ -86,11 +86,7 @@ public class JacksonUtils {
     }
 
     public static JudicialProfile convertInJudicialProfile(Object from) {
-        JudicialProfile profile = MAPPER.convertValue(from, new TypeReference<>() {
+        return MAPPER.convertValue(from, new TypeReference<>() {
         });
-        if (profile.getSidamId() == null) {
-            profile.setSidamId(profile.getObjectId());
-        }
-        return profile;
     }
 }
