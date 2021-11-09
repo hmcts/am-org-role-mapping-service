@@ -155,7 +155,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -169,6 +169,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setServiceCode("BFA1");
+            judicialAccessProfile.setTicketCodes(List.of("35970"));
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BAA03"));
         });
 
@@ -194,7 +195,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("[35970, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -576,10 +577,14 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
     void shouldReturnDefaultTribunalJudgeFeePaidRoles_IacBased() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("Employment Judge");
+            judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("fee paid");
-            judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+            judicialAccessProfile.setServiceCode("");
+            judicialAccessProfile.setTicketCodes(List.of("374", "375", "376"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> {
+                a.setServiceCode("BFA1");
+                a.setStartDate(LocalDateTime.now().minusMonths(20));
+            });
         });
 
         //Execute Kie session
@@ -604,7 +609,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("[374, 375, 376, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -671,7 +676,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[375, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -714,56 +719,56 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
-    @Test
-    @DisplayName("Scenario 3b: Tribunal Judge Salaried")
-    void shouldReturnTribunalJudgeSalariedRoles_withIAC() {
-
-        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
-        });
-        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
-        profile.setAppointment("Tribunal Judge");
-        profile.setAppointmentType("SPTW");
-        judicialAccessProfiles.add(profile);
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "hmcts-judiciary",
-                        "case-allocator", "judge"));
-        roleAssignments.forEach(r -> {
-            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if ("hmcts-judiciary".equals(r.getRoleName())) {
-                assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
-            } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
-            }
-        });
-    }
+//    @Test
+//    @DisplayName("Scenario 3b: Tribunal Judge Salaried")
+//    void shouldReturnTribunalJudgeSalariedRoles_withIAC() {
+//
+//        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+//            judicialAccessProfile.setAppointment("Tribunal Judge");
+//            judicialAccessProfile.setAppointmentType("Salaried");
+//            judicialAccessProfile.setServiceCode("BFA1");
+//            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+//        });
+//        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+//        profile.setAppointment("Tribunal Judge");
+//        profile.setAppointmentType("SPTW");
+//        judicialAccessProfiles.add(profile);
+//
+//        //Execute Kie session
+//        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+//
+//        //Extract all created role assignments using the query defined in the rules.
+//        List<RoleAssignment> roleAssignments = new ArrayList<>();
+//        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+//        for (QueryResultsRow row : queryResults) {
+//            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+//        }
+//
+//        //assertion
+//        assertFalse(roleAssignments.isEmpty());
+//        assertEquals(6, roleAssignments.size());
+//        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+//                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "hmcts-judiciary",
+//                        "case-allocator", "judge"));
+//        roleAssignments.forEach(r -> {
+//            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+//            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+//            if ("hmcts-judiciary".equals(r.getRoleName())) {
+//                assertNull(r.getAuthorisations());
+//                assertNull(r.getAttributes().get("primaryLocation"));
+//            } else {
+//                assertEquals("[375]", r.getAuthorisations().toString());
+//                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+//            }
+//        });
+//    }
 
     @Test
     @DisplayName("Scenario 5,9: Employment Judge Fees Paid Without Service Code.")
@@ -796,7 +801,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         for (QueryResultsRow row : queryResults) {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
-
+        //TODO assert work types
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
@@ -811,7 +816,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375, 373]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -826,12 +831,14 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode(null);
+            judicialAccessProfile.setTicketCodes(List.of("A", "B", "C", "D"));
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Tribunal Judge");
         profile.setAppointmentType("SPTW");
         profile.setServiceCode(null);
+        profile.setTicketCodes(List.of("A", "B", "C", "D"));
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
@@ -839,7 +846,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                                 .endDate(LocalDateTime.now().minusMonths(5)).build(),
                         Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
                                 .build(),
-                        Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("SSCS").build(),
+                        Authorisation.builder().userId(UUID.randomUUID().toString()).ticketCode("A").build(),
                         Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("Dummy").build()
                 )));
 
@@ -866,7 +873,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[A, B, C, D, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -914,7 +921,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -929,12 +936,14 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Deputy Upper Tribunal Judge");
             judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode(null);
+            judicialAccessProfile.setTicketCodes(List.of("A", "B", "C"));
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Tribunal Judge");
         profile.setAppointmentType("SPTW");
         profile.setServiceCode(null);
+        profile.setTicketCodes(List.of("A", "B", "C"));
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
@@ -962,7 +971,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[A, B, C, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -976,6 +985,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode(null);
+            judicialAccessProfile.setTicketCodes(List.of("101", "102", "103", "104"));
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
@@ -983,6 +993,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         profile.setAppointmentType("SPTW");
         profile.setRoles(Collections.singletonList("Pool of Judges"));
         profile.setServiceCode(null);
+        profile.setTicketCodes(List.of("101", "102", "103", "104"));
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
@@ -1010,7 +1021,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[101, 102, 103, 104, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -1024,6 +1035,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setServiceCode("BFA1");
+            judicialAccessProfile.setTicketCodes(List.of("101"));
             judicialAccessProfile.setRoles(List.of("Resident Immigration Judge",
                     "IT Liaison Judge",
                     "Pool of Judges",
@@ -1034,6 +1046,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         profile.setAppointment("Deputy Upper Tribunal Judge");
         profile.setAppointmentType("fee paid");
         profile.setServiceCode(null);
+        profile.setTicketCodes(List.of("101"));
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
@@ -1064,10 +1077,143 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[101, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
     }
 
+    @Test
+    @DisplayName("Scenario 12: Employment Judge with Multiple role")
+    void employmentJudgeWithMultipleRole() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("Employment Judge");
+            judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setServiceCode("BFA1");
+            judicialAccessProfile.setRoles(List.of("Diversity Role Models",
+                    "Diversity and Community Relations Judges",
+                    "Pool of Judges"));
+        });
+
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode("BFA1").ticketCode("373")
+                        .startDate(LocalDateTime.now().minusMonths(10)).build())));
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(3, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("case-allocator", "judge", "hmcts-judiciary"));
+
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+    }
+
+    @Test
+    @DisplayName("Scenario 13: Appointment is Regional Tribunal Judge")
+    void appointmentIsRegionalTribunalJudge() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("Regional Tribunal Judge");
+            judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setServiceCode("BFA1");
+            judicialAccessProfile.setRoles(List.of("Resident Immigration Judge"));
+        });
+
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode("BFA1").ticketCode("373")
+                        .startDate(LocalDateTime.now().minusMonths(10)).build())));
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(6, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("case-allocator", "judge", "hmcts-judiciary",
+                        "leadership-judge", "senior-judge", "task-supervisor"));
+
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+    }
+
+    @Test
+    @DisplayName("Scenario 14: Judge has two Appointments and same appointment type but no IAC mapping available")
+    void noIacMappingForJudge() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("Deputy Upper Tribunal Judge");
+            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setServiceCode("BFA1");
+        });
+
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment("Employment Judge");
+        profile.setAppointmentType("fee paid");
+        profile.setServiceCode("");
+        judicialAccessProfiles.add(profile);
+
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode("BFA1").ticketCode("373")
+                        .startDate(LocalDateTime.now().minusMonths(10)).build())));
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(4, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("fee-paid-judge", "hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary"));
+
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+    }
 }
