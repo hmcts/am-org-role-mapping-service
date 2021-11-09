@@ -726,49 +726,49 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
-//    @Test
-//    @DisplayName("Scenario 3b: Tribunal Judge Salaried")
-//    void shouldReturnTribunalJudgeSalariedRoles_withIAC() {
-//
-//        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-//            judicialAccessProfile.setAppointment("Tribunal Judge");
-//            judicialAccessProfile.setAppointmentType("Salaried");
-//            judicialAccessProfile.setServiceCode("BFA1");
-//            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
-//        });
-//        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
-//        profile.setAppointment("Tribunal Judge");
-//        profile.setAppointmentType("SPTW");
-//        judicialAccessProfiles.add(profile);
-//
-//        //Execute Kie session
-//        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
-//
-//        //Extract all created role assignments using the query defined in the rules.
-//        List<RoleAssignment> roleAssignments = new ArrayList<>();
-//        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-//        for (QueryResultsRow row : queryResults) {
-//            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-//        }
-//
-//        //assertion
-//        assertFalse(roleAssignments.isEmpty());
-//        assertEquals(6, roleAssignments.size());
-//        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-//                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "hmcts-judiciary",
-//                        "case-allocator", "judge"));
-//        roleAssignments.forEach(r -> {
-//            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-//            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-//            if ("hmcts-judiciary".equals(r.getRoleName())) {
-//                assertNull(r.getAuthorisations());
-//                assertNull(r.getAttributes().get("primaryLocation"));
-//            } else {
-//                assertEquals("[375]", r.getAuthorisations().toString());
-//                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
-//            }
-//        });
-//    }
+    @Test
+    @DisplayName("Scenario 3b: Tribunal Judge Salaried")
+    void shouldReturnTribunalJudgeSalariedRoles_withIAC() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("Tribunal Judge");
+            judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setServiceCode("BFA1");
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+        });
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment("Tribunal Judge");
+        profile.setAppointmentType("SPTW");
+        judicialAccessProfiles.add(profile);
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(6, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "hmcts-judiciary",
+                        "case-allocator", "judge"));
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+    }
 
     @Test
     @DisplayName("Scenario 5,9: Employment Judge Fees Paid Without Service Code.")
@@ -801,7 +801,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         for (QueryResultsRow row : queryResults) {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
-        //TODO assert work types
+
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
