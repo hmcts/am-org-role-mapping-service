@@ -4,7 +4,7 @@
 
   "request": {
     "body": {
-      "_extends_": "JRDSingleDuplicateUser"
+      "_extends_": "JRDTribunalJudgeSalariedUser"
     }
   }
 }
