@@ -62,6 +62,12 @@ resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   key_vault_id  = data.azurerm_key_vault.am_key_vault.id
 }
 
+resource "azurerm_key_vault_secret" "POSTGRES-PASS-V11" {
+  name          = join("-", [var.component, "POSTGRES-PASS-V11"])
+  value         = module.org-role-mapping-database-v11.postgresql_password
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
+
 module "org-role-mapping-database-v11" {
   source             = "git@github.com:hmcts/cnp-module-postgres?ref=master"
   name               = join("-", [local.app_full_name, "postgres-db", "v11"])
