@@ -58,7 +58,13 @@ module "org-role-mapping-database" {
 
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   name          = join("-", [var.component, "POSTGRES-PASS"])
-  value         = module.org-role-mapping-database.postgresql_password
+  value         = module.org-role-mapping-database-v11.postgresql_password
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES-PASS-V11" {
+  name          = join("-", [var.component, "POSTGRES-PASS-V11"])
+  value         = module.org-role-mapping-database-v11.postgresql_password
   key_vault_id  = data.azurerm_key_vault.am_key_vault.id
 }
 
