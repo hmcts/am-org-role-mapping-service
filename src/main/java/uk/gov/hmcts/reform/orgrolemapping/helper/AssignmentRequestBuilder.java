@@ -160,9 +160,10 @@ public class AssignmentRequestBuilder {
         Set<String> ticketCodes = new HashSet<>();
         if (judicialProfile.getAuthorisations() != null) {
             judicialProfile.getAuthorisations().forEach(authorisation -> {
-                if (authorisation.getTicketCode() != null)
+                if (authorisation.getTicketCode() != null) {
                     ticketCodes.add(authorisation.getTicketCode());
-                    //authorisation.setUserId(judicialProfile.getSidamId());
+                }
+                //authorisation.setUserId(judicialProfile.getSidamId());
                 }
             );
         }
