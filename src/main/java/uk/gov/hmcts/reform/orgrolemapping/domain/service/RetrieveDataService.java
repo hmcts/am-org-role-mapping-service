@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
@@ -68,27 +68,28 @@ public class RetrieveDataService {
 
         if (userType.equals(UserType.CASEWORKER)) {
             log.info("Calling CRD Service");
-            response = crdService.fetchUserProfiles(userRequest);
-
+            response = crdService.fetchCaseworkerProfiles(userRequest);
+            log.debug(
+                    "Execution time of CRD Response : {} ms",
+                    (Math.subtractExact(System.currentTimeMillis(), startTime))
+            );
             Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
 
         } else if (userType.equals(UserType.JUDICIAL)) {
             log.info("Calling JRD Service");
-            response = jrdService.fetchJudicialProfiles(RefreshRoleRequest.builder().sidamIds(userRequest.getUserIds())
+            response = jrdService.fetchJudicialProfiles(JRDUserRequest.builder().sidamIds(userRequest.getUserIds())
                     .build());
+            log.debug(
+                    "Execution time of JRD Response : {} ms",
+                    (Math.subtractExact(System.currentTimeMillis(), startTime))
+            );
             Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
         }
 
-
-        log.debug(
-                "Execution time of CRD Response : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
         getAccessProfile(userRequest, userType, invalidUserProfilesCount, invalidProfiles, usersAccessProfiles,
                 response, profiles);
 
-
-        log.info(
+        log.debug(
                 "Execution time of retrieveProfiles() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
@@ -131,8 +132,7 @@ public class RetrieveDataService {
                                   List<Object> profiles) {
         if (response != null && !CollectionUtils.isEmpty(profiles)) {
             // no of userProfiles from  responseEntity.getBody().size()
-            log.info("Number of Profile received from upstream : {} ",
-                    profiles.size());
+            log.info("Number of Profile received from RD : {} ", profiles.size());
 
             parseRequestService.validateUserProfiles(profiles, userRequest, invalidUserProfilesCount,
                     invalidProfiles, userType);

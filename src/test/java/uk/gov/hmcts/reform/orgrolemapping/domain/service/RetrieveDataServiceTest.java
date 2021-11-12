@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -56,14 +56,14 @@ class RetrieveDataServiceTest {
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2",
                         ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)))
-                .when(crdService).fetchUserProfiles(TestDataBuilder.buildUserRequest());
+                .when(crdService).fetchCaseworkerProfiles(TestDataBuilder.buildUserRequest());
 
         Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
         assertEquals(1, result.size());
 
         Mockito.verify(crdService, Mockito.times(1))
-                .fetchUserProfiles(any(UserRequest.class));
+                .fetchCaseworkerProfiles(any(UserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any(), any(), any());
     }
@@ -75,7 +75,7 @@ class RetrieveDataServiceTest {
                 TestDataBuilder.buildListOfUserProfiles(true, false, "1",
                         "2", ROLE_NAME_STCW, ROLE_NAME_TCW, false, true,
                         false, true, "1", "2",
-                        false))).when(crdService).fetchUserProfiles(any());
+                        false))).when(crdService).fetchCaseworkerProfiles(any());
 
         doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
         Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
@@ -89,7 +89,7 @@ class RetrieveDataServiceTest {
 
         doReturn(ResponseEntity
                 .ok(buildUserProfile(buildUserRequest(),
-                        "userProfileSample.json"))).when(crdService).fetchUserProfiles(any());
+                        "userProfileSample.json"))).when(crdService).fetchCaseworkerProfiles(any());
 
 
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
@@ -113,7 +113,7 @@ class RetrieveDataServiceTest {
     void shouldReturnZeroCaseWorkerProfile() {
         List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
         doReturn(ResponseEntity
-                .ok(caseWorkerProfiles)).when(crdService).fetchUserProfiles(any());
+                .ok(caseWorkerProfiles)).when(crdService).fetchCaseworkerProfiles(any());
         Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(), UserType.CASEWORKER);
         assertNotNull(response);
         assertTrue(response.isEmpty());
@@ -132,7 +132,7 @@ class RetrieveDataServiceTest {
         assertEquals(1, result.size());
 
         Mockito.verify(jrdService, Mockito.times(1))
-                .fetchJudicialProfiles(any(RefreshRoleRequest.class));
+                .fetchJudicialProfiles(any(JRDUserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any(), any(), any());
     }

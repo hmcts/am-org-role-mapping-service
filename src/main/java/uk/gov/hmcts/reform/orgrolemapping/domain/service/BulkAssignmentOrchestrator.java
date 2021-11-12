@@ -48,8 +48,7 @@ public class BulkAssignmentOrchestrator {
                     .retrieveProfiles(userRequest, userType);
         } catch (FeignException.NotFound feignClientException) {
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
-            throw new ResourceNotFoundException("UserId is not available :: " + userRequest.getUserIds());
-
+            throw new ResourceNotFoundException("User details not found in RD :: " + userRequest.getUserIds());
         }
 
         //call the requestMapping service to determine role name and create role assignment requests

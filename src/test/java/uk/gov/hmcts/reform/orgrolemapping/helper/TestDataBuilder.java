@@ -16,7 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesRespons
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -392,11 +392,11 @@ public class TestDataBuilder {
         return judicialAccessProfileSet;
     }
 
-    public static RefreshRoleRequest buildRefreshRoleRequest() {
+    public static JRDUserRequest buildRefreshRoleRequest() {
         ArrayList<String> users = new ArrayList<>();
         users.add(id_1);
         users.add(id_2);
-        return RefreshRoleRequest.builder().sidamIds(users).build();
+        return JRDUserRequest.builder().sidamIds(users).build();
     }
 
     public static JudicialProfile buildJudicialProfile() throws IOException {

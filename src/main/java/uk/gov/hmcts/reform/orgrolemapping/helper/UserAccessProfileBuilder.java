@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshRoleRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.InputStream;
@@ -153,7 +153,7 @@ public class UserAccessProfileBuilder {
         return new ArrayList<>(caseWorkerProfiles);
     }
 
-    public static List<JudicialProfile> buildJudicialProfile(RefreshRoleRequest userRequest, String resource) {
+    public static List<JudicialProfile> buildJudicialProfile(JRDUserRequest userRequest, String resource) {
 
         Set<JudicialProfile> judicialProfilesProfiles = new LinkedHashSet<>();
 

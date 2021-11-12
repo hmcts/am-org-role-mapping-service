@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefreshRoleRequest {
+public class JRDUserRequest {
 
     @JsonProperty("ccdServiceName")
     private String ccdServiceNames;
