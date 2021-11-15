@@ -1,9 +1,9 @@
 {
-  "_guid_": "PushMessageToJRDAzureServiceBus",
-  "productName": "Azure Service Bus",
-  "operationName": "Push User Ids to Azure Service Bus",
+  "_guid_": "PushMessageToJRDProfileProcess",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Push User Ids to JRD endpoint to process",
   "method": "POST",
-  "uri": "/send2JRD",
+  "uri": "/am/role-mapping/staff/users",
   "specs": [
     "to publish the user ids to topic",
     "to publish existing JRD user ids to topic"
@@ -18,7 +18,8 @@
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "userType": "JUDICIAL"
     },
     "body": {
     }
@@ -30,7 +31,7 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "__plainTextValue__": "{}"
+      "arrayInMap": "[[ANYTHING_PRESENT]]"
     }
   }
 }
