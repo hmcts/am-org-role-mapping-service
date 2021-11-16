@@ -6,7 +6,7 @@
    ]]></notes>
         <cve>CVE-2018-1258</cve>
     </suppress>
-    <suppress until="2021-11-16">
+    <suppress until="2022-11-16">
         <notes><![CDATA[
    file name: lang-tag-1.4.4.jar
    ]]></notes>
