@@ -786,9 +786,9 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("BFA1").build(),
-                        Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("SSCS").build(),
-                        Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("Dummy").build()
+                List.of(Authorisation.builder().serviceCode("BFA1").build(),
+                        Authorisation.builder().serviceCode("SSCS").build(),
+                        Authorisation.builder().serviceCode("Dummy").build()
                 )));
 
         //Execute Kie session
@@ -845,8 +845,8 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                                 .endDate(LocalDateTime.now().minusMonths(5)).build(),
                         Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
                                 .build(),
-                        Authorisation.builder().userId(UUID.randomUUID().toString()).ticketCode("A").build(),
-                        Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("Dummy").build()
+                        Authorisation.builder().ticketCode("A").build(),
+                        Authorisation.builder().serviceCode("Dummy").build()
                 )));
 
 
