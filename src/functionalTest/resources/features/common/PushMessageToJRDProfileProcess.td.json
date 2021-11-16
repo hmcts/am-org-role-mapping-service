@@ -5,8 +5,7 @@
   "method": "POST",
   "uri": "/am/role-mapping/staff/users",
   "specs": [
-    "to publish the user ids to topic",
-    "to publish existing JRD user ids to topic"
+    "to publish existing JRD user ids to endpoint"
   ],
   "users": {
     "invokingUser": {
