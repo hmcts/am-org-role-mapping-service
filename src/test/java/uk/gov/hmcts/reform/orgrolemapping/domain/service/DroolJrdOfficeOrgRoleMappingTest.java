@@ -169,10 +169,9 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.setTicketCodes(List.of("35970"));
+            judicialAccessProfile.setTicketCodes(List.of("373"));
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BAA03"));
         });
-
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
@@ -195,7 +194,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[35970, 373]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -691,9 +690,9 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode(null);
             judicialAccessProfile.setAuthorisations(
-                    List.of(Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("BFA1").build(),
-                            Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("SSCS").build(),
-                            Authorisation.builder().userId(UUID.randomUUID().toString()).serviceCode("Dummy").build()
+                    List.of(Authorisation.builder().serviceCode("BFA1").build(),
+                            Authorisation.builder().serviceCode("SSCS").build(),
+                            Authorisation.builder().serviceCode("Dummy").build()
                     ));
         });
 
@@ -831,14 +830,14 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode(null);
-            judicialAccessProfile.setTicketCodes(List.of("A", "B", "C", "D"));
+            judicialAccessProfile.setTicketCodes(List.of("101", "102", "103", "104"));
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Tribunal Judge");
         profile.setAppointmentType("SPTW");
         profile.setServiceCode(null);
-        profile.setTicketCodes(List.of("A", "B", "C", "D"));
+        profile.setTicketCodes(List.of("101", "102", "103", "104"));
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
@@ -873,7 +872,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[A, B, C, D, 373]", r.getAuthorisations().toString());
+                assertEquals("[101, 102, 103, 104, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
@@ -936,14 +935,14 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Deputy Upper Tribunal Judge");
             judicialAccessProfile.setAppointmentType("fee paid");
             judicialAccessProfile.setServiceCode(null);
-            judicialAccessProfile.setTicketCodes(List.of("A", "B", "C"));
+            judicialAccessProfile.setTicketCodes(List.of("101", "102", "103"));
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Tribunal Judge");
         profile.setAppointmentType("SPTW");
         profile.setServiceCode(null);
-        profile.setTicketCodes(List.of("A", "B", "C"));
+        profile.setTicketCodes(List.of("101", "102", "103"));
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
@@ -971,7 +970,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[A, B, C, 373]", r.getAuthorisations().toString());
+                assertEquals("[101, 102, 103, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
