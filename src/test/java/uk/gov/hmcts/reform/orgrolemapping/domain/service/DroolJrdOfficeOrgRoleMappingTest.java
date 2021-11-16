@@ -763,7 +763,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[375]", r.getAuthorisations().toString());
+                assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
