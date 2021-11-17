@@ -54,7 +54,7 @@ public class BulkAssignmentOrchestrator {
         //call the requestMapping service to determine role name and create role assignment requests
         ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
 
-        log.debug( "Execution time of createBulkAssignmentsRequest() : {} ms",
+        log.debug("Execution time of createBulkAssignmentsRequest() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
         List<Object> roleAssignmentResponses = new ArrayList<>();
