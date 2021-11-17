@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.BeforeEach;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -15,18 +13,17 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
@@ -39,15 +36,11 @@ class ParseRequestServiceTest {
     Set<JudicialProfile> invalidJudicialProfiles = new HashSet<>();
     UserRequest judicialUser = TestDataBuilder.buildUserRequest();
     AtomicInteger mockInteger = mock(AtomicInteger.class);
-    ObjectMapper objectMapper = new ObjectMapper();
     JudicialProfile judicialProfile;
 
     @BeforeEach
     void setupReadFromFile() throws IOException {
-        objectMapper.registerModule(new JavaTimeModule());
-        judicialProfile =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
+        judicialProfile = TestDataBuilder.buildJudicialProfile();
     }
 
     HashSet<CaseWorkerProfile> invalidProfiles;

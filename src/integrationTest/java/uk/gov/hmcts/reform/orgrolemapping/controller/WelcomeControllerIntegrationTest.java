@@ -31,6 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
@@ -158,8 +159,8 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         userRequest = UserRequest.builder().userIds(Arrays.asList("4dc7dd3c-3fb5-4611-bbde-5101a97681e2"))
                 .build();
 
-        judicialProfiles = new ArrayList<>(buildJudicialProfile(userRequest,
-                "judicialProfileSample.json"));
+        judicialProfiles = new ArrayList<>(buildJudicialProfile(JRDUserRequest.builder()
+                        .sidamIds(userRequest.getUserIds()).build(),"judicialProfileSample.json"));
     }
 
     @Test

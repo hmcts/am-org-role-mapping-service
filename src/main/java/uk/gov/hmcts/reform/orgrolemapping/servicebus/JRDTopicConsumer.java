@@ -95,7 +95,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
                         log.debug("    getLockToken......{}", message.getLockToken());
                     } else {
-                        log.info("The JRD feature flag is currently disabled. This message would be supressed");
+                        log.info("The JRD feature flag is currently disabled. This message would be suppressed");
                         return receiveClient.completeAsync(message.getLockToken());
                     }
 
@@ -124,7 +124,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.info("    Parsing the message in JRD");
+        log.info("    Parsing the message from JRD");
         UserRequest request = deserializer.deserialize(body);
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,

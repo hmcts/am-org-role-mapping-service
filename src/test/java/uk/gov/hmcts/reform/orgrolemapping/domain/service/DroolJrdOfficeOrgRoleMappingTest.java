@@ -104,7 +104,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Tribunal Judge");
-        profile.setAppointmentType("fee paid");
+        profile.setAppointmentType("Fee Paid");
         profile.getAuthorisations().forEach(a -> a.setServiceCode(null));
         judicialAccessProfiles.add(profile);
 
@@ -247,7 +247,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode("BFA1");
 
             judicialAccessProfile.getAuthorisations().forEach(a -> {
@@ -291,7 +291,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
         });
 
         //Execute Kie session
@@ -328,12 +328,12 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Employment Judge");
-        profile.setAppointmentType("fee paid");
+        profile.setAppointmentType("Fee Paid");
         judicialAccessProfiles.add(profile);
 
         //Execute Kie session
@@ -373,7 +373,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setRoles(List.of("Assistant Resident Judge",
                     "Resident Immigration Judge",
                     "Designated Immigration Judge"));
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode("BFA1");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
         });
@@ -419,7 +419,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setRoles(List.of("Assistant Resident Judge",
                     "Resident Immigration Judge",
                     "Designated Immigration Judge"));
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
         });
 
 
@@ -498,7 +498,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Employment Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode("BFA2");
         });
 
@@ -577,7 +577,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Employment Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode("BFA1");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
         });

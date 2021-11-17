@@ -44,11 +44,7 @@ class JacksonUtilsTest {
 
     @Test
     void convertInJudicialProfile() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        JudicialProfile judicialProfile =
-                objectMapper.readValue(new File("src/main/resources/judicialProfileSample.json"),
-                        JudicialProfile.class);
+        JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
         assertNotNull(JacksonUtils.convertInJudicialProfile(judicialProfile));
     }
 }

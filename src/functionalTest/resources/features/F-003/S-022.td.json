@@ -1,6 +1,6 @@
 {
   "_guid_": "S-022",
-  "title": "must successfully create judicial role mapping for a user having multiple roles",
+  "title": "must successfully create judicial role mapping for Tribunal Judge - fee paid appointment with Assistant Resident Judge role.",
   "_extends_": "F-003_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
@@ -28,7 +28,6 @@
           "readOnly" : false,
           "created": "[[ANYTHING_PRESENT]]",
           "beginTime" : "[[ANYTHING_PRESENT]]",
-          "endTime" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "Y",
             "contractType" : "Salaried",
@@ -48,14 +47,13 @@
           "roleCategory" : "JUDICIAL",
           "readOnly" : false,
           "beginTime" : "[[ANYTHING_PRESENT]]",
-          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "Y",
             "contractType" : "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "[[ANYTHING_PRESENT]]"
+            "workTypes" : "hearing-work,decision-making-work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -70,7 +68,6 @@
           "roleCategory" : "JUDICIAL",
           "readOnly" : true,
           "beginTime" : "[[ANYTHING_PRESENT]]",
-          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "N",
@@ -88,7 +85,6 @@
           "roleCategory" : "JUDICIAL",
           "readOnly" : true,
           "beginTime" : "[[ANYTHING_PRESENT]]",
-          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "N",
@@ -106,14 +102,54 @@
           "roleCategory" : "JUDICIAL",
           "readOnly" : false,
           "beginTime" : "[[ANYTHING_PRESENT]]",
-          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "Y",
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "[[ANYTHING_PRESENT]]"
+            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "[[ANYTHING_PRESENT]]",
+          "roleType" : "ORGANISATION",
+          "roleName" : "leadership-judge",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "JUDICIAL",
+          "readOnly" : false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "contractType" : "Salaried",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "IA",
+            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications,access-requests"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "[[ANYTHING_PRESENT]]",
+          "roleType" : "ORGANISATION",
+          "roleName" : "task-supervisor",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "JUDICIAL",
+          "readOnly" : false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "contractType" : "Salaried",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "IA"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }

@@ -6,11 +6,11 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.List;
 
 class CaseWorkerAccessProfileBuilderTest {
 
@@ -63,7 +63,7 @@ class CaseWorkerAccessProfileBuilderTest {
     @Test
     void buildJudicialProfilesTest() {
         List<JudicialProfile> judicialProfiles =
-                UserAccessProfileBuilder.buildJudicialProfile(TestDataBuilder.buildUserRequest(),
+                UserAccessProfileBuilder.buildJudicialProfile(TestDataBuilder.buildRefreshRoleRequest(),
                         "judicialProfileSample.json");
         assertNotNull(judicialProfiles);
         assertEquals(2, judicialProfiles.size());
@@ -73,8 +73,7 @@ class CaseWorkerAccessProfileBuilderTest {
 
     @Test
     void buildJudicialProfiles_BadRequest() {
-        UserRequest userRequest = TestDataBuilder.buildUserRequest();
         assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder
-                .buildJudicialProfile(userRequest, ""));
+                .buildJudicialProfile(TestDataBuilder.buildRefreshRoleRequest(), ""));
     }
 }
