@@ -576,7 +576,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode("");
             judicialAccessProfile.setTicketCodes(List.of("374", "375", "376"));
             judicialAccessProfile.getAuthorisations().forEach(a -> {
@@ -686,7 +686,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Employment Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode(null);
             judicialAccessProfile.setAuthorisations(
                     List.of(Authorisation.builder().serviceCode("BFA1").build(),
@@ -774,13 +774,13 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode(null);
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Employment Judge");
-        profile.setAppointmentType("fee paid");
+        profile.setAppointmentType("Fee Paid");
         profile.setServiceCode(null);
         judicialAccessProfiles.add(profile);
 
@@ -827,7 +827,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode(null);
             judicialAccessProfile.setTicketCodes(List.of("101", "102", "103", "104"));
         });
@@ -883,13 +883,13 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode("BFA1");
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Employment Judge");
-        profile.setAppointmentType("fee paid");
+        profile.setAppointmentType("Fee Paid");
         profile.setServiceCode(null);
         judicialAccessProfiles.add(profile);
 
@@ -932,7 +932,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Deputy Upper Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode(null);
             judicialAccessProfile.setTicketCodes(List.of("101", "102", "103"));
         });
@@ -981,7 +981,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode(null);
             judicialAccessProfile.setTicketCodes(List.of("101", "102", "103", "104"));
         });
@@ -1042,7 +1042,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Deputy Upper Tribunal Judge");
-        profile.setAppointmentType("fee paid");
+        profile.setAppointmentType("Fee Paid");
         profile.setServiceCode(null);
         profile.setTicketCodes(List.of("101"));
         judicialAccessProfiles.add(profile);
@@ -1174,13 +1174,13 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Deputy Upper Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("fee paid");
+            judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode("BFA1");
         });
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Employment Judge");
-        profile.setAppointmentType("fee paid");
+        profile.setAppointmentType("Fee Paid");
         profile.setServiceCode("");
         judicialAccessProfiles.add(profile);
 
