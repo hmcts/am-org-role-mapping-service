@@ -40,7 +40,7 @@ class CRDServiceTest {
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body(userProfiles)).when(crdFeignClient)
                 .getCaseworkerDetailsById(userRequest);
 
-        ResponseEntity<List<CaseWorkerProfile>> responseEntity = sut.fetchUserProfiles(userRequest);
+        ResponseEntity<List<CaseWorkerProfile>> responseEntity = sut.fetchCaseworkerProfiles(userRequest);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }

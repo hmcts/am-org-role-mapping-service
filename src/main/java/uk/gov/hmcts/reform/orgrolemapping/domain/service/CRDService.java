@@ -19,7 +19,7 @@ public class CRDService {
     private final CRDFeignClient crdFeignClient;
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
-    public <T> ResponseEntity<List<T>> fetchUserProfiles(UserRequest userRequest) {
+    public <T> ResponseEntity<List<T>> fetchCaseworkerProfiles(UserRequest userRequest) {
         return crdFeignClient.getCaseworkerDetailsById(userRequest);
     }
 

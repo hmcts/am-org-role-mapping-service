@@ -25,8 +25,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT
 @Service
 @Slf4j
 public class ParseRequestService implements ParseRequestBase<Object> {
-    //1. This will parse the list of userIds and validate them.
-    //2. This will parse and validate the user details received from CRD
+    //1. This will parse the list of userIds.
+    //2. This will parse and validate the user details.
 
     public void validateUserRequest(UserRequest userRequest) {
 
@@ -41,43 +41,38 @@ public class ParseRequestService implements ParseRequestBase<Object> {
     //this method is common across all service
     @Override
     @SuppressWarnings("unchecked")
-    public void validateUserProfiles(List profiles, UserRequest userRequest, AtomicInteger invalidUserProfilesCount,
+    public void validateUserProfiles(List retrievedProfiles, UserRequest userRequest,
+                                     AtomicInteger invalidUserProfilesCount,
                                      Set invalidProfiles, UserType userType) {
 
-        if (Collections.isEmpty(profiles)) {
+        if (Collections.isEmpty(retrievedProfiles)) {
             throw new ResourceNotFoundException("The user profiles couldn't be found");
         }
         if (CollectionUtils.isNotEmpty(userRequest.getUserIds())
-                && userRequest.getUserIds().size() != profiles.size()) {
-            List<String> userProfileIds = new ArrayList<>();
+                && userRequest.getUserIds().size() != retrievedProfiles.size()) {
+            List<String> userIdsRetrieved = new ArrayList<>();
 
             if (userType.equals(UserType.CASEWORKER)) {
-                List<CaseWorkerProfile> userProfiles = profiles;
-                userProfiles.forEach(userProfile -> userProfileIds.add(userProfile.getId()));
+                List<CaseWorkerProfile> caseworkerUserProfiles = retrievedProfiles;
+                caseworkerUserProfiles.forEach(userProfile -> userIdsRetrieved.add(userProfile.getId()));
             } else if (userType.equals(UserType.JUDICIAL)) {
-                List<JudicialProfile> judicialProfileList = profiles;
-                judicialProfileList.forEach(judicialProfile -> userProfileIds.add(judicialProfile.getSidamId()));
+                List<JudicialProfile> judicialUserProfiles = retrievedProfiles;
+                judicialUserProfiles.forEach(judicialProfile -> userIdsRetrieved.add(judicialProfile.getSidamId()));
             }
-            List<String> userIdsNotInCRDResponse = userRequest.getUserIds().stream().filter(userId -> !userProfileIds
+            List<String> userIdsNotRetrieved = userRequest.getUserIds().stream().filter(userId -> !userIdsRetrieved
                     .contains(userId)).collect(Collectors.toList());
-
-
-            log.error("Some of the user profiles couldn't be found for the userIds {} in "
-                    + " Response", userIdsNotInCRDResponse);
-
+            log.error("User profiles couldn't be found for the following userIds :: {}", userIdsNotRetrieved);
         }
+
         if (userType.equals(UserType.CASEWORKER)) {
-            caseworkerProfileValidation(profiles, invalidUserProfilesCount, invalidProfiles);
+            caseworkerProfileValidation(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
         } else if (userType.equals(UserType.JUDICIAL)) {
-
-            //Validation of judicial profile
-            judicialValidation(profiles, invalidUserProfilesCount, invalidProfiles);
-
+            judicialProfileValidation(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
         }
-
     }
 
-    private void caseworkerProfileValidation(List<CaseWorkerProfile> profiles, AtomicInteger invalidUserProfilesCount,
+    private void caseworkerProfileValidation(List<CaseWorkerProfile> profiles,
+                                             AtomicInteger invalidUserProfilesCount,
                                              Set<Object> invalidCaseWorkerProfiles) {
 
         profiles.forEach(userProfile -> {
@@ -112,22 +107,22 @@ public class ParseRequestService implements ParseRequestBase<Object> {
         });
     }
 
-    private void judicialValidation(List<JudicialProfile> profiles, AtomicInteger invalidUserProfilesCount,
-                                    Set<Object> invalidJudicialProfiles) {
+    private void judicialProfileValidation(List<JudicialProfile> judicialProfiles,
+                                           AtomicInteger invalidUserProfilesCount,
+                                           Set<Object> invalidJudicialProfiles) {
 
-        profiles.forEach(userProfile -> {
+        judicialProfiles.forEach(userProfile -> {
             AtomicBoolean isInvalid = new AtomicBoolean(false);
             if (CollectionUtils.isEmpty(userProfile.getAppointments())) {
-                log.error("appointment is not available for the judicialProfile {} ", userProfile.getSidamId());
+                log.error("Appointment is not available for the judicialUserProfile :: {}", userProfile.getSidamId());
                 invalidJudicialProfiles.add(userProfile);
                 isInvalid.set(true);
             } else {
                 userProfile.getAppointments().forEach(appointment -> {
                     if (StringUtils.isEmpty(appointment.getBaseLocationId())
                             || StringUtils.isEmpty(appointment.getLocationId())
-
                     ) {
-                        log.error("appointment is not valid for the judicialProfile id {}",
+                        log.error("Appointment doesn't have valid location for the judicialUserProfile :: {}",
                                 userProfile.getSidamId());
                         invalidJudicialProfiles.add(userProfile);
                         isInvalid.set(true);
