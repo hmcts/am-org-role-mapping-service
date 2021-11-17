@@ -63,7 +63,7 @@ class AssignmentRequestBuilderTest {
     @Test
     void convertUserProfileToUserAccessProfile() {
         Set<CaseWorkerAccessProfile> caseWorkerAccessProfiles = AssignmentRequestBuilder
-                .convertUserProfileToUserAccessProfile(TestDataBuilder
+                .convertUserProfileToCaseworkerAccessProfile(TestDataBuilder
                         .buildUserProfile("21334a2b-79ce-44eb-9168-2d49a744be9c",false,"1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true, true, "1", "2", true));
         caseWorkerAccessProfiles.forEach(role -> {
