@@ -39,7 +39,7 @@ public class BulkAssignmentOrchestrator {
 
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
-        log.info("Validated userIds {}", userRequest.getUserIds());
+        log.info("Validated userIds :: {}", userRequest.getUserIds());
         long startTime = System.currentTimeMillis();
         Map<String, Set<?>> userAccessProfiles = null;
         //Create userAccessProfiles based upon roleId and service codes
@@ -48,19 +48,16 @@ public class BulkAssignmentOrchestrator {
                     .retrieveProfiles(userRequest, userType);
         } catch (FeignException.NotFound feignClientException) {
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
-            throw new ResourceNotFoundException("User details not found in RD :: " + userRequest.getUserIds());
+            throw new ResourceNotFoundException("User details couldn't be found in RD :: " + userRequest.getUserIds());
         }
 
         //call the requestMapping service to determine role name and create role assignment requests
         ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
 
+        log.debug("Execution time of createBulkAssignmentsRequest() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
-        log.info(
-                "Execution time of createBulkAssignmentsRequest() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
         List<Object> roleAssignmentResponses = new ArrayList<>();
-
         ((List<ResponseEntity<Object>>)
                 Objects.requireNonNull(responseEntity.getBody())).forEach(entity ->
                 roleAssignmentResponses.add(entity.getBody()));

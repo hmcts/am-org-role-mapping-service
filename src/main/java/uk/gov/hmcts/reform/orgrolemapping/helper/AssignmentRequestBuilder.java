@@ -115,7 +115,7 @@ public class AssignmentRequestBuilder {
                 .build();
     }
 
-    public static Set<CaseWorkerAccessProfile> convertUserProfileToUserAccessProfile(CaseWorkerProfile
+    public static Set<CaseWorkerAccessProfile> convertUserProfileToCaseworkerAccessProfile(CaseWorkerProfile
                                                                                              caseWorkerProfile) {
         long startTime = System.currentTimeMillis();
         //roleId X serviceCode
@@ -145,31 +145,23 @@ public class AssignmentRequestBuilder {
         log.debug("Execution time of convertUserProfileToUserAccessProfile() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
-        log.info(
-                "Execution time of convertUserProfileToUserAccessProfile() : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
+        log.debug("Execution time of convertUserProfileToUserAccessProfile() : {} ms",
+                (Math.subtractExact(System.currentTimeMillis(), startTime)));
         return caseWorkerAccessProfiles;
     }
 
-    public static Set<JudicialAccessProfile> convertProfileToJudicialAccessProfile(JudicialProfile
-                                                                                           judicialProfile) {
-
+    public static Set<JudicialAccessProfile> convertProfileToJudicialAccessProfile(JudicialProfile judicialProfile) {
         Set<JudicialAccessProfile> judicialAccessProfiles = new HashSet<>();
-
         Set<String> ticketCodes = new HashSet<>();
         if (judicialProfile.getAuthorisations() != null) {
             judicialProfile.getAuthorisations().forEach(authorisation -> {
                 if (authorisation.getTicketCode() != null) {
                     ticketCodes.add(authorisation.getTicketCode());
                 }
-                //authorisation.setUserId(judicialProfile.getSidamId());
                 }
             );
         }
-
         judicialProfile.getAppointments().forEach(appointment -> {
-
             JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder().build();
             judicialAccessProfile.setUserId(judicialProfile.getSidamId());
             judicialAccessProfile.setRoles(appointment.getRoles());
@@ -186,11 +178,8 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setPrimaryLocationId(appointment.getIsPrincipalAppointment()
                     .equalsIgnoreCase("true") ? appointment.getEpimmsId() : "");
             judicialAccessProfiles.add(judicialAccessProfile);
-
         });
-
         return judicialAccessProfiles;
-
     }
 
     public static Request buildJudicialRequest(Boolean replaceExisting) {

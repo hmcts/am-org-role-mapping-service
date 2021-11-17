@@ -92,7 +92,7 @@ public class RequestMappingService<T> {
 
     /**
      * Apply the role assignment mapping rules to determine what the role assignments should be
-     * for each caseworker represented in the map.
+     * for each user profile represented in the map.
      */
     @SuppressWarnings("unchecked")
     private Map<String, List<RoleAssignment>> getProfileRoleAssignments(Map<String,
@@ -104,7 +104,7 @@ public class RequestMappingService<T> {
         // Make sure every user in the input collection has a list in the map.  This includes users
         // who have been deleted, for whom no role assignments will be created by the rules.
         usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<>()));
-        // Get all the role assignments the rules create for the set of access profiles.
+        // Get all the role assignments created for the set of access profiles.
         List<RoleAssignment> roleAssignments = mapUserAccessProfiles(usersAccessProfiles);
         // Add each role assignment to the results map.
         roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
