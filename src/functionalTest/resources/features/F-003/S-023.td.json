@@ -109,7 +109,7 @@
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "[[ANYTHING_PRESENT]]"
+            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -130,7 +130,7 @@
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "[[ANYTHING_PRESENT]]"
+            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -151,7 +151,7 @@
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "[[ANYTHING_PRESENT]]"
+            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications,access-requests"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
