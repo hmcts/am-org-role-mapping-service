@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +27,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfile;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertUserProfileToUserAccessProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInCaseWorkerProfileResponse;
@@ -67,26 +68,28 @@ public class RetrieveDataService {
 
         if (userType.equals(UserType.CASEWORKER)) {
             log.info("Calling CRD Service");
-            response = crdService.fetchUserProfiles(userRequest);
-
+            response = crdService.fetchCaseworkerProfiles(userRequest);
+            log.debug(
+                    "Execution time of CRD Response : {} ms",
+                    (Math.subtractExact(System.currentTimeMillis(), startTime))
+            );
             Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInCaseWorkerProfile(o)));
 
         } else if (userType.equals(UserType.JUDICIAL)) {
             log.info("Calling JRD Service");
-            response = jrdService.fetchJudicialProfiles(userRequest);
+            response = jrdService.fetchJudicialProfiles(JRDUserRequest.builder().sidamIds(userRequest.getUserIds())
+                    .build());
+            log.debug(
+                    "Execution time of JRD Response : {} ms",
+                    (Math.subtractExact(System.currentTimeMillis(), startTime))
+            );
             Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
         }
 
-
-        log.debug(
-                "Execution time of CRD Response : {} ms",
-                (Math.subtractExact(System.currentTimeMillis(), startTime))
-        );
         getAccessProfile(userRequest, userType, invalidUserProfilesCount, invalidProfiles, usersAccessProfiles,
                 response, profiles);
 
-
-        log.info(
+        log.debug(
                 "Execution time of retrieveProfiles() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
@@ -126,16 +129,15 @@ public class RetrieveDataService {
     private void getAccessProfile(UserRequest userRequest, UserType userType, AtomicInteger invalidUserProfilesCount,
                                   Set<Object> invalidProfiles, Map<String, Set<?>> usersAccessProfiles,
                                   ResponseEntity<List<Object>> response,
-                                  List<Object> profiles) {
-        if (response != null && !CollectionUtils.isEmpty(profiles)) {
+                                  List<Object> retrievedProfiles) {
+        if (response != null && !CollectionUtils.isEmpty(retrievedProfiles)) {
             // no of userProfiles from  responseEntity.getBody().size()
-            log.info("Number of Profile received from upstream : {} ",
-                    profiles.size());
+            log.info("Number of Profile received from RD :: {} ", retrievedProfiles.size());
 
-            parseRequestService.validateUserProfiles(profiles, userRequest, invalidUserProfilesCount,
+            parseRequestService.validateUserProfiles(retrievedProfiles, userRequest, invalidUserProfilesCount,
                     invalidProfiles, userType);
 
-            List<Object> validProfiles = requireNonNull(profiles).stream()
+            List<Object> validProfiles = requireNonNull(retrievedProfiles).stream()
                     .filter(userProfile -> !invalidProfiles
                             .contains(userProfile)).collect(Collectors.toList());
 
@@ -144,7 +146,7 @@ public class RetrieveDataService {
 
                 List<CaseWorkerProfile> caseWorkerProfiles = (List<CaseWorkerProfile>) (Object) validProfiles;
                 caseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
-                        convertUserProfileToUserAccessProfile(userProfile)));
+                        AssignmentRequestBuilder.convertUserProfileToCaseworkerAccessProfile(userProfile)));
             } else if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.JUDICIAL)) {
 
                 List<JudicialProfile> validJudicialProfiles = (List<JudicialProfile>) (Object) validProfiles;
@@ -154,11 +156,10 @@ public class RetrieveDataService {
             Map<String, Integer> userAccessProfileCount = new HashMap<>();
             usersAccessProfiles.forEach((k, v) -> {
                     userAccessProfileCount.put(k, v.size());
-                    log.debug("UserId {} having the corresponding UserAccessProfile {}", k,
-                                v);
+                    log.debug("UserId {} having the corresponding UserAccessProfile {}", k, v);
                 }
             );
-            log.info("Count of UserAccessProfiles corresponding to the userIds {} ::", userAccessProfileCount);
+            log.info("Count of UserAccessProfiles corresponding to the userIds {} :: ", userAccessProfileCount);
 
             // no of user profile successfully validated
             if (invalidUserProfilesCount.get() > 0) {
@@ -166,7 +167,7 @@ public class RetrieveDataService {
             }
 
         } else {
-            log.info("Number of UserProfile received from upstream : {} ", 0);
+            log.error("No UserProfile received from RD");
         }
     }
 

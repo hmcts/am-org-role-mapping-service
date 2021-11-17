@@ -8,7 +8,6 @@
   "email_id": "EMP62506@ejudiciary.net",
   "appointments": [
     {
-
       "base_location_id": "1351",
       "epimms_id": "839746",
       "court_name": "string",
@@ -17,14 +16,13 @@
       "cft_region_id": "2",
       "cft_region": "North",
       "is_principal_appointment": "TRUE",
-      "start_date": "2020-04-28T16:00:49",
-      "end_date": "2022-04-28T16:00:49",
+      "start_date": "2020-04-28",
+      "end_date": "2022-04-28",
       "appointment": "Employment Judge",
       "appointment_type": "Salaried",
       "service_code": "BFA1"
     },
     {
-
       "base_location_id": "1351",
       "epimms_id": "839746",
       "court_name": "string",
@@ -33,20 +31,14 @@
       "cft_region_id": "2",
       "cft_region": "North",
       "is_principal_appointment": "TRUE",
-      "start_date": "2020-04-28T16:00:49",
-      "end_date": "2022-04-28T16:00:49",
+      "start_date": "2020-04-28",
+      "end_date": "2022-04-28",
       "appointment": "Tribunal Judge",
-      "appointment_type": "fee paid",
+      "appointment_type": "Fee Paid",
       "service_code": "BFA1"
     }
-
-
-
-
-
   ],
   "authorisations": [
-
     {
       "jurisdiction": "Languages",
       "ticket_description": "Welsh",
@@ -70,5 +62,5 @@
       "ticket_code": "374"
     }
 
-    ]
+  ]
 }

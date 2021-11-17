@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
@@ -13,6 +15,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -25,6 +29,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -357,7 +362,7 @@ public class TestDataBuilder {
         builder.regionId("3");
         builder.ticketCodes(List.of("373"));
         builder.authorisations(Collections.singletonList(
-                Authorisation.builder().userId(id_1).serviceCode("BFA1").build()));
+                Authorisation.builder().serviceCode("BFA1").build()));
         return builder
                 .build();
     }
@@ -385,5 +390,22 @@ public class TestDataBuilder {
         judicialAccessProfileSet.add(buildJudicialOfficeHolder());
 
         return judicialAccessProfileSet;
+    }
+
+    public static JRDUserRequest buildRefreshRoleRequest() {
+        ArrayList<String> users = new ArrayList<>();
+        users.add(id_1);
+        users.add(id_2);
+        return JRDUserRequest.builder().sidamIds(users).build();
+    }
+
+    public static JudicialProfile buildJudicialProfile() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
+        JudicialProfile profile = objectMapper.readValue(
+                new File("src/main/resources/judicialProfileSample.json"),
+                JudicialProfile.class);
+        return profile;
     }
 }

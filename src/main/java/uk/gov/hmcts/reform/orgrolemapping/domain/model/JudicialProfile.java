@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class JudicialProfile implements Serializable {
 
-    @NonNull
     private String sidamId;
     private String objectId;
     private String knownAs;

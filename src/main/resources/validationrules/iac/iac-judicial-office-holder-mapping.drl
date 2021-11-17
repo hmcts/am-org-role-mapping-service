@@ -88,7 +88,7 @@ rule "iac_tribunal_judge_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
-                               appointmentType == "fee paid",
+                               appointmentType == "Fee Paid",
                                serviceCode == "BFA1",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
 then
@@ -250,7 +250,7 @@ rule "iac_tribunal_judge_fee_paid_joh_with_authorisation"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
-                               appointmentType == "fee paid",
+                               appointmentType == "Fee Paid",
                                (serviceCode == null || serviceCode != "BFA1"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations))
@@ -380,7 +380,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
                              (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
-                              appointmentType == "fee paid",
+                              appointmentType == "Fee Paid",
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                              (roles == null || (!roles.contains("Resident Immigration Judge") &&
                               !roles.contains("Assistant Resident Judge") &&
@@ -438,7 +438,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile(serviceCode == "BFA1",
                              (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
-                              appointmentType == "fee paid",
+                              appointmentType == "Fee Paid",
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                              (roles == null || (
                                   !roles.contains("Resident Immigration Judge") &&
