@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
@@ -66,9 +66,12 @@ public class RetrieveDataService {
         ResponseEntity<List<Object>> response = null;
         List<Object> profiles = new ArrayList<>();
 
+        Set<String> uniqueUsers = Set.copyOf(userRequest.getUserIds());
+        log.info("Actual userIds {} and Unique UserIds are {} ", userRequest.getUserIds().size(), uniqueUsers.size());
         if (userType.equals(UserType.CASEWORKER)) {
             log.info("Calling CRD Service");
-            response = crdService.fetchCaseworkerProfiles(userRequest);
+            response = crdService.fetchCaseworkerProfiles(
+                    UserRequest.builder().userIds(new ArrayList<>(uniqueUsers)).build());
             log.debug(
                     "Execution time of CRD Response : {} ms",
                     (Math.subtractExact(System.currentTimeMillis(), startTime))
@@ -77,8 +80,7 @@ public class RetrieveDataService {
 
         } else if (userType.equals(UserType.JUDICIAL)) {
             log.info("Calling JRD Service");
-            response = jrdService.fetchJudicialProfiles(JRDUserRequest.builder().sidamIds(userRequest.getUserIds())
-                    .build());
+            response = jrdService.fetchJudicialProfiles(JRDUserRequest.builder().sidamIds(uniqueUsers).build());
             log.debug(
                     "Execution time of JRD Response : {} ms",
                     (Math.subtractExact(System.currentTimeMillis(), startTime))

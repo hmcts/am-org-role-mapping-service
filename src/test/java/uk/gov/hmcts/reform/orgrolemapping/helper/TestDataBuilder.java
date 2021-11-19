@@ -393,10 +393,7 @@ public class TestDataBuilder {
     }
 
     public static JRDUserRequest buildRefreshRoleRequest() {
-        ArrayList<String> users = new ArrayList<>();
-        users.add(id_1);
-        users.add(id_2);
-        return JRDUserRequest.builder().sidamIds(users).build();
+        return JRDUserRequest.builder().sidamIds(Set.of(id_1, id_2)).build();
     }
 
     public static JudicialProfile buildJudicialProfile() throws IOException {
