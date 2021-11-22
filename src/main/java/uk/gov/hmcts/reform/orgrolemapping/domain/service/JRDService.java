@@ -16,8 +16,9 @@ public class JRDService {
 
     private final JRDFeignClient jrdFeignClient;
 
+    // page_size from jrd mapped to appointment, one profile may have upto 5 appointments
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public <T> ResponseEntity<List<T>> fetchJudicialProfiles(JRDUserRequest userRequest) {
-        return jrdFeignClient.getJudicialDetailsById(userRequest);
+        return jrdFeignClient.getJudicialDetailsById(userRequest, userRequest.getSidamIds().size() * 5);
     }
 }

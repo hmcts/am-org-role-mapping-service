@@ -39,7 +39,7 @@ public class BulkAssignmentOrchestrator {
 
         //Extract and Validate received users List
         parseRequestService.validateUserRequest(userRequest);
-        log.info("Validated userIds :: {}", userRequest.getUserIds());
+        log.info("Validated {} userIds :: {}", userRequest.getUserIds().size(), userRequest.getUserIds());
         long startTime = System.currentTimeMillis();
         Map<String, Set<?>> userAccessProfiles = null;
         //Create userAccessProfiles based upon roleId and service codes

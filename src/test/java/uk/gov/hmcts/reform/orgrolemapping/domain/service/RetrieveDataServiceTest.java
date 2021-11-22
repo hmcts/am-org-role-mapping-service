@@ -56,7 +56,7 @@ class RetrieveDataServiceTest {
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body(TestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2",
                         ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)))
-                .when(crdService).fetchCaseworkerProfiles(TestDataBuilder.buildUserRequest());
+                .when(crdService).fetchCaseworkerProfiles(any());
 
         Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
