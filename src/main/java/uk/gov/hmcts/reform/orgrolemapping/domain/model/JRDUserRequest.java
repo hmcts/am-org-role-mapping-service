@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -18,8 +18,8 @@ public class JRDUserRequest {
     private String ccdServiceNames;
 
     @JsonProperty("object_ids")
-    private List<String> objectIds;
+    private Set<String> objectIds;
 
     @JsonProperty("sidam_ids")
-    private List<String> sidamIds;
+    private Set<String> sidamIds;
 }
