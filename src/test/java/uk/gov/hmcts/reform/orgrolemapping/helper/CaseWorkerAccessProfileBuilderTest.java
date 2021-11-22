@@ -7,10 +7,13 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 class CaseWorkerAccessProfileBuilderTest {
 
@@ -67,8 +70,8 @@ class CaseWorkerAccessProfileBuilderTest {
                         "judicialProfileSample.json");
         assertNotNull(judicialProfiles);
         assertEquals(2, judicialProfiles.size());
-        assertEquals(id_1, judicialProfiles.get(0).getSidamId());
-        assertEquals(id_2, judicialProfiles.get(1).getSidamId());
+        assertThat(judicialProfiles.stream().map(JudicialProfile::getSidamId).collect(Collectors.toList()),
+                containsInAnyOrder(id_1, id_2));
     }
 
     @Test

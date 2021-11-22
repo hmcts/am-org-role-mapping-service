@@ -124,8 +124,9 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
 
-        log.info("    Parsing the message from JRD");
+
         UserRequest request = deserializer.deserialize(body);
+        log.info("Parsing the message from JRD with size :: {}", request.getUserIds().size());
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
                     UserType.JUDICIAL);

@@ -30,8 +30,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
@@ -52,6 +52,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -160,7 +161,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .build();
 
         judicialProfiles = new ArrayList<>(buildJudicialProfile(JRDUserRequest.builder()
-                        .sidamIds(userRequest.getUserIds()).build(),"judicialProfileSample.json"));
+                        .sidamIds(Set.copyOf(userRequest.getUserIds())).build(),"judicialProfileSample.json"));
     }
 
     @Test
@@ -567,7 +568,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         judicialProfiles.get(0).getAppointments().remove(0);
 
         doReturn(ResponseEntity.ok(judicialProfiles))
-                .when(jrdFeignClient).getJudicialDetailsById(any());
+                .when(jrdFeignClient).getJudicialDetailsById(any(), any());
 
 
         logger.info(" createOrgRoleMappingTest...");
@@ -596,7 +597,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         judicialProfiles.get(0).getAppointments().remove(1);
 
         doReturn(ResponseEntity.ok(judicialProfiles))
-                .when(jrdFeignClient).getJudicialDetailsById(any());
+                .when(jrdFeignClient).getJudicialDetailsById(any(), any());
 
 
         logger.info(" createOrgRoleMappingTest...");
@@ -629,7 +630,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         );
 
         doReturn(ResponseEntity.ok(judicialProfiles))
-                .when(jrdFeignClient).getJudicialDetailsById(any());
+                .when(jrdFeignClient).getJudicialDetailsById(any(), any());
 
 
         logger.info(" createOrgRoleMappingTest...");
@@ -665,7 +666,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         );
 
         doReturn(ResponseEntity.ok(judicialProfiles))
-                .when(jrdFeignClient).getJudicialDetailsById(any());
+                .when(jrdFeignClient).getJudicialDetailsById(any(), any());
 
 
         logger.info(" createOrgRoleMappingTest...");
