@@ -310,7 +310,7 @@ dependencies {
         exclude group: 'org.apache.ant', module: 'ant-launcher'
     }
 
-    compile group: 'org.flywaydb', name: 'flyway-core', version: '5.2.4'
+    compile group: 'org.flywaydb', name: 'flyway-core', version: '8.0.5'
     //Added for Spring Security Implementation
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot)
 
