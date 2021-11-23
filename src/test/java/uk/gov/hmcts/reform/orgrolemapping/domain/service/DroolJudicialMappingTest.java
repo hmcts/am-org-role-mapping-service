@@ -17,9 +17,9 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialMappingTest extends DroolBase {
 
-    String workTypes = "hearing-work,upper-tribunal,decision-making-work,applications";
-    String workTypesFP = "hearing-work,decision-making-work,applications";
-    String workTypesAccess = "hearing-work,upper-tribunal,decision-making-work,applications,access-requests";
+    String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications";
+    String workTypesFP = "hearing_work,decision_making_work,applications";
+    String workTypesAccess = "hearing_work,upper_tribunal,decision_making_work,applications,access_requests";
 
     @Test
     void shouldReturnPresidentRoles() {

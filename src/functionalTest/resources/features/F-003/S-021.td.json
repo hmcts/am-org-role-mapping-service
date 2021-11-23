@@ -73,7 +73,7 @@
             "contractType" : "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,decision-making-work,applications"
+            "workTypes" : "hearing_work,decision_making_work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -145,7 +145,7 @@
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
+            "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -166,7 +166,7 @@
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
+            "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -187,7 +187,7 @@
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications,access-requests"
+            "workTypes" : "hearing_work,upper_tribunal,decision_making-work,applications,access_requests"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -208,7 +208,7 @@
             "contractType" : "[[ANYTHING_PRESENT]]",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
+            "workTypes" : "hearing_work,upper_tribunal,decision_making-work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -229,7 +229,7 @@
             "contractType" : "[[ANYTHING_PRESENT]]",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
-            "workTypes" : "hearing-work,upper-tribunal,decision-making-work,applications"
+            "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
