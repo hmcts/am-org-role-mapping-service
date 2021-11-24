@@ -36,6 +36,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 
@@ -73,7 +74,7 @@ public class RefDataJudicialProfileConsumerTest {
                         + "based on the provided list of user ids")
                 .path(JRD_GET_PROFILES_URL)
                 .body(new ObjectMapper().writeValueAsString(
-                        JRDUserRequest.builder().sidamIds(List.of(SIDAM_ID)).build()))
+                        JRDUserRequest.builder().sidamIds(Set.of(SIDAM_ID)).build()))
                 .method(HttpMethod.POST.toString())
                 .willRespondWith()
                 .status(HttpStatus.OK.value())
@@ -91,7 +92,7 @@ public class RefDataJudicialProfileConsumerTest {
                         .given()
                         .headers(getHttpHeaders())
                         .body(JRDUserRequest.builder().sidamIds(
-                                List.of(SIDAM_ID)).build())
+                                Set.of(SIDAM_ID)).build())
                         .contentType(ContentType.JSON)
                         .post(mockServer.getUrl() + JRD_GET_PROFILES_URL)
                         .then()
