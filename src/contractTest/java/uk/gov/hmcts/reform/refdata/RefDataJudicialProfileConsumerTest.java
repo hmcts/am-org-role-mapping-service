@@ -34,7 +34,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
