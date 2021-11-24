@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public  class Authorisation implements Serializable {
+public class Authorisation implements Serializable {
 
     private String ticketCode;
     private String jurisdiction;
