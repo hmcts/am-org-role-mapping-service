@@ -21,8 +21,8 @@ public class JudicialAccessProfile implements Serializable {
     private ZonedDateTime endTime;
     private List<String> ticketCodes;
     private String regionId;
-    private String  baseLocationId;
-    private String  contractTypeId;
+    private String baseLocationId;
+    private String contractTypeId;
     private String appointment;
     private String serviceCode;
     private String appointmentType;
