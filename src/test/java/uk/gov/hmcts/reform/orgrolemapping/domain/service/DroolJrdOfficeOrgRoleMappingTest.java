@@ -27,9 +27,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingSe
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
-
-    String workTypes = "hearing-work,upper-tribunal,decision-making-work,applications";
-    String workTypesFP = "hearing-work,decision-making-work,applications";
+    String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications";
+    String workTypesFP = "hearing_work,decision_making_work,applications";
 
     @Test
     void shouldReturnPresidentRoles_withIAC() {
