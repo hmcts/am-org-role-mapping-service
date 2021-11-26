@@ -283,7 +283,7 @@ dependencies {
     implementation (group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0') {
         exclude group: 'org.glassfish', module: 'jakarta.el'
     }
-    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.12'
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.13'
     implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.1'
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
@@ -405,7 +405,6 @@ dependencies {
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
     testCompile('com.github.tomakehurst:wiremock-jre8:2.30.0')
     testCompile('org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE')
-
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
 
     pitest 'org.pitest:pitest-junit5-plugin:0.15'
