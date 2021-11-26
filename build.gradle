@@ -310,7 +310,7 @@ dependencies {
         exclude group: 'org.apache.ant', module: 'ant-launcher'
     }
 
-    compile group: 'org.flywaydb', name: 'flyway-core', version: '5.2.4'
+    compile group: 'org.flywaydb', name: 'flyway-core', version: '8.1.0'
     //Added for Spring Security Implementation
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot)
 
@@ -405,7 +405,6 @@ dependencies {
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
     testCompile('com.github.tomakehurst:wiremock-jre8:2.30.0')
     testCompile('org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE')
-
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
 
     pitest 'org.pitest:pitest-junit5-plugin:0.15'
