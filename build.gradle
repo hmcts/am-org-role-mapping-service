@@ -405,13 +405,12 @@ dependencies {
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
     testCompile('com.github.tomakehurst:wiremock-jre8:2.30.0')
     testCompile('org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE')
-
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
 
     pitest 'org.pitest:pitest-junit5-plugin:0.15'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.12.4'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.1.0'
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: '3.6.28'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
