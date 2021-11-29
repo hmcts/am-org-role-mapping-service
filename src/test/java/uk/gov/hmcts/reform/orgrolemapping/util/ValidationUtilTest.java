@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,9 +72,9 @@ class ValidationUtilTest {
 
     @Test
     void shouldNotThrow_ValidateDateTimeLength() {
+        String ftDate = LocalDateTime.now().plusDays(5).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
         Assertions.assertDoesNotThrow(() ->
-                ValidationUtil.validateDateTime("2021-11-27T15:12",
-                        "2021-11-27T15:12")
+                ValidationUtil.validateDateTime(ftDate, ftDate)
         );
     }
 
