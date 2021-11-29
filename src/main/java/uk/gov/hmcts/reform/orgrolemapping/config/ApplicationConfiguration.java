@@ -7,6 +7,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,6 +46,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
+    @Order(1)
     public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
         return new LDClient(sdkKey);
     }
