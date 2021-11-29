@@ -10,6 +10,7 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
@@ -38,6 +39,7 @@ public class OrgRoleMappingApplication {
     }
 
     @Bean
+    @Order(1)
     public ServiceAuthTokenGenerator authTokenGenerator(
             @Value("${idam.s2s-auth.totp_secret}") final String secret,
             @Value("${idam.s2s-auth.microservice}") final String microService,
