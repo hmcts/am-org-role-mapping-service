@@ -45,7 +45,7 @@ def versions = [
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
         drools         : '7.40.0.Final',
-        launchDarklySdk: '5.2.2'
+        launchDarklySdk: '5.6.3'
 ]
 
 mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
