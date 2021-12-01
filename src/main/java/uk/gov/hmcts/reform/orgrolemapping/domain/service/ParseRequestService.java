@@ -30,7 +30,7 @@ public class ParseRequestService implements ParseRequestBase<Object> {
 
     public void validateUserRequest(UserRequest userRequest) {
 
-        if (CollectionUtils.isEmpty(userRequest.getUserIds())) {
+        if (userRequest == null || CollectionUtils.isEmpty(userRequest.getUserIds())) {
             throw new BadRequestException("Empty user request");
         }
         //parse the user List and validate each user Id to be valid string

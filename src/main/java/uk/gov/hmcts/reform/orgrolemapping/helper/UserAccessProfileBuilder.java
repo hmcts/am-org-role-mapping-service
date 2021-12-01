@@ -9,14 +9,12 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.InputStream;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -178,26 +176,25 @@ public class UserAccessProfileBuilder {
         return new ArrayList<>(judicialProfilesProfiles);
     }
 
-    //JRDFeignClientFallback object for testing jud office holder roles
-    public static List<JudicialOfficeHolder> buildJudicialOfficeHolder(UserRequest userRequest) {
+    public static List<JudicialBooking> buildJudicialBookings(UserRequest userRequest, String resource) {
 
-        Set<JudicialOfficeHolder> judicialOfficeHolders = new LinkedHashSet<>();
-
+        Set<JudicialBooking> judicialBookings = new LinkedHashSet<>();
 
         userRequest.getUserIds().forEach(userId -> {
-            JudicialOfficeHolder judicialProfile =
-                    JudicialOfficeHolder.builder()
-                            .userId(userId)
-                            .office("IAC President of Tribunals")
-                            .beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1))
-                            .endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1))
-                            .baseLocationId("1")
-                            .regionId("3")
-                            .build();
-            judicialOfficeHolders.add(judicialProfile);
+            try (InputStream inputStream =
+                         UserAccessProfileBuilder.class.getClassLoader()
+                                 .getResourceAsStream(resource)) {
+                assert inputStream != null;
+                ObjectMapper objectMapper = getObjectMapper();
+                objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
+                JudicialBooking judicialBooking = objectMapper.readValue(inputStream, JudicialBooking.class);
+                judicialBooking.setUserId(userId);
+                judicialBookings.add(judicialBooking);
+            } catch (Exception e) {
+                throw new BadRequestException("Either the user request is not valid or sample json is missing.");
+            }
         });
-
-        return new ArrayList<>(judicialOfficeHolders);
+        return new ArrayList<>(judicialBookings);
     }
 
     @NotNull

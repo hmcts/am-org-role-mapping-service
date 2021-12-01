@@ -12,6 +12,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 
@@ -86,6 +87,11 @@ public class JacksonUtils {
     }
 
     public static JudicialProfile convertInJudicialProfile(Object from) {
+        return MAPPER.convertValue(from, new TypeReference<>() {
+        });
+    }
+
+    public static JudicialBooking convertInJudicialBooking(Object from) {
         return MAPPER.convertValue(from, new TypeReference<>() {
         });
     }
