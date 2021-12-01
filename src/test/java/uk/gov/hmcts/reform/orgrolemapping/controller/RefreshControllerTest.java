@@ -95,4 +95,5 @@ class RefreshControllerTest {
             sut.judicialRefresh(JudicialRefreshRequest.builder().build()));
 
     }
+
 }

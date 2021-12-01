@@ -4,7 +4,7 @@
     "locationId": "location1",
     "regionId": "region1",
     "beginTime": "2021-12-01T00:00:00Z",
-    "endTime": "2022-02-02T00:00:00Z",
+    "endTime": "2032-02-02T00:00:00Z",
     "created":"2021-04-01T00:00:00Z",
     "log":"Booking record is successfully created"
   }

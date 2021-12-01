@@ -29,6 +29,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -247,7 +248,7 @@ class RequestMappingServiceTest {
             ReflectionTestUtils.setField(sut, "environment", "prod");
             List<RoleAssignment> response =
                     sut.getRoleAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
-                            false));
+                            false), Collections.emptyList());
 
             assertNotNull(response);
             assertEquals(1, response.size());

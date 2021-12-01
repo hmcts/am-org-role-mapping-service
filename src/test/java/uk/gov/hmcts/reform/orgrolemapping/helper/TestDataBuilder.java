@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
@@ -403,6 +404,15 @@ public class TestDataBuilder {
         JudicialProfile profile = objectMapper.readValue(
                 new File("src/main/resources/judicialProfileSample.json"),
                 JudicialProfile.class);
+        return profile;
+    }
+
+    public static JudicialBooking buildJudicialBooking() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        JudicialBooking profile = objectMapper.readValue(
+                new File("src/main/resources/judicialBookingSample.json"),
+                JudicialBooking.class);
         return profile;
     }
 }

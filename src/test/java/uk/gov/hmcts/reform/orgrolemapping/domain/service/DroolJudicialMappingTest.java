@@ -5,14 +5,18 @@ import org.junit.runner.RunWith;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialMappingTest extends DroolBase {
@@ -243,4 +247,39 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
+    @Test
+    void shouldReturnFeePaidTribunalJudgeRoles_withBookings() throws IOException {
+
+        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
+            judicialOfficeHolder.setOffice("IAC Tribunal Judge (Fee-Paid)");
+        });
+        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
+        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst().get().getUserId());
+        judicialBooking.setLocationId("location1");
+        judicialBookings = Set.of(judicialBooking);
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(3, roleAssignments.size());
+        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
+        assertEquals("judge",roleAssignments.get(2).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals("location1", roleAssignments.get(2).getAttributes().get("primaryLocation").asText());
+        assertEquals(judicialBooking.getBeginTime(), roleAssignments.get(2).getBeginTime());
+        assertEquals(judicialBooking.getEndTime(), roleAssignments.get(2).getEndTime());
+    }
 }

@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -32,6 +33,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,11 +78,12 @@ public class RequestMappingService<T> {
      * and update them in the role assignment service.
      */
     @SuppressWarnings("unchecked")
-    public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles, UserType userType) {
+    public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles,
+                                                    List<JudicialBooking> judicialBookings, UserType userType) {
         long startTime = System.currentTimeMillis();
         // Get the role assignments for each caseworker in the input profiles.
         Map<String, List<RoleAssignment>> usersRoleAssignments = getProfileRoleAssignments(usersAccessProfiles,
-                userType);
+                judicialBookings, userType);
         // The response body is a list of ....???....
         ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleAssignments, userType);
         log.debug("Execution time of createCaseWorkerAssignments() : {} ms",
@@ -90,13 +93,17 @@ public class RequestMappingService<T> {
 
     }
 
+    public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles, UserType userType) {
+        return createAssignments(usersAccessProfiles, Collections.emptyList(), userType);
+    }
+
     /**
      * Apply the role assignment mapping rules to determine what the role assignments should be
      * for each user profile represented in the map.
      */
     @SuppressWarnings("unchecked")
     private Map<String, List<RoleAssignment>> getProfileRoleAssignments(Map<String,
-            Set<T>> usersAccessProfiles, UserType userType) {
+            Set<T>> usersAccessProfiles, List<JudicialBooking> judicialBookings, UserType userType) {
 
         // Create a map to hold the role assignments for each user.
         Map<String, List<RoleAssignment>> usersRoleAssignments = new HashMap<>();
@@ -105,7 +112,7 @@ public class RequestMappingService<T> {
         // who have been deleted, for whom no role assignments will be created by the rules.
         usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<>()));
         // Get all the role assignments created for the set of access profiles.
-        List<RoleAssignment> roleAssignments = mapUserAccessProfiles(usersAccessProfiles);
+        List<RoleAssignment> roleAssignments = mapUserAccessProfiles(usersAccessProfiles, judicialBookings);
         // Add each role assignment to the results map.
         roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
 
@@ -165,9 +172,10 @@ public class RequestMappingService<T> {
     /**
      * Run the mapping rules to generate all the role assignments each caseworker represented in the map.
      */
-    private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles) {
+    private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles,
+                                                       List<JudicialBooking> judicialBookings) {
         long startTime = System.currentTimeMillis();
-        List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles);
+        List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles, judicialBookings);
         log.debug("Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
@@ -176,7 +184,8 @@ public class RequestMappingService<T> {
 
     @NotNull
     @SuppressWarnings("unchecked")
-    List<RoleAssignment> getRoleAssignments(Map<String, Set<T>> usersAccessProfiles) {
+    List<RoleAssignment> getRoleAssignments(Map<String, Set<T>> usersAccessProfiles,
+                                            List<JudicialBooking> judicialBookings) {
         // Combine all the user profiles into a single collection for the rules engine.
         Set<T> allProfiles = new HashSet<>();
         usersAccessProfiles.forEach((k, v) -> allProfiles.addAll(v));
@@ -190,6 +199,7 @@ public class RequestMappingService<T> {
         commands.add(CommandFactory.newInsertElements(allProfiles));
         List<FeatureFlag> featureFlags = getDBFeatureFlags();
         commands.add(CommandFactory.newInsertElements(featureFlags));
+        commands.add(CommandFactory.newInsertElements(judicialBookings));
         commands.add(CommandFactory.newFireAllRules());
         commands.add(CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME));
 

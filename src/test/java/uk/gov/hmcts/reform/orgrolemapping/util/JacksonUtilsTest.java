@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -46,5 +47,11 @@ class JacksonUtilsTest {
     void convertInJudicialProfile() throws IOException {
         JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
         assertNotNull(JacksonUtils.convertInJudicialProfile(judicialProfile));
+    }
+
+    @Test
+    void convertInJudicialBookings() throws IOException {
+        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
+        assertNotNull(JacksonUtils.convertInJudicialBooking(judicialBooking));
     }
 }
