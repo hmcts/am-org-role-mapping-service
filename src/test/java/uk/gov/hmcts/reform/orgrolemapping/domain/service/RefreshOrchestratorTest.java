@@ -63,7 +63,7 @@ class RefreshOrchestratorTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -376,5 +376,46 @@ class RefreshOrchestratorTest {
         verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
         verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
 
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void refreshRoleAssignmentRecords_judicial() {
+
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
+        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
+                .id("1")
+                .roleId("1")
+                .roleName("roleName")
+                .primaryLocationName("primary")
+                .primaryLocationId("1")
+                .areaOfWorkId("1")
+                .serviceCode("1")
+                .suspended(false)
+                .build());
+        userAccessProfiles.put("1", userAccessProfileSet);
+
+        Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
+                .thenReturn(userAccessProfiles);
+
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.JUDICIAL)))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK)
+                        .body(Collections.emptyList())));
+
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        Mockito.when(persistenceService.fetchRefreshJobById(any()))
+                .thenReturn(Optional.of(
+                        RefreshJobEntity.builder()
+                                .roleCategory(RoleCategory.JUDICIAL.toString())
+                                .build()));
+
+        ResponseEntity<Object> response = sut.refresh(1L, TestDataBuilder.buildUserRequest());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response);
     }
 }

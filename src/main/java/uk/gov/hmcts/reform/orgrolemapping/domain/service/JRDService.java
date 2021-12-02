@@ -6,7 +6,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class JRDService {
 
-    private final JRDFeignClientFallback jrdFeignClient;
+    private final JRDFeignClient jrdFeignClient;
 
     // page_size from jrd mapped to appointment, one profile may have upto 5 appointments
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))

@@ -5,9 +5,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.io.File;
@@ -47,6 +50,19 @@ class JacksonUtilsTest {
     void convertInJudicialProfile() throws IOException {
         JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
         assertNotNull(JacksonUtils.convertInJudicialProfile(judicialProfile));
+    }
+
+    @Test
+    void convertInRoleAssignmentResource() {
+        RoleAssignmentRequestResource from = new RoleAssignmentRequestResource(AssignmentRequest.builder().build());
+        assertNotNull(JacksonUtils.convertRoleAssignmentResource(from));
+    }
+
+    @Test
+    void convertInCaseWorkerProfileResponse() {
+        CaseWorkerProfilesResponse from = new CaseWorkerProfilesResponse("",
+                CaseWorkerProfile.builder().build());
+        assertNotNull(JacksonUtils.convertInCaseWorkerProfileResponse(from));
     }
 
     @Test

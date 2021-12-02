@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
@@ -62,16 +61,10 @@ class UserAccessProfileBuilderTest {
 
     @Test
     void buildJudicialBookings() {
-        List<JudicialBooking> bookings =
-                UserAccessProfileBuilder.buildJudicialBookings(
+        List<JudicialBooking> bookings = UserAccessProfileBuilder.buildJudicialBookings(
                         TestDataBuilder.buildUserRequest(), "judicialBookingSample.json");
         assertNotNull(bookings);
-        //assertEquals(1, bookings.size());
+        assertEquals(2, bookings.size());
     }
 
-    @Test
-    void buildJudicialBookings_withoutInputFile() {
-        Assert.assertThrows(AssertionError.class, () -> UserAccessProfileBuilder.buildJudicialBookings(
-                        TestDataBuilder.buildUserRequest(), "judicialBooking.json"));
-    }
 }

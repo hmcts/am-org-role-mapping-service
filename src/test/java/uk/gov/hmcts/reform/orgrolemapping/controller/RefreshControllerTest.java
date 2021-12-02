@@ -83,7 +83,7 @@ class RefreshControllerTest {
                         "Role assignments have been refreshed successfully"));
         Mockito.when(judicialRefreshOrchestrator.judicialRefresh(any())).thenReturn(response);
 
-        assertEquals(response, sut.judicialRefresh(JudicialRefreshRequest.builder().build()));
+        assertEquals(response, sut.judicialRefresh("1", JudicialRefreshRequest.builder().build()));
         Mockito.verify(judicialRefreshOrchestrator, Mockito.times(1)).judicialRefresh(any());
     }
 
@@ -92,7 +92,7 @@ class RefreshControllerTest {
         Mockito.when(judicialRefreshOrchestrator.judicialRefresh(any())).thenThrow(BadRequestException.class);
 
         Assert.assertThrows(BadRequestException.class, () ->
-            sut.judicialRefresh(JudicialRefreshRequest.builder().build()));
+            sut.judicialRefresh("1", JudicialRefreshRequest.builder().build()));
 
     }
 

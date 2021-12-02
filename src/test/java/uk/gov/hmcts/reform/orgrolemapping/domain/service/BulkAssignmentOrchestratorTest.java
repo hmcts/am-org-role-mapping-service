@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -24,6 +27,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_SJ;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
@@ -44,7 +48,7 @@ class BulkAssignmentOrchestratorTest {
   
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -121,6 +125,15 @@ class BulkAssignmentOrchestratorTest {
                 .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
         Mockito.verify(requestMappingService, Mockito.times(1))
                 .createAssignments(Mockito.any(),Mockito.any());
+    }
+
+    @Test
+    void createBulkAssignmentsRequestForJudicial_clientNotAvailable() {
+
+        doThrow(FeignException.NotFound.class).when(retrieveDataService)
+                .retrieveProfiles(Mockito.any(),Mockito.any());
+        Assert.assertThrows(ResourceNotFoundException.class, () ->
+                sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL));
     }
 
 }

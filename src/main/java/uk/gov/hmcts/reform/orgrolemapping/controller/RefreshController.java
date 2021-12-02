@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,7 +91,9 @@ public class RefreshController {
                     message = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED
             )
     })
-    public ResponseEntity<Object> judicialRefresh(@Validated @NonNull @RequestBody(required = true)
+    public ResponseEntity<Object> judicialRefresh(@RequestHeader(value = "x-correlation-id", required = false)
+                                                              String correlationId,
+                                                  @Validated @NonNull @RequestBody(required = true)
                                                               JudicialRefreshRequest refreshRequest) {
         return judicialRefreshOrchestrator.judicialRefresh(refreshRequest.getRefreshRequest());
     }

@@ -274,7 +274,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work," +
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,upper_tribunal," +
                                                                       "decision_making_work,applications"));
   insert(
       RoleAssignment.builder()

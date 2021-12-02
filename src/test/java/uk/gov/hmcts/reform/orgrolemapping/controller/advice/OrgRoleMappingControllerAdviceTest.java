@@ -7,6 +7,7 @@ import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.WelcomeController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 
@@ -78,6 +79,12 @@ class OrgRoleMappingControllerAdviceTest {
                 Locale.ENGLISH).format(new Date()));
     }
 
-
+    @Test
+    void handleForbiddenException() {
+        ForbiddenException resourceNotFoundException = mock(ForbiddenException.class);
+        ResponseEntity<Object> responseEntity = csda.handleForbiddenException(resourceNotFoundException);
+        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN.value(), responseEntity.getStatusCodeValue());
+    }
 
 }
