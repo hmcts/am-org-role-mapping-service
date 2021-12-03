@@ -72,8 +72,8 @@ class ValidationUtilTest {
     @Test
     void shouldNotThrow_ValidateDateTimeLength() {
         Assertions.assertDoesNotThrow(() ->
-                ValidationUtil.validateDateTime("2021-11-27T15:12",
-                        "2021-11-27T15:12")
+                ValidationUtil.validateDateTime("3000-11-27T15:12",
+                        "3000-11-27T15:12")
         );
     }
 
