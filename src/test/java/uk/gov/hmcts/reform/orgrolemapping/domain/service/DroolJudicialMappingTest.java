@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -272,14 +273,69 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals(3, roleAssignments.size());
         assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
         assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
-        assertEquals("judge",roleAssignments.get(2).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        assertEquals("location1", roleAssignments.get(2).getAttributes().get("primaryLocation").asText());
-        assertEquals(judicialBooking.getBeginTime(), roleAssignments.get(2).getBeginTime());
-        assertEquals(judicialBooking.getEndTime(), roleAssignments.get(2).getEndTime());
+        RoleAssignment assignment = roleAssignments.get(2);
+        assertEquals(judicialBooking.getUserId(),assignment.getActorId());
+        assertEquals("judge",assignment.getRoleName());
+        assertEquals(judicialBooking.getLocationId(), assignment.getAttributes().get("primaryLocation").asText());
+        assertEquals(judicialBooking.getBeginTime(), assignment.getBeginTime());
+        assertEquals(judicialBooking.getEndTime(), assignment.getEndTime());
+        assertEquals(workTypes, assignment.getAttributes().get("workTypes").asText());
+    }
+
+    @Test
+    void shouldReturnFeePaidTribunalJudgeRoles_withMultipleBookings() throws IOException {
+
+        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
+            judicialOfficeHolder.setOffice("IAC Tribunal Judge (Fee-Paid)");
+        });
+        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
+        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst().get().getUserId());
+        judicialBooking.setLocationId("location1");
+        JudicialBooking judicialBooking2 = TestDataBuilder.buildJudicialBooking();
+        judicialBooking2.setUserId(judicialOfficeHolders.stream().findFirst().get().getUserId());
+        judicialBooking2.setLocationId("location2");
+        judicialBooking2.setBeginTime(ZonedDateTime.now().minusDays(5));
+        judicialBookings = Set.of(judicialBooking, judicialBooking2);
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(4, roleAssignments.size());
+        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
+        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+
+        RoleAssignment assignment = roleAssignments.get(2);
+        assertEquals(judicialBooking2.getUserId(),assignment.getActorId());
+        assertEquals("judge",assignment.getRoleName());
+        assertEquals(judicialBooking2.getLocationId(), assignment.getAttributes().get("primaryLocation").asText());
+        assertEquals(judicialBooking2.getBeginTime(), assignment.getBeginTime());
+        assertEquals(judicialBooking2.getEndTime(), assignment.getEndTime());
+        assertEquals(workTypes, assignment.getAttributes().get("workTypes").asText());
+
+        RoleAssignment assignment2 = roleAssignments.get(3);
+        assertEquals(judicialBooking.getUserId(),assignment2.getActorId());
+        assertEquals("judge",assignment2.getRoleName());
+        assertEquals(judicialBooking.getLocationId(), assignment2.getAttributes().get("primaryLocation").asText());
+        assertEquals(judicialBooking.getBeginTime(), assignment2.getBeginTime());
+        assertEquals(judicialBooking.getEndTime(), assignment2.getEndTime());
+        assertEquals(workTypes, assignment2.getAttributes().get("workTypes").asText());
     }
 }
