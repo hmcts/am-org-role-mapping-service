@@ -6,6 +6,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
@@ -29,9 +32,7 @@ class DroolJudicialMappingTest extends DroolBase {
     @Test
     void shouldReturnPresidentRoles() {
 
-        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
-            judicialOfficeHolder.setOffice("IAC President of Tribunals");
-        });
+        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC President of Tribunals"));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
@@ -67,9 +68,7 @@ class DroolJudicialMappingTest extends DroolBase {
     @Test
     void shouldReturnResidentJudgeRoles() {
 
-        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
-            judicialOfficeHolder.setOffice("IAC Resident Immigration Judge");
-        });
+        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Resident Immigration Judge"));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
@@ -110,9 +109,7 @@ class DroolJudicialMappingTest extends DroolBase {
     @Test
     void shouldReturnImmigrationJudgeRoles() {
 
-        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
-            judicialOfficeHolder.setOffice("IAC Designated Immigration Judge");
-        });
+        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Designated Immigration Judge"));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
@@ -150,9 +147,7 @@ class DroolJudicialMappingTest extends DroolBase {
     @Test
     void shouldReturnAssistantResidentJudgeRoles() {
 
-        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
-            judicialOfficeHolder.setOffice("IAC Assistant Resident Judge");
-        });
+        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Assistant Resident Judge"));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
@@ -190,9 +185,7 @@ class DroolJudicialMappingTest extends DroolBase {
     @Test
     void shouldReturnSalariedTribunalJudgeRoles() {
 
-        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
-            judicialOfficeHolder.setOffice("IAC Tribunal Judge (Salaried)");
-        });
+        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Salaried)"));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
@@ -222,9 +215,7 @@ class DroolJudicialMappingTest extends DroolBase {
     @Test
     void shouldReturnFeePaidTribunalJudgeRoles() {
 
-        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
-            judicialOfficeHolder.setOffice("IAC Tribunal Judge (Fee-Paid)");
-        });
+        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Fee-Paid)"));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
@@ -251,11 +242,10 @@ class DroolJudicialMappingTest extends DroolBase {
     @Test
     void shouldReturnFeePaidTribunalJudgeRoles_withBookings() throws IOException {
 
-        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
-            judicialOfficeHolder.setOffice("IAC Tribunal Judge (Fee-Paid)");
-        });
+        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Fee-Paid)"));
         JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
-        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst().get().getUserId());
+        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
+                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("location1");
         judicialBookings = Set.of(judicialBooking);
         //Execute Kie session
@@ -290,14 +280,14 @@ class DroolJudicialMappingTest extends DroolBase {
     @Test
     void shouldReturnFeePaidTribunalJudgeRoles_withMultipleBookings() throws IOException {
 
-        judicialOfficeHolders.forEach(judicialOfficeHolder -> {
-            judicialOfficeHolder.setOffice("IAC Tribunal Judge (Fee-Paid)");
-        });
+        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Fee-Paid)"));
         JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
-        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst().get().getUserId());
+        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
+                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("location1");
         JudicialBooking judicialBooking2 = TestDataBuilder.buildJudicialBooking();
-        judicialBooking2.setUserId(judicialOfficeHolders.stream().findFirst().get().getUserId());
+        judicialBooking2.setUserId(judicialOfficeHolders.stream().findFirst()
+                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking2.setLocationId("location2");
         judicialBooking2.setBeginTime(ZonedDateTime.now().minusDays(5));
         judicialBookings = Set.of(judicialBooking, judicialBooking2);
@@ -322,20 +312,23 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
 
-        RoleAssignment assignment = roleAssignments.get(2);
-        assertEquals(judicialBooking2.getUserId(),assignment.getActorId());
-        assertEquals("judge",assignment.getRoleName());
-        assertEquals(judicialBooking2.getLocationId(), assignment.getAttributes().get("primaryLocation").asText());
-        assertEquals(judicialBooking2.getBeginTime(), assignment.getBeginTime());
-        assertEquals(judicialBooking2.getEndTime(), assignment.getEndTime());
-        assertEquals(workTypes, assignment.getAttributes().get("workTypes").asText());
 
+        RoleAssignment assignment = roleAssignments.get(2);
+        assertEquals(judicialBooking.getUserId(),assignment.getActorId());
+        assertEquals("judge",assignment.getRoleName());
+        assertEquals(workTypes, assignment.getAttributes().get("workTypes").asText());
         RoleAssignment assignment2 = roleAssignments.get(3);
-        assertEquals(judicialBooking.getUserId(),assignment2.getActorId());
+        assertEquals(judicialBooking2.getUserId(),assignment2.getActorId());
         assertEquals("judge",assignment2.getRoleName());
-        assertEquals(judicialBooking.getLocationId(), assignment2.getAttributes().get("primaryLocation").asText());
-        assertEquals(judicialBooking.getBeginTime(), assignment2.getBeginTime());
-        assertEquals(judicialBooking.getEndTime(), assignment2.getEndTime());
         assertEquals(workTypes, assignment2.getAttributes().get("workTypes").asText());
+
+        assertThat(List.of(judicialBooking.getLocationId(), judicialBooking2.getLocationId()),
+                containsInAnyOrder(assignment.getAttributes().get("primaryLocation").asText(),
+                        assignment2.getAttributes().get("primaryLocation").asText()));
+        assertThat(List.of(judicialBooking.getBeginTime(), judicialBooking2.getBeginTime()),
+                containsInAnyOrder(assignment.getBeginTime(), assignment2.getBeginTime()));
+        assertThat(List.of(judicialBooking.getEndTime(), judicialBooking2.getEndTime()),
+                containsInAnyOrder(assignment.getEndTime(), assignment2.getEndTime()));
+
     }
 }
