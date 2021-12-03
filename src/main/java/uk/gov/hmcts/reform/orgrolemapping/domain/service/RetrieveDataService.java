@@ -71,7 +71,7 @@ public class RetrieveDataService {
         if (userType.equals(UserType.CASEWORKER)) {
             log.info("Calling CRD Service");
             response = crdService.fetchCaseworkerProfiles(
-                    UserRequest.builder().userIds(new ArrayList<>(uniqueUsers)).build());
+                    UserRequest.builder().userIds(List.copyOf(uniqueUsers)).build());
             log.debug(
                     "Execution time of CRD Response : {} ms",
                     (Math.subtractExact(System.currentTimeMillis(), startTime))
