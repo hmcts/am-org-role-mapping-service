@@ -29,7 +29,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "beginTime" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "substantive" : "Y",
+            "substantive" : "N",
             "contractType" : "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA"
