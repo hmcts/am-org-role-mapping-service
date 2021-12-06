@@ -1,0 +1,13 @@
+{
+  "_guid_": "PushMessageToCRDProfileProcess",
+  "_extends_": "PushMessageToJRDProfileProcess",
+  "operationName": "Push User Ids to JRD endpoint to process",
+  "specs": [
+    "to publish existing CRD user ids to endpoint"
+  ],
+  "request": {
+    "headers": {
+      "userType": "CASEWORKER"
+    }
+  }
+}
