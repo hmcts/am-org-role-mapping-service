@@ -71,10 +71,10 @@ public class RefreshController {
 
     @PostMapping(
             path = "/am/role-mapping/judicial/refresh",
-            produces = V1.MediaType.MAP_ASSIGNMENTS,
+            produces = V1.MediaType.REFRESH_JUDICIAL_ASSIGNMENTS,
             consumes = {"application/json"}
     )
-    @ResponseStatus(code = HttpStatus.ACCEPTED)
+    @ResponseStatus(code = HttpStatus.OK)
     @ApiOperation("refreshes judicial role assignments")
     @ApiResponses({
             @ApiResponse(

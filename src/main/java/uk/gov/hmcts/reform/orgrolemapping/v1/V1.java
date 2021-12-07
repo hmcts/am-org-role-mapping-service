@@ -12,6 +12,8 @@ public final class V1 {
         // External API
         public static final String SERVICE = "application/vnd.uk.gov.hmcts.am-org-role-mapping-service";
         public static final String MAP_ASSIGNMENTS = SERVICE + ".map-assignments+json;charset=UTF-8;version=1.0";
+        public static final String REFRESH_JUDICIAL_ASSIGNMENTS = SERVICE
+                + ".map-judicial-assignments+json;charset=UTF-8;version=1.0";
     }
 
     public static final class Error {
