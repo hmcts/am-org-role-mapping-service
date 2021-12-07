@@ -1,7 +1,7 @@
 {
   "_guid_": "PushMessageToCRDProfileProcess",
   "_extends_": "PushMessageToJRDProfileProcess",
-  "operationName": "Push User Ids to JRD endpoint to process",
+  "operationName": "Push User Ids to CRD endpoint to process",
   "specs": [
     "to publish existing CRD user ids to endpoint"
   ],
