@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
@@ -47,7 +48,7 @@ public class JudicialRefreshOrchestrator {
 
         ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles,
                 judicialBookings, JUDICIAL);
-        if (responseEntity.getBody() == null || ((List<ResponseEntity>) responseEntity.getBody()).stream().anyMatch(s ->
+        if (((List<ResponseEntity>) Objects.requireNonNull(responseEntity.getBody())).stream().anyMatch(s ->
                 s.getStatusCode() != HttpStatus.CREATED)) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(FAILED_ROLE_REFRESH);
         }
