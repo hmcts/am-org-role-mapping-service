@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClientInterceptor;
 
 import java.util.List;
 
 
 @FeignClient(value = "crdclient", url = "${feign.client.config.crdclient.url}",
-        configuration = {FeignClientConfiguration.class, FeignClientInterceptor.class},
+        configuration = {FeignClientConfiguration.class, RdFeignClientInterceptor.class},
         fallback = CRDFeignClientFallback.class)
 
 public interface CRDFeignClient {
