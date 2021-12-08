@@ -74,8 +74,6 @@ class ValidationUtilTest {
     void shouldNotThrow_ValidateDateTimeLength() {
         String ftDate = LocalDateTime.now().plusDays(5).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
         Assertions.assertDoesNotThrow(() ->
-                ValidationUtil.validateDateTime("3000-11-27T15:12",
-                        "3000-11-27T15:12")
                 ValidationUtil.validateDateTime(ftDate, ftDate)
         );
     }
