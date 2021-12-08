@@ -116,4 +116,27 @@ public class IdamRepository {
         return tokenResponse.accessToken;
     }
 
+    @Cacheable(value = "userToken")
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 3))
+    public String getManageUserToken(String userId) {
+        if (cacheType != null && !cacheType.equals("none")) {
+            var caffeineCache = (CaffeineCache) cacheManager.getCache("userToken");
+            com.github.benmanes.caffeine.cache.Cache<Object, Object> nativeCache = requireNonNull(caffeineCache)
+                    .getNativeCache();
+            log.info("Generating system user Token, current size of cache: {}", nativeCache.estimatedSize());
+        }
+        var tokenRequest = new TokenRequest(
+                oauth2Configuration.getClientId(),
+                oauth2Configuration.getClientSecret(),
+                "password",
+                "",
+                userId,
+                oidcAdminConfiguration.getSecret(),
+                oidcAdminConfiguration.getScope(),
+                "4",
+                ""
+        );
+        var tokenResponse = idamApi.generateOpenIdToken(tokenRequest);
+        return tokenResponse.accessToken;
+    }
 }

@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClientInterceptor;
 
 import java.util.List;
 
 @FeignClient(value = "jrdClient", url = "${feign.client.config.jrdClient.url}",
-        configuration = {FeignClientConfiguration.class, FeignClientInterceptor.class},
+        configuration = {FeignClientConfiguration.class, RdFeignClientInterceptor.class},
         fallback = JRDFeignClientFallback.class)
 public interface JRDFeignClient {
 
