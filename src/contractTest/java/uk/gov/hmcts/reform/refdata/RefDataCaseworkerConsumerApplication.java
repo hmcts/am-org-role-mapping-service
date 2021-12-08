@@ -25,5 +25,5 @@ public class RefDataCaseworkerConsumerApplication {
     IdamRepository idamRepository;
 
     @MockBean
-    OIdcAdminConfiguration oIdcAdminConfiguration;
+    OIdcAdminConfiguration oidcAdminConfiguration;
 }
