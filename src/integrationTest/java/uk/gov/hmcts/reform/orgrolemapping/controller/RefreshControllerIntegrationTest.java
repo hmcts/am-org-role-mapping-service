@@ -296,7 +296,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
                 .param("jobId", ""))
-                .andExpect(status().is(202))
+                .andExpect(status().is(400))
                 .andReturn();
     }
 
