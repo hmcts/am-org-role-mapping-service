@@ -1,0 +1,9 @@
+{
+  "_guid_": "S-002_PushMessageToCRDService",
+  "_extends_": "PushMessageToCRDProfileProcess",
+  "request": {
+    "body": {
+      "_extends_": "SingleUserId"
+    }
+  }
+}
