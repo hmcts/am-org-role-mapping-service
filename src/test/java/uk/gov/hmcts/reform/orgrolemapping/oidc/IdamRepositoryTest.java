@@ -67,7 +67,7 @@ class IdamRepositoryTest {
 
     IdamRepository idamRepository;
 
-    String token = "eyJhbGciOiJIUzUxMiJ9.Eim7hdYejtBbWXnqCf1gntbYpWHRX8BRzm4zIC_oszmC3D5QlNmkIetVPcMINg";
+    String userId = "abcd";
 
     @BeforeEach
     void setUp() {
@@ -144,7 +144,7 @@ class IdamRepositoryTest {
                 .when(restTemplate)
                 .exchange(anyString(), any(), any(), (Class<?>) any(Class.class));
 
-        assertThrows(NullPointerException.class, () -> idamRepository.searchUserByUserId(token, userId));
+        assertThrows(NullPointerException.class, () -> idamRepository.searchUserByUserId(this.userId, userId));
 
 
     }
@@ -170,7 +170,7 @@ class IdamRepositoryTest {
 
         String userId = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
 
-        ResponseEntity<List<Object>> actualResponse = idamRepository.searchUserByUserId(token, userId);
+        ResponseEntity<List<Object>> actualResponse = idamRepository.searchUserByUserId(this.userId, userId);
         assertNotNull(actualResponse);
         assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
 
@@ -178,9 +178,9 @@ class IdamRepositoryTest {
 
     @Test
     void shouldGetHeaders() {
-        HttpHeaders headers = IdamRepository.getHttpHeaders(token);
+        HttpHeaders headers = IdamRepository.getHttpHeaders(userId);
         assertTrue(headers.containsKey(HttpHeaders.AUTHORIZATION));
-        assertTrue(Objects.requireNonNull(headers.get(HttpHeaders.AUTHORIZATION)).get(0).contains(token));
+        assertTrue(Objects.requireNonNull(headers.get(HttpHeaders.AUTHORIZATION)).get(0).contains(userId));
     }
 
     @Test
