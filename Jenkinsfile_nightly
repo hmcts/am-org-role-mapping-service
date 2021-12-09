@@ -84,7 +84,7 @@ env.LAUNCH_DARKLY_ENV = "aat"
 
   enableMutationTest()
   enableFullFunctionalTest()
-  enableFortifyScan()
+//  enableFortifyScan()
 
   before('fullFunctionalTest') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
@@ -101,7 +101,7 @@ env.LAUNCH_DARKLY_ENV = "aat"
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
   }
 
-  after('fortify-scan') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
-  }
+//  after('fortify-scan') {
+//    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+//  }
 }
