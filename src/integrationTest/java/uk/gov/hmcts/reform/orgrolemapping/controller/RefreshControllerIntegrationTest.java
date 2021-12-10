@@ -31,6 +31,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -435,7 +436,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         logger.info(" -- Refresh Role Assignment record fail to update -- ");
     }
 
-    private ResponseEntity<List<JudicialBooking>> buildJudicialBookingsResponse(String... userIds) {
+    private ResponseEntity<JudicialBookingResponse> buildJudicialBookingsResponse(String... userIds) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("total_records", "" + userIds.length);
         List<JudicialBooking> bookings = new ArrayList<>();
@@ -444,7 +445,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                     .endTime(ZonedDateTime.now().plusDays(5)).userId(userId)
                     .locationId("location").regionId("region").build());
         }
-        return new ResponseEntity<>(bookings, headers, HttpStatus.OK);
+        return new ResponseEntity<>(new JudicialBookingResponse(bookings), headers, HttpStatus.OK);
     }
 
     private ResponseEntity<List<JudicialProfile>> buildJudicialProfilesResponse(String... userIds) {
@@ -517,7 +518,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
             }
             return entity;
         };
-        return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, new Object[]{jobId}, rm);
+        return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, rm, new Object[]{jobId});
     }
 
 }

@@ -2,11 +2,10 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 
-import java.util.ArrayList;
-import java.util.List;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialBookings;
 
 
@@ -21,10 +20,9 @@ public class JBSFeignClientFallback implements JBSFeignClient {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> ResponseEntity<List<T>> getJudicialBookingByUserIds(UserRequest userRequest) {
-        return ResponseEntity.ok((List<T>) new ArrayList<>(buildJudicialBookings(userRequest,
-                "judicialBookingSample.json")));
+    public ResponseEntity<JudicialBookingResponse> getJudicialBookingByUserIds(JudicialBookingRequest userRequest) {
+        return ResponseEntity.ok().body(new JudicialBookingResponse(buildJudicialBookings(
+                userRequest.getQueryRequest(), "judicialBookingSample.json")));
     }
 
 }

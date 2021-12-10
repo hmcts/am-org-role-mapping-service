@@ -94,10 +94,8 @@ class JudicialRefreshOrchestratorTest {
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
                 .thenReturn(userAccessProfiles);
 
-        ResponseEntity<List<Object>> bookingsList = ResponseEntity.ok().body(
-                List.of(TestDataBuilder.buildJudicialBooking()));
-        Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
-                .thenReturn(bookingsList);
+        List<JudicialBooking> bookingsList = List.of(TestDataBuilder.buildJudicialBooking());
+        Mockito.when(judicialBookingService.fetchJudicialBookings(any())).thenReturn(bookingsList);
 
         Mockito.when(requestMappingService.createAssignments(any(), any(), eq(UserType.JUDICIAL)))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
@@ -127,10 +125,9 @@ class JudicialRefreshOrchestratorTest {
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
                 .thenReturn(userAccessProfiles);
 
-        ResponseEntity<List<Object>> bookingsList = ResponseEntity.ok().body(
-                List.of(JudicialBooking.builder().userId(userId).endTime(ZonedDateTime.now().plusDays(5)).build()));
-        Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
-                .thenReturn(bookingsList);
+        List<JudicialBooking> bookingsList =
+                List.of(JudicialBooking.builder().userId(userId).endTime(ZonedDateTime.now().plusDays(5)).build());
+        Mockito.when(judicialBookingService.fetchJudicialBookings(any())).thenReturn(bookingsList);
 
         Mockito.when(requestMappingService.createAssignments(any(), any(), eq(UserType.JUDICIAL)))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
@@ -150,8 +147,7 @@ class JudicialRefreshOrchestratorTest {
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
                 .thenReturn(Collections.emptyMap());
         Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
-                .thenReturn(ResponseEntity.status(HttpStatus.OK)
-                        .body(Collections.emptyList()));
+                .thenReturn(Collections.emptyList());
 
         Mockito.when(requestMappingService.createAssignments(any(), eq(Collections.emptyList()), eq(UserType.JUDICIAL)))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
@@ -181,8 +177,7 @@ class JudicialRefreshOrchestratorTest {
                 .thenReturn(userAccessProfiles);
 
         Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
-                .thenReturn(ResponseEntity.status(HttpStatus.OK)
-                        .body(Collections.emptyList()));
+                .thenReturn(Collections.emptyList());
 
         Mockito.when(requestMappingService.createAssignments(any(), eq(Collections.emptyList()), eq(UserType.JUDICIAL)))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)

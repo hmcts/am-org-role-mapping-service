@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JBSFeignClientFallback;
 
@@ -32,24 +34,25 @@ public class JudicialBookingServiceTest {
         UserRequest userRequest = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445000", "123e4567-e89b-42d3-a456-556642445111"))
                 .build();
-
+        JudicialBookingRequest bookingRequest = new JudicialBookingRequest(userRequest);
         List<JudicialBooking> bookings = List.of(
                 JudicialBooking.builder().userId(userRequest.getUserIds().get(0))
                         .endTime(ZonedDateTime.now().plusDays(5))
                         .build());
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(bookings)).when(feignClient)
-                .getJudicialBookingByUserIds(userRequest);
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(new JudicialBookingResponse(bookings))).when(feignClient)
+                .getJudicialBookingByUserIds(bookingRequest);
 
-        ResponseEntity<List<JudicialBooking>> responseEntity = sut.fetchJudicialBookings(userRequest);
+        List<JudicialBooking> responseEntity = sut.fetchJudicialBookings(userRequest);
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(1, responseEntity.size());
     }
 
     @Test
     void fetchJudicialBookings_emptyUserIds() {
 
         UserRequest userRequest = UserRequest.builder().userIds(List.of("")).build();
-        doThrow(BadRequestException.class).when(feignClient).getJudicialBookingByUserIds(eq(userRequest));
+        JudicialBookingRequest bookingRequest = new JudicialBookingRequest(userRequest);
+        doThrow(BadRequestException.class).when(feignClient).getJudicialBookingByUserIds(eq(bookingRequest));
 
         assertThrows(BadRequestException.class, () -> sut.fetchJudicialBookings(userRequest));
     }
@@ -58,11 +61,12 @@ public class JudicialBookingServiceTest {
     void fetchJudicialBookings_emptyResponse() {
 
         UserRequest userRequest = UserRequest.builder().userIds(List.of("")).build();
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList()))
-                .when(feignClient).getJudicialBookingByUserIds(eq(userRequest));
+        JudicialBookingRequest bookingRequest = new JudicialBookingRequest(userRequest);
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(new JudicialBookingResponse(Collections.emptyList())))
+                .when(feignClient).getJudicialBookingByUserIds(eq(bookingRequest));
 
-        ResponseEntity<List<JudicialBooking>> responseEntity = sut.fetchJudicialBookings(userRequest);
+        List<JudicialBooking> responseEntity = sut.fetchJudicialBookings(userRequest);
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(0, responseEntity.size());
     }
 }
