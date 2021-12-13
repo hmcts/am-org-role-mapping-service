@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 
@@ -18,7 +17,7 @@ public class RASFeignClientFallback implements RASFeignClient {
     }
 
     @Override
-    public ResponseEntity<Object> createRoleAssignment(@RequestBody AssignmentRequest assignmentRequest) {
+    public ResponseEntity<Object> createRoleAssignment(AssignmentRequest assignmentRequest, String correlationId) {
         return ResponseEntity.status(HttpStatus.CREATED).build()/*.body(AssignmentRequest.builder())*/;
     }
 }

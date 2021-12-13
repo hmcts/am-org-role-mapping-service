@@ -44,7 +44,7 @@ public class JudicialRefreshOrchestrator {
         Map<String, Set<?>> userAccessProfiles = retrieveDataService.retrieveProfiles(userRequest, JUDICIAL);
 
         List<JudicialBooking> judicialBookings = judicialBookingService.fetchJudicialBookings(userRequest);
-
+        log.info("{} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
         ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles,
                 judicialBookings, JUDICIAL);
         if (((List<ResponseEntity>) Objects.requireNonNull(responseEntity.getBody())).stream().anyMatch(s ->
