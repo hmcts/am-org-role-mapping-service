@@ -82,24 +82,24 @@ env.LAUNCH_DARKLY_ENV = "aat"
   overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
 
-  enableMutationTest()
-  enableFullFunctionalTest()
+  //enableMutationTest()
+  //enableFullFunctionalTest()
 //  enableFortifyScan()
 
-  before('fullFunctionalTest') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
-  }
+//  before('fullFunctionalTest') {
+  //  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+  //}
 
-  after('build') {
-    stage("integration tests") {
-      sh "./gradlew integration"
-      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
-    }
-  }
+  //after('build') {
+    //stage("integration tests") {
+     // sh "./gradlew integration"
+     // steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+   // }
+  //}
 
-  after('fullFunctionalTest') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
-  }
+ // after('fullFunctionalTest') {
+  //  steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
+  //}
 
 //  after('fortify-scan') {
 //    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
