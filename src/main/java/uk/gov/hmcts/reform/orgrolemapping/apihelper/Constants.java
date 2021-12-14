@@ -50,5 +50,7 @@ public class Constants {
     public static final String SUCCESS_JOB = "Job is success for userIds ::  %s ";
     public static final String LAUNCH_DARKLY_ENV = "LAUNCH_DARKLY_ENV";
     public static final String SERVICEBUS_DOMAIN = ".servicebus.windows.net";
-
+    public static final String SUCCESS_ROLE_REFRESH = "Role assignments have been refreshed successfully";
+    public static final String FAILED_ROLE_REFRESH = "The assignment refresh request has been rejected due to "
+            + "validation failures.";
 }

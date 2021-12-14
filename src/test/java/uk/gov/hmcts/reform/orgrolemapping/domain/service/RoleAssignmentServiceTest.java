@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
 class RoleAssignmentServiceTest {
@@ -21,7 +22,7 @@ class RoleAssignmentServiceTest {
 
     @Test
     void testRASFeignClientTest() {
-        Mockito.when(rasFeignClient.createRoleAssignment(ArgumentMatchers.any(AssignmentRequest.class)))
+        Mockito.when(rasFeignClient.createRoleAssignment(ArgumentMatchers.any(AssignmentRequest.class), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"));
         ResponseEntity<Object> responseEntity = sut.createRoleAssignment(AssignmentRequest.builder().build());
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());

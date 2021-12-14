@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -27,10 +28,18 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
@@ -39,13 +48,17 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -68,6 +81,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String URL = "/am/role-mapping/refresh";
+    private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
 
     private MockMvc mockMvc;
     private JdbcTemplate template;
@@ -80,6 +94,15 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     @MockBean
     private CRDFeignClient crdFeignClient;
+
+    @MockBean
+    private JRDFeignClient jrdFeignClient;
+
+    @MockBean
+    private JBSFeignClient jbsFeignClient;
+
+    @MockBean
+    private RASFeignClient rasFeignClient;
 
     @MockBean
     private RequestMappingService requestMappingService;
@@ -372,6 +395,70 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertNotNull(refreshJob.getLog());
     }
 
+    @Test
+    public void shouldProcessRefreshRoleAssignmentsWithJudicialProfiles() throws Exception {
+        logger.info(" Refresh role assignments successfully with valid user profiles");
+        String uuid = UUID.randomUUID().toString();
+        doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+        doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
+        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
+
+        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
+                        .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                .andExpect(status().is(200))
+                .andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignments()
+            throws Exception {
+        logger.info(" Refresh role assignments failed with valid user profiles");
+        String uuid = UUID.randomUUID().toString();
+        doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+        doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
+        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders())
+                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
+                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                .andExpect(status().is(422))
+                .andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains(Constants.FAILED_ROLE_REFRESH));
+        logger.info(" -- Refresh Role Assignment record fail to update -- ");
+    }
+
+    private ResponseEntity<JudicialBookingResponse> buildJudicialBookingsResponse(String... userIds) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("total_records", "" + userIds.length);
+        List<JudicialBooking> bookings = new ArrayList<>();
+        for (String userId:userIds) {
+            bookings.add(JudicialBooking.builder().beginTime(ZonedDateTime.now())
+                    .endTime(ZonedDateTime.now().plusDays(5)).userId(userId)
+                    .locationId("location").regionId("region").build());
+        }
+        return new ResponseEntity<>(new JudicialBookingResponse(bookings), headers, HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<JudicialProfile>> buildJudicialProfilesResponse(String... userIds) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("total_records", "" + userIds.length);
+        List<JudicialProfile> bookings = new ArrayList<>();
+        for (String userId:userIds) {
+            bookings.add(JudicialProfile.builder().sidamId(userId)
+                    .appointments(List.of(Appointment.builder().appointment("Tribunal Judge")
+                            .appointmentType("Fee Paid").build())).build());
+        }
+        return new ResponseEntity<>(bookings, headers, HttpStatus.OK);
+    }
 
     @NotNull
     private ResponseEntity<List<CaseWorkerProfilesResponse>> buildUserProfileResponse() {
@@ -399,6 +486,14 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                 .when(requestMappingService).createAssignments(any(), any());
     }
 
+    @SuppressWarnings("unchecked")
+    private void mockRequestMappingServiceBookingParamWithStatus(HttpStatus status) {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
+                new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
+                        false))))))
+                .when(requestMappingService).createAssignments(any(), any(), any());
+    }
+
     @NotNull
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -423,7 +518,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
             }
             return entity;
         };
-        return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, new Object[]{jobId}, rm);
+        return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, rm, new Object[]{jobId});
     }
 
 }
