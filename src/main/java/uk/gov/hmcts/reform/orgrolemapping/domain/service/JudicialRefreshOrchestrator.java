@@ -47,8 +47,8 @@ public class JudicialRefreshOrchestrator {
         log.info("{} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
         ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles,
                 judicialBookings, JUDICIAL);
-        if (((List<ResponseEntity>) Objects.requireNonNull(responseEntity.getBody())).stream().anyMatch(s ->
-                s.getStatusCode() != HttpStatus.CREATED)) {
+        if (((List<ResponseEntity>) Objects.requireNonNull(responseEntity.getBody())).stream().anyMatch(response ->
+                response.getStatusCode() != HttpStatus.CREATED)) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(FAILED_ROLE_REFRESH);
         }
         return ResponseEntity.ok().body(Map.of("Message", SUCCESS_ROLE_REFRESH));

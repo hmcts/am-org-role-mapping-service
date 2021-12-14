@@ -397,7 +397,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     @Test
     public void shouldProcessRefreshRoleAssignmentsWithJudicialProfiles() throws Exception {
-        logger.info(" Refresh role assignments record With valid user profiles successful");
+        logger.info(" Refresh role assignments successfully with valid user profiles");
         String uuid = UUID.randomUUID().toString();
         doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
         doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
@@ -418,7 +418,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Test
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignments()
             throws Exception {
-        logger.info(" Not Refreshing role assignments record With valid user profiles");
+        logger.info(" Refresh role assignments failed with valid user profiles");
         String uuid = UUID.randomUUID().toString();
         doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
         doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());

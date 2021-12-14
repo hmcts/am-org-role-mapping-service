@@ -96,11 +96,11 @@ public class RefreshController {
     })
     public ResponseEntity<Object> judicialRefresh(@RequestHeader(value = "x-correlation-id", required = false)
                                                               String correlationId,
-                                                  @Validated @NonNull @RequestBody(required = true)
-                                                              JudicialRefreshRequest refreshRequest) {
+                                                  @Validated @NonNull @RequestBody
+                                                              JudicialRefreshRequest judicialRefreshRequest) {
         if (!StringUtils.isEmpty(correlationId)) {
             ValidationUtil.validateId(Constants.UUID_PATTERN, correlationId);
         }
-        return judicialRefreshOrchestrator.judicialRefresh(refreshRequest.getRefreshRequest());
+        return judicialRefreshOrchestrator.judicialRefresh(judicialRefreshRequest.getRefreshRequest());
     }
 }
