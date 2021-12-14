@@ -280,7 +280,10 @@ class DroolJudicialMappingTest extends DroolBase {
     @Test
     void shouldReturnFeePaidTribunalJudgeRoles_withMultipleBookings() throws IOException {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Fee-Paid)"));
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice("IAC Tribunal Judge (Fee-Paid)");
+            joh.setPrimaryLocation("Judicial Location");
+        });
         JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
         judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
@@ -288,7 +291,7 @@ class DroolJudicialMappingTest extends DroolBase {
         JudicialBooking judicialBooking2 = TestDataBuilder.buildJudicialBooking();
         judicialBooking2.setUserId(judicialOfficeHolders.stream().findFirst()
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
-        judicialBooking2.setLocationId("location2");
+        judicialBooking2.setLocationId(null);
         judicialBooking2.setBeginTime(ZonedDateTime.now().minusDays(5));
         judicialBookings = Set.of(judicialBooking, judicialBooking2);
         //Execute Kie session
@@ -322,7 +325,8 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals("judge",assignment2.getRoleName());
         assertEquals(workTypes, assignment2.getAttributes().get("workTypes").asText());
 
-        assertThat(List.of(judicialBooking.getLocationId(), judicialBooking2.getLocationId()),
+        assertThat(List.of(judicialBooking.getLocationId(),
+                        judicialOfficeHolders.stream().findFirst().get().getPrimaryLocation()),
                 containsInAnyOrder(assignment.getAttributes().get("primaryLocation").asText(),
                         assignment2.getAttributes().get("primaryLocation").asText()));
         assertThat(List.of(judicialBooking.getBeginTime(), judicialBooking2.getBeginTime()),
