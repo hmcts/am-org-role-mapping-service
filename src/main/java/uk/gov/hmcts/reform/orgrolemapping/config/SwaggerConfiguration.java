@@ -41,7 +41,7 @@ public class SwaggerConfiguration {
     private ApiInfo apiV2Info() {
         return new ApiInfoBuilder()
                 .title("Organisation Role Mapping Service")
-                .description("Organisation Role Service")
+                .description("Organisation Role Mapping Service")
                 .version("2")
                 .build();
     }
