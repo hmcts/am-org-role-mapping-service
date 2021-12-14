@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -83,14 +84,13 @@ class RefreshControllerTest {
                         "Role assignments have been refreshed successfully"));
         Mockito.when(judicialRefreshOrchestrator.judicialRefresh(any())).thenReturn(response);
 
-        assertEquals(response, sut.judicialRefresh("1", JudicialRefreshRequest.builder().build()));
+        assertEquals(response, sut.judicialRefresh(UUID.randomUUID().toString(),
+                JudicialRefreshRequest.builder().build()));
         Mockito.verify(judicialRefreshOrchestrator, Mockito.times(1)).judicialRefresh(any());
     }
 
     @Test
     void refreshJudicialRoleAssignmentRecords_emptyRequest() {
-        Mockito.when(judicialRefreshOrchestrator.judicialRefresh(any())).thenThrow(BadRequestException.class);
-
         Assert.assertThrows(BadRequestException.class, () ->
             sut.judicialRefresh("1", JudicialRefreshRequest.builder().build()));
 
