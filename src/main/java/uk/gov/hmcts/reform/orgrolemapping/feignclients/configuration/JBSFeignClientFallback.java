@@ -12,7 +12,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 @Component
 public class JBSFeignClientFallback implements JBSFeignClient {
 
-    public static final String JBS_API_NOT_AVAILABLE = "The Judicial Booking Service API Service is not available";
+    public static final String JBS_API_NOT_AVAILABLE = "The Judicial Booking Service API is not available";
 
     @Override
     public String getServiceStatus() {
