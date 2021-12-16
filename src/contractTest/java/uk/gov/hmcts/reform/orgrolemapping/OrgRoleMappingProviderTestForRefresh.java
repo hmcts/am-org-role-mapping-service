@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
-@Provider("am_judicialBooking_query")
+@Provider("am_orgRoleMapping_refresh")
 @PactBroker(scheme = "${PACT_BROKER_SCHEME:http}",
         host = "${PACT_BROKER_URL:localhost}", port = "${PACT_BROKER_PORT:9292}",
         consumerVersionSelectors = {@VersionSelector(tag = "master")})
