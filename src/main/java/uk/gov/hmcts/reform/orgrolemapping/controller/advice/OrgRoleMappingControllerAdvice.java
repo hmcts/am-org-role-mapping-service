@@ -69,7 +69,6 @@ public class OrgRoleMappingControllerAdvice {
 
     @ExceptionHandler(UnprocessableEntityException.class)
     protected ResponseEntity<Object> handleUnprocessableEntityException(
-            HttpServletRequest request,
             UnprocessableEntityException exception) {
         return errorDetailsResponseEntity(
                 exception,
