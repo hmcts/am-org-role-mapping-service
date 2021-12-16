@@ -129,11 +129,11 @@ class BulkAssignmentOrchestratorTest {
 
     @Test
     void createBulkAssignmentsRequestForJudicial_clientNotAvailable() {
-
+        UserRequest request = TestDataBuilder.buildUserRequest();
         doThrow(FeignException.NotFound.class).when(retrieveDataService)
                 .retrieveProfiles(Mockito.any(),Mockito.any());
         Assert.assertThrows(ResourceNotFoundException.class, () ->
-                sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL));
+                sut.createBulkAssignmentsRequest(request, UserType.JUDICIAL));
     }
 
 }

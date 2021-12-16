@@ -17,12 +17,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
-public class JudicialBookingServiceTest {
+class JudicialBookingServiceTest {
 
 
     JBSFeignClient feignClient = mock(JBSFeignClient.class);
@@ -52,7 +51,7 @@ public class JudicialBookingServiceTest {
 
         UserRequest userRequest = UserRequest.builder().userIds(List.of("")).build();
         JudicialBookingRequest bookingRequest = new JudicialBookingRequest(userRequest);
-        doThrow(BadRequestException.class).when(feignClient).getJudicialBookingByUserIds(eq(bookingRequest));
+        doThrow(BadRequestException.class).when(feignClient).getJudicialBookingByUserIds(bookingRequest);
 
         assertThrows(BadRequestException.class, () -> sut.fetchJudicialBookings(userRequest));
     }
@@ -63,7 +62,7 @@ public class JudicialBookingServiceTest {
         UserRequest userRequest = UserRequest.builder().userIds(List.of("")).build();
         JudicialBookingRequest bookingRequest = new JudicialBookingRequest(userRequest);
         doReturn(ResponseEntity.status(HttpStatus.OK).body(new JudicialBookingResponse(Collections.emptyList())))
-                .when(feignClient).getJudicialBookingByUserIds(eq(bookingRequest));
+                .when(feignClient).getJudicialBookingByUserIds(bookingRequest);
 
         List<JudicialBooking> responseEntity = sut.fetchJudicialBookings(userRequest);
 
