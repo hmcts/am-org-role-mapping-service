@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.JBSFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.mock;
 public class JudicialBookingServiceTest {
 
 
-    JBSFeignClientFallback feignClient = mock(JBSFeignClientFallback.class);
+    JBSFeignClient feignClient = mock(JBSFeignClient.class);
 
     JudicialBookingService sut = new JudicialBookingService(feignClient);
 
