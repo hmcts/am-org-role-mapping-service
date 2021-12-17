@@ -153,13 +153,10 @@ class RetrieveDataServiceTest {
         response.forEach((k, v) -> {
                 assertNotNull(k);
                 assertNotNull(v);
-                v.forEach(userAccessProfile -> {
-                    assertEquals(k, ((JudicialAccessProfile) userAccessProfile).getUserId());
-                });
-
+                v.forEach(userAccessProfile ->
+                        assertEquals(k, ((JudicialAccessProfile) userAccessProfile).getUserId()));
             }
         );
-
     }
 
 
@@ -177,12 +174,11 @@ class RetrieveDataServiceTest {
 
     @Test
     void shouldThrowNotFoundOnInvalidJudicialProfile() {
-
+        UserRequest request = buildUserRequest();
         doReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("errorDescription",
                 "The User Profile data could not be found"))).when(jrdService).fetchJudicialProfiles(any());
 
-        assertThrows(UnprocessableEntityException.class, () ->
-                sut.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL));
+        assertThrows(UnprocessableEntityException.class, () -> sut.retrieveProfiles(request, UserType.JUDICIAL));
     }
 
     @Test
