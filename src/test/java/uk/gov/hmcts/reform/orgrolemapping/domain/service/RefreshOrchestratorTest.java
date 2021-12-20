@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -238,16 +236,15 @@ class RefreshOrchestratorTest {
     }
 
     @Test
-    @DisplayName("nullJobIdTest_validate")
     void nullJobIdTest_validate() {
         StringBuilder builder = new StringBuilder();
-        //builder.append("uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException: ");
+        builder.append("uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException: ");
         builder.append("Invalid JobId request");
-
-        BadRequestException exception = Assertions.assertThrows(BadRequestException.class, () ->
-                sut.validate(null, TestDataBuilder.buildUserRequest()));
-        Assertions.assertTrue(exception.getLocalizedMessage().contains(builder.toString()));
-
+        try {
+            sut.validate(null, TestDataBuilder.buildUserRequest());
+        } catch (BadRequestException e) {
+            assertEquals(builder.toString(), e.toString());
+        }
     }
 
     @Test
@@ -307,10 +304,38 @@ class RefreshOrchestratorTest {
         verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
         verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
         verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
-        //Judicial profile
-        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy, UserType.JUDICIAL);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void refreshJobByServiceName_JudicialProfile() {
+
+        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
+        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.add("total_records", "4");
+
+        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
+                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
+
+
+        doReturn(responseEntity).when(crdService)
+                .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.JUDICIAL)))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+
+        RefreshJobEntity refreshJobEntity =
+                RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
+        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+
+        Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+        responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+        Map<String, HttpStatus> responseCodeWithUserIdSpy = Mockito.spy(responseCodeWithUserId);
+
+        assertNull(sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy, UserType.JUDICIAL));
+
+    }
 
     @SuppressWarnings("unchecked")
     @Test
@@ -370,8 +395,6 @@ class RefreshOrchestratorTest {
         assertNotNull(result.getBody());
 
     }
-
-
 
     @Test
     void buildSuccessAndFailureBucket_Success() {
@@ -449,6 +472,7 @@ class RefreshOrchestratorTest {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 refreshJobEntitySpy);
+        verify(refreshJobEntitySpy, Mockito.times(0)).setStatus(any());
     }
 
     @SuppressWarnings("unchecked")
@@ -496,10 +520,13 @@ class RefreshOrchestratorTest {
     @Test
     @DisplayName("refreshRoleAssignmentRecords_Exception")
     void refreshRoleAssignmentRecords_Exception() {
+        String msg = "Provided refresh job couldn't be retrieved.";
 
-        UnprocessableEntityException exception = Assertions.assertThrows(UnprocessableEntityException.class, () ->
-            sut.refresh(1L, TestDataBuilder.buildUserRequest()));
-        assertTrue(exception.getLocalizedMessage().contains("Provided refresh job couldn't be retrieved."));
+        try {
+            sut.refresh(1L, TestDataBuilder.buildUserRequest());
+        } catch (UnprocessableEntityException e) {
+            assertEquals(msg, e.getLocalizedMessage().toString());
+        }
     }
 
 }
