@@ -139,8 +139,8 @@ class BulkAssignmentOrchestratorTest {
         } catch (ResourceNotFoundException e) {
             assertNotNull(e);
         } catch (RuntimeException re) {
-        assertNotNull(re);
-    }
+            assertNotNull(re);
+        }
     }
 
 }
