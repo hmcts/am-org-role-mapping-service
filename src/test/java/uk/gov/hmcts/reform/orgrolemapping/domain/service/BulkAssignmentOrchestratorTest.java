@@ -138,7 +138,9 @@ class BulkAssignmentOrchestratorTest {
             Assert.fail("Expected an ResourceNotFoundException to be thrown");
         } catch (ResourceNotFoundException e) {
             assertNotNull(e);
-        }
+        } catch (RuntimeException re) {
+        assertNotNull(re);
+    }
     }
 
 }
