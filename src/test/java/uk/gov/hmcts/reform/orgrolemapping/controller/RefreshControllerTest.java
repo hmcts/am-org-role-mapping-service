@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 
 class RefreshControllerTest {
@@ -96,7 +97,7 @@ class RefreshControllerTest {
             sut.judicialRefresh("1", JudicialRefreshRequest.builder().build());
             Assert.fail("Expected an BadRequestException to be thrown ");
         } catch (BadRequestException e) {
-
+            assertNotNull(e);
         }
 
     }

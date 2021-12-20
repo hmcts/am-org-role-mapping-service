@@ -137,7 +137,7 @@ class BulkAssignmentOrchestratorTest {
             sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
             Assert.fail("Expected an ResourceNotFoundException to be thrown");
         } catch (ResourceNotFoundException e) {
-
+            assertNotNull(e);
         }
     }
 
