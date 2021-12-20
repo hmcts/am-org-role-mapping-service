@@ -34,7 +34,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -494,9 +497,9 @@ class RefreshOrchestratorTest {
     @DisplayName("refreshRoleAssignmentRecords_Exception")
     void refreshRoleAssignmentRecords_Exception() {
 
-        UnprocessableEntityException exception = Assertions.assertThrows(UnprocessableEntityException.class,()->
-        sut.refresh(1L, TestDataBuilder.buildUserRequest()));
-       Assertions.assertTrue(exception.getLocalizedMessage().contains("Provided refresh job couldn't be retrieved."));
+        UnprocessableEntityException exception = Assertions.assertThrows(UnprocessableEntityException.class, ()->
+            sut.refresh(1L, TestDataBuilder.buildUserRequest()));
+        assertTrue(exception.getLocalizedMessage().contains("Provided refresh job couldn't be retrieved."));
     }
 
-    }
+}
