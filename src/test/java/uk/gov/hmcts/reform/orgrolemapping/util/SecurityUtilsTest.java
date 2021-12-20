@@ -182,4 +182,10 @@ class SecurityUtilsTest {
         Assertions.assertNull(securityUtils.getServiceName());
     }
 
+    @Test
+    void shouldNotGetServiceNameContext() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        Assertions.assertNull(securityUtils.getServiceName());
+    }
 }

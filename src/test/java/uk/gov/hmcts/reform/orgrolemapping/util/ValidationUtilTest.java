@@ -155,11 +155,13 @@ class ValidationUtilTest {
 
     @Test
     void shouldThrow_EndTimeBeforeBeginTime() {
-        String futureDate1 = LocalDateTime.now().plusDays(10L).toString();
-        String futureDate2 = LocalDateTime.now().plusDays(5L).toString();
-        Assertions.assertThrows(BadRequestException.class, () ->
-                ValidationUtil.compareDateOrder(futureDate1, futureDate2)
-        );
+        String futureBeginTime = LocalDateTime.now().plusDays(10L).toString();
+        String futureEndTime = LocalDateTime.now().plusDays(5L).toString();
+
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class, () ->
+                ValidationUtil.compareDateOrder(futureBeginTime, futureEndTime));
+        Assertions.assertTrue(exception.getLocalizedMessage().contains(String.format(
+                "The end time: %s takes place before the begin time:", futureEndTime)));
     }
 
     @Test

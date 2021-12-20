@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
@@ -31,8 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -159,6 +161,59 @@ class RefreshOrchestratorTest {
         assertNotNull(response);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    @DisplayName("refreshRoleAssignmentJudicialRecords_nullUserRequest")
+    void refreshRoleAssignmentJudicialRecords_nullUserRequest() throws IOException {
+
+        Mockito.when(persistenceService.fetchRefreshJobById(any()))
+                .thenReturn(Optional.of(
+                        RefreshJobEntity.builder()
+                                .roleCategory(RoleCategory.JUDICIAL.toString())
+                                .build()));
+        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
+        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.add("total_records", "4");
+
+        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
+                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
+
+
+        doReturn(responseEntity).when(crdService)
+                .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+
+        Mockito.doNothing().when(parseRequestService)
+                .validateUserRequest(any());
+
+        Map<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
+        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
+                .id("1")
+                .roleId("1")
+                .roleName("roleName")
+                .primaryLocationName("primary")
+                .primaryLocationId("1")
+                .areaOfWorkId("1")
+                .serviceCode("1")
+                .suspended(false)
+                .build());
+        userAccessProfiles.put("1", userAccessProfileSet);
+
+        doReturn(userAccessProfiles).when(retrieveDataService)
+                .retrieveProfiles(any(), eq(UserType.JUDICIAL));
+
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.JUDICIAL)))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+
+        assertNull(response);
+    }
+
+
     @Test
     void refreshRoleAssignmentRecords_nullUserRequest_feignException() {
         Mockito.when(persistenceService.fetchRefreshJobById(any()))
@@ -180,15 +235,16 @@ class RefreshOrchestratorTest {
     }
 
     @Test
+    @DisplayName("nullJobIdTest_validate")
     void nullJobIdTest_validate() {
         StringBuilder builder = new StringBuilder();
-        builder.append("uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException: ");
+        //builder.append("uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException: ");
         builder.append("Invalid JobId request");
-        try {
-            sut.validate(null, TestDataBuilder.buildUserRequest());
-        } catch (BadRequestException e) {
-            assertEquals(builder.toString(), e.toString());
-        }
+
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class, () ->
+                sut.validate(null, TestDataBuilder.buildUserRequest()));
+        Assertions.assertTrue(exception.getLocalizedMessage().contains(builder.toString()));
+
     }
 
     @Test
@@ -248,6 +304,8 @@ class RefreshOrchestratorTest {
         verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
         verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
         verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+        //Judicial profile
+        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy, UserType.JUDICIAL);
     }
 
 
@@ -309,6 +367,8 @@ class RefreshOrchestratorTest {
         assertNotNull(result.getBody());
 
     }
+
+
 
     @Test
     void buildSuccessAndFailureBucket_Success() {
@@ -378,6 +438,16 @@ class RefreshOrchestratorTest {
 
     }
 
+    @Test
+    @DisplayName("updateJobStatus_EmptyList")
+    void updateJobStatus_EmptyList() {
+        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(TestDataBuilder.buildRefreshJobEntity());
+        sut.updateJobStatus(
+                Collections.emptyList(),
+                Collections.emptyList(),
+                refreshJobEntitySpy);
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     void refreshRoleAssignmentRecords_judicial() {
@@ -418,4 +488,15 @@ class RefreshOrchestratorTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response);
     }
-}
+
+    @SuppressWarnings("unchecked")
+    @Test
+    @DisplayName("refreshRoleAssignmentRecords_Exception")
+    void refreshRoleAssignmentRecords_Exception() {
+
+        UnprocessableEntityException exception = Assertions.assertThrows(UnprocessableEntityException.class,()->
+        sut.refresh(1L, TestDataBuilder.buildUserRequest()));
+       Assertions.assertTrue(exception.getLocalizedMessage().contains("Provided refresh job couldn't be retrieved."));
+    }
+
+    }

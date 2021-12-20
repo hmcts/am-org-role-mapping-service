@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -57,25 +58,19 @@ class RefreshControllerTest {
     @Test
     void refreshRoleAssignmentRecords_emptyJobId() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        String nfe = "java.lang.NumberFormatException: For input string: \"\"";
-
-        try {
-            sut.refresh(Long.valueOf(""), userRequest);
-        } catch (NumberFormatException e) {
-            assertEquals(nfe, e.toString());
-        }
+        String nfe = "For input string: \"\"";
+        NumberFormatException exception = Assertions.assertThrows(NumberFormatException.class, () ->
+                sut.refresh(Long.valueOf(""), userRequest));
+        Assertions.assertTrue(exception.getLocalizedMessage().equalsIgnoreCase(nfe));
     }
 
     @Test
     void refreshRoleAssignmentRecords_invalidJobId() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        String nfe = "java.lang.NumberFormatException: For input string: \"abc\"";
-
-        try {
-            sut.refresh(Long.valueOf("abc"), userRequest);
-        } catch (NumberFormatException e) {
-            assertEquals(nfe, e.toString());
-        }
+        String nfe = "For input string: \"abc\"";
+        NumberFormatException exception = Assertions.assertThrows(NumberFormatException.class, () ->
+                sut.refresh(Long.valueOf("abc"), userRequest));
+        Assertions.assertTrue(exception.getLocalizedMessage().equalsIgnoreCase(nfe));
     }
 
     @Test
@@ -96,4 +91,14 @@ class RefreshControllerTest {
 
     }
 
+
+    @Test
+    void refreshJudicialRoleAssignmentRecords_emptyCorrelationId() {
+        ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.OK).body(Map.of("Message",
+                "Role assignments have been refreshed successfully"));
+        Mockito.when(judicialRefreshOrchestrator.judicialRefresh(any())).thenReturn(response);
+
+        assertEquals(response, sut.judicialRefresh("",
+                JudicialRefreshRequest.builder().build()));
+    }
 }
