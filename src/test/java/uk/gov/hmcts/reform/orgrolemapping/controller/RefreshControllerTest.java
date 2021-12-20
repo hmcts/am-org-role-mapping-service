@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 class RefreshControllerTest {
@@ -59,18 +61,21 @@ class RefreshControllerTest {
     void refreshRoleAssignmentRecords_emptyJobId() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         String nfe = "For input string: \"\"";
-        NumberFormatException exception = Assertions.assertThrows(NumberFormatException.class, () ->
-                sut.refresh(Long.valueOf(""), userRequest));
-        Assertions.assertTrue(exception.getLocalizedMessage().equalsIgnoreCase(nfe));
+        NumberFormatException exception = assertThrows(NumberFormatException.class, () -> {
+                sut.refresh(Long.valueOf(""),userRequest);
+        });
+        assertTrue(exception.getLocalizedMessage().equalsIgnoreCase(nfe));
     }
 
     @Test
     void refreshRoleAssignmentRecords_invalidJobId() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        String nfe = "For input string: \"abc\"";
-        NumberFormatException exception = Assertions.assertThrows(NumberFormatException.class, () ->
-                sut.refresh(Long.valueOf("abc"), userRequest));
-        Assertions.assertTrue(exception.getLocalizedMessage().equalsIgnoreCase(nfe));
+        String nfe = "java.lang.NumberFormatException: For input string: \"abc\"";
+        try {
+            sut.refresh(Long.valueOf("abc"), userRequest);
+        } catch (NumberFormatException e) {
+            assertEquals(nfe, e.toString());
+        }
     }
 
     @Test
