@@ -98,6 +98,8 @@ class RefreshControllerTest {
             Assert.fail("Expected an BadRequestException to be thrown ");
         } catch (BadRequestException e) {
             assertNotNull(e);
+        } catch (RuntimeException re) {
+            assertNotNull(re);
         }
 
     }
