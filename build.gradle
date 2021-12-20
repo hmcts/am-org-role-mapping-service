@@ -82,8 +82,6 @@ configurations {
     cucumberRuntime.extendsFrom(functionalRuntime)
     contractTestCompile.extendsFrom testCompile
     contractTestRuntime.extendsFrom testRuntime
-    pactTestCompile.extendsFrom testCompile
-    pactTestRuntime.extendsFrom testRuntime
 }
 
 sourceSets {
@@ -120,14 +118,6 @@ sourceSets {
             srcDir file('src/contractTest/java')
         }
         resources.srcDir file('src/contractTest/resources')
-    }
-    pactTest {
-        java {
-            compileClasspath += main.output
-            runtimeClasspath += main.output
-            srcDir file('src/pactTest/java')
-        }
-        resources.srcDir file('src/pactTest/resources')
     }
 }
 
@@ -387,7 +377,7 @@ dependencies {
     implementation('io.netty:netty-transport-native-epoll:4.1.69.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-kqueue:4.1.69.Final') {
+    implementation('io.netty:netty-transport-native-kqueue:4.1.72.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
     implementation('io.netty:netty-transport-native-unix-common:4.1.69.Final') {
@@ -487,8 +477,17 @@ dependencies {
     contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
     contractTestImplementation('org.springframework.boot:spring-boot-starter-test')
 
+    contractTestCompile group: 'au.com.dius.pact.provider', name: 'junit5', version: versions.pact_version
+    contractTestCompile group: 'au.com.dius.pact.provider', name: 'spring', version: versions.pact_version
+    contractTestCompile group: 'au.com.dius.pact.provider', name: 'junit5spring', version: versions.pact_version
+
     contractTestCompile sourceSets.main.runtimeClasspath
     contractTestCompile sourceSets.test.runtimeClasspath
+}
+
+project.ext {
+    pacticipant = 'accessMgmt_orgRoleMapping'
+    pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
 task contract(type: Test) {
@@ -496,6 +495,7 @@ task contract(type: Test) {
     useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
+    include "uk/gov/hmcts/reform/judicialbooking/**"
     include "uk/gov/hmcts/reform/orgrolemapping/**"
     include "uk/gov/hmcts/reform/refdata/**"
     systemProperty 'pact.rootDir', "pacts"
@@ -505,6 +505,7 @@ task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test 
     useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
+    include "uk/gov/hmcts/reform/judicialbooking/**"
     include "uk/gov/hmcts/reform/refdata/**"
     include "uk/gov/hmcts/reform/orgrolemapping/**"
     systemProperty 'pact.rootDir', "pacts"
@@ -512,11 +513,17 @@ task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test 
 
 runAndPublishConsumerPactTests.finalizedBy pactPublish
 
-
-project.ext {
-    pacticipant = 'accessMgmt_orgRoleMapping'
-    pacticipantVersion = getCheckedOutGitCommitHash()
+task runProviderPactVerification(type: Test) {
+    useJUnitPlatform()
+    logger.lifecycle("Runs provider pact Tests")
+    testClassesDirs = sourceSets.contractTest.output.classesDirs
+    classpath = sourceSets.contractTest.runtimeClasspath
+    systemProperty 'pact.verifier.publishResults', System.getProperty('pact.verifier.publishResults')
+    systemProperty 'pact.provider.version', project.pacticipantVersion
 }
+
+runProviderPactVerification.dependsOn contract
+runProviderPactVerification.finalizedBy pactVerify
 
 def getCheckedOutGitCommitHash() {
     'git rev-parse --verify --short HEAD'.execute().text.trim()
