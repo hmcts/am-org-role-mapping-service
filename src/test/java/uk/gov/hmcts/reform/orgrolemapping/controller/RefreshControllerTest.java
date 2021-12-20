@@ -92,7 +92,6 @@ class RefreshControllerTest {
 
     @Test
     void refreshJudicialRoleAssignmentRecords_emptyRequest() {
-
         try {
             sut.judicialRefresh("1", JudicialRefreshRequest.builder().build());
             Assert.fail("Expected an BadRequestException to be thrown ");
@@ -101,7 +100,5 @@ class RefreshControllerTest {
         } catch (RuntimeException re) {
             assertNotNull(re);
         }
-
     }
-
 }

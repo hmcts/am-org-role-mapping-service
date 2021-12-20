@@ -132,7 +132,6 @@ class BulkAssignmentOrchestratorTest {
 
         doThrow(FeignException.NotFound.class).when(retrieveDataService)
                 .retrieveProfiles(Mockito.any(), Mockito.any());
-
         try {
             sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
             Assert.fail("Expected an ResourceNotFoundException to be thrown");
