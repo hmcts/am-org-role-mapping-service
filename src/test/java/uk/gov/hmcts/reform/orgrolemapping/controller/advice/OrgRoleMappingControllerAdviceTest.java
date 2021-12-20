@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -70,6 +71,14 @@ class OrgRoleMappingControllerAdviceTest {
         ResponseEntity<Object> responseEntity = csda.handleBadRequestError(badRequestException);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
+    }
+
+    @Test
+    void handleUnprocessableRequestError() {
+        UnprocessableEntityException unprocessableError = mock(UnprocessableEntityException.class);
+        ResponseEntity<Object> responseEntity = csda.handleUnprocessableEntityException(unprocessableError);
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), responseEntity.getStatusCodeValue());
     }
 
     @Test
