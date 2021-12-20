@@ -7,11 +7,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -26,6 +27,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -151,13 +153,10 @@ class RetrieveDataServiceTest {
         response.forEach((k, v) -> {
                 assertNotNull(k);
                 assertNotNull(v);
-                v.forEach(userAccessProfile -> {
-                    assertEquals(k, ((JudicialAccessProfile) userAccessProfile).getUserId());
-                });
-
+                v.forEach(userAccessProfile ->
+                        assertEquals(k, ((JudicialAccessProfile) userAccessProfile).getUserId()));
             }
         );
-
     }
 
 
@@ -171,6 +170,15 @@ class RetrieveDataServiceTest {
 
         assertNotNull(response);
         assertTrue(response.isEmpty());
+    }
+
+    @Test
+    void shouldThrowNotFoundOnInvalidJudicialProfile() {
+        UserRequest request = buildUserRequest();
+        doReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("errorDescription",
+                "The User Profile data could not be found"))).when(jrdService).fetchJudicialProfiles(any());
+
+        assertThrows(UnprocessableEntityException.class, () -> sut.retrieveProfiles(request, UserType.JUDICIAL));
     }
 
     @Test
