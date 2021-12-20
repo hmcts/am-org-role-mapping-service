@@ -497,7 +497,7 @@ class RefreshOrchestratorTest {
     @DisplayName("refreshRoleAssignmentRecords_Exception")
     void refreshRoleAssignmentRecords_Exception() {
 
-        UnprocessableEntityException exception = Assertions.assertThrows(UnprocessableEntityException.class, ()->
+        UnprocessableEntityException exception = Assertions.assertThrows(UnprocessableEntityException.class, () ->
             sut.refresh(1L, TestDataBuilder.buildUserRequest()));
         assertTrue(exception.getLocalizedMessage().contains("Provided refresh job couldn't be retrieved."));
     }
