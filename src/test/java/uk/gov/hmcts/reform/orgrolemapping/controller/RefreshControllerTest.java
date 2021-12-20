@@ -91,8 +91,9 @@ class RefreshControllerTest {
 
     @Test
     void refreshJudicialRoleAssignmentRecords_emptyRequest() {
+        JudicialRefreshRequest request = JudicialRefreshRequest.builder().build();
         Assert.assertThrows(BadRequestException.class, () ->
-            sut.judicialRefresh("1", JudicialRefreshRequest.builder().build()));
+            sut.judicialRefresh("1", request));
 
     }
 

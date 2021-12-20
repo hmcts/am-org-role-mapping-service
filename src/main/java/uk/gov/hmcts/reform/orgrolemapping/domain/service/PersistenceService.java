@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfig;

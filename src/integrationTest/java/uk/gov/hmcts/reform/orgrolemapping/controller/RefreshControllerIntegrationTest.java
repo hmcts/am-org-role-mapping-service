@@ -35,6 +35,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
@@ -50,7 +51,9 @@ import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -67,9 +70,11 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
 
 public class RefreshControllerIntegrationTest extends BaseTest {
 
@@ -436,6 +441,93 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         logger.info(" -- Refresh Role Assignment record fail to update -- ");
     }
 
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialBookings()
+            throws Exception {
+        logger.info(" Refresh role assignments with empty bookings");
+        String uuid = UUID.randomUUID().toString();
+        doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+        doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
+        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
+
+        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders())
+                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
+                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                .andExpect(status().isOk())
+                .andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
+        logger.info(" -- Refresh Role Assignment record updated without bookings -- ");
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialProfiles()
+            throws Exception {
+        logger.info(" Refresh role assignments with empty bookings");
+        ResponseEntity response = ResponseEntity.status(404).body(Map.of(
+                "errorDescription", "The User Profile data could not be found",
+                "status", "Not Found"));
+        doReturn(response).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+
+        mockMvc.perform(post(JUDICIAL_REFRESH_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders())
+                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
+                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.errorDescription")
+                        .value(containsString(FAILED_ROLE_REFRESH)))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldRejectJudicialRefreshRequest_withEmptyBody() throws Exception {
+        logger.info(" Refresh request rejected with empty request");
+        mockMvc.perform(post(JUDICIAL_REFRESH_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders())
+                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder().build())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorDescription")
+                        .value(containsString("Empty user request")))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldRejectJudicialRefreshRequest_withEmptyUserList() throws Exception {
+        logger.info(" Refresh request rejected with empty user request");
+        JudicialRefreshRequest request = JudicialRefreshRequest.builder()
+                .refreshRequest(UserRequest.builder().userIds(Collections.emptyList()).build()).build();
+        mockMvc.perform(post(JUDICIAL_REFRESH_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders())
+                        .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorDescription")
+                        .value(containsString("Empty user request")))
+                .andReturn();
+
+    }
+
+    @Test
+    public void shouldRejectJudicialRefreshRequest_withInvalidUserIdFormat() throws Exception {
+        logger.info(" Refresh role assignments failed with invalid valid user profiles format");
+
+        JudicialRefreshRequest request = JudicialRefreshRequest.builder()
+                .refreshRequest(UserRequest.builder().userIds(List.of("abc-123$")).build()).build();
+        mockMvc.perform(post(JUDICIAL_REFRESH_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders())
+                        .content(mapper.writeValueAsBytes(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorDescription")
+                        .value(containsString("The input parameter: \"abc-123$\", "
+                                + "does not comply with the required pattern")))
+                .andReturn();
+    }
+
     private ResponseEntity<JudicialBookingResponse> buildJudicialBookingsResponse(String... userIds) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("total_records", "" + userIds.length);
@@ -518,7 +610,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
             }
             return entity;
         };
-        return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, rm, new Object[]{jobId});
+        return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, rm, jobId);
     }
 
 }

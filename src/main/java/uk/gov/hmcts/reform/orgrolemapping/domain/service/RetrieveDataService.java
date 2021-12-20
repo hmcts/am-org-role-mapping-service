@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
@@ -56,7 +58,8 @@ public class RetrieveDataService {
     private final JRDService jrdService;
 
     @SuppressWarnings("unchecked")
-    public Map<String, Set<?>> retrieveProfiles(UserRequest userRequest, UserType userType) {
+    public Map<String, Set<?>> retrieveProfiles(UserRequest userRequest, UserType userType)
+            throws UnprocessableEntityException {
         long startTime = System.currentTimeMillis();
 
 
@@ -85,7 +88,12 @@ public class RetrieveDataService {
                     "Execution time of JRD Response : {} ms",
                     (Math.subtractExact(System.currentTimeMillis(), startTime))
             );
-            Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
+            } else {
+                log.error("Not getting {} Judicial profile", response.getBody());
+                throw new UnprocessableEntityException(Constants.FAILED_ROLE_REFRESH);
+            }
         }
 
         getAccessProfile(userRequest, userType, invalidUserProfilesCount, invalidProfiles, usersAccessProfiles,

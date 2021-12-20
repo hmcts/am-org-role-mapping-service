@@ -1,13 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller.advice;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,6 +13,15 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @ControllerAdvice(basePackages = "uk.gov.hmcts.reform.orgrolemapping")
 @RequestMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
@@ -64,6 +65,17 @@ public class OrgRoleMappingControllerAdvice {
             ErrorConstants.RESOURCE_NOT_FOUND.getErrorCode(),
             ErrorConstants.RESOURCE_NOT_FOUND.getErrorMessage()
                                          );
+    }
+
+    @ExceptionHandler(UnprocessableEntityException.class)
+    protected ResponseEntity<Object> handleUnprocessableEntityException(
+            UnprocessableEntityException exception) {
+        return errorDetailsResponseEntity(
+                exception,
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                ErrorConstants.UNPROCESSABLE_ENTITY.getErrorCode(),
+                ErrorConstants.UNPROCESSABLE_ENTITY.getErrorMessage()
+        );
     }
 
     @ExceptionHandler(HttpMessageConversionException.class)

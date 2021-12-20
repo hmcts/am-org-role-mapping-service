@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public class JRDServiceTest {
+class JRDServiceTest {
 
     JRDFeignClient jrdFeignClient = mock(JRDFeignClient.class);
 
