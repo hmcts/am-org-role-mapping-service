@@ -139,6 +139,7 @@ class BulkAssignmentOrchestratorTest {
             assertNotNull(e);
         } catch (RuntimeException re) {
             assertNotNull(re);
+            //test
         }
     }
 
