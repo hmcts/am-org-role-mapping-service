@@ -524,7 +524,7 @@ class RefreshOrchestratorTest {
     void refreshRoleAssignmentRecords_Exception() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         String uee = "Provided refresh job couldn't be retrieved.";
-        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,()->
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
                 sut.refresh(1L, userRequest));
         assertTrue(exception.getLocalizedMessage().contains(uee));
     }
