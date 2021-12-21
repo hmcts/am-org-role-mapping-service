@@ -36,6 +36,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -236,15 +238,15 @@ class RefreshOrchestratorTest {
     }
 
     @Test
+    @DisplayName("nullJobIdTest_validate")
     void nullJobIdTest_validate() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException: ");
-        builder.append("Invalid JobId request");
-        try {
-            sut.validate(null, TestDataBuilder.buildUserRequest());
-        } catch (BadRequestException e) {
-            assertEquals(builder.toString(), e.toString());
-        }
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        String errorMessage = "Invalid JobId request";
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () ->
+                sut.validate(null, userRequest));
+        assertTrue(exception.getLocalizedMessage().contains(errorMessage));
+
     }
 
     @Test
@@ -520,13 +522,11 @@ class RefreshOrchestratorTest {
     @Test
     @DisplayName("refreshRoleAssignmentRecords_Exception")
     void refreshRoleAssignmentRecords_Exception() {
-        String msg = "Provided refresh job couldn't be retrieved.";
-
-        try {
-            sut.refresh(1L, TestDataBuilder.buildUserRequest());
-        } catch (UnprocessableEntityException e) {
-            assertEquals(msg, e.getLocalizedMessage().toString());
-        }
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        String uee = "Provided refresh job couldn't be retrieved.";
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,()->
+                sut.refresh(1L, userRequest));
+        assertTrue(exception.getLocalizedMessage().contains(uee));
     }
 
 }
