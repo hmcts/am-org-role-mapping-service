@@ -1,0 +1,33 @@
+{
+  "_guid_": "S-031_DeleteDataForBookings",
+  "productName": "Judicial Booking Service",
+  "operationName": "Delete Booking by userId",
+  "method": "DELETE",
+  "uri": "{{JUDICIAL_BOOKING_URL}}/am/bookings/{userId}",
+  "specs": [
+    "to delete bookings just created above",
+    "to delete existing bookings corresponding to the test actorId"
+  ],
+  "users": {
+    "invokingUser": {
+      "username": "TEST_AM_USER1_BEFTA@test.local",
+      "password": "[[$TEST_AM_USER1_BEFTA_PWD]]"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]"
+    },
+    "pathVariables": {
+      "userId": "${[scenarioContext][parentContext][childContexts][S-031_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+    }
+  },
+  "expectedResponse": {
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "_extends_": "Common_204_Response"
+  }
+}
