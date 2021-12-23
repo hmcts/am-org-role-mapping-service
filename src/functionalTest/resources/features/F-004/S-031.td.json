@@ -10,7 +10,11 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-031_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+      "actorId": "${[scenarioContext][childContexts][S-031_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "roleName" : ["judge"],
+      "attributes": {
+          "contractType": ["Fee-Paid"]
+      }
     }
   },
   "expectedResponse": {
@@ -22,137 +26,22 @@
           "actorIdType" : "IDAM",
           "actorId" : "[[ANYTHING_PRESENT]]",
           "roleType" : "ORGANISATION",
-          "roleName" : "case-allocator",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N",
-            "contractType" : "Salaried",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "fee-paid-judge",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "contractType" : "Fee-Paid",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA",
-            "workTypes" : "hearing_work,decision_making_work,applications"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "hmcts-judiciary",
-          "classification" : "PRIVATE",
-          "grantType" : "BASIC",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : true,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N",
-            "contractType" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "hmcts-judiciary",
-          "classification" : "PRIVATE",
-          "grantType" : "BASIC",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : true,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N",
-            "contractType" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
           "roleName" : "judge",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
           "roleCategory" : "JUDICIAL",
           "readOnly" : false,
           "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "Y",
-            "contractType" : "Salaried",
+            "contractType" : "[[ANYTHING_PRESENT]]",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
             "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications"
           },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "leadership-judge",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "contractType" : "Salaried",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA",
-            "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications,access_requests"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "task-supervisor",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N",
-            "contractType" : "Salaried",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
+          "authorisations" : [ "373" ]
         }
       ]
     }
