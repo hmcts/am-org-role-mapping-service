@@ -353,7 +353,7 @@ dependencies {
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
-    implementation('io.netty:netty-buffer:4.1.69.Final') {
+    implementation('io.netty:netty-buffer:4.1.72.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
     implementation('io.netty:netty-codec:4.1.69.Final') {
