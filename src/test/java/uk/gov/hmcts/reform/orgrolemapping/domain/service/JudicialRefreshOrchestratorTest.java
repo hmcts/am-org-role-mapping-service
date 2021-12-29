@@ -58,7 +58,8 @@ class JudicialRefreshOrchestratorTest {
 
     @Test
     void refreshJudicialRoleAssignmentRecords_emptyUserRequest() {
-        Assert.assertThrows(BadRequestException.class, () -> sut.judicialRefresh(UserRequest.builder().build()));
+        UserRequest request = UserRequest.builder().build();
+        Assert.assertThrows(BadRequestException.class, () -> sut.judicialRefresh(request));
     }
 
     @Test
@@ -68,14 +69,14 @@ class JudicialRefreshOrchestratorTest {
 
     @Test
     void refreshJudicialRoleAssignmentRecords_invalidUserRequest() {
-        Assert.assertThrows(BadRequestException.class, () -> sut
-                .judicialRefresh(UserRequest.builder().userIds(List.of("1234-?4567")).build()));
+        UserRequest request = UserRequest.builder().userIds(List.of("1234-?4567")).build();
+        Assert.assertThrows(BadRequestException.class, () -> sut.judicialRefresh(request));
     }
 
     @Test
     void refreshJudicialRoleAssignmentRecords_emptyUserIds() {
-        Assert.assertThrows(BadRequestException.class, () -> sut
-                .judicialRefresh(UserRequest.builder().userIds(List.of("1234-4567", "")).build()));
+        UserRequest request = UserRequest.builder().userIds(List.of("1234-4567", "")).build();
+        Assert.assertThrows(BadRequestException.class, () -> sut.judicialRefresh(request));
     }
 
     @Test
