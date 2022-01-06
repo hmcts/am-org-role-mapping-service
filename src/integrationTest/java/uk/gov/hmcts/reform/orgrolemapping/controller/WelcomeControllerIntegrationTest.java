@@ -709,7 +709,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private String readJsonFromFile(String fileName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Object json;
-        try(InputStream is = WelcomeControllerIntegrationTest.class
+        try (InputStream is = WelcomeControllerIntegrationTest.class
                 .getResourceAsStream(String.format("/%s.json", fileName))) {
             json = mapper.readValue(is, Object.class);
         }
