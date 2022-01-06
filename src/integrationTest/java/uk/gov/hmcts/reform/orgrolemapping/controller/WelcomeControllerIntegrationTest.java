@@ -52,6 +52,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -157,7 +158,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         );
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         doReturn(true).when(featureConditionEvaluator).preHandle(any(), any(), any());
-        userRequest = UserRequest.builder().userIds(Arrays.asList("4dc7dd3c-3fb5-4611-bbde-5101a97681e2"))
+        userRequest = UserRequest.builder().userIds(List.of("4dc7dd3c-3fb5-4611-bbde-5101a97681e2"))
                 .build();
 
         judicialProfiles = new ArrayList<>(buildJudicialProfile(JRDUserRequest.builder()
@@ -189,7 +190,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -218,7 +219,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445676"))
+                .userIds(List.of("123e4567-e89b-42d3-a456-556642445676"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -277,7 +278,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9v"))
+                .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9v"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -305,7 +306,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -334,7 +335,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445000"))
+                .userIds(List.of("123e4567-e89b-42d3-a456-556642445000"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -366,7 +367,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -395,7 +396,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -423,7 +424,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -452,7 +453,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -508,7 +509,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -537,7 +538,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
         String uri = "/am/role-mapping/staff/users";
@@ -626,7 +627,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         judicialProfiles.get(0).getAppointments().remove(1);
         judicialProfiles.get(0).getAppointments().forEach(appointment ->
-                appointment.setRoles(Arrays.asList("Assistant Resident Judge"))
+                appointment.setRoles(List.of("Assistant Resident Judge"))
         );
 
         doReturn(ResponseEntity.ok(judicialProfiles))
@@ -707,9 +708,11 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private String readJsonFromFile(String fileName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        InputStream is = WelcomeControllerIntegrationTest.class
-                .getResourceAsStream(String.format("/%s.json", fileName));
-        Object json = mapper.readValue(is, Object.class);
+        Object json;
+        try(InputStream is = WelcomeControllerIntegrationTest.class
+                .getResourceAsStream(String.format("/%s.json", fileName))) {
+            json = mapper.readValue(is, Object.class);
+        }
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
     }
 
@@ -733,7 +736,8 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
             assertEquals(roleAssignmentCount, responseNode.get("requestedRoles").size());
         }
         if (roleAssignmentCount > 0) {
-            responseNode.get("requestedRoles").forEach(requestedRole -> {
+            assert responseNode != null;
+            Objects.requireNonNull(responseNode.get("requestedRoles")).forEach(requestedRole -> {
                 assertEquals(roleAssingmentStatus.toString(), requestedRole.get("status").asText());
                 if (!actorIds.contains(requestedRole.get("actorId").asText())) {
                     actorIds.add(requestedRole.get("actorId").asText());
