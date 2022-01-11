@@ -4,7 +4,9 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
@@ -213,6 +215,24 @@ class RequestMappingServiceTest {
 
     @SuppressWarnings("unchecked")
     @Test
+    void updateJudicialRoleAssignments() throws IOException {
+
+        AtomicInteger atomicInteger = new AtomicInteger(1);
+        AtomicInteger spyInteger = Mockito.spy(atomicInteger);
+
+        Mockito.when(roleAssignmentService.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(HttpStatus.CREATED));
+
+        ResponseEntity<Object> responseEntity = sut.updateProfileRoleAssignments(
+                "1",
+                TestDataBuilder.buildRequestedRoleCollection(Status.CREATED),
+                spyInteger,UserType.JUDICIAL);
+
+        assertNotNull(responseEntity);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
     void updateCaseworkerRoleAssignments_Failure() throws IOException {
 
         AtomicInteger atomicInteger = new AtomicInteger(1);
@@ -223,10 +243,27 @@ class RequestMappingServiceTest {
 
         sut.updateProfileRoleAssignments(
                 "1",
-                TestDataBuilder.buildRequestedRoleCollection(Status.CREATED),
+                TestDataBuilder.buildRequestedRoleCollection(Status.DELETED),
                 spyInteger,UserType.CASEWORKER);
 
         verify(spyInteger, Mockito.times(1)).getAndIncrement();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    @DisplayName("updateJudicialRoleAssignments_Failure")
+    void updateJudicialRoleAssignments_Failure() throws IOException {
+
+        AtomicInteger atomicInteger = new AtomicInteger(1);
+        AtomicInteger spyInteger = Mockito.spy(atomicInteger);
+
+        Mockito.when(roleAssignmentService.createRoleAssignment(any()))
+                .thenReturn(new ResponseEntity<>(HttpStatus.CREATED));
+
+        Assertions.assertNotNull(sut.updateProfileRoleAssignments(
+                "1",
+                TestDataBuilder.buildRequestedRoleCollection(Status.DELETED),
+                spyInteger,UserType.JUDICIAL));
     }
 
     @SuppressWarnings("unchecked")
