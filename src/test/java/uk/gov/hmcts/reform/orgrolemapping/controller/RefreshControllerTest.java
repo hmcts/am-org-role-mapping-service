@@ -97,4 +97,14 @@ class RefreshControllerTest {
 
     }
 
+
+    @Test
+    void refreshJudicialRoleAssignmentRecords_emptyCorrelationId() {
+        ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.OK).body(Map.of("Message",
+                "Role assignments have been refreshed successfully"));
+        Mockito.when(judicialRefreshOrchestrator.judicialRefresh(any())).thenReturn(response);
+
+        assertEquals(response, sut.judicialRefresh("",
+                JudicialRefreshRequest.builder().build()));
+    }
 }
