@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller.advice;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -94,6 +95,13 @@ class OrgRoleMappingControllerAdviceTest {
         ResponseEntity<Object> responseEntity = csda.handleForbiddenException(resourceNotFoundException);
         assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
         assertEquals(HttpStatus.FORBIDDEN.value(), responseEntity.getStatusCodeValue());
+    }
+
+    @Test
+    void handleRootExceptionException() {
+        Throwable exception = mock(Throwable.class);
+        Assertions.assertNotNull(csda.getRootException(exception));
+
     }
 
 }

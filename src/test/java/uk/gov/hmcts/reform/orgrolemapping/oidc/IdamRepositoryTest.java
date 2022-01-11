@@ -31,10 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -77,7 +78,7 @@ class IdamRepositoryTest {
         );
         ReflectionTestUtils.setField(
                 idamRepository,
-                "cacheType", ""
+                "cacheType", "null"
 
         );
     }
@@ -175,6 +176,34 @@ class IdamRepositoryTest {
         assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
 
     }
+
+    @Test
+    void shouldNotReturnUserRoles() {
+
+        Map<String, Object> mapRoles = new HashMap<>();
+
+        mapRoles.put("userRoles", Arrays.asList("caseworker", "am_import"));
+
+        List<Object> list = new ArrayList<>();
+        list.add(mapRoles);
+        //Setting status as Not Found
+        ResponseEntity<List<Object>> responseEntity = new ResponseEntity<List<Object>>(HttpStatus.NOT_FOUND);
+        doReturn(responseEntity)
+                .when(restTemplate)
+                .exchange(
+                        isA(String.class),
+                        eq(HttpMethod.GET),
+                        isA(HttpEntity.class),
+                        (ParameterizedTypeReference<?>) any(ParameterizedTypeReference.class));
+
+        String userId = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
+
+        ResponseEntity<List<Object>> actualResponse = idamRepository.searchUserByUserId(this.userId, userId);
+        assertNull(actualResponse);
+
+
+    }
+
 
     @Test
     void shouldGetHeaders() {
