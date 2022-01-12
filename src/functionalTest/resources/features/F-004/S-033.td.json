@@ -1,0 +1,26 @@
+{
+  "_guid_": "S-033",
+  "title": "must successfully create judicial role assignments for a user having single judicial booking",
+  "_extends_": "F-004_Test_Data_Base",
+  "specs": [
+    "contains the actorIds of the user having existing judicial role assignments",
+    "contains the actorIds of the user for which above booking is created"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "body": {
+      "actorId": "${[scenarioContext][childContexts][S-033_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "roleName" : ["judge"],
+      "attributes": {
+        "contractType": ["Fee-Paid"]
+      }
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "roleAssignmentResponse" : []
+    }
+  }
+}
