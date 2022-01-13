@@ -520,10 +520,9 @@ task runProviderPactVerification(type: Test) {
     classpath = sourceSets.contractTest.runtimeClasspath
     systemProperty 'pact.verifier.publishResults', System.getProperty('pact.verifier.publishResults')
     systemProperty 'pact.provider.version', project.pacticipantVersion
-    include "uk/gov/hmcts/reform/orgrolemapping/*Provider*"
+    include "uk/gov/hmcts/reform/orgrolemapping/provider/**"
 }
 
-runProviderPactVerification.dependsOn contract
 runProviderPactVerification.finalizedBy pactVerify
 
 def getCheckedOutGitCommitHash() {

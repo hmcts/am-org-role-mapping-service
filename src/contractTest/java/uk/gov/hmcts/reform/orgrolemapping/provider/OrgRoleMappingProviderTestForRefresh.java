@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.orgrolemapping;
+package uk.gov.hmcts.reform.orgrolemapping.provider;
 
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
