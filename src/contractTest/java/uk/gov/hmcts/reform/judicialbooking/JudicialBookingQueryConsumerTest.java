@@ -105,7 +105,7 @@ public class JudicialBookingQueryConsumerTest {
                         .userIds(List.of(USER_ID, USER_ID2)).build()).build();
     }
 
-    @Pact(provider = "am_judicialBooking_query", consumer = "accessMgmt_judicialBooking")
+    @Pact(provider = "am_judicialBooking_query", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeQueryJudicialBooking(PactDslWithProvider builder) throws JsonProcessingException {
 
         return builder
