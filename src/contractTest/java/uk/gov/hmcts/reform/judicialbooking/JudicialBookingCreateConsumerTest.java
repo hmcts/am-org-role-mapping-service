@@ -100,7 +100,7 @@ public class JudicialBookingCreateConsumerTest {
 
 
 
-    @Pact(provider = "am_judicialBooking_create", consumer = "accessMgmt_orgRoleMapping")
+    @Pact(provider = "am_judicialBooking_create", consumer = "accessMgmt_org")
     public RequestResponsePact executeCreateJudicialBooking(PactDslWithProvider builder) {
 
         return builder
