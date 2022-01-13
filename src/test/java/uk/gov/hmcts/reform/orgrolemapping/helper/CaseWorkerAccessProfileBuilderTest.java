@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
@@ -17,8 +18,8 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 
 class CaseWorkerAccessProfileBuilderTest {
 
-    private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
-    private static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
+    private static final String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
+    private static final String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
 
     @Test
     void buildUserAccessProfiles() {
@@ -76,7 +77,8 @@ class CaseWorkerAccessProfileBuilderTest {
 
     @Test
     void buildJudicialProfiles_BadRequest() {
+        JRDUserRequest userRequest = TestDataBuilder.buildRefreshRoleRequest();
         assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder
-                .buildJudicialProfile(TestDataBuilder.buildRefreshRoleRequest(), ""));
+                .buildJudicialProfile(userRequest, ""));
     }
 }

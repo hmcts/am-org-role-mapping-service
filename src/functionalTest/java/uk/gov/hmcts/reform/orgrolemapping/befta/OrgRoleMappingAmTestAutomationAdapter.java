@@ -6,6 +6,7 @@ import uk.gov.hmcts.befta.DefaultTestAutomationAdapter;
 import uk.gov.hmcts.befta.player.BackEndFunctionalTestScenarioContext;
 import uk.gov.hmcts.befta.util.EnvironmentVariableUtils;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
@@ -63,6 +64,8 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 }
                 logger.info("The nap is complete.");
                 return null;
+            case ("tomorrow"):
+                return LocalDate.now().plusDays(1);
             default:
                 return super.calculateCustomValue(scenarioContext, key);
         }
