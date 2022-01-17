@@ -47,7 +47,7 @@ import java.util.Map;
 @ContextConfiguration(classes = {JudicialBookingConsumerApplication.class})
 @TestPropertySource(properties = {"feign.client.config.jbsClient.url=http://localhost:4097"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
-public class JudicialBookingConsumerTest {
+public class JudicialBookingQueryConsumerTest {
 
     private static final String JUDICIAL_BOOKING_QUERY_URL = "/am/bookings/query";
     private static final String USER_ID = "5629957f-4dcd-40b8-a0b2-e64ff5898b28";
@@ -59,12 +59,12 @@ public class JudicialBookingConsumerTest {
     }
 
     @After
-    void teardown() {
+    public void teardown() {
         Executor.closeIdleConnections();
     }
 
     private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
+        var headers = new HttpHeaders();
         headers.add("ServiceAuthorization", "Bearer " + "1234");
         headers.add("Authorization", "Bearer " + "2345");
         return headers;
@@ -105,7 +105,7 @@ public class JudicialBookingConsumerTest {
                         .userIds(List.of(USER_ID, USER_ID2)).build()).build();
     }
 
-    @Pact(provider = "am_judicialBooking_query", consumer = "accessMgmt_judicialBooking")
+    @Pact(provider = "am_judicialBooking_query", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeQueryJudicialBooking(PactDslWithProvider builder) throws JsonProcessingException {
 
         return builder
