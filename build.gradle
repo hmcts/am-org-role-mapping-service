@@ -383,7 +383,7 @@ dependencies {
     implementation('io.netty:netty-transport-native-unix-common:4.1.69.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-http2:4.1.69.Final') {
+    implementation('io.netty:netty-codec-http2:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
     implementation('io.netty:netty-codec-socks:4.1.69.Final') {
@@ -520,9 +520,9 @@ task runProviderPactVerification(type: Test) {
     classpath = sourceSets.contractTest.runtimeClasspath
     systemProperty 'pact.verifier.publishResults', System.getProperty('pact.verifier.publishResults')
     systemProperty 'pact.provider.version', project.pacticipantVersion
+    include "uk/gov/hmcts/reform/orgrolemapping/provider/**"
 }
 
-runProviderPactVerification.dependsOn contract
 runProviderPactVerification.finalizedBy pactVerify
 
 def getCheckedOutGitCommitHash() {
