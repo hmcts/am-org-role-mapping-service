@@ -273,7 +273,7 @@ dependencies {
     implementation (group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0') {
         exclude group: 'org.glassfish', module: 'jakarta.el'
     }
-    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.12'
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.15'
     implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.1'
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
@@ -520,9 +520,9 @@ task runProviderPactVerification(type: Test) {
     classpath = sourceSets.contractTest.runtimeClasspath
     systemProperty 'pact.verifier.publishResults', System.getProperty('pact.verifier.publishResults')
     systemProperty 'pact.provider.version', project.pacticipantVersion
+    include "uk/gov/hmcts/reform/orgrolemapping/provider/**"
 }
 
-runProviderPactVerification.dependsOn contract
 runProviderPactVerification.finalizedBy pactVerify
 
 def getCheckedOutGitCommitHash() {
