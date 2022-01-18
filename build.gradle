@@ -10,7 +10,7 @@ buildscript {
 
 plugins {
     id 'application'
-    id 'uk.gov.hmcts.java' version '0.12.5'
+    id 'uk.gov.hmcts.java' version '0.12.18'
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
@@ -486,7 +486,6 @@ dependencies {
 }
 
 project.ext {
-    pacticipant = 'accessMgmt_orgRoleMapping'
     pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
@@ -523,6 +522,7 @@ task runProviderPactVerification(type: Test) {
     include "uk/gov/hmcts/reform/orgrolemapping/provider/**"
 }
 
+runProviderPactVerification.dependsOn contract
 runProviderPactVerification.finalizedBy pactVerify
 
 def getCheckedOutGitCommitHash() {
