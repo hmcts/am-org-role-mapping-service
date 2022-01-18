@@ -48,7 +48,7 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-006_DeleteDataForRoleAssignments01].
 
   @S-007
-  @FeatureToggle(IAC:iac_1_0=off) @FeatureToggle(IAC:iac_1_1=on)
+  @FeatureToggle(IAC:iac_1_0=on) @FeatureToggle(IAC:iac_1_1=off)
   Scenario: must successfully generate duplicate records message
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-007_DeleteDataForRoleAssignments01],
