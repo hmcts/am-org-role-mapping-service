@@ -486,7 +486,6 @@ dependencies {
 }
 
 project.ext {
-    pacticipant = 'accessMgmt_orgRoleMapping'
     pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
@@ -523,6 +522,7 @@ task runProviderPactVerification(type: Test) {
     include "uk/gov/hmcts/reform/orgrolemapping/provider/**"
 }
 
+runProviderPactVerification.dependsOn contract
 runProviderPactVerification.finalizedBy pactVerify
 
 def getCheckedOutGitCommitHash() {
