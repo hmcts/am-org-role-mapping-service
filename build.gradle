@@ -522,7 +522,6 @@ task runProviderPactVerification(type: Test) {
     include "uk/gov/hmcts/reform/orgrolemapping/provider/**"
 }
 
-runProviderPactVerification.dependsOn contract
 runProviderPactVerification.finalizedBy pactVerify
 
 def getCheckedOutGitCommitHash() {
