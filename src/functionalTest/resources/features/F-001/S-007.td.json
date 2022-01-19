@@ -3,6 +3,7 @@
   "title": "must successfully generate duplicate records message",
   "_extends_": "S-007_PushMessageToCRDService",
   "specs": [
+    "an active IDAM profile with full permissions",
     "contains the actorId of the user just published"
   ],
   "expectedResponse": {
