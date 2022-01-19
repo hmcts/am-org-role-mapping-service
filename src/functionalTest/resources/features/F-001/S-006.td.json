@@ -16,41 +16,88 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "roleAssignmentResponse": [
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
-          "roleType": "ORGANISATION",
-          "roleName": "senior-tribunal-caseworker",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "817181",
-            "jurisdiction": "IA",
-            "substantive": "Y"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
-          "roleType": "ORGANISATION",
-          "roleName": "tribunal-caseworker",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "817181",
-            "jurisdiction": "IA",
-            "substantive": "N"
-          }
+      "roleAssignmentResponse" : [ {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "roleType" : "ORGANISATION",
+        "roleName" : "hmcts-legal-operations",
+        "classification" : "PRIVATE",
+        "grantType" : "BASIC",
+        "roleCategory" : "LEGAL_OPERATIONS",
+        "readOnly" : true,
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "N",
+          "primaryLocation" : "817181"
         }
+      }, {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "roleType" : "ORGANISATION",
+        "roleName" : "hmcts-legal-operations",
+        "classification" : "PRIVATE",
+        "grantType" : "BASIC",
+        "roleCategory" : "LEGAL_OPERATIONS",
+        "readOnly" : true,
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "N",
+          "primaryLocation" : "817181"
+        }
+      }, {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "roleType" : "ORGANISATION",
+        "roleName" : "senior-tribunal-caseworker",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "LEGAL_OPERATIONS",
+        "readOnly" : false,
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "Y",
+          "primaryLocation" : "817181",
+          "jurisdiction" : "IA",
+          "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
+        }
+      }, {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "roleType" : "ORGANISATION",
+        "roleName" : "tribunal-caseworker",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "LEGAL_OPERATIONS",
+        "readOnly" : false,
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "N",
+          "primaryLocation" : "817181",
+          "jurisdiction" : "IA",
+          "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
+        }
+      }, {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "roleType" : "ORGANISATION",
+        "roleName" : "tribunal-caseworker",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "LEGAL_OPERATIONS",
+        "readOnly" : false,
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "N",
+          "primaryLocation" : "817181",
+          "jurisdiction" : "IA",
+          "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
+        }
+      }
       ]
     }
   }
