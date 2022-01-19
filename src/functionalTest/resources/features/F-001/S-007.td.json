@@ -1,42 +1,100 @@
 {
   "_guid_": "S-007",
   "title": "must successfully generate duplicate records message",
-  "_extends_": "F-001_Test_Data_Base",
+  "_extends_": "S-007_PushMessageToCRDService",
   "specs": [
+    "an active IDAM profile with full permissions",
     "contains the actorId of the user just published"
   ],
-
-  "request": {
-    "pathVariables": {
-      "actorId": "f5bdd3b5-b76d-4460-891e-ab9365669c5d"
-   }
-  },
-
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "headers": {
-      "_extends_": "Common_200_Response_Headers",
-      "ETag" : "W/\"8\""
+      "_extends_": "Common_200_Response_Headers"
     },
-    "body": {
-      "roleAssignmentResponse": [
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
-          "roleType": "ORGANISATION",
-          "roleName": "[[ANYTHING_PRESENT]]",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA",
-            "substantive": "Y"
+    "body" : {
+      "arrayInMap" : [ {
+        "roleAssignmentResponse" : {
+          "roleRequest" : {
+            "id" : "[[ANYTHING_PRESENT]]",
+            "authenticatedUserId" : "[[ANYTHING_PRESENT]]",
+            "correlationId" : "[[ANYTHING_PRESENT]]",
+            "assignerId" : "[[ANYTHING_PRESENT]]",
+            "requestType" : "CREATE",
+            "process" : "staff-organisational-role-mapping",
+            "reference" : "[[ANYTHING_PRESENT]]",
+            "replaceExisting" : true,
+            "status" : "APPROVED",
+            "created" : "[[ANYTHING_PRESENT]]",
+            "log" : "Duplicate Request: Requested Assignments are already live.",
+            "byPassOrgDroolRule" : true
+          },
+          "requestedRoles" : [ {
+            "id" : "[[ANYTHING_PRESENT]]",
+            "actorIdType" : "IDAM",
+            "actorId" : "[[ANYTHING_PRESENT]]",
+            "roleType" : "ORGANISATION",
+            "roleName" : "senior-tribunal-caseworker",
+            "classification" : "PUBLIC",
+            "grantType" : "STANDARD",
+            "roleCategory" : "LEGAL_OPERATIONS",
+            "readOnly" : false,
+            "process" : "staff-organisational-role-mapping",
+            "reference" : "[[ANYTHING_PRESENT]]",
+            "status" : "LIVE",
+            "created" : "[[ANYTHING_PRESENT]]",
+            "log" : "[[ANYTHING_PRESENT]]",
+            "attributes" : {
+              "substantive" : "Y",
+              "primaryLocation" : "[[ANYTHING_PRESENT]]",
+              "jurisdiction" : "IA",
+              "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
+            }
+          },
+            {
+            "id" : "[[ANYTHING_PRESENT]]",
+            "actorIdType" : "IDAM",
+            "actorId" : "[[ANYTHING_PRESENT]]",
+            "roleType" : "ORGANISATION",
+            "roleName" : "tribunal-caseworker",
+            "classification" : "PUBLIC",
+            "grantType" : "STANDARD",
+            "roleCategory" : "LEGAL_OPERATIONS",
+            "readOnly" : false,
+            "process" : "staff-organisational-role-mapping",
+            "reference" : "[[ANYTHING_PRESENT]]",
+            "status" : "LIVE",
+            "created" : "[[ANYTHING_PRESENT]]",
+            "log" : "[[ANYTHING_PRESENT]]",
+            "attributes" : {
+              "substantive" : "N",
+              "primaryLocation" : "[[ANYTHING_PRESENT]]",
+              "jurisdiction" : "IA",
+              "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
+            }
+          },
+            {
+            "id" : "[[ANYTHING_PRESENT]]",
+            "actorIdType" : "IDAM",
+            "actorId" : "[[ANYTHING_PRESENT]]",
+            "roleType" : "ORGANISATION",
+            "roleName" : "hmcts-legal-operations",
+            "classification" : "PRIVATE",
+            "grantType" : "BASIC",
+            "roleCategory" : "LEGAL_OPERATIONS",
+            "readOnly" : true,
+            "process" : "staff-organisational-role-mapping",
+            "reference" : "[[ANYTHING_PRESENT]]",
+            "status" : "LIVE",
+            "created" : "[[ANYTHING_PRESENT]]",
+            "log" : "[[ANYTHING_PRESENT]]",
+            "attributes" : {
+              "substantive" : "N",
+              "primaryLocation" : "[[ANYTHING_PRESENT]]"
+            }
           }
+          ]
         }
+      }
       ]
     }
   }
