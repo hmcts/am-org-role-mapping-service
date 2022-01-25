@@ -1,4 +1,9 @@
 buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
     dependencies {
         classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.9")
         classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.0'
@@ -31,7 +36,7 @@ def versions = [
         junit          : '5.5.0',
         lombok         : '1.18.6',
         pitest         : '1.7.2',
-        reformLogging  : '6.0.1',
+        reformLogging  : '5.1.7',
         reformS2sClient: '4.0.2',
         serenity       : '2.1.0',
         springBoot     : '2.4.9',
@@ -301,14 +306,14 @@ dependencies {
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot)
 
     //Added for S2S and User Authentication
-    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: versions.reformS2sClient
+    implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: versions.reformS2sClient
     compile group: 'javax.inject', name: 'javax.inject', version: '1'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
     compile group: 'io.springfox', name: 'springfox-spring-webmvc', version: versions.swagger2Version
 
-    compile group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
-    compile group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
+    implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
+    implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
 
     //Azure service bus libraries
