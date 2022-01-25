@@ -46,7 +46,7 @@ def versions = [
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
-        drools         : '7.40.0.Final',
+        drools         : '7.60.0.Final',
         launchDarklySdk: '5.2.2'
 ]
 
@@ -286,20 +286,10 @@ dependencies {
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
     // drools engine dependency
-    compile(group: 'org.drools', name: 'drools-core', version: versions.drools) {
-        exclude group: 'org.jsoup', module: 'jsoup'
-    }
-    compile(group: 'org.drools', name: 'drools-compiler', version: versions.drools) {
-        exclude group: 'org.jsoup', module: 'jsoup'
-    }
-    compile(group: 'org.drools', name: 'drools-decisiontables', version: versions.drools) {
-        exclude group: 'org.jsoup', module: 'jsoup'
-    }
-    compile(group: 'org.kie', name: 'kie-ci', version: versions.drools) {
-        exclude group: 'org.jsoup', module: 'jsoup'
-        exclude group: 'org.apache.ant', module: 'ant'
-        exclude group: 'org.apache.ant', module: 'ant-launcher'
-    }
+    implementation group: 'org.drools', name: 'drools-core', version: versions.drools
+    implementation group: 'org.drools', name: 'drools-compiler', version: versions.drools
+    implementation group: 'org.drools', name: 'drools-decisiontables', version: versions.drools
+    implementation group: 'org.kie', name: 'kie-ci', version: versions.drools
 
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.5.7'
     //Added for Spring Security Implementation
@@ -555,7 +545,7 @@ bootJar {
 }
 
 configurations {
-    runtime.exclude group: "com.thoughtworks.xstream", module: "xstream"
+
 }
 
 cucumberReports {
