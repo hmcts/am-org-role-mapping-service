@@ -47,7 +47,9 @@ def versions = [
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
         drools         : '7.60.0.Final',
-        launchDarklySdk: '5.2.2'
+        launchDarklySdk: '5.2.2',
+        log4JVersion   : '2.17.1',
+        logbackVersion : '1.2.10'
 ]
 
 mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
@@ -273,7 +275,7 @@ dependencies {
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot)
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot)
     implementation 'com.github.hmcts:properties-volume-spring-boot-starter:0.1.1'
-    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.12'
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.15'
     implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.1'
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
@@ -289,7 +291,14 @@ dependencies {
     implementation group: 'org.drools', name: 'drools-core', version: versions.drools
     implementation group: 'org.drools', name: 'drools-compiler', version: versions.drools
     implementation group: 'org.drools', name: 'drools-decisiontables', version: versions.drools
-    implementation group: 'org.kie', name: 'kie-ci', version: versions.drools
+    compile(group: 'org.kie', name: 'kie-ci', version: versions.drools) {
+        exclude group: 'org.jsoup', module: 'jsoup'
+        exclude group: 'org.apache.ant', module: 'ant'
+        exclude group: 'org.apache.ant', module: 'ant-launcher'
+        exclude group: 'org.glassfish', module: 'jakarta.el'
+        exclude group: 'jakarta.el', module: 'jakarta.el-api'
+        exclude group: 'com.google.protobuf', module: 'protobuf-java'
+    }
 
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.5.7'
     //Added for Spring Security Implementation
@@ -307,7 +316,9 @@ dependencies {
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
 
     //Azure service bus libraries
-    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'
+    implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'){
+        exclude group: 'com.microsoft.azure', module: 'adal4j'
+    }
     implementation group: 'com.azure', name: 'azure-core', version: '1.16.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
 
@@ -343,52 +354,52 @@ dependencies {
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
-    implementation('io.netty:netty-buffer:4.1.69.Final') {
+    implementation('io.netty:netty-buffer:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec:4.1.69.Final') {
+    implementation('io.netty:netty-codec:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-http:4.1.69.Final') {
+    implementation('io.netty:netty-codec-http:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-common:4.1.69.Final') {
+    implementation('io.netty:netty-common:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-handler:4.1.69.Final') {
+    implementation('io.netty:netty-handler:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver:4.1.69.Final') {
+    implementation('io.netty:netty-resolver:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport:4.1.69.Final') {
+    implementation('io.netty:netty-transport:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-epoll:4.1.69.Final') {
+    implementation('io.netty:netty-transport-native-epoll:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-kqueue:4.1.69.Final') {
+    implementation('io.netty:netty-transport-native-kqueue:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-unix-common:4.1.69.Final') {
+    implementation('io.netty:netty-transport-native-unix-common:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-http2:4.1.69.Final') {
+    implementation('io.netty:netty-codec-http2:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-socks:4.1.69.Final') {
+    implementation('io.netty:netty-codec-socks:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-handler-proxy:4.1.69.Final') {
+    implementation('io.netty:netty-handler-proxy:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-dns:4.1.69.Final') {
+    implementation('io.netty:netty-codec-dns:4.1.73.Final') {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver-dns:4.1.69.Final') {
+    implementation('io.netty:netty-resolver-dns:4.1.73.Final') {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver-dns-native-macos:4.1.69.Final') {
+    implementation('io.netty:netty-resolver-dns-native-macos:4.1.73.Final') {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
@@ -475,6 +486,19 @@ dependencies {
     contractTestCompile sourceSets.test.runtimeClasspath
 }
 
+dependencyManagement {
+    dependencies {
+        dependencySet(group: 'org.apache.logging.log4j', version: versions.log4JVersion) {
+            entry 'log4j-core'
+            entry 'log4j-api'
+            entry 'log4j-to-slf4j'
+        }
+        dependencySet(group: 'ch.qos.logback', version: versions.logbackVersion) {
+            entry 'logback-classic'
+            entry 'logback-core'
+        }
+    }
+}
 project.ext {
     pacticipantVersion = getCheckedOutGitCommitHash()
 }
@@ -545,7 +569,9 @@ bootJar {
 }
 
 configurations {
-
+    runtime.exclude group: "org.glassfish", module: "jakarta.el"
+    runtime.exclude group: "io.github.x-stream", module: "mxparser"
+    runtime.exclude group: 'io.netty', module: 'netty-tcnative-classes'
 }
 
 cucumberReports {
