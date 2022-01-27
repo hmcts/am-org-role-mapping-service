@@ -572,10 +572,6 @@ configurations {
     runtime.exclude group: "org.glassfish", module: "jakarta.el"
     runtime.exclude group: "io.github.x-stream", module: "mxparser"
     runtime.exclude group: 'io.netty', module: 'netty-tcnative-classes'
-    runtime.exclude group: 'org.apache.logging.log4j', module: 'log4j-api'
-    runtime.exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
-    runtime.exclude group: 'ch.qos.logback', module: 'logback-classic'
-    runtime.exclude group: 'ch.qos.logback', module: 'logback-core'
 }
 
 cucumberReports {
