@@ -47,9 +47,7 @@ def versions = [
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
         drools         : '7.60.0.Final',
-        launchDarklySdk: '5.2.2',
-        log4JVersion   : '2.17.1',
-        logbackVersion : '1.2.10'
+        launchDarklySdk: '5.2.2'
 ]
 
 mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
@@ -486,19 +484,6 @@ dependencies {
     contractTestCompile sourceSets.test.runtimeClasspath
 }
 
-dependencyManagement {
-    dependencies {
-        dependencySet(group: 'org.apache.logging.log4j', version: versions.log4JVersion) {
-            entry 'log4j-core'
-            entry 'log4j-api'
-            entry 'log4j-to-slf4j'
-        }
-        dependencySet(group: 'ch.qos.logback', version: versions.logbackVersion) {
-            entry 'logback-classic'
-            entry 'logback-core'
-        }
-    }
-}
 project.ext {
     pacticipantVersion = getCheckedOutGitCommitHash()
 }
@@ -572,6 +557,10 @@ configurations {
     runtime.exclude group: "org.glassfish", module: "jakarta.el"
     runtime.exclude group: "io.github.x-stream", module: "mxparser"
     runtime.exclude group: 'io.netty', module: 'netty-tcnative-classes'
+    runtime.exclude group: 'org.apache.logging.log4j', module: 'log4j-api'
+    runtime.exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    runtime.exclude group: 'ch.qos.logback', module: 'logback-classic'
+    runtime.exclude group: 'ch.qos.logback', module: 'logback-core'
 }
 
 cucumberReports {
