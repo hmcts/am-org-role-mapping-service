@@ -1,6 +1,8 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.9")
@@ -34,8 +36,8 @@ def versions = [
         junit          : '5.5.0',
         lombok         : '1.18.6',
         pitest         : '1.7.2',
-        reformLogging  : '5.1.1',
-        reformS2sClient: '3.1.2',
+        reformLogging  : '5.1.7',
+        reformS2sClient: '4.0.2',
         serenity       : '2.1.0',
         springBoot     : '2.4.9',
         springHystrix  : '2.1.1.RELEASE',
@@ -44,8 +46,10 @@ def versions = [
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
-        drools         : '7.40.0.Final',
-        launchDarklySdk: '5.2.2'
+        drools         : '7.60.0.Final',
+        launchDarklySdk: '5.2.2',
+        log4JVersion   : '2.17.1',
+        logbackVersion : '1.2.10'
 ]
 
 mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
@@ -270,10 +274,8 @@ dependencies {
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot)
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot)
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot)
-    implementation (group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0') {
-        exclude group: 'org.glassfish', module: 'jakarta.el'
-    }
-    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.12'
+    implementation 'com.github.hmcts:properties-volume-spring-boot-starter:0.1.1'
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.15'
     implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.1'
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
@@ -286,19 +288,16 @@ dependencies {
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
     // drools engine dependency
-    compile(group: 'org.drools', name: 'drools-core', version: versions.drools) {
-        exclude group: 'org.jsoup', module: 'jsoup'
-    }
-    compile(group: 'org.drools', name: 'drools-compiler', version: versions.drools) {
-        exclude group: 'org.jsoup', module: 'jsoup'
-    }
-    compile(group: 'org.drools', name: 'drools-decisiontables', version: versions.drools) {
-        exclude group: 'org.jsoup', module: 'jsoup'
-    }
+    implementation group: 'org.drools', name: 'drools-core', version: versions.drools
+    implementation group: 'org.drools', name: 'drools-compiler', version: versions.drools
+    implementation group: 'org.drools', name: 'drools-decisiontables', version: versions.drools
     compile(group: 'org.kie', name: 'kie-ci', version: versions.drools) {
         exclude group: 'org.jsoup', module: 'jsoup'
         exclude group: 'org.apache.ant', module: 'ant'
         exclude group: 'org.apache.ant', module: 'ant-launcher'
+        exclude group: 'org.glassfish', module: 'jakarta.el'
+        exclude group: 'jakarta.el', module: 'jakarta.el-api'
+        exclude group: 'com.google.protobuf', module: 'protobuf-java'
     }
 
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.5.7'
@@ -306,18 +305,20 @@ dependencies {
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot)
 
     //Added for S2S and User Authentication
-    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: versions.reformS2sClient
+    implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: versions.reformS2sClient
     compile group: 'javax.inject', name: 'javax.inject', version: '1'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
     compile group: 'io.springfox', name: 'springfox-spring-webmvc', version: versions.swagger2Version
 
-    compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
-    compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
+    implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
+    implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
 
     //Azure service bus libraries
-    compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'
+    implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'){
+        exclude group: 'com.microsoft.azure', module: 'adal4j'
+    }
     implementation group: 'com.azure', name: 'azure-core', version: '1.16.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
 
@@ -340,7 +341,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-    implementation 'uk.gov.hmcts.reform:idam-client:v1.5.4'
+    compile group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:2.11.0'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090:
     // To be cleaned up later
@@ -353,52 +354,52 @@ dependencies {
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.1'
 
-    implementation('io.netty:netty-buffer:4.1.69.Final') {
+    implementation('io.netty:netty-buffer:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec:4.1.69.Final') {
+    implementation('io.netty:netty-codec:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-http:4.1.69.Final') {
+    implementation('io.netty:netty-codec-http:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-common:4.1.69.Final') {
+    implementation('io.netty:netty-common:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-handler:4.1.69.Final') {
+    implementation('io.netty:netty-handler:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver:4.1.69.Final') {
+    implementation('io.netty:netty-resolver:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport:4.1.69.Final') {
+    implementation('io.netty:netty-transport:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-epoll:4.1.69.Final') {
+    implementation('io.netty:netty-transport-native-epoll:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-kqueue:4.1.69.Final') {
+    implementation('io.netty:netty-transport-native-kqueue:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-transport-native-unix-common:4.1.69.Final') {
+    implementation('io.netty:netty-transport-native-unix-common:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-http2:4.1.69.Final') {
+    implementation('io.netty:netty-codec-http2:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-socks:4.1.69.Final') {
+    implementation('io.netty:netty-codec-socks:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-handler-proxy:4.1.69.Final') {
+    implementation('io.netty:netty-handler-proxy:4.1.73.Final') {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-codec-dns:4.1.69.Final') {
+    implementation('io.netty:netty-codec-dns:4.1.73.Final') {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver-dns:4.1.69.Final') {
+    implementation('io.netty:netty-resolver-dns:4.1.73.Final') {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver-dns-native-macos:4.1.69.Final') {
+    implementation('io.netty:netty-resolver-dns-native-macos:4.1.73.Final') {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
     testCompile('com.opentable.components:otj-pg-embedded:0.13.3')
@@ -423,7 +424,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
-    testImplementation 'com.github.hmcts:befta-fw:8.4.0'
+    testImplementation 'com.github.hmcts:befta-fw:8.7.1'
     //compile fileTree(dir: 'lib', include: 'befta-fw-5.11.0.jar')
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
 
@@ -483,6 +484,19 @@ dependencies {
 
     contractTestCompile sourceSets.main.runtimeClasspath
     contractTestCompile sourceSets.test.runtimeClasspath
+}
+
+dependencyManagement {
+    dependencies {
+        dependencySet(group: 'org.apache.logging.log4j', version: versions.log4JVersion) {
+            entry 'log4j-api'
+            entry 'log4j-to-slf4j'
+        }
+        dependencySet(group: 'ch.qos.logback', version: versions.logbackVersion) {
+            entry 'logback-classic'
+            entry 'logback-core'
+        }
+    }
 }
 
 project.ext {
@@ -555,7 +569,9 @@ bootJar {
 }
 
 configurations {
-    runtime.exclude group: "com.thoughtworks.xstream", module: "xstream"
+    runtime.exclude group: "org.glassfish", module: "jakarta.el"
+    runtime.exclude group: "io.github.x-stream", module: "mxparser"
+    runtime.exclude group: 'io.netty', module: 'netty-tcnative-classes'
 }
 
 cucumberReports {
