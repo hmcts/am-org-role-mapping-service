@@ -300,7 +300,7 @@ dependencies {
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
     }
 
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.5.7'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.4.3'
     //Added for Spring Security Implementation
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot)
 
