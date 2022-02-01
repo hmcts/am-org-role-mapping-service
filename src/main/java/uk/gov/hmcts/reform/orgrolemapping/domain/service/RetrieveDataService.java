@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
@@ -57,15 +58,14 @@ public class RetrieveDataService {
     private final CRDService crdService;
     private final JRDService jrdService;
 
-    @SuppressWarnings("unchecked")
-    public Map<String, Set<?>> retrieveProfiles(UserRequest userRequest, UserType userType)
+    public Map<String, Set<UserAccessProfile>> retrieveProfiles(UserRequest userRequest, UserType userType)
             throws UnprocessableEntityException {
         long startTime = System.currentTimeMillis();
 
 
-        AtomicInteger invalidUserProfilesCount = new AtomicInteger();
+        var invalidUserProfilesCount = new AtomicInteger();
         Set<Object> invalidProfiles = new HashSet<>();
-        Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
+        Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
         ResponseEntity<List<Object>> response = null;
         List<Object> profiles = new ArrayList<>();
 
@@ -106,14 +106,13 @@ public class RetrieveDataService {
         return usersAccessProfiles;
     }
 
-
-    @SuppressWarnings("unchecked")
-    public Map<String, Set<?>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
+    public Map<String, Set<UserAccessProfile>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
                                                                      userProfileResponsesEntity, UserType userType) {
         //check the response if it's not null
         List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
                 Objects
-                        .requireNonNull(convertListInCaseWorkerProfileResponse(userProfileResponsesEntity.getBody()));
+                        .requireNonNull(convertListInCaseWorkerProfileResponse(
+                                requireNonNull(userProfileResponsesEntity.getBody())));
 
         //Fetch the user profile from the response
         List<Object> userProfiles = new ArrayList<>();
@@ -121,11 +120,11 @@ public class RetrieveDataService {
                 .getUserProfile()));
 
         //Collect the userIds to build the UserRequest
-        UserRequest userRequest = UserRequest.builder().userIds(Collections.emptyList()).build();
+        var userRequest = UserRequest.builder().userIds(Collections.emptyList()).build();
 
-        AtomicInteger invalidUserProfilesCount = new AtomicInteger();
+        var invalidUserProfilesCount = new AtomicInteger();
         Set<Object> invalidProfiles = new HashSet<>();
-        Map<String, Set<?>> usersAccessProfiles = new HashMap<>();
+        Map<String, Set<UserAccessProfile>> usersAccessProfiles = new HashMap<>();
 
 
         getAccessProfile(userRequest, userType, invalidUserProfilesCount, invalidProfiles,
@@ -137,7 +136,7 @@ public class RetrieveDataService {
 
     @SuppressWarnings("unchecked")
     private void getAccessProfile(UserRequest userRequest, UserType userType, AtomicInteger invalidUserProfilesCount,
-                                  Set<Object> invalidProfiles, Map<String, Set<?>> usersAccessProfiles,
+                                  Set<Object> invalidProfiles, Map<String, Set<UserAccessProfile>> usersAccessProfiles,
                                   ResponseEntity<List<Object>> response,
                                   List<Object> retrievedProfiles) {
         if (response != null && !CollectionUtils.isEmpty(retrievedProfiles)) {

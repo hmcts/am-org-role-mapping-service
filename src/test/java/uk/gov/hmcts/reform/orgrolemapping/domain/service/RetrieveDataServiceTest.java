@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -60,7 +61,7 @@ class RetrieveDataServiceTest {
                         ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)))
                 .when(crdService).fetchCaseworkerProfiles(any());
 
-        Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
+        Map<String, Set<UserAccessProfile>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
         assertEquals(1, result.size());
 
@@ -80,7 +81,7 @@ class RetrieveDataServiceTest {
                         false))).when(crdService).fetchCaseworkerProfiles(any());
 
         doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
-        Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
+        Map<String, Set<UserAccessProfile>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
         assertEquals(0, result.size());
 
@@ -95,7 +96,7 @@ class RetrieveDataServiceTest {
 
 
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
-        Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(), UserType.CASEWORKER);
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(), UserType.CASEWORKER);
         assertNotNull(response);
         response.forEach((k, v) -> {
                 assertNotNull(k);
@@ -116,7 +117,7 @@ class RetrieveDataServiceTest {
         List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
         doReturn(ResponseEntity
                 .ok(caseWorkerProfiles)).when(crdService).fetchCaseworkerProfiles(any());
-        Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(), UserType.CASEWORKER);
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(), UserType.CASEWORKER);
         assertNotNull(response);
         assertTrue(response.isEmpty());
     }
@@ -129,7 +130,7 @@ class RetrieveDataServiceTest {
                 .when(jrdService).fetchJudicialProfiles(TestDataBuilder.buildRefreshRoleRequest());
 
 
-        Map<String, Set<?>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
+        Map<String, Set<UserAccessProfile>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
 
         assertEquals(1, result.size());
 
@@ -148,7 +149,7 @@ class RetrieveDataServiceTest {
 
 
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
-        Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
         assertNotNull(response);
         response.forEach((k, v) -> {
                 assertNotNull(k);
@@ -166,7 +167,7 @@ class RetrieveDataServiceTest {
         doReturn(ResponseEntity
                 .ok(judicialProfiles)).when(jrdService).fetchJudicialProfiles(any());
 
-        Map<String, Set<?>> response = sut.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
 
         assertNotNull(response);
         assertTrue(response.isEmpty());
@@ -189,7 +190,7 @@ class RetrieveDataServiceTest {
         ResponseEntity<List<Object>> responseEntity
                 = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
 
-        Map<String, Set<?>> response = sut.retrieveProfilesByServiceName(responseEntity,
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfilesByServiceName(responseEntity,
                 UserType.CASEWORKER);
         assertNotNull(response);
         assertEquals(4, response.get("1").size());

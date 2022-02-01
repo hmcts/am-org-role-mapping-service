@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.util.List;
@@ -24,13 +25,13 @@ public class JudicialRefreshOrchestrator {
     private final RetrieveDataService retrieveDataService;
     private final ParseRequestService parseRequestService;
     private final JudicialBookingService judicialBookingService;
-    private final RequestMappingService requestMappingService;
+    private final RequestMappingService<UserAccessProfile> requestMappingService;
 
     @Autowired
     public JudicialRefreshOrchestrator(RetrieveDataService retrieveDataService,
                                        ParseRequestService parseRequestService,
                                        JudicialBookingService judicialBookingService,
-                                       RequestMappingService requestMappingService) {
+                                       RequestMappingService<UserAccessProfile> requestMappingService) {
         this.retrieveDataService = retrieveDataService;
         this.parseRequestService = parseRequestService;
         this.judicialBookingService = judicialBookingService;
@@ -41,13 +42,14 @@ public class JudicialRefreshOrchestrator {
     public ResponseEntity<Object> judicialRefresh(UserRequest userRequest) {
 
         parseRequestService.validateUserRequest(userRequest);
-        Map<String, Set<?>> userAccessProfiles = retrieveDataService.retrieveProfiles(userRequest, JUDICIAL);
+        Map<String, Set<UserAccessProfile>> userAccessProfiles
+                = retrieveDataService.retrieveProfiles(userRequest, JUDICIAL);
 
         List<JudicialBooking> judicialBookings = judicialBookingService.fetchJudicialBookings(userRequest);
         log.info("{} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
         ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles,
                 judicialBookings, JUDICIAL);
-        if (((List<ResponseEntity>) Objects.requireNonNull(responseEntity.getBody())).stream().anyMatch(response ->
+        if (((List<ResponseEntity<UserAccessProfile>>) Objects.requireNonNull(responseEntity.getBody())).stream().anyMatch(response ->
                 response.getStatusCode() != HttpStatus.CREATED)) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(FAILED_ROLE_REFRESH);
         }

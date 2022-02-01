@@ -6,6 +6,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -62,11 +63,14 @@ class AssignmentRequestBuilderTest {
 
     @Test
     void convertUserProfileToUserAccessProfile() {
-        Set<CaseWorkerAccessProfile> caseWorkerAccessProfiles = AssignmentRequestBuilder
+        Set<UserAccessProfile> caseWorkerAccessProfiles = AssignmentRequestBuilder
                 .convertUserProfileToCaseworkerAccessProfile(TestDataBuilder
                         .buildUserProfile("21334a2b-79ce-44eb-9168-2d49a744be9c",false,"1", "2",
                 ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true, true, "1", "2", true));
-        caseWorkerAccessProfiles.forEach(role -> {
+        caseWorkerAccessProfiles.stream()
+                .filter(obj -> obj instanceof CaseWorkerAccessProfile)
+                .map(CaseWorkerAccessProfile.class::cast)
+                .forEach(role -> {
                 assertNotNull(role.getId());
                 assertNotNull(role.getAreaOfWorkId());
                 assertNotNull(role.getPrimaryLocationId());
@@ -85,10 +89,13 @@ class AssignmentRequestBuilderTest {
         JudicialProfile judicialProfile = TestDataBuilder. buildJudicialProfile();
         judicialProfile.getAppointments().get(0).setAppointment("1");
         judicialProfile.getAppointments().get(1).setAppointment("2");
-        Set<JudicialAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
+        Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 
-        judicialAccessProfiles.forEach(appointment -> {
+        judicialAccessProfiles.stream()
+                .filter(obj -> obj instanceof JudicialAccessProfile)
+                .map(JudicialAccessProfile.class::cast)
+                .forEach(appointment -> {
                 assertNotNull(appointment.getUserId());
                 assertNotNull(appointment.getBeginTime());
                 assertNotNull(appointment.getEndTime());
@@ -156,10 +163,13 @@ class AssignmentRequestBuilderTest {
         judicialProfile.getAppointments().get(0).setAppointment("1");
         judicialProfile.getAppointments().get(1).setAppointment("2");
         judicialProfile.setAuthorisations(null);
-        Set<JudicialAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
+        Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 
-        judicialAccessProfiles.forEach(appointment -> {
+        judicialAccessProfiles.stream()
+            .filter(obj -> obj instanceof JudicialAccessProfile)
+            .map(JudicialAccessProfile.class::cast)
+            .forEach(appointment -> {
             assertNotNull(appointment.getUserId());
             assertNotNull(appointment.getBeginTime());
             assertNotNull(appointment.getEndTime());
@@ -180,10 +190,13 @@ class AssignmentRequestBuilderTest {
         judicialProfile.getAppointments().get(0).setIsPrincipalAppointment("False");
         judicialProfile.getAppointments().get(1).setAppointment("2");
         judicialProfile.setAuthorisations(List.of(Authorisation.builder().ticketCode("374").build()));
-        Set<JudicialAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
+        Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 
-        judicialAccessProfiles.forEach(appointment -> {
+        judicialAccessProfiles.stream()
+            .filter(obj -> obj instanceof JudicialAccessProfile)
+            .map(JudicialAccessProfile.class::cast)
+            .forEach(appointment -> {
             assertNotNull(appointment.getUserId());
             assertNotNull(appointment.getBeginTime());
             assertNotNull(appointment.getRegionId());
