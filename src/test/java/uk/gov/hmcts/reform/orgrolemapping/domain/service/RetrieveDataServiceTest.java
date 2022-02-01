@@ -61,7 +61,8 @@ class RetrieveDataServiceTest {
                         ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false, true, "1", "2", false)))
                 .when(crdService).fetchCaseworkerProfiles(any());
 
-        Map<String, Set<UserAccessProfile>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
+        Map<String, Set<UserAccessProfile>> result
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
         assertEquals(1, result.size());
 
@@ -81,7 +82,8 @@ class RetrieveDataServiceTest {
                         false))).when(crdService).fetchCaseworkerProfiles(any());
 
         doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
-        Map<String, Set<UserAccessProfile>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
+        Map<String, Set<UserAccessProfile>> result
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
         assertEquals(0, result.size());
 
@@ -130,7 +132,8 @@ class RetrieveDataServiceTest {
                 .when(jrdService).fetchJudicialProfiles(TestDataBuilder.buildRefreshRoleRequest());
 
 
-        Map<String, Set<UserAccessProfile>> result = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
+        Map<String, Set<UserAccessProfile>> result
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
 
         assertEquals(1, result.size());
 

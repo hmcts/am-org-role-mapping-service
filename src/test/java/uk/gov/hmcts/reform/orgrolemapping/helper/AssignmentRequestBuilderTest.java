@@ -8,12 +8,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,6 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 class AssignmentRequestBuilderTest {
 
@@ -65,28 +65,27 @@ class AssignmentRequestBuilderTest {
     void convertUserProfileToUserAccessProfile() {
         Set<UserAccessProfile> caseWorkerAccessProfiles = AssignmentRequestBuilder
                 .convertUserProfileToCaseworkerAccessProfile(TestDataBuilder
-                        .buildUserProfile("21334a2b-79ce-44eb-9168-2d49a744be9c",false,"1", "2",
-                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true, true, "1", "2", true));
+                        .buildUserProfile("21334a2b-79ce-44eb-9168-2d49a744be9c", false, "1", "2",
+                                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true, true, "1", "2", true));
         caseWorkerAccessProfiles.stream()
                 .filter(obj -> obj instanceof CaseWorkerAccessProfile)
                 .map(CaseWorkerAccessProfile.class::cast)
                 .forEach(role -> {
-                assertNotNull(role.getId());
-                assertNotNull(role.getAreaOfWorkId());
-                assertNotNull(role.getPrimaryLocationId());
-                assertTrue(role.isSuspended());
-                assertNotNull(role.getPrimaryLocationName());
-                assertNotNull(role.getRoleId());
-                assertNotNull(role.getRoleName());
-                assertNotNull(role.getServiceCode());
-            }
-        );
+                    assertNotNull(role.getId());
+                    assertNotNull(role.getAreaOfWorkId());
+                    assertNotNull(role.getPrimaryLocationId());
+                    assertTrue(role.isSuspended());
+                    assertNotNull(role.getPrimaryLocationName());
+                    assertNotNull(role.getRoleId());
+                    assertNotNull(role.getRoleName());
+                    assertNotNull(role.getServiceCode());
+                });
         assertEquals(2, caseWorkerAccessProfiles.size());
     }
 
     @Test
     void convertUserProfileToJudicialAccessProfile() throws IOException {
-        JudicialProfile judicialProfile = TestDataBuilder. buildJudicialProfile();
+        JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
         judicialProfile.getAppointments().get(0).setAppointment("1");
         judicialProfile.getAppointments().get(1).setAppointment("2");
         Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
@@ -96,21 +95,20 @@ class AssignmentRequestBuilderTest {
                 .filter(obj -> obj instanceof JudicialAccessProfile)
                 .map(JudicialAccessProfile.class::cast)
                 .forEach(appointment -> {
-                assertNotNull(appointment.getUserId());
-                assertNotNull(appointment.getBeginTime());
-                assertNotNull(appointment.getEndTime());
-                assertNotNull(appointment.getRegionId());
-                assertNotNull(appointment.getBaseLocationId());
-                assertNotNull(appointment.getTicketCodes());
-                assertEquals(2, appointment.getTicketCodes().size());
-                assertNotNull(appointment.getAppointment());
-            }
-        );
+                    assertNotNull(appointment.getUserId());
+                    assertNotNull(appointment.getBeginTime());
+                    assertNotNull(appointment.getEndTime());
+                    assertNotNull(appointment.getRegionId());
+                    assertNotNull(appointment.getBaseLocationId());
+                    assertNotNull(appointment.getTicketCodes());
+                    assertEquals(2, appointment.getTicketCodes().size());
+                    assertNotNull(appointment.getAppointment());
+                });
         assertEquals(2, judicialAccessProfiles.size());
     }
 
     @Test
-    void validateIACAuthorisation()  {
+    void validateIACAuthorisation() {
 
         assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BFA1")
@@ -118,7 +116,7 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
-    void validateEmptyAuthorisation()  {
+    void validateEmptyAuthorisation() {
 
         List<Authorisation> authorisations = new ArrayList<>();
 
@@ -126,13 +124,13 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
-    void validateNullAuthorisation()  {
+    void validateNullAuthorisation() {
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(null));
     }
 
     @Test
-    void validateNonIACAuthorisation()  {
+    void validateNonIACAuthorisation() {
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BFA2")
@@ -167,18 +165,18 @@ class AssignmentRequestBuilderTest {
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 
         judicialAccessProfiles.stream()
-            .filter(obj -> obj instanceof JudicialAccessProfile)
-            .map(JudicialAccessProfile.class::cast)
-            .forEach(appointment -> {
-            assertNotNull(appointment.getUserId());
-            assertNotNull(appointment.getBeginTime());
-            assertNotNull(appointment.getEndTime());
-            assertNotNull(appointment.getRegionId());
-            assertNotNull(appointment.getBaseLocationId());
-            assertNotNull(appointment.getTicketCodes());
-            assertEquals(0, appointment.getTicketCodes().size());
-            assertNotNull(appointment.getAppointment());
-        });
+                .filter(obj -> obj instanceof JudicialAccessProfile)
+                .map(JudicialAccessProfile.class::cast)
+                .forEach(appointment -> {
+                    assertNotNull(appointment.getUserId());
+                    assertNotNull(appointment.getBeginTime());
+                    assertNotNull(appointment.getEndTime());
+                    assertNotNull(appointment.getRegionId());
+                    assertNotNull(appointment.getBaseLocationId());
+                    assertNotNull(appointment.getTicketCodes());
+                    assertEquals(0, appointment.getTicketCodes().size());
+                    assertNotNull(appointment.getAppointment());
+                });
         assertEquals(2, judicialAccessProfiles.size());
     }
 
@@ -194,17 +192,17 @@ class AssignmentRequestBuilderTest {
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 
         judicialAccessProfiles.stream()
-            .filter(obj -> obj instanceof JudicialAccessProfile)
-            .map(JudicialAccessProfile.class::cast)
-            .forEach(appointment -> {
-            assertNotNull(appointment.getUserId());
-            assertNotNull(appointment.getBeginTime());
-            assertNotNull(appointment.getRegionId());
-            assertNotNull(appointment.getBaseLocationId());
-            assertNotNull(appointment.getTicketCodes());
-            assertEquals(1, appointment.getTicketCodes().size());
-            assertNotNull(appointment.getAppointment());
-        });
+                .filter(obj -> obj instanceof JudicialAccessProfile)
+                .map(JudicialAccessProfile.class::cast)
+                .forEach(appointment -> {
+                    assertNotNull(appointment.getUserId());
+                    assertNotNull(appointment.getBeginTime());
+                    assertNotNull(appointment.getRegionId());
+                    assertNotNull(appointment.getBaseLocationId());
+                    assertNotNull(appointment.getTicketCodes());
+                    assertEquals(1, appointment.getTicketCodes().size());
+                    assertNotNull(appointment.getAppointment());
+                });
         assertEquals(2, judicialAccessProfiles.size());
     }
 }
