@@ -13,4 +13,11 @@
         <packageUrl regex="true">^pkg:maven/com\.nimbusds/lang\-tag@.*$</packageUrl>
         <cve>CVE-2020-23171</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: xstream-1.4.18.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.thoughtworks\.xstream/xstream@.*$</packageUrl>
+        <cve>CVE-2021-43859</cve>
+    </suppress>
 </suppressions>
