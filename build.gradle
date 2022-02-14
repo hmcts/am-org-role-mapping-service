@@ -339,15 +339,15 @@ dependencies {
     implementation "org.springframework.security:spring-security-web"
     implementation "org.springframework.security:spring-security-config"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
-    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.19'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     compile group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:2.11.0'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090:
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.12'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.54'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.16'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.58'
 
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
