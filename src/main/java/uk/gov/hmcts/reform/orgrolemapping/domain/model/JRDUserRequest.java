@@ -24,6 +24,6 @@ public class JRDUserRequest {
     private Set<String> sidamIds;
 
     @JsonProperty("personal_code")
-    private Set<String> personal_code;
+    private Set<String> personalCode;
 
 }
