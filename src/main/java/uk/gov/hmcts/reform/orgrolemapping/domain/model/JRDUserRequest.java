@@ -26,4 +26,5 @@ public class JRDUserRequest {
     @JsonProperty("personal_code")
     private Set<String> personal_code;
 
+
 }
