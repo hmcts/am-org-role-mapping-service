@@ -22,4 +22,8 @@ public class JRDUserRequest {
 
     @JsonProperty("sidam_ids")
     private Set<String> sidamIds;
+
+    @JsonProperty("personal_code")
+    private Set<String> personal_code;
+
 }
