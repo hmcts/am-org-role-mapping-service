@@ -21,6 +21,7 @@ public class JudicialProfile implements Serializable {
     private String objectId;
     private String knownAs;
     private String surname;
+    private String personalCode;
     private String fullName;
     private String postNominals;
     private String emailId;
