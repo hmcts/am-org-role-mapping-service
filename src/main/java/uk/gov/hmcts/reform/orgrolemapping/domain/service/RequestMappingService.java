@@ -148,12 +148,6 @@ public class RequestMappingService<T> {
         log.info("Count of expired/suspended/rejected access profiles in ORM : {} ", needToRemoveUAP.size());
         log.info("Access profiles for empty request for RAS: {} ", needToRemoveUAP);
 
-        //remove the entry of user from map in case of empty if suspended is false
-        // if (!needToRemoveUAP.isEmpty()) {
-        //    needToRemoveUAP.forEach(usersRoleAssignments::remove);
-        //}
-
-
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
         //print usersRoleAssignments
         usersRoleAssignments.forEach((k, v) -> {
