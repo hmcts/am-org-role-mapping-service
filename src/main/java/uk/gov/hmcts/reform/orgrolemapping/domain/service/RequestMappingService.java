@@ -145,7 +145,7 @@ public class RequestMappingService<T> {
         }
 
         //remove the entry of user from map in case of empty if suspended is false
-        log.info("Count of expired/suspended access profiles in ORM : {} ", needToRemoveUAP.size());
+        log.info("Count of expired/suspended/rejected access profiles in ORM : {} ", needToRemoveUAP.size());
         log.info("Access profiles for empty request for RAS: {} ", needToRemoveUAP);
 
         //remove the entry of user from map in case of empty if suspended is false
