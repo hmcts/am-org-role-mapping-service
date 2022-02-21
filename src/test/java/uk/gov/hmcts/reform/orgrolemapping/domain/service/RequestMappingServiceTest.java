@@ -150,9 +150,6 @@ class RequestMappingServiceTest {
                 sut.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
                         false),UserType.CASEWORKER);
 
-
-
-
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
@@ -319,7 +316,7 @@ class RequestMappingServiceTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
-        Mockito.verify(roleAssignmentService, Mockito.times(0))
+        Mockito.verify(roleAssignmentService, Mockito.times(2))
                 .createRoleAssignment(any());
     }
 
