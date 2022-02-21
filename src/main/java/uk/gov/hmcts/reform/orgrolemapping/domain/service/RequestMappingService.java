@@ -77,7 +77,6 @@ public class RequestMappingService<T> {
      * For each caseworker represented in the map, determine what the role assignments should be,
      * and update them in the role assignment service.
      */
-    @SuppressWarnings("unchecked")
     public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles,
                                                     List<JudicialBooking> judicialBookings, UserType userType) {
         long startTime = System.currentTimeMillis();
@@ -146,14 +145,8 @@ public class RequestMappingService<T> {
         }
 
         //remove the entry of user from map in case of empty if suspended is false
-        log.info("Count of rejected access profiles in ORM : {} ", needToRemoveUAP.size());
-        log.info("Access profiles rejected by Drools in ORM: {} ", needToRemoveUAP);
-
-        //remove the entry of user from map in case of empty if suspended is false
-        if (!needToRemoveUAP.isEmpty()) {
-            needToRemoveUAP.forEach(usersRoleAssignments::remove);
-        }
-
+        log.info("Count of expired/suspended/rejected access profiles in ORM : {} ", needToRemoveUAP.size());
+        log.info("Access profiles for empty request for RAS: {} ", needToRemoveUAP);
 
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
         //print usersRoleAssignments
@@ -183,7 +176,6 @@ public class RequestMappingService<T> {
     }
 
     @NotNull
-    @SuppressWarnings("unchecked")
     List<RoleAssignment> getRoleAssignments(Map<String, Set<T>> usersAccessProfiles,
                                             List<JudicialBooking> judicialBookings) {
         // Combine all the user profiles into a single collection for the rules engine.
@@ -339,8 +331,7 @@ public class RequestMappingService<T> {
      * This utility method is used to capture the log in drools.
      */
     public static List<String> addAndGetTicketCodes(List<String> existingTicketCodes, String newTicketCode) {
-        List<String> updatedTicketCodes = new ArrayList<>();
-        updatedTicketCodes.addAll(existingTicketCodes);
+        List<String> updatedTicketCodes = new ArrayList<>(existingTicketCodes);
         updatedTicketCodes.add(newTicketCode);
         return updatedTicketCodes;
     }
