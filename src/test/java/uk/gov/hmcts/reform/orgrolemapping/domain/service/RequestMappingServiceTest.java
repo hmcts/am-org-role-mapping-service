@@ -48,9 +48,6 @@ class RequestMappingServiceTest {
     @Mock
     private RoleAssignmentService roleAssignmentService;
 
-
-    private StatelessKieSession kieSession;
-
     @Mock
     private SecurityUtils securityUtils;
 
@@ -67,10 +64,10 @@ class RequestMappingServiceTest {
     public void setUp() {
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();
-        this.kieSession = kieContainer.newStatelessKieSession("org-role-mapping-validation-session");
+        StatelessKieSession kieSession = kieContainer.newStatelessKieSession("org-role-mapping-validation-session");
         sut = new RequestMappingService("pr", persistenceService, roleAssignmentService, kieSession,
                 securityUtils);
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -95,7 +92,7 @@ class RequestMappingServiceTest {
 
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);
-        assertEquals(1, resultNode.size());
+        assertEquals(2, resultNode.size());
         assertEquals("staff-organisational-role-mapping",
                 resultNode.get(0).get("body").get("roleRequest").get("process")
                         .asText());
@@ -106,7 +103,7 @@ class RequestMappingServiceTest {
 
 
 
-        Mockito.verify(roleAssignmentService, Mockito.times(1))
+        Mockito.verify(roleAssignmentService, Mockito.times(2))
                 .createRoleAssignment(any());
     }
 
@@ -157,7 +154,7 @@ class RequestMappingServiceTest {
 
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);
-        assertEquals(1, resultNode.size());
+        assertEquals(2, resultNode.size());
         assertEquals("staff-organisational-role-mapping",
                 resultNode.get(0).get("body").get("roleAssignmentResponse").get("roleRequest").get("process").asText());
         assertEquals("senior-tribunal-caseworker",
@@ -189,7 +186,7 @@ class RequestMappingServiceTest {
 
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);
-        assertEquals(1, resultNode.size());
+        assertEquals(2, resultNode.size());
     }
 
     @SuppressWarnings("unchecked")
@@ -267,8 +264,6 @@ class RequestMappingServiceTest {
     @Test
     void createCaseWorkerAssignmentsForProdEnv() {
 
-        final String actorId = "123e4567-e89b-42d3-a456-556642445612";
-
         Mockito.when(roleAssignmentService.createRoleAssignment(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
                         .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
@@ -302,8 +297,6 @@ class RequestMappingServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     void createJudicialAssignmentsTest() {
-
-        final String actorId = "123e4567-e89b-42d3-a456-556642445612";
 
         Mockito.when(roleAssignmentService.createRoleAssignment(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
