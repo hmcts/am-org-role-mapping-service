@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -41,8 +40,9 @@ class BulkAssignmentOrchestratorTest {
 
     private final RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
 
-    @Mock
-    private RequestMappingService<UserAccessProfile> requestMappingService;
+    @SuppressWarnings("unchecked")
+    private final RequestMappingService<UserAccessProfile> requestMappingService
+            = (RequestMappingService<UserAccessProfile>)mock(RequestMappingService.class);
 
     @InjectMocks
     private final BulkAssignmentOrchestrator sut = new BulkAssignmentOrchestrator(parseRequestService,

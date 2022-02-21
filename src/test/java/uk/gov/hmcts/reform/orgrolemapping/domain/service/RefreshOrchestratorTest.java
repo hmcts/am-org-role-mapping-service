@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -37,8 +36,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -48,11 +47,9 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 class RefreshOrchestratorTest {
 
-
-
-    @Mock
-    private RequestMappingService<UserAccessProfile> requestMappingService;
-
+    @SuppressWarnings("unchecked")
+    private final RequestMappingService<UserAccessProfile> requestMappingService
+            = (RequestMappingService<UserAccessProfile>)mock(RequestMappingService.class);
     private final RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
     private final ParseRequestService parseRequestService = mock(ParseRequestService.class);
     private final CRDService crdService = mock(CRDService.class);

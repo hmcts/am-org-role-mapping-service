@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -41,9 +40,9 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 class JudicialRefreshOrchestratorTest {
 
-
-    @Mock
-    private RequestMappingService<UserAccessProfile> requestMappingService;
+    @SuppressWarnings("unchecked")
+    private final RequestMappingService<UserAccessProfile> requestMappingService
+            = (RequestMappingService<UserAccessProfile>)mock(RequestMappingService.class);
 
     private final RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
     private final ParseRequestService parseRequestService = new ParseRequestService();
