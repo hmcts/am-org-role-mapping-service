@@ -276,7 +276,7 @@ dependencies {
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot)
     implementation 'com.github.hmcts:properties-volume-spring-boot-starter:0.1.1'
     implementation group: 'org.springframework', name: 'spring-core', version: '5.3.15'
-    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.1'
+    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.6.1'
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.4'
