@@ -73,7 +73,7 @@ class RefreshOrchestratorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void refreshRoleAssignmentRecords() throws IOException {
+    void refreshRoleAssignmentRecords() {
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
 
@@ -110,6 +110,45 @@ class RefreshOrchestratorTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void refreshRoleAssignmentRecords_profileNotFound() {
+
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
+        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
+                .id("1")
+                .roleId("1")
+                .roleName("roleName")
+                .primaryLocationName("primary")
+                .primaryLocationId("1")
+                .areaOfWorkId("1")
+                .serviceCode("1")
+                .suspended(false)
+                .build());
+        userAccessProfiles.put("1", userAccessProfileSet);
+
+        Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
+                .thenThrow(FeignException.NotFound.class);
+
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK)
+                        .body(Collections.emptyList())));
+
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        Mockito.when(persistenceService.fetchRefreshJobById(any()))
+                .thenReturn(Optional.of(
+                        RefreshJobEntity.builder()
+                                .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .build()));
+
+        assertNull(sut.refresh(1L, TestDataBuilder.buildUserRequest()));
+
     }
 
     @SuppressWarnings("unchecked")
@@ -167,7 +206,7 @@ class RefreshOrchestratorTest {
     @SuppressWarnings("unchecked")
     @Test
     @DisplayName("refreshRoleAssignmentJudicialRecords_nullUserRequest")
-    void refreshRoleAssignmentJudicialRecords_nullUserRequest() throws IOException {
+    void refreshRoleAssignmentJudicialRecords_nullUserRequest() {
 
         Mockito.when(persistenceService.fetchRefreshJobById(any()))
                 .thenReturn(Optional.of(
@@ -518,7 +557,6 @@ class RefreshOrchestratorTest {
         assertNotNull(response);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     @DisplayName("refreshRoleAssignmentRecords_Exception")
     void refreshRoleAssignmentRecords_Exception() {

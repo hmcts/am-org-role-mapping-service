@@ -70,8 +70,8 @@ class SecurityUtilsTest {
 
 
 
-    private void mockSecurityContextData() throws IOException {
-        List<String> collection = new ArrayList<String>();
+    private void mockSecurityContextData() {
+        List<String> collection = new ArrayList<>();
         collection.add("string");
         Map<String, Object> headers = new HashMap<>();
         headers.put("header", "head");
@@ -79,26 +79,24 @@ class SecurityUtilsTest {
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
         when(securityContext.getAuthentication().getPrincipal()).thenReturn(jwt);
-        when(jwtGrantedAuthoritiesConverter.getUserInfo())
-               .thenReturn(TestDataBuilder.buildUserInfo(USER_ID));
         when(authTokenGenerator.generate()).thenReturn(serviceAuthorization);
     }
 
     @BeforeEach
-    public void setUp() throws IOException {
+    public void setUp() {
         mockSecurityContextData();
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void getUserId() throws IOException {
+    void getUserId() {
         assertEquals(USER_ID, securityUtils.getUserId());
     }
 
     @Test
-    void getUserIdElse() throws IOException {
+    void getUserIdElse() {
         when(jwtGrantedAuthoritiesConverter.getUserInfo())
-                .thenCallRealMethod();
+                .thenReturn(null);
         when(idamRepository.getUserInfo(any()))
                 .thenReturn(TestDataBuilder.buildUserInfo(USER_ID));
         String result = securityUtils.getUserId();
@@ -106,17 +104,17 @@ class SecurityUtilsTest {
     }
 
     @Test
-    void getUserRoles() throws IOException {
+    void getUserRoles() {
         assertNotNull(securityUtils.getUserRoles());
     }
 
     @Test
-    void getUserRolesHeader() throws IOException {
+    void getUserRolesHeader() {
         assertNotNull(securityUtils.getUserRolesHeader());
     }
 
     @Test
-    void getUserToken() throws IOException {
+    void getUserToken() {
         String result = securityUtils.getUserToken();
         assertNotNull(result);
         assertTrue(result.contains("eyJhbG"));
@@ -139,7 +137,7 @@ class SecurityUtilsTest {
     }
 
     @Test
-    void getAuthorizationHeaders() throws IOException {
+    void getAuthorizationHeaders() {
         HttpHeaders result = securityUtils.authorizationHeaders();
         assertEquals(serviceAuthorization, Objects.requireNonNull(result.get(SERVICE_AUTHORIZATION)).get(0));
         assertEquals(USER_ID, Objects.requireNonNull(result.get("user-id")).get(0));
@@ -150,7 +148,7 @@ class SecurityUtilsTest {
 
     @Test
     void getAuthorizationHeaders_NoContext() {
-        when(securityContext.getAuthentication()).thenReturn(authentication).thenReturn(null);
+        when(securityContext.getAuthentication()).thenReturn(null);
         HttpHeaders result = securityUtils.authorizationHeaders();
         assertEquals(serviceAuthorization, Objects.requireNonNull(result.get(SERVICE_AUTHORIZATION)).get(0));
         assertEquals(USER_ID, Objects.requireNonNull(result.get("user-id")).get(0));
@@ -159,7 +157,7 @@ class SecurityUtilsTest {
     }
 
     @Test
-    void removeBearerFromToken() throws IOException {
+    void removeBearerFromToken() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(SERVICE_AUTHORIZATION, serviceAuthorization);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
@@ -167,7 +165,7 @@ class SecurityUtilsTest {
     }
 
     @Test
-    void removeBearerFromToken_NoBearerTag() throws IOException {
+    void removeBearerFromToken_NoBearerTag() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(SERVICE_AUTHORIZATION, serviceAuthorizationNoBearer);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
@@ -175,7 +173,7 @@ class SecurityUtilsTest {
     }
 
     @Test
-    void shouldNotGetServiceNameFromContext() throws IOException {
+    void shouldNotGetServiceNameFromContext() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(SERVICE_AUTHORIZATION, serviceAuthorizationNoBearer);
         RequestContextHolder.setRequestAttributes(null);
@@ -183,7 +181,7 @@ class SecurityUtilsTest {
     }
 
     @Test
-    void shouldNotGetServiceNameContext() throws IOException {
+    void shouldNotGetServiceNameContext() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         Assertions.assertNull(securityUtils.getServiceName());
