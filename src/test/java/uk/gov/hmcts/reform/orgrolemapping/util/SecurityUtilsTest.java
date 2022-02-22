@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +30,6 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
@@ -79,6 +77,8 @@ class SecurityUtilsTest {
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
         when(securityContext.getAuthentication().getPrincipal()).thenReturn(jwt);
+        when(jwtGrantedAuthoritiesConverter.getUserInfo())
+               .thenReturn(TestDataBuilder.buildUserInfo(USER_ID));
         when(authTokenGenerator.generate()).thenReturn(serviceAuthorization);
     }
 
@@ -91,16 +91,6 @@ class SecurityUtilsTest {
     @Test
     void getUserId() {
         assertEquals(USER_ID, securityUtils.getUserId());
-    }
-
-    @Test
-    void getUserIdElse() {
-        when(jwtGrantedAuthoritiesConverter.getUserInfo())
-                .thenReturn(null);
-        when(idamRepository.getUserInfo(any()))
-                .thenReturn(TestDataBuilder.buildUserInfo(USER_ID));
-        String result = securityUtils.getUserId();
-        assertEquals(USER_ID, result);
     }
 
     @Test
