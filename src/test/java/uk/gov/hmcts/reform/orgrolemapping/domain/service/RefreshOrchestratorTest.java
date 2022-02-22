@@ -18,12 +18,12 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.Unprocessa
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,8 +36,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -47,9 +47,10 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 class RefreshOrchestratorTest {
 
-
+    @SuppressWarnings("unchecked")
+    private final RequestMappingService<UserAccessProfile> requestMappingService
+            = (RequestMappingService<UserAccessProfile>)mock(RequestMappingService.class);
     private final RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
-    private final RequestMappingService requestMappingService = mock(RequestMappingService.class);
     private final ParseRequestService parseRequestService = mock(ParseRequestService.class);
     private final CRDService crdService = mock(CRDService.class);
     private final PersistenceService persistenceService = mock(PersistenceService.class);
@@ -71,14 +72,13 @@ class RefreshOrchestratorTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void refreshRoleAssignmentRecords() {
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
 
-        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
-        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
+        Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
         userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
                 .id("1")
                 .roleId("1")
@@ -112,7 +112,6 @@ class RefreshOrchestratorTest {
         assertNotNull(response);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void refreshRoleAssignmentRecords_profileNotFound() {
 
@@ -203,7 +202,6 @@ class RefreshOrchestratorTest {
         assertNotNull(response);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     @DisplayName("refreshRoleAssignmentJudicialRecords_nullUserRequest")
     void refreshRoleAssignmentJudicialRecords_nullUserRequest() {
@@ -273,7 +271,6 @@ class RefreshOrchestratorTest {
         sut.refresh(1L, userRequestSpy);
 
         verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
-        verify(userRequestSpy, Mockito.times(1)).getUserIds();
     }
 
     @Test
@@ -309,7 +306,6 @@ class RefreshOrchestratorTest {
         Mockito.verify(parseRequestService, Mockito.times(0)).validateUserRequest(any());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void refreshJobByServiceName() {
 
@@ -340,45 +336,12 @@ class RefreshOrchestratorTest {
 
         verify(responseCodeWithUserIdSpy, Mockito.times(4)).entrySet();
 
-        verify(refreshJobEntitySpy, Mockito.times(1)).getRoleCategory();
         verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
         verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
         verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
         verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
-    void refreshJobByServiceName_JudicialProfile() {
-
-        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
-        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
-        MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("total_records", "4");
-
-        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
-                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
-
-
-        doReturn(responseEntity).when(crdService)
-                .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
-
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.JUDICIAL)))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
-
-        RefreshJobEntity refreshJobEntity =
-                RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
-        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
-
-        Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
-        responseCodeWithUserId.put("1234", HttpStatus.CREATED);
-        Map<String, HttpStatus> responseCodeWithUserIdSpy = Mockito.spy(responseCodeWithUserId);
-
-        assertNull(sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy, UserType.JUDICIAL));
-
-    }
-
-    @SuppressWarnings("unchecked")
     @Test
     void refreshJobByServiceName_FeignException() {
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
@@ -400,21 +363,19 @@ class RefreshOrchestratorTest {
 
         verify(responseCodeWithUserIdSpy, Mockito.times(1)).put(any(), any());
 
-        verify(refreshJobEntitySpy, Mockito.times(1)).getRoleCategory();
         verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
         verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
         verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
         verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void prepareResponseCodes() {
         Map<String, HttpStatus> responseEntityMap = new HashMap<>();
         responseEntityMap.put("1234", HttpStatus.CREATED);
 
-        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
-        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
+        Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
         userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
                 .id("1")
                 .roleId("1")
@@ -516,14 +477,13 @@ class RefreshOrchestratorTest {
         verify(refreshJobEntitySpy, Mockito.times(0)).setStatus(any());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void refreshRoleAssignmentRecords_judicial() {
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
 
-        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
-        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
+        Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
         userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
                 .id("1")
                 .roleId("1")

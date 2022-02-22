@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JudicialAccessProfile implements Serializable {
+public class JudicialAccessProfile implements Serializable, UserAccessProfile {
 
     private String userId;
     private String roleId;
@@ -29,5 +29,4 @@ public class JudicialAccessProfile implements Serializable {
     private String primaryLocationId;
     private List<Authorisation> authorisations;
     private List<String> roles;
-
 }
