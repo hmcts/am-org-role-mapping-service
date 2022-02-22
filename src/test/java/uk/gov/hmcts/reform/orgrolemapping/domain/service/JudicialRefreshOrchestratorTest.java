@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -39,8 +40,11 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 class JudicialRefreshOrchestratorTest {
 
+    @SuppressWarnings("unchecked")
+    private final RequestMappingService<UserAccessProfile> requestMappingService
+            = (RequestMappingService<UserAccessProfile>)mock(RequestMappingService.class);
+
     private final RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
-    private final RequestMappingService requestMappingService = mock(RequestMappingService.class);
     private final ParseRequestService parseRequestService = new ParseRequestService();
     private final JudicialBookingService judicialBookingService = mock(JudicialBookingService.class);
 
@@ -80,11 +84,10 @@ class JudicialRefreshOrchestratorTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void refreshJudicialRoleAssignmentRecords() throws IOException {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
 
-        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
+        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
         JudicialProfile judicialProfile = JudicialProfile.builder()
                 .sidamId(userId)
                 .appointments(List.of(Appointment.builder().build()))
@@ -110,12 +113,11 @@ class JudicialRefreshOrchestratorTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void refreshJudicialRoleAssignmentRecords_ras422() {
 
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
 
-        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
+        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
         JudicialProfile judicialProfile = JudicialProfile.builder()
                 .sidamId(userId)
                 .appointments(List.of(Appointment.builder().build()))
@@ -142,7 +144,6 @@ class JudicialRefreshOrchestratorTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void refreshJudicialRoleAssignmentRecords_emptyJrdProfiles() {
 
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
@@ -162,11 +163,10 @@ class JudicialRefreshOrchestratorTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void refreshJudicialRoleAssignmentRecords_emptyJudicialBookings() {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
 
-        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
+        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
         JudicialProfile judicialProfile = JudicialProfile.builder()
                 .sidamId(userId)
                 .appointments(List.of(Appointment.builder().build()))
