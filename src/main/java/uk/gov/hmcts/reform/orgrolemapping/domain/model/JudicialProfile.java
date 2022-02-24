@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class JudicialProfile implements Serializable {
+public class JudicialProfile implements Serializable, UserAccessProfile {
 
     private String sidamId;
     private String objectId;

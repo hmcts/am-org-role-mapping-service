@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -23,7 +24,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -92,7 +92,7 @@ public class AssignmentRequestBuilder {
     }
 
     public static JsonNode buildAttributesFromFile(String fileName) {
-        try (InputStream inputStream =
+        try (var inputStream =
                      AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream(fileName)) {
             assert inputStream != null;
             return new ObjectMapper().readValue(inputStream, new TypeReference<>() {
@@ -115,15 +115,15 @@ public class AssignmentRequestBuilder {
                 .build();
     }
 
-    public static Set<CaseWorkerAccessProfile> convertUserProfileToCaseworkerAccessProfile(CaseWorkerProfile
+    public static Set<UserAccessProfile> convertUserProfileToCaseworkerAccessProfile(CaseWorkerProfile
                                                                                              caseWorkerProfile) {
         long startTime = System.currentTimeMillis();
         //roleId X serviceCode
-        Set<CaseWorkerAccessProfile> caseWorkerAccessProfiles = new HashSet<>();
+        Set<UserAccessProfile> caseWorkerAccessProfiles = new HashSet<>();
 
         caseWorkerProfile.getRole().forEach(role ->
                 caseWorkerProfile.getWorkArea().forEach(workArea -> {
-                    CaseWorkerAccessProfile caseWorkerAccessProfile = new CaseWorkerAccessProfile();
+                    var caseWorkerAccessProfile = new CaseWorkerAccessProfile();
                     caseWorkerAccessProfile.setId(caseWorkerProfile.getId());
                     caseWorkerAccessProfile.setSuspended(caseWorkerProfile.isSuspended());
                     caseWorkerProfile.getBaseLocation().forEach(baseLocation -> {
@@ -150,8 +150,8 @@ public class AssignmentRequestBuilder {
         return caseWorkerAccessProfiles;
     }
 
-    public static Set<JudicialAccessProfile> convertProfileToJudicialAccessProfile(JudicialProfile judicialProfile) {
-        Set<JudicialAccessProfile> judicialAccessProfiles = new HashSet<>();
+    public static Set<UserAccessProfile> convertProfileToJudicialAccessProfile(JudicialProfile judicialProfile) {
+        Set<UserAccessProfile> judicialAccessProfiles = new HashSet<>();
         Set<String> ticketCodes = new HashSet<>();
         if (judicialProfile.getAuthorisations() != null) {
             judicialProfile.getAuthorisations().forEach(authorisation -> {
@@ -162,7 +162,7 @@ public class AssignmentRequestBuilder {
             );
         }
         judicialProfile.getAppointments().forEach(appointment -> {
-            JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder().build();
+            var judicialAccessProfile = JudicialAccessProfile.builder().build();
             judicialAccessProfile.setUserId(judicialProfile.getSidamId());
             judicialAccessProfile.setRoles(appointment.getRoles());
             judicialAccessProfile.setBeginTime(appointment.getStartDate().atStartOfDay(ZoneId.of("UTC")));
