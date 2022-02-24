@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CaseWorkerAccessProfile implements Serializable {
+public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile {
     private String id;
     private String roleId;
     private String roleName;

@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -39,7 +40,7 @@ public class RefreshOrchestrator {
 
     private final RetrieveDataService retrieveDataService;
 
-    private final RequestMappingService requestMappingService;
+    private final RequestMappingService<UserAccessProfile> requestMappingService;
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final PersistenceService persistenceService;
@@ -54,7 +55,8 @@ public class RefreshOrchestrator {
     private String sortColumn;
 
     @Autowired
-    public RefreshOrchestrator(RetrieveDataService retrieveDataService, RequestMappingService requestMappingService,
+    public RefreshOrchestrator(RetrieveDataService retrieveDataService,
+                               RequestMappingService<UserAccessProfile> requestMappingService,
                                ParseRequestService parseRequestService,
                                CRDService crdService, PersistenceService persistenceService,
                                @Value("${refresh.Job.pageSize}") String pageSize,
@@ -88,11 +90,11 @@ public class RefreshOrchestrator {
         long startTime = System.currentTimeMillis();
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
         ResponseEntity<Object> responseEntity = null;
-        Map<String, Set<?>> userAccessProfiles = null;
+        Map<String, Set<UserAccessProfile>> userAccessProfiles;
 
         //fetch the entity based on jobId
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
-        if (!refreshJobEntity.isPresent()) {
+        if (refreshJobEntity.isEmpty()) {
             throw new UnprocessableEntityException("Provided refresh job couldn't be retrieved.");
         } else {
             log.info("The refresh job retrieved from the DB:" + refreshJobEntity.get().getJobId());
@@ -170,19 +172,16 @@ public class RefreshOrchestrator {
 
 
                 //call to CRD
-                for (int page = 0; page < pageNumber; page++) {
+                for (var page = 0; page < pageNumber; page++) {
                     ResponseEntity<List<Object>> userProfilesResponse = crdService
                             .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
                                     Integer.parseInt(pageSize), page,
                                     sortDirection, sortColumn);
-                    Map<String, Set<?>> userAccessProfiles = retrieveDataService
+                    Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                             .retrieveProfilesByServiceName(userProfilesResponse, userType);
 
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles, userType);
                 }
-            } else if (userType.equals(UserType.JUDICIAL)) {
-                //Implement the JRD Logic to fetch the Judicial profile based on service name once service up
-
             }
         } catch (FeignException.NotFound feignClientException) {
 
@@ -197,7 +196,7 @@ public class RefreshOrchestrator {
 
     @SuppressWarnings("unchecked")
     protected ResponseEntity<Object> prepareResponseCodes(Map<String, HttpStatus> responseCodeWithUserId, Map<String,
-            Set<?>> userAccessProfiles, UserType userType) {
+            Set<UserAccessProfile>> userAccessProfiles, UserType userType) {
         ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
 
         ((List<ResponseEntity<Object>>)

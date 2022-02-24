@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
@@ -39,7 +40,9 @@ class BulkAssignmentOrchestratorTest {
 
     private final RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
 
-    private final RequestMappingService requestMappingService = mock(RequestMappingService.class);
+    @SuppressWarnings("unchecked")
+    private final RequestMappingService<UserAccessProfile> requestMappingService
+            = (RequestMappingService<UserAccessProfile>)mock(RequestMappingService.class);
 
     @InjectMocks
     private final BulkAssignmentOrchestrator sut = new BulkAssignmentOrchestrator(parseRequestService,
@@ -73,6 +76,7 @@ class BulkAssignmentOrchestratorTest {
 
         List<AssignmentRequest> entity = (List<AssignmentRequest>) response.getBody();
 
+        assert entity != null;
         AssignmentRequest assignmentRequest = entity.get(0);
         assert assignmentRequest != null;
         RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);

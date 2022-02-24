@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
@@ -31,7 +32,7 @@ public class BulkAssignmentOrchestrator {
 
     private final RetrieveDataService retrieveDataService;
 
-    private final RequestMappingService requestMappingService;
+    private final RequestMappingService<UserAccessProfile> requestMappingService;
 
 
     @SuppressWarnings("unchecked")
@@ -41,7 +42,7 @@ public class BulkAssignmentOrchestrator {
         parseRequestService.validateUserRequest(userRequest);
         log.info("Validated {} userIds :: {}", userRequest.getUserIds().size(), userRequest.getUserIds());
         long startTime = System.currentTimeMillis();
-        Map<String, Set<?>> userAccessProfiles = null;
+        Map<String, Set<UserAccessProfile>> userAccessProfiles;
         //Create userAccessProfiles based upon roleId and service codes
         try {
             userAccessProfiles = retrieveDataService
