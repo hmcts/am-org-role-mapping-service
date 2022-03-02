@@ -28,7 +28,7 @@ class WelcomeControllerTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -83,7 +83,7 @@ class WelcomeControllerTest {
     }
 
     @Test
-    void functionalSleepTest() throws InterruptedException {
+    void functionalSleepTest() {
         ResponseEntity<Object> response =
                 ResponseEntity.status(HttpStatus.OK).body("Sleep time for Functional tests is over");
 

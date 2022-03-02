@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import uk.gov.hmcts.reform.orgrolemapping.controller.WelcomeController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
@@ -20,6 +19,7 @@ import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class OrgRoleMappingControllerAdviceTest {
 
@@ -27,8 +27,6 @@ class OrgRoleMappingControllerAdviceTest {
             uk.gov.hmcts.reform.orgrolemapping.controller.advice.OrgRoleMappingControllerAdvice();
 
     private transient HttpServletRequest servletRequestMock = mock(HttpServletRequest.class);
-
-    private transient WelcomeController welcomeController = new WelcomeController();
 
     @Test
     void customValidationError() {
@@ -100,8 +98,16 @@ class OrgRoleMappingControllerAdviceTest {
     @Test
     void handleRootExceptionException() {
         Throwable exception = mock(Throwable.class);
-        Assertions.assertNotNull(csda.getRootException(exception));
+        Assertions.assertNotNull(OrgRoleMappingControllerAdvice.getRootException(exception));
+    }
 
+    @Test
+    void handleRootException() {
+        Throwable exception = mock(Throwable.class);
+        when(exception.getCause()).thenReturn(new BadRequestException("Bad Req"));
+        Throwable cause = OrgRoleMappingControllerAdvice.getRootException(exception);
+        Assertions.assertNotNull(cause);
+        assertEquals(exception.getCause(), cause);
     }
 
 }

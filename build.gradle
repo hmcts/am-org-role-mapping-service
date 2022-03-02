@@ -158,9 +158,11 @@ task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verificatio
 }
 
 task fortifyScan(type: JavaExec)  {
-  main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
-  classpath += sourceSets.test.runtimeClasspath
-  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+    main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+    classpath += sourceSets.test.runtimeClasspath
+    jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+    // The line below prevents the build from failing if the Fortify scan detects issues
+    ignoreExitValue = true
 }
 
 jacocoTestReport {
@@ -185,6 +187,7 @@ pitest {
     excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication',
                        'uk.gov.hmcts.reform.orgrolemapping.util.GetSasToken',
                        'uk.gov.hmcts.reform.orgrolemapping.config.*',
+                       'uk.gov.hmcts.reform.orgrolemapping.data.*',
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.messaging.MessagingConfig',
                        'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
                        'uk.gov.hmcts.reform.orgrolemapping.domain.model.*',
@@ -212,6 +215,7 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/domain/model/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/servicebus/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/config/**," +
+                "src/main/java/uk/gov/hmcts/reform/orgrolemapping/data/**," +
                 "src/main/java/uk/gov/hmcts/reform/orgrolemapping/controller/TestController.java," +
                 "**UserAccessProfileBuilder.java," +
                 "**TestController.java"
