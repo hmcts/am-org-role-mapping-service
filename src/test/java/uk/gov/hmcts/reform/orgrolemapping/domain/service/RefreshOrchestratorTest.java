@@ -113,6 +113,45 @@ class RefreshOrchestratorTest {
     }
 
     @Test
+    void refreshRoleAssignmentRecords_profileNotFound() {
+
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
+        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
+        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
+                .id("1")
+                .roleId("1")
+                .roleName("roleName")
+                .primaryLocationName("primary")
+                .primaryLocationId("1")
+                .areaOfWorkId("1")
+                .serviceCode("1")
+                .suspended(false)
+                .build());
+        userAccessProfiles.put("1", userAccessProfileSet);
+
+        Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
+                .thenThrow(FeignException.NotFound.class);
+
+        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK)
+                        .body(Collections.emptyList())));
+
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        Mockito.when(persistenceService.fetchRefreshJobById(any()))
+                .thenReturn(Optional.of(
+                        RefreshJobEntity.builder()
+                                .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .build()));
+
+        assertNull(sut.refresh(1L, TestDataBuilder.buildUserRequest()));
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
     void refreshRoleAssignmentRecords_nullUserRequest() {
 
         Mockito.when(persistenceService.fetchRefreshJobById(any()))

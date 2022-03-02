@@ -104,6 +104,19 @@ class ParseRequestServiceTest {
     }
 
     @Test
+    void validateUserProfilesTest_NoUserIds() {
+        sut.validateUserProfiles(TestDataBuilder.buildListOfUserProfiles(true, false,
+                "1", "2",
+                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, false,
+                true, "1", "2", false),
+                UserRequest.builder().build(), new AtomicInteger(),new HashSet<>(), UserType.CASEWORKER);
+
+        verify(spyInteger, Mockito.times(0)).getAndIncrement();
+        verify(invalidProfilesSpy, Mockito.times(0)).add(any(CaseWorkerProfile.class));
+
+    }
+
+    @Test
     void validateUserProfiles_throwsBadRequest_noBaseLocationTest() {
         List<CaseWorkerProfile> caseWorkerProfiles = TestDataBuilder.buildListOfUserProfiles(true,
                 false, "1", "2",
