@@ -5,7 +5,7 @@ Feature: F-003 : Create Role Assignments for Judicial Users
     Given an appropriate test context as detailed in the test data source
 
   @S-022 @FeatureToggle(LD:orm-jrd-org-role=on)
-  Scenario: must successfully create judicial role mapping for Tribunal Judge - fee paid appointment with Assistant Resident Judge role.
+  Scenario: must successfully create judicial role mapping for Tribunal Judge - fee paid appointment.
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-022_DeleteDataForRoleAssignments01],
      And a successful call [to publish existing JRD user ids to endpoint] as in [S-022_PushMessageToJRDService],
