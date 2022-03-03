@@ -31,7 +31,6 @@ apply plugin: 'project-report'
 apply plugin: 'idea'
 apply plugin: 'io.spring.dependency-management'
 
-
 def versions = [
         junit          : '5.5.0',
         lombok         : '1.18.6',
@@ -49,7 +48,9 @@ def versions = [
         drools         : '7.60.0.Final',
         launchDarklySdk: '5.2.2',
         log4JVersion   : '2.17.1',
-        logbackVersion : '1.2.10'
+        logbackVersion : '1.2.10',
+        launchDarklySdk: '5.7.0'
+
 ]
 
 mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
