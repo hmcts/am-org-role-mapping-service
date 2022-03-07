@@ -323,7 +323,7 @@ dependencies {
     implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'){
         exclude group: 'com.microsoft.azure', module: 'adal4j'
     }
-    implementation group: 'com.azure', name: 'azure-core', version: '1.16.0'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.26.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
 
     compile group: 'io.projectreactor', name: 'reactor-core', version: '3.4.0'
