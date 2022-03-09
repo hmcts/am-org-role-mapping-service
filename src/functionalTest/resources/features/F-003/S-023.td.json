@@ -1,6 +1,6 @@
 {
   "_guid_": "S-023",
-  "title": "must successfully create judicial role mapping for Tribunal Judge - salaried appointment with Designated Immigration Judge role.",
+  "title": "must successfully create judicial role mapping for Tribunal Judge - salaried appointment.",
   "_extends_": "F-003_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
@@ -43,43 +43,6 @@
           "actorIdType" : "IDAM",
           "actorId" : "[[ANYTHING_PRESENT]]",
           "roleType" : "ORGANISATION",
-          "roleName" : "case-allocator",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N",
-            "contractType" : "Salaried",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "hmcts-judiciary",
-          "classification" : "PRIVATE",
-          "grantType" : "BASIC",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : true,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N",
-            "contractType" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
           "roleName" : "hmcts-judiciary",
           "classification" : "PRIVATE",
           "grantType" : "BASIC",
@@ -110,68 +73,6 @@
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
             "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "judge",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "contractType" : "Salaried",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA",
-            "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "leadership-judge",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "contractType" : "Salaried",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA",
-            "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications,access_requests"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "task-supervisor",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N",
-            "contractType" : "Salaried",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
