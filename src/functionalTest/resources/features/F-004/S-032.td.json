@@ -41,7 +41,7 @@
           "jurisdiction" : "IA",
           "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications"
         },
-        "authorisations" : [ "373" ]
+        "authorisations" : "[[ANYTHING_PRESENT]]"
       },
         {
         "id" : "[[ANYTHING_PRESENT]]",
@@ -63,7 +63,7 @@
           "jurisdiction" : "IA",
           "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications"
         },
-        "authorisations" : [ "373" ]
+        "authorisations" : "[[ANYTHING_PRESENT]]"
       } ]
     }
   }
