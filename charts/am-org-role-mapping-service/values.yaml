@@ -45,5 +45,6 @@ java:
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified&sslmode=require"
     REFRESH_JOB:
     APPLICATION_LOGGING_LEVEL: INFO
+    RUN_LD_ON_STARTUP: true
 servicebus:
   enabled: false

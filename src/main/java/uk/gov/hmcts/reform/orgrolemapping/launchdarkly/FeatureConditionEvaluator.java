@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.launchdarkly;
 
 import com.launchdarkly.sdk.LDUser;
 import com.launchdarkly.sdk.server.LDClient;
+import com.launchdarkly.sdk.server.interfaces.LDClientInterface;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +24,13 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     public static final String POST = "POST";
     public static final String DELETE = "DELETE";
 
-    private LDClient ldClient;
+    @Autowired
+    private LDClientInterface ldClient;
 
-    private final String environment;
+    @Value("${launchdarkly.sdk.environment}")
+    private String environment;
+
+    @Value("${launchdarkly.sdk.user}")
     private final String userName;
 
     private static final HashMap<String, String> getRequestMap = new HashMap<>();
