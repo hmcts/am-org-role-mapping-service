@@ -401,7 +401,7 @@ dependencies {
     implementation('io.netty:netty-codec-dns:4.1.73.Final') {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
-    implementation('io.netty:netty-resolver-dns:4.1.73.Final') {
+    implementation('io.netty:netty-resolver-dns:4.1.75.Final') {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
     implementation('io.netty:netty-resolver-dns-native-macos:4.1.73.Final') {
