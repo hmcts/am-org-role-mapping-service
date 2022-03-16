@@ -50,8 +50,6 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 @SpringBootTest
 public class OrgRoleMappingConsumerTestForStaticRoles {
 
-    private static final String RAS_GET_LIST_ROLES_URL = "/am/role-assignments/roles";
-
     @MockBean
     CRDTopicConsumer topicConsumer;
 
@@ -146,7 +144,6 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
         public EmbeddedPostgres embeddedPostgres() throws IOException {
             return EmbeddedPostgres
                     .builder()
-                    .setPort(0)
                     .start();
         }
 
@@ -157,7 +154,8 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
             final Properties props = new Properties();
             // Instruct JDBC to accept JSON string for JSONB
             props.setProperty("stringtype", "unspecified");
-            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres", "postgres"), props);
+            props.setProperty("user", "postgres");
+            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres"), props);
             return new SingleConnectionDataSource(connection, true);
         }
 
