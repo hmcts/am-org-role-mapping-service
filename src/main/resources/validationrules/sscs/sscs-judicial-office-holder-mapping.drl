@@ -183,7 +183,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SSCS Tribunal Judge-Salaried")
+      .office("SSCS Tribunal member medical-Salaried")
       .jurisdiction("SSCS")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -226,13 +226,13 @@ then
 end;
 
 /*
- * "SSCS Tribunal member disability-Salaried" business role mapping to JOH.
+ * "SSCS Tribunal member financially qualified" business role mapping to JOH.
  */
-rule "sscs_tribunal_member_disability_salaried_joh"
+rule "sscs_tribunal_member_financially_qualified_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment == "Tribunal member disability",
-                               appointmentType == "Salaried",
+   $jap: JudicialAccessProfile(appointment == "Tribunal member financially qualified",
+                               appointmentType == "Fee Paid",
                                serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
@@ -240,7 +240,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SSCS Tribunal member disability-Salaried")
+      .office("SSCS Tribunal member financially qualified")
       .jurisdiction("SSCS")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -250,7 +250,7 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_disability_salaried_joh");
+      logMsg("Rule : sscs_tribunal_member_financially_qualified_joh");
 end;
 
 /*
