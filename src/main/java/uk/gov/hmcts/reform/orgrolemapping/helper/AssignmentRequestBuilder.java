@@ -199,10 +199,10 @@ public class AssignmentRequestBuilder {
         return requestedRoles;
     }
 
-    public static boolean validateAuthorisation(List<Authorisation> authorisations) {
+    public static boolean validateAuthorisation(List<Authorisation> authorisations, String serviceCode) {
 
         if (!CollectionUtils.isEmpty(authorisations)) {
-            return authorisations.stream().anyMatch(authorisation -> "BFA1".equals(authorisation.getServiceCode())
+            return authorisations.stream().anyMatch(authorisation -> serviceCode.equals(authorisation.getServiceCode())
                      && (authorisation.getEndDate() == null
                     || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
 

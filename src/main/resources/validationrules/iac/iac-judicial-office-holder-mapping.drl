@@ -202,7 +202,7 @@ when
   $jap: JudicialAccessProfile(appointment == "President of Tribunal",
                              (serviceCode == null || serviceCode != "BFA1"),
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                             validateAuthorisation(authorisations))
+                             validateAuthorisation(authorisations, "BFA1"))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -228,7 +228,7 @@ when
                                appointmentType in ("Salaried","SPTW"),
                                (serviceCode == null || serviceCode != "BFA1"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations))
+                               validateAuthorisation(authorisations, "BFA1"))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -253,7 +253,7 @@ when
                                appointmentType == "Fee Paid",
                                (serviceCode == null || serviceCode != "BFA1"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations))
+                               validateAuthorisation(authorisations, "BFA1"))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -277,7 +277,7 @@ when
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                              (roles !=null && roles.contains("Resident Immigration Judge")),
-                             validateAuthorisation(authorisations))
+                             validateAuthorisation(authorisations, "BFA1"))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -301,7 +301,7 @@ when
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                              (roles !=null && roles.contains("Assistant Resident Judge")),
-                             validateAuthorisation(authorisations))
+                             validateAuthorisation(authorisations, "BFA1"))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -325,7 +325,7 @@ when
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                              (roles !=null && roles.contains("Designated Immigration Judge")),
-                             validateAuthorisation(authorisations))
+                             validateAuthorisation(authorisations, "BFA1"))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -356,7 +356,7 @@ when
                               !roles.contains("Resident Immigration Judge") &&
                               !roles.contains("Assistant Resident Judge") &&
                               !roles.contains("Designated Immigration Judge"))),
-                             validateAuthorisation(authorisations))
+                             validateAuthorisation(authorisations, "BFA1"))
 then
  insert(
        JudicialOfficeHolder.builder()
@@ -385,7 +385,7 @@ when
                              (roles == null || (!roles.contains("Resident Immigration Judge") &&
                               !roles.contains("Assistant Resident Judge") &&
                               !roles.contains("Designated Immigration Judge"))),
-                              validateAuthorisation(authorisations))
+                              validateAuthorisation(authorisations, "BFA1"))
 then
  insert(
        JudicialOfficeHolder.builder()
