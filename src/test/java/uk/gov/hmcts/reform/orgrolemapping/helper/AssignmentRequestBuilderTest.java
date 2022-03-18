@@ -112,7 +112,7 @@ class AssignmentRequestBuilderTest {
 
         assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BFA1")
-                .endDate(LocalDateTime.now().plusDays(1)).build())));
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BFA1"));
     }
 
     @Test
@@ -120,13 +120,13 @@ class AssignmentRequestBuilderTest {
 
         List<Authorisation> authorisations = new ArrayList<>();
 
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(authorisations));
+        assertFalse(AssignmentRequestBuilder.validateAuthorisation(authorisations, "BFA1"));
     }
 
     @Test
     void validateNullAuthorisation() {
 
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(null));
+        assertFalse(AssignmentRequestBuilder.validateAuthorisation(null, "BFA1"));
     }
 
     @Test
@@ -134,7 +134,7 @@ class AssignmentRequestBuilderTest {
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BFA2")
-                .endDate(LocalDateTime.now().plusDays(1)).build())));
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BFA1"));
     }
 
 
@@ -144,13 +144,14 @@ class AssignmentRequestBuilderTest {
                 .endDate(LocalDateTime.now().minusDays(2))
                 .serviceCode("BFA2")
                 .build();
-        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation));
+        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
+                "BFA1");
         assertFalse(isValidAuthorisation);
     }
 
     @Test
     void validateAuthorisation_emptyList() {
-        boolean authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of());
+        boolean authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(), "BFA1");
         assertFalse(authorisation);
     }
 
