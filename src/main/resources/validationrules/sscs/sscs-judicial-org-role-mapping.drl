@@ -24,7 +24,7 @@ rule "sscs_caseworker_sscs_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President (SEC)-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS District Tribunal Judge-Salaried"))
+                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
@@ -59,7 +59,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President (SEC)-Salaried", "SSCS Regional Tribunal Judge-Salaried",
                                         "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal member medical-Salaried",
-                                        "SSCS Regional Medical Member-Salaried"))
+                                        "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
@@ -94,7 +94,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President (SEC)-Salaried", "SSCS Regional Tribunal Judge-Salaried",
                                         "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal member medical-Salaried",
-                                        "SSCS Regional Medical Member-Salaried"))
+                                        "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
@@ -128,7 +128,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President (SEC)-Salaried", "SSCS Regional Tribunal Judge-Salaried",
                                         "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal member medical-Salaried",
-                                        "SSCS Regional Medical Member-Salaried"))
+                                        "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
       attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
