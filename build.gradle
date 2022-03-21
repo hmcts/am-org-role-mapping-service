@@ -410,7 +410,7 @@ dependencies {
     testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.1')
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
 
-    pitest group: 'org.pitest', name: 'pitest-junit5-plugin', version:versions.pitest
+    pitest group: 'org.pitest', name: 'pitest-junit5-plugin'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.4.0'
