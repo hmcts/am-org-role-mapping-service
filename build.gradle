@@ -500,10 +500,11 @@ dependencyManagement {
             entry 'logback-classic'
             entry 'logback-core'
         }
-        dependencySet(group: 'com.fasterxml.jackson.core', version: '2.13.1') {
+        dependencySet(group: 'com.fasterxml.jackson.core', version: '2.13.2') {
             entry 'jackson-databind'
             entry 'jackson-core'
             entry 'jackson-annotations'
+            entry 'jackson-datatype-jsr310'
         }
     }
 }
