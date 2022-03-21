@@ -504,7 +504,6 @@ dependencyManagement {
             entry 'jackson-databind'
             entry 'jackson-core'
             entry 'jackson-annotations'
-            entry 'jackson-datatype-jsr310'
         }
     }
 }
