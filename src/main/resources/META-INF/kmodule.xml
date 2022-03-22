@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-    <kbase name="org-role-mapping-validation" packages="validationrules.core, validationrules.iac">
+    <kbase name="org-role-mapping-validation" packages="validationrules.core, validationrules.iac, validationrules.sscs">
         <ksession name="org-role-mapping-validation-session" type="stateless"/>
     </kbase>
 </kmodule>
