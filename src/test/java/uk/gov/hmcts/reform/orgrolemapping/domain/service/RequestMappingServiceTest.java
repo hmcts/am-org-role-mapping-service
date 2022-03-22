@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import feign.FeignException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -151,6 +152,8 @@ class RequestMappingServiceTest {
         assertNotNull(responseEntity.getBody());
 
         ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.registerModule(new JavaTimeModule());
 
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);

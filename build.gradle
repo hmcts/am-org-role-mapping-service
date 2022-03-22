@@ -182,7 +182,7 @@ jacoco {
 }
 
 pitest {
-    pitestVersion = "1.7.2"
+    pitestVersion = "1.7.4"
     testPlugin = "junit5"
     targetClasses = ['uk.gov.hmcts.reform.*']
     excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication',
@@ -499,6 +499,11 @@ dependencyManagement {
         dependencySet(group: 'ch.qos.logback', version: versions.logbackVersion) {
             entry 'logback-classic'
             entry 'logback-core'
+        }
+        dependencySet(group: 'com.fasterxml.jackson.core', version: '2.13.2') {
+            entry 'jackson-databind'
+            entry 'jackson-core'
+            entry 'jackson-annotations'
         }
     }
 }
