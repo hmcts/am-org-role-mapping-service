@@ -426,9 +426,9 @@ end;
 
 
 /*
- * "SSCS Tribunal Judge-Salaried" business role mapping to JOH.
+ * "SSCS Tribunal Judge-Salaried" business role mapping to default JOH.
  */
-rule "sscs_tribunal_judge_salaried_joh"
+rule "sscs_tribunal_judge_salaried_default_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment !=null &&
@@ -452,7 +452,7 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_judge_salaried_joh");
+      logMsg("Rule : sscs_tribunal_judge_salaried_default_joh");
 end;
 
 
