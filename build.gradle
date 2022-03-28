@@ -353,6 +353,8 @@ dependencies {
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.58'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.1'
+    implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.13.2.20220324', ext: 'pom'
 
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.1'
