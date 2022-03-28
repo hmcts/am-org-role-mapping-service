@@ -13,15 +13,16 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.jupiter.api.Assertions.*;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolSSCSJudicialOfficeMapping extends DroolBase{
+class DroolJudicialOfficeMappingSSCS extends DroolBase {
 
     @Test
     void shouldReturnTribunalJudgeSalariedRoles() {
@@ -320,7 +321,8 @@ class DroolSSCSJudicialOfficeMapping extends DroolBase{
         assertEquals("caseworker-sscs-financial-feepaid", roleAssignments.get(0).getRoleName());
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-        });        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        });
+        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
     }
 
@@ -469,8 +471,9 @@ class DroolSSCSJudicialOfficeMapping extends DroolBase{
         assertEquals(1, roleAssignments.size());
 
         roleAssignments.forEach(r -> {
-                    assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
         });
+
         assertEquals("caseworker-sscs-disability-feepaid", roleAssignments.get(0).getRoleName());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 

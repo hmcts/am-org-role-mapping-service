@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DroolSSCSJudicialRoleMapping extends DroolBase{
+class DroolJudicialRoleMappingSSCS extends DroolBase {
 
     @Test
     void shouldReturnPresidentRoles() {
