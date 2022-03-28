@@ -13,16 +13,17 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolJudicialOfficeMappingSSCS extends DroolBase {
+class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
     @Test
     void shouldReturnTribunalJudgeSalariedRoles() {
@@ -49,15 +50,32 @@ class DroolJudicialOfficeMappingSSCS extends DroolBase {
         assertEquals(4, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+
         });
+
         assertEquals("caseworker-sscs-judge", roleAssignments.get(0).getRoleName());
         assertEquals("case-allocator", roleAssignments.get(1).getRoleName());
         assertEquals("task-supervisor", roleAssignments.get(2).getRoleName());
         assertEquals("hmcts-judiciary", roleAssignments.get(3).getRoleName());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
+
+        assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
+        assertEquals("SSCS", roleAssignments.get(1).getAttributes().get("jurisdiction").asText());
+        assertEquals("SSCS", roleAssignments.get(2).getAttributes().get("jurisdiction").asText());
+
+        assertEquals("[373]", roleAssignments.get(0).getAuthorisations().toString());
+        assertEquals("[373]", roleAssignments.get(1).getAuthorisations().toString());
+        assertEquals("[373]", roleAssignments.get(2).getAuthorisations().toString());
+
+        assertEquals("primary location",roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
+        assertEquals("primary location",roleAssignments.get(1).getAttributes().get("primaryLocation").asText());
+        assertEquals("primary location",roleAssignments.get(2).getAttributes().get("primaryLocation").asText());
+
+        assertEquals("", roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals("", roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals("", roleAssignments.get(2).getAttributes().get("workTypes").asText());
+
+
     }
 
     @Test

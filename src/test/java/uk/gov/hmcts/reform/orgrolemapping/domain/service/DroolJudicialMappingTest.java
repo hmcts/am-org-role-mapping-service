@@ -294,7 +294,6 @@ class DroolJudicialMappingTest extends DroolBase {
         judicialBooking2.setLocationId(null);
         judicialBooking2.setBeginTime(ZonedDateTime.now().minusDays(5));
         judicialBookings = Set.of(judicialBooking, judicialBooking2);
-        System.out.println(judicialBooking);
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
