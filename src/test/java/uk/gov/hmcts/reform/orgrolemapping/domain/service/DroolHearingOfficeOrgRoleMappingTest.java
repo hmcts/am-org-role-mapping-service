@@ -28,7 +28,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUse
 
 @RunWith(MockitoJUnitRunner.class)
 public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
-    String workTypes = "";
+
     static final String SERVICE_CODE = "BBA3";
     static final String LD_FLAG = "sscs_hearing_1_0";
 
@@ -53,7 +53,6 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals("hearing-viewer", r.getRoleName());
-            assertEquals(workTypes,r.getAttributes().get("workTypes").asText());
             assertEquals(judicialAccessProfiles.stream().iterator().next().getEndTime().plusDays(1), r.getEndTime());
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
@@ -134,7 +133,6 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
             assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
                     .anyMatch(s::contains));
-            assertEquals(workTypes, r.getAttributes().get("workTypes").asText());
         });
     }
 
@@ -161,7 +159,6 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
             assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
                     .anyMatch(s::contains));
-            assertEquals(workTypes, r.getAttributes().get("workTypes").asText());
         });
     }
 
@@ -188,7 +185,6 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
             assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
             assertThat(r.getRoleName()).matches(s -> Stream.of("listed-hearing-viewer").anyMatch(s::contains));
-            assertEquals(workTypes, r.getAttributes().get("workTypes").asText());
         });
     }
 }
