@@ -356,7 +356,7 @@ dependencies {
 
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.1'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.1'
-    implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.1'
+    implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.2'
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'
