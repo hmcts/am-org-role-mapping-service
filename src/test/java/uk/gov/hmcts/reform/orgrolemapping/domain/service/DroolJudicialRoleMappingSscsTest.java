@@ -35,7 +35,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
-        assertEquals("caseworker-sscs-judge",roleAssignments.get(0).getRoleName());
+        assertEquals("judge",roleAssignments.get(0).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
         assertEquals("hmcts-judiciary",roleAssignments.get(3).getRoleName());
@@ -68,7 +68,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
-        assertEquals("caseworker-sscs-judge",roleAssignments.get(0).getRoleName());
+        assertEquals("judge",roleAssignments.get(0).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
         assertEquals("hmcts-judiciary",roleAssignments.get(3).getRoleName());
@@ -101,7 +101,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
-        assertEquals("caseworker-sscs-judge",roleAssignments.get(0).getRoleName());
+        assertEquals("judge",roleAssignments.get(0).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
         assertEquals("hmcts-judiciary",roleAssignments.get(3).getRoleName());
@@ -135,7 +135,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
-        assertEquals("caseworker-sscs-judge",roleAssignments.get(0).getRoleName());
+        assertEquals("judge",roleAssignments.get(0).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
         assertEquals("hmcts-judiciary",roleAssignments.get(3).getRoleName());
@@ -174,7 +174,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         assertEquals("case-allocator",roleAssignments.get(0).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(1).getRoleName());
         assertEquals("hmcts-judiciary",roleAssignments.get(2).getRoleName());
-        assertEquals("caseworker-sscs-medical",roleAssignments.get(3).getRoleName());
+        assertEquals("medical",roleAssignments.get(3).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
@@ -212,7 +212,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         assertEquals("case-allocator",roleAssignments.get(0).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(1).getRoleName());
         assertEquals("hmcts-judiciary",roleAssignments.get(2).getRoleName());
-        assertEquals("caseworker-sscs-medical",roleAssignments.get(3).getRoleName());
+        assertEquals("medical",roleAssignments.get(3).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
@@ -242,7 +242,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        assertEquals("caseworker-sscs-judge-feepaid",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-judge",roleAssignments.get(0).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
@@ -266,7 +266,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        assertEquals("caseworker-sscs-medical-feepaid",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-medical",roleAssignments.get(0).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
@@ -290,7 +290,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        assertEquals("caseworker-sscs-medical-feepaid",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-medical",roleAssignments.get(0).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
@@ -314,7 +314,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        assertEquals("caseworker-sscs-disability-feepaid",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-disability",roleAssignments.get(0).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
@@ -338,7 +338,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        assertEquals("caseworker-sscs-disability-feepaid",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-disability",roleAssignments.get(0).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
@@ -362,7 +362,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        assertEquals("caseworker-sscs-disability-feepaid",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-disability",roleAssignments.get(0).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
@@ -386,7 +386,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        assertEquals("caseworker-sscs-disability-feepaid",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-disability",roleAssignments.get(0).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
@@ -410,7 +410,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        assertEquals("caseworker-sscs-financial-feepaid",roleAssignments.get(0).getRoleName());
+        assertEquals("fee-paid-financial",roleAssignments.get(0).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
