@@ -17,10 +17,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
- * SSCS "caseworker-sscs-judge" Org role mapping.
+ * SSCS "judge" Org role mapping.
  */
 
-rule "sscs_caseworker_sscs_judge_org_role"
+rule "sscs_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President (SEC)-Salaried", "SSCS Regional Tribunal Judge-Salaried",
@@ -38,7 +38,7 @@ then
       .actorId($joh.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("caseworker-sscs-judge")
+      .roleName("judge")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -47,7 +47,7 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : sscs_caseworker_sscs_judge_org_role");
+      logMsg("Rule : sscs_judge_org_role");
 end;
 
 
@@ -149,10 +149,10 @@ then
 end;
 
 /*
- * SSCS "caseworker-sscs-judge-feepaid" Org role mapping.
+ * SSCS "fee-paid-judge" Org role mapping.
  */
 
-rule "sscs_caseworker_sscs_judge_fee_paid_org_role"
+rule "sscs_fee_paid_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office == "SSCS Tribunal Judge-Fee Paid")
@@ -169,7 +169,7 @@ then
       .actorId($joh.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("caseworker-sscs-judge-feepaid")
+      .roleName("fee-paid-judge")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -178,15 +178,15 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : sscs_caseworker_sscs_judge_fee_paid_org_role");
+      logMsg("Rule : sscs_fee_paid_judge_org_role");
 end;
 
 
 /*
- * SSCS "caseworker-sscs-medical" Org role mapping.
+ * SSCS "medical" Org role mapping.
  */
 
-rule "sscs_caseworker_sscs_medical_org_role"
+rule "sscs_medical_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS Tribunal member medical-Salaried", "SSCS Regional Medical Member-Salaried"))
@@ -203,7 +203,7 @@ then
       .actorId($joh.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("caseworker-sscs-medical")
+      .roleName("medical")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -212,14 +212,14 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : sscs_caseworker_sscs_medical_org_role");
+      logMsg("Rule : sscs_medical_org_role");
 end;
 
 /*
- * SSCS "caseworker-sscs-medical-feepaid" Org role mapping.
+ * SSCS "fee-paid-medical" Org role mapping.
  */
 
-rule "sscs_caseworker_sscs_medical_fee_paid_org_role"
+rule "sscs_fee_paid_medical_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS Tribunal member medical-Fee Paid", "SSCS Tribunal Member Optometrist-Fee Paid"))
@@ -235,7 +235,7 @@ then
       .actorId($joh.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("caseworker-sscs-medical-feepaid")
+      .roleName("fee-paid-medical")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -244,15 +244,15 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : sscs_caseworker_sscs_medical_fee_paid_org_role");
+      logMsg("Rule : sscs_fee_paid_medical_org_role");
 end;
 
 
 /*
- * SSCS "caseworker-sscs-disability-feepaid" Org role mapping.
+ * SSCS "fee-paid-disability" Org role mapping.
  */
 
-rule "sscs_caseworker_sscs_disability_fee_paid_org_role"
+rule "sscs_fee_paid_disability_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS Tribunal member disability-Fee Paid", "SSCS Tribunal Member-Fee Paid",
@@ -269,7 +269,7 @@ then
       .actorId($joh.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("caseworker-sscs-disability-feepaid")
+      .roleName("fee-paid-disability")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -278,14 +278,14 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : sscs_caseworker_sscs_disability_fee_paid_org_role");
+      logMsg("Rule : sscs_fee_paid_disability_org_role");
 end;
 
 /*
- * SSCS "caseworker-sscs-financial-feepaid" Org role mapping.
+ * SSCS "fee-paid-financial" Org role mapping.
  */
 
-rule "sscs_caseworker_sscs_financial_fee_paid_org_role"
+rule "sscs_fee_paid_financial_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office == "SSCS Tribunal member financially qualified")
@@ -301,7 +301,7 @@ then
       .actorId($joh.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("caseworker-sscs-financial-feepaid")
+      .roleName("fee-paid-financial")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -310,5 +310,5 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : sscs_caseworker_sscs_judge_fee_paid_org_role");
+      logMsg("Rule : sscs_fee_paid_financial_org_role");
 end;
