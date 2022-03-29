@@ -16,6 +16,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingSe
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialRoleMappingSscsTest extends DroolBase {
 
+    //sscs_caseworker_sscs_judge_org_role
     @Test
     void shouldReturnPresidentRoles() {
 
