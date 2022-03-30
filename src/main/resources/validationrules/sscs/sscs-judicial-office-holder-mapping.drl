@@ -36,7 +36,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "President of Tribunal",
                                appointmentType == "Salaried",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -64,7 +63,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Regional Tribunal Judge",
                                appointmentType == "Salaried",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -92,7 +90,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
                                appointmentType == "Fee Paid",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -120,7 +117,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
                                appointmentType == "Salaried",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -148,7 +144,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal member medical",
                                appointmentType == "Fee Paid",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -176,7 +171,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal member medical",
                                appointmentType == "Salaried",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -205,7 +199,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal member disability",
                                appointmentType == "Fee Paid",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -233,7 +226,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal member financially qualified",
                                appointmentType == "Fee Paid",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -261,7 +253,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Member",
                                appointmentType == "Fee Paid",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -289,7 +280,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Member Lay",
                                appointmentType == "Fee Paid",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -317,7 +307,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Member Optometrist",
                                appointmentType == "Fee Paid",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -345,7 +334,6 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Member Service",
                                appointmentType == "Fee Paid",
-                               serviceCode == "BBA3",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -363,65 +351,6 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : sscs_tribunal_member_service_fee_paid_joh");
-end;
-
-
-/*
- * "SSCS District Tribunal Judge-Salaried" business role mapping to JOH.
- */
-rule "sscs_district_tribunal_judge_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment !=null,
-                               (roles !=null && roles.contains("District Tribunal Judge")),
-                               appointmentType == "Salaried",
-                               serviceCode == "BBA3",
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "BBA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("SSCS District Tribunal Judge-Salaried")
-      .jurisdiction("SSCS")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : sscs_district_tribunal_judge_salaried_joh");
-end;
-
-/*
- * "SSCS Regional Medical Member-Salaried" business role mapping to JOH.
- */
-rule "sscs_regional_medical_member_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment !=null,
-                               (roles !=null && roles.contains("Regional Medical Member")),
-                               appointmentType == "Salaried",
-                               serviceCode == "BBA3",
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "BBA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("SSCS Regional Medical Member-Salaried")
-      .jurisdiction("SSCS")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : sscs_regional_medical_member_salaried_joh");
 end;
 
 
