@@ -6,6 +6,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -200,11 +201,6 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         for (QueryResultsRow row : queryResults) {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
-
-        System.out.println(roleAssignments.get(0).getRoleName());
-        System.out.println(roleAssignments.get(1).getRoleName());
-        System.out.println(roleAssignments.get(2).getRoleName());
-        System.out.println(roleAssignments.get(3).getRoleName());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
