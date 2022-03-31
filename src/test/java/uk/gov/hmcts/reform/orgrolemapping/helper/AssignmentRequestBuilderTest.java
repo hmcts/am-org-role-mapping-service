@@ -189,7 +189,9 @@ class AssignmentRequestBuilderTest {
         judicialProfile.getAppointments().get(0).setIsPrincipalAppointment("False");
         judicialProfile.getAppointments().get(1).setAppointment("2");
         judicialProfile.setAuthorisations(List.of(Authorisation.builder().ticketCode("374").build(),
-                Authorisation.builder().ticketCode("373").endDate(LocalDateTime.now().minusDays(1)).build()));
+                Authorisation.builder().endDate(LocalDateTime.now().plusDays(1)).build(),
+                Authorisation.builder().ticketCode("373").endDate(LocalDateTime.now().minusDays(1)).build(),
+                Authorisation.builder().ticketCode("372").endDate(LocalDateTime.now().plusDays(1)).build()));
         Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 
@@ -202,8 +204,8 @@ class AssignmentRequestBuilderTest {
                     assertNotNull(appointment.getRegionId());
                     assertNotNull(appointment.getBaseLocationId());
                     assertNotNull(appointment.getTicketCodes());
-                    assertEquals(1, appointment.getTicketCodes().size());
-                    Assertions.assertThat(List.of("374")).hasSameElementsAs(appointment.getTicketCodes());
+                    assertEquals(2, appointment.getTicketCodes().size());
+                    Assertions.assertThat(List.of("374","372")).hasSameElementsAs(appointment.getTicketCodes());
                     assertNotNull(appointment.getAppointment());
                 });
         assertEquals(2, judicialAccessProfiles.size());
