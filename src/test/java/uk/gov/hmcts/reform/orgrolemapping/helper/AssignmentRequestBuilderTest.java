@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
@@ -8,6 +9,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,12 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 class AssignmentRequestBuilderTest {
 
@@ -187,7 +188,8 @@ class AssignmentRequestBuilderTest {
         judicialProfile.getAppointments().get(0).setEndDate(null);
         judicialProfile.getAppointments().get(0).setIsPrincipalAppointment("False");
         judicialProfile.getAppointments().get(1).setAppointment("2");
-        judicialProfile.setAuthorisations(List.of(Authorisation.builder().ticketCode("374").build()));
+        judicialProfile.setAuthorisations(List.of(Authorisation.builder().ticketCode("374").build(),
+                Authorisation.builder().ticketCode("373").endDate(LocalDateTime.now().minusDays(1)).build()));
         Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
                 .convertProfileToJudicialAccessProfile(judicialProfile);
 
@@ -201,6 +203,7 @@ class AssignmentRequestBuilderTest {
                     assertNotNull(appointment.getBaseLocationId());
                     assertNotNull(appointment.getTicketCodes());
                     assertEquals(1, appointment.getTicketCodes().size());
+                    Assertions.assertThat(List.of("374")).hasSameElementsAs(appointment.getTicketCodes());
                     assertNotNull(appointment.getAppointment());
                 });
         assertEquals(2, judicialAccessProfiles.size());
