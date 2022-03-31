@@ -34,7 +34,7 @@ apply plugin: 'io.spring.dependency-management'
 def versions = [
         junit          : '5.8.2',
         lombok         : '1.18.6',
-        pitest         : '1.7.4',
+        pitest         : '1.7.5',
         reformLogging  : '5.1.7',
         reformS2sClient: '4.0.2',
         serenity       : '2.1.0',
@@ -337,7 +337,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.1'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'
 
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
     implementation group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-client', version: versions.springBoot
     implementation 'org.springframework.security:spring-security-web:5.6.2'
     implementation 'org.springframework.security:spring-security-config:5.6.2'
