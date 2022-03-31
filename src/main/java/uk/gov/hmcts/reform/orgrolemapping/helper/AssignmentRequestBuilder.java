@@ -155,7 +155,8 @@ public class AssignmentRequestBuilder {
         Set<String> ticketCodes = new HashSet<>();
         if (judicialProfile.getAuthorisations() != null) {
             judicialProfile.getAuthorisations().forEach(authorisation -> {
-                if (authorisation.getTicketCode() != null) {
+                if (authorisation.getTicketCode() != null && (authorisation.getEndDate() == null
+                        || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0)) {
                     ticketCodes.add(authorisation.getTicketCode());
                 }
                 }
