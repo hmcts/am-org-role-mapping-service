@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
@@ -9,7 +11,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
@@ -17,44 +22,18 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingSe
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialRoleMappingSscsTest extends DroolBase {
 
-    //sscs_caseworker_sscs_judge_org_role
-    @Test
-    void shouldReturnPresidentRoles() {
+    @ParameterizedTest
+    @CsvSource({
+            "SSCS Tribunal Judge-Salaried,judge",
+            "SSCS Regional Tribunal Judge-Salaried,judge",
+            "SSCS District Tribunal Judge-Salaried,judge",
+            "SSCS Tribunal Judge-Salaried,judge",
+            "SSCS Tribunal member medical-Salaried,medical",
+            "SSCS Regional Medical Member-Salaried,medical"
+    })
+    void shouldReturnSalariedRoles(String setOffice, String roleNameOutput) {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal Judge-Salaried"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("judge",roleAssignments.get(0).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
-        assertEquals("hmcts-judiciary",roleAssignments.get(3).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnRegionalTribunalRoles() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Regional Tribunal Judge-Salaried"));
+        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -69,161 +48,33 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
-        assertEquals("judge",roleAssignments.get(0).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
-        assertEquals("hmcts-judiciary",roleAssignments.get(3).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnDistrictTribunalRoles() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS District Tribunal Judge-Salaried"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("judge",roleAssignments.get(0).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
-        assertEquals("hmcts-judiciary",roleAssignments.get(3).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-
-
-    }
-
-    @Test
-    void shouldReturnTribunalRoles() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal Judge-Salaried"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("judge",roleAssignments.get(0).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(2).getRoleName());
-        assertEquals("hmcts-judiciary",roleAssignments.get(3).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnTribunalMedicalSalariedRoles() {
-
-        judicialOfficeHolders.forEach(joh -> {
-            joh.setOffice("SSCS Tribunal member medical-Salaried");
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(roleNameOutput, "case-allocator", "task-supervisor","hmcts-judiciary"));
+        roleAssignments.forEach(r -> {
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
         });
 
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("case-allocator",roleAssignments.get(0).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(1).getRoleName());
-        assertEquals("hmcts-judiciary",roleAssignments.get(2).getRoleName());
-        assertEquals("medical",roleAssignments.get(3).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-
     }
 
-    @Test
-    void shouldReturnMedicalMemberSalariedRoles() {
+    @ParameterizedTest
+    @CsvSource({
+            "SSCS Tribunal Judge-Fee Paid,fee-paid-judge",
+            "SSCS Tribunal member medical-Fee Paid,fee-paid-medical",
+            "SSCS Tribunal Member Optometrist-Fee Paid,fee-paid-medical",
+            "SSCS Tribunal member disability-Fee Paid,fee-paid-disability",
+            "SSCS Tribunal Member-Fee Paid,fee-paid-disability",
+            "SSCS Tribunal Member Lay-Fee Paid,fee-paid-disability",
+            "SSCS Tribunal Member Service-Fee Paid,fee-paid-disability",
+            "SSCS Tribunal member financially qualified,fee-paid-financial"
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Regional Medical Member-Salaried"));
+    })
+    void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) {
 
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("case-allocator",roleAssignments.get(0).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(1).getRoleName());
-        assertEquals("hmcts-judiciary",roleAssignments.get(2).getRoleName());
-        assertEquals("medical",roleAssignments.get(3).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnTribunalJudgeFeePaid() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal Judge-Fee Paid"));
+        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -238,175 +89,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        assertEquals("fee-paid-judge",roleAssignments.get(0).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnTribunalMedicalFeePaid() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal member medical-Fee Paid"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        assertEquals("fee-paid-medical",roleAssignments.get(0).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnTribunalOptometristFeePaid() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal Member Optometrist-Fee Paid"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        assertEquals("fee-paid-medical",roleAssignments.get(0).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnTribunalDisabilityFeePaid() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal member disability-Fee Paid"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        assertEquals("fee-paid-disability",roleAssignments.get(0).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnTribunalMemberFeePaid() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal Member-Fee Paid"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        assertEquals("fee-paid-disability",roleAssignments.get(0).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnTribunalLayFeePaid() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal Member Lay-Fee Paid"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        assertEquals("fee-paid-disability",roleAssignments.get(0).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnTribunalServiceFeePaid() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal Member Service-Fee Paid"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        assertEquals("fee-paid-disability",roleAssignments.get(0).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-
-    }
-
-    @Test
-    void shouldReturnTribunalFinanciallyQualifiedRole() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("SSCS Tribunal member financially qualified"));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        assertEquals("fee-paid-financial",roleAssignments.get(0).getRoleName());
+        assertEquals(roleNameOutput,roleAssignments.get(0).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
