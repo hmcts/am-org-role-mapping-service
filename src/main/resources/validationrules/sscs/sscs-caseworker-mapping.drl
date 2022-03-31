@@ -70,7 +70,7 @@ end;
 rule "sscs_hearing_manager_legal_ops"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("2"), serviceCode == "BBA3", !suspended)
+  $up: CaseWorkerAccessProfile(roleId in ("2","16"), serviceCode == "BBA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
@@ -93,7 +93,7 @@ end;
 rule "sscs_hearing_viewer_legal_ops"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("2"), serviceCode == "BBA3", !suspended)
+  $up: CaseWorkerAccessProfile(roleId in ("2","16"), serviceCode == "BBA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
