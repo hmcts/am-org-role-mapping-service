@@ -8,14 +8,18 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -398,5 +402,225 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
     }
 
+    //    Invalid authorisation(expired enddate) and valid appointment
+    //    Invalid authorisation(wrong servicecode) and valid appointment
+    //    Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
+    //    Valid appointmentRoles
+    //    Invalid appointmentRoles
+
+    // Invalid authorisation(expired enddate) and valid appointment(Salaried)
+    @ParameterizedTest
+    @CsvSource({
+            "President of Tribunal",
+            "Regional Tribunal Judge"
+    })
+    void shouldNotReturnSalariedRolesExpiredEndDate(String appointment) {
+
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment(appointment);
+        profile.setAppointmentType("Salaried");
+        profile.setServiceCode("BBA3");
+        judicialAccessProfiles.add(profile);
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode("BBA3").endDate(LocalDateTime.now().minusMonths(5))
+                        .build())));
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+        assertEquals(0, roleAssignments.size());
+
+    }
+
+    //Invalid authorisation(wrong servicecode) and valid appointment
+    @ParameterizedTest
+    @CsvSource({
+            "President of Tribunal,AAA",
+            "Regional Tribunal Judge,AAA"
+    })
+    void shouldNotReturnSalariedRolesExpiredEndDate(String appointment,String serviceCode) {
+
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment(appointment);
+        profile.setAppointmentType("Salaried");
+        profile.setServiceCode("BBA3");
+        judicialAccessProfiles.add(profile);
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode(serviceCode)
+                        .build())));
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+        assertEquals(0, roleAssignments.size());
+
+    }
+
+    // Invalid authorisation(expired enddate) and valid appointment(Fee-Paid)
+    @ParameterizedTest
+    @CsvSource({
+            "Tribunal member medical",
+            "Tribunal member disability",
+            "Tribunal member financially qualified",
+            "Tribunal Member Lay",
+            "Tribunal Member Optometrist",
+            "Tribunal Member Service",
+            "Tribunal Member"
+    })
+    void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment) {
+
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment(appointment);
+        profile.setAppointmentType("Fee Paid");
+        profile.setServiceCode("BBA3");
+        judicialAccessProfiles.add(profile);
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode("BBA3").endDate(LocalDateTime.now().minusMonths(5))
+                        .build())));
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+        assertEquals(0, roleAssignments.size());
+
+    }
+
+    //Invalid authorisation(wrong servicecode) and valid appointment
+    @ParameterizedTest
+    @CsvSource({
+            "Tribunal member medical,AAA",
+            "Tribunal member disability,AAA",
+            "Tribunal member financially qualified,AAA",
+            "Tribunal Member Lay,AAA",
+            "Tribunal Member Optometrist,AAA",
+            "Tribunal Member Service,AAA",
+            "Tribunal Member,AAA"
+    })
+    void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment,
+                                                           String serviceCode) {
+
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment(appointment);
+        profile.setAppointmentType("Fee Paid");
+        profile.setServiceCode("BBA3");
+        judicialAccessProfiles.add(profile);
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode(serviceCode)
+                        .build())));
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+        assertEquals(0, roleAssignments.size());
+
+    }
+
+    //Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
+    @ParameterizedTest
+    @CsvSource({
+            "President of Tribunal,AAA",
+            "Regional Tribunal Judge,AAA"
+    })
+    void shouldNotReturnSalariedExpiredDateandWServiceode(String appointment,String serviceCode) {
+
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment(appointment);
+        profile.setAppointmentType("Salaried");
+        profile.setServiceCode("BBA3");
+        judicialAccessProfiles.add(profile);
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode(serviceCode).endDate(LocalDateTime.now().minusMonths(5))
+                        .build())));
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+        assertEquals(0, roleAssignments.size());
+
+    }
+
+    //Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
+    @ParameterizedTest
+    @CsvSource({
+            "Tribunal member medical,AAA",
+            "Tribunal member disability,AAA",
+            "Tribunal member financially qualified,AAA",
+            "Tribunal Member Lay,AAA",
+            "Tribunal Member Optometrist,AAA",
+            "Tribunal Member Service,AAA",
+            "Tribunal Member,AAA"
+    })
+    void shouldNotReturnFeePaidRolesExpiredDateandWServiceode(String appointment,
+                                                           String serviceCode) {
+
+        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
+        profile.setAppointment(appointment);
+        profile.setAppointmentType("Fee Paid");
+        profile.setServiceCode("BBA3");
+        judicialAccessProfiles.add(profile);
+        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
+                List.of(Authorisation.builder().serviceCode(serviceCode).endDate(LocalDateTime.now().minusMonths(5))
+                        .build())));
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+        assertEquals(0, roleAssignments.size());
+
+    }
 
 }
