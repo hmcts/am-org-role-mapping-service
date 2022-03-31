@@ -171,7 +171,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        roleAssignments.forEach(r -> assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId()));
+        roleAssignments.forEach(r -> assertEquals(judicialAccessProfiles
+                .stream().iterator().next().getUserId(), r.getActorId()));
         assertEquals(roleNameOutput, roleAssignments.get(0).getRoleName());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
@@ -206,7 +207,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(1, roleAssignments.size());
-        roleAssignments.forEach(r -> assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId()));
+        roleAssignments.forEach(r -> assertEquals(judicialAccessProfiles
+                .stream().iterator().next().getUserId(), r.getActorId()));
         assertEquals("fee-paid-judge", roleAssignments.get(0).getRoleName());
         assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
         assertEquals("[373]", roleAssignments.get(0).getAuthorisations().toString());
