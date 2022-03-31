@@ -337,7 +337,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.1'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'
 
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
     implementation group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-client', version: versions.springBoot
     implementation 'org.springframework.security:spring-security-web:5.6.2'
     implementation 'org.springframework.security:spring-security-config:5.6.2'
