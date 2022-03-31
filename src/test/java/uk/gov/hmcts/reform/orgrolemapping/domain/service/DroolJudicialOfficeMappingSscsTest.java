@@ -33,11 +33,16 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     //=================================SALARIED ROLES==================================
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunal,Salaried,BBA3,judge",
-            "Regional Tribunal Judge,Salaried,BBA3, judge"
+            "President of Tribunal,Salaried,BBA3,judge,"
+                    + "'hearing_work,decision_making_work,routine_work,access_requests,priority'",
+            "Regional Tribunal Judge,Salaried,BBA3,judge,"
+                    + "'hearing_work,decision_making_work,routine_work,access_requests,priority'",
+            "Judge,Salaried,BBA3,judge,"
+                    + "'hearing_work,decision_making_work,routine_work,access_requests,priority'"
+
     })
     void shouldReturSalariedRoles(String appointment, String appointmentType,
-                                  String serviceCode, String roleNameOutput) {
+                                  String serviceCode, String roleNameOutput, String workTypes) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
@@ -77,9 +82,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             }
         });
 
-        assertEquals("hearing_work,decision_making_work,routine_work,access_requests,priority",
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
-
+        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     //Special Medical Salaried
@@ -141,18 +144,23 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     //sscs_tribunal_member_lay_fee_paid_joh
     //sscs_tribunal_member_optometrist_fee_paid_joh
     //sscs_tribunal_member_service_fee_paid_joh
+    //sscs_tribunal_judge_fee_paid_joh
+
+
     @ParameterizedTest
     @CsvSource({
-            "Tribunal member medical,Fee Paid,BBA3,fee-paid-medical",
-            "Tribunal member disability,Fee Paid,BBA3,fee-paid-disability",
-            "Tribunal member financially qualified,Fee Paid,BBA3,fee-paid-financial",
-            "Tribunal Member Lay,Fee Paid,BBA3,fee-paid-disability",
-            "Tribunal Member Optometrist,Fee Paid,BBA3,fee-paid-medical",
-            "Tribunal Member Service,Fee Paid,BBA3,fee-paid-disability",
-            "Tribunal Member,Fee Paid,BBA3,fee-paid-disability",
+            "Tribunal member medical,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
+            "Tribunal member disability,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
+            "Tribunal member financially qualified,Fee Paid,BBA3,fee-paid-financial,'hearing_work,priority'",
+            "Tribunal Member Lay,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
+            "Tribunal Member Optometrist,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
+            "Tribunal Member Service,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
+            "Tribunal Member,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
+            "Tribunal Judge,Fee Paid,BBA3,fee-paid-judge,'hearing_work,decision_making_work,routine_work,priority'",
+            "Judge,Fee Paid,BBA3,fee-paid-judge,'hearing_work,decision_making_work,routine_work,priority'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles(String appointment, String appointmentType,
-                                                       String serviceCode, String roleNameOutput) {
+                                                       String serviceCode, String roleNameOutput, String workTypes) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
@@ -182,47 +190,9 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
         assertEquals("[373]", roleAssignments.get(0).getAuthorisations().toString());
         assertEquals("primary location",roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
-        assertEquals("hearing_work,priority",
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
 
     }
-
-    //sscs_tribunal_judge_fee_paid_joh
-    @Test
-    void shouldReturnTribunalFeePaidJudgeRolesDiciionWorkAndRoutineWork() {
-
-        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("Fee Paid");
-            judicialAccessProfile.setServiceCode("BBA3");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
-        });
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        roleAssignments.forEach(r -> assertEquals(judicialAccessProfiles
-                .stream().iterator().next().getUserId(), r.getActorId()));
-        assertEquals("fee-paid-judge", roleAssignments.get(0).getRoleName());
-        assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
-        assertEquals("[373]", roleAssignments.get(0).getAuthorisations().toString());
-        assertEquals("primary location",roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
-        assertEquals("hearing_work,decision_making_work,routine_work,priority",
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
-
-    }
-
-    //=========================SPECIAL RULES================================================
 
     //sscs_district_tribunal_judge_salaried_joh
     @Test
@@ -291,8 +261,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
 
-        System.out.println(roleAssignments);
-
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
@@ -316,92 +284,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
     }
 
-    //sscs_tribunal_judge_salaried_default_joh
-    @Test
-    void shouldReturnTribunalJudgeSalariedDefaultSetUpRole() {
-
-        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("Judge");
-            judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.setServiceCode("BBA3");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
-        });
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        System.out.println(roleAssignments);
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("judge", "case-allocator", "task-supervisor", "hmcts-judiciary"
-                ));
-        roleAssignments.forEach(r -> {
-            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if ("hmcts-judiciary".equals(r.getRoleName())) {
-                assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
-
-            } else {
-                assertEquals("[373]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
-                assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
-
-            }
-            assertEquals("hearing_work,decision_making_work,routine_work,access_requests,priority",
-                    roleAssignments.get(0).getAttributes().get("workTypes").asText());
-
-        });
-
-    }
-
-    //sscs_tribunal_judge_feepaid_default_joh
-    @Test
-    void shouldReturnTribunalJudgeFeePaidDefaultSetUpRole() {
-
-        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("Judge");
-            judicialAccessProfile.setAppointmentType("Fee Paid");
-            judicialAccessProfile.setServiceCode("BBA3");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
-        });
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        roleAssignments.forEach(r -> {
-            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-        });
-        assertEquals("fee-paid-judge", roleAssignments.get(0).getRoleName());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
-        assertEquals("[373]", roleAssignments.get(0).getAuthorisations().toString());
-        assertEquals("primary location",roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
-        assertEquals("hearing_work,decision_making_work,routine_work,priority",
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
-
-    }
-
     //    Invalid authorisation(expired enddate) and valid appointment
     //    Invalid authorisation(wrong servicecode) and valid appointment
     //    Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
@@ -412,7 +294,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "President of Tribunal",
-            "Regional Tribunal Judge"
+            "Regional Tribunal Judge",
+            "Judge"
     })
     void shouldNotReturnSalariedRolesExpiredEndDate(String appointment) {
 
@@ -483,7 +366,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             "Tribunal Member Lay",
             "Tribunal Member Optometrist",
             "Tribunal Member Service",
-            "Tribunal Member"
+            "Tribunal Member",
+            "Tribunal Judge"
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment) {
 
@@ -521,7 +405,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             "Tribunal Member Lay,AAA",
             "Tribunal Member Optometrist,AAA",
             "Tribunal Member Service,AAA",
-            "Tribunal Member,AAA"
+            "Tribunal Member,AAA",
+            "Tribunal Judge,AAA"
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment,
                                                            String serviceCode) {
@@ -555,7 +440,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "President of Tribunal,AAA",
-            "Regional Tribunal Judge,AAA"
+            "Regional Tribunal Judge,AAA",
+            "Judge,AAA"
     })
     void shouldNotReturnSalariedExpiredDateandWServiceode(String appointment,String serviceCode) {
 
@@ -593,7 +479,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             "Tribunal Member Lay,AAA",
             "Tribunal Member Optometrist,AAA",
             "Tribunal Member Service,AAA",
-            "Tribunal Member,AAA"
+            "Tribunal Member,AAA",
+            "Tribunal Judge,AAA"
     })
     void shouldNotReturnFeePaidRolesExpiredDateandWServiceode(String appointment,
                                                            String serviceCode) {
@@ -622,5 +509,4 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         assertEquals(0, roleAssignments.size());
 
     }
-
 }
