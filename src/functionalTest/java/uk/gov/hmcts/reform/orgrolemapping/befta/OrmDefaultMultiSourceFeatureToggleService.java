@@ -5,7 +5,7 @@ import uk.gov.hmcts.befta.featuretoggle.DefaultMultiSourceFeatureToggleService;
 import uk.gov.hmcts.befta.featuretoggle.FeatureToggleService;
 import uk.gov.hmcts.befta.featuretoggle.ScenarioFeatureToggleInfo;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public class OrmDefaultMultiSourceFeatureToggleService extends DefaultMultiSourceFeatureToggleService {
 
@@ -45,7 +45,7 @@ public class OrmDefaultMultiSourceFeatureToggleService extends DefaultMultiSourc
 
     @Override
     protected FeatureToggleService getToggleService(String toggleDomain) {
-        if (List.of("IAC", "RAS", "DB").stream().anyMatch(toggleDomain::equalsIgnoreCase)) {
+        if (Stream.of("IAC", "RAS", "DB").anyMatch(toggleDomain::equalsIgnoreCase)) {
             return new uk.gov.hmcts.reform.orgrolemapping.befta.OrmFeatureToggleService();
         } else {
             return super.getToggleService(toggleDomain);
