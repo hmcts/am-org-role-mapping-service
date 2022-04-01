@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Setter;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
@@ -13,11 +13,11 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -59,10 +59,6 @@ public class TestDataBuilder {
     private static final String ROLE_NAME_SJ = "salaried-judge";
 
     private TestDataBuilder() {
-    }
-
-    public static String generateUniqueId() {
-        return UUID.randomUUID().toString();
     }
 
     public static UserInfo buildUserInfo(String uuid) {
@@ -108,6 +104,12 @@ public class TestDataBuilder {
         return CaseWorkerAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
                 .primaryLocationId("123456").primaryLocationName("south-east").roleId("1")
                 .serviceCode("BFA1").roleName(ROLE_NAME_STCW).build();
+    }
+
+    public static CaseWorkerAccessProfile buildUserAccessProfile3(String serviceCode, String roleId, String roleName) {
+        return CaseWorkerAccessProfile.builder().id(id_1).suspended(false).areaOfWorkId("London")
+                .primaryLocationId("123456").primaryLocationName("south-east").roleId(roleId)
+                .serviceCode(serviceCode).roleName(roleName).build();
     }
 
     public static CaseWorkerAccessProfile buildUserAccessProfile2(boolean suspended) {
@@ -275,7 +277,7 @@ public class TestDataBuilder {
 
 
     public static AssignmentRequest buildAssignmentRequest(Status requestStatus, Status roleStatus,
-                                                           Boolean replaceExisting) throws IOException {
+                                                           Boolean replaceExisting) {
         return new AssignmentRequest(buildRequest(requestStatus, replaceExisting),
                 buildRequestedRoleCollection(roleStatus));
     }
@@ -295,14 +297,14 @@ public class TestDataBuilder {
                 .build();
     }
 
-    public static Collection<RoleAssignment> buildRequestedRoleCollection(Status status) throws IOException {
+    public static Collection<RoleAssignment> buildRequestedRoleCollection(Status status) {
         Collection<RoleAssignment> requestedRoles = new ArrayList<>();
         requestedRoles.add(buildRoleAssignment(status));
         requestedRoles.add(buildRoleAssignment(status));
         return requestedRoles;
     }
 
-    public static RoleAssignment buildRoleAssignment(Status status) throws IOException {
+    public static RoleAssignment buildRoleAssignment(Status status) {
         ZonedDateTime timeStamp = ZonedDateTime.now(ZoneOffset.UTC);
         return RoleAssignment.builder()
                 .id(UUID.fromString("9785c98c-78f2-418b-ab74-a892c3ccca9f"))
@@ -325,7 +327,7 @@ public class TestDataBuilder {
                 .build();
     }
 
-    public static RoleAssignmentRequestResource buildRoleAssignmentRequestResource() throws IOException {
+    public static RoleAssignmentRequestResource buildRoleAssignmentRequestResource() {
         return new RoleAssignmentRequestResource(TestDataBuilder
                 .buildAssignmentRequest(Status.CREATE_REQUESTED, Status.APPROVED, true));
     }
@@ -400,19 +402,17 @@ public class TestDataBuilder {
     public static JudicialProfile buildJudicialProfile() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
-        JudicialProfile profile = objectMapper.readValue(
+        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
+        return objectMapper.readValue(
                 new File("src/main/resources/judicialProfileSample.json"),
                 JudicialProfile.class);
-        return profile;
     }
 
     public static JudicialBooking buildJudicialBooking() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        JudicialBooking profile = objectMapper.readValue(
+        return objectMapper.readValue(
                 new File("src/main/resources/judicialBookingSample.json"),
                 JudicialBooking.class);
-        return profile;
     }
 }
