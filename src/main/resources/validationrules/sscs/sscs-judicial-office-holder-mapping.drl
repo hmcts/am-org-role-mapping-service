@@ -440,27 +440,3 @@ then
       .build());
       logMsg("Rule : sscs_tribunal_judge_feepaid_joh");
 end;
-
-/*
- * "SSCS Judge" business role mapping to JOH.
- */
-rule "sscs_judge_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment !=null && validateAuthorisation(authorisations, "BBA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("SSCS Judge")
-      .jurisdiction("SSCS")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : sscs_judge_joh");
-end;
