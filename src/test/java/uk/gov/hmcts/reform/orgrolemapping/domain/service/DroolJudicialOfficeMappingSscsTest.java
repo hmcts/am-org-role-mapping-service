@@ -8,6 +8,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.bouncycastle.its.asn1.EndEntityType.app;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -199,6 +201,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     void shouldReturnTribunalDistrictJudgeSalariedSetUpRole() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("judge");
             judicialAccessProfile.setRoles(List.of("District Tribunal Judge"));
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setServiceCode("BBA3");
@@ -509,4 +512,53 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         assertEquals(0, roleAssignments.size());
 
     }
+
+
+
+    @Test
+    void shouldReturnAllValidAppointmentRoles() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setRoles(List.of("District Tribunal Judge",
+                    "Regional Medical Member"
+                    ));
+            judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setServiceCode("BBA3");
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+
+
+        });
+
+
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(4, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "judge"));
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+
+
+
+    }
+
 }
