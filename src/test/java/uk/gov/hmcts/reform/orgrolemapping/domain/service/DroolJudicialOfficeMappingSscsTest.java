@@ -47,7 +47,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
-            judicialAccessProfile.setServiceCode(serviceCode);
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(serviceCode));
         });
 
@@ -91,9 +90,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     void shouldReturnTribunalMemberMedicalRolesNoAccessRequests() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("Tribunal member medical");
+            judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.setServiceCode("BBA3");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
         });
 
@@ -149,15 +147,14 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "Tribunal member medical,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
-            "Tribunal member disability,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal member financially qualified,Fee Paid,BBA3,fee-paid-financial,'hearing_work,priority'",
+            "Tribunal Member Medical,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
+            "Tribunal Member Disability,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
+            "Tribunal Member Financially Qualified,Fee Paid,BBA3,fee-paid-financial,'hearing_work,priority'",
             "Tribunal Member Lay,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
             "Tribunal Member Optometrist,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
             "Tribunal Member Service,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
             "Tribunal Member,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal Judge,Fee Paid,BBA3,fee-paid-judge,'hearing_work,decision_making_work,routine_work,priority'",
-            "Judge,Fee Paid,BBA3,fee-paid-judge,'hearing_work,decision_making_work,routine_work,priority'"
+            "Tribunal Judge,Fee Paid,BBA3,fee-paid-judge,'hearing_work,decision_making_work,routine_work,priority'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles(String appointment, String appointmentType,
                                                        String serviceCode, String roleNameOutput, String workTypes) {
@@ -165,7 +162,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
-            judicialAccessProfile.setServiceCode(serviceCode);
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(serviceCode));
         });
 
@@ -202,7 +198,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setAppointment("judge");
             judicialAccessProfile.setRoles(List.of("District Tribunal Judge"));
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.setServiceCode("BBA3");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
         });
 
@@ -248,7 +243,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("Regional Medical Member"));
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.setServiceCode("BBA3");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
         });
 
@@ -296,14 +290,14 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     @CsvSource({
             "President of Tribunal",
             "Regional Tribunal Judge",
-            "Judge"
+            "Tribunal Member Medical",
+            "Tribunal Judge"
     })
     void shouldNotReturnSalariedRolesExpiredEndDate(String appointment) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
         profile.setAppointmentType("Salaried");
-        profile.setServiceCode("BBA3");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
                 List.of(Authorisation.builder().serviceCode("BBA3").endDate(LocalDateTime.now().minusMonths(5))
@@ -327,14 +321,15 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "President of Tribunal,AAA",
-            "Regional Tribunal Judge,AAA"
+            "Regional Tribunal Judge,AAA",
+            "Tribunal Member Medical,AAA",
+            "Tribunal Judge,AAA"
     })
     void shouldNotReturnSalariedRolesExpiredEndDate(String appointment, String serviceCode) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
         profile.setAppointmentType("Salaried");
-        profile.setServiceCode("BBA3");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
                 List.of(Authorisation.builder().serviceCode(serviceCode)
@@ -357,9 +352,9 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     // Invalid authorisation(expired enddate) and valid appointment(Fee-Paid)
     @ParameterizedTest
     @CsvSource({
-            "Tribunal member medical",
-            "Tribunal member disability",
-            "Tribunal member financially qualified",
+            "Tribunal Member Medical",
+            "Tribunal Member Disability",
+            "Tribunal Member Financially Qualified",
             "Tribunal Member Lay",
             "Tribunal Member Optometrist",
             "Tribunal Member Service",
@@ -371,7 +366,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
         profile.setAppointmentType("Fee Paid");
-        profile.setServiceCode("BBA3");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
                 List.of(Authorisation.builder().serviceCode("BBA3").endDate(LocalDateTime.now().minusMonths(5))
@@ -394,9 +388,9 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     //Invalid authorisation(wrong servicecode) and valid appointment
     @ParameterizedTest
     @CsvSource({
-            "Tribunal member medical,AAA",
-            "Tribunal member disability,AAA",
-            "Tribunal member financially qualified,AAA",
+            "Tribunal Member Medical,AAA",
+            "Tribunal Member Disability,AAA",
+            "Tribunal Member Financially Qualified,AAA",
             "Tribunal Member Lay,AAA",
             "Tribunal Member Optometrist,AAA",
             "Tribunal Member Service,AAA",
@@ -409,7 +403,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
         profile.setAppointmentType("Fee Paid");
-        profile.setServiceCode("BBA3");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
                 List.of(Authorisation.builder().serviceCode(serviceCode)
@@ -434,14 +427,14 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     @CsvSource({
             "President of Tribunal,AAA",
             "Regional Tribunal Judge,AAA",
-            "Judge,AAA"
+            "Tribunal Member Medical,AAA",
+            "Tribunal Judge,AAA"
     })
     void shouldNotReturnSalariedExpiredDateandWServiceode(String appointment, String serviceCode) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
         profile.setAppointmentType("Salaried");
-        profile.setServiceCode("BBA3");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
                 List.of(Authorisation.builder().serviceCode(serviceCode).endDate(LocalDateTime.now().minusMonths(5))
@@ -465,9 +458,9 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     //Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
     @ParameterizedTest
     @CsvSource({
-            "Tribunal member medical,AAA",
-            "Tribunal member disability,AAA",
-            "Tribunal member financially qualified,AAA",
+            "Tribunal Member Medical,AAA",
+            "Tribunal Member Disability,AAA",
+            "Tribunal Member Financially Qualified,AAA",
             "Tribunal Member Lay,AAA",
             "Tribunal Member Optometrist,AAA",
             "Tribunal Member Service,AAA",
@@ -480,7 +473,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
         profile.setAppointmentType("Fee Paid");
-        profile.setServiceCode("BBA3");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
                 List.of(Authorisation.builder().serviceCode(serviceCode).endDate(LocalDateTime.now().minusMonths(5))
@@ -508,7 +500,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setRoles(List.of("District Tribunal Judge", "Regional Medical Member"));
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.setServiceCode("BBA3");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
 
         });
@@ -547,7 +538,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setRoles(List.of("District Judge", "Medical Member"));
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.setServiceCode("BBA3");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
 
         });
@@ -583,10 +573,45 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     void shouldReturnAllValidAppointmentRoles_unmappedAppoitment() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment("President of Tribunal");
             judicialAccessProfile.setRoles(List.of("District Tribunal Judge", "Regional Medical Member"));
-            judicialAccessProfile.setAppointment("Tribunal Member");
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.setServiceCode("BBA3");
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "judge"));
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+
+    }
+
+    @Test
+    void shouldReturnAllInValidAppointmentRoles() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setRoles(List.of("Wrong Role"));
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
 
         });
@@ -603,6 +628,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
+
 
     }
 }
