@@ -27,7 +27,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
             "SSCS Regional Tribunal Judge-Salaried,judge",
             "SSCS District Tribunal Judge-Salaried,judge",
             "SSCS Tribunal Judge-Salaried,judge",
-            "SSCS Tribunal member medical-Salaried,medical",
+            "SSCS Tribunal Member Medical-Salaried,medical",
             "SSCS Regional Medical Member-Salaried,medical"
     })
     void shouldReturnSalariedRoles(String setOffice, String roleNameOutput) {
@@ -62,13 +62,13 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "SSCS Tribunal Judge-Fee Paid,fee-paid-judge",
-            "SSCS Tribunal member medical-Fee Paid,fee-paid-medical",
+            "SSCS Tribunal Member Medical-Fee Paid,fee-paid-medical",
             "SSCS Tribunal Member Optometrist-Fee Paid,fee-paid-medical",
-            "SSCS Tribunal member disability-Fee Paid,fee-paid-disability",
+            "SSCS Tribunal Member Disability-Fee Paid,fee-paid-disability",
             "SSCS Tribunal Member-Fee Paid,fee-paid-disability",
             "SSCS Tribunal Member Lay-Fee Paid,fee-paid-disability",
             "SSCS Tribunal Member Service-Fee Paid,fee-paid-disability",
-            "SSCS Tribunal member financially qualified,fee-paid-financial"
+            "SSCS Tribunal Member Financially Qualified,fee-paid-financial"
 
     })
     void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) {
