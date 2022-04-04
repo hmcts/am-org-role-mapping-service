@@ -629,6 +629,5 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         //assertion
         assertTrue(roleAssignments.isEmpty());
 
-
     }
 }
