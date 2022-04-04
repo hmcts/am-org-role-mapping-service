@@ -59,7 +59,7 @@ rule "sscs_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President (SEC)-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal member medical-Salaried",
+                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal Member Medical-Salaried",
                                         "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -93,7 +93,7 @@ rule "sscs_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President (SEC)-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal member medical-Salaried",
+                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal Member Medical-Salaried",
                                         "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -126,7 +126,7 @@ rule "sscs_hmcts_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President (SEC)-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal member medical-Salaried",
+                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal Member Medical-Salaried",
                                         "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -189,7 +189,7 @@ end;
 rule "sscs_medical_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("SSCS Tribunal member medical-Salaried", "SSCS Regional Medical Member-Salaried"))
+  $joh: JudicialOfficeHolder(office in ("SSCS Tribunal Member Medical-Salaried", "SSCS Regional Medical Member-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
@@ -222,7 +222,7 @@ end;
 rule "sscs_fee_paid_medical_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("SSCS Tribunal member medical-Fee Paid", "SSCS Tribunal Member Optometrist-Fee Paid"))
+  $joh: JudicialOfficeHolder(office in ("SSCS Tribunal Member Medical-Fee Paid", "SSCS Tribunal Member Optometrist-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
@@ -255,7 +255,7 @@ end;
 rule "sscs_fee_paid_disability_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("SSCS Tribunal member disability-Fee Paid", "SSCS Tribunal Member-Fee Paid",
+  $joh: JudicialOfficeHolder(office in ("SSCS Tribunal Member Disability-Fee Paid", "SSCS Tribunal Member-Fee Paid",
                                         "SSCS Tribunal Member Lay-Fee Paid", "SSCS Tribunal Member Service-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -288,7 +288,7 @@ end;
 rule "sscs_fee_paid_financial_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office == "SSCS Tribunal member financially qualified")
+  $joh: JudicialOfficeHolder(office == "SSCS Tribunal Member Financially Qualified")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));

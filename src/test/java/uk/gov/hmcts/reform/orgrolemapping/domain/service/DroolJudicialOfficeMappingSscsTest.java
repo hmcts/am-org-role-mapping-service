@@ -65,7 +65,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "case-allocator", "task-supervisor","hmcts-judiciary"));
+                containsInAnyOrder(roleNameOutput, "case-allocator", "task-supervisor", "hmcts-judiciary"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
@@ -189,7 +189,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
         assertEquals("[373]", roleAssignments.get(0).getAuthorisations().toString());
-        assertEquals("primary location",roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
+        assertEquals("primary location", roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
         assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
 
     }
@@ -231,7 +231,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
-                assertEquals("SSCS",r.getAttributes().get("jurisdiction").asText());
+                assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
                 if ("judge".equals(r.getRoleName())) {
                     assertEquals("hearing_work,decision_making_work,routine_work,access_requests,priority",
                             r.getAttributes().get("workTypes").asText());
@@ -321,8 +321,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-        assertEquals(0, roleAssignments.size());
-
     }
 
     //Invalid authorisation(wrong servicecode) and valid appointment
@@ -331,7 +329,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             "President of Tribunal,AAA",
             "Regional Tribunal Judge,AAA"
     })
-    void shouldNotReturnSalariedRolesExpiredEndDate(String appointment,String serviceCode) {
+    void shouldNotReturnSalariedRolesExpiredEndDate(String appointment, String serviceCode) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -354,8 +352,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-        assertEquals(0, roleAssignments.size());
-
     }
 
     // Invalid authorisation(expired enddate) and valid appointment(Fee-Paid)
@@ -393,8 +389,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-        assertEquals(0, roleAssignments.size());
-
     }
 
     //Invalid authorisation(wrong servicecode) and valid appointment
@@ -433,8 +427,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-        assertEquals(0, roleAssignments.size());
-
     }
 
     //Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
@@ -444,7 +436,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             "Regional Tribunal Judge,AAA",
             "Judge,AAA"
     })
-    void shouldNotReturnSalariedExpiredDateandWServiceode(String appointment,String serviceCode) {
+    void shouldNotReturnSalariedExpiredDateandWServiceode(String appointment, String serviceCode) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -467,7 +459,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-        assertEquals(0, roleAssignments.size());
 
     }
 
@@ -484,7 +475,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             "Tribunal Judge,AAA"
     })
     void shouldNotReturnFeePaidRolesExpiredDateandWServiceode(String appointment,
-                                                           String serviceCode) {
+                                                              String serviceCode) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -507,27 +498,20 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-        assertEquals(0, roleAssignments.size());
-
     }
-
 
 
     @Test
     void shouldReturnAllValidAppointmentRoles() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setRoles(List.of("District Tribunal Judge",
-                    "Regional Medical Member"
-                    ));
+            judicialAccessProfile.setRoles(List.of("District Tribunal Judge", "Regional Medical Member"));
+            judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setServiceCode("BBA3");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
 
-
         });
-
-
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -543,7 +527,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "judge"));
+                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "medical"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
@@ -554,9 +538,71 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
-
-
-
     }
 
+    @Test
+    void shouldReturnAllValidInAppointmentRoles() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setRoles(List.of("District Judge", "Medical Member"));
+            judicialAccessProfile.setAppointment("Tribunal Member Medical");
+            judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setServiceCode("BBA3");
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(4, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "medical"));
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+    }
+
+    @Test
+    void shouldReturnAllValidAppointmentRoles_unmappedAppoitment() {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setRoles(List.of("District Tribunal Judge", "Regional Medical Member"));
+            judicialAccessProfile.setAppointment("Tribunal Member");
+            judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setServiceCode("BBA3");
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+
+    }
 }
