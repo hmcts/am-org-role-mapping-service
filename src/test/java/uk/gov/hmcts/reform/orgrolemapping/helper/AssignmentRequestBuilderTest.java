@@ -117,7 +117,7 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
-    void validateSSCSAuthorisation() {
+    void validateSscsAuthorisation() {
 
         assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BBA3").ticketCode("362")
@@ -125,7 +125,7 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
-    void validateFalseSSCSAuthorisation() {
+    void validateFalseSscsAuthorisation() {
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BBA3").ticketCode("373")
@@ -133,7 +133,7 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
-    void validateFalseSSCSAuthorisationWithNullCode() {
+    void validateFalseSscsAuthorisationWithNullCode() {
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BBA3").ticketCode("373")
