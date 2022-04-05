@@ -121,7 +121,7 @@ class AssignmentRequestBuilderTest {
 
         assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BBA3").ticketCode("362")
-                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362"));
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362", "373"));
     }
 
     @Test
@@ -182,7 +182,7 @@ class AssignmentRequestBuilderTest {
         assertFalse(isValidAuthorisation);
 
         authorisation.setTicketCode("362");
-         isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
+        isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
                 "BBA3", "362");
         assertFalse(isValidAuthorisation);
     }
