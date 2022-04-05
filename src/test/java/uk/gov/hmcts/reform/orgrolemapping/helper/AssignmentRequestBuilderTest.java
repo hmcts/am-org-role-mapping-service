@@ -182,8 +182,8 @@ class AssignmentRequestBuilderTest {
         assertFalse(isValidAuthorisation);
 
         authorisation.setTicketCode("362");
-         isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
-                "BBA3", "362");
+        isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(
+                List.of(authorisation),"BBA3", "362");
         assertFalse(isValidAuthorisation);
     }
 
