@@ -350,7 +350,7 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:20030203.000550'
-    //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090:
+    //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090, CVE-2010-1622:
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.16'
@@ -363,6 +363,8 @@ dependencies {
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.1'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.1'
     implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.1'
+    implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.18'
+
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'
