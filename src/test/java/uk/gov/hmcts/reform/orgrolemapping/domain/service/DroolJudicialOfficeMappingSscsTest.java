@@ -608,12 +608,12 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     }
 
     @Test
-    void shouldReturnAllInValidAppointmentRoles() {
+    void shouldReturnAllInValidDefaultRoles() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("Wrong Role"));
+            judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
-
         });
 
         //Execute Kie session
@@ -627,7 +627,20 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         }
 
         //assertion
-        assertTrue(roleAssignments.isEmpty());
+        assertFalse(roleAssignments.isEmpty());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "judge"));
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+        });
+
 
     }
 }
