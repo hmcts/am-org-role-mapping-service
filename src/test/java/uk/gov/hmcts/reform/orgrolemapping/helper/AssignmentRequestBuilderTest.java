@@ -137,7 +137,7 @@ class AssignmentRequestBuilderTest {
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BBA3").ticketCode("373")
-                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", null));
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", ""));
     }
 
     @Test
@@ -146,12 +146,14 @@ class AssignmentRequestBuilderTest {
         List<Authorisation> authorisations = new ArrayList<>();
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(authorisations, "BFA1"));
+        assertFalse(AssignmentRequestBuilder.validateAuthorisation(authorisations, "BBA3", "362"));
     }
 
     @Test
     void validateNullAuthorisation() {
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(null, "BFA1"));
+        assertFalse(AssignmentRequestBuilder.validateAuthorisation(null, "BBA3", "362"));
     }
 
     @Test
@@ -160,6 +162,12 @@ class AssignmentRequestBuilderTest {
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCode("BFA2")
                 .endDate(LocalDateTime.now().plusDays(1)).build()), "BFA1"));
+        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
+                .serviceCode("BFA2").ticketCode("363")
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362"));
+        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
+                .serviceCode("BBA3").ticketCode("363")
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362"));
     }
 
 
@@ -172,11 +180,19 @@ class AssignmentRequestBuilderTest {
         boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
                 "BFA1");
         assertFalse(isValidAuthorisation);
+
+        authorisation.setTicketCode("362");
+         isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
+                "BBA3", "362");
+        assertFalse(isValidAuthorisation);
     }
 
     @Test
     void validateAuthorisation_emptyList() {
         boolean authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(), "BFA1");
+        assertFalse(authorisation);
+
+        authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(), "BBA3", "362");
         assertFalse(authorisation);
     }
 
