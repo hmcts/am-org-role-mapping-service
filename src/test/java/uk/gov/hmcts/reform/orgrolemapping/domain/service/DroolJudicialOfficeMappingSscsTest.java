@@ -37,9 +37,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
                     + "'hearing_work,decision_making_work,routine_work,access_requests,priority'",
             "Regional Tribunal Judge,Salaried,BBA3,judge,"
                     + "'hearing_work,decision_making_work,routine_work,access_requests,priority'",
-            "Judge,Salaried,BBA3,judge,"
+            "Tribunal Judge,Salaried,BBA3,judge,"
                     + "'hearing_work,decision_making_work,routine_work,access_requests,priority'"
-
     })
     void shouldReturSalariedRoles(String appointment, String appointmentType,
                                   String serviceCode, String roleNameOutput, String workTypes) {
@@ -92,6 +91,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setPrimaryLocationId("1032");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
         });
 
@@ -119,11 +119,11 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
+                assertNull(r.getAttributes().get("1032"));
 
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals("1032", r.getAttributes().get("primaryLocation").asText());
                 assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
 
             }
@@ -134,7 +134,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     }
 
     //=================================FEE-PAID ROLES==================================
-
     //sscs_tribunal_member_medical_fee_paid_joh
     //sscs_tribunal_member_disability_fee_paid_joh
     //sscs_tribunal_member_financially_qualified_joh fee_paid
@@ -143,8 +142,6 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
     //sscs_tribunal_member_optometrist_fee_paid_joh
     //sscs_tribunal_member_service_fee_paid_joh
     //sscs_tribunal_judge_fee_paid_joh
-
-
     @ParameterizedTest
     @CsvSource({
             "Tribunal Member Medical,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
@@ -162,7 +159,11 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(serviceCode));
+            judicialAccessProfile.setBaseLocationId("1032");
+            judicialAccessProfile.getAuthorisations().forEach(a -> {
+                a.setServiceCode(serviceCode);
+                a.setTicketCode("362");
+            });
         });
 
 
@@ -212,33 +213,12 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         }
 
         //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("judge", "case-allocator", "task-supervisor", "hmcts-judiciary"));
-        roleAssignments.forEach(r -> {
-            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-
-            if ("hmcts-judiciary".equals(r.getRoleName())) {
-                assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
-            } else {
-                assertEquals("[373]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
-                assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
-                if ("judge".equals(r.getRoleName())) {
-                    assertEquals("hearing_work,decision_making_work,routine_work,access_requests,priority",
-                            r.getAttributes().get("workTypes").asText());
-                }
-            }
-        });
-
+        assertTrue(roleAssignments.isEmpty());
     }
 
     //sscs_regional_medical_member_salaried_joh
     @Test
-    void shouldReturnRegionalMedicalSalariedSetUpRole() {
+    void shouldReturnEmptyForRoleRegionalMedicalSalariedSetUpRole() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("Regional Medical Member"));
@@ -257,25 +237,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         }
 
         //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "case-allocator", "task-supervisor", "judge"));
-        roleAssignments.forEach(r -> {
-            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if ("hmcts-judiciary".equals(r.getRoleName())) {
-                assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
-            } else if ("judge".equals(r.getRoleName())) {
-                assertEquals("hearing_work,decision_making_work,routine_work,access_requests,priority",
-                        r.getAttributes().get("workTypes").asText());
-            } else {
-                assertEquals("[373]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
-                assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
-            }
-        });
+        assertTrue(roleAssignments.isEmpty());
 
     }
 
@@ -627,20 +589,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         }
 
         //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "judge"));
-        roleAssignments.forEach(r -> {
-            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            if ("hmcts-judiciary".equals(r.getRoleName())) {
-                assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
-            } else {
-                assertEquals("[373]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
-            }
-        });
-
-
+        assertTrue(roleAssignments.isEmpty());
     }
+
 }

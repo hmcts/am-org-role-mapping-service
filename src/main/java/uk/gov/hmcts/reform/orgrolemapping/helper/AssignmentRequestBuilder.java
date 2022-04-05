@@ -212,6 +212,20 @@ public class AssignmentRequestBuilder {
         }
     }
 
+    public static boolean validateAuthorisation(List<Authorisation> authorisations, String serviceCode,
+                                                String ticketCode) {
+
+        if (!CollectionUtils.isEmpty(authorisations)) {
+            return authorisations.stream().anyMatch(authorisation -> serviceCode.equals(authorisation.getServiceCode())
+                && (authorisation.getEndDate() == null
+                    || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0)
+                && ticketCode != null && ticketCode.equals(authorisation.getTicketCode()));
+
+        } else {
+            return false;
+        }
+    }
+
     public static RoleAssignment buildJudicialRoleAssignment() {
         return RoleAssignment.builder()
                 .actorId(ACTOR_ID)

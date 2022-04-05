@@ -117,6 +117,30 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
+    void validateSSCSAuthorisation() {
+
+        assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
+                .serviceCode("BBA3").ticketCode("362")
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362"));
+    }
+
+    @Test
+    void validateFalseSSCSAuthorisation() {
+
+        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
+                .serviceCode("BBA3").ticketCode("373")
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362"));
+    }
+
+    @Test
+    void validateFalseSSCSAuthorisationWithNullCode() {
+
+        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
+                .serviceCode("BBA3").ticketCode("373")
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", null));
+    }
+
+    @Test
     void validateEmptyAuthorisation() {
 
         List<Authorisation> authorisations = new ArrayList<>();
