@@ -91,7 +91,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.setPrimaryLocationId("1032");
+            judicialAccessProfile.setBaseLocationId("1032");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
         });
 
@@ -123,7 +123,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
-                assertEquals("1032", r.getAttributes().get("primaryLocation").asText());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
                 assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
 
             }
@@ -462,6 +462,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setRoles(List.of("District Tribunal Judge", "Regional Medical Member"));
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setBaseLocationId("1032");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
 
         });
@@ -500,6 +501,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setRoles(List.of("District Judge", "Medical Member"));
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
+            judicialAccessProfile.setBaseLocationId("1032");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
 
         });

@@ -61,7 +61,7 @@ rule "sscs_president_of_tribunals_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "President of Tribunal",
-                               appointmentType == "Salaried",
+                               appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -88,7 +88,7 @@ rule "sscs_regional_tribunal_salaried_judge_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Regional Tribunal Judge",
-                               appointmentType == "Salaried",
+                               appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -142,7 +142,7 @@ rule "sscs_tribunal_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
-                               appointmentType == "Salaried",
+                               appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -170,6 +170,7 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Member Medical",
                                appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
@@ -196,7 +197,8 @@ rule "sscs_tribunal_member_medical_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Member Medical",
-                               appointmentType == "Salaried",
+                               appointmentType in ("Salaried", "SPTW"),
+                               baseLocationId == "1032",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
