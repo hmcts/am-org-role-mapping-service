@@ -280,9 +280,9 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Member",
                                appointmentType == "Fee Paid",
-                               baseLocationId == "1032",
+                               !(baseLocationId == "1032" && ticketCodes.contains("362")),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "BBA3", "362"))
+                               validateAuthorisation(authorisations, "BBA3"))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -298,6 +298,35 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : sscs_tribunal_member_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Tribunal Member-Fee Paid with baselocation and ticketcode" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_baselocation_ticketcode_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               ticketCodes.contains("362"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member Financially Qualified")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_baselocation_ticketcode_joh");
 end;
 
 /*
