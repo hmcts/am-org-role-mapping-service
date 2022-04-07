@@ -23,7 +23,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "sscs_hmcts_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("4","5","9","10","12","13","14","15"), serviceCode == "BBA3", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("4","5","9","10","12","13"), serviceCode == "BBA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
