@@ -295,6 +295,17 @@ dependencies {
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.4'
     implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.2.2'
+    implementation group: 'org.springframework', name: 'spring-aop', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-aspects', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-context', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-context-support', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-expression', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-jcl', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-orm', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-tx', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-web', version: '5.3.18'
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.18'
 
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
