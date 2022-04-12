@@ -322,11 +322,7 @@ dependencies {
     // drools engine dependency
     implementation group: 'org.drools', name: 'drools-core', version: versions.drools
     implementation group: 'org.drools', name: 'drools-compiler', version: versions.drools
-    implementation (group: 'org.drools', name: 'drools-decisiontables', version: versions.drools) {
-        exclude group: 'org.apache.poi', module: 'poi-ooxml'
-        exclude group: 'org.apache.poi', module: 'poi'
-        exclude group: 'org.apache.poi', module: 'poi-ooxml-schemas'
-    }
+    implementation group: 'org.drools', name: 'drools-decisiontables', version: versions.drools
     implementation(group: 'org.kie', name: 'kie-ci', version: versions.drools) {
         exclude group: 'org.jsoup', module: 'jsoup'
         exclude group: 'org.apache.ant', module: 'ant'
@@ -360,7 +356,7 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:20030203.000550'
-    //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090, CVE-2010-1622:
+    //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.16'
