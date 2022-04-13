@@ -339,6 +339,7 @@ when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Member Lay",
                                appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
