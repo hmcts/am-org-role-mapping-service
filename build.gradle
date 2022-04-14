@@ -342,6 +342,7 @@ dependencies {
     //Azure service bus libraries
     implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'){
         exclude group: 'com.microsoft.azure', module: 'adal4j'
+        exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.16.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
