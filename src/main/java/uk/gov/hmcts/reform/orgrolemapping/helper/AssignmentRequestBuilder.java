@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -170,7 +171,8 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setEndTime(appointment.getEndDate() != null ? appointment.getEndDate()
                     .atStartOfDay(ZoneId.of("UTC")) : null);
             judicialAccessProfile.setRegionId(appointment.getLocationId());
-            judicialAccessProfile.setBaseLocationId(appointment.getEpimmsId());
+            // change from epimmsid to base location as part of SSCS
+            judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
             judicialAccessProfile.setTicketCodes(List.copyOf(ticketCodes));
             judicialAccessProfile.setAppointment(appointment.getAppointment());
             judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
@@ -206,6 +208,20 @@ public class AssignmentRequestBuilder {
             return authorisations.stream().anyMatch(authorisation -> serviceCode.equals(authorisation.getServiceCode())
                      && (authorisation.getEndDate() == null
                     || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
+
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean validateAuthorisation(List<Authorisation> authorisations, String serviceCode,
+                                                String... ticketCodes) {
+
+        if (!CollectionUtils.isEmpty(authorisations)) {
+            return authorisations.stream().anyMatch(authorisation -> serviceCode.equals(authorisation.getServiceCode())
+                && (authorisation.getEndDate() == null
+                    || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0)
+                && Arrays.asList(ticketCodes).contains(authorisation.getTicketCode()));
 
         } else {
             return false;
