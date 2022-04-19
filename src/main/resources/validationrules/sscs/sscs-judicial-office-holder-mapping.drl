@@ -48,3 +48,367 @@ then
       .build());
       logMsg("Rule : sscs_judge_joh");
 end;
+
+/*
+ * "Stage 1 mapping from judicial appointments/roles(coming from RD JRD access profiles) to judicial office holder.
+ */
+
+/*
+ * "SSCS President of Tribunal-Salaried" business role business role mapping to JOH.
+ */
+
+rule "sscs_president_of_tribunals_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "President of Tribunal",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS President (SEC)-Salaried")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_president_of_tribunals_salaried_joh");
+end;
+
+/*
+ * "SSCS Regional Tribunal Judge-Salaried" business role mapping to JOH.
+ */
+rule "sscs_regional_tribunal_salaried_judge_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Regional Tribunal Judge",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Regional Tribunal Judge-Salaried")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_regional_tribunal_salaried_judge_joh");
+end;
+
+/*
+ * "SSCS Tribunal Judge-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_tribunal_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Judge-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_judge_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Tribunal Judge-Salaried" business role mapping to JOH.
+ */
+rule "sscs_tribunal_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Judge-Salaried")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_judge_salaried_joh");
+end;
+
+/*
+ * "SSCS Tribunal member medical-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_medical_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member Medical",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member Medical-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_medical_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Tribunal member medical-Salaried" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_medical_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member Medical",
+                               appointmentType in ("Salaried", "SPTW"),
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member Medical-Salaried")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_medical_salaried_joh");
+end;
+
+
+/*
+ * "SSCS Tribunal member disability-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_disability_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member Disability",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member Disability-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_disability_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Tribunal member financially qualified" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_financially_qualified_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member Financially Qualified",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member Financially Qualified")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_financially_qualified_joh");
+end;
+
+/*
+ * "SSCS Tribunal Member-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member",
+                               appointmentType == "Fee Paid",
+                               !(baseLocationId == "1032" && ticketCodes.contains("362")),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Tribunal Member-Fee Paid with baselocation and ticketcode" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_baselocation_ticketcode_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               ticketCodes.contains("362"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member Financially Qualified")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_baselocation_ticketcode_joh");
+end;
+
+/*
+ * "SSCS Tribunal Member Lay-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_lay_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member Lay",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member Lay-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_lay_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Tribunal Member Optometrist-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_optometrist_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member Optometrist",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member Optometrist-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_optometrist_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Tribunal Member Service-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_tribunal_member_service_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Tribunal Member Service",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Tribunal Member Service-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : sscs_tribunal_member_service_fee_paid_joh");
+end;

@@ -94,10 +94,14 @@ public class TestDataBuilder {
         return UserRequest.builder().userIds(users).build();
     }
 
-    public static CaseWorkerAccessProfile buildUserAccessProfile(String roleId, boolean suspended) {
+    public static CaseWorkerAccessProfile buildUserAccessProfile(String roleId, String serviceCode, boolean suspended) {
         return CaseWorkerAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
                 .primaryLocationId("123456").primaryLocationName("south-east").roleId(roleId)
-                .serviceCode("BFA1").roleName(ROLE_NAME_STCW).build();
+                .serviceCode(serviceCode).roleName(ROLE_NAME_STCW).build();
+    }
+
+    public static CaseWorkerAccessProfile buildUserAccessProfile(String roleId, boolean suspended) {
+        return buildUserAccessProfile(roleId, "BFA1", suspended);
     }
 
     public static CaseWorkerAccessProfile buildUserAccessProfile1(boolean suspended) {

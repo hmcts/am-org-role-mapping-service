@@ -12,8 +12,12 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,7 +26,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingSe
 @RunWith(MockitoJUnitRunner.class)
 class DroolAdminOrgRoleMappingTest extends DroolBase {
 
-    private String workTypes = "hearing_work, upper_tribunal, routine_work";
+    private final String workTypes = "hearing_work, upper_tribunal, routine_work";
 
     @Test
     void shouldReturnHearingCentreAdminAndAdminOrgRolesForRoleId_3_to_5() {
@@ -270,4 +274,191 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
+
+    @Test
+    void shouldReturnSscsStaffOrgRolesForRoleId_2_and_16() {
+        allProfiles.clear();
+        Stream.of(2, 16).forEach(roleId ->
+                allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", "BBA3",
+                        false)));
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(4, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("tribunal-caseworker", "hmcts-legal-operations", "registrar",
+                        "hmcts-legal-operations"));
+        roleAssignments.forEach(roleAssignment -> {
+            assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
+            if (List.of("tribunal-caseworker", "registrar").contains(roleAssignment.getRoleName())) {
+                assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
+                assertEquals("applications,hearing_work,routine_work,priority,decision_making_work",
+                        roleAssignment.getAttributes().get("workTypes").asText());
+            }
+        });
+    }
+
+    @Test
+    void shouldReturnSscsStaffOrgRolesForRoleId_2_and_16_caseAndTaskSupervisor() {
+        allProfiles.clear();
+        Stream.of(2, 16).forEach(roleId -> {
+            CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "",
+                    "BBA3", false);
+            profile.setCaseAllocatorFlag("Y");
+            profile.setTaskSupervisorFlag("Y");
+            allProfiles.add(profile);
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(8, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("tribunal-caseworker", "hmcts-legal-operations", "registrar",
+                        "hmcts-legal-operations", "task-supervisor", "case-allocator","task-supervisor",
+                        "case-allocator"));
+        roleAssignments.forEach(roleAssignment -> {
+            assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
+            if (List.of("tribunal-caseworker", "registrar").contains(roleAssignment.getRoleName())) {
+                assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
+                assertEquals("applications,hearing_work,routine_work,priority,decision_making_work",
+                        roleAssignment.getAttributes().get("workTypes").asText());
+            }
+        });
+    }
+
+    @Test
+    void shouldReturnSscsAdminOrgRolesForRoleId() {
+        allProfiles.clear();
+        Stream.of(4, 5, 9, 10, 12, 13).forEach(roleId ->
+                allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", "BBA3",
+                        false)));
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(12, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-admin", "hmcts-admin","hmcts-admin","hmcts-admin","hmcts-admin",
+                        "hmcts-admin","superuser", "superuser", "clerk","clerk","clerk","clerk"));
+        roleAssignments.forEach(roleAssignment -> {
+            assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
+            if ("superuser".equals(roleAssignment.getRoleName())) {
+                assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
+                assertEquals("applications,hearing_work,routine_work,priority,access_requests",
+                        roleAssignment.getAttributes().get("workTypes").asText());
+            } else if ("clerk".equals(roleAssignment.getRoleName())) {
+                assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
+                assertEquals("applications,hearing_work,routine_work,priority",
+                        roleAssignment.getAttributes().get("workTypes").asText());
+            }
+        });
+    }
+
+    @Test
+    void shouldReturnSscsAdminOrgRolesForRoleId_caseAndTaskSupervisor() {
+        allProfiles.clear();
+        Stream.of(4, 5, 9, 10, 12, 13).forEach(roleId -> {
+            CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "",
+                    "BBA3", false);
+            profile.setCaseAllocatorFlag("Y");
+            profile.setTaskSupervisorFlag("Y");
+            allProfiles.add(profile);
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(24, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-admin", "hmcts-admin","hmcts-admin","hmcts-admin","hmcts-admin",
+                        "hmcts-admin","superuser", "superuser", "clerk","clerk","clerk","clerk", "task-supervisor",
+                        "task-supervisor", "task-supervisor","task-supervisor", "task-supervisor","task-supervisor",
+                        "case-allocator", "case-allocator", "case-allocator", "case-allocator", "case-allocator",
+                        "case-allocator"));
+        roleAssignments.forEach(roleAssignment -> {
+            assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
+            if ("superuser".equals(roleAssignment.getRoleName())) {
+                assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
+                assertEquals("applications,hearing_work,routine_work,priority,access_requests",
+                        roleAssignment.getAttributes().get("workTypes").asText());
+            } else if ("clerk".equals(roleAssignment.getRoleName())) {
+                assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
+                assertEquals("applications,hearing_work,routine_work,priority",
+                        roleAssignment.getAttributes().get("workTypes").asText());
+            }
+        });
+    }
+
+    @Test
+    void shouldReturnSscsOgdOrgRolesForRoleId() {
+        allProfiles.clear();
+        Stream.of(14, 15).forEach(roleId -> {
+            CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "",
+                    "BBA3", false);
+            profile.setCaseAllocatorFlag("Y");
+            profile.setTaskSupervisorFlag("Y");
+            allProfiles.add(profile);
+        });
+
+        //Execute Kie session
+        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(2, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("dwp", "hmrc"));
+        roleAssignments.forEach(roleAssignment -> {
+            assertEquals(RoleCategory.OTHER_GOV_DEPT, roleAssignment.getRoleCategory());
+            assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
+            assertEquals("applications,hearing_work,routine_work,priority",
+                        roleAssignment.getAttributes().get("workTypes").asText());
+        });
+    }
+
 }
