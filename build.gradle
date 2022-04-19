@@ -357,7 +357,7 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:20030203.000550'
-    //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090:
+    //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.16'
@@ -440,7 +440,7 @@ dependencies {
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
     testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.1')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test', version: versions.springBoot
-    testImplementation 'org.springframework.security:spring-security-test:5.6.2'
+    testImplementation 'org.springframework.security:spring-security-test:5.6.3'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
