@@ -16,113 +16,116 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
- * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker"
- * and "tribunal-case-worker" as version IAC_1_0
- */
-rule "iac_senior_tribunal_caseworker"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
-  $up: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("senior-tribunal-caseworker")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : iac_senior_tribunal_caseworker");
-end;
-
-rule "iac_tribunal_caseworker"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
-  $up: CaseWorkerAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
-then
-     Map<String,JsonNode> attribute = new HashMap<>();
-     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-     attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("tribunal-caseworker")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : iac_tribunal_caseworker");
-end;
-
-/*
- * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker", "tribunal-case-worker", "case-allocator"
- *  and "task-supervisor" as version IAC_1_1. The STCW role would be deprecated later.
+ * IAC Staff admin roles.
  */
 
-rule "iac_senior_tribunal_caseworker_v11"
+rule "iac_hmcts-admin_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
+  $up: CaseWorkerAccessProfile(roleId in ("3","4","5","6","7","8","9","10"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, routine_work, decision_making_work, applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleCategory(RoleCategory.ADMIN)
       .roleType(RoleType.ORGANISATION)
-      .roleName("senior-tribunal-caseworker")
+      .roleName("hmcts-admin")
+      .grantType(GrantType.BASIC)
+      .classification(Classification.PRIVATE)
+      .readOnly(true)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : iac_hmcts-admin_caseworker_v11");
+end;
+
+
+
+rule "iac_hearing-centre-admin_caseworker_v11"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
+  $up: CaseWorkerAccessProfile(roleId in ("3","4","5"), serviceCode == "BFA1", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hearing-centre-admin")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : iac_senior_tribunal_caseworker_v11");
+      logMsg("Rule : iac_hearing-centre-admin_caseworker_v11");
 end;
 
-rule "iac_tribunal_caseworker_v11"
+
+
+rule "iac_national-business-centre_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended)
+  $up: CaseWorkerAccessProfile(roleId in ("6","7","8"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, routine_work, decision_making_work, applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleCategory(RoleCategory.ADMIN)
       .roleType(RoleType.ORGANISATION)
-      .roleName("tribunal-caseworker")
+      .roleName("national-business-centre")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : iac_tribunal_caseworker_v11");
+      logMsg("Rule : iac_national-business-centre_caseworker_v11");
 end;
 
-rule "iac_case_allocator_caseworker_v11"
+
+
+rule "iac_ctsc_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended,
-                         caseAllocatorFlag == "Y")
+  $up: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BFA1", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("ctsc")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : iac_ctsc_caseworker_v11");
+end;
+
+
+
+rule "iac_case_allocator_admin_caseworker_v11"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
+  $up: CaseWorkerAccessProfile(roleId in ("3","4","5","6","7","8","9","10"), serviceCode == "BFA1", !suspended,
+  caseAllocatorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -131,7 +134,7 @@ then
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleCategory(RoleCategory.ADMIN)
       .roleType(RoleType.ORGANISATION)
       .roleName("case-allocator")
       .grantType(GrantType.STANDARD)
@@ -139,15 +142,14 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-
-      logMsg("Rule : iac_case_allocator_caseworker_v11");
+      logMsg("Rule : iac_case_allocator_admin_caseworker_v11");
 end;
 
-rule "iac_task_supervisor_caseworker_v11"
+rule "iac_task-supervisor_admin_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended,
-                         taskSupervisorFlag == "Y")
+  $up: CaseWorkerAccessProfile(roleId in ("3","4","5","6","7","8","9","10"), serviceCode == "BFA1", !suspended,
+  taskSupervisorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -156,7 +158,7 @@ then
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleCategory(RoleCategory.ADMIN)
       .roleType(RoleType.ORGANISATION)
       .roleName("task-supervisor")
       .grantType(GrantType.STANDARD)
@@ -164,29 +166,5 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : iac_case_allocator_caseworker_v11");
-end;
-
-
-
-rule "iac_hmcts-legal-operations_caseworker_v11"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("hmcts-legal-operations")
-      .grantType(GrantType.BASIC)
-      .classification(Classification.PRIVATE)
-      .readOnly(true)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : iac_hmcts-legal-operations_caseworker_v11");
+      logMsg("Rule : iac_task-supervisor_admin_caseworker_v11");
 end;
