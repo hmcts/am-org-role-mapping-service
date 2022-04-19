@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CaseWorkerProfile  implements Serializable  {
     private String id; // can this be of type UUID?
     private String firstName;
@@ -41,7 +41,7 @@ public class CaseWorkerProfile  implements Serializable  {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Role implements Serializable {
         private String roleId;
         @JsonProperty("role")
@@ -59,7 +59,7 @@ public class CaseWorkerProfile  implements Serializable  {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class BaseLocation implements Serializable {
         private String locationId;
         private String location;
@@ -76,7 +76,7 @@ public class CaseWorkerProfile  implements Serializable  {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class WorkArea implements Serializable {
         private String areaOfWork;
         private String serviceCode;
