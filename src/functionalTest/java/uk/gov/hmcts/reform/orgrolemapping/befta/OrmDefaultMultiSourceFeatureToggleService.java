@@ -37,8 +37,7 @@ public class OrmDefaultMultiSourceFeatureToggleService extends DefaultMultiSourc
                 Boolean expectedStatus = expectedStatusString.equalsIgnoreCase("on");
                 scenarioFeatureToggleInfo.addExpectedStatus(id, expectedStatus);
             }
-            Boolean actualStatus;
-            actualStatus = (Boolean) service.getToggleStatusFor(id);
+            Boolean actualStatus = (Boolean) service.getToggleStatusFor(id);
             scenarioFeatureToggleInfo.addActualStatus(id, actualStatus);
         });
         return scenarioFeatureToggleInfo;
