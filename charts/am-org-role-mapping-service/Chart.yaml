@@ -8,7 +8,7 @@ maintainers:
   - name: Access Management Team
 dependencies:
   - name: java
-    version: 3.7.6
+    version: 3.7.5
     repository: '@hmctspublic'
   - name: servicebus
     version: 0.3.1
