@@ -96,7 +96,7 @@ public class TestDataBuilder {
 
     public static CaseWorkerAccessProfile buildUserAccessProfile(String roleId, String serviceCode, boolean suspended) {
         return CaseWorkerAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
-                .primaryLocationId("123456").primaryLocationName("south-east").roleId(roleId)
+                .primaryLocationId("123456").primaryLocationName("south-east").roleId(roleId).regionId("7")
                 .serviceCode(serviceCode).roleName(ROLE_NAME_STCW).build();
     }
 
