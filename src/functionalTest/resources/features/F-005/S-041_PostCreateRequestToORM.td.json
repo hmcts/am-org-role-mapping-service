@@ -1,0 +1,39 @@
+{
+  "_guid_": "S-041_PostRefreshRequestToORM",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Post Judicial Refresh Request",
+  "method": "POST",
+  "uri": "/am/role-mapping/judicial/refresh",
+  "specs": [
+    "to post judicial assignments refresh request on ORM"
+  ],
+  "users": {
+    "invokingUser": {
+      "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
+      "password": "[[$TEST_AM_USER2_BEFTA_PWD]]"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json",
+      "userType": "JUDICIAL"
+    },
+    "body": {
+      "refreshRequest": {
+        "userIds": "${[scenarioContext][parentContext][childContexts][S-041_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+      }
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "Message" : "Role assignments have been refreshed successfully"
+    }
+  }
+}
