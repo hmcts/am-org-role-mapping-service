@@ -33,7 +33,7 @@ apply plugin: 'io.spring.dependency-management'
 
 def versions = [
         junit          : '5.8.2',
-        lombok         : '1.18.6',
+        lombok         : '1.18.22',
         pitest         : '1.7.4',
         reformLogging  : '5.1.7',
         reformS2sClient: '4.0.2',
@@ -66,9 +66,14 @@ pmd {
 group = 'uk.gov.hmcts.reform.orgrolemapping'
 version = '0.0.1'
 
-allprojects {
-    sourceCompatibility = '11'
-    targetCompatibility = '11'
+tasks.withType(JavaExec).configureEach {
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 jacocoTestCoverageVerification {
@@ -171,16 +176,16 @@ task fortifyScan(type: JavaExec)  {
 jacocoTestReport {
     executionData(test)
     reports {
-        xml.enabled(true)
-        csv.enabled(false)
-        xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+        xml.required = true
+        csv.required = false
+        xml.outputLocation = file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
 
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.5"
+    toolVersion = "0.8.7"
 }
 
 pitest {
