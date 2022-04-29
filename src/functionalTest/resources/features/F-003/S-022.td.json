@@ -32,8 +32,8 @@
             "substantive" : "Y",
             "contractType" : "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "SSCS",
-            "workTypes" : "hearing_work,decision_making_work,routine_work,priority"
+            "jurisdiction" : "[[ANYTHING_PRESENT]]",
+            "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }, {
@@ -52,8 +52,8 @@
             "substantive" : "Y",
             "contractType" : "Fee-Paid",
             "primaryLocation" : "",
-            "jurisdiction" : "IA",
-            "workTypes" : "hearing_work,decision_making_work,applications"
+            "jurisdiction" : "[[ANYTHING_PRESENT]]",
+            "workTypes" :"[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }, {
