@@ -440,7 +440,7 @@ dependencies {
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: versions.pitest
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
-    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.1')
+    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.2')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test', version: versions.springBoot
     testImplementation group: 'org.springframework.security',name:'spring-security-test', version: versions.springSecurity
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
