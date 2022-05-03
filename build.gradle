@@ -334,7 +334,7 @@ dependencies {
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
     }
 
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.9'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.10'
     //Added for S2S and User Authentication
     implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: versions.reformS2sClient
     implementation group: 'javax.inject', name: 'javax.inject', version: '1'
@@ -352,7 +352,7 @@ dependencies {
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
-    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '2.8.5'
+    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.0'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.4'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
@@ -425,7 +425,7 @@ dependencies {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
     testImplementation('com.opentable.components:otj-pg-embedded:1.0.1')
-    testImplementation('com.github.tomakehurst:wiremock-jre8:2.33.1')
+    testImplementation('com.github.tomakehurst:wiremock-jre8:2.33.2')
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
 
     pitest 'org.pitest:pitest-junit5-plugin:0.15'
@@ -440,7 +440,7 @@ dependencies {
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: versions.pitest
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
-    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.1')
+    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.2')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test', version: versions.springBoot
     testImplementation group: 'org.springframework.security',name:'spring-security-test', version: versions.springSecurity
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.1.2'
