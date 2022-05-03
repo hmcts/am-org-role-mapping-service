@@ -129,7 +129,7 @@ pm.sendRequest('http://127.0.0.1:4098/token', function (err, res) {
 into the pre-script window.  Also add a header as follows:
 
 ```
-ServiceAuthorization: Bearer {{token}}
+ServiceAuthorization: Bearer {{token}}  
 ```
 
 Authorization :  Bearer copy IDAM access token
