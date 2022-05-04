@@ -10,15 +10,5 @@
     "body": {
         "userIds": "${[scenarioContext][parentContext][childContexts][S-042_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
     }
-  },
-  "expectedResponse": {
-    "_extends_": "Common_200_Response",
-    "headers": {
-      "Content-Length": "[[ANYTHING_PRESENT]]",
-      "Content-Type": "application/json"
-    },
-    "body": {
-      "Message" : "Role assignments have been published successfully"
-    }
   }
 }
