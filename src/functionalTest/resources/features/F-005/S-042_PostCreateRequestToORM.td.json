@@ -8,7 +8,7 @@
 
   "request": {
     "body": {
-        "userIds": ["${[scenarioContext][parentContext][childContexts][S-042_DeleteDataForRoleAssignments][testData][request][body][userIds]}"]
+        "userIds": "${[scenarioContext][parentContext][childContexts][S-042_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
     }
   },
   "expectedResponse": {
