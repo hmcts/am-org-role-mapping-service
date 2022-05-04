@@ -9,30 +9,13 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-042_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "roleName" : ["hearing-viewer"]
+      "actorId": "${[scenarioContext][childContexts][S-042_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
     }
   },
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body" : {
       "roleAssignmentResponse" : [
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "cbb51593-aaca-4da3-ab67-7200d8d31af6",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "ADMIN",
-          "readOnly": true,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "primaryLocation": "21153"
-          }
-        },
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
@@ -65,6 +48,22 @@
             "substantive": "N",
             "primaryLocation": "21153",
             "jurisdiction": "SSCS"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "cbb51593-aaca-4da3-ab67-7200d8d31af6",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-admin",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "ADMIN",
+          "readOnly": true,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "21153"
           }
         },
         {
