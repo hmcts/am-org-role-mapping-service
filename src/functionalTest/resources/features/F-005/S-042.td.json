@@ -8,6 +8,10 @@
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC"
+    },
     "body": {
       "actorId": "${[scenarioContext][childContexts][S-042_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
     }
@@ -21,7 +25,25 @@
           "actorIdType": "IDAM",
           "actorId": "cbb51593-aaca-4da3-ab67-7200d8d31af6",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
+          "roleName": "clerk",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "21153",
+            "jurisdiction": "SSCS",
+            "workTypes": "applications,hearing_work,routine_work,priority"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "cbb51593-aaca-4da3-ab67-7200d8d31af6",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
@@ -38,7 +60,7 @@
           "actorIdType": "IDAM",
           "actorId": "cbb51593-aaca-4da3-ab67-7200d8d31af6",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-manager",
+          "roleName": "hearing-viewer",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
@@ -64,24 +86,6 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "21153"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "cbb51593-aaca-4da3-ab67-7200d8d31af6",
-          "roleType": "ORGANISATION",
-          "roleName": "clerk",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "21153",
-            "jurisdiction": "SSCS",
-            "workTypes": "applications,hearing_work,routine_work,priority"
           }
         }
       ]
