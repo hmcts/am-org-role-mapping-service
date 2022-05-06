@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.9")
+        classpath("net.serenity-bdd:serenity-gradle-plugin:2.4.34")
         classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.4'
     }
 }
@@ -37,7 +37,7 @@ def versions = [
         pitest         : '1.7.4',
         reformLogging  : '5.1.7',
         reformS2sClient: '4.0.2',
-        serenity       : '2.1.0',
+        serenity       : '2.2.12',
         springBoot     : '2.6.6',
         spring         : '5.3.19',
         springSecurity : '5.6.3',
@@ -147,6 +147,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
             classpath += configurations.cucumberRuntime + sourceSets.functionalTest.runtimeClasspath + sourceSets.main.output + sourceSets.test.output
             args = ['--plugin', "json:${projectDir}/target/cucumber.json", '--tags', 'not @Ignore', '--glue',
                     'uk.gov.hmcts.befta.player', 'src/functionalTest/resources/features/']
+            executable = javaLauncher.get().metadata.installationPath.asFile.absolutePath+"/bin/java"
         }
     }
 }
@@ -442,7 +443,7 @@ dependencies {
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.8.2'
 
-    testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
+    testImplementation group: 'org.pitest', name: 'pitest', version: '1.7.6'
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: versions.pitest
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
     testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.2')

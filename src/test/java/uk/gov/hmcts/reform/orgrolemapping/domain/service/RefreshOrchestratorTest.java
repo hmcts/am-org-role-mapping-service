@@ -117,20 +117,6 @@ class RefreshOrchestratorTest {
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
 
-        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
-        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
-                .id("1")
-                .roleId("1")
-                .roleName("roleName")
-                .primaryLocationName("primary")
-                .primaryLocationId("1")
-                .areaOfWorkId("1")
-                .serviceCode("1")
-                .suspended(false)
-                .build());
-        userAccessProfiles.put("1", userAccessProfileSet);
-
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
                 .thenThrow(FeignException.NotFound.class);
 
@@ -150,7 +136,6 @@ class RefreshOrchestratorTest {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void refreshRoleAssignmentRecords_nullUserRequest() {
 
