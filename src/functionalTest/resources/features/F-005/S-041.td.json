@@ -8,9 +8,12 @@
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC"
+    },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-041_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "roleName" : ["hearing-manager"]
+      "actorId": "${[scenarioContext][childContexts][S-041_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
     }
   },
   "expectedResponse": {
