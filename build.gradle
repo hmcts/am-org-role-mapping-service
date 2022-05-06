@@ -190,7 +190,6 @@ jacoco {
 }
 
 pitest {
-    pitestVersion = "1.7.4"
     testPlugin = "junit5"
     targetClasses = ['uk.gov.hmcts.reform.*']
     excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication',
@@ -443,7 +442,7 @@ dependencies {
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.8.2'
 
-    testImplementation group: 'org.pitest', name: 'pitest', version: '1.7.6'
+    testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: versions.pitest
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
     testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.2')
