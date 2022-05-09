@@ -62,7 +62,7 @@
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "[[ANYTHING_PRESENT]]",
           "readOnly": false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -79,7 +79,7 @@
           "roleName" : "hearing-manager",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
+          "roleCategory" : "[[ANYTHING_PRESENT]]",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
@@ -96,7 +96,7 @@
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "[[ANYTHING_PRESENT]]",
           "readOnly": false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -113,7 +113,7 @@
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "[[ANYTHING_PRESENT]]",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
