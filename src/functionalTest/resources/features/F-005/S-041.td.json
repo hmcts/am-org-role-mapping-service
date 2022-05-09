@@ -25,23 +25,6 @@
           "actorIdType": "IDAM",
           "actorId": "33d7a938-69d7-4316-9c54-b989d06838aa",
           "roleType": "ORGANISATION",
-          "roleName": "listed-hearing-viewer",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "OTHER_GOV_DEPT",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "primaryLocation": "21153",
-            "jurisdiction": "SSCS"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "33d7a938-69d7-4316-9c54-b989d06838aa",
-          "roleType": "ORGANISATION",
           "roleName": "dwp",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
@@ -53,6 +36,23 @@
             "primaryLocation": "21153",
             "jurisdiction": "SSCS",
             "workTypes": "applications,hearing_work,routine_work,priority"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "33d7a938-69d7-4316-9c54-b989d06838aa",
+          "roleType": "ORGANISATION",
+          "roleName": "listed-hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "OTHER_GOV_DEPT",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "21153",
+            "jurisdiction": "SSCS"
           }
         }
       ]
