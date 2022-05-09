@@ -21,21 +21,37 @@
     "body" : {
       "roleAssignmentResponse" : [
         {
-          "id" : "[[ANYTHING_PRESENT]]",
+          "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
           "roleType": "ORGANISATION",
-          "roleName": "clerk",
+          "roleName": "case-allocator",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
           "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "21153",
-            "jurisdiction": "SSCS",
-            "workTypes": "applications,hearing_work,routine_work,priority"
+            "substantive": "N",
+            "primaryLocation": "271588",
+            "jurisdiction": "SSCS"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "271588",
+            "jurisdiction": "SSCS"
           }
         },
         {
@@ -51,8 +67,25 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "21153",
+            "primaryLocation": "271588",
             "jurisdiction": "SSCS"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hearing-manager",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "271588",
+            "jurisdiction" : "SSCS"
           }
         },
         {
@@ -68,7 +101,24 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "21153",
+            "primaryLocation": "271588",
+            "jurisdiction": "SSCS"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "271588",
             "jurisdiction": "SSCS"
           }
         },
@@ -85,7 +135,93 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "21153"
+            "primaryLocation": "271588"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-legal-operations",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "271588"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType": "ORGANISATION",
+          "roleName": "registrar",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "271588",
+            "jurisdiction": "SSCS",
+            "workTypes": "applications,hearing_work,routine_work,priority,decision_making_work"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType": "ORGANISATION",
+          "roleName": "superuser",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "271588",
+            "jurisdiction": "SSCS",
+            "workTypes": "applications,hearing_work,routine_work,priority,access_requests"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "271588",
+            "jurisdiction": "SSCS"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "271588",
+            "jurisdiction": "SSCS"
           }
         }
       ]
