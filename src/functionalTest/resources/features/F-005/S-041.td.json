@@ -1,0 +1,61 @@
+{
+  "_guid_": "S-041",
+  "title": "must successfully create hearing role assignments for a user",
+  "_extends_": "F-005_Test_Data_Base",
+  "specs": [
+    "contains the actorIds of the user for which above booking is created"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC"
+    },
+    "body": {
+      "actorId": "${[scenarioContext][childContexts][S-041_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "roleAssignmentResponse" : [
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "33d7a938-69d7-4316-9c54-b989d06838aa",
+          "roleType": "ORGANISATION",
+          "roleName": "dwp",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "OTHER_GOV_DEPT",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "21153",
+            "jurisdiction": "SSCS",
+            "workTypes": "applications,hearing_work,routine_work,priority"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "33d7a938-69d7-4316-9c54-b989d06838aa",
+          "roleType": "ORGANISATION",
+          "roleName": "listed-hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "OTHER_GOV_DEPT",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "21153",
+            "jurisdiction": "SSCS"
+          }
+        }
+      ]
+    }
+  }
+}
