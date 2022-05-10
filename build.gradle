@@ -370,7 +370,7 @@ dependencies {
     implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.13.2.20220324', ext: 'pom'
 
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.1'
-    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.1'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
     implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.1'
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
