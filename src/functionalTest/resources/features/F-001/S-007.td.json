@@ -66,7 +66,7 @@
             "created" : "[[ANYTHING_PRESENT]]",
             "log" : "[[ANYTHING_PRESENT]]",
             "attributes" : {
-              "substantive" : "N",
+              "substantive" : "Y",
               "primaryLocation" : "[[ANYTHING_PRESENT]]",
               "jurisdiction" : "IA",
               "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
