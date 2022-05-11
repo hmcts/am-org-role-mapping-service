@@ -355,7 +355,7 @@ dependencies {
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.0'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.5'
-    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.23'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:20030203.000550'
