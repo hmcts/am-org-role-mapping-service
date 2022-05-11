@@ -34,7 +34,7 @@ apply plugin: 'io.spring.dependency-management'
 def versions = [
         junit          : '5.8.2',
         lombok         : '1.18.6',
-        pitest         : '1.7.4',
+        pitest         : '1.7.6',
         reformLogging  : '5.1.7',
         reformS2sClient: '4.0.2',
         serenity       : '2.1.0',
@@ -349,20 +349,20 @@ dependencies {
     implementation group: 'com.azure', name: 'azure-core', version: '1.16.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.18'
-    implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.5.0'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.0'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.5'
-    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.23'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:20030203.000550'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.20'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.16'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.62'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
