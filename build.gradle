@@ -348,7 +348,7 @@ dependencies {
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.28.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.17'
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.18'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
@@ -366,12 +366,12 @@ dependencies {
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.58'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.2'
     implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.13.2.20220324', ext: 'pom'
 
-    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.1'
-    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.1'
-    implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.1'
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
+    implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.2'
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'

@@ -99,7 +99,7 @@
           "attributes": {
             "primaryLocation": "574546",
             "jurisdiction": "IA",
-            "substantive": "N",
+            "substantive": "Y",
             "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
           }
         }
