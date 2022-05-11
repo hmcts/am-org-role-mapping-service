@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.9")
+        classpath("net.serenity-bdd:serenity-gradle-plugin:2.4.34")
         classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.4'
     }
 }
