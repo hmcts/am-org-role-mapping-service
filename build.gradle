@@ -316,7 +316,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name:'properties-volume-spring-boot-starter', version:'0.1.1'
     implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-    implementation group: 'org.json', name: 'json', version: '20200518'
+    implementation group: 'org.json', name: 'json', version: '20220320'
     implementation group: 'javax.inject', name: 'javax.inject', version: '1'
 
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
