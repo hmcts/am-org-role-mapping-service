@@ -36,7 +36,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     void shouldReturnJudgeRoles_withSscs() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> judicialAccessProfile.getAuthorisations().forEach(a ->
-                a.setServiceCode(SERVICE_CODE)));
+                a.setServiceCodes(List.of(SERVICE_CODE))));
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
 
@@ -66,7 +66,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     void shouldReturnEmptyRoles_withSscs_expiredAuthorisation() {
 
         judicialAccessProfiles.forEach(jap -> jap.getAuthorisations().forEach(a -> {
-            a.setServiceCode(SERVICE_CODE);
+            a.setServiceCodes(List.of(SERVICE_CODE));
             a.setEndDate(LocalDateTime.now().minusDays(1));
         }));
         //Execute Kie session
@@ -91,7 +91,8 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnEmptyRoles(boolean ldFlag, String serviceCode) {
 
-        judicialAccessProfiles.forEach(jap -> jap.getAuthorisations().forEach(a -> a.setServiceCode(serviceCode)));
+        judicialAccessProfiles.forEach(jap -> jap.getAuthorisations().forEach(a ->
+                a.setServiceCodes(List.of(serviceCode))));
         List.of("2","4","5","9","10","12","13","14","15").forEach(a ->
                 allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
         //Execute Kie session
