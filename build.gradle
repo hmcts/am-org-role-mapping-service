@@ -366,7 +366,7 @@ dependencies {
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.58'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
     implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.13.2.20220324', ext: 'pom'
 
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
@@ -517,7 +517,7 @@ dependencyManagement {
             entry 'logback-classic'
             entry 'logback-core'
         }
-        dependencySet(group: 'com.fasterxml.jackson.core', version: '2.13.2') {
+        dependencySet(group: 'com.fasterxml.jackson.core', version: '2.13.3') {
             entry 'jackson-databind'
             entry 'jackson-core'
             entry 'jackson-annotations'
