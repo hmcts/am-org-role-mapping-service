@@ -262,8 +262,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Salaried");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCodes(List.of("BBA3")).endDate(LocalDateTime.now().minusMonths(5))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of("BBA3")).endDate(LocalDateTime.now()
+                                .minusMonths(5)).build())));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -330,8 +330,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Fee Paid");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCodes(List.of("BBA3")).endDate(LocalDateTime.now().minusMonths(5))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of("BBA3")).endDate(LocalDateTime.now()
+                                .minusMonths(5)).build())));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -399,8 +399,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Salaried");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCodes(List.of(serviceCode)).endDate(LocalDateTime.now().minusMonths(5))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of(serviceCode)).endDate(LocalDateTime.now()
+                                .minusMonths(5)).build())));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -437,8 +437,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Fee Paid");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCodes(List.of(serviceCode)).endDate(LocalDateTime.now().minusMonths(5))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of(serviceCode)).endDate(LocalDateTime.now()
+                                .minusMonths(5)).build())));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
