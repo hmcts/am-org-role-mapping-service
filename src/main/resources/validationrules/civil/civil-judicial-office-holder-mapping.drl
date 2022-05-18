@@ -28,10 +28,13 @@ import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuild
  * "Stage 1 mapping from judicial appointments/roles(coming from RD JRD access profiles) to judicial office holder.
  * "Civil Judge" business role mapping to JOH.
  */
-rule "sscs_judge_joh"
+rule "civil_circuit_judge_salaried_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment !=null && validateAuthorisation(authorisations, "BBA3"))
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Circuit Judge",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
 then
   insert(
       JudicialOfficeHolder.builder()
