@@ -107,7 +107,7 @@ then
 end;
 
 /*
- * "CIVIL Deputy District Judge – Fee Paid" business role business role mapping to JOH.
+ * "CIVIL Deputy District Judge–Fee-Paid" business role business role mapping to JOH.
  */
 rule "civil_deputy_district_judge_fee_paid_joh"
 when
@@ -120,7 +120,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("CIVIL Deputy District Judge – Fee Paid")
+      .office("CIVIL Deputy District Judge–Fee-Paid")
       .jurisdiction("CIVIL")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -326,7 +326,7 @@ then
 end;
 
 /*
- * "CIVIL Resident Judge-Salaried" business role mapping to JOH.
+ * "CIVIL Resident Judge Salaried" business role mapping to JOH.
  */
 rule "civil_resident_judge_salaried_joh"
 when
