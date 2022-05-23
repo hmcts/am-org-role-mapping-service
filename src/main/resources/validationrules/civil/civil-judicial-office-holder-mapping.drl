@@ -277,7 +277,7 @@ when
    $jap: JudicialAccessProfile(appointment != null,
                                appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (roles != null && roles.contains("Designated Civil Judge"))
+                               (roles != null && roles.contains("Designated Civil Judge")),
                                (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
 then
   insert(
@@ -306,7 +306,7 @@ when
    $jap: JudicialAccessProfile(appointment != null,
                                appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (roles != null && roles.contains("Presiding Judge"))
+                               (roles != null && roles.contains("Presiding Judge")),
                                (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
 then
   insert(
@@ -334,7 +334,7 @@ when
    $jap: JudicialAccessProfile(appointment != null,
                                appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (roles != null && roles.contains("Resident Judge"))
+                               (roles != null && roles.contains("Resident Judge")),
                                (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
 then
   insert(
