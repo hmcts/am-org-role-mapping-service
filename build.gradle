@@ -137,19 +137,34 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
-task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
-    testClassesDirs = sourceSets.functionalTest.output.classesDirs
-    classpath = sourceSets.functionalTest.runtimeClasspath
-    doFirst {
+task functional(type: JavaExec) {
+    description = "Runs the functional tests"
+    group = "Verification"
+
+    generateCucumberReports.enabled = false
+    main("uk.gov.hmcts.reform.orgrolemapping.befta.OrgRoleMappingAmBeftaMain")
+    classpath += configurations.cucumberRuntime + sourceSets.functionalTest.runtimeClasspath + sourceSets.main.output + sourceSets.test.output
+    args = ['--strict',  '--tags', 'not @Ignore',
+            '--plugin', "json:${rootDir}/target/cucumber.json", '--plugin', "junit:${buildDir}/test-results/functional/cucumber.xml",
+            '--glue', 'uk.gov.hmcts.befta.player', 'src/functionalTest/resources/features'
+           ]
+    // '--add-opens=...' added to suppress 'WARNING: An illegal reflective access operation has occurred' in uk.gov.hmcts.befta.util.CucumberStepAnnotationUtils
+    jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+
+    finalizedBy {
         generateCucumberReports.enabled = true
-        javaexec {
-            main = "uk.gov.hmcts.reform.orgrolemapping.befta.OrgRoleMappingAmBeftaMain"
-            classpath += configurations.cucumberRuntime + sourceSets.functionalTest.runtimeClasspath + sourceSets.main.output + sourceSets.test.output
-            args = ['--plugin', "json:${projectDir}/target/cucumber.json", '--tags', 'not @Ignore', '--glue',
-                    'uk.gov.hmcts.befta.player', 'src/functionalTest/resources/features/']
-            executable = javaLauncher.get().metadata.installationPath.asFile.absolutePath+"/bin/java"
+        generateCucumberReports {
+            doLast{
+                def functionalReportsFolder = "${rootDir}/target/cucumber/functional-html-reports/"
+                delete functionalReportsFolder
+                new File(functionalReportsFolder).mkdirs()
+                file("${rootDir}/target/cucumber/cucumber-html-reports").renameTo(file(functionalReportsFolder))
+                logger.quiet("Functional test report moved to ---> file://$functionalReportsFolder/overview-features.html")
+            }
         }
     }
+
+    outputs.upToDateWhen { false }
 }
 
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
