@@ -1,14 +1,17 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -231,10 +234,11 @@ class DroolCaseMappingTest extends DroolBase {
 
     @Test
     void shouldReturnCaseAllocatorForNewRule() {
-
-        allProfiles.forEach(userAccessProfile -> {
+        Iterator<CaseWorkerAccessProfile> profiles = allProfiles.iterator();
+        while (profiles.hasNext()) {
+            CaseWorkerAccessProfile userAccessProfile = profiles.next();
             if (userAccessProfile.getRoleId().equals("2")) {
-                allProfiles.remove(userAccessProfile);
+                profiles.remove();
             }
             if (userAccessProfile.getRoleId().equals("1")) {
                 userAccessProfile.setServiceCode("BFA1");
@@ -242,7 +246,7 @@ class DroolCaseMappingTest extends DroolBase {
                 userAccessProfile.setTaskSupervisorFlag("X");
                 userAccessProfile.setSuspended(false);
             }
-        });
+        }
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
@@ -313,7 +317,7 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
+        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
                 roleAssignments.get(0).getActorId());
 
         assertEquals(workTypes,
@@ -325,9 +329,11 @@ class DroolCaseMappingTest extends DroolBase {
     @Test
     void shouldReturnTaskSupervisorForNewRule() {
 
-        allProfiles.forEach(userAccessProfile -> {
+        Iterator<CaseWorkerAccessProfile> profiles = allProfiles.iterator();
+        while (profiles.hasNext()) {
+            CaseWorkerAccessProfile userAccessProfile = profiles.next();
             if (userAccessProfile.getRoleId().equals("2")) {
-                allProfiles.remove(userAccessProfile);
+                profiles.remove();
             }
             if (userAccessProfile.getRoleId().equals("1")) {
                 userAccessProfile.setServiceCode("BFA1");
@@ -335,7 +341,7 @@ class DroolCaseMappingTest extends DroolBase {
                 userAccessProfile.setTaskSupervisorFlag("Y");
                 userAccessProfile.setSuspended(false);
             }
-        });
+        }
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
@@ -407,7 +413,7 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
+        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
                 roleAssignments.get(0).getActorId());
 
         assertEquals(workTypes,
@@ -460,7 +466,7 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
-        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
+        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
                 roleAssignments.get(2).getActorId());
 
         assertEquals(workTypes,
@@ -471,10 +477,11 @@ class DroolCaseMappingTest extends DroolBase {
 
     @Test
     void shouldReturnTaskSupervisorCaseAllocatorForNewRule() {
-
-        allProfiles.forEach(userAccessProfile -> {
+        Iterator<CaseWorkerAccessProfile> profiles = allProfiles.iterator();
+        while (profiles.hasNext()) {
+            CaseWorkerAccessProfile userAccessProfile = profiles.next();
             if (userAccessProfile.getRoleId().equals("2")) {
-                allProfiles.remove(userAccessProfile);
+                profiles.remove();
             }
             if (userAccessProfile.getRoleId().equals("1")) {
                 userAccessProfile.setServiceCode("BFA1");
@@ -482,7 +489,7 @@ class DroolCaseMappingTest extends DroolBase {
                 userAccessProfile.setTaskSupervisorFlag("Y");
                 userAccessProfile.setSuspended(false);
             }
-        });
+        }
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
@@ -560,7 +567,7 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(8).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(9).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(9).getRoleCategory());
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
+        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
                 roleAssignments.get(0).getActorId());
 
         assertEquals(workTypes,
@@ -598,9 +605,9 @@ class DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(4).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
+        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
                 roleAssignments.get(1).getActorId());
-        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
+        Assertions.assertThat(usersAccessProfiles.keySet().stream()).contains(
                 roleAssignments.get(2).getActorId());
 
         assertEquals(workTypes,
