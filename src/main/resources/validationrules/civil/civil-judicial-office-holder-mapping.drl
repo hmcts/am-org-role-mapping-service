@@ -107,12 +107,12 @@ then
 end;
 
 /*
- * "CIVIL Deputy District Judge–Fee-Paid" business role business role mapping to JOH.
+ * "CIVIL Deputy District Judge-Fee-Paid" business role business role mapping to JOH.
  */
 rule "civil_deputy_district_judge_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment == "Deputy District Judge – Fee Paid",
+   $jap: JudicialAccessProfile(appointment == "Deputy District Judge - Fee Paid",
                                appointmentType == "Fee Paid",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
@@ -120,7 +120,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("CIVIL Deputy District Judge–Fee-Paid")
+      .office("CIVIL Deputy District Judge-Fee-Paid")
       .jurisdiction("CIVIL")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -134,12 +134,12 @@ then
 end;
 
 /*
- * "CIVIL Deputy District Judge – Sitting in Retirement-Fee-Paid" business role business role mapping to JOH.
+ * "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid" business role business role mapping to JOH.
  */
 rule "civil_deputy_district_judge_sitting_in_retirement_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment == "Deputy District Judge – Sitting in Retirement",
+   $jap: JudicialAccessProfile(appointment == "Deputy District Judge - Sitting in Retirement",
                                appointmentType == "Fee Paid",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
@@ -147,7 +147,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("CIVIL Deputy District Judge – Sitting in Retirement-Fee-Paid")
+      .office("CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid")
       .jurisdiction("CIVIL")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())

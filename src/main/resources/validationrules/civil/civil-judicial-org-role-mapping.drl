@@ -25,8 +25,8 @@ rule "civil_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL Presiding Judge-Salaried",
-                                         "CIVIL Resident Judge-Salaried", "CIVIL Deputy District Judge–Fee-Paid",
-                                         "CIVIL Deputy District Judge – Sitting in Retirement-Fee-Paid",
+                                         "CIVIL Resident Judge-Salaried", "CIVIL Deputy District Judge-Fee-Paid",
+                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                          "CIVIL Recorder-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -199,8 +199,8 @@ rule "civil_fee_paid_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("CIVIL Deputy Circuit Judge-Fee-Paid",
-                                        "CIVIL Deputy District Judge–Fee-Paid",
-                                        "CIVIL Deputy District Judge – Sitting in Retirement-Fee-Paid",
+                                        "CIVIL Deputy District Judge-Fee-Paid",
+                                        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                         "CIVIL Recorder-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -239,7 +239,7 @@ $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL P
                                       "CIVIL Circuit Judge-Salaried", "CIVIL Specialist Circuit Judge-Salaried",
                                       "CIVIL Senior Circuit Judge-Salaried", "CIVIL High Court Judge-Salaried",
                                       "CIVIL Deputy Circuit Judge-Fee-Paid", "CIVIL Deputy District Judge-Fee-Paid",
-                                      "CIVIL Deputy District Judge – Sitting in Retirement-Fee-Paid",
+                                      "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                       "CIVIL Recorder-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
