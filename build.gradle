@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.9")
+        classpath("net.serenity-bdd:serenity-gradle-plugin:2.4.34")
         classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.4'
     }
 }
@@ -33,11 +33,11 @@ apply plugin: 'io.spring.dependency-management'
 
 def versions = [
         junit          : '5.8.2',
-        lombok         : '1.18.6',
+        lombok         : '1.18.22',
         pitest         : '1.7.4',
         reformLogging  : '5.1.7',
         reformS2sClient: '4.0.2',
-        serenity       : '2.1.0',
+        serenity       : '2.2.12',
         springBoot     : '2.6.6',
         spring         : '5.3.20',
         springSecurity : '5.6.3',
@@ -47,7 +47,7 @@ def versions = [
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
-        drools         : '7.66.0.Final',
+        drools         : '7.69.0.Final',
         log4JVersion   : '2.17.1',
         logbackVersion : '1.2.10',
         launchDarklySdk: '5.7.0',
@@ -66,9 +66,14 @@ pmd {
 group = 'uk.gov.hmcts.reform.orgrolemapping'
 version = '0.0.1'
 
-allprojects {
-    sourceCompatibility = '11'
-    targetCompatibility = '11'
+tasks.withType(JavaExec).configureEach {
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 jacocoTestCoverageVerification {
@@ -132,18 +137,34 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
-task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
-    testClassesDirs = sourceSets.functionalTest.output.classesDirs
-    classpath = sourceSets.functionalTest.runtimeClasspath
-    doFirst {
+task functional(type: JavaExec) {
+    description = "Runs the functional tests"
+    group = "Verification"
+
+    generateCucumberReports.enabled = false
+    main("uk.gov.hmcts.reform.orgrolemapping.befta.OrgRoleMappingAmBeftaMain")
+    classpath += configurations.cucumberRuntime + sourceSets.functionalTest.runtimeClasspath + sourceSets.main.output + sourceSets.test.output
+    args = ['--strict',  '--tags', 'not @Ignore',
+            '--plugin', "json:${rootDir}/target/cucumber.json", '--plugin', "junit:${buildDir}/test-results/functional/cucumber.xml",
+            '--glue', 'uk.gov.hmcts.befta.player', 'src/functionalTest/resources/features'
+           ]
+    // '--add-opens=...' added to suppress 'WARNING: An illegal reflective access operation has occurred' in uk.gov.hmcts.befta.util.CucumberStepAnnotationUtils
+    jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+
+    finalizedBy {
         generateCucumberReports.enabled = true
-        javaexec {
-            main = "uk.gov.hmcts.reform.orgrolemapping.befta.OrgRoleMappingAmBeftaMain"
-            classpath += configurations.cucumberRuntime + sourceSets.functionalTest.runtimeClasspath + sourceSets.main.output + sourceSets.test.output
-            args = ['--plugin', "json:${projectDir}/target/cucumber.json", '--tags', 'not @Ignore', '--glue',
-                    'uk.gov.hmcts.befta.player', 'src/functionalTest/resources/features/']
+        generateCucumberReports {
+            doLast{
+                def functionalReportsFolder = "${rootDir}/target/cucumber/functional-html-reports/"
+                delete functionalReportsFolder
+                new File(functionalReportsFolder).mkdirs()
+                file("${rootDir}/target/cucumber/cucumber-html-reports").renameTo(file(functionalReportsFolder))
+                logger.quiet("Functional test report moved to ---> file://$functionalReportsFolder/overview-features.html")
+            }
         }
     }
+
+    outputs.upToDateWhen { false }
 }
 
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
@@ -171,20 +192,19 @@ task fortifyScan(type: JavaExec)  {
 jacocoTestReport {
     executionData(test)
     reports {
-        xml.enabled(true)
-        csv.enabled(false)
-        xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+        xml.required = true
+        csv.required = false
+        xml.outputLocation = file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
 
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.5"
+    toolVersion = "0.8.7"
 }
 
 pitest {
-    pitestVersion = "1.7.4"
     testPlugin = "junit5"
     targetClasses = ['uk.gov.hmcts.reform.*']
     excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication',
@@ -447,7 +467,7 @@ dependencies {
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
-    testImplementation 'com.github.hmcts:befta-fw:8.7.1'
+    testImplementation 'com.github.hmcts:befta-fw:9.0.0-CCD-3068.1'
 
     testImplementation(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
         exclude group: 'javascript', module: 'jquery'

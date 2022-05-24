@@ -117,20 +117,6 @@ class RefreshOrchestratorTest {
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
 
-        Map<String, Set<?>> userAccessProfiles = new HashMap<>();
-        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
-                .id("1")
-                .roleId("1")
-                .roleName("roleName")
-                .primaryLocationName("primary")
-                .primaryLocationId("1")
-                .areaOfWorkId("1")
-                .serviceCode("1")
-                .suspended(false)
-                .build());
-        userAccessProfiles.put("1", userAccessProfileSet);
-
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
                 .thenThrow(FeignException.NotFound.class);
 
@@ -150,7 +136,6 @@ class RefreshOrchestratorTest {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void refreshRoleAssignmentRecords_nullUserRequest() {
 
@@ -330,11 +315,8 @@ class RefreshOrchestratorTest {
 
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
         responseCodeWithUserId.put("1234", HttpStatus.CREATED);
-        Map<String, HttpStatus> responseCodeWithUserIdSpy = Mockito.spy(responseCodeWithUserId);
 
-        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy, UserType.CASEWORKER);
-
-        verify(responseCodeWithUserIdSpy, Mockito.times(4)).entrySet();
+        sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
 
         verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
         verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
@@ -346,7 +328,6 @@ class RefreshOrchestratorTest {
     void refreshJobByServiceName_FeignException() {
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
         responseCodeWithUserId.put("1234", HttpStatus.CREATED);
-        Map<String, HttpStatus> responseCodeWithUserIdSpy = Mockito.spy(responseCodeWithUserId);
 
         Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
                 any(), any(), any(), any(), any()))
@@ -359,9 +340,7 @@ class RefreshOrchestratorTest {
                 RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
         RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
 
-        sut.refreshJobByServiceName(responseCodeWithUserIdSpy, refreshJobEntitySpy, UserType.CASEWORKER);
-
-        verify(responseCodeWithUserIdSpy, Mockito.times(1)).put(any(), any());
+        sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
 
         verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
         verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
