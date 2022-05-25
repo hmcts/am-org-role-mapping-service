@@ -393,10 +393,10 @@ public class TestDataBuilder {
     }
 
     public static Set<JudicialOfficeHolder> buildJudicialOfficeHolderSet() {
-        Set<JudicialOfficeHolder> judicialAccessProfileSet = new HashSet<>();
-        judicialAccessProfileSet.add(buildJudicialOfficeHolder());
+        Set<JudicialOfficeHolder> judicialOfficeHolders = new HashSet<>();
+        judicialOfficeHolders.add(buildJudicialOfficeHolder());
 
-        return judicialAccessProfileSet;
+        return judicialOfficeHolders;
     }
 
     public static JRDUserRequest buildRefreshRoleRequest() {
