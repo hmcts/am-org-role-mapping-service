@@ -333,6 +333,7 @@ public class RequestMappingService<T> {
     public static void logInfoMsg(final String message) {
         log.info(message);
     }
+
     public static List<String> addAndGetTicketCodes(List<String> existingTicketCodes, String newTicketCode) {
         List<String> updatedTicketCodes = new ArrayList<>(existingTicketCodes);
         updatedTicketCodes.add(newTicketCode);
