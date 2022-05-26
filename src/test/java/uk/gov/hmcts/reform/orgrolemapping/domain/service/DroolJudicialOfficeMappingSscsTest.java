@@ -46,7 +46,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(serviceCode));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of(serviceCode)));
         });
 
         //Execute Kie session
@@ -92,7 +92,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setBaseLocationId("1032");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
         });
 
 
@@ -161,7 +161,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.setBaseLocationId("1032");
             judicialAccessProfile.getAuthorisations().forEach(a -> {
-                a.setServiceCode(serviceCode);
+                a.setServiceCodes(List.of(serviceCode));
                 a.setTicketCode("362");
             });
         });
@@ -199,7 +199,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setAppointment("judge");
             judicialAccessProfile.setRoles(List.of("District Tribunal Judge"));
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
         });
 
         //Execute Kie session
@@ -223,7 +223,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("Regional Medical Member"));
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
         });
 
         //Execute Kie session
@@ -262,8 +262,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Salaried");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BBA3").endDate(LocalDateTime.now().minusMonths(5))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of("BBA3")).endDate(LocalDateTime.now()
+                                .minusMonths(5)).build())));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -294,7 +294,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Salaried");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode(serviceCode)
+                List.of(Authorisation.builder().serviceCodes(List.of(serviceCode))
                         .build())));
 
         //Execute Kie session
@@ -330,8 +330,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Fee Paid");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BBA3").endDate(LocalDateTime.now().minusMonths(5))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of("BBA3")).endDate(LocalDateTime.now()
+                                .minusMonths(5)).build())));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -367,7 +367,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Fee Paid");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode(serviceCode)
+                List.of(Authorisation.builder().serviceCodes(List.of(serviceCode))
                         .build())));
 
         //Execute Kie session
@@ -399,8 +399,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Salaried");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode(serviceCode).endDate(LocalDateTime.now().minusMonths(5))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of(serviceCode)).endDate(LocalDateTime.now()
+                                .minusMonths(5)).build())));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -437,8 +437,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         profile.setAppointmentType("Fee Paid");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode(serviceCode).endDate(LocalDateTime.now().minusMonths(5))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of(serviceCode)).endDate(LocalDateTime.now()
+                                .minusMonths(5)).build())));
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -463,7 +463,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setBaseLocationId("1032");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
 
         });
 
@@ -502,7 +502,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setBaseLocationId("1032");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
 
         });
 
@@ -540,7 +540,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
             judicialAccessProfile.setAppointment("President of Tribunal");
             judicialAccessProfile.setRoles(List.of("District Tribunal Judge", "Regional Medical Member"));
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
 
         });
 
@@ -577,7 +577,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("Wrong Role"));
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BBA3"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
         });
 
         //Execute Kie session
