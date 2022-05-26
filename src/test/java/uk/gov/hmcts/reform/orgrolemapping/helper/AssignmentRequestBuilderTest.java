@@ -112,32 +112,8 @@ class AssignmentRequestBuilderTest {
     void validateIACAuthorisation() {
 
         assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
-                .serviceCode("BFA1")
+                .serviceCodes(List.of("BFA1"))
                 .endDate(LocalDateTime.now().plusDays(1)).build()), "BFA1"));
-    }
-
-    @Test
-    void validateSscsAuthorisation() {
-
-        assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
-                .serviceCode("BBA3").ticketCode("362")
-                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362", "373"));
-    }
-
-    @Test
-    void validateFalseSscsAuthorisation() {
-
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
-                .serviceCode("BBA3").ticketCode("373")
-                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362"));
-    }
-
-    @Test
-    void validateFalseSscsAuthorisationWithNullCode() {
-
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
-                .serviceCode("BBA3").ticketCode("373")
-                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", ""));
     }
 
     @Test
@@ -146,28 +122,20 @@ class AssignmentRequestBuilderTest {
         List<Authorisation> authorisations = new ArrayList<>();
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(authorisations, "BFA1"));
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(authorisations, "BBA3", "362"));
     }
 
     @Test
     void validateNullAuthorisation() {
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(null, "BFA1"));
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(null, "BBA3", "362"));
     }
 
     @Test
     void validateNonIACAuthorisation() {
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
-                .serviceCode("BFA2")
+                .serviceCodes(List.of("BFA2"))
                 .endDate(LocalDateTime.now().plusDays(1)).build()), "BFA1"));
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
-                .serviceCode("BFA2").ticketCode("363")
-                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362"));
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
-                .serviceCode("BBA3").ticketCode("363")
-                .endDate(LocalDateTime.now().plusDays(1)).build()), "BBA3", "362"));
     }
 
 
@@ -175,24 +143,16 @@ class AssignmentRequestBuilderTest {
     void validateAuthorisation_inValidEndDate() {
         Authorisation authorisation = Authorisation.builder()
                 .endDate(LocalDateTime.now().minusDays(2))
-                .serviceCode("BFA2")
+                .serviceCodes(List.of("BFA2"))
                 .build();
         boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
                 "BFA1");
-        assertFalse(isValidAuthorisation);
-
-        authorisation.setTicketCode("362");
-        isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
-                "BBA3", "362");
         assertFalse(isValidAuthorisation);
     }
 
     @Test
     void validateAuthorisation_emptyList() {
         boolean authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(), "BFA1");
-        assertFalse(authorisation);
-
-        authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(), "BBA3", "362");
         assertFalse(authorisation);
     }
 
