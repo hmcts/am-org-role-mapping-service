@@ -24,8 +24,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.addAndGetTicketCodes;
 import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
 
-
 /*
+ * "Stage 1 mapping from judicial appointments/roles(coming from RD JRD access profiles) to judicial office holder.
  * "SSCS Judge" business role mapping to JOH.
  */
 rule "sscs_judge_joh"
@@ -46,12 +46,10 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_judge_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_judge_joh");
 end;
-
-/*
- * "Stage 1 mapping from judicial appointments/roles(coming from RD JRD access profiles) to judicial office holder.
- */
 
 /*
  * "SSCS President of Tribunal-Salaried" business role business role mapping to JOH.
@@ -78,7 +76,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_president_of_tribunals_salaried_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_president_of_tribunals_salaried_joh");
 end;
 
 /*
@@ -105,7 +105,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_regional_tribunal_salaried_judge_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_regional_tribunal_salaried_judge_joh");
 end;
 
 /*
@@ -132,7 +134,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_judge_fee_paid_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_judge_fee_paid_joh");
 end;
 
 /*
@@ -159,7 +163,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_judge_salaried_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_judge_salaried_joh");
 end;
 
 /*
@@ -187,7 +193,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_medical_fee_paid_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_member_medical_fee_paid_joh");
 end;
 
 /*
@@ -215,7 +223,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_medical_salaried_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_member_medical_salaried_joh");
 end;
 
 
@@ -244,7 +254,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_disability_fee_paid_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_member_disability_fee_paid_joh");
 end;
 
 /*
@@ -271,7 +283,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_financially_qualified_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_member_financially_qualified_joh");
 end;
 
 /*
@@ -299,7 +313,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_fee_paid_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_member_fee_paid_joh");
 end;
 
 /*
@@ -328,7 +344,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_baselocation_ticketcode_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_member_baselocation_ticketcode_joh");
 end;
 
 /*
@@ -356,7 +374,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_lay_fee_paid_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_member_lay_fee_paid_joh");
 end;
 
 /*
@@ -383,7 +403,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_optometrist_fee_paid_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_member_optometrist_fee_paid_joh");
 end;
 
 /*
@@ -410,5 +432,7 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : sscs_tribunal_member_service_fee_paid_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_tribunal_member_service_fee_paid_joh");
 end;

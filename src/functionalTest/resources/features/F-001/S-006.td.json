@@ -75,7 +75,7 @@
         "readOnly" : false,
         "created" : "[[ANYTHING_PRESENT]]",
         "attributes" : {
-          "substantive" : "N",
+          "substantive" : "Y",
           "primaryLocation" : "817181",
           "jurisdiction" : "IA",
           "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
@@ -92,7 +92,7 @@
         "readOnly" : false,
         "created" : "[[ANYTHING_PRESENT]]",
         "attributes" : {
-          "substantive" : "N",
+          "substantive" : "Y",
           "primaryLocation" : "817181",
           "jurisdiction" : "IA",
           "workTypes" : "hearing_work, routine_work, decision_making_work, applications"

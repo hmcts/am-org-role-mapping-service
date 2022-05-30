@@ -369,7 +369,7 @@ public class TestDataBuilder {
         builder.regionId("3");
         builder.ticketCodes(List.of("373"));
         builder.authorisations(Collections.singletonList(
-                Authorisation.builder().serviceCode("BFA1").build()));
+                Authorisation.builder().serviceCodes(List.of("BFA1")).build()));
         return builder
                 .build();
     }
@@ -393,10 +393,10 @@ public class TestDataBuilder {
     }
 
     public static Set<JudicialOfficeHolder> buildJudicialOfficeHolderSet() {
-        Set<JudicialOfficeHolder> judicialAccessProfileSet = new HashSet<>();
-        judicialAccessProfileSet.add(buildJudicialOfficeHolder());
+        Set<JudicialOfficeHolder> judicialOfficeHolders = new HashSet<>();
+        judicialOfficeHolders.add(buildJudicialOfficeHolder());
 
-        return judicialAccessProfileSet;
+        return judicialOfficeHolders;
     }
 
     public static JRDUserRequest buildRefreshRoleRequest() {

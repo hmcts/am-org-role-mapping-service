@@ -27,7 +27,6 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -206,23 +205,10 @@ public class AssignmentRequestBuilder {
     public static boolean validateAuthorisation(List<Authorisation> authorisations, String serviceCode) {
 
         if (!CollectionUtils.isEmpty(authorisations)) {
-            return authorisations.stream().anyMatch(authorisation -> serviceCode.equals(authorisation.getServiceCode())
-                     && (authorisation.getEndDate() == null
+            return authorisations.stream().anyMatch(authorisation ->
+                    authorisation.getServiceCodes() != null && authorisation.getServiceCodes().contains(serviceCode)
+                    && (authorisation.getEndDate() == null
                     || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
-
-        } else {
-            return false;
-        }
-    }
-
-    public static boolean validateAuthorisation(List<Authorisation> authorisations, String serviceCode,
-                                                String... ticketCodes) {
-
-        if (!CollectionUtils.isEmpty(authorisations)) {
-            return authorisations.stream().anyMatch(authorisation -> serviceCode.equals(authorisation.getServiceCode())
-                && (authorisation.getEndDate() == null
-                    || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0)
-                && Arrays.asList(ticketCodes).contains(authorisation.getTicketCode()));
 
         } else {
             return false;

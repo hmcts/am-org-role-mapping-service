@@ -324,12 +324,16 @@ public class RequestMappingService<T> {
      * This utility method is used to capture the log in drools.
      */
     public static void logMsg(final String message) {
-        log.info(message);
+        log.debug(message);
     }
 
     /**
      * This utility method is used to capture the log in drools.
      */
+    public static void logInfoMsg(final String message) {
+        log.info(message);
+    }
+
     public static List<String> addAndGetTicketCodes(List<String> existingTicketCodes, String newTicketCode) {
         List<String> updatedTicketCodes = new ArrayList<>(existingTicketCodes);
         updatedTicketCodes.add(newTicketCode);
