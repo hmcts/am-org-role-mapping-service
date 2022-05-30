@@ -34,6 +34,7 @@ then
          attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
       } else {
          attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+         attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
       }
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
@@ -104,6 +105,7 @@ then
       attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    } else {
       attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+      attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
@@ -247,6 +249,7 @@ then
       attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    } else {
       attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+      attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
   insert(
       RoleAssignment.builder()
