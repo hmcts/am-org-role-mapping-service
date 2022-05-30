@@ -53,8 +53,10 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "case-allocator", "task-supervisor","hmcts-judiciary"));
+        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            assertEquals(regionId, r.getAttributes().get("region").asText());
         });
 
     }
