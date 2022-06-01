@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public abstract class DroolBase {
     Set<JudicialAccessProfile> judicialAccessProfiles;
     Set<JudicialOfficeHolder> judicialOfficeHolders;
     Set<JudicialBooking> judicialBookings;
+    Set<JudicialProfile> judicialProfiles;
 
     @BeforeEach
     public void setUp() {
@@ -48,6 +50,7 @@ public abstract class DroolBase {
         judicialAccessProfiles = TestDataBuilder.buildJudicialAccessProfileSet();
         judicialOfficeHolders = TestDataBuilder.buildJudicialOfficeHolderSet();
         judicialBookings = Collections.emptySet();
+        judicialProfiles = new HashSet<>();
         // Set up the rule engine for validation.
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();
@@ -67,6 +70,7 @@ public abstract class DroolBase {
         commands.add(CommandFactory.newInsertElements(judicialOfficeHolders));
         commands.add(CommandFactory.newInsertElements(judicialAccessProfiles));
         commands.add(CommandFactory.newInsertElements(judicialBookings));
+        commands.add(CommandFactory.newInsertElements(judicialProfiles));
         commands.add(CommandFactory.newInsertElements(featureFlags));
         commands.add(CommandFactory.newFireAllRules());
         commands.add(CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME));
