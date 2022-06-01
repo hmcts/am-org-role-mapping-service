@@ -45,7 +45,7 @@ then
 end;
 
 /*
- * CIVIL admin "ctsc-admin" Org role mapping.
+ * CIVIL admin "ctsc" Org role mapping.
  */
 
 rule "civil_ctsc_admin_org_role"
@@ -64,7 +64,7 @@ then
       .actorId($cap.getId())
       .roleCategory(RoleCategory.ADMIN)
       .roleType(RoleType.ORGANISATION)
-      .roleName("ctsc-admin")
+      .roleName("ctsc")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -74,10 +74,10 @@ then
 end;
 
 /*
- * CIVIL admin "nbc-admin" Org role mapping.
+ * CIVIL admin "national-business-centre" Org role mapping.
  */
 
-rule "civil_nbc_admin_org_role"
+rule "civil_national_business_centre_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("10","11"), serviceCode in ("AAA6", "AAA7"), !suspended)
@@ -93,13 +93,13 @@ then
       .actorId($cap.getId())
       .roleCategory(RoleCategory.ADMIN)
       .roleType(RoleType.ORGANISATION)
-      .roleName("nbc-admin")
+      .roleName("national-business-centre")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : civil_nbc_admin_org_role");
+      logMsg("Rule : civil_national_business_centre_org_role");
 end;
 
 /*
