@@ -30,6 +30,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -167,7 +168,6 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
       attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-      attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -200,6 +200,7 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
                                                                       + "priority"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -267,6 +268,7 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -301,6 +303,7 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -333,6 +336,7 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -349,4 +353,64 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : sscs_fee_paid_financial_org_role");
+end;
+
+/*
+ * SSCS "multi-region" Org role mapping.
+ */
+
+rule "sscs_multi_region_dependency_org_role_wales"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS", "CIVIL"),
+                      attributes["region"] != null && attributes["region"].asText() in ("7"))
+  not RoleAssignment(actorId == $ra.getActorId() && roleName == $ra.getRoleName()
+                        && attributes["region"] != null && attributes["region"].asText() == "8")
+then
+   Map<String,JsonNode> attribute = new HashMap<>($ra.getAttributes());
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode("8"));
+
+   insert(RoleAssignment.builder()
+         .actorIdType($ra.getActorIdType())
+         .actorId($ra.getActorId())
+         .roleCategory($ra.getRoleCategory())
+         .roleType($ra.getRoleType())
+         .roleName($ra.getRoleName())
+         .grantType($ra.getGrantType())
+         .classification($ra.getClassification())
+         .readOnly($ra.isReadOnly())
+         .beginTime($ra.getBeginTime())
+         .endTime($ra.getEndTime())
+         .attributes(attribute)
+         .authorisations($ra.getAuthorisations())
+         .build());
+   logMsg("Rule : sscs_multi_region_dependency_org_role_wales");
+end;
+
+rule "sscs_multi_region_dependency_org_role_southwest"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS", "CIVIL"),
+                      attributes["region"] != null && attributes["region"].asText() in ("8"))
+  not RoleAssignment(actorId == $ra.getActorId() && roleName == $ra.getRoleName()
+                        && attributes["region"] != null && attributes["region"].asText() == "7" )
+then
+   Map<String,JsonNode> attribute = new HashMap<>($ra.getAttributes());
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode("7"));
+
+   insert(RoleAssignment.builder()
+         .actorIdType($ra.getActorIdType())
+         .actorId($ra.getActorId())
+         .roleCategory($ra.getRoleCategory())
+         .roleType($ra.getRoleType())
+         .roleName($ra.getRoleName())
+         .grantType($ra.getGrantType())
+         .classification($ra.getClassification())
+         .readOnly($ra.isReadOnly())
+         .beginTime($ra.getBeginTime())
+         .endTime($ra.getEndTime())
+         .attributes(attribute)
+         .authorisations($ra.getAuthorisations())
+         .build());
+   logMsg("Rule : sscs_multi_region_dependency_org_role_southwest");
 end;

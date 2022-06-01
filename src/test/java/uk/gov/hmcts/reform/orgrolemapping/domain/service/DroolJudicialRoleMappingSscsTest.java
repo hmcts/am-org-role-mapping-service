@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.hamcrest.collection.ArrayMatching;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.rule.QueryResults;
@@ -17,22 +19,32 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialRoleMappingSscsTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SSCS Tribunal Judge-Salaried,judge",
-            "SSCS Regional Tribunal Judge-Salaried,judge",
-            "SSCS District Tribunal Judge-Salaried,judge",
-            "SSCS Tribunal Judge-Salaried,judge",
-            "SSCS Tribunal Member Medical-Salaried,medical",
-            "SSCS Regional Medical Member-Salaried,medical"
+        "SSCS Tribunal Judge-Salaried,judge,case-allocator,task-supervisor,hmcts-judiciary,judge,case-allocator,"
+                 + "task-supervisor",
+        "SSCS Regional Tribunal Judge-Salaried,judge,case-allocator,task-supervisor,hmcts-judiciary,judge,"
+                + "case-allocator,task-supervisor",
+        "SSCS District Tribunal Judge-Salaried,judge,case-allocator,task-supervisor,hmcts-judiciary,judge,"
+                + "case-allocator,task-supervisor",
+        "SSCS Tribunal Judge-Salaried,judge,case-allocator,task-supervisor,hmcts-judiciary,judge,case-allocator,"
+                + "task-supervisor",
+        "SSCS Tribunal Member Medical-Salaried,medical,case-allocator,task-supervisor,hmcts-judiciary,medical,"
+                + "case-allocator,task-supervisor",
+        "SSCS Regional Medical Member-Salaried,medical,case-allocator,task-supervisor,hmcts-judiciary,medical,"
+                + "case-allocator,task-supervisor"
     })
-    void shouldReturnSalariedRoles(String setOffice, String roleNameOutput) {
+    void shouldReturnSalariedRoles(String setOffice, @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(setOffice);
+            joh.setRegionId("8");
+        });
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
@@ -46,17 +58,19 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
+        assertEquals(7, roleAssignments.size());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "case-allocator", "task-supervisor","hmcts-judiciary"));
-        String regionId = allProfiles.iterator().next().getRegionId();
+                containsInAnyOrder(roleNameOutput));
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertEquals(regionId, r.getAttributes().get("region").asText());
+            if (!"hmcts-judiciary".equals(r.getRoleName())) {
+                assertThat(new String[]{"7", "8"},
+                        ArrayMatching.hasItemInArray(r.getAttributes().get("region").asText()));
+            }
         });
 
     }
