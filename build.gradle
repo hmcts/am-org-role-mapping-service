@@ -366,7 +366,7 @@ dependencies {
         exclude group: 'com.microsoft.azure', module: 'adal4j'
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
-    implementation group: 'com.azure', name: 'azure-core', version: '1.16.0'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.29.1'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.2'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.18'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
