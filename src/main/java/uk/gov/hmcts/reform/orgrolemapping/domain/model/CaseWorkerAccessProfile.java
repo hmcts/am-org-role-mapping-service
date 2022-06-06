@@ -27,4 +27,5 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     private boolean suspended;
     private String caseAllocatorFlag;
     private String taskSupervisorFlag;
+    private String regionId;
 }

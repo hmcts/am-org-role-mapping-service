@@ -6,6 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Setter;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
@@ -418,5 +422,16 @@ public class TestDataBuilder {
         return objectMapper.readValue(
                 new File("src/main/resources/judicialBookingSample.json"),
                 JudicialBooking.class);
+    }
+
+    public static class VarargsAggregator implements ArgumentsAggregator {
+        @Override
+        public Object aggregateArguments(ArgumentsAccessor accessor, ParameterContext context)
+                throws ArgumentsAggregationException {
+            return accessor.toList().stream()
+                    .skip(context.getIndex())
+                    .map(String::valueOf)
+                    .toArray(String[]::new);
+        }
     }
 }
