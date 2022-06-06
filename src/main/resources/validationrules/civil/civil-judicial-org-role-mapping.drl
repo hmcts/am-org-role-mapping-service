@@ -63,7 +63,7 @@ end;
 rule "civil_leadership_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ( "Designated Civil Judge-Salaried"))
+  $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -133,7 +133,7 @@ end;
 rule "civil_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ( "Designated Civil Judge-Salaried"))
+  $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -165,7 +165,7 @@ end;
 rule "civil_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ( "Designated Civil Judge-Salaried"))
+  $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
