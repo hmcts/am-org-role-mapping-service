@@ -33,6 +33,7 @@
             "contractType" : "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "[[ANYTHING_PRESENT]]",
+            "region" : "3",
             "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -71,7 +72,8 @@
           "attributes" : {
             "substantive" : "N",
             "primaryLocation" : "",
-            "jurisdiction" : "SSCS"
+            "jurisdiction" : "SSCS",
+            "region" : "3"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }, {
