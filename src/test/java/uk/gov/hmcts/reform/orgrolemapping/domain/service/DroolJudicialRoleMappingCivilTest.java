@@ -56,7 +56,9 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertEquals(regionId, r.getAttributes().get("region").asText());
+            if (!r.getRoleName().contains("hmcts")) {
+                assertEquals(regionId, r.getAttributes().get("region").asText());
+            }
         });
 
     }
@@ -89,9 +91,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-        });
+        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
     }
 
     @ParameterizedTest
@@ -120,9 +120,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "circuit-judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-        });
+        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
     }
 
     @ParameterizedTest
@@ -153,7 +151,9 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertEquals(regionId, r.getAttributes().get("region").asText());
+            if (!r.getRoleName().contains("hmcts")) {
+                assertEquals(regionId, r.getAttributes().get("region").asText());
+            }
         });
     }
 }
