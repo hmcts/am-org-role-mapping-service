@@ -191,7 +191,6 @@ then
       logMsg("Rule : civil_case_allocator_org_role");
 end;
 
-
 /*
  * CIVIL "fee-paid-judge" Org role mapping.
  */
