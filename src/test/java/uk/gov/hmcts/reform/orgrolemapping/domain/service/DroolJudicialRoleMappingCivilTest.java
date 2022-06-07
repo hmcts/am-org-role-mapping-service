@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import net.thucydides.junit.annotations.TestData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
@@ -32,7 +31,6 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
@@ -181,8 +179,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfile(
                 TestDataBuilder.buildJudicialProfileWithParams(appointmentList, authorisationList));
 
-        judicialAccessProfiles = userAccessProfiles.stream().map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
-
+        judicialAccessProfiles = userAccessProfiles.stream()
+                .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
@@ -198,10 +196,12 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertEquals(2, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("circuit-judge","hmcts-judiciary"));
-        assertEquals(appointmentList.get(0).getEpimmsId(), roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
+        assertEquals(appointmentList.get(0).getEpimmsId(),
+                roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
                 .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
-        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), roleAssignments.get(0).getBeginTime().getDayOfYear());
+        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                roleAssignments.get(0).getBeginTime().getDayOfYear());
         assertNull(roleAssignments.get(0).getEndTime());
         roleAssignments.forEach(r -> assertEquals("Salaried", r.getAttributes().get("contractType").asText()));
     }
@@ -231,7 +231,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfile(
                 TestDataBuilder.buildJudicialProfileWithParams(appointmentList, authorisationList));
 
-        judicialAccessProfiles = userAccessProfiles.stream().map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
+        judicialAccessProfiles = userAccessProfiles.stream()
+                .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
 
 
         //Execute Kie session
@@ -248,13 +249,16 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(6, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("judge","fee-paid-judge","hmcts-judiciary","judge","fee-paid-judge","hmcts-judiciary"));
-        assertEquals(appointmentList.get(0).getEpimmsId(), roleAssignments.get(3).getAttributes().get("primaryLocation").asText());
+                containsInAnyOrder("judge","fee-paid-judge","hmcts-judiciary",
+                        "judge","fee-paid-judge","hmcts-judiciary"));
+        assertEquals(appointmentList.get(0).getEpimmsId(),
+                roleAssignments.get(3).getAttributes().get("primaryLocation").asText());
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
                 .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
 
-        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), roleAssignments.get(0).getBeginTime().getDayOfYear());
+        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                roleAssignments.get(0).getBeginTime().getDayOfYear());
         assertNull(roleAssignments.get(0).getEndTime());
 
         roleAssignments.forEach(r -> {
@@ -287,7 +291,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfile(
                 TestDataBuilder.buildJudicialProfileWithParams(appointmentList, authorisationList));
 
-        judicialAccessProfiles = userAccessProfiles.stream().map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
+        judicialAccessProfiles = userAccessProfiles.stream()
+                .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
@@ -312,7 +317,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
                     assertEquals(JacksonUtils.convertObjectIntoJsonNode(""), r.getAttributes().get("primaryLocation"));
                 });
 
-        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), roleAssignments.get(0).getBeginTime().getDayOfYear());
+        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                roleAssignments.get(0).getBeginTime().getDayOfYear());
         assertNull(roleAssignments.get(0).getEndTime());
 
         roleAssignments.forEach(r -> {
@@ -338,7 +344,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfile(
                 TestDataBuilder.buildJudicialProfileWithParams(appointmentList, authorisationList));
 
-        judicialAccessProfiles = userAccessProfiles.stream().map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
+        judicialAccessProfiles = userAccessProfiles.stream()
+                .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
 
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
@@ -361,7 +368,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
                 .forEach(r -> {
                     assertEquals(authorisationList.size(), r.getAuthorisations().size());
-                    assertEquals(appointmentList.get(0).getEpimmsId(), r.getAttributes().get("primaryLocation").asText());
+                    assertEquals(appointmentList.get(0).getEpimmsId(),
+                            r.getAttributes().get("primaryLocation").asText());
                 });
 
         roleAssignments.forEach(r -> {
