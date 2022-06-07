@@ -427,6 +427,48 @@ public class TestDataBuilder {
                 JudicialBooking.class);
     }
 
+    public static JudicialAccessProfile buildJudicialAccessProfileWithParams(List<String> ticketCodes,
+                                                                             String appointment,
+                                                                             String appointmentType,
+                                                                             String locationId,
+                                                                             List<Authorisation> authorisations,
+                                                                             ZonedDateTime beginTime,
+                                                                             ZonedDateTime endTime,
+                                                                             List<String> roles,
+                                                                             String serviceCode) {
+        return JudicialAccessProfile.builder()
+                .userId(id_1)
+                .roleId("1")
+                .regionId("2")
+                .contractTypeId("3")
+                .appointment(appointment)
+                .appointmentType(appointmentType)
+                .baseLocationId(locationId)
+                .primaryLocationId(locationId)
+                .ticketCodes(ticketCodes)
+                .authorisations(authorisations)
+                .beginTime(beginTime)
+                .endTime(endTime)
+                .roles(roles)
+                .serviceCode(serviceCode)
+                .build();
+    }
+
+    public static JudicialOfficeHolder buildJudicialOfficeHolderWithParams(String locationId,
+                                                                           ZonedDateTime beginTime,
+                                                                           ZonedDateTime endTime,
+                                                                           List<String> ticketCodes) {
+        return JudicialOfficeHolder.builder()
+                .userId(id_1)
+                .regionId("2")
+                .baseLocationId("827")
+                .primaryLocation(locationId)
+                .beginTime(beginTime)
+                .endTime(endTime)
+                .ticketCodes(ticketCodes)
+                .build();
+    }
+
     public static JudicialProfile buildJudicialProfileWithParams(
             List<Appointment> appointments, List<Authorisation> authorisations) {
         return JudicialProfile.builder()
@@ -468,7 +510,7 @@ public class TestDataBuilder {
     public static Authorisation buildAuthorisationWithParams(String jurisdiction,
                                                              String ticketCode,
                                                              String ticketDescription,
-                                                             List<String> serviceCode,
+                                                             String serviceCode,
                                                              LocalDateTime startDate,
                                                              LocalDateTime endDate) {
         return Authorisation.builder()
@@ -477,28 +519,28 @@ public class TestDataBuilder {
                 .ticketDescription(ticketDescription)
                 .startDate(startDate)
                 .endDate(endDate)
-                .serviceCodes(serviceCode)
+                .serviceCode(serviceCode)
                 .build();
     }
 
     public static List<Authorisation> buildListOfAuthorisations(int setNumber) {
         Authorisation auth = TestDataBuilder.buildAuthorisationWithParams("Authorisation Civil", "294",
-                "Civil Authorisation", Collections.singletonList("AAA6"), null, null);
+                "Civil Authorisation", "AAA6", null, null);
 
         Authorisation auth2 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "313",
-                "Court of Protection", Collections.singletonList("ABA7"), null, null);
+                "Court of Protection", "ABA7", null, null);
 
         Authorisation auth3 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "374",
                 "First Tier - Health, Education and Social Care", null, LocalDateTime.now().minusYears(20L), null);
 
         Authorisation auth4 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "342",
-                "Mental Health", Collections.singletonList("BCA2"), LocalDateTime.now().minusYears(15L), LocalDateTime.now().plusYears(1L));
+                "Mental Health", "BCA2", LocalDateTime.now().minusYears(15L), LocalDateTime.now().plusYears(1L));
 
         Authorisation auth5 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "315",
-                "Private Law", Collections.singletonList("ABA5"), LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
+                "Private Law", "ABA5", LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
 
         Authorisation auth6 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "316",
-                "Public Law", Collections.singletonList("ABA3"), LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
+                "Public Law", "ABA3", LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
 
         Authorisation auth7 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "356",
                 "Restricted Patients Panel", null, LocalDateTime.now().minusYears(7L), LocalDateTime.now().plusYears(1L));
@@ -519,13 +561,26 @@ public class TestDataBuilder {
                 "Upper - Immigration and Asylum", null, LocalDateTime.now().minusYears(10L),
                 LocalDateTime.now().minusYears(2L));
 
-        return switch (setNumber) {
-            case 1 -> Arrays.asList(auth, auth2, auth3, auth4, auth5, auth6, auth7, auth8);
-            case 2 -> Arrays.asList(auth, auth3, auth4, auth5, auth6);
-            case 3 -> Arrays.asList(auth, auth3, auth4, auth9, auth12);
-            case 4 -> Arrays.asList(auth, auth5, auth10, auth11);
-            default -> Collections.singletonList(auth);
-        };
+        List<Authorisation> authorisationList = new ArrayList<>();
+
+        switch(setNumber) {
+            case 1:
+                authorisationList = Arrays.asList(auth, auth2, auth3, auth4, auth5, auth6, auth7, auth8);
+                break;
+            case 2:
+                authorisationList = Arrays.asList(auth, auth3, auth4, auth5, auth6);
+                break;
+            case 3:
+                authorisationList = Arrays.asList(auth, auth3, auth4, auth9,  auth12);
+                break;
+            case 4:
+                authorisationList = Arrays.asList(auth, auth5, auth10, auth11);
+                break;
+            default:
+                authorisationList = Collections.singletonList(auth);
+        }
+
+        return authorisationList;
 
     }
 
