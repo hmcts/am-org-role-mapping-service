@@ -6,6 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Setter;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
@@ -372,7 +376,7 @@ public class TestDataBuilder {
         builder.regionId("3");
         builder.ticketCodes(List.of("373"));
         builder.authorisations(Collections.singletonList(
-                Authorisation.builder().serviceCode("BFA1").build()));
+                Authorisation.builder().serviceCodes(List.of("BFA1")).build()));
         return builder
                 .build();
     }
@@ -396,10 +400,10 @@ public class TestDataBuilder {
     }
 
     public static Set<JudicialOfficeHolder> buildJudicialOfficeHolderSet() {
-        Set<JudicialOfficeHolder> judicialAccessProfileSet = new HashSet<>();
-        judicialAccessProfileSet.add(buildJudicialOfficeHolder());
+        Set<JudicialOfficeHolder> judicialOfficeHolders = new HashSet<>();
+        judicialOfficeHolders.add(buildJudicialOfficeHolder());
 
-        return judicialAccessProfileSet;
+        return judicialOfficeHolders;
     }
 
     public static JRDUserRequest buildRefreshRoleRequest() {
@@ -421,48 +425,6 @@ public class TestDataBuilder {
         return objectMapper.readValue(
                 new File("src/main/resources/judicialBookingSample.json"),
                 JudicialBooking.class);
-    }
-
-    public static JudicialAccessProfile buildJudicialAccessProfileWithParams(List<String> ticketCodes,
-                                                                             String appointment,
-                                                                             String appointmentType,
-                                                                             String locationId,
-                                                                             List<Authorisation> authorisations,
-                                                                             ZonedDateTime beginTime,
-                                                                             ZonedDateTime endTime,
-                                                                             List<String> roles,
-                                                                             String serviceCode) {
-        return JudicialAccessProfile.builder()
-                .userId(id_1)
-                .roleId("1")
-                .regionId("2")
-                .contractTypeId("3")
-                .appointment(appointment)
-                .appointmentType(appointmentType)
-                .baseLocationId(locationId)
-                .primaryLocationId(locationId)
-                .ticketCodes(ticketCodes)
-                .authorisations(authorisations)
-                .beginTime(beginTime)
-                .endTime(endTime)
-                .roles(roles)
-                .serviceCode(serviceCode)
-                .build();
-    }
-
-    public static JudicialOfficeHolder buildJudicialOfficeHolderWithParams(String locationId,
-                                                                           ZonedDateTime beginTime,
-                                                                           ZonedDateTime endTime,
-                                                                           List<String> ticketCodes) {
-        return JudicialOfficeHolder.builder()
-                .userId(id_1)
-                .regionId("2")
-                .baseLocationId("827")
-                .primaryLocation(locationId)
-                .beginTime(beginTime)
-                .endTime(endTime)
-                .ticketCodes(ticketCodes)
-                .build();
     }
 
     public static JudicialProfile buildJudicialProfileWithParams(
@@ -506,7 +468,7 @@ public class TestDataBuilder {
     public static Authorisation buildAuthorisationWithParams(String jurisdiction,
                                                              String ticketCode,
                                                              String ticketDescription,
-                                                             String serviceCode,
+                                                             List<String> serviceCode,
                                                              LocalDateTime startDate,
                                                              LocalDateTime endDate) {
         return Authorisation.builder()
@@ -515,28 +477,28 @@ public class TestDataBuilder {
                 .ticketDescription(ticketDescription)
                 .startDate(startDate)
                 .endDate(endDate)
-                .serviceCode(serviceCode)
+                .serviceCodes(serviceCode)
                 .build();
     }
 
     public static List<Authorisation> buildListOfAuthorisations(int setNumber) {
         Authorisation auth = TestDataBuilder.buildAuthorisationWithParams("Authorisation Civil", "294",
-                "Civil Authorisation", "AAA6", null, null);
+                "Civil Authorisation", Collections.singletonList("AAA6"), null, null);
 
         Authorisation auth2 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "313",
-                "Court of Protection", "ABA7", null, null);
+                "Court of Protection", Collections.singletonList("ABA7"), null, null);
 
         Authorisation auth3 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "374",
                 "First Tier - Health, Education and Social Care", null, LocalDateTime.now().minusYears(20L), null);
 
         Authorisation auth4 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "342",
-                "Mental Health", "BCA2", LocalDateTime.now().minusYears(15L), LocalDateTime.now().plusYears(1L));
+                "Mental Health", Collections.singletonList("BCA2"), LocalDateTime.now().minusYears(15L), LocalDateTime.now().plusYears(1L));
 
         Authorisation auth5 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "315",
-                "Private Law", "ABA5", LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
+                "Private Law", Collections.singletonList("ABA5"), LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
 
         Authorisation auth6 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "316",
-                "Public Law", "ABA3", LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
+                "Public Law", Collections.singletonList("ABA3"), LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
 
         Authorisation auth7 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "356",
                 "Restricted Patients Panel", null, LocalDateTime.now().minusYears(7L), LocalDateTime.now().plusYears(1L));
@@ -557,28 +519,24 @@ public class TestDataBuilder {
                 "Upper - Immigration and Asylum", null, LocalDateTime.now().minusYears(10L),
                 LocalDateTime.now().minusYears(2L));
 
-        List<Authorisation> authorisationList = new ArrayList<>();
-
-        switch(setNumber) {
-            case 1:
-                authorisationList = Arrays.asList(auth, auth2, auth3, auth4, auth5, auth6, auth7, auth8);
-                break;
-            case 2:
-                authorisationList = Arrays.asList(auth, auth3, auth4, auth5, auth6);
-                break;
-            case 3:
-                authorisationList = Arrays.asList(auth, auth3, auth4, auth9,  auth12);
-                break;
-            case 4:
-                authorisationList = Arrays.asList(auth, auth5, auth10, auth11);
-                break;
-            default:
-                authorisationList = Collections.singletonList(auth);
-        }
-
-        return authorisationList;
+        return switch (setNumber) {
+            case 1 -> Arrays.asList(auth, auth2, auth3, auth4, auth5, auth6, auth7, auth8);
+            case 2 -> Arrays.asList(auth, auth3, auth4, auth5, auth6);
+            case 3 -> Arrays.asList(auth, auth3, auth4, auth9, auth12);
+            case 4 -> Arrays.asList(auth, auth5, auth10, auth11);
+            default -> Collections.singletonList(auth);
+        };
 
     }
 
-
+    public static class VarargsAggregator implements ArgumentsAggregator {
+        @Override
+        public Object aggregateArguments(ArgumentsAccessor accessor, ParameterContext context)
+                throws ArgumentsAggregationException {
+            return accessor.toList().stream()
+                    .skip(context.getIndex())
+                    .map(String::valueOf)
+                    .toArray(String[]::new);
+        }
+    }
 }
