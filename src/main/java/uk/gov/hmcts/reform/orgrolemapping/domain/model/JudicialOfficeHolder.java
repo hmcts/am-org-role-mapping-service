@@ -29,4 +29,5 @@ public class JudicialOfficeHolder implements Serializable {
     private String  baseLocationId; // epims id
     private String primaryLocation; //epims id where isPrimary is true
     private String  contractType; //appointment type from JRD
+    private String status;
 }

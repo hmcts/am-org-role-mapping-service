@@ -2,7 +2,9 @@ package validationrules.core;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logInfoMsg;
 
 rule "role_assignment"
 salience 1000
@@ -25,5 +27,31 @@ salience 1000
 when
   $jap: JudicialAccessProfile()
 then
-   logMsg("We have a judicial access profile " + $jap.getUserId() + " : " + $jap);
+   logMsg("We have a judicial access profile with userId  " + $jap.getUserId() + " : " + $jap);
 end;
+
+rule "judicial_office_holder"
+salience 1000
+when
+	$joh: JudicialOfficeHolder()
+then
+	logMsg("We have a  judicialOfficeHolder with userId  " + $joh.getUserId() + " : " + $joh);
+end;
+
+rule "judicial_access_profile_rejected"
+salience -1000
+when
+  $jap: JudicialAccessProfile(status == null)
+then
+   logInfoMsg("Rejected userId  " + $jap.getUserId() + " having judicial access profile as: " + $jap);
+end;
+
+/*
+rule "judicial_office_holder_rejected"
+salience -1000
+when
+	$joh: JudicialOfficeHolder(status == null)
+then
+	logInfoMsg("Rejected userId  " + $joh.getUserId() + " having judicial Office Holder as : " + $joh);
+end;
+*/

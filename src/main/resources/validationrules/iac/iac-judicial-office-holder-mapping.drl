@@ -48,7 +48,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_president_of_tribunals_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_president_of_tribunals_joh");
 end;
 
 /*
@@ -76,7 +78,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_tribunal_judge_salaried_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_tribunal_judge_salaried_joh");
 end;
 
 /*
@@ -105,7 +109,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_tribunal_judge_fee_paid_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_tribunal_judge_fee_paid_joh");
 end;
 
 /*
@@ -133,7 +139,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_resident_immigration_judge_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_resident_immigration_judge_joh");
 end;
 
 /*
@@ -161,7 +169,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_assistant_resident_judge_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_assistant_resident_judge_joh");
  end;
 
 /*
@@ -189,7 +199,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_designated_immigration_judge_joh");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_designated_immigration_judge_joh");
 end;
 
 /*
@@ -217,8 +229,9 @@ then
        .primaryLocation($jap.getPrimaryLocationId())
        .contractType($jap.getAppointmentType())
        .build());
-       logMsg("Rule : iac_president_of_tribunals_joh_with_authorisation");
-
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_president_of_tribunals_joh_with_authorisation");
 end;
 
 rule "iac_tribunal_judge_salaried_joh_with_authorisation"
@@ -243,7 +256,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_tribunal_judge_salaried_joh_with_authorisation");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_tribunal_judge_salaried_joh_with_authorisation");
 end;
 
 rule "iac_tribunal_judge_fee_paid_joh_with_authorisation"
@@ -268,7 +283,9 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : iac_tribunal_judge_fee_paid_joh_with_authorisation");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_tribunal_judge_fee_paid_joh_with_authorisation");
 end;
 
 rule "iac_resident_immigration_judge_joh_with_authorisation"
@@ -292,7 +309,9 @@ then
        .primaryLocation($jap.getPrimaryLocationId())
        .contractType($jap.getAppointmentType())
        .build());
-       logMsg("Rule : iac_resident_immigration_judge_joh_with_authorisation");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_resident_immigration_judge_joh_with_authorisation");
 end;
 
 rule "iac_assistant_resident_judge_joh_with_authorisation"
@@ -316,7 +335,9 @@ then
        .primaryLocation($jap.getPrimaryLocationId())
        .contractType($jap.getAppointmentType())
        .build());
-       logMsg("Rule : iac_assistant_resident_judge_joh_with_authorisation");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_assistant_resident_judge_joh_with_authorisation");
   end;
 
 rule "iac_designated_immigration_judge_joh_with_authorisation"
@@ -340,7 +361,9 @@ then
        .primaryLocation($jap.getPrimaryLocationId())
        .contractType($jap.getAppointmentType())
        .build());
-       logMsg("Rule : iac_designated_immigration_judge_joh_with_authorisation");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_designated_immigration_judge_joh_with_authorisation");
  end;
 
 
@@ -371,7 +394,9 @@ then
        .primaryLocation($jap.getPrimaryLocationId())
        .contractType($jap.getAppointmentType())
        .build());
-       logMsg("Rule : iac_default_tribunal_judge_salaried_joh_with_authorisation_based_on_roles_and_appointment");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_default_tribunal_judge_salaried_joh_with_authorisation_based_on_roles_and_appointment");
 end;
 
 rule "iac_default_tribunal_judge_fee_paid_joh_with_authorisation_based_on_roles_and_appointment"
@@ -400,7 +425,9 @@ then
        .primaryLocation($jap.getPrimaryLocationId())
        .contractType($jap.getAppointmentType())
        .build());
-       logMsg("Rule : iac_default_tribunal_judge_fee_paid_joh_with_authorisation_based_on_roles_and_appointment");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_default_tribunal_judge_fee_paid_joh_with_authorisation_based_on_roles_and_appointment");
 end;
 
 rule "iac_default_tribunal_judge_salaried_joh_with_iac_appointment_based_on_roles_and_appointment"
@@ -429,7 +456,9 @@ then
        .primaryLocation($jap.getPrimaryLocationId())
        .contractType($jap.getAppointmentType())
        .build());
-       logMsg("Rule : iac_default_tribunal_judge_salaried_joh_with_iac_appointment_based_on_roles_and_appointment");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_default_tribunal_judge_salaried_joh_with_iac_appointment_based_on_roles_and_appointment");
 end;
 
 rule "iac_default_tribunal_judge_fee_paid_joh_with_iac_appointment_based_on_roles_and_appointment"
@@ -458,5 +487,7 @@ then
        .primaryLocation($jap.getPrimaryLocationId())
        .contractType($jap.getAppointmentType())
        .build());
-       logMsg("Rule : iac_default_tribunal_judge_fee_paid_joh_with_iac_appointment_based_on_roles_and_appointment");
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : iac_default_tribunal_judge_fee_paid_joh_with_iac_appointment_based_on_roles_and_appointment");
 end;

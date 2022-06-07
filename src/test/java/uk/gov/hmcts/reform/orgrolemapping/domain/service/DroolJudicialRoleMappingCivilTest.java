@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import net.thucydides.junit.annotations.TestData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.rule.QueryResults;
@@ -36,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialRoleMappingCivilTest extends DroolBase {
@@ -142,9 +144,10 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "CIVIL Designated Civil Judge-Salaried,hmcts-judiciary"
+            "CIVIL Designated Civil Judge-Salaried,hmcts-judiciary,leadership-judge,task-supervisor,case-allocator"
     })
-    void shouldReturnHmctsJudiciaryRoles(String setOffice, String roleNameOutput) {
+    void shouldReturnHmctsJudiciaryRoles(String setOffice,
+                                         @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
 
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
@@ -160,7 +163,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
+        assertEquals(4, roleAssignments.size());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));

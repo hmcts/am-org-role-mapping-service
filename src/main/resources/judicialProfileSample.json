@@ -43,7 +43,7 @@
       "jurisdiction": "Languages",
       "ticket_description": "Welsh",
       "start_date": "2022-04-28T16:00:49",
-      "service_code": "BFA1",
+      "service_codes": ["BFA1"],
       "ticket_code": "373",
       "end_date": "2022-04-28T16:00:49"
     },
@@ -51,14 +51,14 @@
       "jurisdiction": "Languages",
       "ticket_description": "Welsh",
       "start_date": "2022-04-28T16:00:49",
-      "service_code": "BFA1",
+      "service_codes": ["BFA1"],
       "ticket_code": "373"
     },
     {
       "jurisdiction": "Languages",
       "ticket_description": "Welsh",
       "start_date": "2022-04-28T16:00:49",
-      "service_code": "BFA2",
+      "service_codes": ["BFA2"],
       "ticket_code": "374"
     }
 

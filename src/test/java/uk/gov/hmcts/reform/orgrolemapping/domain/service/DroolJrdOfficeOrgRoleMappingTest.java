@@ -36,7 +36,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("President of Tribunal");
             judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         });
         validatePresidentRoles();
     }
@@ -86,24 +86,24 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("President of Tribunal");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         });
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         });
         JudicialAccessProfile tribunalProfile = TestDataBuilder.buildJudicialAccessProfile();
         tribunalProfile.setAppointment("Tribunal Judge");
         tribunalProfile.setAppointmentType("SPTW");
-        tribunalProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+        tribunalProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         judicialAccessProfiles.add(tribunalProfile);
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Tribunal Judge");
         profile.setAppointmentType("Fee Paid");
-        profile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+        profile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         judicialAccessProfiles.add(profile);
 
         //Execute Kie session
@@ -128,7 +128,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         });
 
         //Execute Kie session
@@ -168,7 +168,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setServiceCode("BFA1");
             judicialAccessProfile.setTicketCodes(List.of("373"));
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode("BAA03"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BAA03")));
         });
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
@@ -249,7 +249,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setServiceCode("BFA1");
 
             judicialAccessProfile.getAuthorisations().forEach(a -> {
-                a.setServiceCode("BFA1");
+                a.setServiceCodes(List.of("BFA1"));
                 a.setStartDate(LocalDateTime.now().minusMonths(20));
                 a.setEndDate(LocalDateTime.now().minusMonths(10));
             });
@@ -373,7 +373,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                     "Designated Immigration Judge"));
             judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         });
 
 
@@ -536,7 +536,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Employment Judge");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         });
 
         //Execute Kie session
@@ -579,7 +579,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setServiceCode("");
             judicialAccessProfile.setTicketCodes(List.of("374", "375", "376"));
             judicialAccessProfile.getAuthorisations().forEach(a -> {
-                a.setServiceCode("BFA1");
+                a.setServiceCodes(List.of("BFA1"));
                 a.setStartDate(LocalDateTime.now().minusMonths(20));
             });
         });
@@ -643,7 +643,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setServiceCode("BFA1");
             judicialAccessProfile.setRoles(List.of("Resident Immigration Judge"));
             judicialAccessProfile.setTicketCodes(List.of("375"));
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
 
         });
 
@@ -688,9 +688,9 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointmentType("Fee Paid");
             judicialAccessProfile.setServiceCode(null);
             judicialAccessProfile.setAuthorisations(
-                    List.of(Authorisation.builder().serviceCode("BFA1").build(),
-                            Authorisation.builder().serviceCode("SSCS").build(),
-                            Authorisation.builder().serviceCode("Dummy").build()
+                    List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).build(),
+                            Authorisation.builder().serviceCodes(List.of("SSCS")).build(),
+                            Authorisation.builder().serviceCodes(List.of("Dummy")).build()
                     ));
         });
 
@@ -731,7 +731,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointment("Tribunal Judge");
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setServiceCode("BFA1");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCode(null));
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         });
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment("Tribunal Judge");
@@ -784,9 +784,9 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BFA1").build(),
-                        Authorisation.builder().serviceCode("SSCS").build(),
-                        Authorisation.builder().serviceCode("Dummy").build()
+                List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).build(),
+                        Authorisation.builder().serviceCodes(List.of("SSCS")).build(),
+                        Authorisation.builder().serviceCodes(List.of("Dummy")).build()
                 )));
 
         //Execute Kie session
@@ -839,12 +839,12 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
-                                .endDate(LocalDateTime.now().minusMonths(5)).build(),
-                        Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
-                                .build(),
+                List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
+                        LocalDateTime.now().minusMonths(10)).endDate(LocalDateTime.now().minusMonths(5)).build(),
+                        Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
+                                LocalDateTime.now().minusMonths(10)).build(),
                         Authorisation.builder().ticketCode("A").build(),
-                        Authorisation.builder().serviceCode("Dummy").build()
+                        Authorisation.builder().serviceCodes(List.of("Dummy")).build()
                 )));
 
 
@@ -893,8 +893,8 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
+                        LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
@@ -944,8 +944,8 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
+                        LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
@@ -960,7 +960,8 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "hmcts-judiciary", "fee-paid-judge", "judge", "case-allocator"));
+                containsInAnyOrder("hmcts-judiciary", "hmcts-judiciary", "fee-paid-judge", "judge",
+                        "case-allocator"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
@@ -994,8 +995,8 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
+                        LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
@@ -1010,7 +1011,8 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary", "case-allocator", "judge"));
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary", "case-allocator",
+                        "judge"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
@@ -1047,8 +1049,8 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BFA1").startDate(LocalDateTime.now().minusMonths(10))
-                        .build())));
+                List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
+                        LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
 
@@ -1094,7 +1096,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BFA1").ticketCode("373")
+                List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).ticketCode("373")
                         .startDate(LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
@@ -1136,7 +1138,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BFA1").ticketCode("373")
+                List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).ticketCode("373")
                         .startDate(LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
@@ -1184,7 +1186,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCode("BFA1").ticketCode("373")
+                List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).ticketCode("373")
                         .startDate(LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
