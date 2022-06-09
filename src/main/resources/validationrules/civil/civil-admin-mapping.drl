@@ -28,7 +28,6 @@ when
                                 !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
