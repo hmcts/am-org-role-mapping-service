@@ -62,7 +62,6 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-            assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
         });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
@@ -70,6 +69,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
                     assertEquals("decision_making_work", r.getAttributes().get("workTypes").asText());
                     assertEquals("region1", r.getAttributes().get("region").asText());
+                    assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
                 });
     }
 
@@ -121,13 +121,13 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("ADMIN", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-            assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
         });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
                 .forEach(r -> {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
                     assertEquals("region1", r.getAttributes().get("region").asText());
+                    assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
                 });
 
         List<Map<String, JsonNode>> list = roleAssignments.stream()
