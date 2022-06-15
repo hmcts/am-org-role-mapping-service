@@ -128,7 +128,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
                     assertEquals("region1", r.getAttributes().get("region").asText());
@@ -136,7 +136,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 });
 
         List<Map<String, JsonNode>> list = roleAssignments.stream()
-                .map(RoleAssignment::getAttributes).collect(Collectors.toList());
+                .map(RoleAssignment::getAttributes).toList();
         List<String> workTypesCombined = new ArrayList<>();
 
         for (Map<String, JsonNode> e : list) {
