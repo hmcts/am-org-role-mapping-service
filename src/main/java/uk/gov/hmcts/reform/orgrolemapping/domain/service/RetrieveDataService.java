@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfile;
@@ -148,7 +147,7 @@ public class RetrieveDataService {
 
             List<Object> validProfiles = requireNonNull(retrievedProfiles).stream()
                     .filter(userProfile -> !invalidProfiles
-                            .contains(userProfile)).collect(Collectors.toList());
+                            .contains(userProfile)).toList();
 
 
             if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.CASEWORKER)) {
