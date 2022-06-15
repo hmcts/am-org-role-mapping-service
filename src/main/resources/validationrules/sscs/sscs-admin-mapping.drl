@@ -26,9 +26,7 @@ when
   $cap: CaseWorkerAccessProfile(roleId in ("4","5","9","10","12","13"), serviceCode == "BBA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
