@@ -373,7 +373,7 @@ dependencies {
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.1'
-    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.6'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.4.0'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.19'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
@@ -394,7 +394,7 @@ dependencies {
     implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.2'
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
-    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.5'
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.6'
 
     implementation (group: 'io.netty', name: 'netty-buffer', version: versions.netty_version) {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
