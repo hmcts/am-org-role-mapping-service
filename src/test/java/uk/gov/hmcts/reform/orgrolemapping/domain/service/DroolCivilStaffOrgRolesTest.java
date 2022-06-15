@@ -82,7 +82,13 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 Arguments.of("9", Arrays.asList("hmcts-admin", "ctsc-team-leader", "nbc-team-leader"),
                         3, Arrays.asList("routine_work,access_requests", "routine_work,access_requests")),
                 Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin"),
-                        2, Collections.singletonList("hearing_work"))
+                        2, Collections.singletonList("hearing_work")),
+                Arguments.of("2", Arrays.asList("tribunal-caseworker","hmcts-legal-operations"),
+                        2, Arrays.asList("decision_making_work")),
+                Arguments.of("6", Arrays.asList("hmcts-admin", "ctsc-team-leader", "nbc-team-leader"),
+                        3, Arrays.asList("routine_work,access_requests", "routine_work,access_requests")),
+                Arguments.of("11", Arrays.asList("hmcts-admin","ctsc","national-business-centre"),
+                        3, Arrays.asList("routine_work","routine_work"))
         );
     }
 
@@ -119,7 +125,6 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 containsInAnyOrder(roleNames.toArray()));
 
         roleAssignments.forEach(r -> {
-            assertEquals("ADMIN", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
