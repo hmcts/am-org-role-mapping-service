@@ -105,9 +105,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-        });
+        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
     }
 
     @ParameterizedTest
@@ -136,9 +134,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "circuit-judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-        });
+        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
     }
 
     @ParameterizedTest
