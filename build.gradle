@@ -446,7 +446,7 @@ dependencies {
     }
     testImplementation('com.opentable.components:otj-pg-embedded:1.0.1')
     testImplementation('com.github.tomakehurst:wiremock-jre8:2.33.2')
-    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
+    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
 
     pitest 'org.pitest:pitest-junit5-plugin:0.16'
 
