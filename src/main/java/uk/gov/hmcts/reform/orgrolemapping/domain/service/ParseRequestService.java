@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
 
@@ -60,7 +59,7 @@ public class ParseRequestService implements ParseRequestBase<Object> {
                 judicialUserProfiles.forEach(judicialProfile -> userIdsRetrieved.add(judicialProfile.getSidamId()));
             }
             List<String> userIdsNotRetrieved = userRequest.getUserIds().stream().filter(userId -> !userIdsRetrieved
-                    .contains(userId)).collect(Collectors.toList());
+                    .contains(userId)).toList();
             log.error("User profiles couldn't be found for the following userIds :: {}", userIdsNotRetrieved);
         }
 
