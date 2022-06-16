@@ -51,7 +51,8 @@ public class JwtGrantedAuthoritiesConverter implements Converter<Jwt, Collection
     private List<GrantedAuthority> extractAuthorityFromClaims(List<String> roles) {
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                .map(GrantedAuthority.class::cast)
+                .toList();
     }
 
     public UserInfo getUserInfo() {
