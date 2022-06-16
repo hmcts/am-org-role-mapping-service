@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 
@@ -305,6 +306,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             if (!roleAssignment.getRoleName().contains("hmcts")) {
                 assertThat(new String[]{"7", "8"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
+            } else {
+                assertNull(roleAssignment.getAttributes().get("region"));
             }
             if (List.of("tribunal-caseworker", "registrar").contains(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
@@ -348,6 +351,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             if (!roleAssignment.getRoleName().contains("hmcts")) {
                 assertThat(new String[]{"7", "8"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
+            } else {
+                assertNull(roleAssignment.getAttributes().get("region"));
             }
             if (List.of("tribunal-caseworker", "registrar").contains(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
@@ -386,6 +391,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             if (!roleAssignment.getRoleName().contains("hmcts")) {
                 assertThat(new String[]{"7", "8"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
+            } else {
+                assertNull(roleAssignment.getAttributes().get("region"));
             }
             if ("superuser".equals(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
@@ -435,6 +442,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             if (!roleAssignment.getRoleName().contains("hmcts")) {
                 assertThat(new String[]{"7", "8"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
+            } else {
+                assertNull(roleAssignment.getAttributes().get("region"));
             }
             if ("superuser".equals(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
