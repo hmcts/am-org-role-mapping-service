@@ -67,7 +67,13 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "hmcts-judiciary"));
-        roleAssignments.forEach(r -> assertEquals("Salaried", r.getAttributes().get("contractType").asText()));
+        String regionId = allProfiles.iterator().next().getRegionId();
+        roleAssignments.forEach(r -> {
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!r.getRoleName().contains("hmcts")) {
+                assertEquals(regionId, r.getAttributes().get("region").asText());
+            }
+        });
 
     }
 
@@ -156,7 +162,13 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
-        roleAssignments.forEach(r -> assertEquals("Salaried", r.getAttributes().get("contractType").asText()));
+        String regionId = allProfiles.iterator().next().getRegionId();
+        roleAssignments.forEach(r -> {
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!r.getRoleName().contains("hmcts")) {
+                assertEquals(regionId, r.getAttributes().get("region").asText());
+            }
+        });
     }
 
     @Test
@@ -223,7 +235,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
                 LocalDate.now().minusYears(1L),null,null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParams(
                 null,"FALSE","Tribunal Judge","Fee Paid",
-                 LocalDate.now().minusYears(1L),null,null,null));
+                LocalDate.now().minusYears(1L),null,null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParams(
                 null,"FALSE","Employment Judge","Fee Paid",
                 LocalDate.now().minusYears(1L),null,null,null));
@@ -379,3 +391,4 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         });
     }
 }
+

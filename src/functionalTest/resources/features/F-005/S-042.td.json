@@ -35,6 +35,7 @@
             "substantive": "Y",
             "primaryLocation": "21153",
             "jurisdiction": "SSCS",
+            "region" : "2",
             "workTypes": "applications,hearing_work,routine_work,priority"
           }
         },
@@ -52,7 +53,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "21153",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region" : "2"
           }
         },
         {
@@ -69,7 +71,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "21153",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region" : "2"
           }
         },
         {

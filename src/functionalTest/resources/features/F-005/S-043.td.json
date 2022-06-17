@@ -34,7 +34,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "271588",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region" : "2"
           }
         },
         {
@@ -51,7 +52,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "271588",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region" : "2"
           }
         },
         {
@@ -68,7 +70,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "271588",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region" : "2"
           }
         },
         {
@@ -85,7 +88,8 @@
           "attributes" : {
             "substantive" : "N",
             "primaryLocation" : "271588",
-            "jurisdiction" : "SSCS"
+            "jurisdiction" : "SSCS",
+            "region" : "2"
           }
         },
         {
@@ -102,7 +106,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "271588",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region" : "2"
           }
         },
         {
@@ -119,7 +124,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "271588",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region" : "2"
           }
         },
         {
@@ -167,6 +173,7 @@
             "substantive": "N",
             "primaryLocation": "271588",
             "jurisdiction": "SSCS",
+            "region" : "2",
             "workTypes": "applications,hearing_work,routine_work,priority,decision_making_work"
           }
         },
@@ -185,6 +192,7 @@
             "substantive": "Y",
             "primaryLocation": "271588",
             "jurisdiction": "SSCS",
+            "region" : "2",
             "workTypes": "applications,hearing_work,routine_work,priority,access_requests"
           }
         },
@@ -202,7 +210,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "271588",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region" : "2"
           }
         },
         {
@@ -219,7 +228,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "271588",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region" : "2"
           }
         }
       ]

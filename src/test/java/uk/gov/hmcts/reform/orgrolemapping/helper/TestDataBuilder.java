@@ -103,7 +103,7 @@ public class TestDataBuilder {
 
     public static CaseWorkerAccessProfile buildUserAccessProfile(String roleId, String serviceCode, boolean suspended) {
         return CaseWorkerAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
-                .primaryLocationId("123456").primaryLocationName("south-east").roleId(roleId)
+                .primaryLocationId("123456").primaryLocationName("south-east").roleId(roleId).regionId("7")
                 .serviceCode(serviceCode).roleName(ROLE_NAME_STCW).build();
     }
 
@@ -113,7 +113,7 @@ public class TestDataBuilder {
 
     public static CaseWorkerAccessProfile buildUserAccessProfile1(boolean suspended) {
         return CaseWorkerAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
-                .primaryLocationId("123456").primaryLocationName("south-east").roleId("1")
+                .primaryLocationId("123456").primaryLocationName("south-east").roleId("1").regionId("3")
                 .serviceCode("BFA1").roleName(ROLE_NAME_STCW).build();
     }
 
@@ -125,7 +125,7 @@ public class TestDataBuilder {
 
     public static CaseWorkerAccessProfile buildUserAccessProfile2(boolean suspended) {
         return CaseWorkerAccessProfile.builder().id(id_2).suspended(suspended).areaOfWorkId("London")
-                .primaryLocationId("123457").primaryLocationName("south-east").roleId("2")
+                .primaryLocationId("123457").primaryLocationName("south-east").roleId("2").regionId("3")
                 .serviceCode("BFA2").roleName(ROLE_NAME_TCW).build();
     }
 
