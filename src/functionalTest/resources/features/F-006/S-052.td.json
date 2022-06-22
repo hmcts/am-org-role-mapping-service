@@ -35,7 +35,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "[[ANYTHING_PRESENT]]",
-            "workTypes": "applications,hearing_work,routine_work,priority,access_requests",
+            "workTypes": "applications,hearing_work,routine_work,priority",
             "substantive" : "[[ANYTHING_PRESENT]]"
           }
         },
@@ -120,12 +120,9 @@
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "ADMIN",
-          "readOnly": false,
+          "readOnly": true,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
             "substantive" : "[[ANYTHING_PRESENT]]"
           }
         },
@@ -138,12 +135,9 @@
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "ADMIN",
-          "readOnly": false,
+          "readOnly": true,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
             "substantive" : "[[ANYTHING_PRESENT]]"
           }
         },

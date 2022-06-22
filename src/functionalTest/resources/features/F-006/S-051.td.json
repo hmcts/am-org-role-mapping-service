@@ -101,12 +101,9 @@
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
+          "readOnly": true,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
             "substantive" : "[[ANYTHING_PRESENT]]"
           }
         },
@@ -119,12 +116,9 @@
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
+          "readOnly": true,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
             "substantive" : "[[ANYTHING_PRESENT]]"
           }
         },
