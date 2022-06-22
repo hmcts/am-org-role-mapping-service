@@ -25,24 +25,6 @@
           "actorIdType": "IDAM",
           "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
           "roleType": "ORGANISATION",
-          "roleName": "superuser",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
-            "workTypes": "applications,hearing_work,routine_work,priority,access_requests"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
-          "roleType": "ORGANISATION",
           "roleName": "clerk",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
@@ -53,41 +35,8 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "[[ANYTHING_PRESENT]]",
-            "workTypes": "applications,hearing_work,routine_work,priority,access_requests"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
-          "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]"
+            "workTypes": "applications,hearing_work,routine_work,priority,access_requests",
+            "substantive" : "[[ANYTHING_PRESENT]]"
           }
         },
         {
@@ -104,41 +53,8 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
-          "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]"
+            "region" : "[[ANYTHING_PRESENT]]",
+            "substantive" : "[[ANYTHING_PRESENT]]"
           }
         },
         {
@@ -155,7 +71,99 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]"
+            "region" : "[[ANYTHING_PRESENT]]",
+            "substantive" : "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
+            "substantive" : "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
+            "substantive" : "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-admin",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
+            "substantive" : "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-admin",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
+            "substantive" : "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
+          "roleType": "ORGANISATION",
+          "roleName": "superuser",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
+            "workTypes": "applications,hearing_work,routine_work,priority,access_requests",
+            "substantive" : "[[ANYTHING_PRESENT]]"
           }
         }
       ]
