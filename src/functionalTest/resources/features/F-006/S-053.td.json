@@ -1,10 +1,7 @@
 {
   "_guid_": "S-053",
-  "title": "must successfully create hearing role assignments for a user",
+  "title": "must successfully create dwp and hmrc role assignments for a user",
   "_extends_": "F-006_Test_Data_Base",
-  "specs": [
-    "contains the actorIds of the user for which above booking is created"
-  ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
@@ -13,7 +10,8 @@
       "direction": "ASC"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-053_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+      "actorId": "${[scenarioContext][childContexts][S-053_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "roleName": ["dwp", "hmrc"]
     }
   },
   "expectedResponse": {
@@ -34,9 +32,9 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
+            "region" : "2",
             "workTypes": "applications,hearing_work,routine_work,priority",
-            "substantive" : "[[ANYTHING_PRESENT]]"
+            "substantive" : "Y"
           }
         },
         {
@@ -53,45 +51,9 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
+            "region" : "2",
             "workTypes": "applications,hearing_work,routine_work,priority",
-            "substantive" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "e8fa3156-b8ea-4dc3-a172-58cb77746226",
-          "roleType": "ORGANISATION",
-          "roleName": "listed-hearing-viewer",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "OTHER_GOV_DEPT",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
-            "substantive" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "e8fa3156-b8ea-4dc3-a172-58cb77746226",
-          "roleType": "ORGANISATION",
-          "roleName": "listed-hearing-viewer",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "OTHER_GOV_DEPT",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
-            "substantive" : "[[ANYTHING_PRESENT]]"
+            "substantive" : "Y"
           }
         }
       ]

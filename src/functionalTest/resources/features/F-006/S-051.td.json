@@ -1,10 +1,7 @@
 {
   "_guid_": "S-051",
-  "title": "must successfully create hearing role assignments for a user",
+  "title": "must successfully create tribunal caseworker and registrar role mappings for a user",
   "_extends_": "F-006_Test_Data_Base",
-  "specs": [
-    "contains the actorIds of the user for which above booking is created"
-  ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
@@ -13,115 +10,14 @@
       "direction": "ASC"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+      "actorId": "${[scenarioContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "roleName": ["registrar", "tribunal-caseworker"]
     }
   },
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body" : {
       "roleAssignmentResponse" : [
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
-          "roleType": "ORGANISATION",
-          "roleName": "hearing-manager",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
-            "substantive" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
-          "roleType": "ORGANISATION",
-          "roleName": "hearing-manager",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
-            "substantive" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
-          "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
-            "substantive" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
-          "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
-            "substantive" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-legal-operations",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": true,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-legal-operations",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": true,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive" : "[[ANYTHING_PRESENT]]"
-          }
-        },
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
@@ -136,9 +32,9 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
+            "region" : "2",
             "workTypes": "applications,hearing_work,routine_work,priority,decision_making_work",
-            "substantive" : "[[ANYTHING_PRESENT]]"
+            "substantive" : "Y"
           }
         },
         {
@@ -155,9 +51,9 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
+            "region" : "2",
             "workTypes": "applications,hearing_work,routine_work,priority,decision_making_work",
-            "substantive" : "[[ANYTHING_PRESENT]]"
+            "substantive" : "Y"
           }
         }
       ]
