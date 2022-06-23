@@ -24,7 +24,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "4e4c2a65-57c6-4705-9be1-66ab60406afe",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-admin",
           "classification": "PRIVATE",
@@ -39,7 +39,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "4e4c2a65-57c6-4705-9be1-66ab60406afe",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-admin",
           "classification": "PRIVATE",
@@ -54,7 +54,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "4e4c2a65-57c6-4705-9be1-66ab60406afe",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-centre-admin",
           "classification": "PUBLIC",
@@ -73,7 +73,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "4e4c2a65-57c6-4705-9be1-66ab60406afe",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-centre-team-leader",
           "classification": "PUBLIC",
