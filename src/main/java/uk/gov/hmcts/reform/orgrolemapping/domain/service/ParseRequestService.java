@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
@@ -116,19 +115,7 @@ public class ParseRequestService implements ParseRequestBase<Object> {
                 log.error("Appointment is not available for the judicialUserProfile :: {}", userProfile.getSidamId());
                 invalidJudicialProfiles.add(userProfile);
                 isInvalid.set(true);
-            } else {
-                userProfile.getAppointments().forEach(appointment -> {
-                    if (StringUtils.isEmpty(appointment.getBaseLocationId())
-                            || StringUtils.isEmpty(appointment.getLocationId())
-                    ) {
-                        log.error("Appointment doesn't have valid location for the judicialUserProfile :: {}",
-                                userProfile.getSidamId());
-                        invalidJudicialProfiles.add(userProfile);
-                        isInvalid.set(true);
-                    }
-                });
             }
-
             if (isInvalid.get()) {
                 invalidUserProfilesCount.getAndIncrement();
             }
