@@ -43,6 +43,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctRoleAssignments;
 import static java.util.Objects.requireNonNull;
 
 @Service
@@ -204,8 +205,10 @@ public class RequestMappingService<T> {
         for (QueryResultsRow row : queryResults) {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
-        return roleAssignments;
+        return distinctRoleAssignments(roleAssignments);
     }
+
+
 
     private List<FeatureFlag> getDBFeatureFlags() {
         List<FeatureFlag> featureFlags = new ArrayList<>();
