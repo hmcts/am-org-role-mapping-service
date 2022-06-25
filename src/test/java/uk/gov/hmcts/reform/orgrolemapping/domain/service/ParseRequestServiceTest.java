@@ -222,32 +222,6 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void judicialValidationTest_noBaseLocationId() {
-        judicialProfile.getAppointments().get(0).setBaseLocationId("");
-        judicialProfile.getAppointments().get(1).setBaseLocationId("");
-
-        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
-                TestDataBuilder.buildUserRequestIndividual(),
-                mockInteger,
-                invalidJudicialProfiles,
-                UserType.JUDICIAL);
-        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
-    }
-
-    @Test
-    void judicialValidationTest_noLocationId() {
-        judicialProfile.getAppointments().get(0).setLocationId("");
-        judicialProfile.getAppointments().get(1).setLocationId("");
-
-        sut.validateUserProfiles(Collections.singletonList(judicialProfile),
-                TestDataBuilder.buildUserRequestIndividual(),
-                mockInteger,
-                invalidJudicialProfiles,
-                UserType.JUDICIAL);
-        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
-    }
-
-    @Test
     void judicialValidationTest_NoAppointment() {
         judicialProfile.setAppointments(new ArrayList<>());
 
