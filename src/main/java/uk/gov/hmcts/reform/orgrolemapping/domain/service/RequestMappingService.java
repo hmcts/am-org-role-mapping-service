@@ -1,19 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.util.Objects.requireNonNull;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import feign.FeignException;
@@ -44,6 +30,21 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctRoleAssignments;
+import static java.util.Objects.requireNonNull;
 
 @Service
 @Slf4j
@@ -204,8 +205,10 @@ public class RequestMappingService<T> {
         for (QueryResultsRow row : queryResults) {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
-        return roleAssignments;
+        return distinctRoleAssignments(roleAssignments);
     }
+
+
 
     private List<FeatureFlag> getDBFeatureFlags() {
         List<FeatureFlag> featureFlags = new ArrayList<>();

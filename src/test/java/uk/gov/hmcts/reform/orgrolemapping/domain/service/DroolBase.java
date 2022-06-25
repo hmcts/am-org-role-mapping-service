@@ -7,13 +7,17 @@ import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -54,7 +58,7 @@ public abstract class DroolBase {
 
     }
 
-    void buildExecuteKieSession(List<FeatureFlag> featureFlags) {
+    List<RoleAssignment> buildExecuteKieSession(List<FeatureFlag> featureFlags) {
         // Sequence of processing for executing the rules:
         //   1. add all the profiles
         //   2. fire all the rules
@@ -72,7 +76,14 @@ public abstract class DroolBase {
 
         // Run the rules
         results = kieSession.execute(CommandFactory.newBatchExecution(commands));
+        //Extract all created role assignments using the query defined in the rules.
+        List<RoleAssignment> roleAssignments = new ArrayList<>();
+        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        }
 
+        return ValidationUtil.distinctRoleAssignments(roleAssignments);
     }
 
     @NotNull
