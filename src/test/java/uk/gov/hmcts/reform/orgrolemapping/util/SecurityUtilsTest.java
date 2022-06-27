@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -71,8 +71,7 @@ class SecurityUtilsTest {
     private void mockSecurityContextData() {
         List<String> collection = new ArrayList<>();
         collection.add("string");
-        Map<String, Object> headers = new HashMap<>();
-        headers.put("header", "head");
+        Map<String, Object> headers = Map.of("header", "head");
         Jwt jwt = new Jwt(serviceAuthorizationNoBearer, Instant.now(), Instant.now().plusSeconds(10),headers, headers);
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);

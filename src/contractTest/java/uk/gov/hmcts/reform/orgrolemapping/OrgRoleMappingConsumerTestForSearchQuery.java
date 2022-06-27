@@ -459,8 +459,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
 
     @NotNull
     private Map<String, String> getResponseHeaders() {
-        Map<String, String> responseHeaders = Maps.newHashMap();
-        responseHeaders.put("Content-Type",
+        Map<String, String> responseHeaders = Map.of("Content-Type",
                 "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;"
                         + "charset=UTF-8;version=1.0");
         return responseHeaders;
@@ -468,8 +467,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
 
     @NotNull
     private Map<String, String> getResponseHeadersV2() {
-        Map<String, String> responseHeaders = Maps.newHashMap();
-        responseHeaders.put("Content-Type", POST_ASSIGNMENTS);
+        Map<String, String> responseHeaders = Map.of("Content-Type", POST_ASSIGNMENTS);
         return responseHeaders;
     }
 

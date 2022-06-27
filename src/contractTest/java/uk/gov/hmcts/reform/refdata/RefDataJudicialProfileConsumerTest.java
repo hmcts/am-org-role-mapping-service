@@ -23,7 +23,6 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.google.common.collect.Maps;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
@@ -155,8 +154,7 @@ public class RefDataJudicialProfileConsumerTest {
 
     @NotNull
     private Map<String, String> getResponseHeaders() {
-        Map<String, String> responseHeaders = Maps.newHashMap();
-        responseHeaders.put("Content-Type", "application/json");
+        Map<String, String> responseHeaders = Map.of("Content-Type", "application/json");
         return responseHeaders;
     }
 

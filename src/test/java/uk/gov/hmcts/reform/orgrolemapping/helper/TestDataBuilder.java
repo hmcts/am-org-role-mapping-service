@@ -43,7 +43,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,29 +74,22 @@ public class TestDataBuilder {
     }
 
     public static UserRequest buildUserRequest() {
-        ArrayList<String> users = new ArrayList<>();
-        users.add(id_1);
-        users.add(id_2);
+        List<String> users = List.of(id_1,id_2);
         return UserRequest.builder().userIds(users).build();
     }
 
     public static UserRequest buildBadUserRequest() {
-        ArrayList<String> users = new ArrayList<>();
-        users.add(id_1);
-        users.add(id_3);
+        List<String> users = List.of(id_1,id_2);
         return UserRequest.builder().userIds(users).build();
     }
 
     public static UserRequest buildUserRequestIndividual() {
-        ArrayList<String> users = new ArrayList<>();
-        users.add(id_1);
+        List<String> users = List.of(id_1);
         return UserRequest.builder().userIds(users).build();
     }
 
     public static UserRequest buildInvalidRequest() {
-        ArrayList<String> users = new ArrayList<>();
-        users.add(id_1);
-        users.add(id_3);
+        List<String> users = List.of(id_1,id_2);
         return UserRequest.builder().userIds(users).build();
     }
 
@@ -156,7 +148,7 @@ public class TestDataBuilder {
     public static List<CaseWorkerProfile.BaseLocation> buildListOfBaseLocations(boolean enableLocationList,
                                                                                 boolean primaryLocation1,
                                                                                 boolean primaryLocation2) {
-        List<CaseWorkerProfile.BaseLocation> baseLocationList = new ArrayList<>();
+        List<CaseWorkerProfile.BaseLocation> baseLocationList = Collections.emptyList();
         if (enableLocationList) {
             baseLocationList.add(buildBaseLocation(primaryLocation1));
             baseLocationList.add(buildBaseLocation(primaryLocation2));
@@ -173,7 +165,7 @@ public class TestDataBuilder {
     public static List<CaseWorkerProfile.WorkArea> buildListOfWorkAreas(boolean enableWorkAreaList,
                                                                         String workArea1,
                                                                         String workArea2) {
-        List<CaseWorkerProfile.WorkArea> workAreaList = new ArrayList<>();
+        List<CaseWorkerProfile.WorkArea> workAreaList = Collections.emptyList();
         if (enableWorkAreaList) {
             workAreaList.add(buildWorkArea(workArea1, "BFA1"));
             workAreaList.add(buildWorkArea(workArea2, "BFA2"));
@@ -239,7 +231,7 @@ public class TestDataBuilder {
                                                                   String workArea1,
                                                                   String workArea2,
                                                                   boolean suspended) {
-        List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
+        List<CaseWorkerProfile> caseWorkerProfiles = Collections.emptyList();
         caseWorkerProfiles.add(buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
                 enableLocationList, primaryLocation1, primaryLocation2,
                 enableWorkAreaList, workArea1, workArea2, suspended));
@@ -309,7 +301,7 @@ public class TestDataBuilder {
     }
 
     public static Collection<RoleAssignment> buildRequestedRoleCollection(Status status) {
-        Collection<RoleAssignment> requestedRoles = new ArrayList<>();
+        Collection<RoleAssignment> requestedRoles = Collections.emptyList();
         requestedRoles.add(buildRoleAssignment(status));
         requestedRoles.add(buildRoleAssignment(status));
         return requestedRoles;
@@ -556,16 +548,16 @@ public class TestDataBuilder {
 
         switch (setNumber) {
             case 1:
-                authorisationList = Arrays.asList(auth, auth2, auth3, auth4, auth5, auth6, auth7, auth8);
+                authorisationList = List.of(auth, auth2, auth3, auth4, auth5, auth6, auth7, auth8);
                 break;
             case 2:
-                authorisationList = Arrays.asList(auth, auth3, auth4, auth5, auth6);
+                authorisationList = List.of(auth, auth3, auth4, auth5, auth6);
                 break;
             case 3:
-                authorisationList = Arrays.asList(auth, auth3, auth4, auth9,  auth12);
+                authorisationList = List.of(auth, auth3, auth4, auth9,  auth12);
                 break;
             case 4:
-                authorisationList = Arrays.asList(auth, auth5, auth10, auth11);
+                authorisationList = List.of(auth, auth5, auth10, auth11);
                 break;
             default:
                 authorisationList = Collections.singletonList(auth);

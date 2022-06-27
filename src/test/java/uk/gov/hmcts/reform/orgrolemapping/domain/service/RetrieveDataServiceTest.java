@@ -116,7 +116,7 @@ class RetrieveDataServiceTest {
 
     @Test
     void shouldReturnZeroCaseWorkerProfile() {
-        List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
+        List<CaseWorkerProfile> caseWorkerProfiles = List.of();
         doReturn(ResponseEntity
                 .ok(caseWorkerProfiles)).when(crdService).fetchCaseworkerProfiles(any());
         Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(), UserType.CASEWORKER);
@@ -166,7 +166,7 @@ class RetrieveDataServiceTest {
 
     @Test
     void shouldReturnZeroJudicialProfile() {
-        List<JudicialProfile> judicialProfiles = new ArrayList<>();
+        List<JudicialProfile> judicialProfiles = List.of();
         doReturn(ResponseEntity
                 .ok(judicialProfiles)).when(jrdService).fetchJudicialProfiles(any());
 
