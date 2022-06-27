@@ -92,14 +92,14 @@ public class RetrieveDataService {
                 if (response.getStatusCode().is2xxSuccessful()) {
                     Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
                 } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
-                    uniqueUsers.forEach(o -> invalidProfiles.add(JudicialProfile.builder().sidamId(o).build()));
+                    uniqueUsers.forEach(o -> usersAccessProfiles.put(o, Collections.emptySet()));
                 } else {
                     log.error("Not getting {} Judicial profile", response.getBody());
                     throw new UnprocessableEntityException(Constants.FAILED_ROLE_REFRESH);
                 }
             } catch (FeignException.NotFound feignClientException) {
                 log.error("User details couldn't be found in RD ::  :: {} ", userRequest.getUserIds());
-                uniqueUsers.forEach(o -> invalidProfiles.add(JudicialProfile.builder().sidamId(o).build()));
+                uniqueUsers.forEach(o -> usersAccessProfiles.put(o, Collections.emptySet()));
             }
         }
 
