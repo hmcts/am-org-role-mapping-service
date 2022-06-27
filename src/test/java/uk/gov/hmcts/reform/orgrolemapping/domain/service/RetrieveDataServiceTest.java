@@ -1,6 +1,7 @@
 
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -34,6 +35,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
@@ -163,7 +166,6 @@ class RetrieveDataServiceTest {
         );
     }
 
-
     @Test
     void shouldReturnZeroJudicialProfile() {
         List<JudicialProfile> judicialProfiles = new ArrayList<>();
@@ -181,6 +183,17 @@ class RetrieveDataServiceTest {
         UserRequest request = buildUserRequest();
         doReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("errorDescription",
                 "The User Profile data could not be found"))).when(jrdService).fetchJudicialProfiles(any());
+
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(request, UserType.JUDICIAL);
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+    }
+
+    @Test
+    void shouldThrowFeignExceptionNotFoundOnInvalidJudicialProfile() {
+        UserRequest request = buildUserRequest();
+        FeignException.NotFound notFound = mock(FeignException.NotFound.class);
+        doThrow(notFound).when(jrdService).fetchJudicialProfiles(any());
 
         Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(request, UserType.JUDICIAL);
         assertNotNull(response);
