@@ -182,6 +182,17 @@ class RetrieveDataServiceTest {
         doReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("errorDescription",
                 "The User Profile data could not be found"))).when(jrdService).fetchJudicialProfiles(any());
 
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(request, UserType.JUDICIAL);
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+    }
+
+    @Test
+    void shouldThrowUnprocessableOnInvalidJudicialProfile() {
+        UserRequest request = buildUserRequest();
+        doReturn(ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(Map.of("errorDescription",
+                "server have some problem"))).when(jrdService).fetchJudicialProfiles(any());
+
         assertThrows(UnprocessableEntityException.class, () -> sut.retrieveProfiles(request, UserType.JUDICIAL));
     }
 
