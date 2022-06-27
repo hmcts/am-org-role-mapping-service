@@ -6,14 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -22,7 +19,6 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUserAccessProfile3;
 
 
@@ -38,14 +34,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> judicialAccessProfile.getAuthorisations().forEach(a ->
                 a.setServiceCodes(List.of(SERVICE_CODE))));
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -70,14 +59,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             a.setEndDate(LocalDateTime.now().minusDays(1));
         }));
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -96,14 +78,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         List.of("2","4","5","9","10","12","13","14","15").forEach(a ->
                 allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags(LD_FLAG, ldFlag));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, ldFlag));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -116,14 +91,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(SERVICE_CODE, a, "")));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -142,14 +110,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         allProfiles.add(buildUserAccessProfile3(SERVICE_CODE, "2", ""));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -169,14 +130,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(SERVICE_CODE, a, "")));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
