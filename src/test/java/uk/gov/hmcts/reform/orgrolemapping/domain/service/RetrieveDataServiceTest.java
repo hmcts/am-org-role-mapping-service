@@ -186,7 +186,7 @@ class RetrieveDataServiceTest {
 
         Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(request, UserType.JUDICIAL);
         assertNotNull(response);
-        assertTrue(response.isEmpty());
+        assertFalse(response.isEmpty());
     }
 
     @Test
@@ -197,7 +197,7 @@ class RetrieveDataServiceTest {
 
         Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(request, UserType.JUDICIAL);
         assertNotNull(response);
-        assertTrue(response.isEmpty());
+        assertFalse(response.isEmpty());
     }
 
     @Test
