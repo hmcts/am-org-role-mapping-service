@@ -463,10 +463,32 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialProfiles()
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withNotFoundJudicialProfiles()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
         ResponseEntity response = ResponseEntity.status(404).body(Map.of(
+                "errorDescription", "The User Profile data could not be found",
+                "status", "Not Found"));
+        doReturn(response).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+        doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
+        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
+
+        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders())
+                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
+                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialProfiles()
+            throws Exception {
+        logger.info(" Refresh role assignments with empty bookings");
+        ResponseEntity response = ResponseEntity.status(501).body(Map.of(
                 "errorDescription", "The User Profile data could not be found",
                 "status", "Not Found"));
         doReturn(response).when(jrdFeignClient).getJudicialDetailsById(any(), any());
