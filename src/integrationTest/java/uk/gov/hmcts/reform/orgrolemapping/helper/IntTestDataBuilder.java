@@ -183,7 +183,8 @@ public class IntTestDataBuilder {
         CaseWorkerProfile profile = buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
                 enableLocationList, primaryLocation1, primaryLocation2,
                 enableWorkAreaList, workArea1, workArea2, suspended);
-        List<CaseWorkerProfilesResponse> userProfiles = List.of(CaseWorkerProfilesResponse.builder().serviceName(service).userProfile(profile).build());
+        List<CaseWorkerProfilesResponse> userProfiles =
+                List.of(CaseWorkerProfilesResponse.builder().serviceName(service).userProfile(profile).build());
 
         return userProfiles;
     }
