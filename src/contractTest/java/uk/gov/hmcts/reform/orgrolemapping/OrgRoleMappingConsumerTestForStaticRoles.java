@@ -97,7 +97,8 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
 
     @NotNull
     private Map<String, String> getRoleAssignmentResponseHeaders() {
-        Map<String, String> responseHeaders = Map.of("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments"
+        Map<String, String> responseHeaders =
+                Map.of("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments"
                 + "+json");
         return responseHeaders;
     }
