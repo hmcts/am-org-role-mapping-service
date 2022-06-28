@@ -75,7 +75,7 @@ public class IdamRepository {
 
     public ResponseEntity<List<Object>> searchUserByUserId(String jwtToken, String userId) {
         try {
-            String url = String.format("%s/api/v1/users?query=%s", idamUrl, userId);
+            var url = String.format("%s/api/v1/users?query=%s", idamUrl, userId);
             ResponseEntity<List<Object>> response = restTemplate.exchange(
                     url,
                     GET,

@@ -59,7 +59,7 @@ public class RetrieveDataService {
 
     public Map<String, Set<UserAccessProfile>> retrieveProfiles(UserRequest userRequest, UserType userType)
             throws UnprocessableEntityException {
-        long startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
 
 
         var invalidUserProfilesCount = new AtomicInteger();

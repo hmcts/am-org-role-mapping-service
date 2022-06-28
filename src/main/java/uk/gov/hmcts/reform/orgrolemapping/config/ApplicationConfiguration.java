@@ -51,7 +51,7 @@ public class ApplicationConfiguration {
 
 
     private CloseableHttpClient getHttpClient() {
-        int timeout = 10000;
+        var timeout = 10000;
         RequestConfig config = RequestConfig.custom()
                                             .setConnectTimeout(timeout)
                                             .setConnectionRequestTimeout(timeout)
