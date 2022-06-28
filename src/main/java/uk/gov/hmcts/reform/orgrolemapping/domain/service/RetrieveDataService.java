@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
@@ -82,16 +84,22 @@ public class RetrieveDataService {
 
         } else if (userType.equals(UserType.JUDICIAL)) {
             log.info("Calling JRD Service");
-            response = jrdService.fetchJudicialProfiles(JRDUserRequest.builder().sidamIds(uniqueUsers).build());
-            log.debug(
-                    "Execution time of JRD Response : {} ms",
-                    (Math.subtractExact(System.currentTimeMillis(), startTime))
-            );
-            if (response.getStatusCode().is2xxSuccessful()) {
-                Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
-            } else {
-                log.error("Not getting {} Judicial profile", response.getBody());
-                throw new UnprocessableEntityException(Constants.FAILED_ROLE_REFRESH);
+            try {
+                response = jrdService.fetchJudicialProfiles(JRDUserRequest.builder().sidamIds(uniqueUsers).build());
+                log.debug("Execution time of JRD Response : {} ms",
+                        (Math.subtractExact(System.currentTimeMillis(), startTime))
+                );
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
+                } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+                    uniqueUsers.forEach(o -> usersAccessProfiles.put(o, Collections.emptySet()));
+                } else {
+                    log.error("Not getting {} Judicial profile", response.getBody());
+                    throw new UnprocessableEntityException(Constants.FAILED_ROLE_REFRESH);
+                }
+            } catch (FeignException.NotFound feignClientException) {
+                log.error("User details couldn't be found in RD ::  :: {} ", userRequest.getUserIds());
+                uniqueUsers.forEach(o -> usersAccessProfiles.put(o, Collections.emptySet()));
             }
         }
 
@@ -160,6 +168,9 @@ public class RetrieveDataService {
                 List<JudicialProfile> validJudicialProfiles = (List<JudicialProfile>) (Object) validProfiles;
                 validJudicialProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getSidamId(),
                         convertProfileToJudicialAccessProfile(userProfile)));
+                Set<JudicialProfile> invalidJProfiles = (Set<JudicialProfile>)(Set<?>) invalidProfiles;
+                invalidJProfiles.forEach(profile ->
+                        usersAccessProfiles.put(profile.getSidamId(), Collections.emptySet()));
             }
             Map<String, Integer> userAccessProfileCount = new HashMap<>();
             usersAccessProfiles.forEach((k, v) -> {
