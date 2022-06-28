@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -231,6 +232,17 @@ class ParseRequestServiceTest {
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
         Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+    }
+
+    @Test
+    void judicialValidationTest_NotAllProfilesRetrived() throws IOException {
+
+        sut.validateUserProfiles(List.of(judicialProfile),
+                judicialUser,
+                mockInteger,
+                invalidJudicialProfiles,
+                UserType.JUDICIAL);
+        assertEquals(judicialUser.getUserIds().size(), invalidJudicialProfiles.size());
     }
 
     @Test
