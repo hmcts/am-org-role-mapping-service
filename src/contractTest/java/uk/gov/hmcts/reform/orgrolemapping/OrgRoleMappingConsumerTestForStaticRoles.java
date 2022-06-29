@@ -106,10 +106,10 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
     }
 
     private DslPart createRolesResponse() {
-        String name = "name";
-        String label = "label";
-        String description = "description";
-        String category = "category";
+        var name = "name";
+        var label = "label";
+        var description = "description";
+       var category = "category";
         return newJsonArray(o -> o
                 .object(role -> role
                         .stringType(name, "judge")

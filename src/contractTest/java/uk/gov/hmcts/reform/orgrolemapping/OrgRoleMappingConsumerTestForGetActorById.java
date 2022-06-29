@@ -108,7 +108,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
     @Test
     @PactTestFor(pactMethod = "executeGetActorByIdAndGet200")
     void getActorByIdAndGet200Test(MockServer mockServer) throws JSONException {
-        String actualResponseBody =
+       var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())

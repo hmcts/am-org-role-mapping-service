@@ -342,7 +342,7 @@ public class RequestMappingService<T> {
 
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
-            Boolean status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
+            var status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
             droolFlagStates.put(featureFlagEnum.getValue(), status);
         }
     }
