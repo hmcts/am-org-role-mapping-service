@@ -270,7 +270,7 @@ public class RequestMappingService<T> {
             failureResponseCount.getAndIncrement();
         }
 
-        log.info("Role Assignment Service response status is {} for the userId {}", requireNonNull(responseEntity)
+        log.debug("Role Assignment Service response status is {} for the userId {}", requireNonNull(responseEntity)
                 .getStatusCode(), userId);
 
         return responseEntity;
