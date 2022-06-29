@@ -167,7 +167,8 @@ public class AssignmentRequestBuilder {
             var judicialAccessProfile = JudicialAccessProfile.builder().build();
             judicialAccessProfile.setUserId(judicialProfile.getSidamId());
             judicialAccessProfile.setRoles(appointment.getRoles());
-            judicialAccessProfile.setBeginTime(appointment.getStartDate().atStartOfDay(ZoneId.of("UTC")));
+            judicialAccessProfile.setBeginTime(appointment.getStartDate() == null ? null :
+                        appointment.getStartDate().atStartOfDay(ZoneId.of("UTC")));
             judicialAccessProfile.setEndTime(appointment.getEndDate() != null ? appointment.getEndDate()
                     .atStartOfDay(ZoneId.of("UTC")) : null);
             judicialAccessProfile.setRegionId(appointment.getLocationId());
@@ -178,8 +179,8 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
             judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
             judicialAccessProfile.setServiceCode(appointment.getServiceCode());
-            judicialAccessProfile.setPrimaryLocationId(appointment.getIsPrincipalAppointment()
-                    .equalsIgnoreCase("true") ? appointment.getEpimmsId() : "");
+            judicialAccessProfile.setPrimaryLocationId("true"
+                    .equalsIgnoreCase(appointment.getIsPrincipalAppointment()) ? appointment.getEpimmsId() : "");
             judicialAccessProfiles.add(judicialAccessProfile);
         });
         return judicialAccessProfiles;

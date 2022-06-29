@@ -83,7 +83,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                 List<byte[]> body = message.getMessageBody().getBinaryData();
                 try {
                     log.debug("    Locked Until Utc : {}", message.getLockedUntilUtc());
-                    log.info("    Delivery Count is : {}", message.getDeliveryCount());
                     AtomicBoolean result = new AtomicBoolean();
                     if (featureConditionEvaluator.isFlagEnabled("am_org_role_mapping_service",
                             "orm-jrd-org-role")) {
@@ -126,11 +125,11 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
 
         UserRequest request = deserializer.deserialize(body);
-        log.info("Parsing the message from JRD with size :: {}", request.getUserIds().size());
+        log.debug("Parsing the message from JRD with size :: {}", request.getUserIds().size());
         try {
             ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
                     UserType.JUDICIAL);
-            log.info("----Role Assignment Service Response JRD {}", response.getStatusCode());
+            log.debug("Role Assignment Service Response JRD {}", response.getStatusCode());
             result.set(Boolean.TRUE);
         } catch (Exception e) {
             log.error("Exception from RAS service : {}", e.getMessage());
