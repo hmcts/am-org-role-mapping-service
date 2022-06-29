@@ -462,7 +462,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
-         //assertion
+        //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(3, roleAssignments.size());
         assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
