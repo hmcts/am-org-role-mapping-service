@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 class DroolAdminOrgRoleMappingTest extends DroolBase {
 
-    private final static String workTypes = "hearing_work, upper_tribunal, routine_work";
+    private static final String workTypes = "hearing_work, upper_tribunal, routine_work";
 
     static Stream<Arguments> generateData() {
         return Stream.of(
@@ -213,7 +213,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
-         //assertion
+        //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),

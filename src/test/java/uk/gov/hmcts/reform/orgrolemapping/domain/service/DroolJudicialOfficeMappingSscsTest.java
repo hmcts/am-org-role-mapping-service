@@ -182,7 +182,7 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-      //assertion
+        //assertion
         assertTrue(roleAssignments.isEmpty());
     }
 
