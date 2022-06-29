@@ -170,7 +170,7 @@
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N",
+            "substantive": "Y",
             "primaryLocation": "271588",
             "jurisdiction": "SSCS",
             "region" : "2",
