@@ -82,51 +82,40 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(32,roleAssignments.size());
-        IntStream.range(0, 8).forEach(id -> {
+        assertEquals(6,roleAssignments.size());
+        IntStream.of(0).forEach(id -> {
             assertEquals("hmcts-admin",roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(8, 11).forEach(id -> {
+        IntStream.of(1).forEach(id -> {
             assertEquals("hearing-centre-admin",roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(11, 13).forEach(id -> {
+        IntStream.of(2).forEach(id -> {
             assertEquals("national-business-centre", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(14, 15).forEach(id -> {
+        IntStream.of(3).forEach(id -> {
             assertEquals("ctsc", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(16, 23).forEach(id -> {
+        IntStream.of(4).forEach(id -> {
             assertEquals("case-allocator", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(24, 31).forEach(id -> {
+        IntStream.of(5).forEach(id -> {
             assertEquals("task-supervisor", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
 
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
-
         assertEquals(workTypes,
-                roleAssignments.get(8).getAttributes().get("workTypes").asText());
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
-                roleAssignments.get(9).getAttributes().get("workTypes").asText());
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
-                roleAssignments.get(10).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(11).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(12).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(13).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(14).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(15).getAttributes().get("workTypes").asText());
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -188,9 +177,9 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("tribunal-caseworker", "tribunal-caseworker", "hmcts-legal-operations",
+                containsInAnyOrder("tribunal-caseworker", "tribunal-caseworker",
                         "registrar", "registrar", "hmcts-legal-operations"));
 
         roleAssignments.forEach(roleAssignment -> {
@@ -226,11 +215,11 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
          //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(12, roleAssignments.size());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("tribunal-caseworker", "hmcts-legal-operations", "registrar",
-                        "hmcts-legal-operations", "task-supervisor", "case-allocator","task-supervisor",
-                        "case-allocator","task-supervisor", "case-allocator", "tribunal-caseworker", "registrar"));
+                        "case-allocator","task-supervisor","task-supervisor",
+                        "tribunal-caseworker", "registrar", "case-allocator"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
@@ -261,10 +250,9 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(14, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-admin", "hmcts-admin","hmcts-admin","hmcts-admin","hmcts-admin",
-                        "hmcts-admin","superuser", "superuser", "superuser", "clerk", "clerk","clerk","clerk","clerk"));
+                containsInAnyOrder("hmcts-admin","superuser", "superuser", "clerk", "clerk"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
@@ -303,13 +291,10 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(28, roleAssignments.size());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-admin", "hmcts-admin","hmcts-admin","hmcts-admin","hmcts-admin",
-                        "hmcts-admin","superuser", "superuser", "superuser","clerk","clerk","clerk","clerk", "clerk",
-                        "task-supervisor", "task-supervisor", "task-supervisor","task-supervisor", "task-supervisor",
-                        "task-supervisor", "task-supervisor", "case-allocator", "case-allocator", "case-allocator",
-                        "case-allocator", "case-allocator", "case-allocator", "case-allocator"));
+                containsInAnyOrder("hmcts-admin","superuser", "superuser","clerk","clerk",
+                        "task-supervisor", "task-supervisor","case-allocator", "case-allocator"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());

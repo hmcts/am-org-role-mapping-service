@@ -177,7 +177,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
                 containsInAnyOrder("circuit-judge","hmcts-judiciary"));
         assertEquals(appointmentList.get(0).getEpimmsId(),
                 roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
         assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
                 roleAssignments.get(0).getBeginTime().getDayOfYear());
@@ -220,14 +220,13 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("judge","fee-paid-judge","hmcts-judiciary",
-                        "judge","fee-paid-judge","hmcts-judiciary"));
+                containsInAnyOrder("judge", "judge", "fee-paid-judge", "fee-paid-judge", "hmcts-judiciary"));
         assertEquals(appointmentList.get(0).getEpimmsId(),
                 roleAssignments.get(3).getAttributes().get("primaryLocation").asText());
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
 
         assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
@@ -277,7 +276,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("judge","fee-paid-judge","hmcts-judiciary"));
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     //removes the auth in the past successfully so minus 1
                     assertEquals(authorisationList.size() - 1, r.getAuthorisations().size());
@@ -320,13 +319,13 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
 
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("circuit-judge","leadership-judge",
-                        "hmcts-judiciary","case-allocator","hmcts-judiciary","task-supervisor"));
+                containsInAnyOrder("leadership-judge", "circuit-judge", "task-supervisor",
+                        "case-allocator", "hmcts-judiciary"));
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals(authorisationList.size(), r.getAuthorisations().size());
                     assertEquals(appointmentList.get(0).getEpimmsId(),

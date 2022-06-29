@@ -331,12 +331,10 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(16, roleAssignments.size());
+        assertEquals(6, roleAssignments.size());
         assertEquals("senior-judge", roleAssignments.get(0).getRoleName());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "leadership-judge",
-                        "task-supervisor", "hmcts-judiciary", "case-allocator", "judge", "leadership-judge",
-                        "task-supervisor", "hmcts-judiciary", "case-allocator", "judge", "leadership-judge",
                         "task-supervisor", "senior-judge"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
@@ -369,11 +367,9 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(16, roleAssignments.size());
+        assertEquals(6, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "leadership-judge",
-                        "task-supervisor", "hmcts-judiciary", "case-allocator", "judge", "leadership-judge",
-                        "task-supervisor", "hmcts-judiciary", "case-allocator", "judge", "leadership-judge",
                         "task-supervisor", "senior-judge"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
@@ -559,11 +555,11 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(10, roleAssignments.size());
+        assertEquals(6, roleAssignments.size());
         assertEquals("senior-judge", roleAssignments.get(0).getRoleName());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("senior-judge", "senior-judge", "hmcts-judiciary", "hmcts-judiciary",
-                        "leadership-judge", "case-allocator", "case-allocator", "task-supervisor", "judge", "judge"));
+                containsInAnyOrder("senior-judge", "hmcts-judiciary", "leadership-judge",
+                        "case-allocator", "task-supervisor", "judge"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
@@ -914,12 +910,10 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(11, roleAssignments.size());
+        assertEquals(8, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "senior-judge", "hmcts-judiciary",
-                        "case-allocator", "judge", "leadership-judge",
-                        "case-allocator", "task-supervisor",
-                        "judge", "fee-paid-judge", "hmcts-judiciary"));
+                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "senior-judge",
+                        "leadership-judge", "task-supervisor", "hmcts-judiciary", "fee-paid-judge"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
