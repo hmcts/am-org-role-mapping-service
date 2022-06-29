@@ -77,7 +77,7 @@ class ParseRequestServiceTest {
     @Test
     void validateUserRequest_throwsBadRequestTest() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
-        List<String> emptyUsers = List.of("");
+        List<String> emptyUsers = Collections.emptyList();
         userRequest.setUserIds(emptyUsers);
         assertThrows(BadRequestException.class, () ->
                 sut.validateUserRequest(userRequest)
@@ -179,10 +179,10 @@ class ParseRequestServiceTest {
 
     @Test
     void validateUserProfiles_throwsResourceNotFound_noProfilesTest() {
-        List<CaseWorkerProfile> caseWorkerProfiles = List.of();
+        List<CaseWorkerProfile> caseWorkerProfiles = Collections.emptyList();
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         AtomicInteger integer = new AtomicInteger();
-        Set<CaseWorkerProfile> invalidCaseWorkerProfiles = Set.of();
+        Set<CaseWorkerProfile> invalidCaseWorkerProfiles = Collections.emptySet();
         assertThrows(ResourceNotFoundException.class, () ->
                 sut.validateUserProfiles(caseWorkerProfiles, userRequest, integer, invalidCaseWorkerProfiles,
                         UserType.CASEWORKER)
@@ -191,7 +191,7 @@ class ParseRequestServiceTest {
 
     @Test
     void validateUserProfiles_throwsResourceNotFound_someProfilesNotFoundTest() {
-        List<CaseWorkerProfile> caseWorkerProfiles = List.of();
+        List<CaseWorkerProfile> caseWorkerProfiles = Collections.emptyList();
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         AtomicInteger integer = new AtomicInteger();
         Set<CaseWorkerProfile> invalidCaseWorkerProfiles = new HashSet<>();
