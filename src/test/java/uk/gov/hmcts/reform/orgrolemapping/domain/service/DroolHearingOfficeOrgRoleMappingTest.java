@@ -23,7 +23,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUse
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
+class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     static final String SERVICE_CODE = "BBA3";
     static final String LD_FLAG = "sscs_hearing_1_0";
@@ -95,7 +95,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(roleIds.size() * 2, roleAssignments.size());
+        assertEquals(2, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals(RoleCategory.ADMIN, r.getRoleCategory());
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
@@ -134,7 +134,7 @@ public class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(roleIds.size(), roleAssignments.size());
+        assertEquals(1, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals(RoleCategory.OTHER_GOV_DEPT, r.getRoleCategory());
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
