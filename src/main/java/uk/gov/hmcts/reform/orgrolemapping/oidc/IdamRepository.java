@@ -123,7 +123,7 @@ public class IdamRepository {
             var caffeineCache = (CaffeineCache) cacheManager.getCache("userToken");
             com.github.benmanes.caffeine.cache.Cache<Object, Object> nativeCache = requireNonNull(caffeineCache)
                     .getNativeCache();
-            log.info("Generating system user Token, current size of cache: {}", nativeCache.estimatedSize());
+            log.debug("Generating system user Token, current size of cache: {}", nativeCache.estimatedSize());
         }
         var tokenRequest = new TokenRequest(
                 oauth2Configuration.getClientId(),
