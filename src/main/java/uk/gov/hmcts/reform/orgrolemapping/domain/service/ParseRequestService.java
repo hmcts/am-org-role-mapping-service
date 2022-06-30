@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.objectPredicates;
 
 @Service
 @Slf4j
@@ -78,7 +79,7 @@ public class ParseRequestService implements ParseRequestBase<Object> {
 
         profiles.forEach(userProfile -> {
             boolean isInvalid = false;
-            if (CollectionUtils.isEmpty(userProfile.getBaseLocation())) {
+            if (objectPredicates.test(java.util.Collections.singletonList(userProfile.getBaseLocation()))) {
                 log.error("The base location is not available for the userProfile {} ", userProfile.getId());
                 invalidCaseWorkerProfiles.add(userProfile);
                 isInvalid = true;
