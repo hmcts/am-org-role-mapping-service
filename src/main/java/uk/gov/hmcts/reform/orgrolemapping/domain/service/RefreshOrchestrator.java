@@ -87,7 +87,7 @@ public class RefreshOrchestrator {
 
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
-       var startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
         ResponseEntity<Object> responseEntity = null;
         Map<String, Set<UserAccessProfile>> userAccessProfiles;
@@ -163,7 +163,7 @@ public class RefreshOrchestrator {
 
 
                 // 2 step to find out the total number of records from header
-               var totalRecords = response.getHeaders().getFirst("total_records");
+                var totalRecords = response.getHeaders().getFirst("total_records");
                 assert totalRecords != null;
                 double pageNumber = 0;
                 if (Integer.parseInt(pageSize) > 0) {

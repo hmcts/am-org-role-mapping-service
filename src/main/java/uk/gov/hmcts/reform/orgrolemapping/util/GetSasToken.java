@@ -15,7 +15,7 @@ public class GetSasToken {
     public static void main(String[] args) throws Exception  {
         System.out.println("Arrays of String :: " + args);
         if (args.length == 3) {
-           var sas = getSaSToken(args[0], args[1], args[2]);
+            var sas = getSaSToken(args[0], args[1], args[2]);
             System.out.println("Signature:: " + sas);
         } else {
             var usage = "Usage: java GetSASToken <Service Bus URI> <Key Name> <Key Value>";

@@ -306,9 +306,8 @@ public class OrgRoleMappingConsumerTestForCreate {
 
     @Test
     @PactTestFor(pactMethod = "executeCreateRoleAssignmentZeroRoleAndGet201")
-    void createRoleAssignmentZeroRoleAndGet201Test(MockServer mockServer)
-            throws JSONException {
-       var actualResponseBody =
+    void createRoleAssignmentZeroRoleAndGet201Test(MockServer mockServer) throws JSONException {
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())

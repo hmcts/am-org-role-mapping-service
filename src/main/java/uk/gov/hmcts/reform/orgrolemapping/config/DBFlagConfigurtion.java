@@ -43,7 +43,7 @@ public class DBFlagConfigurtion implements CommandLineRunner {
             updateFeatureFlag(dbFeature2Disable, Boolean.FALSE);
         }
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
-           var status = flagConfigRepository
+            var status = flagConfigRepository
                     .findByFlagNameAndEnv(featureFlagEnum.getValue(), environment).getStatus();
             droolFlagStates.put(featureFlagEnum.getValue(), status);
             log.info("The DB feature flag {} is set to: {}",featureFlagEnum.getValue(),status);

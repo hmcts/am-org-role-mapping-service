@@ -109,7 +109,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
         var name = "name";
         var label = "label";
         var description = "description";
-       var category = "category";
+        var category = "category";
         return newJsonArray(o -> o
                 .object(role -> role
                         .stringType(name, "judge")
