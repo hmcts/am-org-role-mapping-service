@@ -147,7 +147,7 @@ public class OrgRoleMappingConsumerTestForCreate {
 
 
     private String createRoleAssignmentRequest(String replaceExisting) {
-        String request = "";
+        var request = "";
         request = "{\n"
                 + "    \"roleRequest\": {\n"
                 + "        \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n"
@@ -176,7 +176,7 @@ public class OrgRoleMappingConsumerTestForCreate {
     }
 
     private String createRoleAssignmentRequestZeroRole() {
-        String request = "";
+        var request = "";
         request = "{\n"
                 + "    \"roleRequest\": {\n"
                 + "        \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n"
@@ -263,7 +263,7 @@ public class OrgRoleMappingConsumerTestForCreate {
     @PactTestFor(pactMethod = "executeCreateRoleAssignmentReplacingExistingFalseAndGet201")
     void createRoleAssignmentReplaceExistingFalseAndGet201Test(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
@@ -285,7 +285,7 @@ public class OrgRoleMappingConsumerTestForCreate {
     @PactTestFor(pactMethod = "executeCreateRoleAssignmentOneRoleAndGet201")
     void createRoleAssignmentOneRoleAndGet201Test(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
@@ -306,9 +306,8 @@ public class OrgRoleMappingConsumerTestForCreate {
 
     @Test
     @PactTestFor(pactMethod = "executeCreateRoleAssignmentZeroRoleAndGet201")
-    void createRoleAssignmentZeroRoleAndGet201Test(MockServer mockServer)
-            throws JSONException {
-        String actualResponseBody =
+    void createRoleAssignmentZeroRoleAndGet201Test(MockServer mockServer) throws JSONException {
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())

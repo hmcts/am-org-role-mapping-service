@@ -110,7 +110,7 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete {
     @PactTestFor(pactMethod = "executeAdvanceDeleteAndGet200")
     void advancedDeleteAndGet200Test(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())

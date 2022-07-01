@@ -117,7 +117,7 @@ public class AssignmentRequestBuilder {
 
     public static Set<UserAccessProfile> convertUserProfileToCaseworkerAccessProfile(CaseWorkerProfile
                                                                                              caseWorkerProfile) {
-        long startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
         //roleId X serviceCode
         Set<UserAccessProfile> caseWorkerAccessProfiles = new HashSet<>();
 

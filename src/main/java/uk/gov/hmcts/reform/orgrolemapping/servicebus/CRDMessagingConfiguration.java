@@ -34,7 +34,7 @@ public class CRDMessagingConfiguration {
     public ServiceBusSenderClient getServiceBusSenderClient() {
         log.debug("Getting the ServiceBusSenderClient in CRD");
         logServiceBusVariables();
-        String connectionString = "Endpoint=sb://"
+        var connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
 
         log.info("CRD Topic Name is " + topic);
