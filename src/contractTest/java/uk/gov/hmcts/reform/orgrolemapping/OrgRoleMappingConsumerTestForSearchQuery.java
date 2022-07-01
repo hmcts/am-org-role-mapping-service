@@ -100,10 +100,11 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     }
 
     private String createRoleAssignmentRequestSearchQuery() {
-        return "{\n"
-                + "\"actorId\": ["
-                + ACTOR_ID + "]\n"
-                + "}";
+        return """
+                {
+                    "actorId": [$ACTOR_ID]
+                }
+                """.replace("$ACTOR_ID", ACTOR_ID);
     }
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
@@ -123,9 +124,11 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     }
 
     private String createRoleAssignmentRequestSearchQueryByRoleName() {
-        return "{\n"
-                + "\"roleName\": [\"senior-tribunal-caseworker\"]\n"
-                + "}";
+        return """
+                {
+                    "roleName": ["senior-tribunal-caseworker"]
+                }
+                """;
     }
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
@@ -145,12 +148,14 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     }
 
     private String createRoleAssignmentRequestSearchQueryByAttributes() {
-        return "{\n"
-                + "\"attributes\": {\n"
-                + "\"primaryLocation\": [\"500A2S\"],\n"
-                + "\"jurisdiction\": [\"IA\"]\n"
-                + "}\n"
-                + "}";
+        return """
+                 {
+                     attributes": {
+                         primaryLocation": ["500A2S"],
+                         jurisdiction": ["IA"]
+                     }
+                 }
+                 """;
     }
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
@@ -170,18 +175,20 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     }
 
     private String createRoleAssignmentRequestSearchQueryMultipleRoleAssignments() {
-        return "{\n"
-                + "\"roleType\": [\"ORGANISATION\"],\n"
-                + "\"roleName\": [\"tribunal-caseworker\",\"senior-tribunal-caseworker\"],\n"
-                + "\"roleCategory\": [\"LEGAL_OPERATIONS\"],\n"
-                + "\"classification\": [\"PUBLIC\",\"PRIVATE\"],\n"
-                + "\"grantType\": [\"STANDARD\"],\n"
-                + "\"validAt\": \"2021-12-04T00:00:00Z\",\n"
-                + "\"attributes\": {\n"
-                + "\"primaryLocation\": [\"219ASA\"],\n"
-                + "\"jurisdiction\": [\"IA\"]\n"
-                + "}\n"
-                + "}";
+        return """
+                 {
+                     "roleType": ["ORGANISATION"],
+                     "roleName": ["tribunal-caseworker","senior-tribunal-caseworker"],
+                     "roleCategory": ["LEGAL_OPERATIONS"],
+                     "classification": ["PUBLIC","PRIVATE"],
+                     "grantType": ["STANDARD"],
+                     "validAt": "2021-12-04T00:00:00Z",
+                     "attributes": {
+                         "primaryLocation": ["219ASA"],
+                         "jurisdiction": ["IA"]
+                     }
+                 }
+                 """;
     }
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "accessMgmt_orgRoleMapping")
@@ -220,8 +227,18 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
 
     private String createRoleAssignmentRequestAdvancedSearchQuery() {
 
-        return "{\"queryRequests\":[{\"actorId\":[\"14a21569-eb80-4681-b62c-6ae2ed069e5f\"]},"
-                + "{\"roleName\": [\"tribunal-caseworker\"]}]}";
+        return """
+               {
+                   "queryRequests":[
+                        {"actorId":
+                            ["14a21569-eb80-4681-b62c-6ae2ed069e5f"]
+                        },
+                        {
+                            "roleName": ["tribunal-caseworker"]
+                        }
+                   ]
+               }
+               """;
 
     }
 

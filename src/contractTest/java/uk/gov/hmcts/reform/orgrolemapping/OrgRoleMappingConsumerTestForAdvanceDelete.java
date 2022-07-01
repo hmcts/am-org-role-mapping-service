@@ -82,13 +82,26 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete {
     }
 
     private String createRoleAssignmentRequestAdvanceDelete() {
-
-        return "{\"queryRequests\":[{\"actorId\":[\"14a21569-eb80-4681-b62c-6ae2ed069e5f\"]},"
-                + "{\"roleName\": [\"tribunal-caseworker\"]},"
-                + "{\"roleType\": [\"CASE\"]},"
-                + "{\"attributes\": {"
-                + "\"caseId\": [\"1111222233334444\"]}}"
-                + "]}";
+        return """
+                 {
+                    "queryRequests":[
+                        {
+                            "actorId":["14a21569-eb80-4681-b62c-6ae2ed069e5f"]
+                        },
+                        {
+                            "roleName": ["tribunal-caseworker"]
+                        },
+                        {
+                            "roleType": ["CASE"]
+                        },
+                        {
+                            "attributes": {
+                                "caseId": ["1111222233334444"]
+                            }
+                        }
+                    ]
+                 }
+                 """;
     }
 
     @Pact(provider = "am_roleAssignment_deleteAssignment", consumer = "accessMgmt_orgRoleMapping")

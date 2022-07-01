@@ -145,48 +145,47 @@ public class OrgRoleMappingConsumerTestForCreate {
                 .toPact();
     }
 
-
     private String createRoleAssignmentRequest(String replaceExisting) {
-        String request = "";
-        request = "{\n"
-                + "    \"roleRequest\": {\n"
-                + "        \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n"
-                + "        \"process\": \"staff-organisational-role-mapping\",\n"
-                + "        \"reference\": \"14a21569-eb80-4681-b62c-6ae2ed069e5f\",\n"
-                + "        \"replaceExisting\": " + replaceExisting + "\n"
-                + "    },\n"
-                + "    \"requestedRoles\": [\n"
-                + "        {\n"
-                + "        \"actorIdType\": \"IDAM\",\n"
-                + "        \"actorId\": \"14a21569-eb80-4681-b62c-6ae2ed069e5f\",\n"
-                + "        \"roleType\": \"ORGANISATION\",\n"
-                + "        \"roleName\": \"judge\",\n"
-                + "        \"roleCategory\": \"JUDICIAL\",\n"
-                + "        \"classification\": \"PUBLIC\",\n"
-                + "        \"grantType\": \"STANDARD\",\n"
-                + "        \"readOnly\": false,\n"
-                + "        \"attributes\": {\n"
-                + "            \"jurisdiction\": \"IA\",\n"
-                + "            \"region\": \"south-east\",\n"
-                + "        }\n"
-                + "    }\n"
-                + "    ]\n"
-                + "}";
-        return request;
+        return """
+                 {
+                     "roleRequest": {
+                         "assignerId": "3168da13-00b3-41e3-81fa-cbc71ac28a0f",
+                         "process": "staff-organisational-role-mapping",
+                         "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+                         "replaceExisting": "  "$replaceExisting"
+                     },
+                     "requestedRoles": [
+                         {
+                             "actorIdType": "IDAM",
+                             "actorId": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+                             "roleType": "ORGANISATION",
+                             "roleName": "judge",
+                             "roleCategory": "JUDICIAL",
+                             "classification": "PUBLIC",
+                             "grantType": "STANDARD",
+                             "readOnly": false,
+                             "attributes": {
+                                 "jurisdiction": "IA",
+                                 "region": "south-east",
+                             }
+                         }
+                     ]
+                 }
+                 """.replace("$replaceExisting", replaceExisting);
     }
 
     private String createRoleAssignmentRequestZeroRole() {
-        String request = "";
-        request = "{\n"
-                + "    \"roleRequest\": {\n"
-                + "        \"assignerId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n"
-                + "        \"process\": \"staff-organisational-role-mapping\",\n"
-                + "        \"reference\": \"14a21569-eb80-4681-b62c-6ae2ed069e5f\",\n"
-                + "        \"replaceExisting\": true\n"
-                + "    },\n"
-                + "    \"requestedRoles\": []\n"
-                + "}";
-        return request;
+        return """
+                 {
+                     "roleRequest": {
+                         "assignerId": "3168da13-00b3-41e3-81fa-cbc71ac28a0f",
+                         "process": "staff-organisational-role-mapping",
+                         "reference": "14a21569-eb80-4681-b62c-6ae2ed069e5f",
+                         "replaceExisting": "true"
+                    },
+                    "requestedRoles": []
+                 }
+                 """;
     }
 
     private DslPart createRoleAssignmentResponse(boolean replaceExisting) {

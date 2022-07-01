@@ -87,15 +87,17 @@ public class JudicialBookingCreateConsumerTest {
     }
 
     private String createJudicialBookingsCreateRequest() {
-        return "{\n"
-                + "    \"bookingRequest\": {\n"
-                + "        \"userId\": \"3168da13-00b3-41e3-81fa-cbc71ac28a0f\",\n"
-                + "        \"locationId\": \"south\",\n"
-                + "        \"regionId\": \"BFA1\",\n"
-                + "        \"beginDate\": \"3031-01-01T00:00:00Z\",\n"
-                + "        \"endDate\": \"3031-09-01T00:00:00Z\"\n"
-                + "    }\n"
-                + "}";
+        return """
+                {
+                    "bookingRequest": {
+                        "userId": "3168da13-00b3-41e3-81fa-cbc71ac28a0f",
+                        "locationId": "south",
+                        "regionId": "BFA1",
+                        "beginDate": "3031-01-01T00:00:00Z",
+                        "endDate": "3031-09-01T00:00:00Z"
+                    }
+                }
+                """;
     }
 
 
