@@ -15,7 +15,7 @@ public class OrmFeatureToggleService implements FeatureToggleService<String, Boo
 
         RestAssured.baseURI = TestAutomationConfig.INSTANCE.getTestUrl();
 
-        String path = EnvironmentVariableUtils.getRequiredVariable("TEST_URL") + "/"
+        var path = EnvironmentVariableUtils.getRequiredVariable("TEST_URL") + "/"
             + EnvironmentVariableUtils.getRequiredVariable("EXTERNAL_FLAG_QUERY_PATH") + flagId;
         Response response = RestAssured.get(path);
 

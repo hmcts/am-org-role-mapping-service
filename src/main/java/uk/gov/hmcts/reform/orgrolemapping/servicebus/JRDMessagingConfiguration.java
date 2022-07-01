@@ -34,7 +34,7 @@ public class JRDMessagingConfiguration {
     public ServiceBusSenderClient getServiceBusSenderClient() {
         log.debug("Getting the ServiceBusSenderClient in JRD");
         logServiceBusVariables();
-        String connectionString = "Endpoint=sb://"
+        var connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
 
         log.info("JRD Topic Name is " + topic);

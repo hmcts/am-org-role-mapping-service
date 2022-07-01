@@ -56,7 +56,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
         URI endpoint = new URI("sb://" + host);
         log.debug("JRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
 
-        String destination = topic.concat("/subscriptions/").concat(subscription);
+        var destination = topic.concat("/subscriptions/").concat(subscription);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
