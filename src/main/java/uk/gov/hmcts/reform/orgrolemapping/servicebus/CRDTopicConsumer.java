@@ -54,7 +54,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
         URI endpoint = new URI("sb://" + host);
         log.debug("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
 
-        String destination = topic.concat("/subscriptions/").concat(subscription);
+        var destination = topic.concat("/subscriptions/").concat(subscription);
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,

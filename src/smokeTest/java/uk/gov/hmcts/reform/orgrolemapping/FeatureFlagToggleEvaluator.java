@@ -31,8 +31,8 @@ public class FeatureFlagToggleEvaluator implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                boolean isFlagEnabled = false;
-                String message = "The test is ignored as LD flag is false";
+                var isFlagEnabled = false;
+                var message = "The test is ignored as LD flag is false";
 
                 FeatureFlagToggle featureFlagToggle = description.getAnnotation(FeatureFlagToggle.class);
 

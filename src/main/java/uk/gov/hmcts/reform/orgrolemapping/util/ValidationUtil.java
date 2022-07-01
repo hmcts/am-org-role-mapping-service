@@ -26,7 +26,7 @@ public class ValidationUtil {
     }
 
     public static void validateInputParams(String pattern, String... inputString) {
-        for (String input : inputString) {
+        for (var input : inputString) {
             if (StringUtils.isEmpty(input)) {
                 throw new BadRequestException("The input parameter is Null/Empty");
             } else if (!Pattern.matches(pattern, input)) {
@@ -105,7 +105,7 @@ public class ValidationUtil {
     }
 
     public static void compareRoleCategory(String roleCategoryFromJob) {
-        boolean valid = false;
+        var valid = false;
         for (RoleCategory roleCategory : RoleCategory.values()) {
             if (roleCategory.name().equalsIgnoreCase(roleCategoryFromJob)) {
                 valid = true;
