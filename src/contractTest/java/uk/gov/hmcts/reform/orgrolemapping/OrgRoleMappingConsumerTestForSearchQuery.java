@@ -244,7 +244,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     @PactTestFor(pactMethod = "executeAdvancedSearchQueryRoleAssignmentAndGet200")
     void getAdvancedSearchQueryResultsAndGet200Test(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
@@ -264,7 +264,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentAndGet200")
     void getSearchQueryResultsByActorIdAndGet200Test(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
@@ -284,7 +284,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByRoleNameAndGet200")
     void getSearchQueryResultsByRoleNameAndGet200Test(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
@@ -304,7 +304,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByAttributesAndGet200")
     void getSearchQueryResultsByAttributesAndGet200Test(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
@@ -326,7 +326,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentMultipleRoleAssignmentsAndGet200")
     void getSearchQueryResultsMultipleRoleAssignmentsAndGet200Test(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
@@ -349,7 +349,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentEmptyCollectionAndGet200")
     void getSearchQueryResultsEmptyListOfRoleAssignmentsAndGet200Test(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())

@@ -85,7 +85,7 @@ public class RefDataJudicialProfileConsumerTest {
     @PactTestFor(pactMethod = "getJrdProfilesListOfIds")
     void executeGetJrdProfilesListOfIds(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
@@ -123,7 +123,7 @@ public class RefDataJudicialProfileConsumerTest {
     @PactTestFor(pactMethod = "getJrdProfilesServiceName")
     void executeGetJrdProfilesServiceName(MockServer mockServer)
             throws JSONException {
-        String actualResponseBody =
+        var actualResponseBody =
                 SerenityRest
                         .given()
                         .headers(getHttpHeaders())
