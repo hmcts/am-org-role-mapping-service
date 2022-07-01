@@ -167,7 +167,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @Test
     public void welcomeApiTest() throws Exception {
-        final String url = "/welcome";
+        final var url = "/welcome";
         logger.info(" WelcomeControllerIntegrationTest : Inside  Welcome API Test method...{}", url);
         final MvcResult result = mockMvc.perform(get(url).contentType(JSON_CONTENT_TYPE))
                 .andExpect(status().is(200))
@@ -193,7 +193,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_ONE_ROLE);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -222,7 +222,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("123e4567-e89b-42d3-a456-556642445676"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_MULTI_ROLE);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -251,7 +251,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445000", "123e4567-e89b-42d3-a456-556642445111"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_MULTI_USER_ONE_ROLE);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -281,7 +281,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9v"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DELETE_FLAG_TRUE);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -309,7 +309,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DROOL_RULE_FAIL);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -338,7 +338,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("123e4567-e89b-42d3-a456-556642445000"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_UPDATE_ROLE_TCW_STCW);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -348,7 +348,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(ROLE_NAME_STCW));
 
         assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
@@ -370,7 +370,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -379,7 +379,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertNotNull(contentAsString);
     }
 
@@ -399,7 +399,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -408,7 +408,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertNotNull(contentAsString);
     }
 
@@ -427,7 +427,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -436,7 +436,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertNotNull(contentAsString);
     }
 
@@ -456,7 +456,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -465,7 +465,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertNotNull(contentAsString);
     }
 
@@ -484,7 +484,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(new ArrayList<>())
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
 
         MvcResult result = mockMvc.perform(post(uri)
                 .contentType(JSON_CONTENT_TYPE)
@@ -493,7 +493,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(400))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("Empty user request"));
     }
 
@@ -512,7 +512,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DELETE_FLAG_TRUE);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -541,7 +541,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
                 .build();
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_ONE_ROLE);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -551,7 +551,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
 
         assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
@@ -573,7 +573,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
 
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_TRIBUNAL_JUDGE_FEE_PAID);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -583,7 +583,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("hmcts-judiciary"));
         assertTrue(contentAsString.contains("fee-paid-judge"));
 
@@ -602,7 +602,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
 
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_TRIBUNAL_JUDGE_SALARIED_PAID);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -612,7 +612,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("hmcts-judiciary"));
         assertTrue(contentAsString.contains("case-allocator"));
         assertTrue(contentAsString.contains("judge"));
@@ -635,7 +635,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
 
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_ASSISTANT_RESIDENT_JUDGE_ROLES);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -645,7 +645,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("hmcts-judiciary"));
         assertTrue(contentAsString.contains("case-allocator"));
         assertTrue(contentAsString.contains("judge"));
@@ -671,7 +671,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
 
         logger.info(" createOrgRoleMappingTest...");
-        String uri = "/am/role-mapping/staff/users";
+        var uri = "/am/role-mapping/staff/users";
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_TRIBUNAL_JUDGE_FEE_PAID);
 
         MvcResult result = mockMvc.perform(post(uri)
@@ -681,7 +681,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains("hmcts-judiciary"));
         assertTrue(contentAsString.contains("fee-paid-judge"));
 
@@ -723,7 +723,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         List<String> actorIds = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         JsonNode responseNode = null;
 
         if (StringUtils.isNotEmpty(contentAsString) && !contentAsString.equals("[]")) {
@@ -749,11 +749,11 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private HttpHeaders getHttpHeaders(String userType) {
         HttpHeaders headers = new HttpHeaders();
-        String authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
+        var authorisation = "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIs";
         headers.set("Authorization", "Bearer " + authorisation);
         headers.set("userType", userType);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String s2SToken = MockUtils.generateDummyS2SToken("am_org_role_mapping_service");
+        var s2SToken = MockUtils.generateDummyS2SToken("am_org_role_mapping_service");
         headers.add("ServiceAuthorization", "Bearer " + s2SToken);
         return headers;
     }
