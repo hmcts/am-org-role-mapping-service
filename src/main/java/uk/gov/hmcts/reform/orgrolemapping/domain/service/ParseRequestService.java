@@ -84,12 +84,12 @@ public class ParseRequestService implements ParseRequestBase<Object> {
                 invalidCaseWorkerProfiles.add(userProfile);
                 isInvalid = true;
             }
-            if (CollectionUtils.isEmpty(userProfile.getWorkArea())) {
+            if (objectPredicates.test(java.util.Collections.singletonList(userProfile.getWorkArea()))) {
                 log.error("The work area is not available for the userProfile {} ", userProfile.getId());
                 invalidCaseWorkerProfiles.add(userProfile);
                 isInvalid = true;
             }
-            if (CollectionUtils.isEmpty(userProfile.getRole())) {
+            if (objectPredicates.test(java.util.Collections.singletonList(userProfile.getRole()))) {
                 log.error("The role is not available for the userProfile {} ", userProfile.getId());
                 invalidCaseWorkerProfiles.add(userProfile);
                 isInvalid = true;
