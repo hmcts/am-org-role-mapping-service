@@ -72,7 +72,7 @@ public class SmokeTest {
     @FeatureFlagToggle("orm-base-flag")
     public void should_receive_response_for_welcomeAPI() {
 
-        String targetInstance = config.getOrgRoleMappingUrl();
+        var targetInstance = config.getOrgRoleMappingUrl();
         RestAssured.useRelaxedHTTPSValidation();
 
         Response response = SerenityRest

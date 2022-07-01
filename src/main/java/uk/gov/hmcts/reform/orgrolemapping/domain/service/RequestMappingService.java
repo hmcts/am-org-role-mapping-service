@@ -80,7 +80,7 @@ public class RequestMappingService<T> {
      */
     public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles,
                                                     List<JudicialBooking> judicialBookings, UserType userType) {
-        long startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
         // Get the role assignments for each caseworker in the input profiles.
         Map<String, List<RoleAssignment>> usersRoleAssignments = getProfileRoleAssignments(usersAccessProfiles,
                 judicialBookings, userType);
@@ -168,7 +168,7 @@ public class RequestMappingService<T> {
      */
     private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles,
                                                        List<JudicialBooking> judicialBookings) {
-        long startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles, judicialBookings);
         log.debug("Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
@@ -284,7 +284,7 @@ public class RequestMappingService<T> {
      */
     ResponseEntity<Object> updateRoleAssignments(String process, String reference,
                                                  Collection<RoleAssignment> roleAssignments) {
-        long startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
         AssignmentRequest assignmentRequest =
                 AssignmentRequest.builder()
                         .request(
@@ -345,7 +345,7 @@ public class RequestMappingService<T> {
 
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
-            Boolean status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
+            var status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
             droolFlagStates.put(featureFlagEnum.getValue(), status);
         }
     }

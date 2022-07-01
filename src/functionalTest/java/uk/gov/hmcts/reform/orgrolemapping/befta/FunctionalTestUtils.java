@@ -17,12 +17,12 @@ public class FunctionalTestUtils {
     }
 
     public static String getSaSToken(String resourceUri, String keyName, String key) throws Exception {
-        long epoch = System.currentTimeMillis() / 1000L;
-        int week = 60 * 60 * 24 * 7;
-        String expiry = Long.toString(epoch + week);
+        var epoch = System.currentTimeMillis() / 1000L;
+        var week = 60 * 60 * 24 * 7;
+        var expiry = Long.toString(epoch + week);
 
-        String stringToSign = URLEncoder.encode(resourceUri, StandardCharsets.UTF_8) + "\n" + expiry;
-        String signature = getHmac256(key, stringToSign);
+        var stringToSign = URLEncoder.encode(resourceUri, StandardCharsets.UTF_8) + "\n" + expiry;
+        var signature = getHmac256(key, stringToSign);
         return "SharedAccessSignature sr="
                 + URLEncoder.encode(resourceUri, StandardCharsets.UTF_8) + "&sig="
                 + URLEncoder.encode(signature, StandardCharsets.UTF_8) + "&se=" + expiry + "&skn=" + keyName;

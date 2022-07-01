@@ -403,7 +403,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Test
     public void shouldProcessRefreshRoleAssignmentsWithJudicialProfiles() throws Exception {
         logger.info(" Refresh role assignments successfully with valid user profiles");
-        String uuid = UUID.randomUUID().toString();
+        var uuid = UUID.randomUUID().toString();
         doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
         doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
         mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
@@ -415,7 +415,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is(200))
                 .andReturn();
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
     }
@@ -424,7 +424,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignments()
             throws Exception {
         logger.info(" Refresh role assignments failed with valid user profiles");
-        String uuid = UUID.randomUUID().toString();
+        var uuid = UUID.randomUUID().toString();
         doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
         doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
         mockRequestMappingServiceBookingParamWithStatus(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -436,7 +436,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is(422))
                 .andReturn();
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(Constants.FAILED_ROLE_REFRESH));
         logger.info(" -- Refresh Role Assignment record fail to update -- ");
     }
@@ -445,7 +445,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialBookings()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
-        String uuid = UUID.randomUUID().toString();
+        var uuid = UUID.randomUUID().toString();
         doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
         doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
         mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
@@ -457,7 +457,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().isOk())
                 .andReturn();
-        String contentAsString = result.getResponse().getContentAsString();
+        var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
         logger.info(" -- Refresh Role Assignment record updated without bookings -- ");
     }
@@ -554,7 +554,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("total_records", "" + userIds.length);
         List<JudicialBooking> bookings = new ArrayList<>();
-        for (String userId:userIds) {
+        for (var userId:userIds) {
             bookings.add(JudicialBooking.builder().beginTime(ZonedDateTime.now())
                     .endTime(ZonedDateTime.now().plusDays(5)).userId(userId)
                     .locationId("location").regionId("region").build());
@@ -566,7 +566,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("total_records", "" + userIds.length);
         List<JudicialProfile> bookings = new ArrayList<>();
-        for (String userId:userIds) {
+        for (var userId:userIds) {
             bookings.add(JudicialProfile.builder().sidamId(userId)
                     .appointments(List.of(Appointment.builder().appointment("Tribunal Judge")
                             .appointmentType("Fee Paid").build())).build());
@@ -612,7 +612,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer user1");
-        String s2SToken = MockUtils.generateDummyS2SToken(AUTHORISED_SERVICE);
+        var s2SToken = MockUtils.generateDummyS2SToken(AUTHORISED_SERVICE);
         headers.add("ServiceAuthorization", "Bearer " + s2SToken);
         headers.add(Constants.CORRELATION_ID_HEADER_NAME, "38a90097-434e-47ee-8ea1-9ea2a267f51d");
         return headers;
