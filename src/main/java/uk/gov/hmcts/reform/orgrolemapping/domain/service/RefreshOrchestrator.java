@@ -14,11 +14,10 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.NullCheckBiPredicate;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.userRequestListPredicate;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nullCheckPredicate;
 
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,7 +79,7 @@ public class RefreshOrchestrator {
         }
 
 
-        if (userRequest != null && userRequestListPredicate.test(userRequest.getUserIds())) {
+        if (userRequest != null && nullCheckPredicate.test(userRequest.getUserIds())) {
             //Extract and Validate received users List
             parseRequestService.validateUserRequest(userRequest);
             log.info("Validated userIds {}", userRequest.getUserIds());
@@ -102,7 +101,7 @@ public class RefreshOrchestrator {
             log.info("The refresh job retrieved from the DB:" + refreshJobEntity.get().getJobId());
         }
 
-        if (userRequest != null && userRequestListPredicate.test(userRequest.getUserIds())) {
+        if (userRequest != null && nullCheckPredicate.test(userRequest.getUserIds())) {
             try {
                 //Create userAccessProfiles based upon userIds
 
@@ -244,7 +243,7 @@ public class RefreshOrchestrator {
             refreshJobEntity.setLog(String.format(FAILED_JOB, failureUserIds));
             persistenceService.persistRefreshJob(refreshJobEntity);
 
-        } else if (CollectionUtils.isEmpty(failureUserIds)
+        } else if (!nullCheckPredicate.test(failureUserIds)
             && NullCheckBiPredicate.test(successUserIds,refreshJobEntity)) {
 
             refreshJobEntity.setStatus(COMPLETED);

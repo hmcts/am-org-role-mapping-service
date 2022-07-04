@@ -14,7 +14,7 @@ public class PredicateValidator {
     private PredicateValidator() {
     }
 
-    public static final Predicate<List<String>> userRequestListPredicate = CollectionUtils::isNotEmpty;
+    public static final Predicate<List<String>> nullCheckPredicate = CollectionUtils::isNotEmpty;
     public static final BiPredicate<List<String>, RefreshJobEntity> NullCheckBiPredicate =
         (userIds,refreshJobEntity) ->
             (CollectionUtils.isNotEmpty(userIds) && Objects.nonNull(refreshJobEntity));
