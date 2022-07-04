@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
 public class PredicateValidator {
 
@@ -17,10 +17,14 @@ public class PredicateValidator {
 
     public static final Predicate<HttpStatus> httpPredicates = statsCode -> statsCode.equals(HttpStatus.CREATED);
     public static final Predicate<List<Object>> objectPredicates = List::isEmpty;
-    public static final BiPredicate<UserRequest, List<String>> userRequestListBiPredicate = (userRequest, userId) ->
-        (userRequest != null &&  CollectionUtils.isNotEmpty(userId));
+    public static final Predicate<List<String>> userRequestListPredicate = CollectionUtils::isNotEmpty;
     public static final BiPredicate<List<String>, RefreshJobEntity> refreshJobBiPredicate =
-        (UserIds,refreshJobEntity) ->
-            (CollectionUtils.isNotEmpty(UserIds) && Objects.nonNull(refreshJobEntity));
+        (userIds,refreshJobEntity) ->
+            (CollectionUtils.isNotEmpty(userIds) && Objects.nonNull(refreshJobEntity));
+
+    public static Predicate<UserType> nameContains(final String userTypeName) {
+
+        return userType -> userType.name().contains(userTypeName);
+    }
 
 }

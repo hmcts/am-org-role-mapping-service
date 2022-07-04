@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nameContains;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.refreshJobBiPredicate;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.userRequestListBiPredicate;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.userRequestListPredicate;
 
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -79,8 +79,9 @@ public class RefreshOrchestrator {
         if (jobId == null) {
             throw new BadRequestException("Invalid JobId request");
         }
-        if (userRequestListBiPredicate.test(userRequest,userRequest == null
-            ? Collections.singletonList(null) : userRequest.getUserIds())) {
+
+
+        if (userRequest != null && userRequestListPredicate.test(userRequest.getUserIds())) {
             //Extract and Validate received users List
             parseRequestService.validateUserRequest(userRequest);
             log.info("Validated userIds {}", userRequest.getUserIds());
@@ -102,8 +103,7 @@ public class RefreshOrchestrator {
             log.info("The refresh job retrieved from the DB:" + refreshJobEntity.get().getJobId());
         }
 
-        if (userRequestListBiPredicate.test(userRequest,userRequest == null
-            ? Collections.singletonList(null) : userRequest.getUserIds())) {
+        if (userRequest != null && userRequestListPredicate.test(userRequest.getUserIds())) {
             try {
                 //Create userAccessProfiles based upon userIds
 
@@ -157,7 +157,7 @@ public class RefreshOrchestrator {
         ValidationUtil.compareRoleCategory(refreshJobEntity.getRoleCategory());
 
         try {
-            if (userType.equals(UserType.CASEWORKER)) {
+            if (nameContains(UserType.CASEWORKER.toString()).test(userType)) {
                 //Call to CRD Service to retrieve the total number of records in first call
                 ResponseEntity<List<Object>> response = crdService
                         .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
