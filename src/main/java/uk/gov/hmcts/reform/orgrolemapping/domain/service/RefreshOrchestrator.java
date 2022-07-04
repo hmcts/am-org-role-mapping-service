@@ -13,8 +13,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nameContains;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.refreshJobBiPredicate;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.NullCheckBiPredicate;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.userRequestListPredicate;
 
 import feign.FeignException;
@@ -157,7 +156,7 @@ public class RefreshOrchestrator {
         ValidationUtil.compareRoleCategory(refreshJobEntity.getRoleCategory());
 
         try {
-            if (nameContains(UserType.CASEWORKER.toString()).test(userType)) {
+            if (userType.equals(UserType.CASEWORKER)) {
                 //Call to CRD Service to retrieve the total number of records in first call
                 ResponseEntity<List<Object>> response = crdService
                         .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
@@ -238,7 +237,7 @@ public class RefreshOrchestrator {
     protected void updateJobStatus(List<String> successUserIds, List<String> failureUserIds,
                                    RefreshJobEntity refreshJobEntity) {
 
-        if (refreshJobBiPredicate.test(failureUserIds,refreshJobEntity)) {
+        if (NullCheckBiPredicate.test(failureUserIds,refreshJobEntity)) {
             refreshJobEntity.setStatus(ABORTED);
             refreshJobEntity.setUserIds(failureUserIds.toArray(new String[0]));
             refreshJobEntity.setCreated(ZonedDateTime.now());
@@ -246,7 +245,7 @@ public class RefreshOrchestrator {
             persistenceService.persistRefreshJob(refreshJobEntity);
 
         } else if (CollectionUtils.isEmpty(failureUserIds)
-            && refreshJobBiPredicate.test(successUserIds,refreshJobEntity)) {
+            && NullCheckBiPredicate.test(successUserIds,refreshJobEntity)) {
 
             refreshJobEntity.setStatus(COMPLETED);
             refreshJobEntity.setCreated(ZonedDateTime.now());

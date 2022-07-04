@@ -7,7 +7,7 @@ import java.util.Set;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.httpPredicates;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.httpStatusPredicate;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUDICIAL;
 
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,8 @@ public class JudicialRefreshOrchestrator {
                 judicialBookings, JUDICIAL);
         var object = (List<ResponseEntity<UserAccessProfile>>) Objects.requireNonNull(
             responseEntity.getBody());
-        if (object.stream().anyMatch(response -> httpPredicates.negate().test(response.getStatusCode()))) {
+        if (object.stream().anyMatch(response -> httpStatusPredicate(response.getStatusCode()).negate()
+            .test(HttpStatus.CREATED))) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(FAILED_ROLE_REFRESH);
         }
         return ResponseEntity.ok().body(Map.of("Message", SUCCESS_ROLE_REFRESH));

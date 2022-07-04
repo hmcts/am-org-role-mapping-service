@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT_HYPHEN_PATTERN;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nameContains;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.objectPredicates;
 
 @Service
 @Slf4j
@@ -52,24 +50,24 @@ public class ParseRequestService implements ParseRequestBase<Object> {
                 && userRequest.getUserIds().size() != retrievedProfiles.size()) {
             List<String> userIdsRetrieved = new ArrayList<>();
 
-            if (nameContains(UserType.CASEWORKER.toString()).test(userType))  {
+            if (userType.equals(UserType.CASEWORKER)) {
                 List<CaseWorkerProfile> caseworkerUserProfiles = retrievedProfiles;
                 caseworkerUserProfiles.forEach(userProfile -> userIdsRetrieved.add(userProfile.getId()));
-            } else if (nameContains(UserType.JUDICIAL.toString()).test(userType))  {
+            } else if (userType.equals(UserType.JUDICIAL)) {
                 List<JudicialProfile> judicialUserProfiles = retrievedProfiles;
                 judicialUserProfiles.forEach(judicialProfile -> userIdsRetrieved.add(judicialProfile.getSidamId()));
             }
             List<String> userIdsNotRetrieved = userRequest.getUserIds().stream().filter(userId -> !userIdsRetrieved
                     .contains(userId)).toList();
-            if (nameContains(UserType.JUDICIAL.toString()).test(userType))  {
+            if (userType.equals(UserType.JUDICIAL)) {
                 userIdsNotRetrieved.forEach(o -> invalidProfiles.add(JudicialProfile.builder().sidamId(o).build()));
             }
             log.error("User profiles couldn't be found for the following userIds :: {}", userIdsNotRetrieved);
         }
 
-        if (nameContains(UserType.CASEWORKER.toString()).test(userType))  {
+        if (userType.equals(UserType.CASEWORKER)) {
             caseworkerProfileValidation(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
-        } else if (nameContains(UserType.JUDICIAL.toString()).test(userType))  {
+        } else if (userType.equals(UserType.JUDICIAL)) {
             judicialProfileValidation(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
         }
     }
@@ -85,12 +83,12 @@ public class ParseRequestService implements ParseRequestBase<Object> {
                 invalidCaseWorkerProfiles.add(userProfile);
                 isInvalid = true;
             }
-            if (objectPredicates.test(java.util.Collections.singletonList(userProfile.getWorkArea()))) {
+            if (CollectionUtils.isEmpty(userProfile.getWorkArea())) {
                 log.error("The work area is not available for the userProfile {} ", userProfile.getId());
                 invalidCaseWorkerProfiles.add(userProfile);
                 isInvalid = true;
             }
-            if (objectPredicates.test(java.util.Collections.singletonList(userProfile.getRole()))) {
+            if (CollectionUtils.isEmpty(userProfile.getRole())) {
                 log.error("The role is not available for the userProfile {} ", userProfile.getId());
                 invalidCaseWorkerProfiles.add(userProfile);
                 isInvalid = true;
