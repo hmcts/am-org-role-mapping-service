@@ -79,8 +79,8 @@ public class ParseRequestService implements ParseRequestBase<Object> {
                                              Set<Object> invalidCaseWorkerProfiles) {
 
         profiles.forEach(userProfile -> {
-            boolean isInvalid = false;
-            if (objectPredicates.test(java.util.Collections.singletonList(userProfile.getBaseLocation()))) {
+            var isInvalid = false;
+            if (CollectionUtils.isEmpty(userProfile.getBaseLocation())) {
                 log.error("The base location is not available for the userProfile {} ", userProfile.getId());
                 invalidCaseWorkerProfiles.add(userProfile);
                 isInvalid = true;

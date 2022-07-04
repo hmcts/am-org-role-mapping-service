@@ -21,7 +21,7 @@ public class OrmDefaultMultiSourceFeatureToggleService extends DefaultMultiSourc
         toggleable.getSourceTagNames().stream().filter(tag -> tag.contains(LAUNCH_DARKLY_FLAG)).forEach(tag -> {
 
             String id = null;
-            String domain = tag.contains(COLON) ? tag.substring(tag.indexOf("(") + 1, tag.indexOf(COLON)) : "LD";
+            var domain = tag.contains(COLON) ? tag.substring(tag.indexOf("(") + 1, tag.indexOf(COLON)) : "LD";
             FeatureToggleService service = getToggleService(domain);
 
             if (!tag.contains(COLON) && !tag.contains(STRING_EQUALS)) {
@@ -33,11 +33,11 @@ public class OrmDefaultMultiSourceFeatureToggleService extends DefaultMultiSourc
             }
 
             if (tag.contains(STRING_EQUALS)) {
-                String expectedStatusString = tag.substring(tag.indexOf(STRING_EQUALS) + 1, tag.indexOf(")"));
-                Boolean expectedStatus = expectedStatusString.equalsIgnoreCase("on");
+                var expectedStatusString = tag.substring(tag.indexOf(STRING_EQUALS) + 1, tag.indexOf(")"));
+                var expectedStatus = expectedStatusString.equalsIgnoreCase("on");
                 scenarioFeatureToggleInfo.addExpectedStatus(id, expectedStatus);
             }
-            Boolean actualStatus = (Boolean) service.getToggleStatusFor(id);
+            var actualStatus = (Boolean) service.getToggleStatusFor(id);
             scenarioFeatureToggleInfo.addActualStatus(id, actualStatus);
         });
         return scenarioFeatureToggleInfo;

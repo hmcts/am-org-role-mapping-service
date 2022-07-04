@@ -1,5 +1,19 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.util.Objects.requireNonNull;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import feign.FeignException;
@@ -30,20 +44,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.util.Objects.requireNonNull;
 
 @Service
 @Slf4j
@@ -79,7 +79,7 @@ public class RequestMappingService<T> {
      */
     public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles,
                                                     List<JudicialBooking> judicialBookings, UserType userType) {
-        long startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
         // Get the role assignments for each caseworker in the input profiles.
         Map<String, List<RoleAssignment>> usersRoleAssignments = getProfileRoleAssignments(usersAccessProfiles,
                 judicialBookings, userType);
@@ -167,7 +167,7 @@ public class RequestMappingService<T> {
      */
     private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles,
                                                        List<JudicialBooking> judicialBookings) {
-        long startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
         List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles, judicialBookings);
         log.debug("Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
@@ -281,7 +281,7 @@ public class RequestMappingService<T> {
      */
     ResponseEntity<Object> updateRoleAssignments(String process, String reference,
                                                  Collection<RoleAssignment> roleAssignments) {
-        long startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
         AssignmentRequest assignmentRequest =
                 AssignmentRequest.builder()
                         .request(
@@ -342,7 +342,7 @@ public class RequestMappingService<T> {
 
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
-            Boolean status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
+            var status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
             droolFlagStates.put(featureFlagEnum.getValue(), status);
         }
     }
