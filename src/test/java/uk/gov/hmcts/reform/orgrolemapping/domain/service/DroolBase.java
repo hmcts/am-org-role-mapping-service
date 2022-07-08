@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -62,14 +61,14 @@ public abstract class DroolBase {
         //   3. retrieve all the created role assignments
         //      (into a variable populated by the results of a query defined in the rules).
 
-        commands = new ArrayList<>();
-        commands.add(CommandFactory.newInsertElements(allProfiles));
-        commands.add(CommandFactory.newInsertElements(judicialOfficeHolders));
-        commands.add(CommandFactory.newInsertElements(judicialAccessProfiles));
-        commands.add(CommandFactory.newInsertElements(judicialBookings));
-        commands.add(CommandFactory.newInsertElements(featureFlags));
-        commands.add(CommandFactory.newFireAllRules());
-        commands.add(CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME));
+        commands = List.of(CommandFactory.newInsertElements(allProfiles),
+                CommandFactory.newInsertElements(judicialOfficeHolders),
+                CommandFactory.newInsertElements(judicialAccessProfiles),
+                CommandFactory.newInsertElements(judicialBookings),
+                CommandFactory.newInsertElements(featureFlags),
+                CommandFactory.newFireAllRules(),
+                CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME)
+                );
 
         // Run the rules
         results = kieSession.execute(CommandFactory.newBatchExecution(commands));

@@ -38,9 +38,7 @@ public class IntTestDataBuilder {
     }
 
     public static UserRequest buildUserRequest() {
-        ArrayList<String> users = new ArrayList<>();
-        users.add(id_1);
-        users.add(id_2);
+        List<String> users = List.of(id_1,id_2);
         return UserRequest.builder().userIds(users).build();
     }
 
@@ -182,12 +180,12 @@ public class IntTestDataBuilder {
                                                                                    String workArea1,
                                                                                    String workArea2,
                                                                                    boolean suspended) {
-        List<CaseWorkerProfilesResponse> userProfiles = new ArrayList<>();
         CaseWorkerProfile profile = buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
                 enableLocationList, primaryLocation1, primaryLocation2,
                 enableWorkAreaList, workArea1, workArea2, suspended);
+        List<CaseWorkerProfilesResponse> userProfiles =
+                List.of(CaseWorkerProfilesResponse.builder().serviceName(service).userProfile(profile).build());
 
-        userProfiles.add(CaseWorkerProfilesResponse.builder().serviceName(service).userProfile(profile).build());
         return userProfiles;
     }
 }

@@ -123,9 +123,7 @@ public class RefDataCaseworkerConsumerTest {
     }
 
     public static UserRequest buildUserRequest() {
-        ArrayList<String> users = new ArrayList<>();
-        users.add("userId1");
-        users.add("userId2");
+        List<String> users = List.of("userId1","userId2");
         return UserRequest.builder().userIds(users).build();
     }
 

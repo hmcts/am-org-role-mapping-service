@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolCaseMappingTest extends DroolBase {
+class  DroolCaseMappingTest extends DroolBase {
 
     private final String workTypes = "hearing_work, routine_work, decision_making_work, applications";
 
