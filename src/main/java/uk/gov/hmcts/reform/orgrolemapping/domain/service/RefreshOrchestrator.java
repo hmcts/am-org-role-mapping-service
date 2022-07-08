@@ -1,8 +1,23 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.NullCheckBiPredicate;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nullCheckPredicate;
+
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,20 +34,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
-
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
 
 @Service
 @Slf4j
@@ -78,7 +79,7 @@ public class RefreshOrchestrator {
         }
 
 
-        if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
+        if (userRequest != null && nullCheckPredicate.test(userRequest.getUserIds())) {
             //Extract and Validate received users List
             parseRequestService.validateUserRequest(userRequest);
             log.info("Validated userIds {}", userRequest.getUserIds());
@@ -100,7 +101,7 @@ public class RefreshOrchestrator {
             log.info("The refresh job retrieved from the DB:" + refreshJobEntity.get().getJobId());
         }
 
-        if (userRequest != null && CollectionUtils.isNotEmpty(userRequest.getUserIds())) {
+        if (userRequest != null && nullCheckPredicate.test(userRequest.getUserIds())) {
             try {
                 //Create userAccessProfiles based upon userIds
 
@@ -235,15 +236,15 @@ public class RefreshOrchestrator {
     protected void updateJobStatus(List<String> successUserIds, List<String> failureUserIds,
                                    RefreshJobEntity refreshJobEntity) {
 
-        if (CollectionUtils.isNotEmpty(failureUserIds) && Objects.nonNull(refreshJobEntity)) {
+        if (NullCheckBiPredicate.test(failureUserIds,refreshJobEntity)) {
             refreshJobEntity.setStatus(ABORTED);
             refreshJobEntity.setUserIds(failureUserIds.toArray(new String[0]));
             refreshJobEntity.setCreated(ZonedDateTime.now());
             refreshJobEntity.setLog(String.format(FAILED_JOB, failureUserIds));
             persistenceService.persistRefreshJob(refreshJobEntity);
 
-        } else if (CollectionUtils.isEmpty(failureUserIds) && CollectionUtils.isNotEmpty(successUserIds)
-                && Objects.nonNull(refreshJobEntity)) {
+        } else if (!nullCheckPredicate.test(failureUserIds)
+            && NullCheckBiPredicate.test(successUserIds,refreshJobEntity)) {
 
             refreshJobEntity.setStatus(COMPLETED);
             refreshJobEntity.setCreated(ZonedDateTime.now());
