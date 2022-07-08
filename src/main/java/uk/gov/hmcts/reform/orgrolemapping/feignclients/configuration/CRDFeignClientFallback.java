@@ -44,7 +44,7 @@ public class CRDFeignClientFallback implements CRDFeignClient {
         ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity = ResponseEntity.ok(Arrays
                 .asList(CaseWorkerProfilesResponse.builder()
                 .serviceName(ccdServiceNames).userProfile(buildUserAccessProfile(UserRequest.builder().userIds(
-                        Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString()))
+                        List.of(UUID.randomUUID().toString(), UUID.randomUUID().toString()))
                         .build(), "userProfileSample.json").get(0)).build()));
 
         HttpHeaders responseHeaders = new HttpHeaders();

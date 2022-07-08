@@ -9,7 +9,6 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
-import com.google.common.collect.Maps;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
@@ -142,8 +141,7 @@ public class OrgRoleMappingConsumerTestForGetActorById {
 
     @NotNull
     private Map<String, String> getResponseHeaders() {
-        Map<String, String> responseHeaders = Maps.newHashMap();
-        responseHeaders.put("Content-Type",
+        Map<String, String> responseHeaders = Map.of("Content-Type",
                 "application/vnd.uk.gov.hmcts.role-assignment-service.get-assignments+json;charset=UTF-8;version=1.0");
         return responseHeaders;
     }

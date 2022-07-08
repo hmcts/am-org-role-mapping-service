@@ -28,7 +28,7 @@ class CRDTopicConsumerTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
     }
 
