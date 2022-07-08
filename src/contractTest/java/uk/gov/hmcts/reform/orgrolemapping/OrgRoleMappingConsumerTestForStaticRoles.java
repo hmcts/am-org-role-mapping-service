@@ -5,7 +5,6 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
-import com.google.common.collect.Maps;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
 import org.apache.http.client.fluent.Executor;
@@ -91,17 +90,16 @@ public class OrgRoleMappingConsumerTestForStaticRoles {
 
     @NotNull
     private Map<String, String> getResponseHeaders() {
-        Map<String, String> responseHeaders = Maps.newHashMap();
-        responseHeaders.put("Content-Type",
+        Map<String, String> responseHeaders = Map.of("Content-Type",
                 "application/vnd.uk.gov.hmcts.role-assignment-service.get-roles+json;charset=UTF-8;version=1.0");
         return responseHeaders;
     }
 
     @NotNull
     private Map<String, String> getRoleAssignmentResponseHeaders() {
-        Map<String, String> responseHeaders = Maps.newHashMap();
-        responseHeaders.put("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments"
-               + "+json");
+        Map<String, String> responseHeaders =
+                Map.of("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments"
+                + "+json");
         return responseHeaders;
     }
 

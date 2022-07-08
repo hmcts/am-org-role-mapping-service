@@ -9,7 +9,6 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
-import com.google.common.collect.Maps;
 import groovy.util.logging.Slf4j;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
@@ -330,8 +329,8 @@ public class OrgRoleMappingConsumerTestForCreate {
 
     @NotNull
     private Map<String, String> getRoleAssignmentResponseHeaders() {
-        Map<String, String> responseHeaders = Maps.newHashMap();
-        responseHeaders.put("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service."
+        Map<String, String> responseHeaders =
+                Map.of("Content-Type", "application/vnd.uk.gov.hmcts.role-assignment-service."
                 + "create-assignments+json");
         return responseHeaders;
     }
