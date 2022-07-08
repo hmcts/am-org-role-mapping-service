@@ -22,7 +22,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,8 +61,7 @@ class BulkAssignmentOrchestratorTest {
 
         doReturn(TestDataBuilder.buildUserAccessProfileMap(false, false)).when(retrieveDataService)
                 .retrieveProfiles(Mockito.any(),Mockito.any());
-        List<ResponseEntity<Object>> responseEntities = new ArrayList<>();
-        responseEntities.add(ResponseEntity.ok(AssignmentRequestBuilder
+        List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
                 .buildAssignmentRequest(false)));
 
         Mockito.when(requestMappingService.createAssignments(Mockito.any(), Mockito.any()))
@@ -100,8 +98,7 @@ class BulkAssignmentOrchestratorTest {
 
         doReturn(TestDataBuilder.buildJudicialAccessProfileMap()).when(retrieveDataService)
                 .retrieveProfiles(Mockito.any(),Mockito.any());
-        List<ResponseEntity<Object>> responseEntities = new ArrayList<>();
-        responseEntities.add(ResponseEntity.ok(AssignmentRequestBuilder
+        List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
                 .buildJudicialAssignmentRequest(false)));
 
         Mockito.when(requestMappingService.createAssignments(Mockito.any(), Mockito.any()))
