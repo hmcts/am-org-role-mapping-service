@@ -25,9 +25,7 @@ rule "civil_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL Presiding Judge-Salaried",
-                                         "CIVIL Resident Judge-Salaried", "CIVIL Deputy District Judge-Fee-Paid",
-                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
-                                         "CIVIL Recorder-Fee-Paid"))
+                                         "CIVIL Resident Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
       if($joh.getOffice().contains("Fee-Paid")) {
@@ -208,6 +206,8 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+   attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
+
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -262,4 +262,75 @@ then
       .attributes(attribute)
       .build());
       logMsg("Rule : civil_hmcts_judiciary_org_role");
+end;
+
+/*
+ * CIVIL "circuit-judge" org role can be created by any existing judicial office holder having
+ * "CIVIL Deputy Circuit Judge-Fee-Paid" business role.
+ */
+rule "civil_circuit_judge_org_role_for_fee_paid_judge"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("CIVIL Deputy Circuit Judge-Fee-Paid"))
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+   $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("circuit-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($bk.getBeginTime())
+      .endTime($bk.getEndTime())
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : civil_circuit_judge_org_role_for_fee_paid_judge");
+end;
+
+/*
+ * CIVIL "judge" org role can be created by any existing judicial office holder having
+ * "CIVIL Deputy Judge-Fee-Paid, CIVIL Recorder-Fee-Paid,CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid" business role.
+ */
+rule "civil_judge_org_role_for_fee_paid_judge"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("CIVIL Deputy District Judge-Fee-Paid", "CIVIL Recorder-Fee-Paid",
+                                        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid"))
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+   $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($bk.getBeginTime())
+      .endTime($bk.getEndTime())
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : civil_judge_org_role_for_fee_paid_judge");
 end;
