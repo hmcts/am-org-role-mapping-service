@@ -1,30 +1,25 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
-import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,14 +45,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -97,14 +86,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -168,14 +151,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
 
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -203,15 +180,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
@@ -227,14 +197,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -266,14 +230,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
                                 .minusMonths(5)).build())));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -298,14 +256,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
                         .build())));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -334,14 +286,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
                                 .minusMonths(5)).build())));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -371,14 +317,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
                         .build())));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -403,14 +343,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
                                 .minusMonths(5)).build())));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -441,14 +375,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
                                 .minusMonths(5)).build())));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -468,14 +396,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -507,14 +429,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -545,14 +461,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -581,14 +491,8 @@ class DroolJudicialOfficeMappingSscsTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
