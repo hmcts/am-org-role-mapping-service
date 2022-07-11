@@ -77,7 +77,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
     }
 
-    @ParameterizedTest
+    //@ParameterizedTest
     @CsvSource({
             "CIVIL Deputy District Judge-Fee-Paid,fee-paid-judge",
             "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,fee-paid-judge",
@@ -88,7 +88,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+        buildExecuteKieSession(getFeatureFlags("civil_temp_judge_wa_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
@@ -259,12 +259,10 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("judge","fee-paid-judge","hmcts-judiciary",
-                        "judge","fee-paid-judge","hmcts-judiciary"));
-        assertEquals(appointmentList.get(0).getEpimmsId(),
-                roleAssignments.get(3).getAttributes().get("primaryLocation").asText());
+                containsInAnyOrder("fee-paid-judge","hmcts-judiciary",
+                        "fee-paid-judge","hmcts-judiciary"));
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
                 .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
@@ -318,9 +316,9 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
+        assertEquals(2, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("judge","fee-paid-judge","hmcts-judiciary"));
+                containsInAnyOrder("fee-paid-judge","hmcts-judiciary"));
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
                 .forEach(r -> {
