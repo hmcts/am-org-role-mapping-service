@@ -11,6 +11,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -18,6 +20,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,18 +80,23 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @CsvSource({
             "CIVIL Deputy District Judge-Fee-Paid,fee-paid-judge",
             "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,fee-paid-judge",
             "CIVIL Recorder-Fee-Paid,fee-paid-judge"
     })
-    void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) {
+    void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) throws IOException {
 
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
+        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
+                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
+        judicialBooking.setLocationId("location1");
 
+        judicialBookings = Set.of(judicialBooking);
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_temp_judge_wa_1_0", true));
+        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
