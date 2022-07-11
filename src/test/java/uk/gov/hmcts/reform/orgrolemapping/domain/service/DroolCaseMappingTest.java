@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolCaseMappingTest extends DroolBase {
+class  DroolCaseMappingTest extends DroolBase {
 
     private final String workTypes = "hearing_work, routine_work, decision_making_work, applications";
 

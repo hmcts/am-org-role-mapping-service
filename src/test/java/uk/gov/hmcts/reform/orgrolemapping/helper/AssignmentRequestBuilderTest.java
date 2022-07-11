@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -119,7 +119,7 @@ class AssignmentRequestBuilderTest {
     @Test
     void validateEmptyAuthorisation() {
 
-        List<Authorisation> authorisations = new ArrayList<>();
+        List<Authorisation> authorisations = Collections.emptyList();
 
         assertFalse(AssignmentRequestBuilder.validateAuthorisation(authorisations, "BFA1"));
     }
