@@ -25,9 +25,7 @@ rule "civil_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL Presiding Judge-Salaried",
-                                         "CIVIL Resident Judge-Salaried", "CIVIL Deputy District Judge-Fee-Paid",
-                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
-                                         "CIVIL Recorder-Fee-Paid"))
+                                         "CIVIL Resident Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
       if($joh.getOffice().contains("Fee-Paid")) {
