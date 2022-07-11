@@ -1,0 +1,14 @@
+{
+  "_guid_": "S-051_PostCreateRequestToORM",
+  "_extends_": "PushMessageToCRDProfileProcess",
+  "productName": "Organisation Role Mapping",
+  "specs": [
+    "to post create organisational role mapping request on ORM"
+  ],
+
+  "request": {
+    "body": {
+      "userIds": "${[scenarioContext][parentContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+    }
+  }
+}
