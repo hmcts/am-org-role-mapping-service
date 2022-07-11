@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
-
+import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctRoleAssignments;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import feign.FeignException;
@@ -204,8 +204,10 @@ public class RequestMappingService<T> {
         for (QueryResultsRow row : queryResults) {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
-        return roleAssignments;
+        return distinctRoleAssignments(roleAssignments);
     }
+
+
 
     private List<FeatureFlag> getDBFeatureFlags() {
         List<FeatureFlag> featureFlags = new ArrayList<>();

@@ -3,22 +3,17 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 
 @RunWith(MockitoJUnitRunner.class)
 class  DroolCaseMappingTest extends DroolBase {
@@ -29,14 +24,7 @@ class  DroolCaseMappingTest extends DroolBase {
     void shouldReturnOneSeniorCaseWorker() {
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -57,14 +45,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -85,14 +66,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -115,14 +89,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -140,14 +107,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -165,14 +125,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -183,14 +136,7 @@ class  DroolCaseMappingTest extends DroolBase {
     void shouldReturnOneSeniorCaseWorkerForNewRule() {
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -211,14 +157,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -249,14 +188,7 @@ class  DroolCaseMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -293,14 +225,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -344,14 +269,7 @@ class  DroolCaseMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -389,14 +307,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -441,14 +352,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -492,14 +396,7 @@ class  DroolCaseMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -539,14 +436,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -586,14 +476,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -627,14 +510,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -652,14 +528,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -677,14 +546,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());

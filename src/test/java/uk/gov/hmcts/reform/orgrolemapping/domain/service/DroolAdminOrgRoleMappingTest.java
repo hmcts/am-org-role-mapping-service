@@ -2,16 +2,17 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.hamcrest.collection.ArrayMatching;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -23,120 +24,46 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolAdminOrgRoleMappingTest extends DroolBase {
 
-    private final String workTypes = "hearing_work, upper_tribunal, routine_work";
+    private static final String workTypes = "hearing_work, upper_tribunal, routine_work";
 
-    @Test
-    void shouldReturnHearingCentreAdminAndAdminOrgRolesForRoleId_3_to_5() {
-        allProfiles.clear();
-        IntStream.range(3, 6).forEach(roleId ->
-                allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", false)));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(6,roleAssignments.size());
-        IntStream.range(0, 3).forEach(id -> {
-            assertEquals("hmcts-admin",roleAssignments.get(id).getRoleName());
-            assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
-        });
-        IntStream.range(3, 6).forEach(id -> {
-            assertEquals("hearing-centre-admin",roleAssignments.get(id).getRoleName());
-            assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
-        });
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(3).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(4).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(5).getAttributes().get("workTypes").asText());
+    static Stream<Arguments> generateData() {
+        return Stream.of(
+                Arguments.of("3", Arrays.asList("hmcts-admin", "hearing-centre-admin"), workTypes),
+                Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin"), workTypes),
+                Arguments.of("5", Arrays.asList("hmcts-admin", "hearing-centre-admin"), workTypes),
+                Arguments.of("6", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes),
+                Arguments.of("7", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes),
+                Arguments.of("8", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes),
+                Arguments.of("9", Arrays.asList("hmcts-admin", "ctsc"), workTypes),
+                Arguments.of("10", Arrays.asList("hmcts-admin", "ctsc"), workTypes)
+        );
     }
 
-    @Test
-    void shouldReturnNationalBusinessCentreAndAdminOrgRolesForRoleId_6_to_8() {
+    @ParameterizedTest
+    @MethodSource("generateData")
+    void verifyIacAdminProfileRoleCreation(String roleId, List<String> roleNames, String workTypes) {
         allProfiles.clear();
-        IntStream.range(6, 9).forEach(roleId ->
-                allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", false)));
+        allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId, false));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6,roleAssignments.size());
-        IntStream.range(0, 3).forEach(id -> {
-            assertEquals("hmcts-admin",roleAssignments.get(id).getRoleName());
-            assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
-        });
-        IntStream.range(3, 6).forEach(id -> {
-            assertEquals("national-business-centre",roleAssignments.get(id).getRoleName());
-            assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
-        });
+        assertEquals(roleNames.size(), roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(roleNames.toArray()));
+        assertEquals(RoleCategory.ADMIN,roleAssignments.get(0).getRoleCategory());
+        assertEquals(RoleCategory.ADMIN,roleAssignments.get(1).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(3).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(4).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(5).getAttributes().get("workTypes").asText());
-    }
-
-    @Test
-    void shouldReturnCtscAndAdminOrgRolesForRoleId_9_to_10() {
-        allProfiles.clear();
-        IntStream.range(9, 11).forEach(roleId ->
-                allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", false)));
-
-        //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4,roleAssignments.size());
-        IntStream.range(0, 2).forEach(id -> {
-            assertEquals("hmcts-admin",roleAssignments.get(id).getRoleName());
-            assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
-        });
-        IntStream.range(2, 4).forEach(id -> {
-            assertEquals("ctsc",roleAssignments.get(id).getRoleName());
-            assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
-        });
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(2).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(3).getAttributes().get("workTypes").asText());
+        assertThat(roleAssignments.stream().filter(w -> w.getAttributes().get("workTypes") != null)
+                        .map(w -> w.getAttributes().get("workTypes").asText()).toList(),
+                containsInAnyOrder(workTypes));
     }
 
     @Test
@@ -151,62 +78,44 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(32,roleAssignments.size());
-        IntStream.range(0, 8).forEach(id -> {
+        assertEquals(6,roleAssignments.size());
+        IntStream.of(0).forEach(id -> {
             assertEquals("hmcts-admin",roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(8, 11).forEach(id -> {
+        IntStream.of(1).forEach(id -> {
             assertEquals("hearing-centre-admin",roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(11, 13).forEach(id -> {
+        IntStream.of(2).forEach(id -> {
             assertEquals("national-business-centre", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(14, 15).forEach(id -> {
+        IntStream.of(3).forEach(id -> {
             assertEquals("ctsc", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(16, 23).forEach(id -> {
+        IntStream.of(4).forEach(id -> {
             assertEquals("case-allocator", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.range(24, 31).forEach(id -> {
+        IntStream.of(5).forEach(id -> {
             assertEquals("task-supervisor", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
 
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
-
         assertEquals(workTypes,
-                roleAssignments.get(8).getAttributes().get("workTypes").asText());
+                roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
-                roleAssignments.get(9).getAttributes().get("workTypes").asText());
+                roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
-                roleAssignments.get(10).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(11).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(12).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(13).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(14).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(15).getAttributes().get("workTypes").asText());
+                roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -216,14 +125,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
                 allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", false)));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -239,14 +141,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -264,14 +159,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -285,20 +173,13 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
                         false)));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("tribunal-caseworker", "tribunal-caseworker", "hmcts-legal-operations",
+                containsInAnyOrder("tribunal-caseworker", "tribunal-caseworker",
                         "registrar", "registrar", "hmcts-legal-operations"));
 
         roleAssignments.forEach(roleAssignment -> {
@@ -329,22 +210,16 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(12, roleAssignments.size());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("tribunal-caseworker", "hmcts-legal-operations", "registrar",
-                        "hmcts-legal-operations", "task-supervisor", "case-allocator","task-supervisor",
-                        "case-allocator","task-supervisor", "case-allocator", "tribunal-caseworker", "registrar"));
+                        "case-allocator","task-supervisor","task-supervisor",
+                        "tribunal-caseworker", "registrar", "case-allocator"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
@@ -370,21 +245,14 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
                         false)));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(14, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-admin", "hmcts-admin","hmcts-admin","hmcts-admin","hmcts-admin",
-                        "hmcts-admin","superuser", "superuser", "superuser", "clerk", "clerk","clerk","clerk","clerk"));
+                containsInAnyOrder("hmcts-admin","superuser", "superuser", "clerk", "clerk"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
@@ -418,24 +286,15 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(28, roleAssignments.size());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-admin", "hmcts-admin","hmcts-admin","hmcts-admin","hmcts-admin",
-                        "hmcts-admin","superuser", "superuser", "superuser","clerk","clerk","clerk","clerk", "clerk",
-                        "task-supervisor", "task-supervisor", "task-supervisor","task-supervisor", "task-supervisor",
-                        "task-supervisor", "task-supervisor", "case-allocator", "case-allocator", "case-allocator",
-                        "case-allocator", "case-allocator", "case-allocator", "case-allocator"));
+                containsInAnyOrder("hmcts-admin","superuser", "superuser","clerk","clerk",
+                        "task-supervisor", "task-supervisor","case-allocator", "case-allocator"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
@@ -469,14 +328,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
