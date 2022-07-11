@@ -5,8 +5,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
@@ -31,7 +29,6 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,14 +48,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -88,14 +79,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -117,14 +102,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -147,14 +126,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -194,14 +167,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -210,7 +177,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
                 containsInAnyOrder("circuit-judge","hmcts-judiciary"));
         assertEquals(appointmentList.get(0).getEpimmsId(),
                 roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
         assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
                 roleAssignments.get(0).getBeginTime().getDayOfYear());
@@ -248,25 +215,18 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("judge","fee-paid-judge","hmcts-judiciary",
-                        "judge","fee-paid-judge","hmcts-judiciary"));
+                containsInAnyOrder("judge", "judge", "fee-paid-judge", "fee-paid-judge", "hmcts-judiciary"));
         assertEquals(appointmentList.get(0).getEpimmsId(),
                 roleAssignments.get(3).getAttributes().get("primaryLocation").asText());
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
 
         assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
@@ -307,14 +267,8 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -322,7 +276,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("judge","fee-paid-judge","hmcts-judiciary"));
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     //removes the auth in the past successfully so minus 1
                     assertEquals(authorisationList.size() - 1, r.getAuthorisations().size());
@@ -360,24 +314,18 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
 
         //Execute Kie session
-        buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
-
-        //Extract all created role assignments using the query defined in the rules.
-        List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
-        }
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
 
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("circuit-judge","leadership-judge",
-                        "hmcts-judiciary","case-allocator","hmcts-judiciary","task-supervisor"));
+                containsInAnyOrder("leadership-judge", "circuit-judge", "task-supervisor",
+                        "case-allocator", "hmcts-judiciary"));
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals(authorisationList.size(), r.getAuthorisations().size());
                     assertEquals(appointmentList.get(0).getEpimmsId(),
