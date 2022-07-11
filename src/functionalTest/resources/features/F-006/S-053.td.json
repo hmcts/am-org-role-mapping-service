@@ -1,0 +1,62 @@
+{
+  "_guid_": "S-053",
+  "title": "must successfully create dwp and hmrc role assignments for a user",
+  "_extends_": "F-006_Test_Data_Base",
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC"
+    },
+    "body": {
+      "actorId": "${[scenarioContext][childContexts][S-053_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "roleName": ["dwp", "hmrc"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "roleAssignmentResponse" : [
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "e8fa3156-b8ea-4dc3-a172-58cb77746226",
+          "roleType": "ORGANISATION",
+          "roleName": "dwp",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "OTHER_GOV_DEPT",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "2",
+            "workTypes": "applications,hearing_work,routine_work,priority",
+            "substantive" : "Y"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "e8fa3156-b8ea-4dc3-a172-58cb77746226",
+          "roleType": "ORGANISATION",
+          "roleName": "hmrc",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "OTHER_GOV_DEPT",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "2",
+            "workTypes": "applications,hearing_work,routine_work,priority",
+            "substantive" : "Y"
+          }
+        }
+      ]
+    }
+  }
+}

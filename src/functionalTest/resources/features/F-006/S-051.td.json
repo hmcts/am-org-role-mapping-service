@@ -1,0 +1,62 @@
+{
+  "_guid_": "S-051",
+  "title": "must successfully create tribunal caseworker and registrar role mappings for a user",
+  "_extends_": "F-006_Test_Data_Base",
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC"
+    },
+    "body": {
+      "actorId": "${[scenarioContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "roleName": ["registrar", "tribunal-caseworker"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "roleAssignmentResponse" : [
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
+          "roleType": "ORGANISATION",
+          "roleName": "registrar",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "2",
+            "workTypes": "applications,hearing_work,routine_work,priority,decision_making_work",
+            "substantive" : "Y"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
+          "roleType": "ORGANISATION",
+          "roleName": "tribunal-caseworker",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "2",
+            "workTypes": "applications,hearing_work,routine_work,priority,decision_making_work",
+            "substantive" : "Y"
+          }
+        }
+      ]
+    }
+  }
+}
