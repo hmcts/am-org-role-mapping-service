@@ -1,0 +1,62 @@
+{
+  "_guid_": "S-052",
+  "title": "must successfully create superuser and clerk role assignments for a user",
+  "_extends_": "F-006_Test_Data_Base",
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC"
+    },
+    "body": {
+      "actorId": "${[scenarioContext][childContexts][S-052_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "roleName": ["clerk", "superuser"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "roleAssignmentResponse" : [
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
+          "roleType": "ORGANISATION",
+          "roleName": "clerk",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "2",
+            "workTypes": "applications,hearing_work,routine_work,priority",
+            "substantive" : "Y"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "689a10af-eff1-4249-a2ee-85a89962977b",
+          "roleType": "ORGANISATION",
+          "roleName": "superuser",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "2",
+            "workTypes": "applications,hearing_work,routine_work,priority,access_requests",
+            "substantive" : "Y"
+          }
+        }
+      ]
+    }
+  }
+}
