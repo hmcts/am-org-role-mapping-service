@@ -5,7 +5,7 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     Given an appropriate test context as detailed in the test data source
 
   @S-002
-  @FeatureToggle(IAC:iac_1_0=off) @FeatureToggle(IAC:iac_1_1=on)
+  @FeatureToggle(DB:iac_1_0=off) @FeatureToggle(DB:iac_1_1=on)
   Scenario: must successfully create org role mapping for a multiple user having single role
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments01],
@@ -20,7 +20,7 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments02].
 
   @S-005
-  @FeatureToggle(IAC:iac_1_0=off) @FeatureToggle(IAC:iac_1_1=on)
+  @FeatureToggle(DB:iac_1_0=off) @FeatureToggle(DB:iac_1_1=on)
   Scenario: should not create role assignments when user primary work location is false
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-005_DeleteDataForRoleAssignments01],
@@ -34,7 +34,7 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-005_DeleteDataForRoleAssignments01].
 
   @S-006
-  @FeatureToggle(IAC:iac_1_0=off) @FeatureToggle(IAC:iac_1_1=on)
+  @FeatureToggle(DB:iac_1_0=off) @FeatureToggle(DB:iac_1_1=on)
   Scenario: must successfully create org role mapping for a user having multiple roles
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-006_DeleteDataForRoleAssignments01],
@@ -48,7 +48,7 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-006_DeleteDataForRoleAssignments01].
 
   @S-007
-  @FeatureToggle(IAC:iac_1_0=off) @FeatureToggle(IAC:iac_1_1=on)
+  @FeatureToggle(DB:iac_1_0=off) @FeatureToggle(DB:iac_1_1=on)
   Scenario: must successfully generate duplicate records message
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-007_DeleteDataForRoleAssignments01],
@@ -61,7 +61,7 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-007_DeleteDataForRoleAssignments01].
 
   @S-010
-  @FeatureToggle(IAC:iac_1_0=off) @FeatureToggle(IAC:iac_1_1=on)
+  @FeatureToggle(DB:iac_1_0=off) @FeatureToggle(DB:iac_1_1=on)
   Scenario: must successfully create org role mapping for CA and TS roles
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-010_DeleteDataForRoleAssignments01],
