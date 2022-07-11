@@ -71,7 +71,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
 
     }
 
-    //@ParameterizedTest
+    @ParameterizedTest
     @CsvSource({
             "CIVIL Deputy District Judge-Fee-Paid,fee-paid-judge",
             "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,fee-paid-judge",
@@ -88,7 +88,7 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         judicialBookings = Set.of(judicialBooking);
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("civil_temp_judge_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
