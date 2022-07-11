@@ -267,7 +267,7 @@ then
 end;
 
 /*
- * IAC "circuit-judge" org role can be created by any existing judicial office holder having
+ * CIVIL "circuit-judge" org role can be created by any existing judicial office holder having
  * "CIVIL Deputy Circuit Judge-Fee-Paid" business role.
  */
 rule "civil_circuit_judge_org_role_for_fee_paid_judge"
@@ -302,7 +302,7 @@ then
 end;
 
 /*
- * IAC "judge" org role can be created by any existing judicial office holder having
+ * CIVIL "judge" org role can be created by any existing judicial office holder having
  * "CIVIL Deputy Judge-Fee-Paid, CIVIL Recorder-Fee-Paid,CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid" business role.
  */
 rule "civil_judge_org_role_for_fee_paid_judge"
