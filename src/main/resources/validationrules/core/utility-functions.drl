@@ -1,15 +1,13 @@
 package validationrules.core;
 
+import java.util.List;
+
 function String getJurisdictionFromServiceCode(String serviceCode) {
     String result = null;
-        switch (serviceCode) {
-            case "BBA3":
-                result = "SSCS";
-                break;
-            case "AAA6":
-            case "AAA7":
-                result = "CIVIL";
-                break;
-        }
-        return result;
+    if (serviceCode == "BBA3") {
+       result = "SSCS";
+    } else if (List.of("AAA6", "AAA7").contains(serviceCode)) {
+       result = "CIVIL";
+    }
+    return result;
 }
