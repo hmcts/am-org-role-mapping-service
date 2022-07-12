@@ -109,17 +109,3 @@ then
       .build());
       logMsg("Rule : global_listed_hearing_viewer_other_gov_dept");
 end;
-
-function String getJurisdictionFromServiceCode(String serviceCode) {
-    String result = null;
-        switch (serviceCode) {
-            case "BBA3":
-                result = "SSCS";
-                break;
-            case "AAA6":
-            case "AAA7":
-                result = "CIVIL";
-                break;
-        }
-        return result;
-}
