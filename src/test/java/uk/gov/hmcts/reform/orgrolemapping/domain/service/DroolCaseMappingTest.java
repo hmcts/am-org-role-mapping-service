@@ -1,5 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -8,76 +15,11 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
-import java.util.Iterator;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @RunWith(MockitoJUnitRunner.class)
 class  DroolCaseMappingTest extends DroolBase {
 
     private final String workTypes = "hearing_work, routine_work, decision_making_work, applications";
 
-    @Test
-    void shouldReturnOneSeniorCaseWorker() {
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
-        assertEquals(usersAccessProfiles.keySet().iterator().next(),roleAssignments.get(0).getActorId());
-    }
-
-    @Test
-    void shouldReturnOneCaseWorker() {
-
-        allProfiles.forEach(userAccessProfile -> {
-            if (userAccessProfile.getRoleId().equals("2")) {
-                userAccessProfile.setServiceCode("BFA1");
-            } else {
-                userAccessProfile.setServiceCode("BFA2");
-            }
-
-        });
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1,roleAssignments.size());
-        assertEquals("tribunal-caseworker",roleAssignments.get(0).getRoleName());
-        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
-                roleAssignments.get(0).getActorId());
-    }
-
-    @Test
-    void shouldReturnBothCaseWorker() {
-
-        allProfiles.forEach(userAccessProfile -> {
-            if (userAccessProfile.getRoleId().equals("2")) {
-                userAccessProfile.setServiceCode("BFA1");
-            }
-
-        });
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(2,roleAssignments.size());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
-        assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(0).getActorId());
-        assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
-                roleAssignments.get(1).getActorId());
-    }
 
     @Test
     void shouldReturnZeroCaseWorkerWrongServiceCode() {
