@@ -1,0 +1,111 @@
+package validationrules.core;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+/*
+ * For on-boarding new service, we just need to include the corresponding service code in every
+ * rule as per the hearing role requirements captured on service configuration page.
+ */
+
+/*
+ * SSCS "hearing-manager" Org role mapping.
+ */
+
+rule "sscs_hearing_manager_admin"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+  $up: CaseWorkerAccessProfile(roleId in ("4","5","9","10","12","13"),
+                                serviceCode in ("BBA3"),
+                                !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($up.getRegionId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hearing-manager")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : sscs_hearing_manager_admin");
+end;
+
+/*
+ * SSCS "hearing-viewer" Org role mapping.
+ */
+rule "sscs_hearing_viewer_admin"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+  $up: CaseWorkerAccessProfile(roleId in ("4","5","9","10","12","13"),
+                                serviceCode in ("BBA3"),
+                                !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($up.getRegionId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hearing-viewer")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : sscs_hearing_viewer_admin");
+end;
+
+/*
+ * SSCS "listed-hearing-viewer" Org role mapping.
+ */
+rule "sscs_listed_hearing_viewer_other_gov_dept"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+  $up: CaseWorkerAccessProfile(roleId in ("14","15"),
+                                serviceCode in ("BBA3"),
+                                !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($up.getRegionId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.OTHER_GOV_DEPT)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("listed-hearing-viewer")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : sscs_listed_hearing_viewer_other_gov_dept");
+end;
