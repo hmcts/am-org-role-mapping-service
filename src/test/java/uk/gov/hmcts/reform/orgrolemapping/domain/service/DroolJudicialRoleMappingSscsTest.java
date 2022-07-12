@@ -39,7 +39,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
 
         judicialOfficeHolders.forEach(joh -> {
             joh.setOffice(setOffice);
-            joh.setRegionId("8");
+            joh.setRegionId("7");
         });
 
         //Execute Kie session
@@ -58,7 +58,7 @@ class DroolJudicialRoleMappingSscsTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if (!"hmcts-judiciary".equals(r.getRoleName())) {
-                assertThat(new String[]{"7", "8"},
+                assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(r.getAttributes().get("region").asText()));
             }
         });

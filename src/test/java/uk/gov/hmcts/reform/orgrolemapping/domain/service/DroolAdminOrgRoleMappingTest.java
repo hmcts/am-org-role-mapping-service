@@ -185,7 +185,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
             if (!roleAssignment.getRoleName().contains("hmcts")) {
-                assertThat(new String[]{"7", "8"},
+                assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
                 assertNull(roleAssignment.getAttributes().get("region"));
@@ -224,7 +224,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
             if (!roleAssignment.getRoleName().contains("hmcts")) {
-                assertThat(new String[]{"7", "8"},
+                assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
                 assertNull(roleAssignment.getAttributes().get("region"));
@@ -257,7 +257,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
             if (!roleAssignment.getRoleName().contains("hmcts")) {
-                assertThat(new String[]{"7", "8"},
+                assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
                 assertNull(roleAssignment.getAttributes().get("region"));
@@ -299,7 +299,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
             if (!roleAssignment.getRoleName().contains("hmcts")) {
-                assertThat(new String[]{"7", "8"},
+                assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
                 assertNull(roleAssignment.getAttributes().get("region"));
@@ -338,7 +338,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
                 containsInAnyOrder("dwp", "hmrc","dwp", "hmrc"));
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.OTHER_GOV_DEPT, roleAssignment.getRoleCategory());
-            assertThat(new String[]{"7", "8"},
+            assertThat(new String[]{"7", "6"},
                     ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
             assertEquals("applications,hearing_work,routine_work,priority",
