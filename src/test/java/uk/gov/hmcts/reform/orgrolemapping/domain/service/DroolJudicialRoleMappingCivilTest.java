@@ -3,11 +3,14 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
@@ -26,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -99,6 +103,36 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "judge","hmcts-judiciary"));
         roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
+    }
+
+    @ParameterizedTest
+    @MethodSource("generateDataForTempCivilJudgeFlag")
+    void shouldReturnFeePaidRoles_withTempFlag(String setOffice, List<String> roleNames) {
+
+        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_temp_wa_1_0").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build()));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(3, roleAssignments.size());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(roleNames.toArray()));
+        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
+    }
+
+    static Stream<Arguments> generateDataForTempCivilJudgeFlag() {
+        return Stream.of(
+                Arguments.of("CIVIL Deputy District Judge-Fee-Paid", Arrays.asList("judge", "hmcts-judiciary",
+                        "fee-paid-judge")),
+                Arguments.of("CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
+                        Arrays.asList("judge", "hmcts-judiciary", "fee-paid-judge")),
+                Arguments.of("CIVIL Recorder-Fee-Paid", Arrays.asList("judge", "hmcts-judiciary", "fee-paid-judge"))
+        );
     }
 
     @ParameterizedTest
