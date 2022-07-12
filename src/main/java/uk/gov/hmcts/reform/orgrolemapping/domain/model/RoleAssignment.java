@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -48,4 +49,8 @@ public class RoleAssignment {
     private ZonedDateTime created; //this will be set by app
     private String log; //this will be set app based on drool validation rule name on individual assignments.
 
+    public void setAttribute(String key, String value) {
+        var valueNode = JacksonUtils.convertValueJsonNode(value);
+        attributes.put(key, valueNode);
+    }
 }

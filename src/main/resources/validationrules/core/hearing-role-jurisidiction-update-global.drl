@@ -1,0 +1,51 @@
+package validationrules.core;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+/*
+ * This rule will identify all the instances of RoleAssignment injected by hearing mapping rules and
+ * update their correct jurisdiction as per service codes. Similar rule can be created for every on-boarding service.
+ * A sample rule has been added for CIVIL.
+ */
+
+/*
+ * SSCS hearing Org role mapping.
+ */
+
+rule "sscs_hearing_org_role"
+when
+  $ra: RoleAssignment(roleName in ("hearing-manager", "hearing-viewer", "listed-hearing-viewer"),
+                      attributes["jurisdiction"] != null &&
+                      attributes["jurisdiction"].asText() == "BBA3")
+then
+   $ra.setAttribute("jurisdiction", "SSCS");
+   update($ra);
+   logMsg("Rule : sscs_hearing_org_role");
+end;
+
+/*
+ * CIVIL hearing Org role mapping.
+ */
+
+rule "civil_hearing_org_role"
+when
+  $ra: RoleAssignment(roleName in ("hearing-manager", "hearing-viewer", "listed-hearing-viewer"),
+                      attributes["jurisdiction"] != null &&
+                      attributes["jurisdiction"].asText() in ("AAA6", "AAA7"))
+then
+   $ra.setAttribute("jurisdiction", "CIVIL");
+   update($ra);
+   logMsg("Rule : civil_hearing_org_role");
+end;

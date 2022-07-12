@@ -20,9 +20,9 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  */
 
 /*
- * SSCS "hearing-manager" Org role mapping.
+ * All services "hearing-manager" Org role mapping.
  */
- rule "sscs_hearing_manager_legal_ops"
+ rule "global_hearing_manager_legal_ops"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
    $up: CaseWorkerAccessProfile(roleId in ("2","16"),
@@ -30,7 +30,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
                                 !suspended)
  then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($up.getServiceCode()));
     attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($up.getRegionId()));
 
@@ -46,13 +46,13 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
        .readOnly(false)
        .attributes(attribute)
        .build());
-       logMsg("Rule : sscs_hearing_manager_legal_ops");
+       logMsg("Rule : global_hearing_manager_legal_ops");
  end;
 
  /*
-  * SSCS "hearing-viewer" Org role mapping.
+  * All services "hearing-viewer" Org role mapping.
   */
- rule "sscs_hearing_viewer_legal_ops"
+ rule "global_hearing_viewer_legal_ops"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
    $up: CaseWorkerAccessProfile(roleId in ("2","16"),
@@ -60,7 +60,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
                                 !suspended)
  then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($up.getServiceCode()));
     attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($up.getRegionId()));
 
@@ -76,5 +76,5 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
        .readOnly(false)
        .attributes(attribute)
        .build());
-       logMsg("Rule : sscs_hearing_viewer_legal_ops");
+       logMsg("Rule : global_hearing_viewer_legal_ops");
  end;

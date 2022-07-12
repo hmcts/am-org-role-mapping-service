@@ -20,16 +20,16 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  */
 
  /*
-  * SSCS "hearing-viewer" Org role mapping.
+  * All services "hearing-viewer" Org role mapping.
   */
 
- rule "sscs_hearing_viewer_org_role"
+ rule "global_hearing_viewer_judicial"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
    $joh: JudicialOfficeHolder(office in ("SSCS Judge"))
  then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($joh.getJurisdiction()));
     attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    insert(
@@ -47,5 +47,5 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
        .attributes(attribute)
        .authorisations($joh.getTicketCodes())
        .build());
-       logMsg("Rule : sscs_hearing_viewer_org_role");
+       logMsg("Rule : global_hearing_viewer_judicial");
  end;

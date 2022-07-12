@@ -20,10 +20,10 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  */
 
 /*
- * SSCS "hearing-manager" Org role mapping.
+ * All services  "hearing-manager" Org role mapping.
  */
 
-rule "sscs_hearing_manager_admin"
+rule "global_hearing_manager_admin"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("4","5","9","10","12","13"),
@@ -31,7 +31,7 @@ when
                                 !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($up.getServiceCode()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($up.getRegionId()));
 
@@ -47,13 +47,13 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : sscs_hearing_manager_admin");
+      logMsg("Rule : global_hearing_manager_admin");
 end;
 
 /*
- * SSCS "hearing-viewer" Org role mapping.
+ * All services  "hearing-viewer" Org role mapping.
  */
-rule "sscs_hearing_viewer_admin"
+rule "global_hearing_viewer_admin"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("4","5","9","10","12","13"),
@@ -61,7 +61,7 @@ when
                                 !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($up.getServiceCode()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($up.getRegionId()));
 
@@ -77,13 +77,13 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : sscs_hearing_viewer_admin");
+      logMsg("Rule : global_hearing_viewer_admin");
 end;
 
 /*
- * SSCS "listed-hearing-viewer" Org role mapping.
+ * All services  "listed-hearing-viewer" Org role mapping.
  */
-rule "sscs_listed_hearing_viewer_other_gov_dept"
+rule "global_listed_hearing_viewer_other_gov_dept"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("14","15"),
@@ -91,7 +91,7 @@ when
                                 !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($up.getServiceCode()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($up.getRegionId()));
 
@@ -107,5 +107,5 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : sscs_listed_hearing_viewer_other_gov_dept");
+      logMsg("Rule : global_listed_hearing_viewer_other_gov_dept");
 end;
