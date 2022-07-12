@@ -363,12 +363,12 @@ rule "sscs_multi_region_dependency_org_role_wales"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $ra: RoleAssignment(attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
-                      attributes["region"] != null && attributes["region"].asText() in ("7"))
+                      attributes["region"] != null && attributes["region"].asText() in ("6"))
   not RoleAssignment(actorId == $ra.getActorId() && roleName == $ra.getRoleName()
-                        && attributes["region"] != null && attributes["region"].asText() == "8")
+                        && attributes["region"] != null && attributes["region"].asText() == "7")
 then
    Map<String,JsonNode> attribute = new HashMap<>($ra.getAttributes());
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode("8"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode("7"));
 
    insert(RoleAssignment.builder()
          .actorIdType($ra.getActorIdType())
@@ -391,12 +391,12 @@ rule "sscs_multi_region_dependency_org_role_southwest"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $ra: RoleAssignment(attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
-                      attributes["region"] != null && attributes["region"].asText() in ("8"))
+                      attributes["region"] != null && attributes["region"].asText() in ("7"))
   not RoleAssignment(actorId == $ra.getActorId() && roleName == $ra.getRoleName()
-                        && attributes["region"] != null && attributes["region"].asText() == "7" )
+                        && attributes["region"] != null && attributes["region"].asText() == "6" )
 then
    Map<String,JsonNode> attribute = new HashMap<>($ra.getAttributes());
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode("7"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode("6"));
 
    insert(RoleAssignment.builder()
          .actorIdType($ra.getActorIdType())
