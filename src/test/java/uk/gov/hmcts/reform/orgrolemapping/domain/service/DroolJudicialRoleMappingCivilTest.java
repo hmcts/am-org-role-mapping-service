@@ -105,9 +105,16 @@ class DroolJudicialRoleMappingCivilTest extends DroolBase {
     @CsvSource({
             "CIVIL Deputy Circuit Judge-Fee-Paid,fee-paid-judge"
     })
-    void shouldReturnCircuitJudgeRoles(String setOffice, String roleNameOutput) {
+    void shouldReturnCircuitJudgeRoles(String setOffice, String roleNameOutput) throws IOException {
 
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+
+        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
+        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
+                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
+        judicialBooking.setLocationId("location1");
+
+        judicialBookings = Set.of(judicialBooking);
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
