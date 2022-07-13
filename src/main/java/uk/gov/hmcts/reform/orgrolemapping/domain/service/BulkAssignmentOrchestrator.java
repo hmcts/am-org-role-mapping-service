@@ -24,7 +24,7 @@ public class BulkAssignmentOrchestrator {
     //1. Call parse request service to extract userId List and their validations.
     //2. Call retrieveDataService to fetch the single or multiple user profiles(from CRD) and
     // validate the data through parse request. This might require a stub
-    //3. Call request mapping service to apply the mapping rules for each userBulkAssignmentOrchestrator.java
+    //3. Call request mapping service to apply the mapping rules for each user
     //   a) prepare role assignment requests
     //   b)Invoke RoleAssignmentService and audit the response.
 
