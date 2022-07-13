@@ -16,12 +16,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
- * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker"
- * and "tribunal-case-worker" as version IAC_1_0
- */
-
-
-/*
  * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker", "tribunal-case-worker", "case-allocator"
  *  and "task-supervisor" as version IAC_1_1. The STCW role would be deprecated later.
  */
