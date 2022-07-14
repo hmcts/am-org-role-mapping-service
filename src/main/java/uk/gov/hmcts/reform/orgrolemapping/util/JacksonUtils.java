@@ -56,10 +56,6 @@ public class JacksonUtils {
         return MAPPER.convertValue(from, JsonNode.class);
     }
 
-    public static JsonNode convertValueJsonNode(Object from) {
-        return MAPPER.convertValue(from, JsonNode.class);
-    }
-
     public static final TypeReference<HashMap<String, JsonNode>> getHashMapTypeReference() {
         return new TypeReference<HashMap<String, JsonNode>>() {
         };
