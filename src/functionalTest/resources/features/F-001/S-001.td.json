@@ -1,0 +1,38 @@
+{
+  "_guid_": "S-001",
+  "title": "must successfully create org role mapping for a single user having single role",
+  "_extends_": "F-001_Test_Data_Base",
+
+  "specs": [
+    "contains the actorId of the user just published"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "${[scenarioContext][childContexts][PushMessageToCRDAzureServiceBus][testData][request][body][userIds][0]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "senior-tribunal-caseworker",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "2191654",
+            "jurisdiction": "IA",
+            "substantive": "Y"
+          }
+        }
+      ]
+    }
+  }
+}
