@@ -1,0 +1,75 @@
+{
+  "_guid_": "S-006",
+  "title": "must successfully create org role mapping for a user having multiple roles",
+  "_extends_": "F-001_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published",
+    "contains multiple role assignments for the user"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "body": {
+      "actorId": "${[scenarioContext][childContexts][S-006_DeleteDataForRoleAssignments01][testData][request][body][userIds]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse" : [
+        {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "roleType" : "ORGANISATION",
+        "roleName" : "hmcts-legal-operations",
+        "classification" : "PRIVATE",
+        "grantType" : "BASIC",
+        "roleCategory" : "LEGAL_OPERATIONS",
+        "readOnly" : true,
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "N",
+          "primaryLocation" : "817181"
+        }
+      },
+        {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "roleType" : "ORGANISATION",
+        "roleName" : "senior-tribunal-caseworker",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "LEGAL_OPERATIONS",
+        "readOnly" : false,
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "Y",
+          "primaryLocation" : "817181",
+          "jurisdiction" : "IA",
+          "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
+        }
+      },
+        {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "roleType" : "ORGANISATION",
+        "roleName" : "tribunal-caseworker",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "LEGAL_OPERATIONS",
+        "readOnly" : false,
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "Y",
+          "primaryLocation" : "817181",
+          "jurisdiction" : "IA",
+          "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
+        }
+      }
+      ]
+    }
+  }
+}
