@@ -31,25 +31,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //assertion
-        assertTrue(roleAssignments.isEmpty());
-
-    }
-
-    @Test
-    void shouldReturnZeroCaseWorkerWrongRoleId() {
-
-        allProfiles.forEach(userAccessProfile -> {
-            userAccessProfile.setRoleId("5");
-            if (userAccessProfile.getServiceCode().equals("BFA2")) {
-                userAccessProfile.setServiceCode("BFA1");
-            }
-        });
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -67,23 +49,11 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
 
-    }
-
-    @Test
-    void shouldReturnOneSeniorCaseWorkerForNewRule() {
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
-        assertEquals(usersAccessProfiles.keySet().iterator().next(),roleAssignments.get(0).getActorId());
     }
 
     @Test

@@ -73,7 +73,7 @@ class RequestMappingServiceTest {
         Mockito.when(roleAssignmentService.createRoleAssignment(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
                         .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
-        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+        Mockito.when(persistenceService.getStatusByParam("iac_1_1", "pr"))
                 .thenReturn(true);
         ResponseEntity<Object> responseEntity =
                 sut.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
@@ -135,7 +135,7 @@ class RequestMappingServiceTest {
                 .thenThrow(feignClientException);
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
-        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+        Mockito.when(persistenceService.getStatusByParam("iac_1_1", "pr"))
                 .thenReturn(true);
         ResponseEntity<Object> responseEntity =
                 sut.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
@@ -171,7 +171,7 @@ class RequestMappingServiceTest {
                 .thenThrow(feignClientException);
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
-        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+        Mockito.when(persistenceService.getStatusByParam("iac_1_1", "pr"))
                 .thenReturn(true);
         ResponseEntity<Object> responseEntity = sut.createAssignments(
                 TestDataBuilder.buildUserAccessProfileMap(false, false),UserType.CASEWORKER);
