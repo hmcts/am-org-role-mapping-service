@@ -16,56 +16,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
- * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker"
- * and "tribunal-case-worker" as version IAC_1_0
- */
-rule "iac_senior_tribunal_caseworker"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
-  $up: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("senior-tribunal-caseworker")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : iac_senior_tribunal_caseworker");
-end;
-
-rule "iac_tribunal_caseworker"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_0.getValue())
-  $up: CaseWorkerAccessProfile(roleId == "2", serviceCode == "BFA1", !suspended)
-then
-     Map<String,JsonNode> attribute = new HashMap<>();
-     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-     attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("tribunal-caseworker")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : iac_tribunal_caseworker");
-end;
-
-/*
  * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker", "tribunal-case-worker", "case-allocator"
  *  and "task-supervisor" as version IAC_1_1. The STCW role would be deprecated later.
  */

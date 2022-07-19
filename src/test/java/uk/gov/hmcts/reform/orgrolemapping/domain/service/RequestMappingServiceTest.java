@@ -1,6 +1,15 @@
 
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -15,33 +24,17 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 class RequestMappingServiceTest {
@@ -80,7 +73,7 @@ class RequestMappingServiceTest {
         Mockito.when(roleAssignmentService.createRoleAssignment(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
                         .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
-        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+        Mockito.when(persistenceService.getStatusByParam("iac_1_1", "pr"))
                 .thenReturn(true);
         ResponseEntity<Object> responseEntity =
                 sut.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
@@ -142,7 +135,7 @@ class RequestMappingServiceTest {
                 .thenThrow(feignClientException);
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
-        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+        Mockito.when(persistenceService.getStatusByParam("iac_1_1", "pr"))
                 .thenReturn(true);
         ResponseEntity<Object> responseEntity =
                 sut.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
@@ -178,7 +171,7 @@ class RequestMappingServiceTest {
                 .thenThrow(feignClientException);
         Mockito.when(feignClientException.contentUTF8())
                 .thenReturn(content);
-        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "pr"))
+        Mockito.when(persistenceService.getStatusByParam("iac_1_1", "pr"))
                 .thenReturn(true);
         ResponseEntity<Object> responseEntity = sut.createAssignments(
                 TestDataBuilder.buildUserAccessProfileMap(false, false),UserType.CASEWORKER);
@@ -263,38 +256,6 @@ class RequestMappingServiceTest {
                 spyInteger,UserType.JUDICIAL));
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
-    void createCaseWorkerAssignmentsForProdEnv() {
-
-        Mockito.when(roleAssignmentService.createRoleAssignment(any()))
-                .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
-                        .body(AssignmentRequestBuilder.buildAssignmentRequest(false)));
-        Mockito.when(persistenceService.getStatusByParam("iac_1_0", "prod"))
-                .thenReturn(true);
-
-        ConcurrentHashMap<String, Boolean> droolFlagStates = new ConcurrentHashMap<>();
-        droolFlagStates.put(FeatureFlagEnum.IAC_1_0.getValue(), true);
-        try (MockedStatic<DBFlagConfigurtion> theMock = Mockito.mockStatic(DBFlagConfigurtion.class)) {
-            theMock.when(() -> dbFlagConfigurtion.getDroolFlagStates()).thenReturn(droolFlagStates);
-            ReflectionTestUtils.setField(sut, "environment", "prod");
-            List<RoleAssignment> response =
-                    sut.getRoleAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
-                            false), Collections.emptyList());
-
-            assertNotNull(response);
-            assertEquals(1, response.size());
-            assertEquals("senior-tribunal-caseworker",
-                    response.get(0)
-                            .getRoleName());
-            assertNotNull(
-                    response.get(0).getActorId());
-
-        }
-
-
-
-    }
 
 
     @Test

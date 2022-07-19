@@ -119,19 +119,6 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     }
 
     @Test
-    void shouldNotReturnAdminOrgRolesForRoleId_3_to_10_with_V1_0() {
-        allProfiles.clear();
-        IntStream.range(3, 11).forEach(roleId ->
-                allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", false)));
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_0", true));
-
-        //assertion
-        assertTrue(roleAssignments.isEmpty());
-    }
-
-    @Test
     void shouldNotReturnAdminOrgRolesForRoleId_3_to_10_with_BFA2() {
         allProfiles.clear();
         IntStream.range(3, 11).forEach(roleId -> {
