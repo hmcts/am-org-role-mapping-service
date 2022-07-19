@@ -1,13 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfig;
-import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
-import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
-
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
@@ -16,8 +8,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfig;
+import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 
 class PersistenceServiceTest {
 
@@ -69,7 +69,7 @@ class PersistenceServiceTest {
 
     @Test
     void getFlagStatus() {
-        String flagName = "iac_1_0";
+        String flagName = "iac_1_1";
         String env = "pr";
         when(flagConfigRepository.findByFlagNameAndEnv(flagName, env)).thenReturn(getFlagConfig(Boolean.TRUE));
         Boolean response = sut.getStatusByParam(flagName, env);
@@ -79,7 +79,7 @@ class PersistenceServiceTest {
 
     @Test
     void getFlagWhenStatusIsFalse() {
-        String flagName = "iac_1_0";
+        String flagName = "iac_1_1";
         String env = "pr";
         when(flagConfigRepository.findByFlagNameAndEnv(flagName, env)).thenReturn(getFlagConfig(Boolean.FALSE));
         Boolean response = sut.getStatusByParam(flagName, env);
@@ -89,7 +89,7 @@ class PersistenceServiceTest {
 
     @Test
     void getFlagStatusWhenEnvIsEmpty() {
-        String flagName = "iac_1_0";
+        String flagName = "iac_1_1";
         String env = "pr";
         when(flagConfigRepository.findByFlagNameAndEnv(any(), any())).thenReturn(getFlagConfig(Boolean.TRUE));
         Boolean response = sut.getStatusByParam(flagName, "");
@@ -108,7 +108,7 @@ class PersistenceServiceTest {
     private FlagConfig getFlagConfig(Boolean status) {
         return FlagConfig.builder()
                 .env("pr")
-                .flagName("iac_1_0")
+                .flagName("iac_1_1")
                 .serviceName("iac")
                 .status(status)
                 .build();

@@ -1,5 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,12 +18,6 @@ import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfig;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FlagRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import uk.gov.hmcts.reform.orgrolemapping.util.PersistenceUtil;
-
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FeatureFlagControllerTest {
 
@@ -38,7 +38,7 @@ class FeatureFlagControllerTest {
     @Test
     void getFlagStatus() {
 
-        String flagName = "iac_1_0";
+        String flagName = "iac_1_1";
         String env = "pr";
 
         Mockito.when(persistenceService.getStatusByParam(flagName, env)).thenReturn(Boolean.TRUE);
@@ -53,7 +53,7 @@ class FeatureFlagControllerTest {
 
         FlagRequest flagRequest = FlagRequest.builder()
                 .env("pr")
-                .flagName("iac_1_0")
+                .flagName("iac_1_1")
                 .serviceName("iac")
                 .status(Boolean.TRUE)
                 .build();
