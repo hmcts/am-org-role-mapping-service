@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-054_PostCreateRequestToORM",
+  "_guid_": "S-045_PostCreateRequestToORM",
   "_extends_": "PushMessageToJRDProfileProcess",
   "productName": "Organisation Role Mapping",
   "specs": [
