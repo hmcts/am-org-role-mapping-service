@@ -33,7 +33,6 @@
           "attributes": {
             "primaryLocation": null,
             "jurisdiction": "SSCS",
-            "region" : null,
             "substantive" : "N"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
