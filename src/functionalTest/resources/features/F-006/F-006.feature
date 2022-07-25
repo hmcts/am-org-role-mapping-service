@@ -39,4 +39,3 @@ Feature: F-006 : Create Role Assignments for Org Staff Roles SSCS
     Then a positive response is received,
     And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-053_DeleteDataForRoleAssignments].
-

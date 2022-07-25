@@ -1,0 +1,14 @@
+{
+  "_guid_": "S-045_PostCreateRequestToORM",
+  "_extends_": "PushMessageToJRDProfileProcess",
+  "productName": "Organisation Role Mapping",
+  "specs": [
+    "to post create organisational role mapping request on ORM"
+  ],
+
+  "request": {
+    "body": {
+      "userIds": "${[scenarioContext][parentContext][childContexts][S-045_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+    }
+  }
+}
