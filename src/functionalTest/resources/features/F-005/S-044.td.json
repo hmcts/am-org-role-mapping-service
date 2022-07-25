@@ -33,25 +33,7 @@
         "attributes" : {
           "substantive" : "N",
           "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]"
-        }
-      }, {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
-        "roleType" : "ORGANISATION",
-        "roleName" : "hearing-manager",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "LEGAL_OPERATIONS",
-        "readOnly" : false,
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "N",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]"
+          "jurisdiction" : "SSCS"
         }
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
@@ -67,25 +49,7 @@
         "attributes" : {
           "substantive" : "N",
           "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]"
-        }
-      }, {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
-        "roleType" : "ORGANISATION",
-        "roleName" : "hearing-viewer",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "LEGAL_OPERATIONS",
-        "readOnly" : false,
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "N",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]"
+          "jurisdiction" : "SSCS"
         }
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
