@@ -31,7 +31,6 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($joh.getJurisdiction()));
     attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    insert(
        RoleAssignment.builder()
        .actorIdType(ActorIdType.IDAM)
