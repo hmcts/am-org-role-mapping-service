@@ -42,9 +42,9 @@ java:
     AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
     AMQP_JRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
     ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql"
-    ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
-    ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
-    ORG_ROLE_MAPPING_DB_PASSWORD: "{{ .Values.postgresql.postgresqlPassword}}"
+    ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.auth.database}}"
+    ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
+    ORG_ROLE_MAPPING_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
     ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.postgresqlPort}}"
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
     RUN_LD_ON_STARTUP: true
