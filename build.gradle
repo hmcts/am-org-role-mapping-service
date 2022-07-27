@@ -383,7 +383,7 @@ dependencies {
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.0.23'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.64'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.65'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
