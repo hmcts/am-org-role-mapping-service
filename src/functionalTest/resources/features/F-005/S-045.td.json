@@ -31,7 +31,7 @@
           "beginTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": null,
+            "primaryLocation": "",
             "jurisdiction": "SSCS",
             "substantive" : "N"
           },
