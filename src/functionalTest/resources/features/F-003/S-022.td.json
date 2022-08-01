@@ -3,7 +3,7 @@
   "title": "must successfully create judicial role mapping for Tribunal Judge - fee paid appointment",
   "_extends_": "F-003_Test_Data_Base",
   "specs": [
-    "contains the actorIds of the user just  published"
+    "contains the actorIds of the user just published"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
