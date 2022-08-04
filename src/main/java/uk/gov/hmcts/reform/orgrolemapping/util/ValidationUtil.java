@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -139,7 +138,7 @@ public class ValidationUtil {
         return t -> {
             final List<?> keys = Arrays.stream(keyExtractors)
                     .map(ke -> ke.apply(t))
-                    .collect(Collectors.toList());
+                    .toList();
             return seen.putIfAbsent(keys, Boolean.TRUE) == null;
         };
     }
