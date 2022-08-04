@@ -1,14 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.text.ParseException;
@@ -22,6 +13,15 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 @Named
 @Singleton
@@ -130,8 +130,7 @@ public class ValidationUtil {
                         RoleAssignment::getRoleCategory,
                         RoleAssignment::getRoleType,
                         RoleAssignment::getEndTime,
-                        RoleAssignment::getAttributes))
-                .collect(Collectors.toList());
+                        RoleAssignment::getAttributes)).toList();
     }
 
     @SafeVarargs
