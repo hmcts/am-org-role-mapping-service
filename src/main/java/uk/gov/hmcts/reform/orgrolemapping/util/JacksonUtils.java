@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
@@ -32,14 +33,12 @@ public class JacksonUtils {
 
 
 
-    public static final ObjectMapper MAPPER = new ObjectMapper()
-            .registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    public static final ObjectMapper MAPPER = JsonMapper.builder()
             .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true)
             .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
             .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build()
+            .registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     public static Map<String, JsonNode> convertValue(Object from) {
         return MAPPER.convertValue(from, new TypeReference<HashMap<String, JsonNode>>() {
@@ -56,8 +55,8 @@ public class JacksonUtils {
         return MAPPER.convertValue(from, JsonNode.class);
     }
 
-    public static final TypeReference<HashMap<String, JsonNode>> getHashMapTypeReference() {
-        return new TypeReference<HashMap<String, JsonNode>>() {
+    public static TypeReference<HashMap<String, JsonNode>> getHashMapTypeReference() {
+        return new TypeReference<>() {
         };
     }
 
@@ -79,7 +78,7 @@ public class JacksonUtils {
     public static List<CaseWorkerProfilesResponse> convertListInCaseWorkerProfileResponse(List<Object> from) {
         List<CaseWorkerProfilesResponse> caseWorkerProfilesResponses = new ArrayList<>();
         for (Object obj : from) {
-            caseWorkerProfilesResponses.add(MAPPER.convertValue(obj, new TypeReference<CaseWorkerProfilesResponse>() {
+            caseWorkerProfilesResponses.add(MAPPER.convertValue(obj, new TypeReference<>() {
             }));
         }
 
