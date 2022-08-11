@@ -78,6 +78,16 @@ class PersistenceServiceTest {
     }
 
     @Test
+    void getFlagStatusFalse() {
+        String flagName = "iac_1_1";
+        String env = "";
+        when(flagConfigRepository.findByFlagNameAndEnv(flagName, "pr")).thenReturn(getFlagConfig(Boolean.TRUE));
+        Boolean response = sut.getStatusByParam(flagName, env);
+        assertTrue(response);
+
+    }
+
+    @Test
     void getFlagWhenStatusIsFalse() {
         String flagName = "iac_1_1";
         String env = "pr";
