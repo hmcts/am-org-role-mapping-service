@@ -1,24 +1,6 @@
 
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import feign.FeignException;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +24,24 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserRequest;
+
+import feign.FeignException;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 class RetrieveDataServiceTest {
@@ -144,6 +144,25 @@ class RetrieveDataServiceTest {
                 .fetchJudicialProfiles(any(JRDUserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    void retrieveJudicialProfilesTestWithInvalid() throws IOException {
+        JudicialProfile profile = TestDataBuilder.buildJudicialProfile();
+
+        doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
+            .when(jrdService).fetchJudicialProfiles(TestDataBuilder.buildRefreshRoleRequest());
+
+
+        Map<String, Set<UserAccessProfile>> result
+            = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
+
+        assertEquals(1, result.size());
+
+        Mockito.verify(jrdService, Mockito.times(1))
+            .fetchJudicialProfiles(any(JRDUserRequest.class));
+        Mockito.verify(parseRequestService, Mockito.times(1))
+            .validateUserProfiles(any(), any(), any(), any(), any());
     }
 
     @Test
