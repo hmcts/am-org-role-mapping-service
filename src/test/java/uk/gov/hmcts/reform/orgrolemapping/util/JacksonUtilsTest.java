@@ -1,5 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
@@ -13,17 +21,15 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.io.File;
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @RunWith(MockitoJUnitRunner.class)
 class JacksonUtilsTest {
 
     @Test
     void convertValue() {
-        assertNotNull(JacksonUtils.convertValue(TestDataBuilder.buildAttributesFromFile()));
+        Map<String, JsonNode> jsonNodeMap = JacksonUtils.convertValue(TestDataBuilder.buildAttributesFromFile());
+        assertNotNull(jsonNodeMap);
+        assertEquals("123456",jsonNodeMap.get("primaryLocation").asText());
+        assertEquals("IA",jsonNodeMap.get("jurisdiction").asText());
     }
 
     @Test
