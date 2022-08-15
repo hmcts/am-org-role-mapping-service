@@ -2,6 +2,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,6 +31,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
@@ -47,6 +49,9 @@ class RequestMappingServiceTest {
 
     @Mock
     PersistenceService persistenceService;
+
+    @Mock
+    List<RoleAssignment> roleAssignments;
 
     @Mock
     DBFlagConfigurtion dbFlagConfigurtion;
@@ -83,7 +88,6 @@ class RequestMappingServiceTest {
         assertNotNull(responseEntity.getBody());
 
         ObjectMapper objectMapper = new ObjectMapper();
-
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);
         assertEquals(2, resultNode.size());
@@ -262,17 +266,35 @@ class RequestMappingServiceTest {
     @SuppressWarnings("unchecked")
     void createJudicialAssignmentsTest() {
 
+        RequestMappingService requestMappingService = Mockito.spy(sut);
+
+        final String actorId = "123e4567-e89b-42d3-a456-556642445612";
+
         Mockito.when(roleAssignmentService.createRoleAssignment(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
                         .body(AssignmentRequestBuilder.buildJudicialAssignmentRequest(false)));
 
         ResponseEntity<Object> responseEntity =
-                sut.createAssignments(TestDataBuilder.buildJudicialAccessProfileMap(),
+            requestMappingService.createAssignments(TestDataBuilder.buildJudicialAccessProfileMap(),
                         UserType.JUDICIAL);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
+            JsonNode.class);
+        assertEquals(2, resultNode.size());
+        assertEquals("judicial-organisational-role-mapping",
+            resultNode.get(0).get("body").get("roleRequest").get("process")
+                .asText());
+        assertEquals("judge",
+            resultNode.get(0).get("body").get("requestedRoles").get(0).get("roleName").asText());
+        assertEquals(UserType.JUDICIAL.toString(),
+            resultNode.get(0).get("body").get("requestedRoles").get(0).get("roleCategory").asText());
+
+        assertEquals(actorId,
+            resultNode.get(0).get("body").get("requestedRoles").get(0).get("actorId").asText());
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-
         Mockito.verify(roleAssignmentService, Mockito.times(2))
                 .createRoleAssignment(any());
     }
