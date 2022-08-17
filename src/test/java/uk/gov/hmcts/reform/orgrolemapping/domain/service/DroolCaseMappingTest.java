@@ -6,6 +6,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -154,8 +156,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
-        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
-                roleAssignments.get(0).getActorId());
+        assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
 
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
@@ -236,8 +237,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
-        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
-                roleAssignments.get(0).getActorId());
+        assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
 
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
@@ -282,8 +282,8 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
-        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
-                roleAssignments.get(2).getActorId());
+        assertThat(usersAccessProfiles).containsKey(roleAssignments.get(2).getActorId());
+
 
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
@@ -369,8 +369,8 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(8).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(9).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(9).getRoleCategory());
-        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
-                roleAssignments.get(0).getActorId());
+        assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
+
 
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
@@ -400,8 +400,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(4).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
-        Assertions.assertThat(usersAccessProfiles.keySet()).contains(
-                roleAssignments.get(1).getActorId());
+        assertThat(usersAccessProfiles).containsKey(roleAssignments.get(1).getActorId());
         Assertions.assertThat(usersAccessProfiles.keySet().stream()).contains(
                 roleAssignments.get(2).getActorId());
 

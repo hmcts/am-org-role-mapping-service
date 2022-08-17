@@ -52,8 +52,11 @@ public class DBFlagConfigurtion implements CommandLineRunner {
     }
 
     private void updateFeatureFlag(String featureFlag, Boolean status) {
+        log.info("updating DB feature flag {} to status {}", featureFlag, status);
         FlagConfig flagConfig = flagConfigRepository.findByFlagNameAndEnv(featureFlag, environment);
-        flagConfig.setStatus(status);
-        flagConfigRepository.save(flagConfig);
+        if (flagConfig != null) {
+            flagConfig.setStatus(status);
+            flagConfigRepository.save(flagConfig);
+        }
     }
 }
