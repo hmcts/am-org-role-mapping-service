@@ -25,7 +25,13 @@ rule "privatelaw_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "PRIVATELAW District Judge-Salaried", "PRIVATELAW Presiding Judge-Salaried",
-                                         "PRIVATELAW Resident Judge-Salaried", "PRIVATELAW Designated Family Judge-Salaried"))
+                                         "PRIVATELAW Resident Judge-Salaried", "PRIVATELAW Designated Family Judge-Salaried",
+                                         "PRIVATELAW Deputy District Judge – PRFD-Fee-Paid",
+                                         "PRIVATELAW Deputy District Judge – (MC)-Fee-Paid",
+                                         "PRIVATELAW Deputy District Judge – (MC)-Sitting in Retirement-Fee-Paid",
+                                         "PRIVATELAW Deputy High Court Judge-Fee-Paid",
+                                         "PRIVATELAW District Judge (MC)-Fee-Paid",
+                                         "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
       if($joh.getOffice().contains("Fee-Paid")) {
@@ -197,7 +203,13 @@ when
   $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy Circuit Judge-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid",
-                                        "PRIVATELAW Recorder-Fee-Paid"))
+                                        "PRIVATELAW Recorder-Fee-Paid",
+                                        "PRIVATELAW Deputy District Judge – PRFD-Fee-Paid",
+                                        "PRIVATELAW Deputy District Judge – (MC)-Fee-Paid",
+                                        "PRIVATELAW Deputy District Judge – (MC)-Sitting in Retirement-Fee-Paid",
+                                        "PRIVATELAW Deputy High Court Judge-Fee-Paid",
+                                        "PRIVATELAW District Judge (MC)-Fee-Paid",
+                                        "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
@@ -232,12 +244,18 @@ end;
 rule "privatelaw_hmcts_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
-$joh: JudicialOfficeHolder(office in ( "PRIVATELAW District Judge-Salaried", "PRIVATELAW Presiding Judge-Salaried",
+$joh: JudicialOfficeHolder(office in ("PRIVATELAW District Judge-Salaried", "PRIVATELAW Presiding Judge-Salaried",
                                       "PRIVATELAW Resident Judge-Salaried", "PRIVATELAW Designated Family Judge-Salaried",
                                       "PRIVATELAW Circuit Judge-Salaried", "PRIVATELAW High Court Judge-Salaried",
                                       "PRIVATELAW Deputy Circuit Judge-Fee-Paid", "PRIVATELAW Deputy District Judge-Fee-Paid",
                                       "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid",
-                                      "PRIVATELAW Recorder-Fee-Paid"))
+                                      "PRIVATELAW Recorder-Fee-Paid",
+                                      "PRIVATELAW Deputy District Judge – PRFD-Fee-Paid",
+                                      "PRIVATELAW Deputy District Judge – (MC)-Fee-Paid",
+                                      "PRIVATELAW Deputy District Judge – (MC)-Sitting in Retirement-Fee-Paid",
+                                      "PRIVATELAW Deputy High Court Judge-Fee-Paid",
+                                      "PRIVATELAW District Judge (MC)-Fee-Paid",
+                                      "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if($joh.getOffice().contains("Fee-Paid")) {
