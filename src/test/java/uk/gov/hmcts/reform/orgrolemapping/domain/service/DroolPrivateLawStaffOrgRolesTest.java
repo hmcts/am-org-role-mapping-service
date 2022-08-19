@@ -156,7 +156,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
             }
             if (RoleCategory.ADMIN.equals(roleAssignment.getRoleCategory())
                 && !roleAssignment.getRoleName().contains("hmcts")) {
-                assertThat(new String[]{"7", "6"},
+                assertThat(new String[]{"7"},
                     ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
                 assertNull(roleAssignment.getAttributes().get("region"));
