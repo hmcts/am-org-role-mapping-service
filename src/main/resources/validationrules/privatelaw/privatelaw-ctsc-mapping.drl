@@ -92,7 +92,7 @@ then
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($cap.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleCategory(RoleCategory.CTSC)
       .roleType(RoleType.ORGANISATION)
       .roleName("ctsc-team-leader")
       .grantType(GrantType.STANDARD)
