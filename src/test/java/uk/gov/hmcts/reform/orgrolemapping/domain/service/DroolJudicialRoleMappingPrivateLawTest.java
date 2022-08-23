@@ -12,17 +12,19 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
 
-    static Stream<Arguments> generateData() {
+    static Stream<Arguments> endToEndData() {
         return Stream.of(
                 Arguments.of("Circuit Judge",
                         "Salaried",
@@ -60,10 +62,10 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
                         "Salaried",
                         List.of(""),
                         List.of("judge", "hmcts-judiciary")),
-                //Arguments.of("District Judge (MC)", "SPTW",
-                //        List.of(""),
-                //        List.of("judge","fee-paid-judge","hmcts-judiciary")),
-                // doesn't exist in table 2.6 but does in 2.2
+                Arguments.of("District Judge (MC)",
+                        "SPTW",
+                        List.of("District Judge"),
+                        List.of("judge","hmcts-judiciary")),
                 Arguments.of("High Court Judge",
                         "Salaried",
                         List.of(""),
@@ -92,16 +94,26 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
     }
 
     @ParameterizedTest
-    @MethodSource("generateData")
+    @MethodSource("endToEndData")
     void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
             String appointment, String appointmentType, List<String> assignedRoles, List<String> expectedRoleNames) {
 
         String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
+        List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "circuit-judge", "fee-paid-judge");
+        List<String> bookingLocationAppointments = List.of(
+                "Deputy District Judge - Fee Paid",
+                "Deputy District Judge - Sitting in Retirement", "Recorder",
+                "Deputy District Judge – PRFD",
+                "Deputy District Judge (MC) - Fee Paid",
+                "Deputy District Judge (MC) - Sitting in Retirement",
+                "Deputy High Court Judge",
+                "District Judge (MC)",
+                "High Court Judge - Sitting in Retirement");
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        judicialBookings.add(JudicialBooking.builder().userId(userId).build());
+        judicialBookings.add(JudicialBooking.builder().userId(userId).locationId("Scotland").build());
 
         judicialAccessProfiles.add(
                 JudicialAccessProfile.builder()
@@ -109,6 +121,9 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
                         .appointmentType(appointmentType)
                         .userId(userId)
                         .roles(assignedRoles)
+                        .regionId("LDN")
+                        .primaryLocationId("London")
+                        .ticketCodes(List.of("ABA5"))
                         .authorisations(List.of(
                                 Authorisation.builder()
                                         .serviceCodes(List.of("ABA5"))
@@ -129,5 +144,27 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
                 roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
         assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
+        roleAssignments.forEach(r -> {
+            assertEquals(userId, r.getActorId());
+            if (!r.getRoleName().contains("hmcts-judiciary")) {
+                assertEquals("LDN", r.getAttributes().get("region").asText());
+                assertEquals("ABA5", r.getAuthorisations().get(0));
+                if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
+                    assertEquals("hearing_work,decision_making_work,applications",
+                            r.getAttributes().get("workTypes").asText());
+                } else if (r.getRoleName().contains("leadership-judge")) {
+                    assertEquals("access_requests",
+                            r.getAttributes().get("workTypes").asText());
+                }
+                if(bookingLocationAppointments.contains(appointment) &&
+                    Objects.equals(r.getRoleName(), "judge")) {
+                    assertEquals("Scotland", r.getAttributes().get("primaryLocation").asText());
+                } else {
+                    assertEquals("London", r.getAttributes().get("primaryLocation").asText());
+                }
+            } else {
+                assertEquals(1, r.getAttributes().size());
+            }
+        });
     }
 }

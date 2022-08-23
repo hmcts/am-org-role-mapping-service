@@ -412,13 +412,13 @@ then
 end;
 
 /*
- * "PRIVATELAW District Judge (MC)-Fee-Paid" business role mapping to JOH.
+ * "PRIVATELAW District Judge (MC)-Salaried" business role mapping to JOH.
  */
 rule "privatelaw_district_judge_mc_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment == "District Judge (MC) - Fee Paid",
-                               appointmentType == "Fee Paid",
+   $jap: JudicialAccessProfile(appointment == "District Judge (MC)",
+                               appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (roles != null && roles.contains("District Judge")),
                                validateAuthorisation(authorisations, "ABA5"))
@@ -426,7 +426,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("PRIVATELAW District Judge (MC)-Fee-Paid")
+      .office("PRIVATELAW District Judge (MC)-Salaried")
       .jurisdiction("PRIVATELAW")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -436,7 +436,7 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : privatelaw_district_judge_mc_fee_paid_joh");
+      logMsg("Rule : privatelaw_district_judge_mc_salaried_joh");
 end;
 
 /*
