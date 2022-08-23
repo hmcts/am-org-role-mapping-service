@@ -76,7 +76,7 @@ spring:
       client:
         provider:
           oidc:
-            issuer-uri: http://localhost:5001/o
+            issuer-uri: ${OPEN_ID_API_BASE_URI:https://idam-web-public.aat.platform.hmcts.net/o}
         registration:
           oidc:
             client-id: microservicekey-am-role-assignment-service
@@ -97,7 +97,7 @@ idam:
     url: ${IDAM_S2S_URL:http://localhost:4502}
   s2s-authorised:
     services: ${ROLE_ASSIGNMENT_S2S_AUTHORISED_SERVICES:am_role_assignment_service,am_org_role_mapping_service,am_role_assignment_refresh_batch}
-  api.url: ${IDAM_USER_URL:http://localhost:5001}
+  api.url: ${IDAM_USER_URL:http://localhost:5000}
   client:
     id: ${ORM_IDAM_CLIENT_ID:am_docker}
     secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:}

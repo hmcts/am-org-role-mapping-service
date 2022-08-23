@@ -24,6 +24,18 @@ import java.util.stream.Stream;
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
 
+    String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
+    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "circuit-judge", "fee-paid-judge");
+    List<String> bookingLocationAppointments = List.of(
+            "Deputy District Judge - Fee Paid",
+            "Deputy District Judge - Sitting in Retirement", "Recorder",
+            "Deputy District Judge – PRFD",
+            "Deputy District Judge (MC) - Fee Paid",
+            "Deputy District Judge (MC) - Sitting in Retirement",
+            "Deputy High Court Judge",
+            "District Judge (MC)",
+            "High Court Judge - Sitting in Retirement");
+
     static Stream<Arguments> endToEndData() {
         return Stream.of(
                 Arguments.of("Circuit Judge",
@@ -98,18 +110,6 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
     void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
             String appointment, String appointmentType, List<String> assignedRoles, List<String> expectedRoleNames) {
 
-        String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
-        List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "circuit-judge", "fee-paid-judge");
-        List<String> bookingLocationAppointments = List.of(
-                "Deputy District Judge - Fee Paid",
-                "Deputy District Judge - Sitting in Retirement", "Recorder",
-                "Deputy District Judge – PRFD",
-                "Deputy District Judge (MC) - Fee Paid",
-                "Deputy District Judge (MC) - Sitting in Retirement",
-                "Deputy High Court Judge",
-                "District Judge (MC)",
-                "High Court Judge - Sitting in Retirement");
-
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -156,8 +156,8 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
                     assertEquals("access_requests",
                             r.getAttributes().get("workTypes").asText());
                 }
-                if(bookingLocationAppointments.contains(appointment) &&
-                    Objects.equals(r.getRoleName(), "judge")) {
+                if (bookingLocationAppointments.contains(appointment)
+                        && Objects.equals(r.getRoleName(), "judge")) {
                     assertEquals("Scotland", r.getAttributes().get("primaryLocation").asText());
                 } else {
                     assertEquals("London", r.getAttributes().get("primaryLocation").asText());
