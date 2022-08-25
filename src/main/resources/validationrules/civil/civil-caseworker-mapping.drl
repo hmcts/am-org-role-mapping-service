@@ -16,6 +16,35 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
+ * CIVIL staff "senior tribunal-caseworker" Org role mapping.
+ */
+
+rule "civil_senior_tribunal_caseworker_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId == "1", serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,access_requests"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("senior-tribunal-caseworker")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : civil_senior_tribunal_caseworker_org_role");
+end;
+
+/*
  * CIVIL staff "tribunal-caseworker" Org role mapping.
  */
 
@@ -51,7 +80,7 @@ end;
 rule "civil_hmcts_legal_operations_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "2", serviceCode in ("AAA6", "AAA7"), !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("1", "2"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
   insert(
@@ -67,4 +96,63 @@ then
       .attributes(attribute)
       .build());
       logMsg("Rule : civil_hmcts_legal_operations_org_role");
+end;
+
+/*
+ * CIVIL staff "task-supervisor" Org role mapping.
+ */
+rule "civil_task_supervisor_staff_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId == "1", serviceCode in ("AAA6", "AAA7"),
+                                !suspended, taskSupervisorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : civil_task_supervisor_admin_org_role");
+end;
+
+/*
+ * CIVIL staff "case-allocator" Org role mapping.
+ */
+
+rule "civil_case_allocator_staff_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId == "1", serviceCode in ("AAA6", "AAA7"),
+                                !suspended, caseAllocatorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : civil_case_allocator_staff_org_role");
 end;
