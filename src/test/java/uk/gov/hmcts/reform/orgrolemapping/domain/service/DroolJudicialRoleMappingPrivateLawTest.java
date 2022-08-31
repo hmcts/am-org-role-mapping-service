@@ -11,17 +11,17 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
@@ -29,13 +29,13 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
     List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "circuit-judge", "fee-paid-judge");
     List<String> bookingLocationAppointments = List.of(
-            "Deputy District Judge - Fee Paid",
-            "Deputy District Judge - Sitting in Retirement", "Recorder",
-            "Deputy District Judge – PRFD",
-            "Deputy District Judge (MC) - Fee Paid",
-            "Deputy District Judge (MC) - Sitting in Retirement",
+            "Deputy District Judge- Fee-Paid",
+            "Deputy District Judge- Sitting in Retirement", "Recorder",
+            "Deputy District Judge - PRFD",
+            "Deputy District Judge (MC)- Fee paid",
+            "Deputy District Judge (MC)- Sitting in Retirement",
             "Deputy High Court Judge",
-            "High Court Judge - Sitting in Retirement");
+            "High Court Judge- Sitting in Retirement");
 
     static Stream<Arguments> endToEndData() {
         return Stream.of(
@@ -47,23 +47,23 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
                         "Fee Paid",
                         List.of(""),
                         List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge – PRFD",
+                Arguments.of("Deputy District Judge - PRFD",
                         "Fee Paid",
                         List.of("Deputy District Judge"),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge (MC) - Fee Paid",
+                Arguments.of("Deputy District Judge (MC)- Fee paid",
                         "Fee Paid",
                         List.of("Deputy District Judge"),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge (MC) - Sitting in Retirement",
+                Arguments.of("Deputy District Judge (MC)- Sitting in Retirement",
                         "Fee Paid",
                         List.of("Deputy District Judge"),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge - Fee Paid",
+                Arguments.of("Deputy District Judge- Fee-Paid",
                         "Fee Paid",
                         List.of(""),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge - Sitting in Retirement",
+                Arguments.of("Deputy District Judge- Sitting in Retirement",
                         "Fee Paid",
                         List.of(""),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
@@ -83,7 +83,7 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
                         "Salaried",
                         List.of(""),
                         List.of("circuit-judge", "hmcts-judiciary")),
-                Arguments.of("High Court Judge - Sitting in Retirement",
+                Arguments.of("High Court Judge- Sitting in Retirement",
                         "Fee Paid",
                         List.of("High Court Judge"),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
@@ -91,17 +91,17 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
                         "Fee Paid",
                         List.of(""),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Designated Family Judge",
-                        "Salaried",
+                Arguments.of("",
+                        "",
                         List.of("Designated Family Judge"),
                         List.of("leadership-judge","judge","task-supervisor","hmcts-judiciary","case-allocator")),
-                Arguments.of("Family Division Liaison Judge",
-                        "Salaried",
-                        List.of("Presiding Judge"),
+                Arguments.of("",
+                        "",
+                        List.of("Family Division Liaison Judge"),
                         List.of("judge", "hmcts-judiciary")),
-                Arguments.of("Senior Family Liaison Judge",
-                        "Salaried",
-                        List.of("Resident Judge"),
+                Arguments.of("",
+                        "",
+                        List.of("Senior Family Liaison Judge"),
                         List.of("judge", "hmcts-judiciary"))
         );
     }

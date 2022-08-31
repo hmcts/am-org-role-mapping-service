@@ -29,11 +29,8 @@ when
                                          "PRIVATELAW District Judge (MC)-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-      if($joh.getOffice().contains("Fee-Paid")) {
-         attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-      } else {
-         attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-      }
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
@@ -98,15 +95,12 @@ when
 
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   if($joh.getOffice().contains("Fee-Paid")) {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   } else {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   }
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -331,11 +325,7 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
    $bk.getLocationId():$joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   if($joh.getOffice().contains("Fee-Paid")) {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   } else {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   }
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
 
   insert(
