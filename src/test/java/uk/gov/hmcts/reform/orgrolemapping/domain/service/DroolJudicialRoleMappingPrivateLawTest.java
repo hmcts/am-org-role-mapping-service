@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,7 +35,6 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
             "Deputy District Judge (MC) - Fee Paid",
             "Deputy District Judge (MC) - Sitting in Retirement",
             "Deputy High Court Judge",
-            "District Judge (MC)",
             "High Court Judge - Sitting in Retirement");
 
     static Stream<Arguments> endToEndData() {
@@ -166,5 +167,37 @@ class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
                 assertEquals(1, r.getAttributes().size());
             }
         });
+    }
+
+    @Test
+    void falsePrivateLawFlagTest() {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+
+        judicialAccessProfiles.add(
+                JudicialAccessProfile.builder()
+                        .appointment("District Judge (MC)")
+                        .appointmentType("SPTW")
+                        .userId(userId)
+                        .roles(List.of("District Judge"))
+                        .regionId("LDN")
+                        .primaryLocationId("London")
+                        .ticketCodes(List.of("ABA5"))
+                        .authorisations(List.of(
+                                Authorisation.builder()
+                                        .serviceCodes(List.of("ABA5"))
+                                        .endDate(LocalDateTime.now().plusYears(1L))
+                                        .build()
+                        ))
+                        .build()
+        );
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("privatelaw_wa_1_0", false));
+
+        //assertions
+        assertTrue(roleAssignments.isEmpty());
     }
 }

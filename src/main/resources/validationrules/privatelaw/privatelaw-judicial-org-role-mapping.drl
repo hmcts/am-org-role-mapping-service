@@ -25,7 +25,8 @@ rule "privatelaw_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "PRIVATELAW District Judge-Salaried", "PRIVATELAW Presiding Judge-Salaried",
-                                         "PRIVATELAW Resident Judge-Salaried", "PRIVATELAW Designated Family Judge-Salaried"))
+                                         "PRIVATELAW Resident Judge-Salaried", "PRIVATELAW Designated Family Judge-Salaried",
+                                         "PRIVATELAW District Judge (MC)-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
       if($joh.getOffice().contains("Fee-Paid")) {
@@ -322,7 +323,6 @@ when
                                         "PRIVATELAW Deputy District Judge – (MC)-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge – (MC)-Sitting in Retirement-Fee-Paid",
                                         "PRIVATELAW Deputy High Court Judge-Fee-Paid",
-                                        "PRIVATELAW District Judge (MC)-Salaried",
                                         "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
