@@ -74,14 +74,14 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
                 2, Collections.singletonList("routine_work,hearing_work,applications"),"CTSC"),
             Arguments.of("4", Arrays.asList("hearing-centre-admin", "hmcts-admin"),
                 2, Collections.singletonList("routine_work,hearing_work,applications"),"ADMINISTRATOR"),
-            Arguments.of("2", Arrays.asList("legal-caseworker", "hmcts-legal-operations"),
+            Arguments.of("2", Arrays.asList("tribunal-caseworker", "hmcts-legal-operations"),
                 2, Collections.singletonList("routine_work,hearing_work,applications"),"LEGAL_OPERATIONS"));
     }
 
     @ParameterizedTest
     @MethodSource("generateData")
-    void shouldReturnCivilAdminMappings(String roleId, List<String> roleNames, int roleCount, List<String> workTypes,
-                                        String roleCategory) {
+    void shouldReturnPrivateLawAdminMappings(String roleId, List<String> roleNames, int roleCount,
+                                             List<String> workTypes, String roleCategory) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
