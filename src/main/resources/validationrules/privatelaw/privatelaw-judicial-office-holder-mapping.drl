@@ -466,3 +466,30 @@ then
       .build());
       logMsg("Rule : privatelaw_high_court_judge_sitting_in_retirement_fee_paid_joh");
 end;
+
+/*
+ * "Stage 1 mapping from judicial appointments/roles(coming from RD JRD access profiles) to judicial office holder.
+ * "Family Judge" business role mapping to JOH.
+ */
+rule "family_judge_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment !=null && validateAuthorisation(authorisations, "ABA5"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("Family Judge")
+      .jurisdiction("PRIVATELAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : family_judge_joh");
+end;
