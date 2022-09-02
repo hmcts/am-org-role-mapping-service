@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
@@ -25,14 +24,17 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUse
 @RunWith(MockitoJUnitRunner.class)
 class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
-    static final String SERVICE_CODE = "BBA3";
     static final String LD_FLAG = "sscs_hearing_1_0";
 
-    @Test
-    void shouldReturnJudgeRoles_withSscs() {
+    @ParameterizedTest
+    @CsvSource({
+            "BBA3,SSCS",
+            "ABA5,PRIVATELAW"
+    })
+    void shouldReturnHearingJudicialRoles(String serviceCode, String jurisdiction) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> judicialAccessProfile.getAuthorisations().forEach(a ->
-                a.setServiceCodes(List.of(SERVICE_CODE))));
+                a.setServiceCodes(List.of(serviceCode))));
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
 
@@ -44,18 +46,22 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             assertEquals("hearing-viewer", r.getRoleName());
             assertEquals(judicialAccessProfiles.stream().iterator().next().getEndTime().plusDays(1), r.getEndTime());
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
             MatcherAssert.assertThat(judicialAccessProfiles.stream().iterator().next().getTicketCodes(),
                     containsInAnyOrder(r.getAuthorisations().toArray()));
             assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
         });
     }
 
-    @Test
-    void shouldReturnEmptyRoles_withSscs_expiredAuthorisation() {
+    @ParameterizedTest
+    @CsvSource({
+            "BBA3",
+            "ABA5"
+    })
+    void shouldReturnEmptyRoles_expiredAuthorisation(String serviceCode) {
 
         judicialAccessProfiles.forEach(jap -> jap.getAuthorisations().forEach(a -> {
-            a.setServiceCodes(List.of(SERVICE_CODE));
+            a.setServiceCodes(List.of(serviceCode));
             a.setEndDate(LocalDateTime.now().minusDays(1));
         }));
         //Execute Kie session
@@ -85,10 +91,15 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     }
 
 
-    @Test
-    void shouldReturnHearingManagerAndViewerCaseWorker_Admin() {
-        List<String> roleIds = List.of("4","5","9","10","12","13");
-        roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(SERVICE_CODE, a, "")));
+    @ParameterizedTest
+    @CsvSource({
+            "'4,5,9,10,12,13',BBA3,SSCS",
+            "'3,4,9,10,12,13',ABA5,PRIVATELAW"
+    })
+    void shouldReturnHearingManagerAndViewerCaseWorker_Admin(String roleId, String serviceCode,
+                                                             String jurisdiction) {
+        List<String> roleIds = List.of(roleId.split(","));
+        roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
@@ -99,15 +110,20 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals(RoleCategory.ADMIN, r.getRoleCategory());
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
-            assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
             assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
                     .anyMatch(s::contains));
         });
     }
 
-    @Test
-    void shouldReturnHearingManagerAndViewerCaseWorker_LegalOps() {
-        allProfiles.add(buildUserAccessProfile3(SERVICE_CODE, "2", ""));
+    @ParameterizedTest
+    @CsvSource({
+            "2,BBA3,SSCS",
+            "2,ABA5,PRIVATELAW"
+    })
+    void shouldReturnHearingManagerAndViewerCaseWorker_LegalOps(String roleId, String serviceCode,
+                                                                String jurisdiction) {
+        allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
@@ -118,16 +134,22 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals(RoleCategory.LEGAL_OPERATIONS, r.getRoleCategory());
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
-            assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
             assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
                     .anyMatch(s::contains));
         });
     }
 
-    @Test
-    void shouldReturnListedHearingViewerCaseWorker_otherGovDept() {
-        List<String> roleIds = List.of("14","15");
-        roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(SERVICE_CODE, a, "")));
+    @ParameterizedTest
+    @CsvSource({
+            "14,BBA3,SSCS",
+            "15,BBA3,SSCS",
+            "14,ABA5,PRIVATELAW",
+            "15,ABA5,PRIVATELAW"
+    })
+    void shouldReturnListedHearingViewerCaseWorker_otherGovDept(String roleId, String serviceCode,
+                                                                String jurisdiction) {
+        allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
@@ -138,7 +160,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals(RoleCategory.OTHER_GOV_DEPT, r.getRoleCategory());
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
-            assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
             assertThat(r.getRoleName()).matches(s -> Stream.of("listed-hearing-viewer").anyMatch(s::contains));
         });
     }
