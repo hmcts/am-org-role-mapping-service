@@ -51,7 +51,7 @@ public abstract class DroolBase {
 
         judicialAccessProfiles = TestDataBuilder.buildJudicialAccessProfileSet();
         judicialOfficeHolders = TestDataBuilder.buildJudicialOfficeHolderSet();
-        judicialBookings = Collections.emptySet();
+        judicialBookings = new HashSet<>();
         // Set up the rule engine for validation.
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();

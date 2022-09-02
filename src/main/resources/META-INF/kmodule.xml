@@ -4,7 +4,8 @@
            packages="validationrules.core,
                     validationrules.iac,
                     validationrules.sscs,
-                    validationrules.civil">
+                    validationrules.civil,
+                    validationrules.privatelaw">
         <ksession name="org-role-mapping-validation-session" type="stateless"/>
     </kbase>
 </kmodule>
