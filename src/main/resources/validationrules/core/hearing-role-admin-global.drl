@@ -85,7 +85,7 @@ rule "global_listed_hearing_viewer_other_gov_dept"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("14","15"),
-                                serviceCode in ("BBA3","ABA5"),
+                                serviceCode in ("BBA3"),
                                 !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
