@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
@@ -95,7 +94,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "'4,5,9,10,12,13',BBA3,SSCS",
-            "'3,4,9,10',ABA5,PRIVATELAW"
+            "'3,4,9,10,12,13',ABA5,PRIVATELAW"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Admin(String roleId, String serviceCode,
                                                              String jurisdiction) {
@@ -141,10 +140,16 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         });
     }
 
-    @Test
-    void shouldReturnListedHearingViewerCaseWorker_otherGovDept() {
-        List<String> roleIds = List.of("14","15");
-        roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3("BBA3", a, "")));
+    @ParameterizedTest
+    @CsvSource({
+            "14,BBA3,SSCS",
+            "15,BBA3,SSCS",
+            "14,ABA5,PRIVATELAW",
+            "15,ABA5,PRIVATELAW"
+    })
+    void shouldReturnListedHearingViewerCaseWorker_otherGovDept(String roleId, String serviceCode,
+                                                                String jurisdiction) {
+        allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
@@ -155,7 +160,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals(RoleCategory.OTHER_GOV_DEPT, r.getRoleCategory());
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
-            assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
             assertThat(r.getRoleName()).matches(s -> Stream.of("listed-hearing-viewer").anyMatch(s::contains));
         });
     }
