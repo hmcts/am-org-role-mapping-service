@@ -131,6 +131,9 @@ sourceSets {
         }
         resources.srcDir file('src/contractTest/resources')
     }
+    dependencySet(group: 'org.yaml', version: '1.31') {
+      entry 'snakeyaml'
+    }
 }
 
 tasks.withType(JavaCompile) {
@@ -371,9 +374,6 @@ dependencies {
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.22'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
-    dependencySet(group: 'org.yaml', version: '1.31') {
-      entry 'snakeyaml'
-    }
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.1'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.6'
