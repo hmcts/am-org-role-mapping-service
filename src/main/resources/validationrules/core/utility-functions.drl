@@ -10,6 +10,9 @@ function String getJurisdictionFromServiceCode(String serviceCode) {
             case "AAA7":
                 result = "CIVIL";
                 break;
+            case "ABA5":
+                result = "PRIVATELAW";
+                break;
         }
         return result;
 }

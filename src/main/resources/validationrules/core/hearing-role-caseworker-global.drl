@@ -25,8 +25,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  rule "global_hearing_manager_legal_ops"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-   $up: CaseWorkerAccessProfile(roleId in ("2","16"),
-                                serviceCode in ("BBA3"),
+   $up: CaseWorkerAccessProfile((roleId in ("2","16") && serviceCode in ("BBA3"))
+                                  || (roleId in ("2") && serviceCode in ("ABA5")),
                                 !suspended)
  then
     Map<String,JsonNode> attribute = new HashMap<>();
@@ -54,8 +54,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  rule "global_hearing_viewer_legal_ops"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-   $up: CaseWorkerAccessProfile(roleId in ("2","16"),
-                                serviceCode in ("BBA3"),
+   $up: CaseWorkerAccessProfile((roleId in ("2","16") && serviceCode in ("BBA3"))
+                                  || (roleId in ("2") && serviceCode in ("ABA5")),
                                 !suspended)
  then
     Map<String,JsonNode> attribute = new HashMap<>();
