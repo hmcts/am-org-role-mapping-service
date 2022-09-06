@@ -136,22 +136,22 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "1,ABA5,'senior-tribunal-caseworker,task-supervisor,hmcts-legal-operations,case-allocator'," +
-                    "'routine_work,hearing_work,applications'",
-            "3,ABA5,'hearing-centre-team-leader,task-supervisor,hmcts-admin,case-allocator'," +
-                    "'routine_work,hearing_work,applications'",
-            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,task-supervisor,case-allocator'," +
-                    "'routine_work,access_requests,hearing_work,applications'",
+            "1,ABA5,'senior-tribunal-caseworker,task-supervisor,hmcts-legal-operations,case-allocator',"
+            +         "'routine_work,hearing_work,applications'",
+            "3,ABA5,'hearing-centre-team-leader,task-supervisor,hmcts-admin,case-allocator',"
+            +        "'routine_work,access_requests,hearing_work,applications'",
+            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,task-supervisor,case-allocator',"
+            +        "'routine_work,access_requests,hearing_work,applications'",
     })
     void shouldReturnPrivateLawCtsOrgRolesForRoleId_caseAndTaskSupervisor(String roleId, String serviceCode,
                                                                           String expectedRoles, String worktypes) {
         allProfiles.clear();
 
-            CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId, serviceCode,
-                    false);
-            profile.setCaseAllocatorFlag("Y");
-            profile.setTaskSupervisorFlag("Y");
-            allProfiles.add(profile);
+        CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId, serviceCode,
+                false);
+        profile.setCaseAllocatorFlag("Y");
+        profile.setTaskSupervisorFlag("Y");
+        allProfiles.add(profile);
 
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("privatelaw_wa_1_0", true));
@@ -164,11 +164,11 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
             if ("ctsc-team-leader".equals(roleAssignment.getRoleName())
                     || "hearing-centre-team-leader".equals(roleAssignment.getRoleName())) {
                 assertEquals("PRIVATELAW",roleAssignment.getAttributes().get("jurisdiction").asText());
-                assertEquals("routine_work,access_requests,hearing_work,applications",
-                        roleAssignment.getAttributes().get("workTypes").asText());
+                assertEquals(worktypes, roleAssignment.getAttributes().get("workTypes").asText());
             }
-            if (RoleCategory.CTSC != roleAssignment.getRoleCategory() && !List.of("hmcts-admin", "hmcts-legal-operations",
-                    "ctsc-team-leader", "ctsc", "hmcts-ctsc").contains(roleAssignment.getRoleName())) {
+            if (RoleCategory.CTSC != roleAssignment.getRoleCategory() && !List.of("hmcts-admin",
+                    "hmcts-legal-operations", "ctsc-team-leader", "ctsc", "hmcts-ctsc")
+                    .contains(roleAssignment.getRoleName())) {
                 assertNotNull(roleAssignment.getAttributes().get("region").asText());
             } else {
                 assertNull(roleAssignment.getAttributes().get("region"));
