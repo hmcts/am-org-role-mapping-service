@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolJudicialRoleMappingPrivateLawTest extends DroolBase {
+class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
 
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
     List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "circuit-judge", "fee-paid-judge");
