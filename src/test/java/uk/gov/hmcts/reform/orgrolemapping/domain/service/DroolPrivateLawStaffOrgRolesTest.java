@@ -17,8 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -90,9 +88,6 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader", "task-supervisor",
-                "case-allocator", "hearing-centre-admin");
-
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -117,12 +112,15 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
+        List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader", "task-supervisor",
+                "case-allocator", "hearing-centre-admin");
+
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals("PRIVATELAW", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
                     //assert region
-                    if(roleNamesWithRegionAttribute.contains(r.getRoleName())){
+                    if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
                     }
                     //assert work types
@@ -152,9 +150,6 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker", "senior-tribunal-caseworker",
-                "task-supervisor", "case-allocator");
-
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -179,12 +174,15 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
+        List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker", "senior-tribunal-caseworker",
+                "task-supervisor", "case-allocator");
+
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals("PRIVATELAW", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
                     //assert region
-                    if(roleNamesWithRegionAttribute.contains(r.getRoleName())){
+                    if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
                     }
                     //assert work types
