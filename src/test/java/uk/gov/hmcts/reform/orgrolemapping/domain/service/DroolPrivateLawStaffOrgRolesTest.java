@@ -34,13 +34,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
+    List<String> roleNamesWith4WorkTypes = List.of("ctsc", "ctsc-team-leader", "hearing-centre-team-leader");
+    List<String> roleNamesWith3WorkTypes = List.of("hearing-centre-admin", "tribunal-caseworker", "hearing-centre-team-leader");
+    List<String> roleNamesWith1WorkType = List.of("task-supervisor", "case-allocator");
+
     @ParameterizedTest
     @CsvSource({
-            "10,ABA5,'ctsc,hmcts-ctsc','routine_work,hearing_work,applications'",
-            "9,ABA5,'ctsc-team-leader,hmcts-ctsc','routine_work,access_requests,hearing_work,applications'",
+            "10,ABA5,'ctsc,hmcts-ctsc','routine_work,hearing_work,applications',N,N",
+            "9,ABA5,'ctsc-team-leader,hmcts-ctsc','routine_work,access_requests,hearing_work,applications',N,N",
+            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,task-supervisor,case-allocator','routine_work,access_requests,hearing_work,applications',Y,Y",
+            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,case-allocator','routine_work,access_requests,hearing_work,applications',N,Y",
+            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,task-supervisor','routine_work,access_requests,hearing_work,applications',Y,N",
     })
     void shouldReturnPrivateLawStaffMappings(String roleId, String serviceCode, String expectedRoles,
-                                             String worktypes) {
+                                             String worktypes, String taskSupervisorFlag, String caseAllocatorFlag) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -49,6 +56,8 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
         cap.setRoleId(roleId);
+        cap.setTaskSupervisorFlag(taskSupervisorFlag);
+        cap.setCaseAllocatorFlag(caseAllocatorFlag);
 
         allProfiles.add(cap);
 
@@ -66,10 +75,13 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals("PRIVATELAW", r.getAttributes().get("jurisdiction").asText());
-                    assertEquals(worktypes, r.getAttributes().get("workTypes").asText());
+                    if (roleNamesWith4WorkTypes.contains(r.getRoleName())) {
+                        assertEquals(worktypes,
+                                r.getAttributes().get("workTypes").asText());
+                    }
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
                 });
     }
@@ -196,5 +208,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
+
+
 
 }
