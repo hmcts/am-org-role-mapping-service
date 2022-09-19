@@ -377,7 +377,7 @@ dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.0'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.23'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-    implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
+    implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.1.1'
     implementation 'commons-io:commons-io:20030203.000550'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
