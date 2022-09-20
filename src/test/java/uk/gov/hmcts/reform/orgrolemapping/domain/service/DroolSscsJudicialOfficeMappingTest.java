@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolJudicialOfficeMappingSscsTest extends DroolBase {
+class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
     //=================================SALARIED ROLES==================================
     @ParameterizedTest
