@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolJudicialRoleMappingSscsTest extends DroolBase {
+class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
