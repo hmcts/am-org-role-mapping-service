@@ -51,7 +51,7 @@ public abstract class DroolBase {
 
         judicialAccessProfiles = TestDataBuilder.buildJudicialAccessProfileSet();
         judicialOfficeHolders = TestDataBuilder.buildJudicialOfficeHolderSet();
-        judicialBookings = Collections.emptySet();
+        judicialBookings = new HashSet<>();
         // Set up the rule engine for validation.
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();
@@ -73,7 +73,7 @@ public abstract class DroolBase {
                 CommandFactory.newInsertElements(featureFlags),
                 CommandFactory.newFireAllRules(),
                 CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME)
-                );
+        );
 
         // Run the rules
         results = kieSession.execute(CommandFactory.newBatchExecution(commands));
