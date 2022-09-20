@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolJudicialRoleMappingCivilTest extends DroolBase {
+class DroolCivilJudicialRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "CIVIL District Judge-Salaried,judge",
