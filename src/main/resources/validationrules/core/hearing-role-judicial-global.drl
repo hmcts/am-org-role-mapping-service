@@ -26,7 +26,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  rule "global_hearing_viewer_judicial"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-   $joh: JudicialOfficeHolder(office in ("SSCS Judge"))
+   $joh: JudicialOfficeHolder(office in ("SSCS Judge", "Family Judge"))
  then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($joh.getJurisdiction()));
