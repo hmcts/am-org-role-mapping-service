@@ -50,4 +50,10 @@
      <cve>CVE-2022-38750</cve>
      <cve>CVE-2022-38751</cve>
   </suppress>
+    <suppress>
+   <notes>suppressing due to no working updated version</notes>
+   <packageUrl regex="true">^pkg:maven/com\.thoughtworks\.xstream/xstream@.*$</packageUrl>
+   <cve>CVE-2022-40151</cve>
+   <cve>CVE-2022-40152</cve>
+</suppress>
 </suppressions>
