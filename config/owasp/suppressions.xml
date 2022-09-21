@@ -42,23 +42,29 @@
     <suppress until="2023-01-01">
         <cve>CVE-2022-31569</cve>
     </suppress>
-  <suppress>
-    <notes>Suppressed due to unavailability of updated version of launchdarkly-java-server-sdk</notes>
-    <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
-    <cve>CVE-2022-25857</cve>
-     <cve>CVE-2022-38749</cve>
-     <cve>CVE-2022-38750</cve>
-     <cve>CVE-2022-38751</cve>
-     <cve>CVE-2022-38752</cve>
-  </suppress>
-  <suppress>
-    <notes>Suppressed due to unavailability of updated version of xstream</notes>
-    <packageUrl regex="true">^pkg:maven/com\.thoughtworks\.xstream/xstream@.*$</packageUrl>
-    <cve>CVE-2022-40151</cve>
-    <cve>CVE-2022-40152</cve>
-    <cve>CVE-2022-40153</cve>
-    <cve>CVE-2022-40154</cve>
-    <cve>CVE-2022-40155</cve>
-    <cve>CVE-2022-40156</cve>
-  </suppress>
+    <suppress>
+        <notes>Suppressed due to unavailability of updated version of snakeyaml</notes>
+        <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
+        <cve>CVE-2022-25857</cve>
+        <cve>CVE-2022-38749</cve>
+        <cve>CVE-2022-38750</cve>
+        <cve>CVE-2022-38751</cve>
+        <cve>CVE-2022-38752</cve>
+    </suppress>
+    <suppress>
+        <notes>Suppressed due to unavailability of updated version of xstream</notes>
+        <packageUrl regex="true">^pkg:maven/com\.thoughtworks\.xstream/xstream@.*$</packageUrl>
+        <cve>CVE-2022-40151</cve>
+        <cve>CVE-2022-40152</cve>
+        <cve>CVE-2022-40153</cve>
+        <cve>CVE-2022-40154</cve>
+        <cve>CVE-2022-40155</cve>
+        <cve>CVE-2022-40156</cve>
+    </suppress>
+    <suppress>
+        <notes>Suppressed due to unavailability of updated version of spring-security-crypto</notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring-security-crypto@.*$</packageUrl>
+        <cve>CVE-2020-5408</cve>
+        <cve>CVE-2022-22976</cve>
+    </suppress>
 </suppressions>
