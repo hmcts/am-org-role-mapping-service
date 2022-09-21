@@ -49,5 +49,16 @@
      <cve>CVE-2022-38749</cve>
      <cve>CVE-2022-38750</cve>
      <cve>CVE-2022-38751</cve>
+     <cve>CVE-2022-38752</cve>
+  </suppress>
+  <suppress>
+    <notes>Suppressed due to unavailability of updated version of xstream</notes>
+    <packageUrl regex="true">^pkg:maven/com\.thoughtworks\.xstream/xstream@.*$</packageUrl>
+    <cve>CVE-2022-40151</cve>
+    <cve>CVE-2022-40152</cve>
+    <cve>CVE-2022-40153</cve>
+    <cve>CVE-2022-40154</cve>
+    <cve>CVE-2022-40155</cve>
+    <cve>CVE-2022-40156</cve>
   </suppress>
 </suppressions>

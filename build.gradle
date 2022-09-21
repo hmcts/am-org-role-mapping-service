@@ -40,9 +40,9 @@ def versions = [
         serenity       : '2.2.12',
         springBoot     : '2.6.6',
         spring         : '5.3.20',
-        springSecurity : '5.6.3',
+        springSecurity : '5.7.3',
         springHystrix  : '2.1.1.RELEASE',
-        swagger2Version: '2.10.5',
+        swagger2Version: '3.0.0',
         pact_version   : '4.1.7',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
@@ -50,7 +50,7 @@ def versions = [
         drools         : '7.69.0.Final',
         log4JVersion   : '2.17.1',
         logbackVersion : '1.2.10',
-        launchDarklySdk: '5.10.0',
+        launchDarklySdk: '5.10.2',
         netty_version  : '4.1.77.Final'
 
 ]
@@ -314,7 +314,7 @@ dependencies {
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.1'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.4'
-    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.2.2'
+    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.5.2'
     implementation group: 'org.springframework', name: 'spring-core', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-beans', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-aop', version: versions.spring
@@ -328,6 +328,8 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-tx', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-web', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.spring
+
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.1.4'
 
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
@@ -352,6 +354,7 @@ dependencies {
         exclude group: 'org.glassfish', module: 'jakarta.el'
         exclude group: 'jakarta.el', module: 'jakarta.el-api'
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
+        exclude group: 'org.apache.maven', module: 'maven-compat'
     }
 
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.13'
@@ -362,7 +365,7 @@ dependencies {
     implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
 
     //Azure service bus libraries
-    implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'){
+    implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.6'){
         exclude group: 'com.microsoft.azure', module: 'adal4j'
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
@@ -377,7 +380,7 @@ dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.0'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.23'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-    implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.1.1'
+    implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:20030203.000550'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
@@ -444,6 +447,7 @@ dependencies {
     implementation (group: 'io.netty', name: 'netty-resolver-dns-native-macos', version: versions.netty_version) {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
+
     testImplementation('com.opentable.components:otj-pg-embedded:1.0.1')
     testImplementation('com.github.tomakehurst:wiremock-jre8:2.34.0')
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
@@ -463,7 +467,6 @@ dependencies {
     testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.2')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test', version: versions.springBoot
     testImplementation group: 'org.springframework.security',name:'spring-security-test', version: versions.springSecurity
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
@@ -615,6 +618,8 @@ configurations.all {
     exclude group: 'io.netty', module: 'netty-tcnative-classes'
     exclude group: 'io.netty.incubator', module: 'netty-incubator-codec-native-quic'
     exclude group: 'io.netty.incubator', module: 'netty-incubator-codec-classes-quic'
+    exclude group: 'net.minidev', module: 'json-smart'
+    exclude group: 'org.springframework.security', module: 'spring-security-crypto'
 }
 
 cucumberReports {
