@@ -1,0 +1,46 @@
+{
+  "_guid_": "S-073",
+  "title": "must successfully create judicial role mapping for circuit-judge - fee paid appointment",
+  "_extends_": "F-008_Test_Data_Base",
+  "specs": [
+    "contains the actorIds of the user just published"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "body": {
+      "actorId": "${[scenarioContext][childContexts][S-073_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "attributes" : {
+        "jurisdiction" : ["PRIVATELAW"]
+      }
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "[[ANYTHING_PRESENT]]",
+          "roleType" : "ORGANISATION",
+          "roleName" : "circuit-judge",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "JUDICIAL",
+          "readOnly" : false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "contractType" : "Fee-Paid",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "PRIVATELAW",
+            "workTypes" : "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        }
+      ]
+    }
+  }
+}
