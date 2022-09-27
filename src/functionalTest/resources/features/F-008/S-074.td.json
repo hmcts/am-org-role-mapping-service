@@ -1,6 +1,6 @@
 {
   "_guid_": "S-074",
-  "title": "must successfully create judicial role mapping for district-judge - salaried appointment",
+  "title": "must successfully create judicial role mapping for District Judge - salaried appointment",
   "_extends_": "F-008_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
@@ -21,21 +21,42 @@
       "roleAssignmentResponse": [
         {
           "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "CASE",
-          "roleName" : "hearing-judge",
-          "classification" : "PUBLIC",
-          "grantType" : "SPECIFIC",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
+          "actorIdType": "IDAM",
+          "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
           "beginTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "contractType" : "Salaried",
+          "attributes": {
+            "substantive": "N",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PRIVATELAW"
+            "jurisdiction": "PRIVATELAW"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
+          "roleType": "ORGANISATION",
+          "roleName": "judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Salaried",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "region": "1",
+            "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }

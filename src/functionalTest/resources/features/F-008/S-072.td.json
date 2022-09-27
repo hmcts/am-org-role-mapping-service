@@ -14,7 +14,10 @@
       "direction": "ASC"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-072_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+      "actorId": "${[scenarioContext][childContexts][S-072_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "attributes" : {
+        "jurisdiction" : ["PRIVATELAW"]
+      }
     }
   },
   "expectedResponse": {
@@ -37,7 +40,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
             "region": "2",
-            "workTypes": "hearing_work"
+            "workTypes": "routine_work,hearing_work,applications"
           }
         },
         {
@@ -56,7 +59,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
             "region": "2",
-            "workTypes": "hearing_work,access_requests"
+            "workTypes": "routine_work,access_requests,hearing_work,applications"
           }
         },
         {
@@ -64,14 +67,33 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
           "roleCategory": "ADMIN",
-          "readOnly": true,
+          "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N"
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW"
           }
         }
       ]

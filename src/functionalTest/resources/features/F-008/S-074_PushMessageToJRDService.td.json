@@ -4,7 +4,7 @@
 
   "request": {
     "body": {
-      "_extends_": "S-074_JRDHearingJudgeSalariedUser"
+      "_extends_": "S-074_JRDDistrictJudgeSalariedUser"
     }
   }
 }

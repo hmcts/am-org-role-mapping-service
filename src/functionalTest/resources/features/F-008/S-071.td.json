@@ -14,51 +14,17 @@
       "direction": "ASC"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-071_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+      "actorId": "${[scenarioContext][childContexts][S-071_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "attributes" : {
+        "jurisdiction" : ["PRIVATELAW"]
+      }
     }
   },
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "tribunal-caseworker",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PRIVATELAW",
-            "region": "2",
-            "workTypes": "decision_making_work"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "senior-tribunal-caseworker",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PRIVATELAW",
-            "region": "2",
-            "workTypes": "decision_making_work, access_requests"
-          }
-        }
+
       ]
     }
   }

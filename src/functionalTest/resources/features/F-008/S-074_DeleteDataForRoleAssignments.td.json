@@ -25,7 +25,7 @@
       "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
     },
     "body": {
-      "_extends_": "S-074_JRDHearingJudgeSalariedUser"
+      "_extends_": "S-074_JRDDistrictJudgeSalariedUser"
     }
   },
 

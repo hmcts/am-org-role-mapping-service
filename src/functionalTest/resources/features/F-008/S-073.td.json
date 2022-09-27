@@ -1,6 +1,6 @@
 {
   "_guid_": "S-073",
-  "title": "must successfully create judicial role mapping for circuit-judge - fee paid appointment",
+  "title": "must successfully create judicial role mapping for Deputy Circuit Judge - fee-paid appointment",
   "_extends_": "F-008_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
@@ -21,22 +21,43 @@
       "roleAssignmentResponse": [
         {
           "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "circuit-judge",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
+          "actorIdType": "IDAM",
+          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
+          "roleType": "ORGANISATION",
+          "roleName": "fee-paid-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
           "beginTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "contractType" : "Fee-Paid",
+          "attributes": {
+            "bookable": "true",
+            "substantive": "Y",
+            "contractType": "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PRIVATELAW",
+            "jurisdiction": "PRIVATELAW",
+            "region": "1",
             "workTypes" : "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
