@@ -23,7 +23,6 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
-
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
@@ -38,6 +37,28 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
+            "contractType": "Salaried",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "region": "1",
+            "workTypes": "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "1c8ae5a0-70f9-49e8-a197-3afe6ccf3dc6",
+          "roleType": "ORGANISATION",
+          "roleName": "circuit-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
@@ -104,28 +125,6 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "CIVIL",
-            "region": "1",
-            "workTypes": "[[ANYTHING_PRESENT]]"
-          },
-          "authorisations": "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "1c8ae5a0-70f9-49e8-a197-3afe6ccf3dc6",
-          "roleType": "ORGANISATION",
-          "roleName": "circuit-judge",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
