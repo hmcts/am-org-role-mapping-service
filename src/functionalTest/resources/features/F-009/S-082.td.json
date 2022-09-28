@@ -33,6 +33,7 @@
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
           "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",

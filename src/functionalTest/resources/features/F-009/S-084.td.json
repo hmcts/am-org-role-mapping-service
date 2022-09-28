@@ -23,28 +23,7 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "e723c75b-74c1-4994-82df-0370fd02bb85",
-          "roleType": "ORGANISATION",
-          "roleName": "judge",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "CIVIL",
-            "region": "1",
-            "workTypes": "[[ANYTHING_PRESENT]]"
-          },
-          "authorisations": "[[ANYTHING_PRESENT]]"
-        },
+
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
@@ -61,6 +40,28 @@
             "bookable": "true",
             "substantive": "Y",
             "contractType": "Fee-Paid",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "region": "1",
+            "workTypes": "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "e723c75b-74c1-4994-82df-0370fd02bb85",
+          "roleType": "ORGANISATION",
+          "roleName": "judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "region": "1",
