@@ -26,7 +26,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
           "roleType": "ORGANISATION",
           "roleName": "circuit-judge",
           "classification": "PUBLIC",

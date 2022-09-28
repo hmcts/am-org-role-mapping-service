@@ -47,7 +47,7 @@ Feature: F-009 : Create Judicial ORG Role Assignments for CIVIL
   Scenario: must successfully create org role mapping for fee paid Judge
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-084_DeleteDataForRoleAssignments],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [S-084_PushMessageToJRDService],
+    And a successful call [to publish existing JRD user ids to endpoint] as in [S-084_PushMessageToJRDService],
     And the request [contains the actorId of the user just published who has fee paid judge role],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
