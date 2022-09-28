@@ -23,12 +23,13 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
+
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "1c8ae5a0-70f9-49e8-a197-3afe6ccf3dc6",
           "roleType": "ORGANISATION",
-          "roleName": "task-supervisor",
+          "roleName": "case-allocator",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -48,30 +49,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "e723c75b-74c1-4994-82df-0370fd02bb85",
-          "roleType": "ORGANISATION",
-          "roleName": "fee-paid-judge",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "bookable": "true",
-            "substantive": "Y",
-            "contractType": "Fee-Paid",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "CIVIL",
-            "region": "1",
-            "workTypes": "[[ANYTHING_PRESENT]]"
-          },
-          "authorisations": "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
+          "actorId": "1c8ae5a0-70f9-49e8-a197-3afe6ccf3dc6",
           "roleType": "ORGANISATION",
           "roleName": "judge",
           "classification": "PUBLIC",
@@ -117,7 +95,7 @@
           "actorIdType": "IDAM",
           "actorId": "1c8ae5a0-70f9-49e8-a197-3afe6ccf3dc6",
           "roleType": "ORGANISATION",
-          "roleName": "case-allocator",
+          "roleName": "task-supervisor",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -137,7 +115,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
+          "actorId": "1c8ae5a0-70f9-49e8-a197-3afe6ccf3dc6",
           "roleType": "ORGANISATION",
           "roleName": "circuit-judge",
           "classification": "PUBLIC",
