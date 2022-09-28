@@ -20,7 +20,7 @@
         "last_updated_time": "2021-04-28T16:00:49"
       },
       {
-        "role_id": 2,
+        "role_id": 3,
         "role": "tribunal-caseworker",
         "is_primary": false,
         "created_time": "2020-04-28T16:00:49",
@@ -52,7 +52,7 @@
       },
       {
         "area_of_work": "2",
-        "service_code": "BFA2",
+        "service_code": "ABA5",
         "created_time": "2020-04-28T16:00:49",
         "last_updated_time": "2021-04-28T16:00:49"
       }

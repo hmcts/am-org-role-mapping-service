@@ -139,6 +139,10 @@ public class AssignmentRequestBuilder {
                     caseWorkerAccessProfile.setCaseAllocatorFlag(caseWorkerProfile.getCaseAllocator());
                     caseWorkerAccessProfile.setTaskSupervisorFlag(caseWorkerProfile.getTaskSupervisor());
                     caseWorkerAccessProfile.setRegionId(Long.toString(caseWorkerProfile.getRegionId()));
+                    if (caseWorkerProfile.getSkills() != null) {
+                        caseWorkerAccessProfile.setSkillCodes(caseWorkerProfile.getSkills().stream()
+                                .map(CaseWorkerProfile.Skills::getSkillCode).toList());
+                    }
                     caseWorkerAccessProfiles.add(caseWorkerAccessProfile);
                 })
         );

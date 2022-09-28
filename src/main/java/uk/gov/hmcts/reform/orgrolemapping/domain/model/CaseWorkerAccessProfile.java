@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 //b. Create a new model class UserAccessProfile(id, roleId, roleName, primaryLocationId,
 // primaryLocationName, areaOfWorkId, serviceCode, suspended) (which will flatten the User Profile into multiple
@@ -28,4 +29,5 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     private String caseAllocatorFlag;
     private String taskSupervisorFlag;
     private String regionId;
+    private List<String> skillCodes;
 }

@@ -98,6 +98,7 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : privatelaw_hmcts_admin_admin_org_role");
 end;

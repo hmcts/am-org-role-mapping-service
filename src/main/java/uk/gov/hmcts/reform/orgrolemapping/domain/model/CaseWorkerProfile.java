@@ -36,6 +36,7 @@ public class CaseWorkerProfile  implements Serializable  {
     private List<Role> role;
     private List<BaseLocation> baseLocation;
     private List<WorkArea> workArea;
+    private List<Skills> skills;
 
     @Data
     @Builder
@@ -84,6 +85,18 @@ public class CaseWorkerProfile  implements Serializable  {
         private LocalDateTime createdTime;
         //@JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss:SSS")
         private LocalDateTime lastUpdatedTime;
+
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class Skills implements Serializable {
+        private String skillId;
+        private String skillCode;
+        private String description;
 
     }
 
