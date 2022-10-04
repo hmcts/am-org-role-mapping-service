@@ -47,6 +47,29 @@
           "actorIdType": "IDAM",
           "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
           "roleType": "ORGANISATION",
+          "roleName": "circuit-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "bookable": "true",
+            "substantive": "Y",
+            "contractType": "Fee-Paid",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "region": "1",
+            "workTypes" : "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
+          "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
@@ -60,6 +83,21 @@
             "jurisdiction": "PRIVATELAW"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
         }
       ]
     }

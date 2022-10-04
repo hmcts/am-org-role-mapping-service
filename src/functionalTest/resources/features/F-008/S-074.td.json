@@ -59,6 +59,21 @@
             "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
         }
       ]
     }
