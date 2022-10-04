@@ -11,7 +11,7 @@
     "body": {
       "actorId": "${[scenarioContext][childContexts][S-074_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
       "attributes" : {
-        "jurisdiction" : ["PRIVATELAW"]
+        "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"]
       }
     }
   },
