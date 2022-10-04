@@ -16,7 +16,7 @@
       "actorId": "${[scenarioContext][childContexts][S-083_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
       "queryRequests":[
         {
-          "actorId": ["beddec04-4c43-403c-9737-fcacc10f4900"]
+          "actorId": ["1c8ae5a0-70f9-49e8-a197-3afe6ccf3dc6"]
         }
       ]
     }
