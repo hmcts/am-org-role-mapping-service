@@ -14,11 +14,13 @@
     },
     "body": {
       "actorId": "${[scenarioContext][childContexts][S-081_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "attributes" : {
-        "jurisdiction" : ["CIVIL"]
-      }
+      "queryRequests":[
+        {
+          "actorId": ["beddec04-4c43-403c-9737-fcacc10f4900"]
+        }
+      ]
     }
-  },
+    },
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
