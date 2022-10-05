@@ -14,7 +14,11 @@
       "direction": "ASC"
     },
     "body": {
-      "actorId": "2473198a-bf6a-4453-adc0-7617753c3f96"
+      "queryRequests": [
+        {
+          "actorId": "2473198a-bf6a-4453-adc0-7617753c3f96"
+        }
+      ]
     }
   },
   "expectedResponse": {
