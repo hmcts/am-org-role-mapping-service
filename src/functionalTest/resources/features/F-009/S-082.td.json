@@ -16,7 +16,10 @@
       "actorId": "${[scenarioContext][childContexts][S-082_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
       "queryRequests":[
         {
-          "actorId": ["322d8512-82e7-4f69-aa6c-c6b105a99f45"]
+          "actorId": ["322d8512-82e7-4f69-aa6c-c6b105a99f45"],
+          "attributes": {
+            "jurisdiction": "CIVIL"
+          }
         }
       ]
     }

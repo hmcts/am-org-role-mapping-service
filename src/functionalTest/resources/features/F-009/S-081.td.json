@@ -16,7 +16,10 @@
       "actorId": "${[scenarioContext][childContexts][S-081_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
       "queryRequests":[
         {
-          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"]
+          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
+          "attributes": {
+            "jurisdiction": "CIVIL"
+          }
         }
       ]
     }
@@ -59,6 +62,7 @@
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
+            "jurisdiction": "CIVIL",
             "substantive": "N"
           }
         }
