@@ -17,7 +17,7 @@
     "body": {
       "queryRequests": [
         {
-          "actorId": "beddec04-4c43-403c-9737-fcacc10f4900"
+          "actorId": ["beddec04-4c43-403c-9737-fcacc10f4900"]
         }
       ]
     }
