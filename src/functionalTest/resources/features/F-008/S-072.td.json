@@ -11,7 +11,8 @@
   "request": {
     "headers": {
       "sort": "roleName",
-      "direction": "ASC"
+      "direction": "ASC",
+      "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
     },
     "body": {
       "queryRequests": [
