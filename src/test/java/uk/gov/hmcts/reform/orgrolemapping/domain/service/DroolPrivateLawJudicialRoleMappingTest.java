@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,74 +34,17 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             "Deputy District Judge (MC)- Fee paid",
             "Deputy District Judge (MC)- Sitting in Retirement",
             "Deputy High Court Judge",
-            "High Court Judge- Sitting in Retirement");
+            "High Court Judge- Sitting in Retirement",
+            "Deputy Circuit Judge");
 
     static Stream<Arguments> endToEndData() {
         return Stream.of(
-                Arguments.of("Circuit Judge",
-                        "Salaried",
-                        List.of(""),
-                        List.of("circuit-judge", "hmcts-judiciary")),
+
                 Arguments.of("Deputy Circuit Judge",
                         "Fee Paid",
                         List.of(""),
-                        List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge - PRFD",
-                        "Fee Paid",
-                        List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge (MC)- Fee paid",
-                        "Fee Paid",
-                        List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge (MC)- Sitting in Retirement",
-                        "Fee Paid",
-                        List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge- Fee-Paid",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy District Judge- Sitting in Retirement",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Deputy High Court Judge",
-                        "Fee Paid",
-                        List.of("Deputy High Court Judge"),
-                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
-                Arguments.of("District Judge",
-                        "Salaried",
-                        List.of(""),
-                        List.of("judge", "hmcts-judiciary")),
-                Arguments.of("District Judge (MC)",
-                        "SPTW",
-                        List.of("District Judge"),
-                        List.of("judge","hmcts-judiciary")),
-                Arguments.of("High Court Judge",
-                        "Salaried",
-                        List.of(""),
-                        List.of("circuit-judge", "hmcts-judiciary")),
-                Arguments.of("High Court Judge- Sitting in Retirement",
-                        "Fee Paid",
-                        List.of("High Court Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("Recorder",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of("",
-                        "",
-                        List.of("Designated Family Judge"),
-                        List.of("leadership-judge","judge","task-supervisor","hmcts-judiciary","case-allocator")),
-                Arguments.of("",
-                        "",
-                        List.of("Family Division Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary")),
-                Arguments.of("",
-                        "",
-                        List.of("Senior Family Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary"))
+                        List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary"))
+
         );
     }
 
@@ -113,8 +55,8 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
-
-        judicialBookings.add(JudicialBooking.builder().userId(userId).locationId("Scotland").build());
+        JudicialBooking booking = JudicialBooking.builder().userId(userId).locationId("Scotland").regionId("1").build();
+        judicialBookings.add(booking);
 
         judicialAccessProfiles.add(
                 JudicialAccessProfile.builder()
@@ -148,20 +90,23 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals(userId, r.getActorId());
             if (!r.getRoleName().contains("hmcts-judiciary")) {
-                assertEquals("LDN", r.getAttributes().get("region").asText());
                 assertEquals("ABA5", r.getAuthorisations().get(0));
                 if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
                     assertEquals("hearing_work,decision_making_work,applications",
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
+                    assertEquals("LDN", r.getAttributes().get("region").asText());
                     assertEquals("access_requests",
                             r.getAttributes().get("workTypes").asText());
                 }
                 if (bookingLocationAppointments.contains(appointment)
-                        && Objects.equals(r.getRoleName(), "judge")) {
-                    assertEquals("Scotland", r.getAttributes().get("primaryLocation").asText());
+                        && List.of("circuit-judge", "judge").contains(r.getRoleName())) {
+                    assertEquals(booking.getLocationId(), r.getAttributes().get("primaryLocation").asText());
+                    assertEquals(booking.getLocationId(), r.getAttributes().get("baseLocation").asText());
+                    assertEquals(booking.getRegionId(), r.getAttributes().get("region").asText());
                 } else {
                     assertEquals("London", r.getAttributes().get("primaryLocation").asText());
+                    assertEquals("LDN", r.getAttributes().get("region").asText());
                 }
             } else {
                 assertEquals(1, r.getAttributes().size());
