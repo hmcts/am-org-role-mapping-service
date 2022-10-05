@@ -14,16 +14,12 @@
     },
     "body": {
       "actorId": "${[scenarioContext][childContexts][S-081_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "queryRequests":[
-        {
-          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
-          "attributes": {
-            "jurisdiction": "CIVIL"
-          }
-        }
-      ]
+      "roleName" : ["judge","hmcts-judiciary"],
+      "attributes": {
+        "contractType": "Salaried"
+      }
     }
-    },
+  },
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
@@ -58,12 +54,12 @@
           "roleName": "hmcts-judiciary",
           "classification": "PRIVATE",
           "grantType": "BASIC",
-          "roleCategory": "ADMIN",
+          "roleCategory": "JUDICIAL",
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "jurisdiction": "CIVIL",
-            "substantive": "N"
+            "substantive": "N",
+            "contractType": "Salaried"
           }
         }
       ]

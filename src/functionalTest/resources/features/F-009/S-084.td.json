@@ -10,86 +10,83 @@
   "request": {
     "headers": {
       "sort": "roleName",
-      "direction": "ASC"
+      "direction": "ASC",
+      "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
+      "body": {
+        "actorId": "${[scenarioContext][childContexts][S-084_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+        "roleName" : ["fee-paid-judge","judge","hmcts-judiciary"],
+        "attributes": {
+          "contractType": "Fee-Paid"
+        }
+      }
     },
-    "body": {
-      "actorId": "${[scenarioContext][childContexts][S-084_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "queryRequests":[
-        {
-          "actorId": ["e723c75b-74c1-4994-82df-0370fd02bb85"],
-          "attributes": {
-            "jurisdiction": "CIVIL"
-          }
-        }
-      ]
-    }
-  },
-  "expectedResponse": {
-    "_extends_": "Common_200_Response",
-    "body": {
-      "roleAssignmentResponse": [
-
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "e723c75b-74c1-4994-82df-0370fd02bb85",
-          "roleType": "ORGANISATION",
-          "roleName": "fee-paid-judge",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "bookable": "true",
-            "substantive": "Y",
-            "contractType": "Fee-Paid",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "CIVIL",
-            "region": "1",
-            "workTypes": "[[ANYTHING_PRESENT]]"
+    "expectedResponse": {
+      "_extends_": "Common_200_Response",
+      "body": {
+        "roleAssignmentResponse": [
+          {
+            "id": "[[ANYTHING_PRESENT]]",
+            "actorIdType": "IDAM",
+            "actorId": "e723c75b-74c1-4994-82df-0370fd02bb85",
+            "roleType": "ORGANISATION",
+            "roleName": "fee-paid-judge",
+            "classification": "PUBLIC",
+            "grantType": "STANDARD",
+            "roleCategory": "JUDICIAL",
+            "readOnly": false,
+            "beginTime": "[[ANYTHING_PRESENT]]",
+            "created": "[[ANYTHING_PRESENT]]",
+            "attributes": {
+              "bookable": "true",
+              "substantive": "Y",
+              "contractType": "Fee-Paid",
+              "primaryLocation": "[[ANYTHING_PRESENT]]",
+              "jurisdiction": "CIVIL",
+              "region": "1",
+              "workTypes": "[[ANYTHING_PRESENT]]"
+            },
+            "authorisations": "[[ANYTHING_PRESENT]]"
           },
-          "authorisations": "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "e723c75b-74c1-4994-82df-0370fd02bb85",
-          "roleType": "ORGANISATION",
-          "roleName": "judge",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "CIVIL",
-            "region": "1",
-            "workTypes": "[[ANYTHING_PRESENT]]"
+          {
+            "id": "[[ANYTHING_PRESENT]]",
+            "actorIdType": "IDAM",
+            "actorId": "e723c75b-74c1-4994-82df-0370fd02bb85",
+            "roleType": "ORGANISATION",
+            "roleName": "judge",
+            "classification": "PUBLIC",
+            "grantType": "STANDARD",
+            "roleCategory": "JUDICIAL",
+            "readOnly": false,
+            "beginTime": "[[ANYTHING_PRESENT]]",
+            "created": "[[ANYTHING_PRESENT]]",
+            "attributes": {
+              "substantive": "Y",
+              "contractType": "Salaried",
+              "primaryLocation": "[[ANYTHING_PRESENT]]",
+              "jurisdiction": "CIVIL",
+              "region": "1",
+              "workTypes": "[[ANYTHING_PRESENT]]"
+            },
+            "authorisations": "[[ANYTHING_PRESENT]]"
           },
-          "authorisations": "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-judiciary",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "ADMIN",
-          "readOnly": true,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N"
+          {
+            "id": "[[ANYTHING_PRESENT]]",
+            "actorIdType": "IDAM",
+            "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+            "roleType": "ORGANISATION",
+            "roleName": "hmcts-judiciary",
+            "classification": "PRIVATE",
+            "grantType": "BASIC",
+            "roleCategory": "JUDICIAL",
+            "readOnly": true,
+            "created": "[[ANYTHING_PRESENT]]",
+            "attributes": {
+              "substantive": "N",
+              "contractType": "Fee-Paid"
+            }
           }
-        }
-      ]
+        ]
+      }
     }
   }
 }
