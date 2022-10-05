@@ -9,10 +9,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-074_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "attributes" : {
-        "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"]
-      }
+      "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9"
     }
   },
   "expectedResponse": {

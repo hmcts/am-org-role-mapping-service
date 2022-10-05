@@ -14,10 +14,7 @@
       "direction": "ASC"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-072_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "attributes" : {
-        "actorId": ["2473198a-bf6a-4453-adc0-7617753c3f96"]
-      }
+      "actorId": "2473198a-bf6a-4453-adc0-7617753c3f96"
     }
   },
   "expectedResponse": {
