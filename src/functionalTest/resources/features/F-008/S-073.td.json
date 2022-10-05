@@ -9,12 +9,21 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
       "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
     },
     "body": {
-      "queryRequests": [
+      "queryRequests":[
         {
-          "actorId": ["670a2a93-3911-4332-8c60-d38d56b53266"]
+          "actorId": ["670a2a93-3911-4332-8c60-d38d56b53266"],
+          "roleName": ["hmcts-judiciary"]
+        },
+        {
+          "actorId": ["670a2a93-3911-4332-8c60-d38d56b53266"],
+          "attributes": {
+            "jurisdiction": ["PRIVATELAW"]
+          }
         }
       ]
     }
@@ -23,6 +32,29 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
+          "roleType": "ORGANISATION",
+          "roleName": "circuit-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "bookable": "true",
+            "substantive": "Y",
+            "contractType": "Fee-Paid",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "region": "1",
+            "workTypes" : "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
@@ -62,29 +94,6 @@
             "substantive": "N",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
-          "roleType": "ORGANISATION",
-          "roleName": "circuit-judge",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "bookable": "true",
-            "substantive": "Y",
-            "contractType": "Fee-Paid",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PRIVATELAW",
-            "region": "1",
-            "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },

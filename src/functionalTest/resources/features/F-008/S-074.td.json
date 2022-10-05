@@ -9,12 +9,21 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
       "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
     },
     "body": {
       "queryRequests":[
         {
-          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"]
+          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
+          "roleName": ["hmcts-judiciary"]
+        },
+        {
+          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
+          "attributes": {
+            "jurisdiction": ["PRIVATELAW"]
+          }
         }
       ]
     }
@@ -43,6 +52,22 @@
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
         {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        },
+        {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
@@ -63,21 +88,6 @@
             "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-judiciary",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "JUDICIAL",
-          "readOnly": true,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N"
-          }
         }
       ]
     }

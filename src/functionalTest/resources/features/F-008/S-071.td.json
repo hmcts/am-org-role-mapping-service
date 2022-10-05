@@ -139,7 +139,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "actorId": "beddec04-4c43-403c-9737-fcacc10f4900",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-legal-operations",
           "classification": "PRIVATE",
