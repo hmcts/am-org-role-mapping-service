@@ -11,15 +11,23 @@
     "headers": {
       "sort": "roleName",
       "direction": "ASC",
-      "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
-      "body": {
-        "actorId": "${[scenarioContext][childContexts][S-084_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-        "roleName" : ["fee-paid-judge","judge","hmcts-judiciary"],
-        "attributes": {
-          "contractType": "Fee-Paid"
-        }
-      }
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
     },
+    "body": {
+      "queryRequests":[
+        {
+          "actorId": ["e723c75b-74c1-4994-82df-0370fd02bb85"],
+          "roleName": ["hmcts-judiciary"]
+        },
+        {
+          "actorId": ["e723c75b-74c1-4994-82df-0370fd02bb85"],
+          "attributes": {
+            "jurisdiction": ["CIVIL"]
+          }
+        }
+      ]
+    }
+  },
     "expectedResponse": {
       "_extends_": "Common_200_Response",
       "body": {
@@ -89,4 +97,4 @@
       }
     }
   }
-}
+

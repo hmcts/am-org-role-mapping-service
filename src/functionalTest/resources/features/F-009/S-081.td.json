@@ -10,14 +10,22 @@
   "request": {
     "headers": {
       "sort": "roleName",
-      "direction": "ASC"
+      "direction": "ASC",
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-081_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "roleName" : ["judge","hmcts-judiciary"],
-      "attributes": {
-        "contractType": "Salaried"
-      }
+      "queryRequests":[
+        {
+          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
+          "roleName": ["hmcts-judiciary"]
+        },
+        {
+          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
+          "attributes": {
+            "jurisdiction": ["CIVIL"]
+          }
+        }
+      ]
     }
   },
   "expectedResponse": {

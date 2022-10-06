@@ -11,14 +11,21 @@
     "headers": {
       "sort": "roleName",
       "direction": "ASC",
-      "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-083_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "roleName" : ["case-allocator","circuit-judge","judge","leadership-judge","task-supervisor","hmcts-judiciary"],
-      "attributes": {
-        "contractType": "Salaried"
-      }
+      "queryRequests":[
+        {
+          "actorId": ["1c8ae5a0-70f9-49e8-a197-3afe6ccf3dc6"],
+          "roleName": ["hmcts-judiciary"]
+        },
+        {
+          "actorId": ["1c8ae5a0-70f9-49e8-a197-3afe6ccf3dc6"],
+          "attributes": {
+            "jurisdiction": ["CIVIL"]
+          }
+        }
+      ]
     }
   },
   "expectedResponse": {
