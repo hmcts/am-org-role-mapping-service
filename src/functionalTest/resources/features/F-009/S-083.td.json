@@ -49,7 +49,7 @@
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "region": "1",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
@@ -71,7 +71,7 @@
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "region": "1",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
@@ -110,7 +110,7 @@
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "region": "1",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
@@ -132,7 +132,7 @@
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "region": "1",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
@@ -154,7 +154,7 @@
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "region": "1",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
