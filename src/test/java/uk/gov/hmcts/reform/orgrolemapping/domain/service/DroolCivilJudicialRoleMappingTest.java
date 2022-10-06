@@ -84,7 +84,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("location1");
-
+        judicialBooking.setRegionId("1");
         judicialBookings = Set.of(judicialBooking);
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
@@ -99,6 +99,9 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "judge","hmcts-judiciary"));
         roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
+        RoleAssignment role = roleAssignments.stream().filter(r -> "judge".equals(r.getRoleName())).findFirst().get();
+        assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
+        assertEquals(judicialBooking.getRegionId(), role.getAttributes().get("region").asText());
     }
 
     @ParameterizedTest
@@ -113,7 +116,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("location1");
-
+        judicialBooking.setRegionId("1");
         judicialBookings = Set.of(judicialBooking);
 
         //Execute Kie session
@@ -129,6 +132,10 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "circuit-judge","hmcts-judiciary"));
         roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
+        RoleAssignment role = roleAssignments.stream().filter(r -> "circuit-judge".equals(r.getRoleName())).findFirst()
+                .get();
+        assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
+        assertEquals(judicialBooking.getRegionId(), role.getAttributes().get("region").asText());
     }
 
     @ParameterizedTest
