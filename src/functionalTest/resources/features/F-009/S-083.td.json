@@ -86,6 +86,7 @@
           "grantType": "BASIC",
           "roleCategory": "JUDICIAL",
           "readOnly": true,
+          "beginTime": "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "contractType": "Salaried",
