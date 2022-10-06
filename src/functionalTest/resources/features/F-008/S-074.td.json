@@ -37,6 +37,25 @@
           "actorIdType": "IDAM",
           "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
           "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
+          "roleType": "ORGANISATION",
           "roleName": "hmcts-judiciary",
           "classification": "PRIVATE",
           "grantType": "BASIC",
