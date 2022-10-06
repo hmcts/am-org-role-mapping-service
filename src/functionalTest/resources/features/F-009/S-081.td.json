@@ -17,10 +17,6 @@
       "queryRequests":[
         {
           "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
-          "roleName": ["hmcts-judiciary"]
-        },
-        {
-          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
           "attributes": {
             "jurisdiction": ["CIVIL"]
           }
@@ -32,6 +28,22 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried"
+          }
+        },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
@@ -53,22 +65,6 @@
             "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-judiciary",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "JUDICIAL",
-          "readOnly": true,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "contractType": "Salaried"
-          }
         }
       ]
     }
