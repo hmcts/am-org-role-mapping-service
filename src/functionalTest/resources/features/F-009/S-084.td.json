@@ -16,11 +16,11 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": ["e723c75b-74c1-4994-82df-0370fd02bb85"],
+          "actorId": ["cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b"],
           "roleName": ["hmcts-judiciary"]
         },
         {
-          "actorId": ["e723c75b-74c1-4994-82df-0370fd02bb85"],
+          "actorId": ["cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b"],
           "attributes": {
             "jurisdiction": ["CIVIL"]
           }
@@ -35,30 +35,7 @@
           {
             "id": "[[ANYTHING_PRESENT]]",
             "actorIdType": "IDAM",
-            "actorId": "e723c75b-74c1-4994-82df-0370fd02bb85",
-            "roleType": "ORGANISATION",
-            "roleName": "fee-paid-judge",
-            "classification": "PUBLIC",
-            "grantType": "STANDARD",
-            "roleCategory": "JUDICIAL",
-            "readOnly": false,
-            "beginTime": "[[ANYTHING_PRESENT]]",
-            "created": "[[ANYTHING_PRESENT]]",
-            "attributes": {
-              "bookable": "true",
-              "substantive": "Y",
-              "contractType": "Fee-Paid",
-              "primaryLocation": "[[ANYTHING_PRESENT]]",
-              "jurisdiction": "CIVIL",
-              "region": "1",
-              "workTypes": "[[ANYTHING_PRESENT]]"
-            },
-            "authorisations": "[[ANYTHING_PRESENT]]"
-          },
-          {
-            "id": "[[ANYTHING_PRESENT]]",
-            "actorIdType": "IDAM",
-            "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+            "actorId": "cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b",
             "roleType": "ORGANISATION",
             "roleName": "hmcts-judiciary",
             "classification": "PRIVATE",
@@ -74,9 +51,9 @@
           {
             "id": "[[ANYTHING_PRESENT]]",
             "actorIdType": "IDAM",
-            "actorId": "e723c75b-74c1-4994-82df-0370fd02bb85",
+            "actorId": "cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b",
             "roleType": "ORGANISATION",
-            "roleName": "judge",
+            "roleName": "fee-paid-judge",
             "classification": "PUBLIC",
             "grantType": "STANDARD",
             "roleCategory": "JUDICIAL",
@@ -84,8 +61,9 @@
             "beginTime": "[[ANYTHING_PRESENT]]",
             "created": "[[ANYTHING_PRESENT]]",
             "attributes": {
+              "bookable": "true",
               "substantive": "Y",
-              "contractType": "Salaried",
+              "contractType": "Fee-Paid",
               "primaryLocation": "[[ANYTHING_PRESENT]]",
               "jurisdiction": "CIVIL",
               "region": "1",
