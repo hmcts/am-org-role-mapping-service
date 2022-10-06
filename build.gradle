@@ -47,6 +47,7 @@ def versions = [
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
+        jacksondata    : '2.14.0-rc1',
         drools         : '7.69.0.Final',
         log4JVersion   : '2.17.1',
         logbackVersion : '1.2.10',
@@ -386,8 +387,8 @@ dependencies {
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.65'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4'
-    implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.13.2.20220324', ext: 'pom'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksondata
+    implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.jacksondata, ext: 'pom'
 
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
@@ -532,7 +533,7 @@ dependencyManagement {
             entry 'logback-classic'
             entry 'logback-core'
         }
-        dependencySet(group: 'com.fasterxml.jackson.core', version: '2.13.2') {
+        dependencySet(group: 'com.fasterxml.jackson.core', version: versions.jacksondata) {
             entry 'jackson-databind'
             entry 'jackson-core'
             entry 'jackson-annotations'
