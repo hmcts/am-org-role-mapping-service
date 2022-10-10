@@ -1,0 +1,10 @@
+{
+  "_guid_": "S-073_PushMessageToJRDService",
+  "_extends_": "PushMessageToJRDProfileProcess",
+
+  "request": {
+    "body": {
+      "_extends_": "S-073_JRDCircuitJudgeFeePaidUser"
+    }
+  }
+}
