@@ -1,7 +1,7 @@
 {
   "_guid_": "S-082",
   "title": "must successfully create org role mapping for circuit judge",
-  "_extends_": "F-009_Test_Data_Base",
+  "_extends_": "F-007_Test_Data_Base",
   "specs": [
     "contains the actorId of the user just published who has circuit judge role"
   ],
