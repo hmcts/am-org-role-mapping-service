@@ -38,6 +38,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_senior_tribunal_caseworker_org_role");
@@ -67,6 +68,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_tribunal_caseworker_org_role");
@@ -95,6 +97,7 @@ then
       .grantType(GrantType.BASIC)
       .classification(Classification.PRIVATE)
       .readOnly(true)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_hmcts_legal_operations_org_role");
@@ -125,6 +128,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_task_supervisor_admin_org_role");
@@ -155,6 +159,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_case_allocator_staff_org_role");
