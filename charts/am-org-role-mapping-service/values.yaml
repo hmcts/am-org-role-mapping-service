@@ -3,7 +3,6 @@ java:
   ingressHost: am-org-role-mapping-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   applicationPort: 4098
   aadIdentityName: am
-
   keyVaults:
     am:
       secrets:
@@ -28,7 +27,6 @@ java:
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
-
     AMQP_HOST: rd-servicebus-{{ .Values.global.environment }}.servicebus.windows.net
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
     TRUST_ALL_CERTS: "true"
@@ -36,7 +34,6 @@ java:
     CRD_SUBSCRIPTION_NAME: rd-caseworker-subscription-{{ .Values.global.environment }}
     JRD_TOPIC_NAME: rd-judicial-topic-{{ .Values.global.environment }}
     JRD_SUBSCRIPTION_NAME: rd-judicial-subscription-{{ .Values.global.environment }}
-
     ORG_ROLE_MAPPING_IDAM_ADMIN_USERID: orm.admin@hmcts.NET
     ORG_ROLE_MAPPING_DB_PORT: 5432
     ORG_ROLE_MAPPING_DB_NAME: org_role_mapping
