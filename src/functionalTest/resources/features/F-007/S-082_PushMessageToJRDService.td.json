@@ -1,0 +1,9 @@
+{
+  "_guid_": "S-082_PushMessageToJRDService",
+  "_extends_": "PushMessageToJRDProfileProcess",
+  "request": {
+    "body": {
+      "_extends_": "S-082_SingleUserId"
+    }
+  }
+}
