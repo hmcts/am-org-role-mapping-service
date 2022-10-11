@@ -1,5 +1,5 @@
 @F-007
-Feature: F-007 :Create Role Assignments for CIVIL Caseworker Users
+Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
 
   Background:
     Given an appropriate test context as detailed in the test data source
