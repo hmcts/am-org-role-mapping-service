@@ -1,0 +1,77 @@
+{
+  "_guid_": "S-081",
+  "title": "must successfully create org role mapping for judge",
+  "_extends_": "F-007_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has judge role"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+    },
+    "body": {
+      "queryRequests":[
+        {
+          "actorId": ["7faf83c9-8924-4c26-bff3-0a51fb6c9c8f"],
+          "roleName": ["hmcts-judiciary"]
+        },
+        {
+          "actorId": ["7faf83c9-8924-4c26-bff3-0a51fb6c9c8f"],
+          "attributes": {
+            "jurisdiction": ["CIVIL"]
+        }
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "7faf83c9-8924-4c26-bff3-0a51fb6c9c8f",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "7faf83c9-8924-4c26-bff3-0a51fb6c9c8f",
+          "roleType": "ORGANISATION",
+          "roleName": "judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Salaried",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "[[ANYTHING_PRESENT]]"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+        }
+      ]
+    }
+  }
+}
