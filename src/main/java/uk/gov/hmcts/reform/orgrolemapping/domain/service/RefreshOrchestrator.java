@@ -1,21 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.NullCheckBiPredicate;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nullCheckPredicate;
-
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -34,6 +18,22 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
+
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.NullCheckBiPredicate;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nullCheckPredicate;
 
 @Service
 @Slf4j
@@ -98,7 +98,8 @@ public class RefreshOrchestrator {
         if (refreshJobEntity.isEmpty()) {
             throw new UnprocessableEntityException("Provided refresh job couldn't be retrieved.");
         } else {
-            log.info("The refresh job retrieved from the DB:" + refreshJobEntity.get().getJobId());
+            log.info("The refresh job {} retrieved from the DB to run {}", refreshJobEntity.get().getJobId(),
+                    refreshJobEntity.get().getRoleCategory());
         }
 
         if (userRequest != null && nullCheckPredicate.test(userRequest.getUserIds())) {
@@ -109,6 +110,7 @@ public class RefreshOrchestrator {
                         .equals(RoleCategory.LEGAL_OPERATIONS.name())) {
                     userAccessProfiles = retrieveDataService
                             .retrieveProfiles(userRequest, UserType.CASEWORKER);
+                    log.info("Total profiles received from CRD is {}", userAccessProfiles.size());
                     //prepare the response code
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.CASEWORKER);
@@ -116,6 +118,7 @@ public class RefreshOrchestrator {
                         .equals(RoleCategory.JUDICIAL.name())) {
                     userAccessProfiles = retrieveDataService
                             .retrieveProfiles(userRequest, UserType.JUDICIAL);
+                    log.info("Total profiles received from JRD is {}", userAccessProfiles.size());
                     //prepare the response code
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.JUDICIAL);
