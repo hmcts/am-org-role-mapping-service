@@ -36,18 +36,21 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
+        List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
         cap.setRoleId(roleId);
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
+        cap.setSkillCodes(skillCodes);
 
         allProfiles.add(cap);
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("privatelaw_wa_1_0", true));
+
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -57,6 +60,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("CTSC", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
+            assertEquals(skillCodes,r.getAuthorisations());
         });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
@@ -87,7 +91,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
-
+        List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -95,6 +99,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
         cap.setRegionId("LDN");
+        cap.setSkillCodes(skillCodes);
 
         allProfiles.add(cap);
 
@@ -110,6 +115,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("ADMIN", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
+            assertEquals(skillCodes,r.getAuthorisations());
         });
 
         List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader", "task-supervisor",
@@ -149,7 +155,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
-
+        List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -157,6 +163,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
         cap.setRegionId("LDN");
+        cap.setSkillCodes(skillCodes);
 
         allProfiles.add(cap);
 
@@ -172,6 +179,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
+            assertEquals(skillCodes,r.getAuthorisations());
         });
 
         List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker", "senior-tribunal-caseworker",
@@ -204,11 +212,12 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
-
+        List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode("ABA5");
         cap.setSuspended(false);
         cap.setRoleId("10");
+        cap.setSkillCodes(skillCodes);
 
         allProfiles.add(cap);
 
