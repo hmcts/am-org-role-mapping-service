@@ -39,8 +39,11 @@ public class JobConfiguration implements CommandLineRunner {
         if (StringUtils.isNotEmpty(jobDetail) && featureConditionEvaluator
                 .isFlagEnabled("am_org_role_mapping_service", "orm-refresh-job-enable")) {
             String[] jobAttributes = jobDetail.split("-");
-            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder().build();
             log.info("Job {} inserting into refresh table", jobDetail);
+            if (jobAttributes.length < 4) {
+                return;
+            }
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder().build();
             if (jobAttributes.length > 4) {
                 Optional<RefreshJobEntity> refreshJob = refreshJobsRepository.findById(Long.valueOf(jobAttributes[4]));
                 refreshJobEntity = refreshJob.orElse(refreshJobEntity);
