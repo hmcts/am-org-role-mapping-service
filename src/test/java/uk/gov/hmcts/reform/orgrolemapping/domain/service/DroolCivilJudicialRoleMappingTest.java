@@ -220,7 +220,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 "487294","TRUE","Recorder", "Fee Paid",
                 LocalDate.now().minusYears(1L),null,null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParams(
-                "487294","FALSE","Deputy District Judge - Fee Paid","Fee Paid",
+                "487294","FALSE","Deputy District Judge- Fee-Paid","Fee Paid",
                 LocalDate.now().minusYears(1L),null,null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParams(
                 null,"FALSE","Tribunal Judge","Fee Paid",
