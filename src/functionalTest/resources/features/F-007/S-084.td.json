@@ -50,7 +50,6 @@
               "contractType": "Fee-Paid",
               "primaryLocation": "[[ANYTHING_PRESENT]]",
               "jurisdiction": "CIVIL",
-              "region": "[[ANYTHING_PRESENT]]",
               "workTypes": "[[ANYTHING_PRESENT]]"
             },
             "authorisations": "[[ANYTHING_PRESENT]]"
