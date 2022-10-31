@@ -14,7 +14,7 @@ plugins {
     id 'uk.gov.hmcts.java' version '0.12.12'
     id 'pmd'
     id 'jacoco'
-    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'org.springframework.boot' version '2.4.9'
     id 'info.solidsoft.pitest' version '1.7.4'
     id 'com.github.ben-manes.versions' version '0.43.0'
@@ -367,7 +367,7 @@ dependencies {
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.32.0'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.9.1'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.12.1'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.22'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
@@ -383,7 +383,7 @@ dependencies {
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.67'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.65'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.68'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksondata
