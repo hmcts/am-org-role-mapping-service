@@ -6,7 +6,8 @@ public enum FeatureFlagEnum {
     SSCS_HEARING_1_0("sscs_hearing_1_0"),
     SSCS_WA_1_0("sscs_wa_1_0"),
     CIVIL_WA_1_0("civil_wa_1_0"),
-    PRIVATELAW_WA_1_0("privatelaw_wa_1_0");
+    PRIVATELAW_WA_1_0("privatelaw_wa_1_0"),
+    PUBLICLAW_WA_1_0("publiclaw_wa_1_O");
 
     private final String value;
 

@@ -1,0 +1,191 @@
+package validationrules.publiclaw;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import java.util.ArrayList;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+/*
+ * publiclaw ctsc "ctsc" Org role mapping.
+ */
+
+
+rule "publiclaw_ctsc_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId == "10", serviceCode == "ABA3", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("ctsc")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : publiclaw_ctsc_org_role");
+end;
+
+
+/*
+ * publiclaw ctsc "hmcts-ctsc" Org role mapping.
+ */
+
+
+rule "publiclaw_hmcts_ctsc_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("10","9"), serviceCode == "ABA3", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hmcts-ctsc")
+      .grantType(GrantType.BASIC)
+      .classification(Classification.PRIVATE)
+      .readOnly(true)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : publiclaw_hmcts_ctsc_org_role");
+end;
+
+/*
+ * publiclaw ctsc "ctsc-team-leader" Org role mapping.
+ */
+
+
+rule "publiclaw_ctsc_team_leader_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId == "9", serviceCode == "ABA3", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests,hearing_work,applications"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("ctsc-team-leader")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : publicaw_ctsc_team_leader_org_role");
+end;
+
+/*
+ * publiclaw ctsc "task-supervisor" Org role mapping.
+ */
+
+rule "publiclaw_task_supervisor_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "ABA3", !suspended,
+                         taskSupervisorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : publiclaw_task_supervisor_role");
+end;
+
+/*
+ * publiclaw ctsc "case-allocator" Org role mapping.
+ */
+
+rule "publiclaw_case_allocator_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "ABA3", !suspended,
+                           caseAllocatorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : publiclaw_case_allocator_role");
+end;
+
+/*
+ * publiclaw ctsc "specific-access-approver-ctsc" Org role mapping.
+ */
+
+rule "publiclaw_specific-access-approver-ctsc_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "ABA3", !suspended,
+                           caseAllocatorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-ctsc")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : publiclaw_specific-access-approver-ctsc_role");
+end;
