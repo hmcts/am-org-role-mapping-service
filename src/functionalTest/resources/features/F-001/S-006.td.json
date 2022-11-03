@@ -20,7 +20,7 @@
         {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "actorId" : "${[scenarioContext][testData][request][body][actorId][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "hmcts-legal-operations",
         "classification" : "PRIVATE",
@@ -30,13 +30,13 @@
         "created" : "[[ANYTHING_PRESENT]]",
         "attributes" : {
           "substantive" : "N",
-          "primaryLocation" : "817181"
+          "primaryLocation" : "[[ANYTHING_PRESENT]]"
         }
       },
         {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "actorId" : "${[scenarioContext][testData][request][body][actorId][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "senior-tribunal-caseworker",
         "classification" : "PUBLIC",
@@ -46,7 +46,7 @@
         "created" : "[[ANYTHING_PRESENT]]",
         "attributes" : {
           "substantive" : "Y",
-          "primaryLocation" : "817181",
+          "primaryLocation" : "[[ANYTHING_PRESENT]]",
           "jurisdiction" : "IA",
           "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
         }
@@ -54,7 +54,7 @@
         {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId" : "4385b1e4-ec91-401e-b83c-fedad3b0d419",
+        "actorId" : "${[scenarioContext][testData][request][body][actorId][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "tribunal-caseworker",
         "classification" : "PUBLIC",
@@ -64,7 +64,7 @@
         "created" : "[[ANYTHING_PRESENT]]",
         "attributes" : {
           "substantive" : "Y",
-          "primaryLocation" : "817181",
+          "primaryLocation" : "[[ANYTHING_PRESENT]]",
           "jurisdiction" : "IA",
           "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
         }
