@@ -160,3 +160,31 @@ then
       .build());
       logMsg("Rule : privatelaw_ctsc_case_allocator_role");
 end;
+
+/*
+ * privatelaw ctsc "specific-access-approver-ctsc" Org role mapping.
+ */
+
+rule "privatelaw_specific_access_approver_ctsc_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "ABA5", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-ctsc")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : privatelaw_specific_access_approver_ctsc_role");
+end;
