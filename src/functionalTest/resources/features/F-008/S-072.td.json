@@ -29,7 +29,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-centre-admin",
           "classification": "PUBLIC",
@@ -48,7 +48,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-centre-team-leader",
           "classification": "PUBLIC",
@@ -67,7 +67,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
@@ -84,7 +84,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -101,7 +101,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-admin",
           "classification": "PRIVATE",
@@ -115,7 +115,7 @@
         },{
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
-          "actorId" : "${[scenarioContext][testData][request][body][queryRequests][actorId][0]}",
+          "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType" : "ORGANISATION",
           "roleName" : "specific-access-approver-admin",
           "classification" : "PUBLIC",
