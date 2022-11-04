@@ -97,7 +97,7 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publiclaw_tribunal_caseworker_org_role");
+      logMsg("Rule :publiclaw_tribunal_caseworker_org_role");
 end;
 
 /*
@@ -122,7 +122,7 @@ then
       .readOnly(true)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publiclaw_hmcts_legal_operations_org_role");
+      logMsg("Rule :publiclaw_hmcts_legal_operations_org_role");
 end;
 /*
  * publiclaw staff "task-supervisor" Org role mapping.
@@ -150,7 +150,7 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publiclaw_task_supervisor_admin_org_role");
+      logMsg("Rule : publiclaw_task_supervisor_staff_org_role");
 end;
 
 /*
