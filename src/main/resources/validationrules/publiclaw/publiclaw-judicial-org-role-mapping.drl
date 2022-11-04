@@ -129,7 +129,7 @@ when
   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
   "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
-  "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid"
+  "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
   "PUBLICLAW Magistrate - Fee Paid", "PUBLICLAW Designated Family Judge - Salaried",
   "PUBLICLAW Deputy Circuit Judge - Fee Paid"))
 then
@@ -183,9 +183,9 @@ then
 end;
 
 /*
- * PUBLICLAW "task-supervisor" Org role mapping.
+ * PUBLICLAW "task-supervisor" Judicial Org role mapping.
  */
-rule "publiclaw_task_supervisor_org_role"
+rule "publiclaw_task_supervisor_judicial_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried"))
@@ -211,7 +211,7 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : publiclaw_task_supervisor_org_role");
+      logMsg("Rule : publiclaw_task_supervisor_judicial_org_role");
 end;
 
 /*
@@ -279,45 +279,13 @@ then
 end;
 
 /*
- * PUBLICLAW "specific-access-approver-judiciary" Org role mapping.
- */
-rule "publiclaw_specific_access_approver_judiciary_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried"))
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($joh.getUserId())
-      .roleCategory(RoleCategory.JUDICIAL)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("specific-access-approver-judiciary")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
-      .attributes(attribute)
-      .authorisations($joh.getTicketCodes())
-      .build());
-      logMsg("Rule : publiclaw_specific_access_approver_judiciary_org_role");
-end;
-
-/*
  * PUBLICLAW "circuit-judge" Org role mapping.
  */
 rule "publiclaw_circuit_judge_org_fee_paid_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $bk: JudicialBooking(userId == $joh.userId)
   $joh: JudicialOfficeHolder(office in ( "PUBLICLAW Deputy Circuit Judge - Fee Paid"))
+  $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
@@ -349,12 +317,12 @@ end;
 rule "publiclaw_fee_paid_judge_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $bk: JudicialBooking(userId == $joh.userId)
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW Deputy Circuit Judge - Fee Paid", "PUBLICLAW Magistrate - Fee Paid",
   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
   "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
   "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid"))
+  $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
