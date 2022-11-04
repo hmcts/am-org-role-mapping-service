@@ -100,14 +100,14 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publicaw_ctsc_team_leader_org_role");
+      logMsg("Rule : publiclaw_ctsc_team_leader_org_role");
 end;
 
 /*
  * publiclaw ctsc "task-supervisor" Org role mapping.
  */
 
-rule "publiclaw_task_supervisor_role"
+rule "publiclaw_ctsc_task_supervisor_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "ABA3", !suspended,
@@ -129,14 +129,14 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publiclaw_task_supervisor_role");
+      logMsg("Rule : publiclaw_ctsc_task_supervisor_role");
 end;
 
 /*
  * publiclaw ctsc "case-allocator" Org role mapping.
  */
 
-rule "publiclaw_case_allocator_role"
+rule "publiclaw_ctsc_case_allocator_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "ABA3", !suspended,
@@ -158,7 +158,7 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publiclaw_case_allocator_role");
+      logMsg("Rule : publiclaw_ctsc_case_allocator_role");
 end;
 
 /*
@@ -187,5 +187,5 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publiclaw_specific-access-approver-ctsc_role");
+      logMsg("Rule : publiclaw_specific_access_approver_ctsc_role");
 end;
