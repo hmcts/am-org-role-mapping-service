@@ -165,11 +165,11 @@ end;
  * publiclaw ctsc "specific-access-approver-ctsc" Org role mapping.
  */
 
-rule "publiclaw_specific-access-approver-ctsc_role"
+rule "publiclaw_specific_access_approver_ctsc_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "ABA3", !suspended,
-                           caseAllocatorFlag == "Y")
+  $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "ABA3", !suspended)
+
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
