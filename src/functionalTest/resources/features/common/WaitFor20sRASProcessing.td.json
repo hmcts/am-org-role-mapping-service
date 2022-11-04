@@ -9,8 +9,7 @@
   ],
   "users": {
     "invokingUser": {
-      "username": "[[$TEST_AM_CRD_USER1_BEFTA]]",
-      "password": "[[$TEST_AM_CRD_USER1_BEFTA_PASSWORD]]"
+      "_extends_": "CrdBeftaUser1"
     }
   },
   "request": {
