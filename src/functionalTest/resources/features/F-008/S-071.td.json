@@ -18,6 +18,10 @@
       "queryRequests":[
         {
           "actorId": ["beddec04-4c43-403c-9737-fcacc10f4900"],
+          "roleName": ["hmcts-legal-operations"]
+        },
+        {
+          "actorId": ["beddec04-4c43-403c-9737-fcacc10f4900"],
           "attributes": {
             "jurisdiction": ["PRIVATELAW"]
           }
@@ -32,7 +36,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "case-allocator",
           "classification": "PUBLIC",
@@ -51,7 +55,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
@@ -68,7 +72,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -100,7 +104,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "senior-tribunal-caseworker",
           "classification": "PUBLIC",
@@ -118,7 +122,7 @@
         },{
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
-          "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "actorId" : "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType" : "ORGANISATION",
           "roleName" : "specific-access-approver-legal-ops",
           "classification" : "PUBLIC",
@@ -137,7 +141,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "task-supervisor",
           "classification": "PUBLIC",
@@ -156,7 +160,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "tribunal-caseworker",
           "classification": "PUBLIC",
