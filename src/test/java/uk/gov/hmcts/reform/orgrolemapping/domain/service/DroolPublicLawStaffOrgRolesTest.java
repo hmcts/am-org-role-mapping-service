@@ -141,7 +141,7 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @CsvSource({
             "2,ABA3,'tribunal-caseworker,hmcts-legal-operations',N,N",
             "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations, specific-access-approver-legal-ops,"
+            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
                     + "task-supervisor',Y,N",
             "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
                     + "case-allocator',N,Y",
