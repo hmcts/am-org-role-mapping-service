@@ -68,7 +68,7 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publiclaw_specific-access-approver-legal-ops_org_role");
+      logMsg("Rule : publiclaw_specific_access_approver_legal_ops_org_role");
 end;
 
 /*

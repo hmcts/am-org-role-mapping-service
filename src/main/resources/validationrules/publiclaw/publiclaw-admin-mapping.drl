@@ -99,7 +99,7 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publiclaw_specific-access-approver-admin_org_role");
+      logMsg("Rule : publiclaw_specific_access_approver_admin_org_role");
 end;
 
 /*

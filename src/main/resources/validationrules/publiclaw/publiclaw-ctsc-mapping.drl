@@ -187,5 +187,5 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : publiclaw_specific_access_approver_ctsc_role");
+      logMsg("Rule :publiclaw_specific_access_approver_ctsc_role");
 end;
