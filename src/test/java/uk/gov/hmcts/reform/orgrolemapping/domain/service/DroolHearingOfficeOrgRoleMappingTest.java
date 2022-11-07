@@ -121,7 +121,9 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "2,BBA3,SSCS",
-            "2,ABA5,PRIVATELAW"
+            "2,ABA5,PRIVATELAW",
+            "1,ABA3,PUBLICLAW",
+            "2,ABA3,PUBLICLAW"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_LegalOps(String roleId, String serviceCode,
                                                                 String jurisdiction) {
@@ -142,6 +144,29 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         });
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "9,ABA3,PUBLICLAW",
+            "10,ABA3,PUBLICLAW"
+    })
+    void shouldReturnHearingManagerAndViewerCaseWorker_Ctsc(String roleId, String serviceCode,
+                                                                String jurisdiction) {
+        allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(2, roleAssignments.size());
+        roleAssignments.forEach(r -> {
+            assertEquals(RoleCategory.CTSC, r.getRoleCategory());
+            assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
+            assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
+            assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
+                    .anyMatch(s::contains));
+        });
+    }
     @ParameterizedTest
     @CsvSource({
             "14,BBA3,SSCS",
