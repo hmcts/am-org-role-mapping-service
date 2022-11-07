@@ -78,7 +78,8 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @CsvSource({
             "4,ABA3,'hearing-centre-admin,hmcts-admin',N,N",
             "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin',N,N",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,task-supervisor,case-allocator',Y,Y",
+            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,"
+                    + "task-supervisor,case-allocator',Y,Y",
             "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,task-supervisor',Y,N",
             "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,case-allocator',N,Y",
 
@@ -112,8 +113,7 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
             assertEquals("ADMIN", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
-
-        List<String> roleNamesWithRegionAttribute = List.of( "hearing-centre-team-leader","case-allocator",
+        List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader","case-allocator",
                  "task-supervisor", "specific-access-approver-admin", "hearing-centre-admin");
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
@@ -141,9 +141,12 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @CsvSource({
             "2,ABA3,'tribunal-caseworker,hmcts-legal-operations',N,N",
             "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,task-supervisor',Y,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,case-allocator',N,Y",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,task-supervisor,case-allocator',Y,Y",
+            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
+                    + "task-supervisor',Y,N",
+            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
+                    + "case-allocator',N,Y",
+            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
+                    + "task-supervisor,case-allocator',Y,Y",
     })
     void shouldReturnPublicLawCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
                                                   String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -199,6 +202,8 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                     }
                 });
     }
+
+
     @Test
     void shouldNotReturnCtsRoles_disabledFlag() {
 

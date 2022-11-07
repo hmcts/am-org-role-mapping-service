@@ -121,8 +121,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "2,BBA3,SSCS",
-            "2,ABA5,PRIVATELAW",
-            "'1,2',ABA3,PUBLICLAW"
+            "2,ABA5,PRIVATELAW"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_LegalOps(String roleId, String serviceCode,
                                                                 String jurisdiction) {
