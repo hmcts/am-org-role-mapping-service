@@ -50,6 +50,8 @@ java:
     RUN_LD_ON_STARTUP: true
   postgresql:
     enabled: true
+    auth:
+      port: 5432
 servicebus:
   enabled: true
   teamName: RD
