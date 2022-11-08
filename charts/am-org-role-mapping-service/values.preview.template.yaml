@@ -51,9 +51,6 @@ java:
   postgresql:
     enabled: true
     auth:
-      username: org_role_mapping
-      password: org_role_mapping
-      database: org_role_mapping
       port: 5432
 servicebus:
   enabled: true
