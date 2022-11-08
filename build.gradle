@@ -366,7 +366,7 @@ dependencies {
         exclude group: 'com.microsoft.azure', module: 'adal4j'
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
-    implementation group: 'com.azure', name: 'azure-core', version: '1.32.0'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.34.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.12.1'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.22'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
@@ -445,7 +445,7 @@ dependencies {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
     }
     testImplementation('com.opentable.components:otj-pg-embedded:1.0.1')
-    testImplementation('com.github.tomakehurst:wiremock-jre8-standalone:2.34.0')
+    testImplementation('com.github.tomakehurst:wiremock-jre8-standalone:2.35.0')
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
 
     pitest 'org.pitest:pitest-junit5-plugin:0.16'
