@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import java.io.Serializable;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,4 +31,6 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     private String caseAllocatorFlag;
     private String taskSupervisorFlag;
     private String regionId;
+    private String staffAdmin;
+    private List<String> skillCodes;
 }
