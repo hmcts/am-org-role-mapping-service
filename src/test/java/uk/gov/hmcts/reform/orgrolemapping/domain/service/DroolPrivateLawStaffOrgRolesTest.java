@@ -25,10 +25,10 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "10,ABA5,'ctsc,hmcts-ctsc',N,N",
-            "9,ABA5,'ctsc-team-leader,hmcts-ctsc',N,N",
-            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,task-supervisor,case-allocator',Y,Y",
-            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,case-allocator',N,Y",
-            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,task-supervisor',Y,N"
+            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc',N,N",
+            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,task-supervisor,case-allocator,specific-access-approver-ctsc',Y,Y",
+            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,case-allocator,specific-access-approver-ctsc',N,Y",
+            "9,ABA5,'ctsc-team-leader,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N"
     })
     void shouldReturnPrivateLawCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                             String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -77,10 +77,11 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "4,ABA5,'hearing-centre-admin,hmcts-admin',N,N",
-            "3,ABA5,'hearing-centre-team-leader,hmcts-admin',N,N",
-            "3,ABA5,'hearing-centre-team-leader,hmcts-admin,task-supervisor',Y,N",
-            "3,ABA5,'hearing-centre-team-leader,hmcts-admin,case-allocator',N,Y",
-            "3,ABA5,'hearing-centre-team-leader,hmcts-admin,task-supervisor,case-allocator',Y,Y",
+            "3,ABA5,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin',N,N",
+            "3,ABA5,'hearing-centre-team-leader,hmcts-admin,task-supervisor,specific-access-approver-admin',Y,N",
+            "3,ABA5,'hearing-centre-team-leader,hmcts-admin,case-allocator,specific-access-approver-admin',N,Y",
+            "3,ABA5,'hearing-centre-team-leader,hmcts-admin,task-supervisor,case-allocator,"
+                     + "specific-access-approver-admin',Y,Y",
     })
     void shouldReturnPrivateLawAdminMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -139,10 +140,13 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N",
-            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations',N,N",
-            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor',Y,N",
-            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,case-allocator',N,Y",
-            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y",
+            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N",
+            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                    + "specific-access-approver-legal-ops',Y,N",
+            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
+                    + "specific-access-approver-legal-ops',N,Y",
+            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,"
+                    + "specific-access-approver-legal-ops',Y,Y",
     })
     void shouldReturnPrivateLawCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
