@@ -39,6 +39,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_hearing_centre_team_leader_org_role");
@@ -68,6 +69,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_task_supervisor_org_role");
@@ -97,6 +99,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_specific_access_approver_admin_org_role");
@@ -123,6 +126,7 @@ then
       .grantType(GrantType.BASIC)
       .classification(Classification.PRIVATE)
       .readOnly(true)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_hmcts_admin_admin_org_role");
@@ -153,6 +157,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_case_allocator_admin_org_role");
@@ -183,6 +188,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_hearing_centre_admin_org_role");
