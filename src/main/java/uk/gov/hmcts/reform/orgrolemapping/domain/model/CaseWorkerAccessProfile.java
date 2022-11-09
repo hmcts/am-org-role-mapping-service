@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 
 //b. Create a new model class UserAccessProfile(id, roleId, roleName, primaryLocationId,
 // primaryLocationName, areaOfWorkId, serviceCode, suspended) (which will flatten the User Profile into multiple
