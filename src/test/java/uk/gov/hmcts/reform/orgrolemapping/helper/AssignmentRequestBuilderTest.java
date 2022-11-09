@@ -3,11 +3,13 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -22,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 
 class AssignmentRequestBuilderTest {
 
@@ -64,10 +68,16 @@ class AssignmentRequestBuilderTest {
 
     @Test
     void convertUserProfileToUserAccessProfile() {
+        CaseWorkerProfile caseworker = TestDataBuilder
+                .buildUserProfile("21334a2b-79ce-44eb-9168-2d49a744be9c", false, "1",
+                        "2", ROLE_NAME_STCW, ROLE_NAME_TCW, true, true,
+                        true, true, "1", "2", true);
+        caseworker.setSkills(List.of(
+                CaseWorkerProfile.Skills.builder().skillId("008").skillCode("test2").description("test3").build(),
+                CaseWorkerProfile.Skills.builder().skillId("009").skillCode("law").description("ctsc").build(),
+                CaseWorkerProfile.Skills.builder().skillId("010").skillCode("junit").description("test4").build()));
         Set<UserAccessProfile> caseWorkerAccessProfiles = AssignmentRequestBuilder
-                .convertUserProfileToCaseworkerAccessProfile(TestDataBuilder
-                        .buildUserProfile("21334a2b-79ce-44eb-9168-2d49a744be9c", false, "1", "2",
-                                ROLE_NAME_STCW, ROLE_NAME_TCW, true, true, true, true, "1", "2", true));
+                .convertUserProfileToCaseworkerAccessProfile(caseworker);
         caseWorkerAccessProfiles.stream()
                 .filter(obj -> obj instanceof CaseWorkerAccessProfile)
                 .map(CaseWorkerAccessProfile.class::cast)
@@ -80,6 +90,8 @@ class AssignmentRequestBuilderTest {
                     assertNotNull(role.getRoleId());
                     assertNotNull(role.getRoleName());
                     assertNotNull(role.getServiceCode());
+                    assertNotNull(role.getSkillCodes());
+                    assertThat(role.getSkillCodes(), containsInAnyOrder("test2","law","junit"));
                 });
         assertEquals(2, caseWorkerAccessProfiles.size());
     }

@@ -36,13 +36,14 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
+        List<String> skillCodes = List.of("test1", "test2", "test3");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
         cap.setRoleId(roleId);
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
-
+        cap.setSkillCodes(skillCodes);
         allProfiles.add(cap);
 
         //Execute Kie session
