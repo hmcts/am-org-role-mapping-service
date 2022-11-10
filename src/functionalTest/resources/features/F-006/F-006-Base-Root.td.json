@@ -2,7 +2,7 @@
   "_guid_": "F-006-Base-Root",
   "users": {
     "invokingUser": {
-      "_extends_": "CrdBeftaUser1"
+      "_extends_": "AmBeftaUser1"
     }
   },
   "request": {
