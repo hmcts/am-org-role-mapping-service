@@ -10,7 +10,7 @@
   ],
   "users": {
     "invokingUser": {
-      "_extends_": "CrdBeftaUser1"
+      "_extends_": "AmBeftaUser1"
     }
   },
   "request": {
