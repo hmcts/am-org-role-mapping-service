@@ -224,7 +224,7 @@ end;
 rule "publiclaw_deputy_high_court_judge_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment == "Deputy High Court Judge-Fee Paid",
+   $jap: JudicialAccessProfile(appointment == "Deputy High Court Judge",
                                appointmentType in ("Fee Paid"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "ABA3"))
@@ -381,12 +381,12 @@ then
 end;
 
 /*
- * 14: "PUBLICLAW Magistrate - Fee Paid" business role mapping to JOH.
+ * 14: "PUBLICLAW Magistrate - Voluntary" business role mapping to JOH.
  */
-rule "publiclaw_magistrate_fee_paid_joh"
+rule "publiclaw_magistrate_voluntary_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment == "Magistrate - Fee-Paid",
+   $jap: JudicialAccessProfile(appointment == "Magistrate",
                                appointmentType in ("Voluntary"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "ABA3"))
@@ -394,7 +394,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("PUBLICLAW Magistrate - Fee Paid")
+      .office("PUBLICLAW Magistrate - Voluntary")
       .jurisdiction("PUBLICLAW")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -404,5 +404,5 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : publiclaw_magistrate_fee_paid_joh");
+      logMsg("Rule : publiclaw_magistrate_voluntary_joh");
 end;

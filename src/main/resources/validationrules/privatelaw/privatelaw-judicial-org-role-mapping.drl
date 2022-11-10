@@ -279,11 +279,6 @@ $joh: JudicialOfficeHolder(office in ("PRIVATELAW District Judge-Salaried", "PRI
                                       "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   if($joh.getOffice().contains("Fee-Paid")) {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   } else {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -296,7 +291,6 @@ then
       .readOnly(true)
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
-      .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_hmcts_judiciary_org_role");
 end;

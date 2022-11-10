@@ -26,7 +26,16 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  rule "global_hearing_viewer_judicial"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-   $joh: JudicialOfficeHolder(office in ("SSCS Judge", "Family Judge"))
+   $joh: JudicialOfficeHolder(office in ("SSCS Judge", "Family Judge",
+   "PUBLICLAW District Judge - Salaried", "PUBLICLAW District Judge (MC) - SPTW",
+   "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",
+   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
+   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
+   "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
+   "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
+   "PUBLICLAW Magistrate - Voluntary", "PUBLICLAW Designated Family Judge - Salaried",
+   "PUBLICLAW Deputy Circuit Judge - Fee Paid"
+   ))
  then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($joh.getJurisdiction()));
@@ -48,3 +57,38 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
        .build());
        logMsg("Rule : global_hearing_viewer_judicial");
  end;
+
+  rule "global_hearing_manager_judicial"
+  when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+    $joh: JudicialOfficeHolder(office in (
+    "PUBLICLAW District Judge - Salaried", "PUBLICLAW District Judge (MC) - SPTW",
+    "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",
+    "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
+    "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
+    "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
+    "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
+    "PUBLICLAW Designated Family Judge - Salaried",
+    "PUBLICLAW Deputy Circuit Judge - Fee Paid"
+    ))
+  then
+     Map<String,JsonNode> attribute = new HashMap<>();
+     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($joh.getJurisdiction()));
+     attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+    insert(
+        RoleAssignment.builder()
+        .actorIdType(ActorIdType.IDAM)
+        .actorId($joh.getUserId())
+        .roleCategory(RoleCategory.JUDICIAL)
+        .roleType(RoleType.ORGANISATION)
+        .roleName("hearing-manager")
+        .grantType(GrantType.STANDARD)
+        .classification(Classification.PUBLIC)
+        .readOnly(false)
+        .beginTime($joh.getBeginTime())
+        .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+        .attributes(attribute)
+        .authorisations($joh.getTicketCodes())
+        .build());
+        logMsg("Rule : global_hearing_viewer_judicial");
+  end;
