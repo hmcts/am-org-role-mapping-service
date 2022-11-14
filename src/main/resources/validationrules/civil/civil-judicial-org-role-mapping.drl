@@ -204,7 +204,6 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
    attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
 
@@ -278,6 +277,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
    $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
 
@@ -314,6 +315,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
    $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
 

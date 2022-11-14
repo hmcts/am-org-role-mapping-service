@@ -184,6 +184,38 @@ then
 end;
 
 /*
+ * PRIVATELAW "specific-access-approver-judiciary" Org role mapping.
+ */
+rule "privatelaw_specific_access_approver_judiciary_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ( "PRIVATELAW Designated Family Judge-Salaried"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-judiciary")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : privatelaw_specific_access_approver_judiciary_org_role");
+end;
+
+/*
  * PRIVATELAW "fee-paid-judge" Org role mapping.
  */
 rule "privatelaw_fee_paid_judge_org_role"
@@ -281,8 +313,10 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+      $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
 
@@ -311,7 +345,8 @@ end;
 rule "privatelaw_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy District Judge-Fee-Paid", "PRIVATELAW Recorder-Fee-Paid",
+  $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy District Judge-Fee-Paid",
+                                        "PRIVATELAW Recorder-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge – PRFD-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge – (MC)-Fee-Paid",
@@ -324,7 +359,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
    $bk.getLocationId():$joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
 

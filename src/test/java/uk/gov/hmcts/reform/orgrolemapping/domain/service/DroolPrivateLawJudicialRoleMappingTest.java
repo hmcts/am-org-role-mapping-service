@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,7 +34,8 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             "Deputy District Judge (MC)- Fee paid",
             "Deputy District Judge (MC)- Sitting in Retirement",
             "Deputy High Court Judge",
-            "High Court Judge- Sitting in Retirement");
+            "High Court Judge- Sitting in Retirement",
+            "Deputy Circuit Judge");
 
     static Stream<Arguments> endToEndData() {
         return Stream.of(
@@ -94,7 +94,8 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("",
                         "",
                         List.of("Designated Family Judge"),
-                        List.of("leadership-judge","judge","task-supervisor","hmcts-judiciary","case-allocator")),
+                        List.of("leadership-judge","judge","task-supervisor","hmcts-judiciary","case-allocator",
+                                "specific-access-approver-judiciary")),
                 Arguments.of("",
                         "",
                         List.of("Family Division Liaison Judge"),
@@ -113,8 +114,8 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
-
-        judicialBookings.add(JudicialBooking.builder().userId(userId).locationId("Scotland").build());
+        JudicialBooking booking = JudicialBooking.builder().userId(userId).locationId("Scotland").regionId("1").build();
+        judicialBookings.add(booking);
 
         judicialAccessProfiles.add(
                 JudicialAccessProfile.builder()
@@ -148,20 +149,23 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals(userId, r.getActorId());
             if (!r.getRoleName().contains("hmcts-judiciary")) {
-                assertEquals("LDN", r.getAttributes().get("region").asText());
                 assertEquals("ABA5", r.getAuthorisations().get(0));
                 if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
                     assertEquals("hearing_work,decision_making_work,applications",
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
+                    assertEquals("LDN", r.getAttributes().get("region").asText());
                     assertEquals("access_requests",
                             r.getAttributes().get("workTypes").asText());
                 }
                 if (bookingLocationAppointments.contains(appointment)
-                        && Objects.equals(r.getRoleName(), "judge")) {
-                    assertEquals("Scotland", r.getAttributes().get("primaryLocation").asText());
+                        && List.of("circuit-judge", "judge").contains(r.getRoleName())) {
+                    assertEquals(booking.getLocationId(), r.getAttributes().get("primaryLocation").asText());
+                    assertEquals(booking.getLocationId(), r.getAttributes().get("baseLocation").asText());
+                    assertEquals(booking.getRegionId(), r.getAttributes().get("region").asText());
                 } else {
                     assertEquals("London", r.getAttributes().get("primaryLocation").asText());
+                    assertEquals("LDN", r.getAttributes().get("region").asText());
                 }
             } else {
                 assertEquals(1, r.getAttributes().size());
