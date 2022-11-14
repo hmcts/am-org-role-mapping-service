@@ -1,0 +1,79 @@
+{
+  "_guid_": "S-084",
+  "title": "must successfully create org role mapping for fee paid judge",
+  "_extends_": "F-007_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has fee paid judge role"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+    },
+    "body": {
+      "queryRequests":[
+        {
+          "actorId": ["cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b"],
+          "roleName": ["hmcts-judiciary"]
+        },
+        {
+          "actorId": ["cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b"],
+          "attributes": {
+            "jurisdiction": ["CIVIL"]
+          }
+        }
+      ]
+    }
+  },
+    "expectedResponse": {
+      "_extends_": "Common_200_Response",
+      "body": {
+        "roleAssignmentResponse": [
+          {
+            "id": "[[ANYTHING_PRESENT]]",
+            "actorIdType": "IDAM",
+            "actorId": "cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b",
+            "roleType": "ORGANISATION",
+            "roleName": "fee-paid-judge",
+            "classification": "PUBLIC",
+            "grantType": "STANDARD",
+            "roleCategory": "JUDICIAL",
+            "readOnly": false,
+            "beginTime": "[[ANYTHING_PRESENT]]",
+            "created": "[[ANYTHING_PRESENT]]",
+            "attributes": {
+              "bookable": "true",
+              "substantive": "Y",
+              "contractType": "Fee-Paid",
+              "primaryLocation": "[[ANYTHING_PRESENT]]",
+              "jurisdiction": "CIVIL",
+              "workTypes": "[[ANYTHING_PRESENT]]"
+            },
+            "authorisations": "[[ANYTHING_PRESENT]]"
+          },
+          {
+            "id": "[[ANYTHING_PRESENT]]",
+            "actorIdType": "IDAM",
+            "actorId": "cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b",
+            "roleType": "ORGANISATION",
+            "roleName": "hmcts-judiciary",
+            "classification": "PRIVATE",
+            "grantType": "BASIC",
+            "roleCategory": "JUDICIAL",
+            "readOnly": true,
+            "beginTime": "[[ANYTHING_PRESENT]]",
+            "created": "[[ANYTHING_PRESENT]]",
+            "attributes": {
+              "substantive": "N",
+              "contractType": "Fee-Paid"
+            }
+          }
+        ]
+      }
+    }
+  }
+
+

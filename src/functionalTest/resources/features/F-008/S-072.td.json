@@ -1,0 +1,137 @@
+{
+  "_guid_": "S-072",
+  "title": "must successfully create org role mapping for Hearing Centre Team Leader and Hearing Centre Administrator",
+  "_extends_": "F-008_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has Hearing Centre Team Leader role",
+    "contains the actorId of the user just published who has Hearing Centre Administrator role"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+    },
+    "body": {
+      "queryRequests": [
+        {
+          "actorId": ["2473198a-bf6a-4453-adc0-7617753c3f96"]
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-centre-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "region": "2",
+            "workTypes": "routine_work,hearing_work,applications"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-centre-team-leader",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "region": "2",
+            "workTypes": "routine_work,access_requests,hearing_work,applications"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-admin",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "ADMIN",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        },{
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "specific-access-approver-admin",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "ADMIN",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "PRIVATELAW",
+            "region" : "[[ANYTHING_PRESENT]]",
+            "workTypes" : "routine_work"
+          }
+        }
+      ]
+    }
+  }
+}

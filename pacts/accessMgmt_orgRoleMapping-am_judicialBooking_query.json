@@ -1,0 +1,182 @@
+{
+  "provider": {
+    "name": "am_judicialBooking_query"
+  },
+  "consumer": {
+    "name": "accessMgmt_orgRoleMapping"
+  },
+  "interactions": [
+    {
+      "description": "A query request is received with a valid userId passed",
+      "request": {
+        "method": "POST",
+        "path": "/am/bookings/query",
+        "body": {
+          "queryRequest": {
+            "userIds": [
+              "5629957f-4dcd-40b8-a0b2-e64ff5898b28",
+              "5629957f-4dcd-40b8-a0b2-e64ff5898b29"
+            ]
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "bookings": [
+            {
+              "regionId": "BFA1",
+              "locationId": "south-east",
+              "created": "2021-02-23T06:37:58Z",
+              "id": "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470",
+              "beginTime": "2031-01-01T00:00:00Z",
+              "endTime": "2031-09-01T00:00:00Z",
+              "userId": "5629957f-4dcd-40b8-a0b2-e64ff5898b28"
+            },
+            {
+              "regionId": "BFA1",
+              "locationId": "north-west",
+              "created": "2021-03-23T06:37:58Z",
+              "id": "fcb4f03c-4b3f-4c3c-bf3a-662b4557b471",
+              "beginTime": "2032-01-01T00:00:00Z",
+              "endTime": "2032-09-01T00:00:00Z",
+              "userId": "5629957f-4dcd-40b8-a0b2-e64ff5898b29"
+            }
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.bookings[0].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[0].userId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[0].locationId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[0].regionId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[0].beginTime": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[0].endTime": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[0].created": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[1].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[1].userId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[1].locationId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[1].regionId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[1].beginTime": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[1].endTime": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookings[1].created": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "A query request is received with a valid userId passed"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}

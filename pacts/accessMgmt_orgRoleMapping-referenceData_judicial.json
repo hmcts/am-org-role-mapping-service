@@ -1,0 +1,224 @@
+{
+  "provider": {
+    "name": "referenceData_judicial"
+  },
+  "consumer": {
+    "name": "accessMgmt_orgRoleMapping"
+  },
+  "interactions": [
+    {
+      "description": "the api returns judicial user profiles based on the provided list of user ids",
+      "request": {
+        "method": "POST",
+        "path": "/refdata/judicial/users",
+        "body": {
+          "ccdServiceName": null,
+          "object_ids": null,
+          "sidam_ids": [
+            "44362987-4b00-f2e7-4ff8-761b87f16bf9"
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "email_id": "e@mail.com",
+            "appointments": [
+              {
+                "location_id": "1"
+              }
+            ],
+            "sidam_id": "44362987-4b00-f2e7-4ff8-761b87f16bf9",
+            "authorisations": [
+              {
+                "jurisdiction": "IA"
+              }
+            ],
+            "object_id": "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470"
+          }
+        ],
+        "matchingRules": {
+          "body": {
+            "$[0].sidam_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].object_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].email_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].appointments": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].appointments[*].location_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].authorisations": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].authorisations[*].jurisdiction": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "return judicial user profiles along with their active appointments and authorisations"
+        }
+      ]
+    },
+    {
+      "description": "the api returns judicial user profiles based on the provided service name",
+      "request": {
+        "method": "POST",
+        "path": "/refdata/judicial/users",
+        "body": {
+          "ccdServiceName": "CMC",
+          "object_ids": null,
+          "sidam_ids": null
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "email_id": "e@mail.com",
+            "appointments": [
+              {
+                "location_id": "1"
+              }
+            ],
+            "sidam_id": "44362987-4b00-f2e7-4ff8-761b87f16bf9",
+            "authorisations": [
+              {
+                "jurisdiction": "IA"
+              }
+            ],
+            "object_id": "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470"
+          }
+        ],
+        "matchingRules": {
+          "body": {
+            "$[0].sidam_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].object_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].email_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].appointments": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].appointments[*].location_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].authorisations": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].authorisations[*].jurisdiction": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "return judicial user profiles along with their active appointments and authorisations"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}
