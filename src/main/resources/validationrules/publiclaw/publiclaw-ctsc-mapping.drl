@@ -29,7 +29,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
-
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -88,7 +88,8 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests,hearing_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work access_requests"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
       RoleAssignment.builder()
@@ -119,6 +120,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
       RoleAssignment.builder()
@@ -149,6 +151,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
       RoleAssignment.builder()
@@ -179,7 +182,8 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
