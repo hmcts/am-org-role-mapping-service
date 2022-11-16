@@ -47,7 +47,7 @@ end;
  * CIVIL admin "ctsc" Org role mapping.
  */
 
-rule "civil_ctsc_admin_org_role"
+rule "civil_ctsc_ctsc_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("10"), serviceCode in ("AAA6", "AAA7"), !suspended)
@@ -68,7 +68,7 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : civil_ctsc_admin_org_role");
+      logMsg("Rule : civil_ctsc_ctsc_org_role");
 end;
 
 /*
@@ -101,9 +101,9 @@ end;
 
 
 /*
- * CIVIL admin "task-supervisor" Org role mapping.
+ * CIVIL ctsc "task-supervisor" Org role mapping.
  */
-rule "civil_task_supervisor_admin_org_role"
+rule "civil_task_supervisor_ctsc_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("9"), serviceCode in ("AAA6", "AAA7"),
@@ -125,14 +125,14 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : civil_task_supervisor_admin_org_role");
+      logMsg("Rule : civil_task_supervisor_ctsc_org_role");
 end;
 
 /*
- * CIVIL admin "case-allocator" Org role mapping.
+ * CIVIL ctsc "case-allocator" Org role mapping.
  */
 
-rule "civil_case_allocator_admin_org_role"
+rule "civil_case_allocator_ctsc_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("9"), serviceCode in ("AAA6", "AAA7"),
@@ -154,5 +154,5 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : civil_case_allocator_admin_org_role");
+      logMsg("Rule : civil_case_allocator_ctsc_org_role");
 end;
