@@ -362,7 +362,7 @@ dependencies {
     implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
 
     //Azure service bus libraries
-    implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.3'){
+    implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.7'){
         exclude group: 'com.microsoft.azure', module: 'adal4j'
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
