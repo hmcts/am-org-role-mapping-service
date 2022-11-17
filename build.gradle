@@ -367,7 +367,7 @@ dependencies {
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.34.0'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.12.1'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.13.0'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.22'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
