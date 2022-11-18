@@ -484,3 +484,30 @@ then
   update($jap);
   logMsg("Rule : family_judge_joh");
 end;
+
+/*
+ * "PRIVATELAW Magistrate-Voluntary" business role business role mapping to JOH.
+ */
+rule "privatelaw_magistrate-voluntary_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Magistrate- Voluntary",
+                               appointmentType == "Voluntary",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA5"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PRIVATELAW Magistrate- Voluntary")
+      .jurisdiction("PRIVATELAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : privatelaw_magistrate-voluntary_joh");
+end;

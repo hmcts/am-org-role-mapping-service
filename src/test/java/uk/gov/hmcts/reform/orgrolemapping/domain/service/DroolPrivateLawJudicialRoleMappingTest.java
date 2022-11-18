@@ -7,9 +7,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -104,7 +107,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                         "",
                         List.of("Senior Family Liaison Judge"),
                         List.of("judge", "hmcts-judiciary"))
-        );
+                );
     }
 
     @ParameterizedTest
@@ -172,6 +175,70 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             }
         });
     }
+
+    static Stream<Arguments> magistrateData() {
+        return Stream.of(Arguments.of(
+                List.of("magistrate", "hmcts-judiciary"),
+                        List.of("magistrate", "hmcts-judiciary")
+
+       ));
+    }
+
+    @ParameterizedTest
+    @MethodSource("magistrateData")
+    void magistratePrivateLawRoleMappingTest(List<String> assignedRoles,List<String> expectedRoleNames) {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+        judicialAccessProfiles.add(
+                JudicialAccessProfile.builder()
+                        .appointment("Magistrate- Voluntary")
+                        .appointmentType("Voluntary")
+                        .userId(userId)
+                        .roles(assignedRoles)
+                        .regionId("LDN")
+                        .primaryLocationId("London")
+                        .ticketCodes(List.of("ABA5"))
+                        .authorisations(List.of(
+                                Authorisation.builder()
+                                        .serviceCodes(List.of("ABA5"))
+                                        .jurisdiction("PRIVATELAW")
+                                        .endDate(LocalDateTime.now().plusYears(1L))
+                                        .build()
+                        ))
+                        .build()
+        );
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(
+                        List.of(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build()));
+        //assertions
+        assertFalse(roleAssignments.isEmpty());
+
+        List<String> roleNameResults =
+                roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
+        assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
+
+        roleAssignments.forEach(r -> {
+            assertEquals(userId, r.getActorId());
+            if (!r.getRoleName().contains("hmcts-judiciary")) {
+                assertEquals(Classification.PUBLIC, r.getClassification());
+                assertEquals(GrantType.STANDARD, r.getGrantType());
+                assertEquals("ABA5", r.getAuthorisations().get(0));
+                assertEquals("London", r.getAttributes().get("primaryLocation").asText());
+                if ("magistrate".equals(r.getRoleName())) {
+                    assertEquals("LDN", r.getAttributes().get("region").asText());
+                    assertEquals("hearing_work,decision_making_work,applications",
+                            r.getAttributes().get("workTypes").asText());
+                }
+            } else {
+                assertEquals(Classification.PRIVATE, r.getClassification());
+                assertEquals(GrantType.BASIC, r.getGrantType());
+            }
+        });
+    }
+
 
     @Test
     void falsePrivateLawFlagTest() {
