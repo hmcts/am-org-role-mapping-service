@@ -488,7 +488,7 @@ end;
 /*
  * "PRIVATELAW Magistrate-Voluntary" business role business role mapping to JOH.
  */
-rule "privatelaw_magistrate-voluntary_joh"
+rule "privatelaw_magistrate_voluntary_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Magistrate- Voluntary",
@@ -509,5 +509,5 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : privatelaw_magistrate-voluntary_joh");
+      logMsg("Rule : privatelaw_magistrate_voluntary_joh");
 end;
