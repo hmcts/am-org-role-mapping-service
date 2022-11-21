@@ -229,8 +229,6 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals("London", r.getAttributes().get("primaryLocation").asText());
                 if ("magistrate".equals(r.getRoleName())) {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
-                    assertEquals("hearing_work,decision_making_work,applications",
-                            r.getAttributes().get("workTypes").asText());
                 }
             } else {
                 assertEquals(Classification.PRIVATE, r.getClassification());
