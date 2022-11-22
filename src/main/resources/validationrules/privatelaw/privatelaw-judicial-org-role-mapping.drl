@@ -276,8 +276,8 @@ $joh: JudicialOfficeHolder(office in ("PRIVATELAW District Judge-Salaried", "PRI
                                       "PRIVATELAW Deputy District Judge – (MC)-Fee-Paid",
                                       "PRIVATELAW Deputy District Judge – (MC)-Sitting in Retirement-Fee-Paid",
                                       "PRIVATELAW Deputy High Court Judge-Fee-Paid",
-                                      "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid",
-                                      "PRIVATELAW Magistrate- Voluntary"))
+                                      "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid"
+                                     ))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if($joh.getOffice().contains("Fee-Paid")) {
@@ -396,6 +396,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)

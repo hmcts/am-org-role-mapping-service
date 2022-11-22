@@ -177,23 +177,24 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     }
 
     static Stream<Arguments> magistrateData() {
-        return Stream.of(Arguments.of(
-                List.of("magistrate", "hmcts-judiciary"),
-                        List.of("magistrate", "hmcts-judiciary")
+        return Stream.of(Arguments.of("Magistrate- Voluntary","Voluntary",
+                List.of("Magistrate Voluntary"),
+                        List.of("magistrate")
 
        ));
     }
 
     @ParameterizedTest
     @MethodSource("magistrateData")
-    void magistratePrivateLawRoleMappingTest(List<String> assignedRoles,List<String> expectedRoleNames) {
+    void magistratePrivateLawRoleMappingTest(String appointment, String appointmentType,List<String> assignedRoles,
+                                             List<String> expectedRoleNames) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         judicialAccessProfiles.add(
                 JudicialAccessProfile.builder()
-                        .appointment("Magistrate- Voluntary")
-                        .appointmentType("Voluntary")
+                        .appointment(appointment)
+                        .appointmentType(appointmentType)
                         .userId(userId)
                         .roles(assignedRoles)
                         .regionId("LDN")
@@ -222,17 +223,13 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals(userId, r.getActorId());
-            if (!r.getRoleName().contains("hmcts-judiciary")) {
+            if ("magistrate".equals(r.getRoleName())) {
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
                 assertEquals("ABA5", r.getAuthorisations().get(0));
+                assertEquals("LDN", r.getAttributes().get("region").asText());
                 assertEquals("London", r.getAttributes().get("primaryLocation").asText());
-                if ("magistrate".equals(r.getRoleName())) {
-                    assertEquals("LDN", r.getAttributes().get("region").asText());
-                }
-            } else {
-                assertEquals(Classification.PRIVATE, r.getClassification());
-                assertEquals(GrantType.BASIC, r.getGrantType());
+                assertEquals("hearing_work, applications", r.getAttributes().get("workTypes").asText());
             }
         });
     }
