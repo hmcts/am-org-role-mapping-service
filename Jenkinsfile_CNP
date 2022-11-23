@@ -75,7 +75,7 @@ env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
 env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
 env.CRD_TOPIC_NAME = "rd-caseworker-topic-aat"
 env.JRD_TOPIC_NAME = "rd-judicial-topic-aat"
-env.ROLE_ASSIGNMENT_URL = "https://am-role-assignment-service-pr-1626.service.core-compute-preview.internal"
+env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
 env.JUDICIAL_BOOKING_URL = "http://am-judicial-booking-service-aat.service.core-compute-aat.internal"
 
 // Vars for Kubernetes PACT
