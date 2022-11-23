@@ -486,12 +486,12 @@ then
 end;
 
 /*
- * "PRIVATELAW Magistrate-Voluntary" business role business role mapping to JOH.
+ * "PRIVATELAW Magistrates-Voluntary" business role business role mapping to JOH.
  */
-rule "privatelaw_magistrate_voluntary_joh"
+rule "privatelaw_magistrates_voluntary_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment == "Magistrate- Voluntary",
+   $jap: JudicialAccessProfile(appointment == "Magistrate",
                                appointmentType == "Voluntary",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "ABA5"))
@@ -499,7 +499,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("PRIVATELAW Magistrate- Voluntary")
+      .office("PRIVATELAW Magistrates-Voluntary")
       .jurisdiction("PRIVATELAW")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -509,5 +509,5 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : privatelaw_magistrate_voluntary_joh");
+      logMsg("Rule : privatelaw_magistrates_voluntary_joh");
 end;

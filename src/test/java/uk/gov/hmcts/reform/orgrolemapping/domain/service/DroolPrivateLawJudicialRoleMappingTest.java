@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -73,7 +72,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("Deputy High Court Judge",
                         "Fee Paid",
                         List.of("Deputy High Court Judge"),
-                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
                 Arguments.of("District Judge",
                         "Salaried",
                         List.of(""),
@@ -81,7 +80,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("District Judge (MC)",
                         "SPTW",
                         List.of("District Judge"),
-                        List.of("judge","hmcts-judiciary")),
+                        List.of("judge", "hmcts-judiciary")),
                 Arguments.of("High Court Judge",
                         "Salaried",
                         List.of(""),
@@ -97,7 +96,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("",
                         "",
                         List.of("Designated Family Judge"),
-                        List.of("leadership-judge","judge","task-supervisor","hmcts-judiciary","case-allocator",
+                        List.of("leadership-judge", "judge", "task-supervisor", "hmcts-judiciary", "case-allocator",
                                 "specific-access-approver-judiciary")),
                 Arguments.of("",
                         "",
@@ -106,8 +105,12 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("",
                         "",
                         List.of("Senior Family Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary"))
-                );
+                        List.of("judge", "hmcts-judiciary")),
+                Arguments.of("Magistrate", "Voluntary",
+                        List.of("Magistrates-Voluntary"),
+                        List.of("magistrate")
+                )
+        );
     }
 
     @ParameterizedTest
@@ -158,8 +161,6 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
-                    assertEquals("access_requests",
-                            r.getAttributes().get("workTypes").asText());
                 }
                 if (bookingLocationAppointments.contains(appointment)
                         && List.of("circuit-judge", "judge").contains(r.getRoleName())) {
@@ -173,56 +174,6 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             } else {
                 assertEquals(1, r.getAttributes().size());
             }
-        });
-    }
-
-    static Stream<Arguments> magistrateData() {
-        return Stream.of(Arguments.of("Magistrate- Voluntary","Voluntary",
-                List.of("Magistrate Voluntary"),
-                        List.of("magistrate")
-
-       ));
-    }
-
-    @ParameterizedTest
-    @MethodSource("magistrateData")
-    void magistratePrivateLawRoleMappingTest(String appointment, String appointmentType,List<String> assignedRoles,
-                                             List<String> expectedRoleNames) {
-
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-        judicialAccessProfiles.add(
-                JudicialAccessProfile.builder()
-                        .appointment(appointment)
-                        .appointmentType(appointmentType)
-                        .userId(userId)
-                        .roles(assignedRoles)
-                        .regionId("LDN")
-                        .primaryLocationId("London")
-                        .ticketCodes(List.of("ABA5"))
-                        .authorisations(List.of(
-                                Authorisation.builder()
-                                        .serviceCodes(List.of("ABA5"))
-                                        .jurisdiction("PRIVATELAW")
-                                        .endDate(LocalDateTime.now().plusYears(1L))
-                                        .build()
-                        ))
-                        .build()
-        );
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build()));
-        //assertions
-        assertFalse(roleAssignments.isEmpty());
-
-        List<String> roleNameResults =
-                roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
-        assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
-
-        roleAssignments.forEach(r -> {
-            assertEquals(userId, r.getActorId());
             if ("magistrate".equals(r.getRoleName())) {
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
