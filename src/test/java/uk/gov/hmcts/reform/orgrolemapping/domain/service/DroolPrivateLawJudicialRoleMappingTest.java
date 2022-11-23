@@ -72,7 +72,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("Deputy High Court Judge",
                         "Fee Paid",
                         List.of("Deputy High Court Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
                 Arguments.of("District Judge",
                         "Salaried",
                         List.of(""),
@@ -80,7 +80,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("District Judge (MC)",
                         "SPTW",
                         List.of("District Judge"),
-                        List.of("judge", "hmcts-judiciary")),
+                        List.of("judge","hmcts-judiciary")),
                 Arguments.of("High Court Judge",
                         "Salaried",
                         List.of(""),
@@ -96,7 +96,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("",
                         "",
                         List.of("Designated Family Judge"),
-                        List.of("leadership-judge", "judge", "task-supervisor", "hmcts-judiciary", "case-allocator",
+                        List.of("leadership-judge","judge","task-supervisor","hmcts-judiciary","case-allocator",
                                 "specific-access-approver-judiciary")),
                 Arguments.of("",
                         "",
@@ -161,6 +161,9 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
+                    assertEquals("access_requests",
+                            r.getAttributes().get("workTypes").asText());
+
                 }
                 if (bookingLocationAppointments.contains(appointment)
                         && List.of("circuit-judge", "judge").contains(r.getRoleName())) {
