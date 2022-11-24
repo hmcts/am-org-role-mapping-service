@@ -155,8 +155,6 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
-                    assertEquals("access_requests",
-                            r.getAttributes().get("workTypes").asText());
                 }
                 if (bookingLocationAppointments.contains(appointment)
                         && List.of("circuit-judge", "judge").contains(r.getRoleName())) {
