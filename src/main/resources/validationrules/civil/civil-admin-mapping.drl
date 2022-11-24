@@ -23,7 +23,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "civil_hmcts_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("3","4","6","9","10","11"),
+  $cap: CaseWorkerAccessProfile(roleId in ("3","4","6","11"),
                                 serviceCode in ("AAA6", "AAA7"),
                                 !suspended)
 then
@@ -43,34 +43,6 @@ then
       logMsg("Rule : civil_hmcts_admin_org_role");
 end;
 
-/*
- * CIVIL admin "ctsc" Org role mapping.
- */
-
-rule "civil_ctsc_admin_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("10","11"), serviceCode in ("AAA6", "AAA7"), !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.ADMIN)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("ctsc")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : civil_ctsc_admin_org_role");
-end;
 
 /*
  * CIVIL admin "national-business-centre" Org role mapping.
@@ -79,7 +51,7 @@ end;
 rule "civil_national_business_centre_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("10","11"), serviceCode in ("AAA6", "AAA7"), !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("11"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
@@ -101,34 +73,6 @@ then
       logMsg("Rule : civil_national_business_centre_org_role");
 end;
 
-/*
- * CIVIL admin "ctsc-team-leader" Org role mapping.
- */
-
-rule "civil_ctsc_team_leader_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("6","9"), serviceCode in ("AAA6", "AAA7"), !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.ADMIN)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("ctsc-team-leader")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : civil_ctsc_team_leader_org_role");
-end;
 
 /*
  * CIVIL admin "nbc-team-leader" Org role mapping.
@@ -136,7 +80,7 @@ end;
 rule "civil_nbc_team_leader_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("6","9"), serviceCode in ("AAA6", "AAA7"), !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("6"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
@@ -222,7 +166,7 @@ end;
 rule "civil_task_supervisor_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("3","6","9"), serviceCode in ("AAA6", "AAA7"),
+  $cap: CaseWorkerAccessProfile(roleId in ("3","6"), serviceCode in ("AAA6", "AAA7"),
                                 !suspended, taskSupervisorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -252,7 +196,7 @@ end;
 rule "civil_case_allocator_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("6","9"), serviceCode in ("AAA6", "AAA7"),
+  $cap: CaseWorkerAccessProfile(roleId in ("6"), serviceCode in ("AAA6", "AAA7"),
                                 !suspended, caseAllocatorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
