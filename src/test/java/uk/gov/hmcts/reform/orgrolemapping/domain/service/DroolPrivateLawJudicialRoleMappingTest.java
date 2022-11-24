@@ -165,8 +165,6 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                     assertEquals("London", r.getAttributes().get("primaryLocation").asText());
                     assertEquals("LDN", r.getAttributes().get("region").asText());
                 }
-            } else {
-                assertEquals(1, r.getAttributes().size());
             }
         });
     }

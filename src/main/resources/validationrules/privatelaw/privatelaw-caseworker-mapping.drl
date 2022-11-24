@@ -84,7 +84,6 @@ when
   $cap: CaseWorkerAccessProfile(roleId in ("1", "2"), serviceCode == "ABA5", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
