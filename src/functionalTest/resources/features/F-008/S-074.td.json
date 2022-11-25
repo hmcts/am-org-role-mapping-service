@@ -64,6 +64,7 @@
           "beginTime": "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
+            "contractType": "Salaried",
             "substantive": "N"
           }
         },
