@@ -85,7 +85,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work,applications"));
 
   insert(
       RoleAssignment.builder()
@@ -115,7 +115,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work, hearing_work, applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work,applications"));
     insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
