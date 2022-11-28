@@ -10,6 +10,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -103,7 +105,11 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("",
                         "",
                         List.of("Senior Family Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary"))
+                        List.of("judge", "hmcts-judiciary")),
+                Arguments.of("Magistrate", "Voluntary",
+                        List.of("Magistrates-Voluntary"),
+                        List.of("magistrate")
+                )
         );
     }
 
@@ -166,8 +172,17 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
                 }
             }
+            if ("magistrate".equals(r.getRoleName())) {
+                assertEquals(Classification.PUBLIC, r.getClassification());
+                assertEquals(GrantType.STANDARD, r.getGrantType());
+                assertEquals("ABA5", r.getAuthorisations().get(0));
+                assertEquals("LDN", r.getAttributes().get("region").asText());
+                assertEquals("London", r.getAttributes().get("primaryLocation").asText());
+                assertEquals("hearing_work, applications", r.getAttributes().get("workTypes").asText());
+            }
         });
     }
+
 
     @Test
     void falsePrivateLawFlagTest() {

@@ -274,7 +274,8 @@ $joh: JudicialOfficeHolder(office in ("PRIVATELAW District Judge-Salaried", "PRI
                                       "PRIVATELAW Deputy District Judge – (MC)-Fee-Paid",
                                       "PRIVATELAW Deputy District Judge – (MC)-Sitting in Retirement-Fee-Paid",
                                       "PRIVATELAW Deputy High Court Judge-Fee-Paid",
-                                      "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid"))
+                                      "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid"
+                                     ))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
   insert(
@@ -373,4 +374,36 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : privatelaw_judge_org_role_for_fee_paid_judge");
+end;
+
+/*
+ * PRIVATELAW "magistrate" Org role mapping.
+ */
+rule "privatelaw_magistrate_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("PRIVATELAW Magistrates-Voluntary"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Voluntary"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, applications"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("magistrate")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : privatelaw_magistrate_org_role");
 end;
