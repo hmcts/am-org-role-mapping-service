@@ -1,0 +1,157 @@
+package validationrules.civil;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import java.util.ArrayList;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+
+/*
+ * CIVIL admin "hmcts-ctsc" Org role mapping.
+ */
+
+rule "civil_hmcts_ctsc_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("9","10"),
+                                serviceCode in ("AAA6", "AAA7"),
+                                !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hmcts-ctsc")
+      .grantType(GrantType.BASIC)
+      .classification(Classification.PRIVATE)
+      .readOnly(true)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : civil_hmcts_ctsc_org_role");
+end;
+
+/*
+ * CIVIL admin "ctsc" Org role mapping.
+ */
+
+rule "civil_ctsc_ctsc_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("10"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("ctsc")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : civil_ctsc_ctsc_org_role");
+end;
+
+/*
+ * CIVIL admin "ctsc-team-leader" Org role mapping.
+ */
+
+rule "civil_ctsc_team_leader_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("9"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("ctsc-team-leader")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : civil_ctsc_team_leader_org_role");
+end;
+
+
+/*
+ * CIVIL ctsc "task-supervisor" Org role mapping.
+ */
+rule "civil_task_supervisor_ctsc_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("9"), serviceCode in ("AAA6", "AAA7"),
+                                !suspended, taskSupervisorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : civil_task_supervisor_ctsc_org_role");
+end;
+
+/*
+ * CIVIL ctsc "case-allocator" Org role mapping.
+ */
+
+rule "civil_case_allocator_ctsc_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("9"), serviceCode in ("AAA6", "AAA7"),
+                                !suspended, caseAllocatorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : civil_case_allocator_ctsc_org_role");
+end;

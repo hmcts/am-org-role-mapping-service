@@ -1,17 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
-import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +12,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolCivilStaffOrgRolesTest extends DroolBase {
@@ -112,20 +112,20 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         return Stream.of(
                 Arguments.of("3", Arrays.asList("hmcts-admin", "hearing-centre-team-leader"),
                         2, Collections.singletonList("hearing_work,access_requests")),
-                Arguments.of("10", Arrays.asList("hmcts-admin", "ctsc", "national-business-centre"),
-                        3, Arrays.asList("routine_work", "routine_work")),
-                Arguments.of("9", Arrays.asList("hmcts-admin", "ctsc-team-leader", "nbc-team-leader"),
-                        3, Arrays.asList("routine_work,access_requests", "routine_work,access_requests")),
+                Arguments.of("10", Arrays.asList("hmcts-ctsc", "ctsc"),
+                        2, Arrays.asList("routine_work")),
+                Arguments.of("9", Arrays.asList("hmcts-ctsc", "ctsc-team-leader"),
+                        2, Arrays.asList("routine_work,access_requests")),
                 Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin"),
                         2, Collections.singletonList("hearing_work")),
                 Arguments.of("1", Arrays.asList("senior-tribunal-caseworker","hmcts-legal-operations"),
                         2, List.of("decision_making_work,access_requests")),
                 Arguments.of("2", Arrays.asList("tribunal-caseworker","hmcts-legal-operations"),
                         2, List.of("decision_making_work")),
-                Arguments.of("6", Arrays.asList("hmcts-admin", "ctsc-team-leader", "nbc-team-leader"),
-                        3, Arrays.asList("routine_work,access_requests", "routine_work,access_requests")),
-                Arguments.of("11", Arrays.asList("hmcts-admin","ctsc","national-business-centre"),
-                        3, Arrays.asList("routine_work","routine_work"))
+                Arguments.of("6", Arrays.asList("hmcts-admin", "nbc-team-leader"),
+                        2, Arrays.asList("routine_work,access_requests")),
+                Arguments.of("11", Arrays.asList("hmcts-admin","national-business-centre"),
+                        2, Arrays.asList("routine_work"))
         );
     }
 
@@ -160,7 +160,9 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
-                    assertEquals("region1", r.getAttributes().get("region").asText());
+                    if (!(roleId.equals("10") || roleId.equals("9"))) {
+                        assertEquals("region1", r.getAttributes().get("region").asText());
+                    }
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
                 });
 
