@@ -48,6 +48,7 @@
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
+            "workTypes": "[[ANYTHING_PRESENT]]",
             "region": "[[ANYTHING_PRESENT]]"
           }
         },
@@ -134,7 +135,7 @@
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "PRIVATELAW",
             "region" : "[[ANYTHING_PRESENT]]",
-            "workTypes" : "access_requests"
+            "workTypes" : "routine_work"
           }
         },
         {
