@@ -34,7 +34,6 @@
         "created": "2021-10-25T13:56:33.072743Z",
         "log": "Create requested with replace: true\nCreate approved : staff_organisational_role_mapping_service_create\nApproved : validate_role_assignment_against_patterns",
         "attributes": {
-          "contractType": "Salaried",
           "substantive": "N"
         }
       },
