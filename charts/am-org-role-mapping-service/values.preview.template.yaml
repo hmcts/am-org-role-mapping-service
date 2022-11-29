@@ -45,15 +45,13 @@ java:
     ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.auth.database}}"
     ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
     ORG_ROLE_MAPPING_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
-    ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.postgresqlPort}}"
+    ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.auth.port}}"
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
     RUN_LD_ON_STARTUP: true
   postgresql:
     enabled: true
-    postgresqlUsername: org_role_mapping
-    postgresqlPassword: org_role_mapping
-    postgresqlDatabase: org_role_mapping
-    postgresqlPort: 5432
+    auth:
+      port: 5432
 servicebus:
   enabled: true
   teamName: RD
