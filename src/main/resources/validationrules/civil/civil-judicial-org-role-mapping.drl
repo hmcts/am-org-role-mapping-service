@@ -241,11 +241,6 @@ $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL P
                                       "CIVIL Recorder-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   if($joh.getOffice().contains("Fee-Paid")) {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   } else {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)

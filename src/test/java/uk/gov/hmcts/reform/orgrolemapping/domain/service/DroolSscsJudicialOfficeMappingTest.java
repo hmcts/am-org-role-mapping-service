@@ -56,7 +56,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
@@ -99,7 +98,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("1032"));

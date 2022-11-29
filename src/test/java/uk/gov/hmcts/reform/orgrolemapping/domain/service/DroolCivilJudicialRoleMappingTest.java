@@ -63,7 +63,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 containsInAnyOrder(roleNameOutput, "hmcts-judiciary"));
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if (!r.getRoleName().contains("hmcts")) {
                 assertEquals(regionId, r.getAttributes().get("region").asText());
             }
@@ -98,7 +97,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
         RoleAssignment role = roleAssignments.stream().filter(r -> "judge".equals(r.getRoleName())).findFirst().get();
         assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
         assertEquals(judicialBooking.getRegionId(), role.getAttributes().get("region").asText());
@@ -131,7 +129,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput, "circuit-judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
         RoleAssignment role = roleAssignments.stream().filter(r -> "circuit-judge".equals(r.getRoleName())).findFirst()
                 .get();
         assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
@@ -159,7 +156,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 containsInAnyOrder(roleNameOutput));
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if (!r.getRoleName().contains("hmcts")) {
                 assertEquals(regionId, r.getAttributes().get("region").asText());
             }
@@ -204,7 +200,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
                 roleAssignments.get(0).getBeginTime().getDayOfYear());
         assertNull(roleAssignments.get(0).getEndTime());
-        roleAssignments.forEach(r -> assertEquals("Salaried", r.getAttributes().get("contractType").asText()));
     }
 
     @Test
@@ -255,7 +250,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         assertNull(roleAssignments.get(0).getEndTime());
 
         roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
             assertNull(r.getEndTime());
         });
@@ -309,7 +303,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         assertNull(roleAssignments.get(0).getEndTime());
 
         roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
             assertNull(r.getEndTime());
         });
@@ -354,7 +347,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 });
 
         roleAssignments.forEach(r -> {
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
             assertNull(r.getEndTime());
         });
@@ -399,7 +391,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         assertNull(roleAssignments.get(0).getEndTime());
 
         roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
             assertNull(r.getEndTime());
         });

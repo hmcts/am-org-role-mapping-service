@@ -56,7 +56,6 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
         roleAssignments.forEach(r -> {
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if (!"hmcts-judiciary".equals(r.getRoleName())) {
                 assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(r.getAttributes().get("region").asText()));

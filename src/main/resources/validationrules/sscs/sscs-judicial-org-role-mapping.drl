@@ -134,7 +134,6 @@ when
                                         "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
