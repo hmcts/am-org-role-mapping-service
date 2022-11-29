@@ -118,23 +118,23 @@ withPipeline(type, product, component) {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
   }
 
-  after('functionalTest:preview') {
+  afterSuccess('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
   }
 
-  after('functionalTest:aat') {
+  afterSuccess('functionalTest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
   }
 
-  after('smoketest:preview') {
+  afterSuccess('smoketest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/site/serenity/**'
   }
 
-  after('smoketest:aat') {
+  afterSuccess('smoketest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/site/serenity/**'
   }
 
-  after('pact-consumer-tests') {
+  afterSuccess('pact-consumer-tests') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/**/*'
   }
 
