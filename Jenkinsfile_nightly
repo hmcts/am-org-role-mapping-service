@@ -91,18 +91,18 @@ env.JUDICIAL_BOOKING_URL = "http://am-judicial-booking-service-aat.service.core-
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
     }
 
-    after('build') {
+    afterSuccess('build') {
         stage("integration tests") {
             sh "./gradlew integration"
             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
         }
     }
 
-    after('fullFunctionalTest') {
+    afterSuccess('fullFunctionalTest') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
     }
 
-    after('fortify-scan') {
+    afterSuccess('fortify-scan') {
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 }
