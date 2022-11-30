@@ -12,7 +12,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -57,9 +56,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            if (!Objects.equals(r.getRoleName(), "hmcts-judiciary")) {
-                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            }
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
@@ -102,9 +99,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            if (!Objects.equals(r.getRoleName(), "hmcts-judiciary")) {
-                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            }
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("1032"));

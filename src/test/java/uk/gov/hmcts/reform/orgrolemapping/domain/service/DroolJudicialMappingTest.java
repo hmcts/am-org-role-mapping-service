@@ -46,6 +46,7 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
         assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
         assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
@@ -79,6 +80,7 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(5).getActorId());
         assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
+        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(4).getAttributes().get("contractType").asText());
@@ -110,6 +112,7 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
+        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
@@ -141,6 +144,7 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
+        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
@@ -168,6 +172,7 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
         assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
@@ -189,6 +194,7 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
@@ -213,6 +219,7 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
         RoleAssignment assignment = roleAssignments.get(2);
@@ -252,6 +259,7 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
 

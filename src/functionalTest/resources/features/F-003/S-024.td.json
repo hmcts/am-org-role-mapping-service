@@ -75,7 +75,8 @@
           "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "substantive" : "N"
+            "substantive" : "N",
+            "contractType" : "[[ANYTHING_PRESENT]]"
           }
         },
         {
@@ -92,7 +93,8 @@
           "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "substantive" : "N"
+            "substantive" : "N",
+            "contractType" : "[[ANYTHING_PRESENT]]"
           }
         },
         {

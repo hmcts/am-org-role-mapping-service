@@ -9,7 +9,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -57,9 +56,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
         roleAssignments.forEach(r -> {
-            if (!Objects.equals(r.getRoleName(), "hmcts-judiciary")) {
-                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            }
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             if (!"hmcts-judiciary".equals(r.getRoleName())) {
                 assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(r.getAttributes().get("region").asText()));

@@ -63,6 +63,11 @@ when
                                         "IAC Tribunal Judge (Salaried)", "IAC Tribunal Judge (Fee-Paid)"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
+   if($joh.getOffice().equals("IAC Tribunal Judge (Fee-Paid)")) {
+      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   } else {
+      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
