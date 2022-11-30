@@ -17,9 +17,7 @@
       "queryRequests":[
         {
           "actorId": ["7faf83c9-8924-4c26-bff3-0a51fb6c9c8f"],
-          "attributes": {
-          "roleName": ["hmcts-judiciary"],
-            "contractType": ["Salaried"]}
+          "roleName": ["hmcts-judiciary"]
         },
         {
           "actorId": ["7faf83c9-8924-4c26-bff3-0a51fb6c9c8f"],
@@ -47,8 +45,7 @@
           "beginTime": "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N",
-            "contractType": "Salaried"
+            "substantive": "N"
           }
         },
         {
