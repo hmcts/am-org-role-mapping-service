@@ -67,7 +67,8 @@
             "beginTime": "[[ANYTHING_PRESENT]]",
             "created": "[[ANYTHING_PRESENT]]",
             "attributes": {
-              "substantive": "N"
+              "substantive": "N",
+              "contractType": "Fee-Paid"
             }
           }
         ]

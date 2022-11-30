@@ -34,6 +34,7 @@
         "created": "2021-10-22T13:50:16.302544Z",
         "log": "Create requested with replace: true\nCreate approved : staff_organisational_role_mapping_service_create\nApproved : validate_role_assignment_against_patterns",
         "attributes": {
+          "contractType": "Fee-Paid",
           "substantive": "N"
         }
       },
