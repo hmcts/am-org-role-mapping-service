@@ -31,7 +31,7 @@ apply plugin: 'idea'
 apply plugin: 'io.spring.dependency-management'
 
 def versions = [
-        junit          : '5.9.1',
+        junit          : '5.9.0',
         lombok         : '1.18.24',
         pitest         : '1.7.4',
         reformLogging  : '5.1.9',
@@ -42,13 +42,13 @@ def versions = [
         springSecurity : '5.6.3',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
-        pact_version   : '4.1.7',
+        pact_version   : '4.1.40',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
         jacksondata    : '2.14.0-rc2',
-        drools         : '7.69.0.Final',
-        log4JVersion   : '2.17.1',
+        drools         : '7.73.0.Final',
+        log4JVersion   : '2.19.0',
         logbackVersion : '1.2.10',
         launchDarklySdk: '5.10.3',
         netty_version  : '4.1.77.Final'
@@ -339,7 +339,7 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20220320'
     implementation group: 'javax.inject', name: 'javax.inject', version: '1'
 
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
 
     // drools engine dependency
     implementation group: 'org.drools', name: 'drools-core', version: versions.drools
@@ -382,8 +382,8 @@ dependencies {
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.69'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.69'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.70'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.70'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksondata
