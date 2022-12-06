@@ -84,7 +84,6 @@ when
   $cap: CaseWorkerAccessProfile(roleId in ("1", "2"), serviceCode == "ABA5", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -127,7 +126,7 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : privatelaw_task_supervisor_admin_org_role");
+      logMsg("Rule : privatelaw_task_supervisor_staff_org_role");
 end;
 
 /*
