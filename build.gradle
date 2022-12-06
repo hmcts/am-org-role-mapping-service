@@ -45,7 +45,7 @@ def versions = [
         pact_version   : '4.1.40',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
-        feign_jackson  : '9.7.0',
+        feign_jackson  : '12.1',
         jacksondata    : '2.14.0-rc2',
         drools         : '7.73.0.Final',
         log4JVersion   : '2.19.0',
