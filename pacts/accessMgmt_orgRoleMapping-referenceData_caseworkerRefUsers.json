@@ -1,0 +1,445 @@
+{
+  "provider": {
+    "name": "referenceData_caseworkerRefUsers"
+  },
+  "consumer": {
+    "name": "accessMgmt_orgRoleMapping"
+  },
+  "interactions": [
+    {
+      "description": "A request for caseworkers by serviceName",
+      "request": {
+        "method": "GET",
+        "path": "/refdata/internal/staff/usersByServiceName",
+        "query": {
+          "ccd_service_names": [
+            "IA"
+          ],
+          "page_size": [
+            "20"
+          ],
+          "page_number": [
+            "1"
+          ],
+          "sort_direction": [
+            "ASC"
+          ],
+          "sort_column": [
+            "caseWorkerId"
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        "body": [
+          {
+            "staff_profile": {
+              "email_id": "sam.manuel@gmail.com",
+              "user_type": "HMCTS",
+              "role": [
+                {
+                  "role": "senior-tribunal-caseworker",
+                  "is_primary": true,
+                  "role_id": "1"
+                }
+              ],
+              "region_id": 1,
+              "last_name": "Manuel",
+              "user_type_id": 1,
+              "region": "National",
+              "work_area": [
+                {
+                  "service_code": "BFA1"
+                }
+              ],
+              "first_name": "Sam",
+              "suspended": "true"
+            },
+            "ccd_service_name": "IA"
+          }
+        ],
+        "matchingRules": {
+          "body": {
+            "$[0].ccd_service_name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.first_name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.last_name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.email_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.region_id": {
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.region": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.user_type": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.suspended": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "true|false"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.user_type_id": {
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.role": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.role[*].role_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.role[*].role": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.role[*].is_primary": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.work_area": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].staff_profile.work_area[*].service_code": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          },
+          "header": {
+            "Content-Type": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json(;\\s?charset=[\\w\\-]+)?"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "A list of staff profiles for CRD request by service names"
+        }
+      ]
+    },
+    {
+      "description": "A request for caseworkers",
+      "request": {
+        "method": "POST",
+        "path": "/refdata/case-worker/users/fetchUsersById",
+        "body": {
+          "userIds": [
+            "userId1",
+            "userId2"
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        "body": [
+          {
+            "email_id": "sam.manuel@gmail.com",
+            "base_location": [
+              {
+                "is_primary": true,
+                "location": "Aberdeen Tribunal Hearing Centre",
+                "location_id": 1
+              }
+            ],
+            "user_type": "HMCTS",
+            "role": [
+              {
+                "role": "senior-tribunal-caseworker",
+                "is_primary": true,
+                "role_id": "1"
+              }
+            ],
+            "region_id": 1,
+            "last_name": "Manuel",
+            "user_type_id": 1,
+            "region": "National",
+            "work_area": [
+              {
+                "area_of_work": "1",
+                "service_code": "BFA1"
+              }
+            ],
+            "first_name": "Sam",
+            "suspended": "true"
+          }
+        ],
+        "matchingRules": {
+          "body": {
+            "$[0].first_name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].last_name": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].email_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].region_id": {
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].region": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].user_type_id": {
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].user_type": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].suspended": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "true|false"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].role": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].role[*].role_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].role[*].role": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].role[*].is_primary": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].base_location": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].base_location[*].location_id": {
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].base_location[*].location": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].base_location[*].is_primary": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].work_area": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].work_area[*].area_of_work": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$[0].work_area[*].service_code": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          },
+          "header": {
+            "Content-Type": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json(;\\s?charset=[\\w\\-]+)?"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "A list of users for CRD request"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}

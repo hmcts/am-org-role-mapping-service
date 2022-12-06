@@ -1,0 +1,119 @@
+{
+  "provider": {
+    "name": "am_judicialBooking_create"
+  },
+  "consumer": {
+    "name": "accessMgmt_orgRoleMapping"
+  },
+  "interactions": [
+    {
+      "description": "A create request is received with a valid userId",
+      "request": {
+        "method": "POST",
+        "path": "/am/bookings",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "bookingRequest": {
+            "userId": "3168da13-00b3-41e3-81fa-cbc71ac28a0f",
+            "locationId": "south",
+            "regionId": "BFA1",
+            "beginDate": "3031-01-01T00:00:00Z",
+            "endDate": "3031-09-01T00:00:00Z"
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/vnd.uk.gov.hmcts.judicial-booking-service.create-booking+json;charset=UTF-8;version=1.0"
+        },
+        "body": {
+          "bookingResponse": {
+            "regionId": "BFA1",
+            "locationId": "south-east",
+            "created": "2021-02-23T06:37:58Z",
+            "id": "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470",
+            "beginTime": "3031-01-01T00:00:00Z",
+            "endTime": "3031-09-01T00:00:00Z",
+            "userId": "5629957f-4dcd-40b8-a0b2-e64ff5898b28"
+          }
+        },
+        "matchingRules": {
+          "body": {
+            "$.bookingResponse.id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookingResponse.userId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookingResponse.locationId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookingResponse.regionId": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookingResponse.beginTime": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookingResponse.endTime": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.bookingResponse.created": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "A create request is received with valid begin and end dates"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}
