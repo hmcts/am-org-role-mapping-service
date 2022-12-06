@@ -96,11 +96,10 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
                 .forEach(r -> {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
-                    if ("senior-tribunal-caseworker".equals(r.getRoleName())) {
+                    if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                        || "task-supervisor".equals(r.getRoleName())) {
                         assertEquals("decision_making_work,access_requests",
                                 r.getAttributes().get("workTypes").asText());
-                    } else {
-                        assertEquals("routine_work", r.getAttributes().get("workTypes").asText());
                     }
                     assertEquals("region1", r.getAttributes().get("region").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
