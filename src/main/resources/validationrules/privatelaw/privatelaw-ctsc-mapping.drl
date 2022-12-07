@@ -58,7 +58,6 @@ when
   $cap: CaseWorkerAccessProfile(roleId in ("10","9"), serviceCode == "ABA5", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -88,7 +87,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests,hearing_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work,applications"));
 
   insert(
       RoleAssignment.builder()
@@ -119,8 +118,8 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-
-  insert(
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work,applications"));
+    insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($cap.getId())
@@ -149,7 +148,6 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -178,7 +176,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
 
   insert(
       RoleAssignment.builder()

@@ -17,7 +17,10 @@
       "queryRequests":[
         {
           "actorId": ["322d8512-82e7-4f69-aa6c-c6b105a99f45"],
-          "roleName": ["hmcts-judiciary"]
+          "roleName": ["hmcts-judiciary"],
+          "attributes": {
+            "contractType": ["Salaried"]
+          }
         },
         {
           "actorId": ["322d8512-82e7-4f69-aa6c-c6b105a99f45"],
