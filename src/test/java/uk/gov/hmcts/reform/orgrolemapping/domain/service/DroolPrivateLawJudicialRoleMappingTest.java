@@ -161,8 +161,6 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
-                    assertEquals("access_requests",
-                            r.getAttributes().get("workTypes").asText());
                 }
                 if (bookingLocationAppointments.contains(appointment)
                         && List.of("circuit-judge", "judge").contains(r.getRoleName())) {
@@ -173,8 +171,6 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                     assertEquals("London", r.getAttributes().get("primaryLocation").asText());
                     assertEquals("LDN", r.getAttributes().get("region").asText());
                 }
-            } else {
-                assertEquals(1, r.getAttributes().size());
             }
             if ("magistrate".equals(r.getRoleName())) {
                 assertEquals(Classification.PUBLIC, r.getClassification());
