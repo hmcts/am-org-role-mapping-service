@@ -30,7 +30,6 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
@@ -66,7 +65,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -132,7 +130,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work,applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -164,7 +162,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -196,7 +193,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -280,11 +277,6 @@ $joh: JudicialOfficeHolder(office in ("PRIVATELAW District Judge-Salaried", "PRI
                                      ))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   if($joh.getOffice().contains("Fee-Paid")) {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   } else {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)

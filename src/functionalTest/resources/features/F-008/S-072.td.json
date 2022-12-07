@@ -61,7 +61,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
             "region": "2",
-            "workTypes": "routine_work,access_requests,hearing_work,applications"
+            "workTypes": "routine_work,hearing_work,applications"
           }
         },
         {
@@ -128,7 +128,7 @@
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "PRIVATELAW",
             "region" : "[[ANYTHING_PRESENT]]",
-            "workTypes" : "routine_work"
+            "workTypes" : "access_requests"
           }
         }
       ]
