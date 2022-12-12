@@ -23,7 +23,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "privatelaw_ctsc_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "10", serviceCode == "ABA5", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("10","9"), serviceCode == "ABA5", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
@@ -119,7 +119,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work,applications"));
-    insert(
+  insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($cap.getId())
