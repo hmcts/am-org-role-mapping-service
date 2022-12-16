@@ -39,6 +39,7 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_hmcts_ctsc_org_role");
 end;
@@ -67,6 +68,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_ctsc_ctsc_org_role");
 end;
@@ -95,6 +97,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_ctsc_team_leader_org_role");
 end;
@@ -124,6 +127,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_task_supervisor_ctsc_org_role");
 end;
@@ -152,6 +156,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_case_allocator_ctsc_org_role");
 end;

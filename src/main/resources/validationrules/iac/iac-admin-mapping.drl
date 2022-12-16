@@ -37,6 +37,7 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_hmcts-admin_caseworker_v11");
 end;
@@ -63,6 +64,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_hearing-centre-admin_caseworker_v11");
 end;
@@ -89,6 +91,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_national-business-centre_caseworker_v11");
 end;
@@ -115,6 +118,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_ctsc_caseworker_v11");
 end;
@@ -141,6 +145,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_case_allocator_admin_caseworker_v11");
 end;
@@ -165,6 +170,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_task-supervisor_admin_caseworker_v11");
 end;

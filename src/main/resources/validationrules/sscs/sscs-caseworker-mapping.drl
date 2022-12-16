@@ -42,6 +42,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_tribunal_caseworker_legal_ops_org_role");
 end;
@@ -74,6 +75,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_registrar_legal_ops_org_role");
 end;
@@ -105,6 +107,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_case_allocator_legal_ops_org_role");
 end;
@@ -135,6 +138,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_task_supervisor_legal_ops_org_role");
 end;
@@ -160,6 +164,7 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_hmcts_legal_operations_org_role");
 end;

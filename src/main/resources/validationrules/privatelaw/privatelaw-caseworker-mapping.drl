@@ -188,6 +188,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : privatelaw_specific_access_approver_legal-ops_org_role");
 end;

@@ -88,6 +88,7 @@ class  DroolCaseMappingTest extends DroolBase {
     @Test
     void shouldReturnCaseAllocatorForNewRule() {
         Iterator<CaseWorkerAccessProfile> profiles = allProfiles.iterator();
+        List<String> skillCodes = List.of("IA", "test", "ctsc");
         while (profiles.hasNext()) {
             CaseWorkerAccessProfile userAccessProfile = profiles.next();
             if (userAccessProfile.getRoleId().equals("2")) {
@@ -99,6 +100,7 @@ class  DroolCaseMappingTest extends DroolBase {
                 userAccessProfile.setTaskSupervisorFlag("X");
                 userAccessProfile.setSuspended(false);
             }
+            userAccessProfile.setSkillCodes(skillCodes);
         }
 
         //Execute Kie session
@@ -114,6 +116,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
+        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
 
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
@@ -121,7 +124,7 @@ class  DroolCaseMappingTest extends DroolBase {
 
     @Test
     void shouldReturnDoubleCaseAllocatorRolesForNewRule() {
-
+        List<String> skillCodes = List.of("IA", "test", "ctsc");
         allProfiles.forEach(userAccessProfile -> {
             if (userAccessProfile.getRoleId().equals("2")) {
                 userAccessProfile.setRoleId("1");
@@ -136,6 +139,7 @@ class  DroolCaseMappingTest extends DroolBase {
                 userAccessProfile.setTaskSupervisorFlag("X");
                 userAccessProfile.setSuspended(false);
             }
+            userAccessProfile.setSkillCodes(skillCodes);
         });
 
         //Execute Kie session
@@ -157,7 +161,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
-
+        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
@@ -166,7 +170,6 @@ class  DroolCaseMappingTest extends DroolBase {
 
     @Test
     void shouldReturnTaskSupervisorForNewRule() {
-
         Iterator<CaseWorkerAccessProfile> profiles = allProfiles.iterator();
         while (profiles.hasNext()) {
             CaseWorkerAccessProfile userAccessProfile = profiles.next();
@@ -202,7 +205,7 @@ class  DroolCaseMappingTest extends DroolBase {
 
     @Test
     void shouldReturnDoubleTaskSupervisorForNewRule() {
-
+        List<String> skillCodes = List.of("IA", "test", "ctsc");
         allProfiles.forEach(userAccessProfile -> {
             if (userAccessProfile.getRoleId().equals("2")) {
                 userAccessProfile.setRoleId("1");
@@ -217,6 +220,7 @@ class  DroolCaseMappingTest extends DroolBase {
                 userAccessProfile.setTaskSupervisorFlag("Y");
                 userAccessProfile.setSuspended(false);
             }
+            userAccessProfile.setSkillCodes(skillCodes);
         });
 
         //Execute Kie session
@@ -238,7 +242,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
-
+        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
@@ -247,7 +251,7 @@ class  DroolCaseMappingTest extends DroolBase {
 
     @Test
     void shouldReturnTribunalWorkerAndCaseAllocatorRolesForNewRule() {
-
+        List<String> skillCodes = List.of("IA", "test", "ctsc");
         allProfiles.forEach(userAccessProfile -> {
             if (userAccessProfile.getRoleId().equals("2")) {
                 userAccessProfile.setServiceCode("BFA1");
@@ -261,6 +265,7 @@ class  DroolCaseMappingTest extends DroolBase {
                 userAccessProfile.setTaskSupervisorFlag("X");
                 userAccessProfile.setSuspended(false);
             }
+            userAccessProfile.setSkillCodes(skillCodes);
         });
 
         //Execute Kie session
@@ -284,7 +289,7 @@ class  DroolCaseMappingTest extends DroolBase {
                 roleAssignments.get(0).getActorId());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(2).getActorId());
 
-
+        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
@@ -330,7 +335,7 @@ class  DroolCaseMappingTest extends DroolBase {
 
     @Test
     void shouldReturnDoubleAllocatorAndSupervisorRolesForNewRule() {
-
+        List<String> skillCodes = List.of("IA", "test", "ctsc");
         allProfiles.forEach(userAccessProfile -> {
             if (userAccessProfile.getRoleId().equals("2")) {
                 userAccessProfile.setRoleId("1");
@@ -345,6 +350,7 @@ class  DroolCaseMappingTest extends DroolBase {
                 userAccessProfile.setTaskSupervisorFlag("Y");
                 userAccessProfile.setSuspended(false);
             }
+            userAccessProfile.setSkillCodes(skillCodes);
         });
 
         //Execute Kie session
@@ -371,7 +377,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(9).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
 
-
+        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
@@ -380,11 +386,12 @@ class  DroolCaseMappingTest extends DroolBase {
 
     @Test
     void shouldReturnBothCaseWorkerForNewRule() {
-
+        List<String> skillCodes = List.of("IA", "test", "ctsc");
         allProfiles.forEach(userAccessProfile -> {
             if (userAccessProfile.getRoleId().equals("2")) {
                 userAccessProfile.setServiceCode("BFA1");
             }
+            userAccessProfile.setSkillCodes(skillCodes);
         });
 
         //Execute Kie session
@@ -403,7 +410,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(1).getActorId());
         Assertions.assertThat(usersAccessProfiles.keySet().stream()).contains(
                 roleAssignments.get(2).getActorId());
-
+        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,

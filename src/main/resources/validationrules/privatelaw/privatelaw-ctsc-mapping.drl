@@ -189,6 +189,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : privatelaw_specific_access_approver_ctsc_role");
 end;

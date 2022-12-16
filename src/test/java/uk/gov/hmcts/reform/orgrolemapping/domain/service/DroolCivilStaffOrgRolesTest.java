@@ -71,11 +71,13 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         judicialOfficeHolders.clear();
 
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId3();
+        List<String> skillCodes = List.of("civil", "test", "ctsc");
         cap.setServiceCode("AAA6");
         cap.setSuspended(false);
         cap.setRegionId("region1");
         cap.setTaskSupervisorFlag("Y");
         cap.setCaseAllocatorFlag("Y");
+        cap.setSkillCodes(skillCodes);
         allProfiles.add(cap);
 
         //Execute Kie session
@@ -91,6 +93,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
+            assertEquals(skillCodes,r.getAuthorisations());
         });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
@@ -136,10 +139,12 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         judicialOfficeHolders.clear();
 
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
+        List<String> skillCodes = List.of("civil", "test", "ctsc");
         cap.setRoleId(roleId);
         cap.setServiceCode("AAA6");
         cap.setSuspended(false);
         cap.setRegionId("region1");
+        cap.setSkillCodes(skillCodes);
 
         allProfiles.add(cap);
 
@@ -154,7 +159,10 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNames.toArray()));
 
-        roleAssignments.forEach(r -> assertEquals("ORGANISATION", r.getRoleType().toString()));
+        roleAssignments.forEach(r -> {
+            assertEquals("ORGANISATION", r.getRoleType().toString());
+            assertEquals(skillCodes,r.getAuthorisations());
+        });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {

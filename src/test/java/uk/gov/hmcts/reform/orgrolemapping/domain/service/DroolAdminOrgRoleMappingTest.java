@@ -1,17 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.hamcrest.collection.ArrayMatching;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +12,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.hamcrest.collection.ArrayMatching;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolAdminOrgRoleMappingTest extends DroolBase {
@@ -71,10 +71,11 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         allProfiles.clear();
         IntStream.range(3, 11).forEach(roleId ->
                 allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", false)));
-
+        List<String> skillCodes = List.of("IA", "test", "ctsc");
         allProfiles.forEach(userAccessProfile -> {
             userAccessProfile.setCaseAllocatorFlag("Y");
             userAccessProfile.setTaskSupervisorFlag("Y");
+            userAccessProfile.setSkillCodes(skillCodes);
         });
 
         //Execute Kie session
@@ -107,7 +108,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             assertEquals("task-supervisor", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
-
+        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
         assertEquals(workTypes,
@@ -188,9 +189,11 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     @Test
     void shouldReturnSscsStaffOrgRolesForRoleId_2_and_16_caseAndTaskSupervisor() {
         allProfiles.clear();
+        List<String> skillCodes = List.of("SSCS", "test", "ctsc");
         Stream.of(2, 16).forEach(roleId -> {
             CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "",
                     "BBA3", false);
+            profile.setSkillCodes(skillCodes);
             profile.setCaseAllocatorFlag("Y");
             profile.setTaskSupervisorFlag("Y");
             allProfiles.add(profile);
@@ -210,6 +213,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
+            assertEquals(skillCodes,roleAssignment.getAuthorisations());
             if (!roleAssignment.getRoleName().contains("hmcts")) {
                 assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
@@ -264,11 +268,13 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     @Test
     void shouldReturnSscsAdminOrgRolesForRoleId_caseAndTaskSupervisor() {
         allProfiles.clear();
+        List<String> skillCodes = List.of("SSCS", "test", "ctsc");
         Stream.of(4, 5, 9, 10, 12, 13).forEach(roleId -> {
             CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "",
                     "BBA3", false);
             profile.setCaseAllocatorFlag("Y");
             profile.setTaskSupervisorFlag("Y");
+            profile.setSkillCodes(skillCodes);
             allProfiles.add(profile);
         });
 
@@ -285,6 +291,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
+            assertEquals(skillCodes,roleAssignment.getAuthorisations());
             if (!roleAssignment.getRoleName().contains("hmcts")) {
                 assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
@@ -306,11 +313,13 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     @Test
     void shouldReturnSscsOgdOrgRolesForRoleId() {
         allProfiles.clear();
+        List<String> skillCodes = List.of("SSCS", "test", "ctsc");
         Stream.of(14, 15).forEach(roleId -> {
             CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "",
                     "BBA3", false);
             profile.setCaseAllocatorFlag("Y");
             profile.setTaskSupervisorFlag("Y");
+            profile.setSkillCodes(skillCodes);
             allProfiles.add(profile);
         });
 
@@ -325,6 +334,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
                 containsInAnyOrder("dwp", "hmrc","dwp", "hmrc"));
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.OTHER_GOV_DEPT, roleAssignment.getRoleCategory());
+            assertEquals(skillCodes,roleAssignment.getAuthorisations());
             assertThat(new String[]{"7", "6"},
                     ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
