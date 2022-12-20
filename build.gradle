@@ -51,7 +51,7 @@ def versions = [
         log4JVersion   : '2.19.0',
         logbackVersion : '1.2.10',
         launchDarklySdk: '5.10.3',
-        netty_version  : '4.1.86.Final'
+        netty_version  : '4.1.77.Final'
 
 ]
 
@@ -353,6 +353,7 @@ dependencies {
         exclude group: 'jakarta.el', module: 'jakarta.el-api'
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
     }
+
 
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.13'
     //Added for S2S and User Authentication
