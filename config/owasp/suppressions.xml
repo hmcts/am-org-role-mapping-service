@@ -54,4 +54,8 @@
    <cve>CVE-2022-40151</cve>
    <cve>CVE-2022-40152</cve>
 </suppress>
+    <suppress until="2023-06-16">
+        <packageUrl regex="true">^pkg:maven/io\.netty.*$</packageUrl>
+        <cve>CVE-2022-41915</cve>
+    </suppress>
 </suppressions>
