@@ -51,7 +51,7 @@ def versions = [
         log4JVersion   : '2.19.0',
         logbackVersion : '1.2.10',
         launchDarklySdk: '5.10.3',
-        netty_version  : '4.1.77.Final'
+        netty_version  : '4.1.85.Final'
 
 ]
 
