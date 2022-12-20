@@ -265,7 +265,8 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
             }
         });
 
-}
+    }
+
 
     @Test
     void falsePublicLawFlagTest() {
