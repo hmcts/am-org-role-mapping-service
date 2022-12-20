@@ -51,7 +51,7 @@ def versions = [
         log4JVersion   : '2.19.0',
         logbackVersion : '1.2.10',
         launchDarklySdk: '5.10.3',
-        netty_version  : '4.1.86.Final'
+        netty_version  : '4.1.77.Final'
 
 ]
 
@@ -397,54 +397,6 @@ dependencies {
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.6'
 
-    implementation (group: 'io.netty', name: 'netty-buffer', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec-http', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-common', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-handler', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-resolver', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-transport', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-transport-native-epoll', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-transport-native-kqueue', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-transport-native-unix-common', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec-http2', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec-socks', version: versions.netty_version)  {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-handler-proxy', version: versions.netty_version)  {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec-dns', version: versions.netty_version)  {
-        because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-resolver-dns', version: versions.netty_version)  {
-        because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-resolver-dns-native-macos', version: versions.netty_version) {
-        because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
-    }
     testImplementation('com.opentable.components:otj-pg-embedded:1.0.1')
     testImplementation('com.github.tomakehurst:wiremock-jre8-standalone:2.35.0')
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
