@@ -151,7 +151,6 @@ then
       .readOnly(true)
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
-      .authorisations($joh.getTicketCodes())
        .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_hmcts_judiciary_role");
