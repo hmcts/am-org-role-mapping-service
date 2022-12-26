@@ -201,7 +201,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.8"
 }
 
 pitest {
