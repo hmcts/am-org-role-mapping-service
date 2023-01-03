@@ -146,6 +146,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             "15,BBA3,SSCS",
             "14,ABA5,PRIVATELAW",
             "15,ABA5,PRIVATELAW"
+
     })
     void shouldReturnListedHearingViewerCaseWorker_otherGovDept(String roleId, String serviceCode,
                                                                 String jurisdiction) {
