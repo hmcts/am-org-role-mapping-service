@@ -66,4 +66,3 @@ then
       .build());
       logMsg("Rule : iac_hmcts_ctsc_caseworker_v11");
 end;
-
