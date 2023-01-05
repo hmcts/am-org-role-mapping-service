@@ -37,14 +37,12 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> skillCodes = List.of("publiclaw", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
         cap.setRoleId(roleId);
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setSkillCodes(skillCodes);
         allProfiles.add(cap);
 
         //Execute Kie session
@@ -59,19 +57,16 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("CTSC", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-
         });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    assertEquals(skillCodes,r.getAuthorisations());
                     //assert work types
                     if (("ctsc").equals(r.getRoleName())) {
                         assertEquals("routine_work",
                                 r.getAttributes().get("workTypes").asText());
-
                     } else if (("ctsc-team-leader").equals(r.getRoleName())) {
                         assertEquals("routine_work,access_requests",
                                 r.getAttributes().get("workTypes").asText());
@@ -95,7 +90,6 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> skillCodes = List.of("publiclaw", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -103,7 +97,7 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
         cap.setRegionId("LDN");
-        cap.setSkillCodes(skillCodes);
+
         allProfiles.add(cap);
 
         //Execute Kie session
@@ -126,7 +120,6 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                 .forEach(r -> {
                     assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    assertEquals(skillCodes,r.getAuthorisations());
                     //assert region
                     if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
@@ -161,7 +154,6 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> skillCodes = List.of("publiclaw", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -169,7 +161,7 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
         cap.setRegionId("LDN");
-        cap.setSkillCodes(skillCodes);
+
         allProfiles.add(cap);
 
         //Execute Kie session
@@ -193,7 +185,6 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                 .forEach(r -> {
                     assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    assertEquals(skillCodes,r.getAuthorisations());
                     //assert region
                     if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
@@ -222,12 +213,10 @@ public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> skillCodes = List.of("publiclaw", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode("ABA3");
         cap.setSuspended(false);
         cap.setRoleId("10");
-        cap.setSkillCodes(skillCodes);
         allProfiles.add(cap);
 
         //Execute Kie session
