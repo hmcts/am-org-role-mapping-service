@@ -31,6 +31,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
     List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "task-supervisor", "case-allocator",
             "specific-access-approver-judiciary", "fee-paid-judge");
+
     static Stream<Arguments> endToEndData() {
         return Stream.of(
                 Arguments.of("Circuit Judge",
@@ -265,6 +266,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         });
 
     }
+
 
     @Test
     void falsePublicLawFlagTest() {
