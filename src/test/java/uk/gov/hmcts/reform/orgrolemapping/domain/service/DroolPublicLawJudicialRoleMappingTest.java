@@ -30,8 +30,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
     List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "task-supervisor", "case-allocator",
-            "specific-access-approver-judiciary", "circuit-judge", "fee-paid-judge");
-
+            "specific-access-approver-judiciary", "fee-paid-judge");
     static Stream<Arguments> endToEndData() {
         return Stream.of(
                 Arguments.of("Circuit Judge",
@@ -45,7 +44,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         true,
                         true,
                         List.of("Deputy District Judge"),
-                        List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary",
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary",
                                 "hearing-viewer", "hearing-manager")),
                 Arguments.of("Deputy Circuit Judge",
                         "Fee Paid",
@@ -178,7 +177,12 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         true,
                         List.of("High Court Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary",
-                                "hearing-viewer", "hearing-manager"))
+                                "hearing-viewer", "hearing-manager")),
+                Arguments.of("Magistrate", "Voluntary",
+                        true,
+                        true,
+                        List.of("Magistrate - Voluntary"),
+                        List.of("magistrate", "hearing-viewer"))
         );
     }
 
@@ -251,87 +255,15 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals(Classification.PRIVATE, r.getClassification());
                 assertEquals(GrantType.BASIC, r.getGrantType());
             }
-        });
-    }
-
-    static Stream<Arguments> magistrateData() {
-        return Stream.of(
-                Arguments.of(true, false,
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of(false, false,
-                        List.of("fee-paid-judge", "hmcts-judiciary")),
-                Arguments.of(true, true,
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
-                Arguments.of(false, true,
-                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"))
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource("magistrateData")
-    void magistratePublicLawRoleMappingTest(boolean addBooking, boolean hearingFlag, List<String> expectedRoleNames) {
-
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-        judicialBookings.clear();
-        if (addBooking) {
-            JudicialBooking booking = JudicialBooking.builder()
-                    .userId(userId).locationId("Scotland").regionId("1")
-                    .build();
-            judicialBookings.add(booking);
-        }
-
-        judicialAccessProfiles.add(
-                JudicialAccessProfile.builder()
-                        .appointment("Magistrate")
-                        .appointmentType("Voluntary")
-                        .userId(userId)
-                        .roles(List.of("High Court Judge"))
-                        .regionId("LDN")
-                        .primaryLocationId("London")
-                        .ticketCodes(List.of("ABA3"))
-                        .authorisations(List.of(
-                                Authorisation.builder()
-                                        .serviceCodes(List.of("ABA3"))
-                                        .jurisdiction("PUBLICLAW")
-                                        .endDate(LocalDateTime.now().plusYears(1L))
-                                        .build()
-                        ))
-                        .build()
-        );
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("publiclaw_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
-                );
-
-        //assertions
-        assertFalse(roleAssignments.isEmpty());
-
-        List<String> roleNameResults =
-                roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
-
-        assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
-
-        roleAssignments.forEach(r -> {
-            assertEquals(userId, r.getActorId());
-            if (!r.getRoleName().contains("hmcts-judiciary")) {
+            if (r.getRoleName().contains("magistrate")) {
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
                 assertEquals("ABA3", r.getAuthorisations().get(0));
+                assertEquals("LDN", r.getAttributes().get("region").asText());
                 assertEquals("London", r.getAttributes().get("primaryLocation").asText());
-                if ("fee-paid-judge".equals(r.getRoleName())) {
-                    assertEquals("LDN", r.getAttributes().get("region").asText());
-                    assertEquals("hearing_work,decision_making_work,applications",
-                            r.getAttributes().get("workTypes").asText());
-                }
-            } else {
-                assertEquals(Classification.PRIVATE, r.getClassification());
-                assertEquals(GrantType.BASIC, r.getGrantType());
             }
         });
+
     }
 
     @Test

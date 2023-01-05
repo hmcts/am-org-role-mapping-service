@@ -26,7 +26,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests,hearing_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
@@ -58,7 +58,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -87,8 +87,8 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -126,7 +126,6 @@ then
       .grantType(GrantType.BASIC)
       .classification(Classification.PRIVATE)
       .readOnly(true)
-      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_hmcts_admin_admin_org_role");
@@ -139,13 +138,14 @@ end;
 rule "publiclaw_case_allocator_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId =="3", serviceCode == "ABA3", !suspended,
+  $cap: CaseWorkerAccessProfile(roleId in ("3","4"), serviceCode == "ABA3", !suspended,
                          caseAllocatorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
 
   insert(
       RoleAssignment.builder()
@@ -175,7 +175,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,decision_making_work"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
