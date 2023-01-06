@@ -115,6 +115,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
                     .anyMatch(s::contains));
         });
     }
+
     @ParameterizedTest
     @CsvSource({
             "'9,10',ABA5,PRIVATELAW"
