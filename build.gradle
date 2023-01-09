@@ -353,6 +353,7 @@ dependencies {
         exclude group: 'jakarta.el', module: 'jakarta.el-api'
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
     }
+    implementation group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.20'
 
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.13'
     //Added for S2S and User Authentication
