@@ -94,7 +94,6 @@ rule "publiclaw_magistrate_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW Magistrate - Voluntary"))
-  $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Voluntary"));
@@ -301,6 +300,7 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+   attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
