@@ -23,12 +23,12 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  * All services  "hearing-manager" Org role mapping.
  */
 
-rule "global_hearing_manager_admin"
+rule "global_hearing_manager_ctsc"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile((roleId in ("4","5","9","10","12","13") && serviceCode in ("BBA3"))
-                                 || (roleId in ("3","4") && serviceCode in ("ABA5")),
-                                !suspended)
+  $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA5")),
+                                                              !suspended)
+
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(getJurisdictionFromServiceCode($up.getServiceCode())));
@@ -38,7 +38,7 @@ then
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
-      .roleCategory(RoleCategory.ADMIN)
+      .roleCategory(RoleCategory.CTSC)
       .roleType(RoleType.ORGANISATION)
       .roleName("hearing-manager")
       .grantType(GrantType.STANDARD)
@@ -46,18 +46,18 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : global_hearing_manager_admin");
+      logMsg("Rule : global_hearing_manager_ctsc");
 end;
 
 /*
  * All services  "hearing-viewer" Org role mapping.
  */
-rule "global_hearing_viewer_admin"
+rule "global_hearing_viewer_ctsc"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile((roleId in ("4","5","9","10","12","13") && serviceCode in ("BBA3"))
-                                || (roleId in ("3","4") && serviceCode in ("ABA5")),
-                                !suspended)
+  $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA5")),
+                                                              !suspended)
+
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(getJurisdictionFromServiceCode($up.getServiceCode())));
@@ -67,7 +67,7 @@ then
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
-      .roleCategory(RoleCategory.ADMIN)
+      .roleCategory(RoleCategory.CTSC)
       .roleType(RoleType.ORGANISATION)
       .roleName("hearing-viewer")
       .grantType(GrantType.STANDARD)
@@ -75,34 +75,5 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : global_hearing_viewer_admin");
-end;
-
-/*
- * All services  "listed-hearing-viewer" Org role mapping.
- */
-rule "global_listed_hearing_viewer_other_gov_dept"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("14","15"),
-                                serviceCode in ("BBA3","ABA5"),
-                                !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(getJurisdictionFromServiceCode($up.getServiceCode())));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.OTHER_GOV_DEPT)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("listed-hearing-viewer")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : global_listed_hearing_viewer_other_gov_dept");
+      logMsg("Rule : global_hearing_viewer_ctsc");
 end;
