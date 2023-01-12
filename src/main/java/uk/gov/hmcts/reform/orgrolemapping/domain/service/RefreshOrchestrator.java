@@ -156,7 +156,7 @@ public class RefreshOrchestrator {
 
         //validate the role Category
         ValidationUtil.compareRoleCategory(refreshJobEntity.getRoleCategory());
-
+        log.info("fetching details from RD for :: {} ", userType);
         try {
             if (userType.equals(UserType.CASEWORKER)) {
                 //Call to CRD Service to retrieve the total number of records in first call
@@ -165,7 +165,7 @@ public class RefreshOrchestrator {
                                 Integer.parseInt(pageSize), 0,
                                 sortDirection, sortColumn);
 
-
+                log.info("fetching details from RD for :: {} ", userType);
                 // 2 step to find out the total number of records from header
                 var totalRecords = response.getHeaders().getFirst("total_records");
                 assert totalRecords != null;
@@ -192,7 +192,7 @@ public class RefreshOrchestrator {
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
             responseCodeWithUserId.put("", HttpStatus.resolve(feignClientException.status()));
         }
-
+        log.info("fetched all records from RD  :: {} ", userType);
         //build the success and failure list
         buildSuccessAndFailureBucket(responseCodeWithUserId, refreshJobEntity);
         return responseEntity;
