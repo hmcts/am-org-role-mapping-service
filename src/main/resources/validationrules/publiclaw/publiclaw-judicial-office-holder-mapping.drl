@@ -279,7 +279,7 @@ rule "publiclaw_district_judge_mc_sptw_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "District Judge (MC)",
-                               appointmentType in ("SPTW"),
+                               appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "ABA3"))
 then
