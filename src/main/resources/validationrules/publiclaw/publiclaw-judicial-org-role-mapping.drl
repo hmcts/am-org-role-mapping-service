@@ -134,7 +134,7 @@ when
   "PUBLICLAW Deputy Circuit Judge - Fee Paid"))
 then
  Map<String,JsonNode> attribute = new HashMap<>();
- if($joh.getOffice().contains("Salaried"))
+ if($joh.getOffice().contains("Salaried")|| $joh.getOffice().contains("SPTW"))
  {
  attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
  }
