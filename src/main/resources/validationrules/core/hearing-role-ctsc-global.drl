@@ -20,12 +20,13 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  */
 
 /*
+
  * All services "hearing-manager" Org role mapping.
  */
  rule "global_hearing_manager_ctsc"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-   $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3")),
+   $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3","ABA5")),
                                                                 !suspended)
 
  then
@@ -54,7 +55,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  rule "global_hearing_viewer_ctsc"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-   $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3")),
+   $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3","ABA5")),
                                                                            !suspended)
  then
     Map<String,JsonNode> attribute = new HashMap<>();
