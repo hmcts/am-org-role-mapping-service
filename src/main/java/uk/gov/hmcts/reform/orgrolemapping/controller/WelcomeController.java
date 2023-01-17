@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.NoArgsConstructor;
@@ -49,7 +50,7 @@ public class WelcomeController {
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.OK)
-    //@ApiOperation("creates multiple role assignments based upon user profile mapping rules")
+    @ApiOperation("creates multiple role assignments based upon user profile mapping rules")
     @ApiResponses({
             @ApiResponse(
                     code = 200,
