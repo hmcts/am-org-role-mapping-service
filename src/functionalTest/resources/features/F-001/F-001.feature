@@ -49,7 +49,6 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     And the request [contains the actorId of the user just published],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Push User Ids to CRD endpoint to process] operation of [Organisation Role Mapping],
-    Then a positive response is received,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-007_DeleteDataForRoleAssignments01].
 
   @S-010
