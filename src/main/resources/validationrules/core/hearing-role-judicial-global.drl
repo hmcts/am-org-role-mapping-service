@@ -34,7 +34,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
    "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
    "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
    "PUBLICLAW Magistrate - Voluntary", "PUBLICLAW Designated Family Judge - Salaried",
-   "PUBLICLAW Deputy Circuit Judge - Fee Paid"
+   "PUBLICLAW Deputy Circuit Judge - Fee Paid", "PUBLICLAW District Judge (MC) - Salaried"
    ))
  then
     Map<String,JsonNode> attribute = new HashMap<>();
@@ -68,7 +68,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
     "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
     "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
     "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
-    "PUBLICLAW Designated Family Judge - Salaried",
+    "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW District Judge (MC) - Salaried",
     "PUBLICLAW Deputy Circuit Judge - Fee Paid"
     ))
   then

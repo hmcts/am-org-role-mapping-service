@@ -24,7 +24,8 @@ rule "publiclaw_salaried_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW District Judge - Salaried", "PUBLICLAW District Judge (MC) - SPTW",
-  "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried", "PUBLICLAW Designated Family Judge - Salaried"))
+  "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried", "PUBLICLAW Designated Family Judge - Salaried",
+  "PUBLICLAW District Judge (MC) - Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -131,7 +132,7 @@ when
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
   "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
   "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid", "PUBLICLAW Designated Family Judge - Salaried",
-  "PUBLICLAW Deputy Circuit Judge - Fee Paid"))
+  "PUBLICLAW Deputy Circuit Judge - Fee Paid","PUBLICLAW District Judge (MC) - Salaried"))
 then
  Map<String,JsonNode> attribute = new HashMap<>();
  if($joh.getOffice().contains("Salaried")|| $joh.getOffice().contains("SPTW"))

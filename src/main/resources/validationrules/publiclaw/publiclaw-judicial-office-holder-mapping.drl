@@ -252,7 +252,7 @@ rule "publiclaw_district_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "District Judge",
-                               appointmentType in ("Salaried"),
+                               appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "ABA3"))
 then
@@ -405,4 +405,31 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : publiclaw_magistrate_voluntary_joh");
+end;
+
+/*
+ * 15: "PUBLICLAW District Judge (MC) - Salaried" business role mapping to JOH.
+ */
+rule "publiclaw_district_judge_mc_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge (MC)",
+                               appointmentType in ("Salaried"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW District Judge (MC) - Salaried")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_district_judge_mc_salaried_joh");
 end;
