@@ -84,6 +84,8 @@ env.PACT_BROKER_URL = "pact-broker.platform.hmcts.net"
 env.PACT_BROKER_PORT = "443"
 env.PACT_BROKER_SCHEME = "https"
 
+
+
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
     env.LAUNCH_DARKLY_ENV = "pr"
@@ -106,6 +108,7 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   disableLegacyDeploymentOnAAT()
   disableLegacyDeployment()
+  disableFullFunctionalTest()
 
   // Sync environment specific branches with master branch
   syncBranchesWithMaster(branchesToSync)
