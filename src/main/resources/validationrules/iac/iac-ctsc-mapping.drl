@@ -1,4 +1,4 @@
- package validationrules.iac;
+package validationrules.iac;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
@@ -66,4 +66,3 @@ then
       .build());
       logMsg("Rule : iac_hmcts_ctsc_caseworker_v11");
 end;
-
