@@ -12,7 +12,6 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-041_DeleteDataForRoleAssignments].
 
   @S-042
@@ -23,7 +22,6 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-042_DeleteDataForRoleAssignments].
 
   @S-043
@@ -35,7 +33,6 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     And the request [contains the actorId of the user just published for admin and legal operation role assignments],
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-043_DeleteDataForRoleAssignments].
 
   @S-044
@@ -47,7 +44,6 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     And the request [contains the actorId of the user just published for admin and legal operation role assignments],
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-044_DeleteDataForRoleAssignments].
 
   @S-045

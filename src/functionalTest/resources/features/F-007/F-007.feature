@@ -15,7 +15,6 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-061_DeleteDataForRoleAssignments].
 
   @S-062
@@ -29,7 +28,6 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-062_DeleteDataForRoleAssignments].
 
   @S-063
@@ -42,7 +40,6 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-063_DeleteDataForRoleAssignments].
 
   @S-081

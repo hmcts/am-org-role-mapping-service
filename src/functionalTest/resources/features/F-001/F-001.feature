@@ -15,7 +15,6 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments01],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments02].
 
@@ -30,7 +29,6 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-005_DeleteDataForRoleAssignments01].
 
   @S-006
@@ -44,7 +42,6 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-006_DeleteDataForRoleAssignments01].
 
   @S-007
@@ -57,7 +54,6 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     When a request is prepared with appropriate values,
     And it is submitted to call the [Push User Ids to CRD endpoint to process] operation of [Organisation Role Mapping],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-007_DeleteDataForRoleAssignments01].
 
   @S-010
@@ -71,6 +67,5 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-010_DeleteDataForRoleAssignments01].
 

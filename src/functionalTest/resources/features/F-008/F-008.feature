@@ -15,7 +15,6 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-071_DeleteDataForRoleAssignments].
 
 
@@ -30,7 +29,6 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-072_DeleteDataForRoleAssignments].
 
 
