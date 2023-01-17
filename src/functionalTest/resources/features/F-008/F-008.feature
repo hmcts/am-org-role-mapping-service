@@ -22,7 +22,6 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader and Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-072_DeleteDataForRoleAssignments],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [S-072_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
