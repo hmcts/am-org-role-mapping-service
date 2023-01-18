@@ -362,6 +362,7 @@ when
    $jap: JudicialAccessProfile(appointment == "Designated Family Judge- Salaried",
                                appointmentType in ("Salaried"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (roles != null && roles.contains("Designated Family Judge")),
                                validateAuthorisation(authorisations, "ABA3"))
 then
   insert(
