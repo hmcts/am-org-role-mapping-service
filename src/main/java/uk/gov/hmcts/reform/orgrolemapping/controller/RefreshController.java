@@ -48,7 +48,7 @@ public class RefreshController {
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.ACCEPTED)
-    @ApiOperation("refreshes role assignments")
+    //@ApiOperation("refreshes role assignments")
     @ApiResponses({
             @ApiResponse(
                     code = 202,
