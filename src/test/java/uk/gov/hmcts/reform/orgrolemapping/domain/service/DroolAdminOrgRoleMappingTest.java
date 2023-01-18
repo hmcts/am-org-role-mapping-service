@@ -37,9 +37,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
                 Arguments.of("5", Arrays.asList("hmcts-admin", "hearing-centre-admin"), workTypes),
                 Arguments.of("6", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes),
                 Arguments.of("7", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes),
-                Arguments.of("8", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes),
-                Arguments.of("9", Arrays.asList("hmcts-admin", "ctsc"), workTypes),
-                Arguments.of("10", Arrays.asList("hmcts-admin", "ctsc"), workTypes)
+                Arguments.of("8", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes)
         );
     }
 
@@ -69,7 +67,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     @Test
     void shouldReturnAllAdminOrgRolesForRoleId_3_to_10() {
         allProfiles.clear();
-        IntStream.range(3, 11).forEach(roleId ->
+        IntStream.range(3, 9).forEach(roleId ->
                 allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", false)));
         List<String> skillCodes = List.of("IA", "test", "ctsc");
         allProfiles.forEach(userAccessProfile -> {
@@ -83,7 +81,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6,roleAssignments.size());
+        assertEquals(5,roleAssignments.size());
         IntStream.of(0).forEach(id -> {
             assertEquals("hmcts-admin",roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
@@ -97,14 +95,10 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
         IntStream.of(3).forEach(id -> {
-            assertEquals("ctsc", roleAssignments.get(id).getRoleName());
-            assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
-        });
-        IntStream.of(4).forEach(id -> {
             assertEquals("case-allocator", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
-        IntStream.of(5).forEach(id -> {
+        IntStream.of(4).forEach(id -> {
             assertEquals("task-supervisor", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
         });
@@ -115,14 +109,13 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(3).getAttributes().get("workTypes").asText());
+
     }
 
     @Test
     void shouldNotReturnAdminOrgRolesForRoleId_3_to_10_with_BFA2() {
         allProfiles.clear();
-        IntStream.range(3, 11).forEach(roleId -> {
+        IntStream.range(3, 8).forEach(roleId -> {
             CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "", false);
             profile.setServiceCode("BFA2");
             allProfiles.add(profile);
@@ -138,7 +131,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     @Test
     void shouldNotReturnAdminOrgRolesForRoleId_3_to_10_with_suspendedProfile() {
         allProfiles.clear();
-        IntStream.range(3, 11).forEach(roleId ->
+        IntStream.range(3, 8).forEach(roleId ->
                 allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", true)));
 
         allProfiles.forEach(userAccessProfile -> {

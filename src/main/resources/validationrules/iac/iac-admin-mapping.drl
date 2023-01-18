@@ -22,7 +22,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "iac_hmcts-admin_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("3","4","5","6","7","8","9","10"), serviceCode == "BFA1", !suspended)
+  $up: CaseWorkerAccessProfile(roleId in ("3","4","5","6","7","8"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
@@ -97,38 +97,10 @@ then
 end;
 
 
-
-rule "iac_ctsc_caseworker_v11"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BFA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.ADMIN)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("ctsc")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .authorisations($up.getSkillCodes())
-      .build());
-      logMsg("Rule : iac_ctsc_caseworker_v11");
-end;
-
-
-
 rule "iac_case_allocator_admin_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("3","4","5","6","7","8","9","10"), serviceCode == "BFA1", !suspended,
+  $up: CaseWorkerAccessProfile(roleId in ("3","4","5","6","7","8"), serviceCode == "BFA1", !suspended,
   caseAllocatorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -153,7 +125,7 @@ end;
 rule "iac_task-supervisor_admin_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("3","4","5","6","7","8","9","10"), serviceCode == "BFA1", !suspended,
+  $up: CaseWorkerAccessProfile(roleId in ("3","4","5","6","7","8"), serviceCode == "BFA1", !suspended,
   taskSupervisorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
