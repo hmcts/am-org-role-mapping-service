@@ -36,7 +36,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         return Stream.of(
                 Arguments.of("Circuit Judge",
                         "Salaried",
-                        true,
+                        false,
                         true,
                         List.of(""),
                         List.of("judge", "hmcts-judiciary", "hearing-viewer", "hearing-manager")),
