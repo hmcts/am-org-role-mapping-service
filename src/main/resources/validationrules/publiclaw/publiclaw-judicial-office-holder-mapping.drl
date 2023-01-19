@@ -359,8 +359,7 @@ end;
 rule "publiclaw_designated_family_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-   $jap: JudicialAccessProfile(appointment == "Designated Family Judge- Salaried",
-                               appointmentType in ("Salaried"),
+   $jap: JudicialAccessProfile(appointment != null,
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (roles != null && roles.contains("Designated Family Judge")),
                                validateAuthorisation(authorisations, "ABA3"))
