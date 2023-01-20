@@ -96,7 +96,6 @@ then
       .grantType(GrantType.BASIC)
       .classification(Classification.PRIVATE)
       .readOnly(true)
-      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_hmcts_legal_operations_org_role");

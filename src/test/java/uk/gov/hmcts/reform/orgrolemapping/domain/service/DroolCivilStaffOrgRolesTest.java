@@ -93,7 +93,9 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-            assertEquals(skillCodes,r.getAuthorisations());
+            if (!r.getRoleName().contains("hmcts")) {
+                assertEquals(skillCodes, r.getAuthorisations());
+            }
         });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
@@ -161,7 +163,9 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals("ORGANISATION", r.getRoleType().toString());
-            assertEquals(skillCodes,r.getAuthorisations());
+            if (!r.getRoleName().contains("hmcts")) {
+                assertEquals(skillCodes, r.getAuthorisations());
+            }
         });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()

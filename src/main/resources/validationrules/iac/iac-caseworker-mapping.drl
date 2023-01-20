@@ -141,7 +141,6 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
-      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_hmcts-legal-operations_caseworker_v11");
 end;

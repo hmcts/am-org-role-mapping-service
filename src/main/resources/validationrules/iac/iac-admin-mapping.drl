@@ -37,7 +37,6 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
-      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_hmcts-admin_caseworker_v11");
 end;

@@ -39,7 +39,6 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_hmcts_ctsc_org_role");
 end;

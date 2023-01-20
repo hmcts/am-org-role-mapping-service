@@ -36,7 +36,6 @@ then
       .roleType(RoleType.ORGANISATION)
       .roleName("hmcts-admin")
       .grantType(GrantType.BASIC)
-      .authorisations($cap.getSkillCodes())
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)

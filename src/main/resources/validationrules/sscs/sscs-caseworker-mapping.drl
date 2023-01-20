@@ -164,7 +164,6 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_hmcts_legal_operations_org_role");
 end;

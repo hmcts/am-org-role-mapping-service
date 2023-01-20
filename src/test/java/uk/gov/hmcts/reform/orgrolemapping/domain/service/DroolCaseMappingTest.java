@@ -110,13 +110,13 @@ class  DroolCaseMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals(skillCodes,roleAssignments.get(0).getAuthorisations());
         assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
         assertEquals("hmcts-legal-operations",roleAssignments.get(3).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
-        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
 
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
@@ -150,6 +150,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(8,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals(skillCodes,roleAssignments.get(1).getAuthorisations());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(4).getRoleName());
@@ -161,7 +162,6 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
-        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
@@ -231,6 +231,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(8,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals(skillCodes,roleAssignments.get(0).getAuthorisations());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
         assertEquals("task-supervisor",roleAssignments.get(4).getRoleName());
@@ -242,7 +243,6 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
-        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
@@ -275,6 +275,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(7,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
+        assertEquals(skillCodes,roleAssignments.get(0).getAuthorisations());
         assertEquals("tribunal-caseworker",roleAssignments.get(1).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(3).getRoleName());
@@ -289,7 +290,6 @@ class  DroolCaseMappingTest extends DroolBase {
                 roleAssignments.get(0).getActorId());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(2).getActorId());
 
-        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
@@ -361,6 +361,7 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals(10,roleAssignments.size());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(0).getRoleName());
         assertEquals("senior-tribunal-caseworker",roleAssignments.get(1).getRoleName());
+        assertEquals(skillCodes,roleAssignments.get(1).getAuthorisations());
         assertEquals("tribunal-caseworker",roleAssignments.get(2).getRoleName());
         assertEquals("tribunal-caseworker",roleAssignments.get(3).getRoleName());
         assertEquals("case-allocator",roleAssignments.get(4).getRoleName());
@@ -376,8 +377,6 @@ class  DroolCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(9).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(9).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
-
-        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
         assertEquals(workTypes,
                 roleAssignments.get(2).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
@@ -410,7 +409,11 @@ class  DroolCaseMappingTest extends DroolBase {
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(1).getActorId());
         Assertions.assertThat(usersAccessProfiles.keySet().stream()).contains(
                 roleAssignments.get(2).getActorId());
-        roleAssignments.forEach(r -> assertEquals(skillCodes,r.getAuthorisations()));
+        roleAssignments.forEach(r -> {
+            if (!r.getRoleName().contains("hmcts")) {
+                assertEquals(skillCodes,r.getAuthorisations());
+            }
+        });
         assertEquals(workTypes,
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
         assertEquals(workTypes,
