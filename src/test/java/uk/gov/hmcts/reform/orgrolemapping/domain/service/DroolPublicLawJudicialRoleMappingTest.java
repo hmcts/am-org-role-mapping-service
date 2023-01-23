@@ -6,7 +6,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.pitest.functional.predicate.False;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -178,7 +177,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         false,
                         true,
                         List.of("High Court Judge"),
-                        List.of("fee-paid-judge", "hmcts-judiciary",
+                        List.of("judge","fee-paid-judge", "hmcts-judiciary",
                                 "hearing-viewer", "hearing-manager")),
                 Arguments.of("Magistrate", "Voluntary",
                         false,
@@ -186,10 +185,10 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         List.of("Magistrate - Voluntary"),
                         List.of("magistrate", "hearing-viewer")),
                 Arguments.of("Recorder", "Fee Paid",
-                        false,
+                        true,
                         true,
                         List.of("Recorder - Fee Paid"),
-                        List.of("fee-paid-judge","hmcts-judiciary",
+                        List.of("judge","fee-paid-judge","hmcts-judiciary",
                                 "hearing-viewer", "hearing-manager"))
         );
     }
