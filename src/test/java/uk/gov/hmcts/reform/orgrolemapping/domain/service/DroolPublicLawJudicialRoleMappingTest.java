@@ -188,7 +188,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         true,
                         true,
                         List.of("Recorder - Fee Paid"),
-                        List.of("judge","fee-paid-judge","hmcts-judiciary",
+                        List.of("fee-paid-judge","hmcts-judiciary",
                                 "hearing-viewer", "hearing-manager"))
         );
     }
