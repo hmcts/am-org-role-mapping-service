@@ -26,10 +26,9 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "global_hearing_manager_admin"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile((roleId in ("4","5","9","10","12","13") && serviceCode in ("BBA3"))
-                                 || (roleId in ("3","4","12","13") && serviceCode in ("ABA5"))
-                                 || (roleId in ("3","4") && serviceCode in ("ABA3")),
-                                !suspended)
+  $up: CaseWorkerAccessProfile((roleId in ("4","5","9","10","12","13") && serviceCode in ("BBA3"))                              
+                                 || (roleId in ("3","4") && serviceCode in ("ABA3","ABA5")),
+                                 !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(getJurisdictionFromServiceCode($up.getServiceCode())));
@@ -56,9 +55,8 @@ end;
 rule "global_hearing_viewer_admin"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile((roleId in ("4","5","9","10","12","13") && serviceCode in ("BBA3"))
-                                || (roleId in ("3","4","12","13") && serviceCode in ("ABA5"))
-                                || (roleId in ("3","4") && serviceCode in ("ABA3")),
+  $up: CaseWorkerAccessProfile((roleId in ("4","5","9","10","12","13") && serviceCode in ("BBA3"))                               
+                                || (roleId in ("3","4") && serviceCode in ("ABA3","ABA5")),
                                 !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -87,7 +85,7 @@ rule "global_listed_hearing_viewer_other_gov_dept"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("14","15"),
-                                serviceCode in ("BBA3"),
+                                serviceCode in ("BBA3","ABA5"),
                                 !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
