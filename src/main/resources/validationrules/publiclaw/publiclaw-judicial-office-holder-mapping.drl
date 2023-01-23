@@ -406,3 +406,30 @@ then
       .build());
       logMsg("Rule : publiclaw_magistrate_voluntary_joh");
 end;
+
+/*
+ * 15. "PUBLICLAW Recorder-Fee-Paid" business role business role mapping to JOH.
+ */
+rule "publiclaw_recorder_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Recorder",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Recorder - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_recorder_fee_paid_joh");
+end;

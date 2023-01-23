@@ -60,7 +60,8 @@ when
   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
   "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
-  "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid","PUBLICLAW Deputy Circuit Judge - Fee Paid"))
+  "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid","PUBLICLAW Deputy Circuit Judge - Fee Paid",
+  "PUBLICLAW Recorder - Fee Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -131,7 +132,7 @@ when
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
   "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
   "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid", "PUBLICLAW Designated Family Judge - Salaried",
-  "PUBLICLAW Deputy Circuit Judge - Fee Paid"))
+  "PUBLICLAW Deputy Circuit Judge - Fee Paid","PUBLICLAW Recorder - Fee Paid"))
 then
  Map<String,JsonNode> attribute = new HashMap<>();
  if($joh.getOffice().contains("Salaried"))
@@ -292,7 +293,7 @@ when
   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
   "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
-  "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid"))
+  "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid", "PUBLICLAW Recorder - Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
