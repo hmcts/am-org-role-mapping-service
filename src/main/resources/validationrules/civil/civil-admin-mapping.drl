@@ -66,6 +66,7 @@ then
       .roleType(RoleType.ORGANISATION)
       .roleName("national-business-centre")
       .grantType(GrantType.STANDARD)
+      .authorisations($cap.getSkillCodes())
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
@@ -98,6 +99,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_nbc_team_leader_org_role");
 end;
@@ -127,6 +129,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_hearing_centre_team_leader_org_role");
 end;
@@ -156,6 +159,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_hearing_centre_admin_org_role");
 end;
@@ -184,6 +188,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : civil_task_supervisor_admin_org_role");
@@ -214,6 +219,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_case_allocator_admin_org_role");
 end;
