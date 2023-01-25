@@ -67,7 +67,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_superuser_admin_org_role");
 end;
@@ -99,7 +98,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_clerk_admin_org_role");
 end;
@@ -130,7 +128,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_case_allocator_admin_org_role");
 end;
@@ -161,7 +158,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_task_supervisor_admin_org_role");
 end;
@@ -192,7 +188,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_dwp_ogd_org_role");
 end;
@@ -223,7 +218,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : sscs_hmrc_ogd_org_role");
 end;
