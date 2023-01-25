@@ -41,6 +41,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_admin_hearing_centre_team_leader_org_role");
@@ -70,6 +71,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_task_supervisor_admin_org_role");
@@ -126,6 +128,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_case_allocator_admin_org_role");
@@ -155,6 +158,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_specific_access_approver_admin_org_role");
@@ -184,6 +188,7 @@ then
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
+      .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_hearing_centre_admin_org_role");

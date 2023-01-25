@@ -1,17 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.hamcrest.collection.ArrayMatching;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +12,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.hamcrest.collection.ArrayMatching;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolAdminOrgRoleMappingTest extends DroolBase {
@@ -69,10 +69,11 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         allProfiles.clear();
         IntStream.range(3, 9).forEach(roleId ->
                 allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", false)));
-
+        List<String> skillCodes = List.of("IA", "test", "ctsc");
         allProfiles.forEach(userAccessProfile -> {
             userAccessProfile.setCaseAllocatorFlag("Y");
             userAccessProfile.setTaskSupervisorFlag("Y");
+            userAccessProfile.setSkillCodes(skillCodes);
         });
 
         //Execute Kie session
@@ -88,20 +89,23 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         IntStream.of(1).forEach(id -> {
             assertEquals("hearing-centre-admin",roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN,roleAssignments.get(id).getRoleCategory());
+            assertEquals(skillCodes,roleAssignments.get(id).getAuthorisations());
         });
         IntStream.of(2).forEach(id -> {
             assertEquals("national-business-centre", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
+            assertEquals(skillCodes,roleAssignments.get(id).getAuthorisations());
         });
         IntStream.of(3).forEach(id -> {
             assertEquals("case-allocator", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
+            assertEquals(skillCodes,roleAssignments.get(id).getAuthorisations());
         });
         IntStream.of(4).forEach(id -> {
             assertEquals("task-supervisor", roleAssignments.get(id).getRoleName());
             assertEquals(RoleCategory.ADMIN, roleAssignments.get(id).getRoleCategory());
+            assertEquals(skillCodes,roleAssignments.get(id).getAuthorisations());
         });
-
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
         assertEquals(workTypes,
