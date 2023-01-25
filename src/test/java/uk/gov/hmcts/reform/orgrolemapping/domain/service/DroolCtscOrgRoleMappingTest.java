@@ -1,5 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
@@ -8,14 +16,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,13 +32,14 @@ public class DroolCtscOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         allProfiles.clear();
-
+        List<String> skillCodes = List.of("civil", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
         cap.setRoleId(roleId);
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
+        cap.setSkillCodes(skillCodes);
         allProfiles.add(cap);
 
         //Execute Kie session
@@ -53,6 +54,9 @@ public class DroolCtscOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("CTSC", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
+            if (!r.getRoleName().contains("hmcts")) {
+                assertEquals(skillCodes, r.getAuthorisations());
+            }
         });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
