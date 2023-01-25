@@ -1,11 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import java.io.Serializable;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 //b. Create a new model class UserAccessProfile(id, roleId, roleName, primaryLocationId,
 // primaryLocationName, areaOfWorkId, serviceCode, suspended) (which will flatten the User Profile into multiple
@@ -28,4 +29,6 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     private String caseAllocatorFlag;
     private String taskSupervisorFlag;
     private String regionId;
+    private String staffAdmin;
+    private List<String> skillCodes;
 }
