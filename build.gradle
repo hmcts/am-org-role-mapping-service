@@ -59,7 +59,7 @@ mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
 def jarName = 'am-org-role-mapping-service.jar'
 
 pmd {
-    toolVersion = '6.21.0'
+    toolVersion = '6.53.0'
     sourceSets = []
 }
 
