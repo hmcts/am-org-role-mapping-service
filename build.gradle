@@ -369,7 +369,7 @@ dependencies {
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.34.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.13.0'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.22'
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.2'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
