@@ -32,3 +32,4 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     private String regionId;
     private String staffAdmin;
     private List<String> skillCodes;
+}
