@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -100,4 +101,3 @@ public class CaseWorkerProfile  implements Serializable  {
 
     }
 
-}

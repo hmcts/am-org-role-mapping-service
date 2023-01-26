@@ -6,6 +6,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -17,6 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -73,9 +76,11 @@ class AssignmentRequestBuilderTest {
                         "2", ROLE_NAME_STCW, ROLE_NAME_TCW, true, true,
                         true, true, "1", "2", true);
         caseworker.setSkills(List.of(
-                CaseWorkerProfile.Skills.builder().skillId("008").skillCode("test2").description("test3").build(),
-                CaseWorkerProfile.Skills.builder().skillId("009").skillCode("law").description("ctsc").build(),
-                CaseWorkerProfile.Skills.builder().skillId("010").skillCode("junit").description("test4").build()));
+
+                CaseWorkerProfile.Skills.builder().skillId("privatelaw").skillCode("test").description("ctsc").build(),
+                CaseWorkerProfile.Skills.builder().skillId("pr").skillCode("ts").description("cts").build(),
+                CaseWorkerProfile.Skills.builder().skillId("java").skillCode("junit").description("test2").build()));
+
         Set<UserAccessProfile> caseWorkerAccessProfiles = AssignmentRequestBuilder
                 .convertUserProfileToCaseworkerAccessProfile(caseworker);
         caseWorkerAccessProfiles.stream()
@@ -91,9 +96,11 @@ class AssignmentRequestBuilderTest {
                     assertNotNull(role.getRoleName());
                     assertNotNull(role.getServiceCode());
                     assertNotNull(role.getSkillCodes());
-                    assertThat(role.getSkillCodes(), containsInAnyOrder("test2","law","junit"));
+                    assertThat(role.getSkillCodes(), containsInAnyOrder("test","ts","junit"));
+
                 });
         assertEquals(2, caseWorkerAccessProfiles.size());
+
     }
 
     @Test

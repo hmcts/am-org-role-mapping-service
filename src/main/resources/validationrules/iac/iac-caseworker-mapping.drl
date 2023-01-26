@@ -40,6 +40,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_senior_tribunal_caseworker_v11");
 end;
@@ -64,6 +65,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_tribunal_caseworker_v11");
 end;
@@ -88,6 +90,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
 
       logMsg("Rule : iac_case_allocator_caseworker_v11");
@@ -113,6 +116,7 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
+      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : iac_case_allocator_caseworker_v11");
 end;
