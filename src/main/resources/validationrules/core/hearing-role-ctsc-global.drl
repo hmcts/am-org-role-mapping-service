@@ -20,60 +20,59 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  */
 
 /*
- * All services  "hearing-manager" Org role mapping.
+
+ * All services "hearing-manager" Org role mapping.
  */
+ rule "global_hearing_manager_ctsc"
+ when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+   $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3","ABA5")),
+                                                                !suspended)
 
-rule "global_hearing_manager_ctsc"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA5")),
-                                                              !suspended)
+ then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(getJurisdictionFromServiceCode($up.getServiceCode())));
+    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
 
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(getJurisdictionFromServiceCode($up.getServiceCode())));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   insert(
+       RoleAssignment.builder()
+       .actorIdType(ActorIdType.IDAM)
+       .actorId($up.getId())
+       .roleCategory(RoleCategory.CTSC)
+       .roleType(RoleType.ORGANISATION)
+       .roleName("hearing-manager")
+       .grantType(GrantType.STANDARD)
+       .classification(Classification.PUBLIC)
+       .readOnly(false)
+       .attributes(attribute)
+       .build());
+       logMsg("Rule : global_hearing_manager_ctsc");
+ end;
 
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.CTSC)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("hearing-manager")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : global_hearing_manager_ctsc");
-end;
+ /*
+  * All services "hearing-viewer" Org role mapping.
+  */
+ rule "global_hearing_viewer_ctsc"
+ when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+   $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3","ABA5")),
+                                                                           !suspended)
+ then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(getJurisdictionFromServiceCode($up.getServiceCode())));
+    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
 
-/*
- * All services  "hearing-viewer" Org role mapping.
- */
-rule "global_hearing_viewer_ctsc"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA5")),
-                                                              !suspended)
-
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(getJurisdictionFromServiceCode($up.getServiceCode())));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.CTSC)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("hearing-viewer")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : global_hearing_viewer_ctsc");
-end;
+   insert(
+       RoleAssignment.builder()
+       .actorIdType(ActorIdType.IDAM)
+       .actorId($up.getId())
+       .roleCategory(RoleCategory.CTSC)
+       .roleType(RoleType.ORGANISATION)
+       .roleName("hearing-viewer")
+       .grantType(GrantType.STANDARD)
+       .classification(Classification.PUBLIC)
+       .readOnly(false)
+       .attributes(attribute)
+       .build());
+       logMsg("Rule : global_hearing_viewer_ctsc");
+ end;
