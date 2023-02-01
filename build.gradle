@@ -309,7 +309,7 @@ dependencies {
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-resource-server', version: versions.springBoot)
 
 
-    implementation group: 'org.springframework.security', name: 'spring-security-core', version: versions.springSecurity
+    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.7.5'
     implementation group: 'org.springframework.security', name:'spring-security-web', version: versions.springSecurity
     implementation group: 'org.springframework.security', name:'spring-security-config', version: versions.springSecurity
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.0'
@@ -329,6 +329,7 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-tx', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-web', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.spring
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
 
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
