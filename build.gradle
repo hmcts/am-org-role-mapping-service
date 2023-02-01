@@ -15,12 +15,13 @@ plugins {
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.springframework.boot' version '2.4.9'
+    id 'org.springframework.boot' version '2.7.7'
     id 'info.solidsoft.pitest' version '1.7.4'
     id 'com.github.ben-manes.versions' version '0.44.0'
     id 'org.sonarqube' version '3.4.0.2513'
     id 'au.com.dius.pact' version '4.3.12'
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
+    id 'org.owasp.dependencycheck' version '8.0.1'
 }
 
 apply plugin: "info.solidsoft.pitest"
@@ -37,9 +38,9 @@ def versions = [
         reformLogging  : '5.1.9',
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
-        springBoot     : '2.6.6',
+        springBoot     : '2.7.7',
         spring         : '5.3.25',
-        springSecurity : '5.6.3',
+        springSecurity : '5.7.5',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '3.0.0',
         pact_version   : '4.1.40',
@@ -329,10 +330,8 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-web', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.spring
 
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
-    implementation group: 'io.springfox', name: 'springfox-spring-webmvc', version: versions.swagger2Version
-
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.8'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.5'
 
     implementation group: 'com.github.hmcts', name:'properties-volume-spring-boot-starter', version:'0.1.1'
     implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
@@ -376,7 +375,7 @@ dependencies {
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.1'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
-    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.23'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.25'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:20030203.000550'

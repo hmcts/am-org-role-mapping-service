@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,18 +49,15 @@ public class RefreshController {
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.ACCEPTED)
-    //@ApiOperation("refreshes role assignments")
-    @ApiResponses({
-            @ApiResponse(
-                    code = 202,
-                    message = "Accepted",
-                    response = Object.class
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = V1.Error.INVALID_REQUEST
-            )
-    })
+    @ApiResponse(
+            responseCode = "202",
+            description = "Accepted",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = V1.Error.INVALID_REQUEST
+    )
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
@@ -76,22 +74,20 @@ public class RefreshController {
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.OK)
-    @ApiOperation("refreshes judicial role assignments")
-    @ApiResponses({
-            @ApiResponse(
-                    code = 200,
-                    message = "Successful",
-                    response = Object.class
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = V1.Error.INVALID_REQUEST
-            ),
-            @ApiResponse(
-                    code = 422,
-                    message = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED
-            )
-    })
+    @Operation(summary = "refreshes judicial role assignments")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Successful",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = V1.Error.INVALID_REQUEST
+    )
+    @ApiResponse(
+            responseCode = "422",
+            description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED
+    )
     public ResponseEntity<Object> judicialRefresh(@RequestHeader(value = "x-correlation-id", required = false)
                                                               String correlationId,
                                                   @Validated @NonNull @RequestBody
