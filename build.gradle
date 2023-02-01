@@ -21,6 +21,7 @@ plugins {
     id 'org.sonarqube' version '3.4.0.2513'
     id 'au.com.dius.pact' version '4.3.12'
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
+    id 'org.owasp.dependencycheck' version '8.0.2'
 }
 
 apply plugin: "info.solidsoft.pitest"
@@ -39,7 +40,7 @@ def versions = [
         serenity       : '2.2.12',
         springBoot     : '2.6.6',
         spring         : '5.3.25',
-        springSecurity : '5.6.3',
+        springSecurity : '5.7.5',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '3.0.0',
         pact_version   : '4.1.41',
@@ -312,7 +313,7 @@ dependencies {
     implementation group: 'org.springframework.security', name:'spring-security-web', version: versions.springSecurity
     implementation group: 'org.springframework.security', name:'spring-security-config', version: versions.springSecurity
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.0'
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.4'
     implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.2.2'
     implementation group: 'org.springframework', name: 'spring-core', version: versions.spring
@@ -328,6 +329,7 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-tx', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-web', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.spring
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
 
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
