@@ -52,7 +52,8 @@ def versions = [
         log4JVersion   : '2.19.0',
         logbackVersion : '1.2.10',
         launchDarklySdk: '5.10.5',
-        netty_version  : '4.1.87.Final'
+        netty_version  : '4.1.87.Final',
+        mockito        : '5.1.1'
 
 ]
 
@@ -452,8 +453,8 @@ dependencies {
     pitest 'org.pitest:pitest-junit5-plugin:0.16'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.4.0'
-    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.4.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: versions.mockito
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.9.2'
