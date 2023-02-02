@@ -398,10 +398,10 @@ dependencies {
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
 
-    implementation (group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.22') {
+    testImplementation (group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.22') {
         because 'Clashes in using other transitive versions at once are causing issue'
     }
-    implementation (group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.12.22') {
+    testImplementation (group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.12.22') {
         because 'Clashes in using other transitive versions at once are causing issue'
     }
 
