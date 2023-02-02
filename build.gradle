@@ -295,6 +295,9 @@ repositories {
 
 
 dependencies {
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.22'
+    testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.12.22'
+
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web', version: versions.springBoot) {
         exclude group: 'org.glassfish', module: 'jakarta.el'
     }
@@ -398,14 +401,6 @@ dependencies {
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
 
-    testImplementation (group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.22') {
-        because 'Clashes in using other transitive versions at once are causing issue'
-    }
-    testImplementation (group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.12.22') {
-        because 'Clashes in using other transitive versions at once are causing issue'
-    }
-
-
     implementation (group: 'io.netty', name: 'netty-buffer', version: versions.netty_version) {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
@@ -461,7 +456,9 @@ dependencies {
     pitest 'org.pitest:pitest-junit5-plugin:0.16'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: versions.mockito
+    testImplementation (group: 'org.mockito', name: 'mockito-core', version: versions.mockito) {
+        exclude group: 'byte-buddy', module: 'net.bytebuddy'
+    }
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
@@ -620,6 +617,8 @@ bootJar {
 }
 
 configurations.all {
+    exclude group: 'byte-buddy', module: 'net.bytebuddy'
+    exclude group: 'byte-buddy-agent', module: 'net.bytebuddy'
     exclude group: "org.glassfish", module: "jakarta.el"
     exclude group: "io.github.x-stream", module: "mxparser"
     exclude group: 'io.netty', module: 'netty-tcnative-classes'
