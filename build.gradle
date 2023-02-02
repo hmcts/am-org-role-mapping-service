@@ -295,11 +295,9 @@ repositories {
 
 
 dependencies {
-    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.22'
-    testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.12.22'
-
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web', version: versions.springBoot) {
         exclude group: 'org.glassfish', module: 'jakarta.el'
+        exclude group: 'byte-buddy', module: 'net.bytebuddy'
     }
     implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
     implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot)
@@ -456,7 +454,9 @@ dependencies {
     pitest 'org.pitest:pitest-junit5-plugin:0.16'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: versions.mockito
+    testImplementation (group: 'org.mockito', name: 'mockito-core', version: versions.mockito) {
+        exclude group: 'byte-buddy', module: 'net.bytebuddy'
+    }
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
