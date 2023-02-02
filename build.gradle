@@ -40,7 +40,7 @@ def versions = [
         serenity       : '2.2.12',
         springBoot     : '2.6.6',
         spring         : '5.3.25',
-        springSecurity : '5.7.5',
+        springSecurity : '5.8.1',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '3.0.0',
         pact_version   : '4.1.40',
