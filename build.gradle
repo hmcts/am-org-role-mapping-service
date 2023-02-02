@@ -14,7 +14,6 @@ plugins {
     id 'uk.gov.hmcts.java' version '0.12.12'
     id 'pmd'
     id 'jacoco'
-    id 'io.spring.dependency-management' version '1.1.0'
     id 'org.springframework.boot' version '2.7.7'
     id 'info.solidsoft.pitest' version '1.7.4'
     id 'com.github.ben-manes.versions' version '0.44.0'
@@ -29,7 +28,6 @@ apply plugin: 'java'
 apply plugin: 'net.serenity-bdd.aggregator'
 apply plugin: 'project-report'
 apply plugin: 'idea'
-apply plugin: 'io.spring.dependency-management'
 
 def versions = [
         junit          : '5.9.0',
@@ -528,24 +526,6 @@ dependencies {
 
     contractTestImplementation sourceSets.main.runtimeClasspath
     contractTestImplementation sourceSets.test.runtimeClasspath
-}
-
-dependencyManagement {
-    dependencies {
-        dependencySet(group: 'org.apache.logging.log4j', version: versions.log4JVersion) {
-            entry 'log4j-api'
-            entry 'log4j-to-slf4j'
-        }
-        dependencySet(group: 'ch.qos.logback', version: versions.logbackVersion) {
-            entry 'logback-classic'
-            entry 'logback-core'
-        }
-        dependencySet(group: 'com.fasterxml.jackson.core', version: versions.jacksondata) {
-            entry 'jackson-databind'
-            entry 'jackson-core'
-            entry 'jackson-annotations'
-        }
-    }
 }
 
 project.ext {
