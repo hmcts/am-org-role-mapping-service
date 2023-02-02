@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DroolPublicLawStaffOrgRolesTest extends DroolBase {
+class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
