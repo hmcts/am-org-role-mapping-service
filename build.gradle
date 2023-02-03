@@ -40,7 +40,7 @@ def versions = [
         serenity       : '2.2.12',
         springBoot     : '2.7.5',
         spring         : '5.3.25',
-        springSecurity : '5.7.5',
+        springSecurity : '6.0.1',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '3.0.0',
         pact_version   : '4.1.40',
@@ -309,6 +309,7 @@ dependencies {
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-resource-server', version: versions.springBoot)
 
 
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: versions.springSecurity
     implementation group: 'org.springframework.security', name: 'spring-security-core', version: versions.springSecurity
     implementation group: 'org.springframework.security', name:'spring-security-web', version: versions.springSecurity
     implementation group: 'org.springframework.security', name:'spring-security-config', version: versions.springSecurity
@@ -446,6 +447,15 @@ dependencies {
     }
     implementation (group: 'io.netty', name: 'netty-resolver-dns-native-macos', version: versions.netty_version) {
         because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation (group: 'io.netty', name: 'netty-resolver-dns-classes-macos', version: versions.netty_version) {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation (group: 'io.netty', name: 'netty-transport-classes-epoll', version: versions.netty_version) {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
+    }
+    implementation (group: 'io.netty', name: 'netty-transport-classes-kqueue', version: versions.netty_version) {
+        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
     }
     testImplementation('com.opentable.components:otj-pg-embedded:1.0.1')
     testImplementation('com.github.tomakehurst:wiremock-jre8-standalone:2.35.0')
