@@ -332,9 +332,8 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.spring
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
 
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
-    implementation group: 'io.springfox', name: 'springfox-spring-webmvc', version: versions.swagger2Version
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.8'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.5'
 
 
     implementation group: 'com.github.hmcts', name:'properties-volume-spring-boot-starter', version:'0.1.1'

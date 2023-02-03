@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,7 +57,7 @@ public class TestController {
     }
 
     @GetMapping(value = "/am/test/jobs/{jobId}")
-    public ResponseEntity<Object>  fetchJob(@ApiParam(required = true)
+    public ResponseEntity<Object>  fetchJob(@Parameter(required = true)
                                             @PathVariable("jobId") Long jobId) {
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
         return ResponseEntity.status(HttpStatus.OK).body(refreshJobEntity.isPresent() ? refreshJobEntity
@@ -65,7 +65,7 @@ public class TestController {
     }
 
     @DeleteMapping(value = "/am/test/jobs/{jobId}")
-    public ResponseEntity<Object>  removeJob(@ApiParam(required = true)
+    public ResponseEntity<Object>  removeJob(@Parameter(required = true)
                                              @PathVariable("jobId") Long jobId) {
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
         if (refreshJobEntity.isPresent()) {
