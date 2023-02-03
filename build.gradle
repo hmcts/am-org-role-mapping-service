@@ -21,6 +21,7 @@ plugins {
     id 'org.sonarqube' version '3.4.0.2513'
     id 'au.com.dius.pact' version '4.3.12'
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
+    id 'org.owasp.dependencycheck' version '8.0.2'
 }
 
 apply plugin: "info.solidsoft.pitest"
@@ -38,10 +39,10 @@ def versions = [
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
         springBoot     : '2.7.5',
-        spring         : '5.3.24',
-        springSecurity : '5.6.3',
+        spring         : '5.3.25',
+        springSecurity : '5.7.5',
         springHystrix  : '2.1.1.RELEASE',
-        swagger2Version: '2.10.5',
+        swagger2Version: '3.0.0',
         pact_version   : '4.1.40',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
@@ -50,8 +51,8 @@ def versions = [
         drools         : '7.73.0.Final',
         log4JVersion   : '2.19.0',
         logbackVersion : '1.2.10',
-        launchDarklySdk: '5.10.3',
-        netty_version  : '4.1.86.Final'
+        launchDarklySdk: '5.10.5',
+        netty_version  : '4.1.87.Final'
 
 ]
 
@@ -201,7 +202,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.8"
 }
 
 pitest {
@@ -312,7 +313,7 @@ dependencies {
     implementation group: 'org.springframework.security', name:'spring-security-web', version: versions.springSecurity
     implementation group: 'org.springframework.security', name:'spring-security-config', version: versions.springSecurity
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.0'
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.5.RELEASE'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.4'
     implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.0.1'
     implementation group: 'org.springframework', name: 'spring-core', version: versions.spring
@@ -328,6 +329,7 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-tx', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-web', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.spring
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
 
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
@@ -374,7 +376,7 @@ dependencies {
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.1'
-    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.6'
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.23'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
@@ -383,7 +385,7 @@ dependencies {
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.70'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.71'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.70'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
@@ -395,7 +397,7 @@ dependencies {
     implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.2'
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
-    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.6'
+    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
 
     implementation (group: 'io.netty', name: 'netty-buffer', version: versions.netty_version) {
         because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
@@ -456,12 +458,13 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.4.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
-    testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.9.1'
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.9.2'
 
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: versions.pitest
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
     testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.2')
+    testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test', version: versions.springBoot
     testImplementation group: 'org.springframework.security',name:'spring-security-test', version: versions.springSecurity
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
