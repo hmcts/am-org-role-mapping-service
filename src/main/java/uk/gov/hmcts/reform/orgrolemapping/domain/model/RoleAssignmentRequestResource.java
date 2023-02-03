@@ -2,12 +2,10 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.UUID;
@@ -15,9 +13,8 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Validated
-public class RoleAssignmentRequestResource extends RepresentationModel<RoleAssignmentRequestResource> {
+public class RoleAssignmentRequestResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoleAssignmentRequestResource.class);
 
