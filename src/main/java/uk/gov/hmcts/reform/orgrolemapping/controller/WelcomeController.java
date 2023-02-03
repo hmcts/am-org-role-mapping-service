@@ -1,7 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,17 +51,15 @@ public class WelcomeController {
     )
     @ResponseStatus(code = HttpStatus.OK)
     //@ApiOperation("creates multiple role assignments based upon user profile mapping rules")
-    @ApiResponses({
-            @ApiResponse(
-                    code = 200,
-                    message = "OK",
-                    response = Object.class
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = V1.Error.INVALID_REQUEST
-            )
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = V1.Error.INVALID_REQUEST
+    )
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest,
                                                    @RequestHeader(value = "userType")
                                                            UserType userType) {
