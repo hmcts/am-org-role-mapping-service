@@ -14,6 +14,7 @@ plugins {
     id 'uk.gov.hmcts.java' version '0.12.12'
     id 'pmd'
     id 'jacoco'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'org.springframework.boot' version '2.7.7'
     id 'info.solidsoft.pitest' version '1.7.4'
     id 'com.github.ben-manes.versions' version '0.44.0'
@@ -28,6 +29,7 @@ apply plugin: 'java'
 apply plugin: 'net.serenity-bdd.aggregator'
 apply plugin: 'project-report'
 apply plugin: 'idea'
+apply plugin: 'io.spring.dependency-management'
 
 def versions = [
         junit          : '5.9.0',
@@ -50,8 +52,7 @@ def versions = [
         log4JVersion   : '2.19.0',
         logbackVersion : '1.2.10',
         launchDarklySdk: '5.10.5',
-        netty_version  : '4.1.87.Final',
-        mockito        : '5.1.1'
+        netty_version  : '4.1.87.Final'
 
 ]
 
@@ -293,10 +294,6 @@ repositories {
 
 
 dependencies {
-    constraints {
-        implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.22'
-        testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.12.22'
-    }
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web', version: versions.springBoot) {
         exclude group: 'org.glassfish', module: 'jakarta.el'
     }
@@ -455,10 +452,8 @@ dependencies {
     pitest 'org.pitest:pitest-junit5-plugin:0.16'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation (group: 'org.mockito', name: 'mockito-core', version: versions.mockito) {
-        exclude group: 'byte-buddy', module: 'net.bytebuddy'
-    }
-    testImplementation group: 'org.mockito', name: 'mockito-inline', version: versions.mockito
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.4.0'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.4.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.9.2'
@@ -526,6 +521,24 @@ dependencies {
 
     contractTestImplementation sourceSets.main.runtimeClasspath
     contractTestImplementation sourceSets.test.runtimeClasspath
+}
+
+dependencyManagement {
+    dependencies {
+        dependencySet(group: 'org.apache.logging.log4j', version: versions.log4JVersion) {
+            entry 'log4j-api'
+            entry 'log4j-to-slf4j'
+        }
+        dependencySet(group: 'ch.qos.logback', version: versions.logbackVersion) {
+            entry 'logback-classic'
+            entry 'logback-core'
+        }
+        dependencySet(group: 'com.fasterxml.jackson.core', version: versions.jacksondata) {
+            entry 'jackson-databind'
+            entry 'jackson-core'
+            entry 'jackson-annotations'
+        }
+    }
 }
 
 project.ext {
@@ -598,8 +611,6 @@ bootJar {
 }
 
 configurations.all {
-    exclude group: 'byte-buddy', module: 'net.bytebuddy'
-    exclude group: 'byte-buddy-agent', module: 'net.bytebuddy'
     exclude group: "org.glassfish", module: "jakarta.el"
     exclude group: "io.github.x-stream", module: "mxparser"
     exclude group: 'io.netty', module: 'netty-tcnative-classes'
