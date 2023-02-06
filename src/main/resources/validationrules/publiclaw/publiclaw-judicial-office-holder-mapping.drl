@@ -1,0 +1,462 @@
+package validationrules.publiclaw;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.lang.String;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.addAndGetTicketCodes;
+import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
+
+
+/*
+ * "Stage 1 mapping from judicial appointments(coming from RD JRD access profiles) to judicial office holder.
+ */
+
+/*
+ * 1: "PUBLICLAW Circuit Judge - Salaried" business role mapping to JOH.
+ */
+rule "publiclaw_circuit_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Circuit Judge",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Circuit Judge - Salaried")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_circuit_judge_salaried_joh");
+end;
+
+/*
+ * 2: "PUBLICLAW Deputy Circuit Judge - Fee Paid" business role mapping to JOH.
+ */
+rule "publiclaw_deputy_circuit_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Deputy Circuit Judge",
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Deputy Circuit Judge - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_deputy_circuit_judge_fee_paid_joh");
+end;
+
+/*
+ * 3: "PUBLICLAW Deputy District Judge - PRFD - Fee Paid" business role mapping to JOH.
+ */
+rule "publiclaw_deputy_district_judge_prfd_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Deputy District Judge - PRFD",
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Deputy District Judge - PRFD - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_deputy_district_judge_prfd_fee_paid_joh");
+end;
+
+/*
+ * 4: "PUBLICLAW Deputy District Judge (MC) - Fee Paid" business role mapping to JOH.
+ */
+rule "publiclaw_deputy_district_judge_mc_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Deputy District Judge (MC)- Fee paid",
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Deputy District Judge (MC) - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_deputy_district_judge_mc_fee_paid_joh");
+end;
+
+/*
+ * 5: "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement" business role mapping to JOH.
+ */
+rule "publiclaw_deputy_district_judge_mc_in_retirement_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Deputy District Judge (MC)- Sitting in Retirement",
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_deputy_district_judge_mc_in_retirement_joh");
+end;
+
+/*
+ * 6: "PUBLICLAW Deputy District Judge - Fee Paid" business role mapping to JOH.
+ */
+rule "publiclaw_deputy_deputy_district_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Deputy District Judge- Fee-Paid",
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Deputy District Judge - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_deputy_deputy_district_judge_fee_paid_joh");
+end;
+
+/*
+ * 7: "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid" business role mapping to JOH.
+ */
+rule "publiclaw_deputy_district_judge_in_retirement_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Deputy District Judge- Sitting in Retirement",
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_deputy_district_judge_in_retirement_joh");
+end;
+
+/*
+ * 8: "PUBLICLAW Deputy High Court Judge - Fee Paid" business role mapping to JOH.
+ */
+rule "publiclaw_deputy_high_court_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Deputy High Court Judge",
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Deputy High Court Judge - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_deputy_high_court_judge_fee_paid_joh");
+end;
+
+/*
+ * 9: "PUBLICLAW District Judge - Salaried" business role mapping to JOH.
+ */
+rule "publiclaw_district_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW District Judge - Salaried")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_district_judge_salaried_joh");
+end;
+
+/*
+ * 10: "PUBLICLAW District Judge (MC) - SPTW" business role mapping to JOH.
+ */
+rule "publiclaw_district_judge_mc_sptw_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge (MC)",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW District Judge (MC) - SPTW")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_district_judge_mc_sptw_joh");
+end;
+
+/*
+ * 11: "PUBLICLAW High Court Judge - Salaried" business role mapping to JOH.
+ */
+rule "publiclaw_high_court_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "High Court Judge",
+                               appointmentType in ("Salaried"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW High Court Judge - Salaried")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_high_court_judge_salaried_joh");
+end;
+
+/*
+ * 12: "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid" business role mapping to JOH.
+ */
+rule "publiclaw_high_court_judge_in_retirement_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "High Court Judge- Sitting in Retirement",
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_high_court_judge_in_retirement_joh");
+end;
+
+/*
+ * 13: "PUBLICLAW Designated Family Judge - Salaried" business role mapping to JOH.
+ */
+rule "publiclaw_designated_family_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (roles != null && roles.contains("Designated Family Judge")),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Designated Family Judge - Salaried")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_designated_family_judge_salaried_joh");
+end;
+
+/*
+ * 14: "PUBLICLAW Magistrate - Voluntary" business role mapping to JOH.
+ */
+rule "publiclaw_magistrate_voluntary_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Magistrate",
+                               appointmentType in ("Voluntary"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Magistrate - Voluntary")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_magistrate_voluntary_joh");
+end;
+
+/*
+ * 15: "PUBLICLAW District Judge (MC) - Salaried" business role mapping to JOH.
+ */
+rule "publiclaw_district_judge_mc_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge (MC)",
+                               appointmentType in ("Salaried"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW District Judge (MC) - Salaried")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_district_judge_mc_salaried_joh");
+end;
+
+/*
+ * 16. "PUBLICLAW Recorder-Fee-Paid" business role business role mapping to JOH.
+ */
+rule "publiclaw_recorder_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment == "Recorder",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Recorder - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_recorder_fee_paid_joh");
+end;

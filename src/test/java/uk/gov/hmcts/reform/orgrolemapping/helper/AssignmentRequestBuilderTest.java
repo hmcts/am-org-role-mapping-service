@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
@@ -26,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 
 class AssignmentRequestBuilderTest {
 
@@ -73,9 +76,11 @@ class AssignmentRequestBuilderTest {
                         "2", ROLE_NAME_STCW, ROLE_NAME_TCW, true, true,
                         true, true, "1", "2", true);
         caseworker.setSkills(List.of(
+
                 CaseWorkerProfile.Skills.builder().skillId("privatelaw").skillCode("test").description("ctsc").build(),
                 CaseWorkerProfile.Skills.builder().skillId("pr").skillCode("ts").description("cts").build(),
                 CaseWorkerProfile.Skills.builder().skillId("java").skillCode("junit").description("test2").build()));
+
         Set<UserAccessProfile> caseWorkerAccessProfiles = AssignmentRequestBuilder
                 .convertUserProfileToCaseworkerAccessProfile(caseworker);
         caseWorkerAccessProfiles.stream()
@@ -92,6 +97,7 @@ class AssignmentRequestBuilderTest {
                     assertNotNull(role.getServiceCode());
                     assertNotNull(role.getSkillCodes());
                     assertThat(role.getSkillCodes(), containsInAnyOrder("test","ts","junit"));
+
                 });
         assertEquals(2, caseWorkerAccessProfiles.size());
 

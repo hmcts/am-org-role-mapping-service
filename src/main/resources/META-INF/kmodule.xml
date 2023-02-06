@@ -5,7 +5,8 @@
                     validationrules.iac,
                     validationrules.sscs,
                     validationrules.civil,
-                    validationrules.privatelaw">
+                    validationrules.privatelaw,
+                    validationrules.publiclaw">
         <ksession name="org-role-mapping-validation-session" type="stateless"/>
     </kbase>
 </kmodule>

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 //b. Create a new model class UserAccessProfile(id, roleId, roleName, primaryLocationId,
 // primaryLocationName, areaOfWorkId, serviceCode, suspended) (which will flatten the User Profile into multiple
 // userAccessProfile instances based upon roleId X serviceCode).

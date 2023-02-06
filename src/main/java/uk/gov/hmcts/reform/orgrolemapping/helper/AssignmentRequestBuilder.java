@@ -143,6 +143,7 @@ public class AssignmentRequestBuilder {
                     if (caseWorkerProfile.getSkills() != null) {
                         caseWorkerAccessProfile.setSkillCodes(caseWorkerProfile.getSkills().stream()
                             .map(CaseWorkerProfile.Skills::getSkillCode).toList());
+
                     }
                     caseWorkerAccessProfiles.add(caseWorkerAccessProfile);
 
