@@ -1,6 +1,7 @@
 java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  memoryLimits: "2048Mi"
 
   secrets:
     AMQP_SHARED_ACCESS_KEY_VALUE:
