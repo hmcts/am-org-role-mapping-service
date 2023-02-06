@@ -32,11 +32,17 @@ security:
     - "/swagger-ui.html"
     - "/swagger-ui/**"
     - "/swagger-resources/**"
-    - "/v2/api-docs"
+    - "/v3/api-docs"
+    - "/v3/**"
     - "/webjars/springfox-swagger-ui/**"
     - "/search/**"
     - "/csrf"
     - "/error"
+    - "/status/health"
+    - "/welcome"
+    - "/health/liveness"
+    - "/loggers/**"
+    - "/send*"
     - "/favicon.ico"
   authorisedRoles:
   authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service}

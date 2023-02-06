@@ -55,23 +55,6 @@ public class SecurityConfiguration {
         this.anonymousPaths = anonymousPaths;
     }
 
-    private static final String[] AUTH_WHITELIST = new String[]{
-        "/swagger-ui.html",
-        "/webjars/springfox-swagger-ui/**",
-        "/swagger-resources/**",
-        "/v2/**",
-        "/status/health",
-        "/welcome",
-        "/health/**",
-        "/health/liveness",
-        "/loggers/**",
-        "/send*",
-        "/",
-        "/favicon.ico",
-        "/am/role-mapping/fetchFlagStatus"
-    };
-
-
     @Inject
     public SecurityConfiguration(final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter,
                                  final ServiceAuthFilter serviceAuthFilter,
@@ -86,7 +69,7 @@ public class SecurityConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().antMatchers(AUTH_WHITELIST);
+        return web -> web.ignoring().antMatchers(anonymousPaths.toArray(String[]::new));
     }
 
     @Bean
