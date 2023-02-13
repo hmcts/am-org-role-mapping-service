@@ -25,10 +25,6 @@ variable "subscription" {
   type = string
 }
 
-variable "ilbIp" {
-  type = string
-}
-
 variable "common_tags" {
   type =  map(string)
 }
