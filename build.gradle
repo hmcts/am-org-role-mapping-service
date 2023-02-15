@@ -34,7 +34,7 @@ apply plugin: 'io.spring.dependency-management'
 def versions = [
         junit          : '5.9.0',
         lombok         : '1.18.26',
-        pitest         : '1.7.4',
+        pitest         : '1.11.0',
         reformLogging  : '5.1.9',
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
