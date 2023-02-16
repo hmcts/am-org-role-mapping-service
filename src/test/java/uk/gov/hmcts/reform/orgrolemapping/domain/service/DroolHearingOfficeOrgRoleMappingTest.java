@@ -94,7 +94,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "'4,5,9,10,12,13',BBA3,SSCS",
+            "'3,4,5,9,10,12,13',BBA3,SSCS",
             "'3,4',ABA3,PUBLICLAW",
             "'3,4',ABA5,PRIVATELAW"
             
@@ -147,6 +147,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "2,BBA3,SSCS",
+            "1,BBA3,SSCS",
             "2,ABA5,PRIVATELAW",
             "1,ABA3,PUBLICLAW",
             "2,ABA3,PUBLICLAW",     
