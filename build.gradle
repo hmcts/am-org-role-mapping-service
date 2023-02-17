@@ -15,7 +15,7 @@ plugins {
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.springframework.boot' version '2.4.9'
+    id 'org.springframework.boot' version '2.6.6'
     id 'info.solidsoft.pitest' version '1.7.4'
     id 'com.github.ben-manes.versions' version '0.45.0'
     id 'org.sonarqube' version '3.4.0.2513'
@@ -379,7 +379,7 @@ dependencies {
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
 
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
-    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.25'
+    //implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.25'
     
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
