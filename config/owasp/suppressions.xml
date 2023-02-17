@@ -75,4 +75,11 @@
         <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
         <cve>CVE-2022-1471</cve>
     </suppress>
+    <suppress>
+        <notes>SpringBoot only uses snakeYaml to parse application.yaml file so this security vulnerability should not be a risk, info in AM-2517 comments</notes>
+        <cve>CVE-2022-31692</cve>
+        <cve>CVE-2022-31690</cve>
+        <cve>CVE-2022-41881</cve>
+        <cve>CVE-2022-24823</cve>
+    </suppress>
 </suppressions>
