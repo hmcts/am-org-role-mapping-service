@@ -21,7 +21,7 @@ plugins {
     id 'org.sonarqube' version '3.4.0.2513'
     id 'au.com.dius.pact' version '4.3.12'
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
-    id 'org.owasp.dependencycheck' version '8.0.2'
+    id 'org.owasp.dependencycheck' version '8.1.0'
 }
 
 apply plugin: "info.solidsoft.pitest"
@@ -368,7 +368,7 @@ dependencies {
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.36.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.13.0'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.22'
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.3'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
