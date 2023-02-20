@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,12 @@ public class WelcomeController {
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.OK)
-    //@ApiOperation("creates multiple role assignments based upon user profile mapping rules")
+    @Operation(summary = "creates multiple role assignments based upon user profile mapping rules",
+            security =
+                    {
+                            @SecurityRequirement(name = "Authorization"),
+                            @SecurityRequirement(name = "ServiceAuthorization")
+                    })
     @ApiResponse(
             responseCode = "200",
             description = "OK",

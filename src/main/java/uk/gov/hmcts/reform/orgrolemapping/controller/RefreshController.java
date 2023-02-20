@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,12 @@ public class RefreshController {
             produces = V1.MediaType.MAP_ASSIGNMENTS,
             consumes = {"application/json"}
     )
+    @Operation(summary = "refresh",
+            security =
+                    {
+                            @SecurityRequirement(name = "Authorization"),
+                            @SecurityRequirement(name = "ServiceAuthorization")
+                    })
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     @ApiResponse(
             responseCode = "202",
@@ -74,7 +81,12 @@ public class RefreshController {
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.OK)
-    @Operation(summary = "refreshes judicial role assignments")
+    @Operation(summary = "refreshes judicial role assignments",
+            security =
+                    {
+                            @SecurityRequirement(name = "Authorization"),
+                            @SecurityRequirement(name = "ServiceAuthorization")
+                    })
     @ApiResponse(
             responseCode = "200",
             description = "Successful",

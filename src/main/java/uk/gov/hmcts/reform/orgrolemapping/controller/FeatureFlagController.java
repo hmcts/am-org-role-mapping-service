@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,12 @@ public class FeatureFlagController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = {"application/json"}
     )
+    @Operation(summary = "Create feature flag",
+            security =
+                    {
+                            @SecurityRequirement(name = "Authorization"),
+                            @SecurityRequirement(name = "ServiceAuthorization")
+                    })
     public ResponseEntity<Object> createFeatureFlag(@RequestBody() FlagRequest flagRequest) {
 
         var flagConfig = persistenceUtil.convertFlagRequestToFlagConfig(flagRequest);
