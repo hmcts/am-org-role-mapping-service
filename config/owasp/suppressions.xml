@@ -78,51 +78,72 @@
 
     <suppress>
         <notes><![CDATA[
-   file name: netty-resolver-dns-classes-macos-4.1.76.Final.jar
+   file name: netty-transport-classes-epoll-4.1.76.Final.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-resolver\-dns\-classes\-macos@.*$</packageUrl>
-        <cpe>cpe:/a:netty:netty</cpe>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-transport\-classes\-epoll@.*$</packageUrl>
+        <cve>CVE-2022-41881</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: spring-security-crypto-5.6.3.jar
+   file name: netty-transport-classes-epoll-4.1.76.Final.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
-        <cpe>cpe:/a:pivotal_software:spring_security</cpe>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-transport\-classes\-epoll@.*$</packageUrl>
+        <cve>CVE-2022-24823</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: spring-security-crypto-5.6.3.jar
+   file name: netty-transport-classes-kqueue-4.1.76.Final.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
-        <cpe>cpe:/a:vmware:spring_security</cpe>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-transport\-classes\-kqueue@.*$</packageUrl>
+        <cve>CVE-2022-41881</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: spring-security-oauth2-client-5.6.3.jar
+   file name: netty-transport-classes-kqueue-4.1.76.Final.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-client@.*$</packageUrl>
-        <cpe>cpe:/a:pivotal:spring_security_oauth</cpe>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-transport\-classes\-kqueue@.*$</packageUrl>
+        <cve>CVE-2022-24823</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: spring-security-oauth2-client-5.6.3.jar
+   file name: spring-security-oauth2-core-5.6.3.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-client@.*$</packageUrl>
-        <cpe>cpe:/a:pivotal_software:spring_security</cpe>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-core@.*$</packageUrl>
+        <cve>CVE-2022-31692</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: spring-security-oauth2-client-5.6.3.jar
+   file name: spring-security-oauth2-core-5.6.3.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-client@.*$</packageUrl>
-        <cpe>cpe:/a:pivotal_software:spring_security_oauth</cpe>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-core@.*$</packageUrl>
+        <cve>CVE-2022-31690</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: spring-security-oauth2-client-5.6.3.jar
+   file name: spring-security-oauth2-jose-5.6.3.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-client@.*$</packageUrl>
-        <cpe>cpe:/a:vmware:spring_security</cpe>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-jose@.*$</packageUrl>
+        <cve>CVE-2022-31692</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: spring-security-oauth2-jose-5.6.3.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-jose@.*$</packageUrl>
+        <cve>CVE-2022-31690</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: spring-security-oauth2-resource-server-5.6.3.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-resource\-server@.*$</packageUrl>
+        <cve>CVE-2022-31692</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: spring-security-oauth2-resource-server-5.6.3.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-oauth2\-resource\-server@.*$</packageUrl>
+        <cve>CVE-2022-31690</cve>
     </suppress>
 </suppressions>
