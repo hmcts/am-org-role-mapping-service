@@ -63,8 +63,8 @@
     <cve>CVE-2021-4277</cve>
   </suppress>
     <suppress until="2023-07-05">
-        <notes>latest jackson version also having the cve vulnerability</notes>
-        <cve>CVE-2022-45688</cve>
+    <notes>suppressing due to no working updated version for jackson</notes>
+    <cve>CVE-2022-45688</cve>
     </suppress>
    <suppress>
     <notes>CVE-2022-22978 suppression (false positive), because spring security already at (5.7.5) this is higher than the vulnerable versions
