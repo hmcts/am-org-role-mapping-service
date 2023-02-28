@@ -40,17 +40,19 @@
           "actorIdType": "IDAM",
           "actorId": "7faf83c9-8924-4c26-bff3-0a51fb6c9c8f",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-judiciary",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
-          "readOnly": true,
+          "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "contractType": "Salaried"
-          }
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -73,6 +75,23 @@
             "workTypes": "[[ANYTHING_PRESENT]]"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "7faf83c9-8924-4c26-bff3-0a51fb6c9c8f",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried"
+          }
         }
       ]
     }

@@ -26,25 +26,6 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-centre-admin",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "CIVIL",
-            "region": "2",
-            "workTypes": "hearing_work"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType": "ORGANISATION",
           "roleName": "hearing-centre-team-leader",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
@@ -64,6 +45,40 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
           "roleName": "hmcts-admin",
           "classification": "PRIVATE",
           "grantType": "BASIC",
@@ -72,6 +87,25 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-centre-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "region": "2",
+            "workTypes": "hearing_work"
           }
         }
       ]

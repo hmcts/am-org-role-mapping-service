@@ -35,7 +35,7 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
-        {
+            {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
@@ -57,6 +57,25 @@
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
         },
+        {
+          "id": "2efc8398-8510-47a8-bcbb-fecc809a3c8e",
+          "actorIdType": "IDAM",
+          "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "2018-10-01T00:00:00Z",
+          "created": "2023-02-28T16:16:06.394705Z",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "20262",
+            "jurisdiction": "CIVIL"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+          },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
