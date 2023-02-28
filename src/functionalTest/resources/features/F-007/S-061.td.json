@@ -64,7 +64,7 @@
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -81,7 +81,7 @@
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "CTSC",
+          "roleCategory": "ADMIN",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
