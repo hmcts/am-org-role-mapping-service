@@ -58,7 +58,7 @@
           "authorisations": "[[ANYTHING_PRESENT]]"
         },
         {
-          "id": "2efc8398-8510-47a8-bcbb-fecc809a3c8e",
+          "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
           "roleType": "ORGANISATION",
