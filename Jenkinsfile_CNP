@@ -95,10 +95,10 @@ withPipeline(type, product, component) {
     env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
   }
   onMaster {
-    enableSlackNotifications('#am-org-role-mapping-service-builds')
+    enableSlackNotifications('#am-master-builds')
   }
   onPR {
-    enableSlackNotifications('#am-org-role-mapping-service-builds')
+    enableSlackNotifications('#am-master-builds')
   }
 
   overrideVaultEnvironments(vaultOverrides)
