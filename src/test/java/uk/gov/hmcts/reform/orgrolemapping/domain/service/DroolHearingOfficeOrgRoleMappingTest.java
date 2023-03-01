@@ -1,14 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -19,6 +11,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUserAccessProfile3;
+
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,7 +57,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "BBA3",
-            "ABA5"
+            "ABA5",
+            "AAA6"
     })
     void shouldReturnEmptyRoles_expiredAuthorisation(String serviceCode) {
 
@@ -96,7 +97,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @CsvSource({
             "'3,4,5,9,10,12,13',BBA3,SSCS",
             "'3,4',ABA3,PUBLICLAW",
-            "'3,4',ABA5,PRIVATELAW"
+            "'3,4',ABA5,PRIVATELAW",
+            "'3,4,6,11',AAA6,CIVIL"
             
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Admin(String roleId, String serviceCode,
@@ -122,7 +124,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "'9,10',ABA5,PRIVATELAW",
-            "'9,10',ABA3,PUBLICLAW"
+            "'9,10',ABA3,PUBLICLAW",
+            "'9,10',AAA6,CIVIL"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Ctsc(String roleId, String serviceCode,
                                                              String jurisdiction) {
@@ -134,13 +137,18 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals(RoleCategory.CTSC, r.getRoleCategory());
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
             assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
-            assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
+            if (!r.getAttributes().get("jurisdiction").asText().equals("CIVIL")) {
+                assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
                     .anyMatch(s::contains));
+                assertEquals(2, roleAssignments.size());
+            } else {
+                r.getRoleName().contains("hearing-viewer");
+                assertEquals(1, roleAssignments.size());
+            }
         });
     }
 
@@ -151,7 +159,9 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             "2,ABA5,PRIVATELAW",
             "1,ABA3,PUBLICLAW",
             "2,ABA3,PUBLICLAW",     
-            "1,ABA5,PRIVATELAW"
+            "1,ABA5,PRIVATELAW",
+            "1,AAA6,CIVIL",
+            "2,AAA6,CIVIL"
             
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_LegalOps(String roleId, String serviceCode,
