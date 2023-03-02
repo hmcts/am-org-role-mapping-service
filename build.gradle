@@ -40,6 +40,7 @@ def versions = [
         serenity       : '2.2.12',
         springBoot     : '2.7.1',
         spring         : '5.3.25',
+//        spring         : '6.0.5',
         springSecurity : '5.7.5',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
@@ -390,7 +391,8 @@ dependencies {
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.23'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
-    implementation 'commons-io:commons-io:20030203.000550'
+//    implementation 'commons-io:commons-io:20030203.000550'
+    implementation 'commons-io:commons-io:2.11.0'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
@@ -499,7 +501,8 @@ dependencies {
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     smokeTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
-    smokeTestImplementation group: 'commons-io', name: 'commons-io', version: '20030203.000550'
+//    smokeTestImplementation group: 'commons-io', name: 'commons-io', version: '20030203.000550'
+    smokeTestImplementation 'commons-io:commons-io:2.11.0'
     // AM-467-Serenity report for Integration test
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
