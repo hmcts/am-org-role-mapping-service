@@ -1,20 +1,20 @@
 {
   "_guid_": "S-061",
-  "title": "must successfully create org role mapping for National Business Centre Team Leader",
+  "title": "must successfully create org role mapping for CTSC Administrator",
   "_extends_": "F-007_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Business Centre Team Leader role"
+    "contains the actorId of the user just published who has CTSC Administrator role"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "headers": {
-      "sort": "roleName,roleCategory",
+      "sort": "roleName",
       "direction": "ASC"
     },
     "body": {
       "actorId": "${[scenarioContext][childContexts][S-061_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "roleCategory": ["ADMIN"]
+      "roleCategory": ["CTSC"]
     }
   },
   "expectedResponse": {
@@ -26,16 +26,17 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-manager",
+          "roleName": "ctsc",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N",
+            "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "CIVIL"
+            "jurisdiction": "CIVIL",
+            "workTypes": "routine_work"
           }
         },
         {
@@ -46,7 +47,7 @@
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC" ,
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -60,33 +61,14 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
+          "roleName": "hmcts-ctsc",
           "classification": "PRIVATE",
           "grantType": "BASIC",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "nbc-team-leader",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "CIVIL",
-            "region": "2",
-            "workTypes": "routine_work,access_requests"
           }
         }
       ]
