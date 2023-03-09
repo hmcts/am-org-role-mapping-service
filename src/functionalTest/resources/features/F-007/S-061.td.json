@@ -9,7 +9,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
     "headers": {
-      "sort": "roleName,roleCategory",
+      "sort": "roleName",
       "direction": "ASC"
     },
     "body": {
