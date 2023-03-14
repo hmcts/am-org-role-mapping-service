@@ -1,0 +1,209 @@
+package validationrules.employment;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.lang.String;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.addAndGetTicketCodes;
+import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
+
+
+/*
+ * "EMPLOYMENT President of Tribunal" business role mapping to JOH.
+ */
+rule "employment_president_of_tribunal_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "President of Tribunal",
+                               appointmentType == "Salaried",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT President of Tribunal-Salaried")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_president_of_tribunal_salaried_joh");
+end;
+
+/*
+ * "EMPLOYMENT Vice President" business role mapping to JOH.
+ */
+rule "employment_vice_president_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Vice President",
+                               appointmentType == "Salaried",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT Vice President-Salaried")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_vice_president_salaried_joh");
+end;
+
+/*
+ * "EMPLOYMENT Regional Employment Judge" business role mapping to JOH.
+ */
+rule "employment_regional_employment_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Regional Employment Judge",
+                               appointmentType == "Salaried",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT Regional Employment Judge-Salaried")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_regional_employment_judge_salaried_joh");
+end;
+
+/*
+ * "EMPLOYMENT Employment Judge" business role mapping to JOH.
+ */
+rule "employment_employment_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Employment Judge",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT Employment Judge-Salaried")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_employment_judge_salaried_joh");
+end;
+
+/*
+ * "EMPLOYMENT Employment Judge" business role mapping to JOH.
+ */
+rule "employment_employment_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Employment Judge",
+                               appointmentType == "Fee-Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT Employment Judge-Fee-Paid")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_employment_judge_fee_paid_joh");
+end;
+
+/*
+ * "EMPLOYMENT Tribunal Member" business role mapping to JOH.
+ */
+rule "employment_tribunal_member_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Member",
+                               appointmentType == "Fee-Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT Tribunal Member-Fee-Paid")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_tribunal_member_fee_paid_joh");
+end;
+
+/*
+ * "EMPLOYMENT Tribunal Member Lay" business role mapping to JOH.
+ */
+rule "employment_tribunal_member_lay_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Member Lay",
+                               appointmentType == "Fee-Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT Tribunal Member Lay-Fee-Paid")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_tribunal_member_lay_fee_paid_joh");
+end;
+

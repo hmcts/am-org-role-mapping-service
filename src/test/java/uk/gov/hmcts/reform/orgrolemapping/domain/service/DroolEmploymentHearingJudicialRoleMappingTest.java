@@ -1,0 +1,143 @@
+package uk.gov.hmcts.reform.orgrolemapping.domain.service;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+@RunWith(MockitoJUnitRunner.class)
+class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
+
+    String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
+    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "fee-paid-judge");
+
+    static Stream<Arguments> endToEndData() {
+        return Stream.of(
+                Arguments.of("President of Tribunal",
+                        "Salaried",
+                        false,
+                        true,
+                        List.of("President of Tribunal"),
+                        List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
+                                "specific-access-approver-judiciary", "hearing-viewer")),
+                Arguments.of("Vice President",
+                        "Salaried",
+                        false,
+                        true,
+                        List.of("Vice President"),
+                        List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
+                                "specific-access-approver-judiciary", "hearing-viewer")),
+                Arguments.of("Regional Employment Judge",
+                        "Salaried",
+                        false,
+                        true,
+                        List.of("Regional Employment Judge"),
+                        List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
+                                "specific-access-approver-judiciary", "hearing-viewer")),
+                Arguments.of("Employment Judge",
+                        "Salaried",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Employment Judge",
+                        "Fee-Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Tribunal Member",
+                        "Fee-Paid",
+                        false,
+                        true,
+                        List.of("Tribunal Member"),
+                        List.of("tribunal-member", "hearing-viewer")),
+                Arguments.of("Tribunal Member Lay",
+                        "Fee-Paid",
+                        false,
+                        true,
+                        List.of("Tribunal Member Lay"),
+                        List.of("tribunal-member", "hearing-viewer"))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("endToEndData")
+    void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
+            String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
+            List<String> assignedRoles, List<String> expectedRoleNames) {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+        judicialBookings.clear();
+        if (addBooking) {
+            JudicialBooking booking = JudicialBooking.builder()
+                    .userId(userId).locationId("Scotland").regionId("1")
+                    .build();
+            judicialBookings.add(booking);
+        }
+        judicialAccessProfiles.add(
+                JudicialAccessProfile.builder()
+                        .appointment(appointment)
+                        .appointmentType(appointmentType)
+                        .userId(userId)
+                        .roles(assignedRoles)
+                        .regionId("LDN")
+                        .primaryLocationId("London")
+                        .ticketCodes(List.of("BHA1"))
+                        .authorisations(List.of(
+                                Authorisation.builder()
+                                        .serviceCodes(List.of("BHA1"))
+                                        .jurisdiction("EMPLOYMENT")
+                                        .endDate(LocalDateTime.now().plusYears(1L))
+                                        .build()
+                        ))
+                        .build()
+        );
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(
+                        List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
+                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
+                );
+
+        //assertions
+        assertFalse(roleAssignments.isEmpty());
+
+        List<String> roleNameResults =
+                roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
+        assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
+
+        roleAssignments.forEach(r -> {
+            assertEquals(userId, r.getActorId());
+            if (!r.getRoleName().contains("hmcts-judiciary")) {
+                assertEquals(Classification.PUBLIC, r.getClassification());
+                assertEquals(GrantType.STANDARD, r.getGrantType());
+                assertEquals("BHA1", r.getAuthorisations().get(0));
+                if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
+                    assertEquals("hearing_work,decision_making_work,routine_work,applications,amendments",
+                            r.getAttributes().get("workTypes").asText());
+                }
+            } else {
+                assertEquals(Classification.PRIVATE, r.getClassification());
+                assertEquals(GrantType.BASIC, r.getGrantType());
+            }
+        });
+
+    }
+}

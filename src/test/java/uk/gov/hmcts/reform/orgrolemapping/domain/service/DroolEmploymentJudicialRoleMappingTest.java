@@ -1,19 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
-import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.*;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,6 +19,24 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsA
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
+
+    void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId){
+        assertEquals(ActorIdType.IDAM, r.getActorIdType());
+        assertEquals(TestDataBuilder.id_2, r.getActorId());
+        assertEquals(RoleType.ORGANISATION, r.getRoleType());
+        assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
+
+        if (!r.getRoleName().contains("hmcts")) {
+            assertEquals(regionId, r.getAttributes().get("region").asText());
+            assertEquals(Classification.PUBLIC, r.getClassification());
+            assertEquals(GrantType.STANDARD, r.getGrantType());
+            assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
+        } else {
+            assertEquals(null, r.getAttributes().get("region"));
+            assertEquals(Classification.PRIVATE, r.getClassification());
+            assertEquals(GrantType.BASIC, r.getGrantType());
+        }
+    }
 
     @ParameterizedTest
     @CsvSource({
@@ -42,19 +55,16 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-//        assertEquals(6, roleAssignments.size());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
+        assertEquals(6, roleAssignments.size());
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(regionId, r.getAttributes().get("region").asText());
-            }
+            assertCommonRoleAssignmentAttributes(r, regionId);
         });
     }
-
 
     @ParameterizedTest
     @CsvSource({
@@ -71,16 +81,14 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-//        assertEquals(2, roleAssignments.size());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
+        assertEquals(2, roleAssignments.size());
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(regionId, r.getAttributes().get("region").asText());
-            }
+            assertCommonRoleAssignmentAttributes(r, regionId);
         });
     }
 
@@ -99,11 +107,10 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
-        String regionId = allProfiles.iterator().next().getRegionId();
+        assertEquals(2, roleAssignments.size());
         roleAssignments.forEach(r -> {
             if (!r.getRoleName().contains("hmcts")) {
                 assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
@@ -111,22 +118,13 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
             else {
                 assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             }
-
-            if (r.getRoleName().equals("judge")) {
-                assertEquals(regionId, r.getAttributes().get("region").asText());
-            }
-            else {
-                assertEquals(null, r.getAttributes().get("region"));
-            }
-
-
         });
     }
 
     @ParameterizedTest
     @CsvSource({
-            "EMPLOYMENT Tribunal Member,tribunal-member",
-            "EMPLOYMENT Tribunal Member Lay,tribunal-member"
+            "EMPLOYMENT Tribunal Member-Fee-Paid,tribunal-member",
+            "EMPLOYMENT Tribunal Member Lay-Fee-Paid,tribunal-member"
     })
     void shouldReturnTribunalMemberFeePaidRoles(String setOffice,
                                                  @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -139,20 +137,14 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-//        assertEquals(3, roleAssignments.size());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
+        assertEquals(1, roleAssignments.size());
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-            //commented as looks like confluence page needs to be corrected
-//            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            if (!r.getRoleName().contains("fee-paid") && !r.getRoleName().contains("hmcts")) {
-                assertEquals(regionId, r.getAttributes().get("region").asText());
-            }
-            else {
-                assertEquals(null, r.getAttributes().get("region"));
-            }
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            assertCommonRoleAssignmentAttributes(r, regionId);
         });
     }
 
