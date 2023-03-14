@@ -5,11 +5,15 @@ import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,7 +24,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsA
 @RunWith(MockitoJUnitRunner.class)
 class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
-    void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId){
+    void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
@@ -40,9 +44,12 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "EMPLOYMENT President of Tribunal-Salaried,leadership-judge,judge,task-supervisor,case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
-            "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
-            "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,hmcts-judiciary,specific-access-approver-judiciary"
+            "EMPLOYMENT President of Tribunal-Salaried,leadership-judge,judge,task-supervisor,case-allocator," +
+                    "hmcts-judiciary,specific-access-approver-judiciary",
+            "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator," +
+                    "hmcts-judiciary,specific-access-approver-judiciary",
+            "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator," +
+                    "hmcts-judiciary,specific-access-approver-judiciary"
     })
     void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRolesRoles(String setOffice,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -114,8 +121,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             if (!r.getRoleName().contains("hmcts")) {
                 assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            }
-            else {
+            } else {
                 assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             }
         });
