@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,12 +45,12 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "EMPLOYMENT President of Tribunal-Salaried,leadership-judge,judge,task-supervisor,case-allocator," +
-                    "hmcts-judiciary,specific-access-approver-judiciary",
-            "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator," +
-                    "hmcts-judiciary,specific-access-approver-judiciary",
-            "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator," +
-                    "hmcts-judiciary,specific-access-approver-judiciary"
+            "EMPLOYMENT President of Tribunal-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                    + "hmcts-judiciary,specific-access-approver-judiciary",
+            "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                    + "hmcts-judiciary,specific-access-approver-judiciary",
+            "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                    + "hmcts-judiciary,specific-access-approver-judiciary"
     })
     void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRolesRoles(String setOffice,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
