@@ -3,10 +3,6 @@ java:
   ingressHost: am-org-role-mapping-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   applicationPort: 4098
   aadIdentityName: am
-  cpuRequests: 250m
-  memoryRequests: 1Gi
-  cpuLimits: 1
-  memoryLimits: 2Gi
   keyVaults:
     am:
       secrets:
