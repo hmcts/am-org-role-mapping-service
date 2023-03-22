@@ -60,7 +60,7 @@
           "contractType": "Fee-Paid",
           "jurisdiction": "IA",
           "workTypes": "hearing-work,decision-making-work,applications",
-          "substantive": "Y"
+          "substantive": "N"
         },
         "authorisations": [
           "374",

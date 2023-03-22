@@ -330,7 +330,6 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-web', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.spring
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
-
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.swagger2Version
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.swagger2Version
     implementation group: 'io.springfox', name: 'springfox-spring-webmvc', version: versions.swagger2Version
