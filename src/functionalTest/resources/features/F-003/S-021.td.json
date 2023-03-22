@@ -69,7 +69,7 @@
           "beginTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "substantive" : "Y",
+            "substantive" : "N",
             "contractType" : "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "IA",
