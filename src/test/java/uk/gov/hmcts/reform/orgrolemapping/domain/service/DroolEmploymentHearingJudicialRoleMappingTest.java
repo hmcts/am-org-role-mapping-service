@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,7 +22,6 @@ import java.util.stream.Stream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
@@ -37,45 +37,80 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         true,
                         List.of("President of Tribunal"),
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
-                                "specific-access-approver-judiciary", "hearing-viewer")),
+                                "specific-access-approver-judiciary", "hearing-viewer"),
+                        null),
                 Arguments.of("Vice President",
                         "Salaried",
                         false,
                         true,
                         List.of("Vice President"),
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
-                                "specific-access-approver-judiciary", "hearing-viewer")),
+                                "specific-access-approver-judiciary", "hearing-viewer"),
+                        null),
                 Arguments.of("Regional Employment Judge",
                         "Salaried",
                         false,
                         true,
                         List.of("Regional Employment Judge"),
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
-                                "specific-access-approver-judiciary", "hearing-viewer")),
+                                "specific-access-approver-judiciary", "hearing-viewer"),
+                        null),
                 Arguments.of("Employment Judge",
                         "Salaried",
                         false,
                         true,
                         List.of("Employment Judge"),
-                        List.of("judge", "hmcts-judiciary", "hearing-viewer")),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
                 Arguments.of("Employment Judge",
                         "Fee-Paid",
                         false,
                         true,
                         List.of("Employment Judge"),
-                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
                 Arguments.of("Tribunal Member",
                         "Fee-Paid",
                         false,
                         true,
                         List.of("Tribunal Member"),
-                        List.of("tribunal-member", "hearing-viewer")),
+                        List.of("tribunal-member", "hearing-viewer"),
+                        "1036"),
                 Arguments.of("Tribunal Member Lay",
                         "Fee-Paid",
                         false,
                         true,
                         List.of("Tribunal Member Lay"),
-                        List.of("tribunal-member", "hearing-viewer"))
+                        List.of("tribunal-member", "hearing-viewer"),
+                        "1036"),
+                Arguments.of("Tribunal Member",
+                        "Fee-Paid",
+                        false,
+                        true,
+                        List.of("Tribunal Member"),
+                        List.of("tribunal-member", "hearing-viewer"),
+                        "1037"),
+                Arguments.of("Tribunal Member Lay",
+                        "Fee-Paid",
+                        false,
+                        true,
+                        List.of("Tribunal Member Lay"),
+                        List.of("tribunal-member", "hearing-viewer"),
+                        "1037"),
+                Arguments.of("Tribunal Member",
+                        "Fee-Paid",
+                        false,
+                        true,
+                        List.of("Tribunal Member"),
+                        new ArrayList<>(),
+                        "1"),
+                Arguments.of("Tribunal Member Lay",
+                        "Fee-Paid",
+                        false,
+                        true,
+                        List.of("Tribunal Member Lay"),
+                        new ArrayList<>(),
+                        "1")
         );
     }
 
@@ -83,7 +118,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
     @MethodSource("endToEndData")
     void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
             String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
-            List<String> assignedRoles, List<String> expectedRoleNames) {
+            List<String> assignedRoles, List<String> expectedRoleNames, String baseLocationId) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -101,6 +136,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         .userId(userId)
                         .roles(assignedRoles)
                         .regionId("LDN")
+                        .baseLocationId(baseLocationId)
                         .primaryLocationId("London")
                         .ticketCodes(List.of("BHA1"))
                         .authorisations(List.of(
@@ -120,13 +156,11 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                                 FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
                 );
 
-        //assertions
-        assertFalse(roleAssignments.isEmpty());
-
         List<String> roleNameResults =
                 roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
         assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
+        //assertions
         roleAssignments.forEach(r -> {
             assertEquals(userId, r.getActorId());
             if (!r.getRoleName().contains("hmcts-judiciary")) {

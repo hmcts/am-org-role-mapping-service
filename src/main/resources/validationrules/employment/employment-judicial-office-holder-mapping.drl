@@ -164,6 +164,7 @@ when
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member",
                                appointmentType == "Fee-Paid",
+                               baseLocationId in ("1036","1037"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "BHA1") ))
 then
@@ -190,6 +191,7 @@ when
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member Lay",
                                appointmentType == "Fee-Paid",
+                               baseLocationId in ("1036","1037"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "BHA1") ))
 then
