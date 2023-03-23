@@ -19,6 +19,7 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolEmploymentStaffOrgRolesTest extends DroolBase {
@@ -210,8 +211,7 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
                     }
                     //assert work types
                     if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("hearing_work,routine_work,applications,amendments",
-                                r.getAttributes().get("workTypes").asText());
+                        assertNull(r.getAttributes().get("workTypes"));
                     } else if (("tribunal-caseworker").equals(r.getRoleName())) {
                         assertEquals("hearing_work,routine_work,applications,amendments",
                                 r.getAttributes().get("workTypes").asText());
