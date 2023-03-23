@@ -28,10 +28,10 @@ java:
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.preview.platform.hmcts.net
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.preview.platform.hmcts.net
-    CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.aat.platform.hmcts.net
-    JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.aat.platform.hmcts.net
-    ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-aat.aat.platform.hmcts.net
-    JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.aat.platform.hmcts.net
+    CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.platform.hmcts.net
+    JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.platform.hmcts.net
+    ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-aat.platform.hmcts.net
+    JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.platform.hmcts.net
     LAUNCH_DARKLY_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "$(AMQP_HOST)"
