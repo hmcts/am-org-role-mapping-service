@@ -25,21 +25,33 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsA
 @RunWith(MockitoJUnitRunner.class)
 class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
-    void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId) {
+    void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
 
-        if (!r.getRoleName().contains("hmcts")) {
+        if (r.getRoleName().equals("hmcts-judiciary")) {
+            assertEquals(null, r.getAttributes().get("region"));
+            assertEquals(Classification.PRIVATE, r.getClassification());
+            assertEquals(GrantType.BASIC, r.getGrantType());
+            assertEquals(true, r.isReadOnly());
+        } else {
             assertEquals(regionId, r.getAttributes().get("region").asText());
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(false, r.isReadOnly());
+        }
+
+        if ((r.getRoleName().equals("hmcts-judiciary") && office.equals("Employment Judge-Fee-Paid"))
+            || (r.getRoleName().equals("hmcts-judiciary") && office.equals("Tribunal Member-Fee-Paid"))
+            || (r.getRoleName().equals("hmcts-judiciary") && office.equals("Tribunal Member Lay-Fee-Paid"))
+            || r.getRoleName().equals("fee-paid-judge")
+            || r.getRoleName().equals("tribunal-member")) {
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
         } else {
-            assertEquals(null, r.getAttributes().get("region"));
-            assertEquals(Classification.PRIVATE, r.getClassification());
-            assertEquals(GrantType.BASIC, r.getGrantType());
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
         }
     }
 
@@ -70,7 +82,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId);
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
 
@@ -96,7 +108,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId);
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
 
@@ -119,12 +131,9 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
         assertEquals(2, roleAssignments.size());
+        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            } else {
-                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            }
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
 
@@ -151,7 +160,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId);
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
 
