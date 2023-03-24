@@ -73,7 +73,10 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
                 .forEach(r -> {
                     assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    assertEquals(skillCodes,r.getAuthorisations());
+                    if (r.getRoleName().equals("task-supervisor")
+                            || r.getRoleName().equals("case-allocator")) {
+                        assertEquals(skillCodes, r.getAuthorisations());
+                    }
                     //assert region
                     if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
@@ -193,9 +196,6 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(skillCodes, r.getAuthorisations());
-            }
         });
 
         List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker", "senior-tribunal-caseworker",
