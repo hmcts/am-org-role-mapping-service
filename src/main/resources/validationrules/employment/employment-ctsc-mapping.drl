@@ -111,7 +111,7 @@ end;
 rule "employment_ctsc_task_supervisor_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "BHA1", !suspended,
+  $cap: CaseWorkerAccessProfile(roleId in("9","10"), serviceCode == "BHA1", !suspended,
                          taskSupervisorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -140,7 +140,7 @@ end;
 rule "employment_ctsc_case_allocator_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId =="9", serviceCode == "BHA1", !suspended,
+  $cap: CaseWorkerAccessProfile(roleId in("9","10"), serviceCode == "BHA1", !suspended,
                            caseAllocatorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
