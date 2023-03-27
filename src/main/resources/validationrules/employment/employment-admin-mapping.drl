@@ -53,7 +53,7 @@ end;
 rule "employment_admin_hearing_centre_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in("3"), serviceCode == "BHA1", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in("3","4"), serviceCode == "BHA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
@@ -249,35 +249,6 @@ then
 end;
 
 /*
- * employment admin "hearing-centre-admin" Org role mapping.
- */
-
-rule "employment_admin_hearing_centre_admin_Admin_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("4","13"), serviceCode == "BHA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,applications,amendments"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.ADMIN)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("hearing-centre-admin")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : employment_admin_hearing_centre_admin_Admin_org_role");
-end;
-
-/*
  * employment admin "hmcts-admin" Org role mapping.
  */
 
@@ -329,36 +300,6 @@ then
         .attributes(attribute)
         .build());
         logMsg("Rule : employment_admin_clerk_org_role");
-end;
-
-/*
- * employment admin "hearing-centre-admin" Org role mapping.
- */
-
-rule "employment_admin_hearing_centre_admin_clerk_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId =="5", serviceCode == "BHA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,applications,amendments"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-        RoleAssignment.builder()
-        .actorIdType(ActorIdType.IDAM)
-        .actorId($cap.getId())
-        .roleCategory(RoleCategory.ADMIN)
-        .roleType(RoleType.ORGANISATION)
-        .roleName("hearing-centre-admin")
-        .grantType(GrantType.STANDARD)
-        .classification(Classification.PUBLIC)
-        .readOnly(false)
-        .authorisations($cap.getSkillCodes())
-        .attributes(attribute)
-        .build());
-        logMsg("Rule : employment_admin_hearing_centre_admin_clerk_org_role");
 end;
 
 /*
