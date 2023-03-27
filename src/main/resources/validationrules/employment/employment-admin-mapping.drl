@@ -166,7 +166,7 @@ end;
 rule "employment_admin_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in("3","12","4","13"), serviceCode == "BHA1", !suspended, taskSupervisorFlag == "Y")
+  $cap: CaseWorkerAccessProfile(roleId in("3","12","4","13","5"), serviceCode == "BHA1", !suspended, taskSupervisorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
@@ -196,7 +196,7 @@ end;
 rule "employment_admin_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in("3","12","4","13"), serviceCode == "BHA1", !suspended, caseAllocatorFlag == "Y")
+  $cap: CaseWorkerAccessProfile(roleId in("3","12","4","13","5"), serviceCode == "BHA1", !suspended, caseAllocatorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
