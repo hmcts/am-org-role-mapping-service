@@ -27,12 +27,13 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "3,BHA1,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin',N,N",
-            "12,BHA1,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin',N,N",
-            "12,BHA1,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
+            "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin'"
+                    + ",N,N",
+            "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
                     + "task-supervisor,case-allocator',Y,Y",
-            "12,BHA1,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
+            "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
                     + "task-supervisor',Y,N",
-            "12,BHA1,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
+            "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
                     + "case-allocator',N,Y",
 
     })
