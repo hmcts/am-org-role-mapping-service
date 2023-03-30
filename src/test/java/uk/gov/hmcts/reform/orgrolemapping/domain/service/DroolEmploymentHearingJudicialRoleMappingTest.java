@@ -10,12 +10,17 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,8 +31,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
 
-    String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
+    static String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
     List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "fee-paid-judge");
+
+    static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
+
+    {
+        employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", "hearing_work,decision_making_work,routine_work,applications");
+        employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("task-supervisor", "hearing_work,decision_making_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("case-allocator", "hearing_work,decision_making_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
+        employmentExpectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", null);
+        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("tribunal-member", "hearing_work");
+    }
 
     static Stream<Arguments> endToEndData() {
         return Stream.of(
@@ -69,6 +87,8 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("Employment Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
                         null),
+                //Tribunal Member and Lay should get roles tribunal-member,hearing-viewer when baseLocationId = 1036
+                // or 1037
                 Arguments.of("Tribunal Member",
                         "Fee-Paid",
                         false,
@@ -97,6 +117,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("Tribunal Member Lay"),
                         List.of("tribunal-member", "hearing-viewer"),
                         "1037"),
+                //Tribunal Member and Lay should NOT get roles when baseLocationId != 1036 or 1037
                 Arguments.of("Tribunal Member",
                         "Fee-Paid",
                         false,
@@ -160,22 +181,53 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                 roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
         assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
+        String regionId = allProfiles.iterator().next().getRegionId();
         //assertions
         roleAssignments.forEach(r -> {
             assertEquals(userId, r.getActorId());
-            if (!r.getRoleName().contains("hmcts-judiciary")) {
-                assertEquals(Classification.PUBLIC, r.getClassification());
-                assertEquals(GrantType.STANDARD, r.getGrantType());
-                assertEquals("BHA1", r.getAuthorisations().get(0));
-                if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
-                    assertEquals("hearing_work,decision_making_work,routine_work,applications,amendments",
-                            r.getAttributes().get("workTypes").asText());
-                }
-            } else {
-                assertEquals(Classification.PRIVATE, r.getClassification());
-                assertEquals(GrantType.BASIC, r.getGrantType());
-            }
+            assertCommonRoleAssignmentAttributes(r, "LDN", appointment);
         });
 
+    }
+
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
+
+
+        //filter
+
+        assertEquals(ActorIdType.IDAM, r.getActorIdType());
+        assertEquals(userId, r.getActorId());
+        assertEquals(RoleType.ORGANISATION, r.getRoleType());
+        assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
+
+//        assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+
+        if (r.getRoleName().equals("hmcts-judiciary")) {
+            assertEquals(null, r.getAttributes().get("region"));
+            assertEquals(Classification.PRIVATE, r.getClassification());
+            assertEquals(GrantType.BASIC, r.getGrantType());
+            assertEquals(true, r.isReadOnly());
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+        } else if (r.getRoleName().equals("hearing-viewer")) {
+            assertEquals(null, r.getAttributes().get("region"));
+            assertEquals(Classification.PUBLIC, r.getClassification());
+            assertEquals(GrantType.STANDARD, r.getGrantType());
+            assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(false, r.isReadOnly());
+            assertEquals(null, r.getAttributes().get("contractType"));
+        } else
+        {
+            assertEquals(Classification.PUBLIC, r.getClassification());
+            assertEquals(GrantType.STANDARD, r.getGrantType());
+            assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(false, r.isReadOnly());
+        }
+
+        String expectedWorkTypes = employmentExpectedRoleNameWorkTypesMap.get(r.getRoleName());
+        String actualWorkTypes = null;
+        if (r.getAttributes().get("workTypes") != null) {
+            actualWorkTypes = r.getAttributes().get("workTypes").asText();
+        }
+        assertEquals(expectedWorkTypes, actualWorkTypes);
     }
 }

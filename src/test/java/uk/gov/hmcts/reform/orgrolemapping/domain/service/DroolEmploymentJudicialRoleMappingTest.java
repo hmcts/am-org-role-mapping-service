@@ -13,19 +13,35 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
-    void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
+    static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
+
+    {
+        employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", "hearing_work,decision_making_work,routine_work,applications");
+        employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("task-supervisor", "hearing_work,decision_making_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("case-allocator", "hearing_work,decision_making_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
+        employmentExpectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", null);
+        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("tribunal-member", "hearing_work");
+    }
+
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
@@ -53,6 +69,13 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         } else {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
         }
+
+        String expectedWorkTypes = employmentExpectedRoleNameWorkTypesMap.get(r.getRoleName());
+        String actualWorkTypes = null;
+        if (r.getAttributes().get("workTypes") != null) {
+            actualWorkTypes = r.getAttributes().get("workTypes").asText();
+        }
+        assertEquals(expectedWorkTypes, actualWorkTypes);
     }
 
     @ParameterizedTest
