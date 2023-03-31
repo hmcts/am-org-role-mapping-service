@@ -63,7 +63,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,amendments"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -97,7 +96,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,amendments"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -131,7 +129,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   //attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -165,7 +163,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,applications"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)

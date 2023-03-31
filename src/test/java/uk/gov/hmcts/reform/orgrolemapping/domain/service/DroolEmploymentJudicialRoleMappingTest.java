@@ -29,14 +29,16 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsA
 class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
+    final static String PRIMARY_LOCATION = "2";
+    final static String JURISDICTION = "EMPLOYMENT";
 
     {
-        employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", "hearing_work,decision_making_work,routine_work,applications");
+        employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", null);
         employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
-        employmentExpectedRoleNameWorkTypesMap.put("task-supervisor", "hearing_work,decision_making_work,applications,amendments");
-        employmentExpectedRoleNameWorkTypesMap.put("case-allocator", "hearing_work,decision_making_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("task-supervisor", null);
+        employmentExpectedRoleNameWorkTypesMap.put("case-allocator", null);
         employmentExpectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
-        employmentExpectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", null);
+        employmentExpectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
         employmentExpectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
         employmentExpectedRoleNameWorkTypesMap.put("tribunal-member", "hearing_work");
     }
@@ -47,17 +49,24 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
 
+        String primaryLocation = null;
+        if (r.getAttributes().get("primaryLocation") != null) {
+            primaryLocation = r.getAttributes().get("primaryLocation").asText();
+        }
+
         if (r.getRoleName().equals("hmcts-judiciary")) {
             assertEquals(null, r.getAttributes().get("region"));
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
             assertEquals(true, r.isReadOnly());
+            assertEquals(null, primaryLocation);
         } else {
             assertEquals(regionId, r.getAttributes().get("region").asText());
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
-            assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(JURISDICTION, r.getAttributes().get("jurisdiction").asText());
             assertEquals(false, r.isReadOnly());
+            assertEquals(PRIMARY_LOCATION, primaryLocation);
         }
 
         if ((r.getRoleName().equals("hmcts-judiciary") && office.equals("Employment Judge-Fee-Paid"))

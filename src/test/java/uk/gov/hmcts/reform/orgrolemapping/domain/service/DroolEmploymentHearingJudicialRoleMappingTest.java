@@ -37,12 +37,12 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
     static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
 
     {
-        employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", "hearing_work,decision_making_work,routine_work,applications");
+        employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", null);
         employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
-        employmentExpectedRoleNameWorkTypesMap.put("task-supervisor", "hearing_work,decision_making_work,applications,amendments");
-        employmentExpectedRoleNameWorkTypesMap.put("case-allocator", "hearing_work,decision_making_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("task-supervisor", null);
+        employmentExpectedRoleNameWorkTypesMap.put("case-allocator", null);
         employmentExpectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
-        employmentExpectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", null);
+        employmentExpectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
         employmentExpectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
         employmentExpectedRoleNameWorkTypesMap.put("tribunal-member", "hearing_work");
     }

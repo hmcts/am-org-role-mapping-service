@@ -46,6 +46,8 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : employment_president_of_tribunal_salaried_joh");
@@ -72,6 +74,8 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : employment_vice_president_salaried_joh");
@@ -98,6 +102,8 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : employment_regional_employment_judge_salaried_joh");
@@ -124,6 +130,8 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : employment_employment_judge_salaried_joh");
@@ -150,6 +158,8 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : employment_employment_judge_fee_paid_joh");
@@ -177,6 +187,8 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : employment_tribunal_member_fee_paid_joh");
@@ -204,6 +216,8 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : employment_tribunal_member_lay_fee_paid_joh");
