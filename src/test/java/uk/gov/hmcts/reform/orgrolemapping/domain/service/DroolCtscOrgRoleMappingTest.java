@@ -76,7 +76,10 @@ class DroolCtscOrgRoleMappingTest extends DroolBase {
             "10,BFA1,'task-supervisor',Y,N",
             "10,BFA1,'case-allocator',N,Y",
             "10,BFA1,'task-supervisor,case-allocator',Y,Y",
-            "9,BFA1,'ctsc-team-leader',N,N"
+            "9,BFA1,'ctsc-team-leader',N,N",
+            "9,BFA1,'task-supervisor,ctsc-team-leader',Y,N",
+            "9,BFA1,'case-allocator,ctsc-team-leader',N,Y",
+            "9,BFA1,'task-supervisor,case-allocator,ctsc-team-leader',Y,Y"
     })
     void shouldReturnIACCtscMappingsIAC_WA_1_2(String roleId, String serviceCode, String expectedRoles,
                                      String taskSupervisorFlag, String caseAllocatorFlag) {
