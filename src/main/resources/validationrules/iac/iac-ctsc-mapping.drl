@@ -70,7 +70,7 @@ end;
  * IAC ctsc "ctsc-team-leader" Org role mapping. added for CR:AM2732
  */
 
-rule "iac_ctsc-team-leader_v12"
+rule "iac_ctsc_team_leader_v12"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_2.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("9"), serviceCode == "BFA1", !suspended)
@@ -92,14 +92,14 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : iac_ctsc-team-leader_v12");
+      logMsg("Rule : iac_ctsc_team_leader_v12");
 end;
 
 /*
  * IAC ctsc "case-allocator" Org role mapping. added for CR:AM2732
  */
 
-rule "iac_case-allocator_v12"
+rule "iac_case_allocator_v12"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_2.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BFA1", !suspended,caseAllocatorFlag == "Y")
@@ -120,14 +120,14 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : iac_case-allocator_v12");
+      logMsg("Rule : iac_case_allocator_v12");
 end;
 
 /*
  * IAC ctsc "task-supervisor" Org role mapping. added for CR:AM2732
  */
 
-rule "iac_task-supervisor_v12"
+rule "iac_task_supervisor_v12"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_2.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BFA1", !suspended,taskSupervisorFlag == "Y")
@@ -148,5 +148,5 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : iac_task-supervisor_v12");
+      logMsg("Rule : iac_task_supervisor_v12");
 end;
