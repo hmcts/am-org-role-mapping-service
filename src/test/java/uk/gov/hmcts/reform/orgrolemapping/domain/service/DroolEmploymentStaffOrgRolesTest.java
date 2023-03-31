@@ -68,16 +68,12 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
         List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader","hearing-centre-admin",
-                 "task-supervisor","case-allocator", "specific-access-approver-admin");
+                 "specific-access-approver-admin");
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    if (r.getRoleName().equals("task-supervisor")
-                            || r.getRoleName().equals("case-allocator")) {
-                        assertEquals(skillCodes, r.getAuthorisations());
-                    }
                     //assert region
                     if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
@@ -134,7 +130,7 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("CTSC", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
+            if (("ctsc").equals(r.getRoleName())) {
                 assertEquals(skillCodes,r.getAuthorisations());
             }
 
@@ -200,7 +196,7 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
         });
 
         List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker", "senior-tribunal-caseworker",
-                "task-supervisor", "case-allocator","specific-access-approver-legal-ops");
+                "specific-access-approver-legal-ops");
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
