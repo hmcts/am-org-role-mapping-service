@@ -38,12 +38,14 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
 
     {
         employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", null);
-        employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,"
+                + "applications,amendments");
         employmentExpectedRoleNameWorkTypesMap.put("task-supervisor", null);
         employmentExpectedRoleNameWorkTypesMap.put("case-allocator", null);
         employmentExpectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         employmentExpectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,routine_work,"
+                + "applications,amendments");
         employmentExpectedRoleNameWorkTypesMap.put("tribunal-member", "hearing_work");
     }
 
@@ -200,8 +202,6 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
 
-//        assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-
         if (r.getRoleName().equals("hmcts-judiciary")) {
             assertEquals(null, r.getAttributes().get("region"));
             assertEquals(Classification.PRIVATE, r.getClassification());
@@ -215,8 +215,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
             assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
             assertEquals(false, r.isReadOnly());
             assertEquals(null, r.getAttributes().get("contractType"));
-        } else
-        {
+        } else {
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());

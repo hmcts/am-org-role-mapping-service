@@ -22,24 +22,25 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
-
-    static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
     final static String PRIMARY_LOCATION = "2";
     final static String JURISDICTION = "EMPLOYMENT";
+    static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
+
 
     {
         employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", null);
-        employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,"
+                + "applications,amendments");
         employmentExpectedRoleNameWorkTypesMap.put("task-supervisor", null);
         employmentExpectedRoleNameWorkTypesMap.put("case-allocator", null);
         employmentExpectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         employmentExpectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,routine_work,applications,amendments");
+        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,"
+                + "routine_work,applications,amendments");
         employmentExpectedRoleNameWorkTypesMap.put("tribunal-member", "hearing_work");
     }
 
