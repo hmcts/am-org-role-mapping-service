@@ -26,10 +26,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsA
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
-    final static String PRIMARY_LOCATION = "2";
-    final static String JURISDICTION = "EMPLOYMENT";
     static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
-
 
     {
         employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", null);
@@ -65,9 +62,9 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
             assertEquals(regionId, r.getAttributes().get("region").asText());
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
-            assertEquals(JURISDICTION, r.getAttributes().get("jurisdiction").asText());
+            assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
             assertEquals(false, r.isReadOnly());
-            assertEquals(PRIMARY_LOCATION, primaryLocation);
+            assertEquals("2", primaryLocation);
         }
 
         if ((r.getRoleName().equals("hmcts-judiciary") && office.equals("Employment Judge-Fee-Paid"))
