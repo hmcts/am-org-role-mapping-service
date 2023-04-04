@@ -80,8 +80,7 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
                     }
                     //assert work types
                     if (("hearing-centre-team-leader").equals(r.getRoleName())) {
-                        assertEquals("hearing_work,routine_work,applications,amendments",
-                                r.getAttributes().get("workTypes").asText());
+                        assertNull(r.getAttributes().get("workTypes"));
                     } else if (("hearing-centre-admin").equals(r.getRoleName())) {
                         assertEquals("hearing_work,routine_work,applications,amendments",
                                 r.getAttributes().get("workTypes").asText());
