@@ -29,4 +29,8 @@
         <notes>https://tools.hmcts.net/jira/browse/AM-2737 spring</notes>
         <cve>CVE-2023-20861</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2740 spring</notes>
+        <cve>CVE-2023-20860</cve>
+    </suppress>
 </suppressions>
