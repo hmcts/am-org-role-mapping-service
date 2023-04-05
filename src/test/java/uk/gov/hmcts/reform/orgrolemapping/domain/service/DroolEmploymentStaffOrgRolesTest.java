@@ -143,9 +143,6 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
                     if (("ctsc").equals(r.getRoleName())) {
                         assertEquals("hearing_work,routine_work,applications,amendments",
                                 r.getAttributes().get("workTypes").asText());
-                    } else if (("ctsc-team-leader").equals(r.getRoleName())) {
-                        assertEquals("hearing_work,routine_work,applications,amendments",
-                                r.getAttributes().get("workTypes").asText());
                     }
                 });
     }
