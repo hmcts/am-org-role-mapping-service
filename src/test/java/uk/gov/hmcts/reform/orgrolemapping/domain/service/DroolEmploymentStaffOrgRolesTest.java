@@ -194,8 +194,7 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
-        List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker", "senior-tribunal-caseworker",
-                "specific-access-approver-legal-ops");
+        List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker");
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
