@@ -35,12 +35,12 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
-            {
+        {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
           "roleType": "ORGANISATION",
-          "roleName": "circuit-judge",
+          "roleName": "judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -57,12 +57,12 @@
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
         },
-        {
+            {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
           "roleType": "ORGANISATION",
-          "roleName": "judge",
+          "roleName": "circuit-judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
