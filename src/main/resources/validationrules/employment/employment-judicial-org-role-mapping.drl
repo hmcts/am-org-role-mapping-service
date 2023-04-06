@@ -62,7 +62,6 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -95,7 +94,6 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -128,7 +126,9 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().contains("President of Tribunal")) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
   insert(
       RoleAssignment.builder()
@@ -162,7 +162,9 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().contains("President of Tribunal")) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -196,7 +198,9 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().contains("President of Tribunal")) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,applications,amendments"));
   insert(
       RoleAssignment.builder()
@@ -228,7 +232,6 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,applications,amendments"));
    attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
 
@@ -263,7 +266,6 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work"));
   insert(
       RoleAssignment.builder()

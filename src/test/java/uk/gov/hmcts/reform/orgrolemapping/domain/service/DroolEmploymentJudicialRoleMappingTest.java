@@ -53,18 +53,23 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         }
 
         if (r.getRoleName().equals("hmcts-judiciary")) {
-            assertEquals(null, r.getAttributes().get("region"));
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
             assertEquals(true, r.isReadOnly());
             assertEquals(null, primaryLocation);
         } else {
-            assertEquals(regionId, r.getAttributes().get("region").asText());
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertEquals("EMPLOYMENT", r.getAttributes().get("jurisdiction").asText());
             assertEquals(false, r.isReadOnly());
             assertEquals("2", primaryLocation);
+        }
+
+        //region assertions
+        if (List.of("leadership-judge", "judge", "specific-access-approver-judiciary").contains(r.getRoleName()) && !office.contains("President of Tribunal")) {
+            assertEquals(regionId, r.getAttributes().get("region").asText());
+        } else {
+            assertEquals(null, r.getAttributes().get("region"));
         }
 
         if ((r.getRoleName().equals("hmcts-judiciary") && office.equals("Employment Judge-Fee-Paid"))
