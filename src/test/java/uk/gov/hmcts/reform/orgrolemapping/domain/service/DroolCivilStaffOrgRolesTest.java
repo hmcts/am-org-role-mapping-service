@@ -132,6 +132,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                         2, Arrays.asList("routine_work"))
         );
     }
+
     static Stream<Arguments> generateDatav11() {
         return Stream.of(
                 Arguments.of("3", Arrays.asList("hearing-centre-admin"),
@@ -140,6 +141,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                         1, Arrays.asList("routine_work"))
         );
     }
+
     @ParameterizedTest
     @MethodSource("generateData")
     void shouldReturnCivilAdminMappings(String roleId, List<String> roleNames, int roleCount, List<String> workTypes) {
@@ -200,7 +202,8 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @MethodSource("generateDatav11")
-    void shouldReturnCivilAdminMappings_v11(String roleId, List<String> roleNames, int roleCount, List<String> workTypes) {
+    void shouldReturnCivilAdminMappings_v11(String roleId, List<String> roleNames, int roleCount,
+                                            List<String> workTypes) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
