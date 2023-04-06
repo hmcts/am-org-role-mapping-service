@@ -66,7 +66,8 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         }
 
         //region assertions
-        if (List.of("leadership-judge", "judge", "specific-access-approver-judiciary").contains(r.getRoleName()) && !office.contains("President of Tribunal")) {
+        if (List.of("leadership-judge", "judge", "specific-access-approver-judiciary").contains(r.getRoleName())
+                && !office.contains("President of Tribunal")) {
             assertEquals(regionId, r.getAttributes().get("region").asText());
         } else {
             assertEquals(null, r.getAttributes().get("region"));
