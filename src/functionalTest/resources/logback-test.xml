@@ -6,11 +6,12 @@
         </encoder>
     </appender>
 
+    <logger name="io.restassured" level="ERROR"/>
     <logger name="org.apache" level="ERROR"/>
     <logger name="httpclient" level="ERROR"/>
-    <logger name="uk.gov.hmcts.befta" level="ERROR"/>
+    <logger name="uk.gov.hmcts" level="DEBUG"/>
 
-    <root level="debug">
-        <appender-ref ref="STDOUT" />
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
