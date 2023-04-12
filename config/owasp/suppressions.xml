@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-  <suppress>
-    <notes>Suppressed due to unavailability of updated version of launchdarkly-java-server-sdk</notes>
-    <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
-    <cvssBelow>9</cvssBelow>
-  </suppress>
     <suppress until="2023-07-05">
     <notes>suppressing due to no working updated version for jackson</notes>
     <cve>CVE-2022-45688</cve>
@@ -28,5 +23,9 @@
     <suppress>
         <notes>https://tools.hmcts.net/jira/browse/AM-2737 spring</notes>
         <cve>CVE-2023-20861</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2740 spring</notes>
+        <cve>CVE-2023-20860</cve>
     </suppress>
 </suppressions>
