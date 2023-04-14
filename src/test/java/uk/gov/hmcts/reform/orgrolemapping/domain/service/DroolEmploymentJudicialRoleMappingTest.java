@@ -73,9 +73,9 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
             assertEquals(null, r.getAttributes().get("region"));
         }
 
-        if ((r.getRoleName().equals("hmcts-judiciary") && office.equals("Employment Judge-Fee-Paid"))
-            || (r.getRoleName().equals("hmcts-judiciary") && office.equals("Tribunal Member-Fee-Paid"))
-            || (r.getRoleName().equals("hmcts-judiciary") && office.equals("Tribunal Member Lay-Fee-Paid"))
+        if ((r.getRoleName().equals("hmcts-judiciary") && office.equals("EMPLOYMENT Employment Judge-Fee-Paid"))
+            || (r.getRoleName().equals("hmcts-judiciary") && office.equals("EMPLOYMENT Tribunal Member-Fee-Paid"))
+            || (r.getRoleName().equals("hmcts-judiciary") && office.equals("EMPLOYMENT Tribunal Member Lay-Fee-Paid"))
             || r.getRoleName().equals("fee-paid-judge")
             || r.getRoleName().equals("tribunal-member")) {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());

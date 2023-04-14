@@ -207,7 +207,6 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
             assertEquals(true, r.isReadOnly());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
         } else if (r.getRoleName().equals("hearing-viewer")) {
             assertEquals(null, r.getAttributes().get("region"));
             assertEquals(Classification.PUBLIC, r.getClassification());
