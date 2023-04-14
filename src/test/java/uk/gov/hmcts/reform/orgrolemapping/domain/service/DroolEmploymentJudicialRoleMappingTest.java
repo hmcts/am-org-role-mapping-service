@@ -46,6 +46,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
+        assertEquals(null, r.getAttributes().get("bookable"));
 
         String primaryLocation = null;
         if (r.getAttributes().get("primaryLocation") != null) {

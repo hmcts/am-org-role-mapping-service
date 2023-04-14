@@ -201,6 +201,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         assertEquals(userId, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
+        assertEquals(null, r.getAttributes().get("bookable"));
 
         if (r.getRoleName().equals("hmcts-judiciary")) {
             assertEquals(null, r.getAttributes().get("region"));
