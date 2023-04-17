@@ -435,7 +435,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         assertEquals(1, roleAssignments.size());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(roleAssignments.get(0).getRoleName(),"judge");
+        assertEquals("judge", roleAssignments.get(0).getRoleName());
 
         roleAssignments.forEach(r -> assertEquals(contractType, r.getAttributes().get("contractType").asText()));
 

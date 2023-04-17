@@ -23,6 +23,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -135,10 +136,14 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
     static Stream<Arguments> generateDatav11() {
         return Stream.of(
+                Arguments.of("1", Arrays.asList("tribunal-caseworker"),
+                        1, Arrays.asList("decision_making_work"), RoleCategory.LEGAL_OPERATIONS),
                 Arguments.of("3", Arrays.asList("hearing-centre-admin"),
-                        1, Collections.singletonList("hearing_work")),
+                        1, Collections.singletonList("hearing_work"), RoleCategory.ADMIN),
                 Arguments.of("6", Arrays.asList("national-business-centre"),
-                        1, Arrays.asList("routine_work"))
+                        1, Arrays.asList("routine_work"), RoleCategory.ADMIN),
+                Arguments.of("9", Arrays.asList("ctsc"),
+                        1, Arrays.asList("routine_work"), RoleCategory.CTSC)
         );
     }
 
@@ -202,8 +207,11 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @MethodSource("generateDatav11")
-    void shouldReturnCivilAdminMappings_v11(String roleId, List<String> roleNames, int roleCount,
-                                            List<String> workTypes) {
+    void shouldReturnCivilAdminMappings_v11(String roleId,
+                                            List<String> roleNames,
+                                            int roleCount,
+                                            List<String> workTypes,
+                                            RoleCategory expectedRoleCategory) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -231,6 +239,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals("ORGANISATION", r.getRoleType().toString());
+            assertEquals(expectedRoleCategory, r.getRoleCategory());
             if (!r.getRoleName().contains("hmcts")) {
                 assertEquals(skillCodes, r.getAuthorisations());
             }
@@ -241,6 +250,8 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
                     if (!(roleId.equals("10") || roleId.equals("9"))) {
                         assertEquals("region1", r.getAttributes().get("region").asText());
+                    } else {
+                        assertFalse(r.getAttributes().containsKey("region"));
                     }
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
                 });
@@ -256,6 +267,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                         .map(Map.Entry::getValue).findFirst().get().textValue());
             }
         }
-        assertThat(workTypesCombined,containsInAnyOrder(workTypes.toArray()));
+        assertThat(workTypesCombined, containsInAnyOrder(workTypes.toArray()));
     }
+
 }
