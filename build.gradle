@@ -364,7 +364,6 @@ dependencies {
     implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: versions.reformS2sClient
     implementation group: 'javax.inject', name: 'javax.inject', version: '1'
     implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
-    implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
 
     //Azure service bus libraries
     implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.7'){

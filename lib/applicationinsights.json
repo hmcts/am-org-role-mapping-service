@@ -1,0 +1,6 @@
+{
+  "connectionString": "${file:/mnt/secrets/am/AppInsightsInstrumentationKey}",
+  "role": {
+    "name": "HMCTS Access Management Role Mapping Service"
+  }
+}
