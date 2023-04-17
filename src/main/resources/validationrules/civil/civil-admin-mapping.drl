@@ -74,6 +74,35 @@ then
       logMsg("Rule : civil_national_business_centre_org_role");
 end;
 
+/*
+ * CIVIL admin "national-business-centre" civil wa 1.1 Org role mapping.
+ */
+
+rule "v11_civil_national_business_centre_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_1.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("6"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("national-business-centre")
+      .grantType(GrantType.STANDARD)
+      .authorisations($cap.getSkillCodes())
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : v11_civil_national_business_centre_org_role");
+end;
 
 /*
  * CIVIL admin "nbc-team-leader" Org role mapping.
@@ -162,6 +191,36 @@ then
       .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_hearing_centre_admin_org_role");
+end;
+
+/*
+ * CIVIL admin "hearing-centre-admin" V11 Org role mapping.
+ */
+
+rule "v11_civil_hearing_centre_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_1.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("3"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hearing-centre-admin")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
+      .build());
+      logMsg("Rule : v11_civil_hearing_centre_admin_org_role");
 end;
 
 /*
