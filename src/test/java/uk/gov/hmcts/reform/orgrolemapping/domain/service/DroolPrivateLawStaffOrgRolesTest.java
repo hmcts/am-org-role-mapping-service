@@ -157,17 +157,22 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N",
-            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N",
+            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,false",
+            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
-                    + "specific-access-approver-legal-ops',Y,N",
+                    + "specific-access-approver-legal-ops',Y,N,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
-                    + "specific-access-approver-legal-ops',N,Y",
+                    + "specific-access-approver-legal-ops',N,Y,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,"
-                    + "specific-access-approver-legal-ops',Y,Y",
+                    + "specific-access-approver-legal-ops',Y,Y,false",
+            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,true",
     })
-    void shouldReturnPrivateLawCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
-                                             String taskSupervisorFlag, String caseAllocatorFlag) {
+    void shouldReturnPrivateLawCaseWorkerMappings(String roleId,
+                                                  String serviceCode,
+                                                  String expectedRoles,
+                                                  String taskSupervisorFlag,
+                                                  String caseAllocatorFlag,
+                                                  String privateLawVersion1IsEnabled) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -183,9 +188,10 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
         allProfiles.add(cap);
 
+        boolean prlV1_1Enabled = Boolean.parseBoolean(privateLawVersion1IsEnabled);
         List<FeatureFlag> featureFlags = new ArrayList<>();
         featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build());
-        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(false).build());
+        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(prlV1_1Enabled).build());
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(featureFlags);
@@ -218,77 +224,11 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
                     if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
                         assertEquals("decision_making_work",
                                 r.getAttributes().get("workTypes").asText());
-                    } else if (("tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("routine_work,hearing_work,applications",
-                                r.getAttributes().get("workTypes").asText());
-                    } else if (Objects.equals("task-supervisor", r.getRoleName())) {
-                        assertEquals("routine_work,hearing_work,applications",
-                                r.getAttributes().get("workTypes").asText());
-                    }
-                });
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "2,ABA5,'tribunal-caseworker',N,N",
-    })
-    void shouldReturnPrivateLawCaseWorkerMappingsUpdatedWorkTypes(String roleId,
-                                                                  String serviceCode,
-                                                                  String expectedRoles,
-                                                                  String taskSupervisorFlag,
-                                                                  String caseAllocatorFlag) {
-
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-        List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
-        CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
-        cap.setServiceCode(serviceCode);
-        cap.setSuspended(false);
-        cap.setRoleId(roleId);
-        cap.setTaskSupervisorFlag(taskSupervisorFlag);
-        cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setRegionId("LDN");
-        cap.setSkillCodes(skillCodes);
-
-        allProfiles.add(cap);
-
-        List<FeatureFlag> featureFlags = new ArrayList<>();
-        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(false).build());
-        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(true).build());
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(featureFlags);
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(expectedRoles.split(",")));
-        roleAssignments.forEach(r -> {
-            assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
-            assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(skillCodes, r.getAuthorisations());
-            }
-        });
-
-        List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker", "senior-tribunal-caseworker",
-                "task-supervisor", "case-allocator");
-
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> {
-                    assertEquals("PRIVATELAW", r.getAttributes().get("jurisdiction").asText());
-                    assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    //assert region
-                    if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
-                        assertEquals("LDN", r.getAttributes().get("region").asText());
-                    }
-                    //assert work types
-                    if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("decision_making_work",
-                                r.getAttributes().get("workTypes").asText());
-                    } else if (("tribunal-caseworker").equals(r.getRoleName())) {
+                    } else if (("tribunal-caseworker").equals(r.getRoleName()) && prlV1_1Enabled) {
                         assertEquals("routine_work,hearing_work,applications,decision_making_work",
+                                r.getAttributes().get("workTypes").asText());
+                    } else if (("tribunal-caseworker").equals(r.getRoleName())) {
+                        assertEquals("routine_work,hearing_work,applications",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (Objects.equals("task-supervisor", r.getRoleName())) {
                         assertEquals("routine_work,hearing_work,applications",

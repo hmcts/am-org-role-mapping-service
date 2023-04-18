@@ -197,10 +197,9 @@ end;
  * privatelaw staff "tribunal-caseworker" Org role mapping update to workTypes. added for CR:AM2755
  */
 
-rule "privatelaw_tribunal_caseworker_org_role_update"
+rule "privatelaw_tribunal_caseworker_org_role_v11"
 when
    $f: FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_1.getValue())
-   $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
    $cap: CaseWorkerAccessProfile(roleId == "2", serviceCode == "ABA5", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
