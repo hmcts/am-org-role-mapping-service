@@ -22,7 +22,6 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
 
   @S-072
   @FeatureToggle(DB:privatelaw_wa_1_0=on)
-  @FeatureToggle(DB:privatelaw_wa_1_1=off)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader and Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-072_DeleteDataForRoleAssignments],
@@ -38,7 +37,6 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
 
   @S-073
   @FeatureToggle(DB:privatelaw_wa_1_0=on)
-  @FeatureToggle(DB:privatelaw_wa_1_1=off)
   Scenario: must successfully create judicial role mapping for Deputy Circuit Judge - fee-paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-073_DeleteDataForRoleAssignments],
@@ -54,7 +52,6 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
 
   @S-074
   @FeatureToggle(DB:privatelaw_wa_1_0=on)
-  @FeatureToggle(DB:privatelaw_wa_1_1=off)
   Scenario: must successfully create judicial role mapping for District Judge - salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-074_DeleteDataForRoleAssignments],
