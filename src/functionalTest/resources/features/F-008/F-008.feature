@@ -4,7 +4,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
   Background:
     Given an appropriate test context as detailed in the test data source
 
-  @S-071
+  @S-071.v1_0
   @FeatureToggle(DB:privatelaw_wa_1_0=on) @FeatureToggle(DB:privatelaw_wa_1_1=off)
   Scenario: must successfully create org role mapping for Legal Caseworker and Senior Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],

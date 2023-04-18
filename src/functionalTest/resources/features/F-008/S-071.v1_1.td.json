@@ -144,7 +144,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work, hearing_work, applications, decision_making_work"
+            "workTypes": "routine_work,hearing_work,applications,decision_making_work"
           }
         }
       ]
