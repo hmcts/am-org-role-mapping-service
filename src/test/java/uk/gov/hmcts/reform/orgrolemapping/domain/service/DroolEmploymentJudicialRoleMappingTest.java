@@ -176,8 +176,8 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "EMPLOYMENT Tribunal Member-Fee-Paid,tribunal-member",
-            "EMPLOYMENT Tribunal Member Lay-Fee-Paid,tribunal-member"
+            "EMPLOYMENT Tribunal Member-Fee-Paid,tribunal-member,hmcts-judiciary",
+            "EMPLOYMENT Tribunal Member Lay-Fee-Paid,tribunal-member,hmcts-judiciary"
     })
     void shouldReturnTribunalMemberFeePaidRoles(String setOffice,
                                                  @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -193,10 +193,9 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
-        assertEquals(1, roleAssignments.size());
+        assertEquals(2, roleAssignments.size());
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
