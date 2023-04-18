@@ -48,6 +48,7 @@ java:
     ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.auth.port}}"
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
     RUN_LD_ON_STARTUP: true
+    DB_FEATURE_FLAG_DISABLE: privatelaw_wa_1_1
   postgresql:
     enabled: true
     auth:
