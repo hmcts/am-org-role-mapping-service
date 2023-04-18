@@ -172,7 +172,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
                                                   String expectedRoles,
                                                   String taskSupervisorFlag,
                                                   String caseAllocatorFlag,
-                                                  String privateLawVersion1IsEnabled) {
+                                                  String privateLawV11IsEnabled) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -188,10 +188,10 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
         allProfiles.add(cap);
 
-        boolean prlV1_1Enabled = Boolean.parseBoolean(privateLawVersion1IsEnabled);
+        boolean prlV11Enabled = Boolean.parseBoolean(privateLawV11IsEnabled);
         List<FeatureFlag> featureFlags = new ArrayList<>();
         featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build());
-        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(prlV1_1Enabled).build());
+        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(prlV11Enabled).build());
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(featureFlags);
@@ -224,7 +224,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
                     if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
                         assertEquals("decision_making_work",
                                 r.getAttributes().get("workTypes").asText());
-                    } else if (("tribunal-caseworker").equals(r.getRoleName()) && prlV1_1Enabled) {
+                    } else if (("tribunal-caseworker").equals(r.getRoleName()) && prlV11Enabled) {
                         assertEquals("routine_work,hearing_work,applications,decision_making_work",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (("tribunal-caseworker").equals(r.getRoleName())) {
