@@ -602,6 +602,9 @@ pact {
 }
 
 test {
+    jacoco{
+        excludes = ['org/drools/**/*']
+    }
     generateCucumberReports.enabled = false
     useJUnitPlatform()
     failFast = true
