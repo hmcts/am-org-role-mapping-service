@@ -220,5 +220,5 @@ then
       .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
-      logMsg("Rule : privatelaw_tribunal_caseworker_org_role_update");
+      logMsg("Rule : privatelaw_tribunal_caseworker_org_role_v11");
 end;
