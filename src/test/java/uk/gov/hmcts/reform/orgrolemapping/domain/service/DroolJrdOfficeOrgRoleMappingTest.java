@@ -20,7 +20,6 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
@@ -86,38 +85,6 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
     }
 
     @Test
-    void shouldReturnEmptyRoles_withoutAuthorisationAndIAC_allAppointments() {
-
-        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("President of Tribunal");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
-        });
-
-        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("Tribunal Judge");
-            judicialAccessProfile.setAppointmentType("Salaried");
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
-        });
-        JudicialAccessProfile tribunalProfile = TestDataBuilder.buildJudicialAccessProfile();
-        tribunalProfile.setAppointment("Tribunal Judge");
-        tribunalProfile.setAppointmentType("SPTW");
-        tribunalProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
-        judicialAccessProfiles.add(tribunalProfile);
-
-        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
-        profile.setAppointment("Tribunal Judge");
-        profile.setAppointmentType("Fee Paid");
-        profile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
-        judicialAccessProfiles.add(profile);
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
-
-        //assertion
-        assertTrue(roleAssignments.isEmpty());
-    }
-
-    @Test
     @DisplayName("Scenario 3b: Tribunal Judge Salaried")
     void shouldReturnTribunalJudgeSalariedRoleswithIAC() {
 
@@ -133,15 +100,28 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
+        assertEquals(6, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge"));
+                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -212,16 +192,30 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "hmcts-judiciary",
-                        "case-allocator", "judge"));
+                        "case-allocator", "judge", "hmcts-legal-operations",
+                        "tribunal-caseworker", "senior-tribunal-caseworker"));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -250,21 +244,35 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge", roleAssignments.get(1).getRoleName());
+        assertEquals(5, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals(workTypesFP, r.getAttributes().get("workTypes").asText());
             }
         });
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -328,23 +336,36 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge", roleAssignments.get(1).getRoleName());
-        assertEquals("hmcts-judiciary", roleAssignments.get(2).getRoleName());
-        assertEquals("fee-paid-judge", roleAssignments.get(3).getRoleName());
+        assertEquals(7, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary", "fee-paid-judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals(workTypesFP, r.getAttributes().get("workTypes").asText());
             }
         });
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+
     }
 
     @Test
@@ -403,22 +424,34 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.setAppointmentType("Fee Paid");
         });
 
-
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "leadership-judge",
-                        "task-supervisor", "senior-judge"));
+                        "task-supervisor", "senior-judge", "hmcts-legal-operations", "tribunal-caseworker",
+                        "senior-tribunal-caseworker"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -440,22 +473,37 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("case-allocator", roleAssignments.get(1).getRoleName());
-        assertEquals("judge", roleAssignments.get(2).getRoleName());
+        assertEquals(6, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
+
+            if ("judge".equals(r.getRoleName())) {
+                assertEquals(workTypes, r.getAttributes().get("workTypes").asText());
+            }
         });
-        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -472,21 +520,35 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge", roleAssignments.get(1).getRoleName());
+        assertEquals(5, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals(workTypesFP, r.getAttributes().get("workTypes").asText());
             }
         });
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -504,22 +566,38 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("case-allocator", roleAssignments.get(1).getRoleName());
-        assertEquals("judge", roleAssignments.get(2).getRoleName());
+        assertEquals(6, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
+
+            if ("judge".equals(r.getRoleName())) {
+                assertEquals(workTypes, r.getAttributes().get("workTypes").asText());
+            }
         });
-        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -542,36 +620,35 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge", roleAssignments.get(1).getRoleName());
+        assertEquals(5, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[374, 375, 376, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals(workTypesFP, r.getAttributes().get("workTypes").asText());
             }
         });
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
-    }
-
-    @Test
-    void shouldNotReturnPresidentRoles_disabledFlag() {
-
-        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("President of Tribunal");
-            judicialAccessProfile.setServiceCode("BFA1");
-        });
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
-
-        //assertion
-        assertTrue(roleAssignments.isEmpty());
     }
 
     @Test
@@ -586,24 +663,34 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         });
 
-
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
-        assertEquals("senior-judge", roleAssignments.get(0).getRoleName());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("senior-judge", "hmcts-judiciary", "leadership-judge",
-                        "case-allocator", "task-supervisor", "judge"));
+                        "case-allocator", "task-supervisor", "judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
 
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[375, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -631,21 +718,35 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge", roleAssignments.get(1).getRoleName());
+        assertEquals(5, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals(workTypesFP, r.getAttributes().get("workTypes").asText());
             }
         });
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -668,16 +769,30 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "hmcts-judiciary",
-                        "case-allocator", "judge"));
+                        "case-allocator", "judge", "hmcts-legal-operations",
+                        "tribunal-caseworker", "senior-tribunal-caseworker"));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -775,15 +890,21 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
+        assertEquals(8, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "judge", "hmcts-judiciary",
-                        "case-allocator"));
+                        "case-allocator", "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[101, 102, 103, 104, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -815,16 +936,29 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
+        assertEquals(7, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary", "fee-paid-judge"));
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary", "fee-paid-judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -859,16 +993,22 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
+        assertEquals(8, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "hmcts-judiciary", "fee-paid-judge", "judge",
-                        "case-allocator"));
+                        "case-allocator", "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[101, 102, 103, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -903,16 +1043,22 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
+        assertEquals(8, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary", "case-allocator",
-                        "judge"));
+                        "judge", "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[101, 102, 103, 104, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -950,16 +1096,23 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(8, roleAssignments.size());
+        assertEquals(11, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "senior-judge",
-                        "leadership-judge", "task-supervisor", "hmcts-judiciary", "fee-paid-judge"));
+                        "leadership-judge", "task-supervisor", "hmcts-judiciary", "fee-paid-judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[101, 373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -988,15 +1141,22 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
+        assertEquals(6, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("case-allocator", "judge", "hmcts-judiciary"));
+                containsInAnyOrder("case-allocator", "judge", "hmcts-judiciary",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -1023,16 +1183,23 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("case-allocator", "judge", "hmcts-judiciary",
-                        "leadership-judge", "senior-judge", "task-supervisor"));
+                        "leadership-judge", "senior-judge", "task-supervisor",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -1064,15 +1231,22 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
+        assertEquals(7, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("fee-paid-judge", "hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary"));
+                containsInAnyOrder("fee-paid-judge", "hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
