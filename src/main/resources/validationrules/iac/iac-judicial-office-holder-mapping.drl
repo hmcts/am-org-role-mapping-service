@@ -30,7 +30,6 @@ import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuild
 
 rule "iac_president_of_tribunals_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "President of Tribunal",
                                serviceCode == "BFA1",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0))
@@ -59,7 +58,6 @@ end;
  */
 rule "iac_tribunal_judge_salaried_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
                                appointmentType in ("Salaried","SPTW"),
                                serviceCode == "BFA1",
@@ -90,7 +88,6 @@ end;
 
 rule "iac_tribunal_judge_fee_paid_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
                                appointmentType == "Fee Paid",
                                serviceCode == "BFA1",
@@ -121,7 +118,6 @@ end;
 
 rule "iac_resident_immigration_judge_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(serviceCode == "BFA1",
                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                               (roles !=null && roles.contains("Resident Immigration Judge")))
@@ -151,7 +147,6 @@ end;
 
 rule "iac_assistant_resident_judge_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(serviceCode == "BFA1",
                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                               (roles !=null && roles.contains("Assistant Resident Judge")))
@@ -181,7 +176,6 @@ then
 
 rule "iac_designated_immigration_judge_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(serviceCode == "BFA1",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (roles !=null && roles.contains("Designated Immigration Judge")))
@@ -210,7 +204,6 @@ end;
 
 rule "iac_president_of_tribunals_joh_with_authorisation"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile(appointment == "President of Tribunal",
                              (serviceCode == null || serviceCode != "BFA1"),
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
@@ -236,7 +229,6 @@ end;
 
 rule "iac_tribunal_judge_salaried_joh_with_authorisation"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
                                appointmentType in ("Salaried","SPTW"),
                                (serviceCode == null || serviceCode != "BFA1"),
@@ -263,7 +255,6 @@ end;
 
 rule "iac_tribunal_judge_fee_paid_joh_with_authorisation"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
                                appointmentType == "Fee Paid",
                                (serviceCode == null || serviceCode != "BFA1"),
@@ -290,7 +281,6 @@ end;
 
 rule "iac_resident_immigration_judge_joh_with_authorisation"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                              (roles !=null && roles.contains("Resident Immigration Judge")),
@@ -316,7 +306,6 @@ end;
 
 rule "iac_assistant_resident_judge_joh_with_authorisation"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                              (roles !=null && roles.contains("Assistant Resident Judge")),
@@ -342,7 +331,6 @@ then
 
 rule "iac_designated_immigration_judge_joh_with_authorisation"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
                              (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                              (roles !=null && roles.contains("Designated Immigration Judge")),
@@ -370,7 +358,6 @@ then
 rule "iac_default_tribunal_judge_salaried_joh_with_authorisation_based_on_roles_and_appointment"
 salience -900
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
                              (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
                              appointmentType in ("Salaried","SPTW"),
@@ -402,7 +389,6 @@ end;
 rule "iac_default_tribunal_judge_fee_paid_joh_with_authorisation_based_on_roles_and_appointment"
 salience -900
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile((serviceCode == null || serviceCode != "BFA1"),
                              (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
                               appointmentType == "Fee Paid",
@@ -433,7 +419,6 @@ end;
 rule "iac_default_tribunal_judge_salaried_joh_with_iac_appointment_based_on_roles_and_appointment"
 salience -900
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile(serviceCode == "BFA1",
                              (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
                               appointmentType in ("Salaried","SPTW"),
@@ -464,7 +449,6 @@ end;
 rule "iac_default_tribunal_judge_fee_paid_joh_with_iac_appointment_based_on_roles_and_appointment"
 salience -900
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $jap: JudicialAccessProfile(serviceCode == "BFA1",
                              (appointment != "President of Tribunal" && appointment != "Tribunal Judge" ),
                               appointmentType == "Fee Paid",

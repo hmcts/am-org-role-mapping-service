@@ -22,7 +22,6 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 
 rule "iac_senior_tribunal_caseworker_v11"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -47,7 +46,6 @@ end;
 
 rule "iac_tribunal_caseworker_v11"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -72,7 +70,6 @@ end;
 
 rule "iac_case_allocator_caseworker_v11"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended,
                          caseAllocatorFlag == "Y")
 then
@@ -98,7 +95,6 @@ end;
 
 rule "iac_task_supervisor_caseworker_v11"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended,
                          taskSupervisorFlag == "Y")
 then
@@ -125,7 +121,6 @@ end;
 
 rule "iac_hmcts-legal-operations_caseworker_v11"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();

@@ -464,7 +464,6 @@ end;
  */
 rule "family_judge_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
    $jap: JudicialAccessProfile(appointment !=null && validateAuthorisation(authorisations, "ABA5"))
 then
   insert(

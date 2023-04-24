@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,8 +44,7 @@ class DroolCtscOrgRoleMappingTest extends DroolBase {
         allProfiles.add(cap);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -73,13 +73,13 @@ class DroolCtscOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "10,BFA1,'task-supervisor',Y,N",
-            "10,BFA1,'case-allocator',N,Y",
-            "10,BFA1,'task-supervisor,case-allocator',Y,Y",
-            "9,BFA1,'ctsc-team-leader',N,N",
-            "9,BFA1,'task-supervisor,ctsc-team-leader',Y,N",
-            "9,BFA1,'case-allocator,ctsc-team-leader',N,Y",
-            "9,BFA1,'task-supervisor,case-allocator,ctsc-team-leader',Y,Y"
+            "10,BFA1,'ctsc,hmcts-ctsc,task-supervisor',Y,N",
+            "10,BFA1,'ctsc,hmcts-ctsc,case-allocator',N,Y",
+            "10,BFA1,'ctsc,hmcts-ctsc,task-supervisor,case-allocator',Y,Y",
+            "9,BFA1,'ctsc,hmcts-ctsc,ctsc-team-leader',N,N",
+            "9,BFA1,'ctsc,hmcts-ctsc,task-supervisor,ctsc-team-leader',Y,N",
+            "9,BFA1,'ctsc,hmcts-ctsc,case-allocator,ctsc-team-leader',N,Y",
+            "9,BFA1,'ctsc,hmcts-ctsc,task-supervisor,case-allocator,ctsc-team-leader',Y,Y"
     })
     void shouldReturnIACCtscMappingsIAC_WA_1_2(String roleId, String serviceCode, String expectedRoles,
                                      String taskSupervisorFlag, String caseAllocatorFlag) {

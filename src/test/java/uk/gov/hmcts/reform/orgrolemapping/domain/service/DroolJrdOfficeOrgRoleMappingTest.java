@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,27 +47,40 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
     private void validatePresidentRoles() {
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("senior-judge", roleAssignments.get(0).getRoleName());
-        assertEquals("hmcts-judiciary", roleAssignments.get(1).getRoleName());
-        assertEquals("case-allocator", roleAssignments.get(2).getRoleName());
-        assertEquals("judge", roleAssignments.get(3).getRoleName());
-        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes, roleAssignments.get(3).getAttributes().get("workTypes").asText());
+        assertEquals(7, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("senior-judge", "hmcts-judiciary", "case-allocator", "judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            }
+
+            if ("senior-judge".equals(r.getRoleName()) || "judge".equals(r.getRoleName())) {
+                assertEquals(workTypes, r.getAttributes().get("workTypes").asText());
             }
         });
     }
@@ -97,8 +111,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -116,8 +129,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -149,21 +161,34 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BAA03")));
         });
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
+        assertEquals(6, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge"));
+                containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
-            } else {
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
+            }  else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
@@ -183,8 +208,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -222,8 +246,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -253,26 +276,38 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge", roleAssignments.get(1).getRoleName());
+        assertEquals(5, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals(workTypesFP, r.getAttributes().get("workTypes").asText());
             }
         });
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -289,8 +324,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -324,25 +358,34 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(null));
         });
 
-
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
-        assertEquals("senior-judge", roleAssignments.get(0).getRoleName());
+        assertEquals(9, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-judiciary", "case-allocator", "judge", "leadership-judge",
-                        "task-supervisor", "senior-judge"));
+                        "task-supervisor", "senior-judge", "hmcts-legal-operations",
+                        "tribunal-caseworker", "senior-tribunal-caseworker"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
 
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
@@ -362,8 +405,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -394,8 +436,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -427,8 +468,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -460,8 +500,8 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
+
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(3, roleAssignments.size());
@@ -498,8 +538,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -529,8 +568,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", false));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -550,8 +588,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -590,8 +627,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -628,8 +664,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(profile);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -673,28 +708,38 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 )));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge", roleAssignments.get(1).getRoleName());
-        assertEquals("hmcts-judiciary", roleAssignments.get(2).getRoleName());
-        assertEquals("fee-paid-judge", roleAssignments.get(3).getRoleName());
+        assertEquals(7, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hmcts-judiciary", "fee-paid-judge", "hmcts-judiciary", "fee-paid-judge",
+                        "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if (!"hmcts-legal-operations".equals(r.getRoleName())
+                    && !"tribunal-caseworker".equals(r.getRoleName())
+                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if ("senior-tribunal-caseworker".equals(r.getRoleName())
+                    || "hmcts-legal-operations".equals(r.getRoleName())
+                    || "tribunal-caseworker".equals(r.getRoleName())
+            ) {
+                assertNull(r.getAuthorisations());
+                assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals(workTypesFP, r.getAttributes().get("workTypes").asText());
             }
         });
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -726,8 +771,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -767,8 +811,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
                         LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -812,8 +855,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
                         LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -857,8 +899,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
                         LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -905,8 +946,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).startDate(
                         LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -944,8 +984,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).ticketCode("373")
                         .startDate(LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -980,8 +1019,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).ticketCode("373")
                         .startDate(LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -1022,8 +1060,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 List.of(Authorisation.builder().serviceCodes(List.of("BFA1")).ticketCode("373")
                         .startDate(LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
