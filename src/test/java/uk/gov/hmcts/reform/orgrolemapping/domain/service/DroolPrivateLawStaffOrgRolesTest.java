@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
@@ -155,17 +157,22 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N",
-            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N",
+            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,false",
+            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
-                    + "specific-access-approver-legal-ops',Y,N",
+                    + "specific-access-approver-legal-ops',Y,N,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
-                    + "specific-access-approver-legal-ops',N,Y",
+                    + "specific-access-approver-legal-ops',N,Y,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,"
-                    + "specific-access-approver-legal-ops',Y,Y",
+                    + "specific-access-approver-legal-ops',Y,Y,false",
+            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,true",
     })
-    void shouldReturnPrivateLawCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
-                                             String taskSupervisorFlag, String caseAllocatorFlag) {
+    void shouldReturnPrivateLawCaseWorkerMappings(String roleId,
+                                                  String serviceCode,
+                                                  String expectedRoles,
+                                                  String taskSupervisorFlag,
+                                                  String caseAllocatorFlag,
+                                                  String privateLawV11IsEnabled) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -181,9 +188,13 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
         allProfiles.add(cap);
 
+        boolean prlV11Enabled = Boolean.parseBoolean(privateLawV11IsEnabled);
+        List<FeatureFlag> featureFlags = new ArrayList<>();
+        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build());
+        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(prlV11Enabled).build());
+
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("privatelaw_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(featureFlags);
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -212,6 +223,9 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
                     //assert work types
                     if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
                         assertEquals("decision_making_work",
+                                r.getAttributes().get("workTypes").asText());
+                    } else if (("tribunal-caseworker").equals(r.getRoleName()) && prlV11Enabled) {
+                        assertEquals("routine_work,hearing_work,applications,decision_making_work",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (("tribunal-caseworker").equals(r.getRoleName())) {
                         assertEquals("routine_work,hearing_work,applications",
@@ -244,7 +258,4 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
-
-
-
 }
