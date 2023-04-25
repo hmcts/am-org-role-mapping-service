@@ -32,6 +32,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnHearingJudicialRoles(String serviceCode, String jurisdiction) {
 
+        allProfiles.clear();
+
         judicialAccessProfiles.forEach(judicialAccessProfile -> judicialAccessProfile.getAuthorisations().forEach(a ->
                 a.setServiceCodes(List.of(serviceCode))));
 
@@ -61,6 +63,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnEmptyRoles_expiredAuthorisation(String serviceCode) {
 
+        allProfiles.clear();
+
         judicialAccessProfiles.forEach(jap -> jap.getAuthorisations().forEach(a -> {
             a.setServiceCodes(List.of(serviceCode));
             a.setEndDate(LocalDateTime.now().minusDays(1));
@@ -82,6 +86,9 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Admin(String roleId, String serviceCode,
                                                              String jurisdiction) {
+
+        allProfiles.clear();
+
         List<String> roleIds = List.of(roleId.split(","));
         roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
 
@@ -108,6 +115,9 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Ctsc(String roleId, String serviceCode,
                                                              String jurisdiction) {
+
+        allProfiles.clear();
+
         List<String> roleIds = List.of(roleId.split(","));
         roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
 
@@ -125,9 +135,9 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
                 if (!r.getAttributes().get("jurisdiction").asText().equals("CIVIL")) {
                     assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
                             .anyMatch(s::contains));
-                    assertEquals(5, roleAssignments.size());
+                    assertEquals(2, roleAssignments.size());
                 } else {
-                    assertEquals(4, roleAssignments.size());
+                    assertEquals(1, roleAssignments.size());
                 }
             }
         });
@@ -147,6 +157,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_LegalOps(String roleId, String serviceCode,
                                                                 String jurisdiction) {
+
+        allProfiles.clear();
         allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
@@ -154,7 +166,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
+        assertEquals(2, roleAssignments.size());
         roleAssignments.forEach(r -> {
             if ("hearing-manager".equals(r.getRoleName()) || "hearing-viewer".equals(r.getRoleName())) {
                 assertEquals(RoleCategory.LEGAL_OPERATIONS, r.getRoleCategory());
@@ -178,6 +190,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnListedHearingViewerCaseWorker_otherGovDept(String roleId, String serviceCode,
                                                                 String jurisdiction) {
+        allProfiles.clear();
         allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session

@@ -37,6 +37,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
     void shouldReturnPrivateLawCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                             String taskSupervisorFlag, String caseAllocatorFlag) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -100,6 +101,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
     void shouldReturnPrivateLawAdminMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
@@ -157,15 +159,16 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,false",
-            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N,false",
+            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations,hearing-viewer,hearing-manager',N,N,false",
+            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
+                    + "hearing-viewer,hearing-manager',N,N,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
-                    + "specific-access-approver-legal-ops',Y,N,false",
+                    + "specific-access-approver-legal-ops,hearing-viewer,hearing-manager',Y,N,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
-                    + "specific-access-approver-legal-ops',N,Y,false",
+                    + "specific-access-approver-legal-ops,hearing-viewer,hearing-manager',N,Y,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,"
-                    + "specific-access-approver-legal-ops',Y,Y,false",
-            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,true",
+                    + "specific-access-approver-legal-ops,hearing-viewer,hearing-manager',Y,Y,false",
+            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations,hearing-viewer,hearing-manager',N,N,true",
     })
     void shouldReturnPrivateLawCaseWorkerMappings(String roleId,
                                                   String serviceCode,
@@ -174,6 +177,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
                                                   String caseAllocatorFlag,
                                                   String privateLawV11IsEnabled) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
@@ -240,6 +244,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
     @Test
     void shouldNotReturnCtsRoles_disabledFlag() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         List<String> skillCodes = List.of("privatelaw", "test", "ctsc");

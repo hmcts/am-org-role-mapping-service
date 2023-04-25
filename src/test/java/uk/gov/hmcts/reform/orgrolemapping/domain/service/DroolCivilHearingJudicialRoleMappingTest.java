@@ -36,63 +36,54 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         "Salaried",
                         false,
                         List.of(""),
-                        List.of("circuit-judge", "hmcts-judiciary", "hearing-viewer", "hmcts-legal-operations",
-                                "tribunal-caseworker", "senior-tribunal-caseworker")),
+                        List.of("circuit-judge", "hmcts-judiciary", "hearing-viewer")),
                 Arguments.of("Deputy Circuit Judge",
                         "Fee Paid",
                         true,
                         List.of("Deputy District Judge"),
                         List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary",
-                                "hearing-viewer", "hmcts-legal-operations",
-                                "tribunal-caseworker", "senior-tribunal-caseworker")),
+                                "hearing-viewer")),
                 Arguments.of("Deputy District Judge- Sitting in Retirement",
                         "Fee Paid",
                         true,
                         List.of("Deputy District Judge"),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary",
-                                "hearing-viewer", "hmcts-legal-operations",
-                                "tribunal-caseworker", "senior-tribunal-caseworker")),
+                                "hearing-viewer")),
                 Arguments.of("Deputy District Judge- Fee-Paid",
                         "Fee Paid",
                         true,
                         List.of(""),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary",
-                                "hearing-viewer", "hmcts-legal-operations",
-                                "tribunal-caseworker", "senior-tribunal-caseworker")),
+                                "hearing-viewer")),
                 Arguments.of("District Judge",
                         "Salaried",
                         true,
                         List.of(""),
                         List.of("judge", "hmcts-judiciary",
-                                "hearing-viewer", "hmcts-legal-operations",
-                                "tribunal-caseworker", "senior-tribunal-caseworker")),
+                                "hearing-viewer")),
                 Arguments.of("High Court Judge",
                         "Salaried",
                         true,
                         List.of(""),
                         List.of("circuit-judge", "hmcts-judiciary",
-                                "hearing-viewer", "hmcts-legal-operations",
-                                "tribunal-caseworker", "senior-tribunal-caseworker")),
+                                "hearing-viewer")),
             Arguments.of("Senior Circuit Judge",
                         "Salaried",
                         true,
                         List.of(""),
                         List.of("circuit-judge", "hmcts-judiciary",
-                            "hearing-viewer", "hmcts-legal-operations",
-                                "tribunal-caseworker", "senior-tribunal-caseworker")),
+                            "hearing-viewer")),
             Arguments.of("Specialist Circuit Judge",
                         "Salaried",
                         true,
                         List.of(""),
                         List.of("circuit-judge", "hmcts-judiciary",
-                            "hearing-viewer", "hmcts-legal-operations",
-                                "tribunal-caseworker", "senior-tribunal-caseworker")),
+                            "hearing-viewer")),
                 Arguments.of("Recorder", "Fee Paid",
                         false,
                         List.of("Recorder - Fee Paid"),
                         List.of("fee-paid-judge","hmcts-judiciary",
-                                "hearing-viewer", "hmcts-legal-operations",
-                                "tribunal-caseworker", "senior-tribunal-caseworker"))
+                                "hearing-viewer"))
         );
     }
 
@@ -102,9 +93,11 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
             String appointment, String appointmentType, boolean addBooking,
             List<String> assignedRoles, List<String> expectedRoleNames) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         judicialBookings.clear();
+
         if (addBooking) {
             JudicialBooking booking = JudicialBooking.builder()
                     .userId(userId).locationId("Scotland").regionId("1")
@@ -143,39 +136,33 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
         assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
         roleAssignments.forEach(r -> {
-            if (!"hmcts-legal-operations".equals(r.getRoleName())
-                    && !"tribunal-caseworker".equals(r.getRoleName())
-                    && !"senior-tribunal-caseworker".equals(r.getRoleName())
-            ) {
-                assertEquals(userId, r.getActorId());
-                if (!r.getRoleName().contains("hmcts-judiciary")) {
-                    assertEquals(Classification.PUBLIC, r.getClassification());
-                    assertEquals(GrantType.STANDARD, r.getGrantType());
-                    assertEquals("AAA6", r.getAuthorisations().get(0));
-                    if (!addBooking) {
-                        assertEquals("London", r.getAttributes().get("primaryLocation").asText());
-                    }
-                    if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
-                        assertEquals("hearing_work,decision_making_work,applications",
-                                r.getAttributes().get("workTypes").asText());
-                    } else if (r.getRoleName().contains("leadership-judge")) {
-                        assertEquals("LDN", r.getAttributes().get("region").asText());
-                        assertEquals("access_requests",
-                                r.getAttributes().get("workTypes").asText());
-                    }
-                } else {
-                    assertEquals(Classification.PRIVATE, r.getClassification());
-                    assertEquals(GrantType.BASIC, r.getGrantType());
-                }
-                if (r.getRoleName().contains("magistrate")) {
-                    assertEquals(Classification.PUBLIC, r.getClassification());
-                    assertEquals(GrantType.STANDARD, r.getGrantType());
-                    assertEquals("AAA6", r.getAuthorisations().get(0));
-                    assertEquals("LDN", r.getAttributes().get("region").asText());
+            assertEquals(userId, r.getActorId());
+            if (!r.getRoleName().contains("hmcts-judiciary")) {
+                assertEquals(Classification.PUBLIC, r.getClassification());
+                assertEquals(GrantType.STANDARD, r.getGrantType());
+                assertEquals("AAA6", r.getAuthorisations().get(0));
+                if (!addBooking) {
                     assertEquals("London", r.getAttributes().get("primaryLocation").asText());
                 }
+                if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
+                    assertEquals("hearing_work,decision_making_work,applications",
+                            r.getAttributes().get("workTypes").asText());
+                } else if (r.getRoleName().contains("leadership-judge")) {
+                    assertEquals("LDN", r.getAttributes().get("region").asText());
+                    assertEquals("access_requests",
+                            r.getAttributes().get("workTypes").asText());
+                }
+            } else {
+                assertEquals(Classification.PRIVATE, r.getClassification());
+                assertEquals(GrantType.BASIC, r.getGrantType());
+            }
+            if (r.getRoleName().contains("magistrate")) {
+                assertEquals(Classification.PUBLIC, r.getClassification());
+                assertEquals(GrantType.STANDARD, r.getGrantType());
+                assertEquals("AAA6", r.getAuthorisations().get(0));
+                assertEquals("LDN", r.getAttributes().get("region").asText());
+                assertEquals("London", r.getAttributes().get("primaryLocation").asText());
             }
         });
-
     }
 }
