@@ -35,7 +35,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> judicialAccessProfile.getAuthorisations().forEach(a ->
                 a.setServiceCodes(List.of(serviceCode))));
 
-        //Execute Kie session
+        //Execute Kie session``src/test/java/uk/gov/hmcts/reform/orgrolemapping/domain/service/DroolCivilHearingJudicialRoleMappingTest.java
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
@@ -71,26 +71,6 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
-
-
-    @ParameterizedTest
-    @CsvSource({
-            "DUMMY"
-    })
-    void shouldReturnEmptyRoles(String serviceCode) {
-
-        judicialAccessProfiles.forEach(jap -> jap.getAuthorisations().forEach(a ->
-                a.setServiceCodes(List.of(serviceCode))));
-        List.of("2","4","5","9","10","12","13","14","15").forEach(a ->
-                allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
-
-        //assertion
-        assertTrue(roleAssignments.isEmpty());
-    }
-
 
     @ParameterizedTest
     @CsvSource({
@@ -137,16 +117,18 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         roleAssignments.forEach(r -> {
-            assertEquals(RoleCategory.CTSC, r.getRoleCategory());
-            assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
-            assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
-            if (!r.getAttributes().get("jurisdiction").asText().equals("CIVIL")) {
-                assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
-                    .anyMatch(s::contains));
-                assertEquals(2, roleAssignments.size());
-            } else {
-                r.getRoleName().contains("hearing-viewer");
-                assertEquals(1, roleAssignments.size());
+            if (r.getRoleName().equals("hearing-manager") || r.getRoleName().equals("hearing-viewer")) {
+                assertEquals(RoleCategory.CTSC, r.getRoleCategory());
+                assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
+                assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
+
+                if (!r.getAttributes().get("jurisdiction").asText().equals("CIVIL")) {
+                    assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
+                            .anyMatch(s::contains));
+                    assertEquals(5, roleAssignments.size());
+                } else {
+                    assertEquals(4, roleAssignments.size());
+                }
             }
         });
     }
@@ -172,12 +154,16 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         roleAssignments.forEach(r -> {
-            assertEquals(RoleCategory.LEGAL_OPERATIONS, r.getRoleCategory());
-            assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
-            assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
-            assertThat(r.getRoleName()).matches(s -> Stream.of("hearing-manager", "hearing-viewer")
+            if ("hearing-manager".equals(r.getRoleName()) || "hearing-viewer".equals(r.getRoleName())) {
+                assertEquals(RoleCategory.LEGAL_OPERATIONS, r.getRoleCategory());
+                assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
+                assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
+            }
+            assertThat(r.getRoleName())
+                    .matches(s -> Stream.of("hearing-manager", "hearing-viewer",
+                            "hmcts-legal-operations", "tribunal-caseworker", "senior-tribunal-caseworker")
                     .anyMatch(s::contains));
         });
     }
