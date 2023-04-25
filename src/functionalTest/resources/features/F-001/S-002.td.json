@@ -22,7 +22,7 @@
         "roleType" : "ORGANISATION",
         "roleName" : "hmcts-legal-operations",
         "classification" : "PRIVATE",
-        "grantType" : "BASIC 123",
+        "grantType" : "BASIC",
         "roleCategory" : "LEGAL_OPERATIONS",
         "readOnly" : true,
         "created" : "[[ANYTHING_PRESENT]]",
