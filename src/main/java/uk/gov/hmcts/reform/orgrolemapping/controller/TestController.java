@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import java.util.Optional;
 
 @RestController
+@Hidden
 public class TestController {
 
     PersistenceService persistenceService;

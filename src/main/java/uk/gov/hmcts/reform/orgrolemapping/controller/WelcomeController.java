@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 @RestController
 @Slf4j
 @NoArgsConstructor
+@Hidden
 public class WelcomeController {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
