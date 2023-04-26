@@ -25,15 +25,19 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "10,ABA3,'ctsc,hmcts-ctsc',N,N",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc',N,N",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor,case-allocator',Y,Y",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,case-allocator',N,Y",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor',Y,N"
+            "10,ABA3,'ctsc,hmcts-ctsc,hearing-viewer,hearing-manager',N,N",
+            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,hearing-viewer,hearing-manager',N,N",
+            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor,case-allocator"
+                    + ",hearing-viewer,hearing-manager',Y,Y",
+            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,case-allocator,hearing-viewer,"
+                    + "hearing-manager',N,Y",
+            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor,hearing-viewer,"
+                    + "hearing-manager',Y,N"
     })
     void shouldReturnPublicLawCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                            String taskSupervisorFlag, String caseAllocatorFlag) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -66,7 +70,9 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                 .forEach(r -> {
                     assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    assertEquals(skillCodes,r.getAuthorisations());
+                    if (!r.getRoleName().contains("hearing")) {
+                        assertEquals(skillCodes, r.getAuthorisations());
+                    }
                     //assert work types
                     if (("ctsc").equals(r.getRoleName())) {
                         assertEquals("routine_work",
@@ -81,17 +87,21 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "4,ABA3,'hearing-centre-admin,hmcts-admin',N,N",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin',N,N",
+            "4,ABA3,'hearing-centre-admin,hmcts-admin,hearing-viewer,hearing-manager',N,N",
             "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,"
-                    + "task-supervisor,case-allocator',Y,Y",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,task-supervisor',Y,N",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,case-allocator',N,Y",
+                    + "hearing-viewer,hearing-manager',N,N",
+            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,"
+                    + "task-supervisor,case-allocator,hearing-viewer,hearing-manager',Y,Y",
+            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,"
+                    + "task-supervisor,hearing-viewer,hearing-manager',Y,N",
+            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,case-allocator,"
+                    + "hearing-viewer,hearing-manager',N,Y",
 
     })
     void shouldReturnPublicLawAdminMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -126,7 +136,9 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                 .forEach(r -> {
                     assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    assertEquals(skillCodes,r.getAuthorisations());
+                    if (!r.getRoleName().contains("hearing")) {
+                        assertEquals(skillCodes, r.getAuthorisations());
+                    }
                     //assert region
                     if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
@@ -146,18 +158,20 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "2,ABA3,'tribunal-caseworker,hmcts-legal-operations',N,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N",
+            "2,ABA3,'tribunal-caseworker,hmcts-legal-operations,hearing-viewer,hearing-manager',N,N",
             "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
-                    + "task-supervisor',Y,N",
+                    + "hearing-viewer,hearing-manager',N,N",
             "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
-                    + "case-allocator',N,Y",
+                    + "task-supervisor,hearing-viewer,hearing-manager',Y,N",
             "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
-                    + "task-supervisor,case-allocator',Y,Y",
+                    + "case-allocator,hearing-viewer,hearing-manager',N,Y",
+            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
+                    + "task-supervisor,case-allocator,hearing-viewer,hearing-manager',Y,Y",
     })
     void shouldReturnPublicLawCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
                                                   String taskSupervisorFlag, String caseAllocatorFlag) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -193,7 +207,9 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                 .forEach(r -> {
                     assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    assertEquals(skillCodes,r.getAuthorisations());
+                    if (!r.getRoleName().contains("hearing")) {
+                        assertEquals(skillCodes, r.getAuthorisations());
+                    }
                     //assert region
                     if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
@@ -219,6 +235,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @Test
     void shouldNotReturnCtsRoles_disabledFlag() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -235,9 +252,9 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                 buildExecuteKieSession(getFeatureFlags("publiclaw_wa_1_0", false));
 
         //assertion
-        assertTrue(roleAssignments.isEmpty());
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(2, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hearing-manager", "hearing-viewer"));
     }
-
-
-
 }

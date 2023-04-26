@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 @RunWith(MockitoJUnitRunner.class)
 class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
@@ -35,8 +34,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
             "Tribunal Judge,Salaried,BBA3,judge,"
                     + "'hearing_work,decision_making_work,routine_work,access_requests,priority'"
     })
-    void shouldReturSalariedRoles(String appointment, String appointmentType,
+    void shouldReturnSalariedRoles(String appointment, String appointmentType,
                                   String serviceCode, String roleNameOutput, String workTypes) {
+
+        allProfiles.clear();
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
@@ -50,13 +51,21 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "case-allocator", "task-supervisor", "hmcts-judiciary"));
+                containsInAnyOrder(roleNameOutput, "case-allocator", "task-supervisor",
+                        "hmcts-judiciary", "hearing-viewer"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
+            if ("judge".equals(r.getRoleName())) {
+                assertEquals(workTypes, r.getAttributes().get("workTypes").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
@@ -68,14 +77,14 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
             }
         });
-
-        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     //Special Medical Salaried
     //sscs_tribunal_member_medical_salaried_joh
     @Test
     void shouldReturnTribunalMemberMedicalRolesNoAccessRequests() {
+
+        allProfiles.clear();
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("Tribunal Member Medical");
@@ -84,22 +93,28 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
         });
 
-
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("case-allocator", roleAssignments.get(0).getRoleName());
-        assertEquals("task-supervisor", roleAssignments.get(1).getRoleName());
-        assertEquals("hmcts-judiciary", roleAssignments.get(2).getRoleName());
-        assertEquals("medical", roleAssignments.get(3).getRoleName());
+        assertEquals(5, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("case-allocator", "task-supervisor", "hmcts-judiciary",
+                        "medical", "hearing-viewer"));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
+            if ("medical".equals(r.getRoleName())) {
+                assertEquals("hearing_work,decision_making_work,routine_work,priority",
+                        r.getAttributes().get("workTypes").asText());
+            }
+
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("1032"));
@@ -111,9 +126,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
             }
         });
-
-        assertEquals("hearing_work,decision_making_work,routine_work,priority",
-                roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     //=================================FEE-PAID ROLES==================================
@@ -127,17 +139,21 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //sscs_tribunal_judge_fee_paid_joh
     @ParameterizedTest
     @CsvSource({
-            "Tribunal Member Medical,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
-            "Tribunal Member Disability,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal Member Financially Qualified,Fee Paid,BBA3,fee-paid-financial,'hearing_work,priority'",
-            "Tribunal Member Lay,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal Member Optometrist,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
-            "Tribunal Member Service,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal Member,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal Judge,Fee Paid,BBA3,fee-paid-judge,'hearing_work,decision_making_work,routine_work,priority'"
+            "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hearing-viewer','hearing_work,priority'",
+            "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hearing-viewer','hearing_work,priority'",
+            "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hearing-viewer',"
+                    + "'hearing_work,priority'",
+            "Tribunal Member Lay,Fee Paid,BBA3,'fee-paid-disability,hearing-viewer','hearing_work,priority'",
+            "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hearing-viewer','hearing_work,priority'",
+            "Tribunal Member Service,Fee Paid,BBA3,'fee-paid-disability,hearing-viewer','hearing_work,priority'",
+            "Tribunal Member,Fee Paid,BBA3,'fee-paid-disability,hearing-viewer','hearing_work,priority'",
+            "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hearing-viewer',"
+                    + "'hearing_work,decision_making_work,routine_work,priority'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles(String appointment, String appointmentType,
                                                        String serviceCode, String roleNameOutput, String workTypes) {
+
+        allProfiles.clear();
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
@@ -149,28 +165,35 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
             });
         });
 
-
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        roleAssignments.forEach(r -> assertEquals(judicialAccessProfiles
-                .stream().iterator().next().getUserId(), r.getActorId()));
-        assertEquals(roleNameOutput, roleAssignments.get(0).getRoleName());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
-        assertEquals("[373]", roleAssignments.get(0).getAuthorisations().toString());
-        assertEquals("primary location", roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
-        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals(roleNameOutput.split(",").length, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(roleNameOutput.split(",")));
 
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles
+                    .stream().iterator().next().getUserId(), r.getActorId());
+
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+                assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals(workTypes, r.getAttributes().get("workTypes").asText());
+            }
+        });
     }
 
     //sscs_district_tribunal_judge_salaried_joh
     @Test
     void shouldReturnTribunalDistrictJudgeSalariedSetUpRole() {
+
+        allProfiles.clear();
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("judge");
@@ -182,13 +205,19 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
         //assertion
-        assertTrue(roleAssignments.isEmpty());
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(1, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hearing-viewer"));
     }
 
     //sscs_regional_medical_member_salaried_joh
     @Test
     void shouldReturnEmptyForRoleRegionalMedicalSalariedSetUpRole() {
+
+        allProfiles.clear();
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("Regional Medical Member"));
@@ -201,8 +230,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
-        assertTrue(roleAssignments.isEmpty());
-
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(1, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hearing-viewer"));
     }
 
     //    Invalid authorisation(expired enddate) and valid appointment
@@ -220,6 +251,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
             "Tribunal Judge"
     })
     void shouldNotReturnSalariedRolesExpiredEndDate(String appointment) {
+
+        allProfiles.clear();
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -246,6 +279,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
             "Tribunal Judge,AAA"
     })
     void shouldNotReturnSalariedRolesExpiredEndDate(String appointment, String serviceCode) {
+
+        allProfiles.clear();
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -277,6 +312,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment) {
 
+        allProfiles.clear();
+
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
         profile.setAppointmentType("Fee Paid");
@@ -307,6 +344,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment,
                                                            String serviceCode) {
+        allProfiles.clear();
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -333,6 +371,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
             "Tribunal Judge,AAA"
     })
     void shouldNotReturnSalariedExpiredDateandWServiceode(String appointment, String serviceCode) {
+
+        allProfiles.clear();
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -365,6 +405,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     })
     void shouldNotReturnFeePaidRolesExpiredDateandWServiceode(String appointment,
                                                               String serviceCode) {
+        allProfiles.clear();
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -382,9 +423,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-
     @Test
     void shouldReturnAllValidAppointmentRoles() {
+
+        allProfiles.clear();
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("District Tribunal Judge", "Regional Medical Member"));
@@ -401,9 +443,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "medical"));
+                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "medical",
+                        "hearing-viewer"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
@@ -418,6 +461,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
     @Test
     void shouldReturnAllValidInAppointmentRoles() {
+
+        allProfiles.clear();
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("District Judge", "Medical Member"));
@@ -434,9 +479,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "medical"));
+                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "medical",
+                        "hearing-viewer"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
@@ -451,6 +497,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
     @Test
     void shouldReturnAllValidAppointmentRoles_unmappedAppoitment() {
+
+        allProfiles.clear();
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("President of Tribunal");
@@ -467,7 +515,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "judge"));
+                containsInAnyOrder("task-supervisor", "case-allocator", "hmcts-judiciary", "judge",
+                        "hearing-viewer"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
@@ -484,6 +533,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @Test
     void shouldReturnAllInValidDefaultRoles() {
 
+        allProfiles.clear();
+
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("Wrong Role"));
             judicialAccessProfile.setAppointmentType("Salaried");
@@ -495,7 +546,9 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
-        assertTrue(roleAssignments.isEmpty());
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(1, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hearing-viewer"));
     }
-
 }
