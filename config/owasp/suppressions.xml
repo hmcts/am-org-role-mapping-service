@@ -10,7 +10,6 @@
         https://tanzu.vmware.com/security/cve-2022-22978</notes>
     <cve>CVE-2022-22978</cve>
     <cve>CVE-2022-22976</cve>
-    <cve>CVE-2021-22044</cve>
    </suppress>
     <suppress>
         <notes>CVE-2022-1471 https://tools.hmcts.net/jira/browse/AM-2728 snakeyaml</notes>
