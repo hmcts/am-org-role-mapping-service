@@ -16,6 +16,35 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
+ * SSCS staff "senior-tribunal-caseworker" Org role mapping.
+ */
+
+rule "sscs_senior_tribunal_caseworker_legal_ops_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BBA3", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("senior-tribunal-caseworker")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : sscs_senior_tribunal_caseworker_legal_ops_org_role");
+end;
+
+/*
  * SSCS staff "tribunal-caseworker" Org role mapping.
  */
 
@@ -23,12 +52,12 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "sscs_tribunal_caseworker_legal_ops_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "2", serviceCode == "BBA3", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BBA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("applications,hearing_work,routine_work,priority,decision_making_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing_work,post_hearing_work,applications,hearing_work,routine_work,priority,decision_making_work"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
@@ -60,7 +89,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("applications,hearing_work,routine_work,priority,decision_making_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing_work,post_hearing_work,applications,hearing_work,routine_work,priority,decision_making_work"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
@@ -86,7 +115,7 @@ end;
 rule "sscs_case_allocator_legal_ops_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("2","16"), serviceCode == "BBA3", !suspended,
+  $cap: CaseWorkerAccessProfile(roleId in ("1","2","16"), serviceCode == "BBA3", !suspended,
                          caseAllocatorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -116,7 +145,7 @@ end;
 rule "sscs_task_supervisor_legal_ops_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("2","16"), serviceCode == "BBA3", !suspended,
+  $cap: CaseWorkerAccessProfile(roleId in ("1","2","16"), serviceCode == "BBA3", !suspended,
                          taskSupervisorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -146,7 +175,7 @@ end;
 rule "sscs_hmcts_legal_operations_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("2","16"), serviceCode == "BBA3", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("1","2","16"), serviceCode == "BBA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
   insert(
@@ -162,4 +191,34 @@ then
       .attributes(attribute)
       .build());
       logMsg("Rule : sscs_hmcts_legal_operations_org_role");
+end;
+
+/*
+ * SSCS staff "specific-access-approver-legal-ops" Org role mapping.
+ */
+
+rule "sscs_specific_access_approver_legal_ops_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BBA3", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-legal-ops")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : sscs_specific_access_approver_legal_ops_org_role");
 end;

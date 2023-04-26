@@ -176,7 +176,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             }
             if (List.of("tribunal-caseworker", "registrar").contains(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
-                assertEquals("applications,hearing_work,routine_work,priority,decision_making_work",
+                assertEquals("pre_hearing_work,post_hearing_work,applications,hearing_work,routine_work,priority,decision_making_work",
                         roleAssignment.getAttributes().get("workTypes").asText());
             }
         });
@@ -215,7 +215,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             }
             if (List.of("tribunal-caseworker", "registrar").contains(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
-                assertEquals("applications,hearing_work,routine_work,priority,decision_making_work",
+                assertEquals("pre_hearing_work,post_hearing_work,applications,hearing_work,routine_work,priority,decision_making_work",
                         roleAssignment.getAttributes().get("workTypes").asText());
             }
         });
