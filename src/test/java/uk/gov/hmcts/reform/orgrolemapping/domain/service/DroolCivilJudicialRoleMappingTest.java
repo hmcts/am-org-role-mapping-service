@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -28,16 +27,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolCivilJudicialRoleMappingTest extends DroolBase {
+
     @ParameterizedTest
     @CsvSource({
             "CIVIL District Judge-Salaried,judge",
@@ -343,24 +343,26 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                         "judge", "leadership-judge", "hearing-viewer", "senior-judge", "case-allocator",
                         "task-supervisor"));
 
-        //TODO: resolve below test block
-//
-//        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-//                .forEach(r -> {
-//                    //removes the auth in the past successfully so minus 1
-//                    assertEquals(authorisationList.size() - 1, r.getAuthorisations().size());
-//                    assertEquals(JacksonUtils.convertObjectIntoJsonNode(""), r.getAttributes().get("primaryLocation"));
-//                });
-//
-//        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
-//                roleAssignments.get(0).getBeginTime().getDayOfYear());
-//        assertNull(roleAssignments.get(0).getEndTime());
-//
-//        roleAssignments.forEach(r -> {
-//            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-//            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
-//            assertNull(r.getEndTime());
-//        });
+        roleAssignments.stream()
+                .filter(r -> isNotEmpty(r.getAttributes().get("contractType"))
+                        && "CIVIL".equals(r.getAttributes().get("contractType").textValue())
+                ).forEach(r -> {
+                    if (r.getGrantType().equals(GrantType.STANDARD)) {
+                        //removes the auth in the past successfully so minus 1
+                        assertEquals(authorisationList.size() - 1, r.getAuthorisations().size());
+                        assertEquals(JacksonUtils.convertObjectIntoJsonNode(""),
+                                r.getAttributes().get("primaryLocation"));
+                    }
+
+                    if ("fee-paid-judge".equals(r.getRoleName())) {
+                        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                                r.getBeginTime().getDayOfYear());
+                        assertNull(r.getEndTime());
+                    }
+                    assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+                    assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
+                    assertNull(r.getEndTime());
+                });
     }
 
     @Test

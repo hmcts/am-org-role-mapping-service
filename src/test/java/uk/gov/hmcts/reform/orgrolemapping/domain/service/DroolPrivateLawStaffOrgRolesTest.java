@@ -9,7 +9,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,8 +27,8 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "10,ABA5,'ctsc,hmcts-ctsc,hearing-viewer,hearing-manager',N,N",
-            "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc," +
-                    "hearing-viewer,hearing-manager',N,N",
+            "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,"
+                    + "hearing-viewer,hearing-manager',N,N",
             "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,"
                     + "specific-access-approver-ctsc,hearing-viewer,hearing-manager',Y,Y",
             "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc,"

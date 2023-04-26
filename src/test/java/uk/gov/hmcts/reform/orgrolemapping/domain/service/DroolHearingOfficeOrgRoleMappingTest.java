@@ -37,7 +37,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> judicialAccessProfile.getAuthorisations().forEach(a ->
                 a.setServiceCodes(List.of(serviceCode))));
 
-        //Execute Kie session``src/test/java/uk/gov/hmcts/reform/orgrolemapping/domain/service/DroolCivilHearingJudicialRoleMappingTest.java
+        //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
