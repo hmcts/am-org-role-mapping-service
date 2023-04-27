@@ -121,7 +121,9 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   if ($cap.getRoleId().equals("2") || $cap.getRoleId().equals("16")) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   }
 
   insert(
       RoleAssignment.builder()
@@ -151,7 +153,9 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   if ($cap.getRoleId().equals("2") || $cap.getRoleId().equals("16")) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   }
 
   insert(
       RoleAssignment.builder()
