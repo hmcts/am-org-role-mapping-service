@@ -98,11 +98,21 @@ env.JUDICIAL_BOOKING_URL = "http://am-judicial-booking-service-aat.service.core-
         }
     }
 
-    afterSuccess('fullFunctionalTest') {
+    afterAlways('fullFunctionalTest') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
+
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "target/cucumber/functional-html-reports",
+                reportFiles          : "overview-features.html,overview-failures.html,",
+                reportTitles         : "Features,Failures",
+                reportName           : "Functional Test Report"
+        ]
     }
 
-    afterSuccess('fortify-scan') {
+    afterAlways('fortify-scan') {
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 }

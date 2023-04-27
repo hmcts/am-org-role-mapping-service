@@ -475,11 +475,11 @@ dependencies {
     testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.2')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test', version: versions.springBoot
     testImplementation group: 'org.springframework.security',name:'spring-security-test', version: versions.springSecurity
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.10.RELEASE'
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
-    testImplementation 'com.github.hmcts:befta-fw:9.0.0-CCD-3068.1'
+    testImplementation 'com.github.hmcts:befta-fw:8.7.11'
 
     testImplementation(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
         exclude group: 'javascript', module: 'jquery'
