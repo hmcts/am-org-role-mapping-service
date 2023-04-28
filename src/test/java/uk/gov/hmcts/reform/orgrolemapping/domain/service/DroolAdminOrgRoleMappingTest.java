@@ -224,7 +224,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     @Test
     void shouldReturnSscsAdminOrgRolesForRoleId() {
         allProfiles.clear();
-        Stream.of(4, 5, 9, 10, 12, 13).forEach(roleId ->
+        Stream.of(3, 4, 5, 12, 13).forEach(roleId ->
                 allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", "BBA3",
                         false)));
 
@@ -235,12 +235,12 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         // additional roleAssignments get created due to different regions
-        assertEquals(13, roleAssignments.size());
+        assertEquals(15, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-admin","superuser", "superuser", "clerk", "clerk",
-                        "hearing-centre-admin", "hearing-centre-admin", "specific-access-approver-admin",
-                        "specific-access-approver-admin", "regional-centre-team-leader", "regional-centre-team-leader",
-                        "regional-centre-admin", "regional-centre-admin"));
+                        "hearing-centre-admin", "hearing-centre-admin", "hearing-centre-team-leader",
+                        "hearing-centre-team-leader", "specific-access-approver-admin", "specific-access-approver-admin",
+                        "regional-centre-team-leader", "regional-centre-team-leader", "regional-centre-admin", "regional-centre-admin"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
@@ -265,7 +265,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     @Test
     void shouldReturnSscsAdminOrgRolesForRoleId_caseAndTaskSupervisor() {
         allProfiles.clear();
-        Stream.of(4, 5, 9, 10, 12, 13).forEach(roleId -> {
+        Stream.of(3, 4, 5, 12, 13).forEach(roleId -> {
             CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "",
                     "BBA3", false);
             profile.setCaseAllocatorFlag("Y");
@@ -280,10 +280,10 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         // additional roleAssignments get created due to different regions
-        assertEquals(15, roleAssignments.size());
+        assertEquals(17, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-admin","superuser", "superuser","clerk","clerk",
-                        "task-supervisor","case-allocator",
+                        "task-supervisor","case-allocator", "hearing-centre-team-leader", "hearing-centre-team-leader",
                         "hearing-centre-admin", "hearing-centre-admin", "specific-access-approver-admin",
                         "specific-access-approver-admin", "regional-centre-team-leader", "regional-centre-team-leader",
                         "regional-centre-admin", "regional-centre-admin"));
