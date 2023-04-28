@@ -235,9 +235,9 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         // additional roleAssignments get created due to different regions
-        assertEquals(15, roleAssignments.size());
+        assertEquals(13, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-admin","superuser", "superuser", "clerk", "clerk",
+                containsInAnyOrder("hmcts-admin", "clerk", "clerk",
                         "hearing-centre-admin", "hearing-centre-admin", "hearing-centre-team-leader",
                         "hearing-centre-team-leader", "specific-access-approver-admin", "specific-access-approver-admin",
                         "regional-centre-team-leader", "regional-centre-team-leader", "regional-centre-admin", "regional-centre-admin"));
@@ -280,9 +280,9 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         // additional roleAssignments get created due to different regions
-        assertEquals(17, roleAssignments.size());
+        assertEquals(15, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-admin","superuser", "superuser","clerk","clerk",
+                containsInAnyOrder("hmcts-admin","clerk","clerk",
                         "task-supervisor","case-allocator", "hearing-centre-team-leader", "hearing-centre-team-leader",
                         "hearing-centre-admin", "hearing-centre-admin", "specific-access-approver-admin",
                         "specific-access-approver-admin", "regional-centre-team-leader", "regional-centre-team-leader",
