@@ -26,12 +26,12 @@ java:
         - orm-IDAM-CLIENT-SECRET
         - orm-IDAM-ADMIN-SECRET
   environment:
-    IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
-    JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
-    ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-aat.service.core-compute-aat.internal
-    JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.service.core-compute-aat.internal
+    IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.preview.platform.hmcts.net
+    S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.preview.platform.hmcts.net
+    CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.platform.hmcts.net
+    JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.platform.hmcts.net
+    ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-aat.platform.hmcts.net
+    JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.platform.hmcts.net
     LAUNCH_DARKLY_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "$(AMQP_HOST)"
