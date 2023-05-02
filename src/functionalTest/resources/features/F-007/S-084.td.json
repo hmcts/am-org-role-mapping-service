@@ -36,6 +36,10 @@
       "body": {
         "roleAssignmentResponse": [
           {
+            "__ordering__": "UNORDERED",
+            "__elementId__": "roleName"
+          },
+          {
             "id": "[[ANYTHING_PRESENT]]",
             "actorIdType": "IDAM",
             "actorId": "cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b",
