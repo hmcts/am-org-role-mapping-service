@@ -18,7 +18,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.9'
     id 'info.solidsoft.pitest' version '1.7.4'
     id 'com.github.ben-manes.versions' version '0.45.0'
-    id 'org.sonarqube' version '3.4.0.2513'
+    id 'org.sonarqube' version '4.0.0.2929'
     id 'au.com.dius.pact' version '4.3.12'
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
     id 'org.owasp.dependencycheck' version '8.1.0'
@@ -30,6 +30,8 @@ apply plugin: 'net.serenity-bdd.aggregator'
 apply plugin: 'project-report'
 apply plugin: 'idea'
 apply plugin: 'io.spring.dependency-management'
+
+ext['snakeyaml.version'] = '1.32'
 
 def versions = [
         junit          : '5.9.0',
@@ -49,10 +51,10 @@ def versions = [
         feign_jackson  : '9.7.0',
         jacksondata    : '2.14.0-rc2',
         drools         : '7.73.0.Final',
-        log4JVersion   : '2.19.0',
+        log4JVersion   : '2.20.0',
         logbackVersion : '1.2.10',
         launchDarklySdk: '5.10.5',
-        netty_version  : '4.1.87.Final'
+        netty_version  : '4.1.90.Final'
 
 ]
 
@@ -60,7 +62,7 @@ mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
 def jarName = 'am-org-role-mapping-service.jar'
 
 pmd {
-    toolVersion = '6.21.0'
+    toolVersion = '6.55.0'
     sourceSets = []
 }
 
@@ -370,12 +372,12 @@ dependencies {
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.36.0'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.13.0'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.13.2'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.3'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
-    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.1'
+    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.4'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.23'
@@ -385,8 +387,8 @@ dependencies {
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.71'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.70'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.72'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.72'
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksondata
@@ -466,11 +468,11 @@ dependencies {
     testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.2')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test', version: versions.springBoot
     testImplementation group: 'org.springframework.security',name:'spring-security-test', version: versions.springSecurity
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.10.RELEASE'
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
-    testImplementation 'com.github.hmcts:befta-fw:9.0.0-CCD-3068.1'
+    testImplementation 'com.github.hmcts:befta-fw:8.7.11'
 
     testImplementation(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
         exclude group: 'javascript', module: 'jquery'
