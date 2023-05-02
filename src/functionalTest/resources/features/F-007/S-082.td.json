@@ -35,7 +35,11 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
-            {
+				{
+					"__ordering__": "UNORDERED",
+					"__elementId__": "roleName"
+				},
+        {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",

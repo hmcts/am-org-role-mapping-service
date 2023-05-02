@@ -34,6 +34,10 @@
     "body": {
       "roleAssignmentResponse": [
         {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
@@ -150,25 +154,6 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PRIVATELAW",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "tribunal-caseworker",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
             "region": "[[ANYTHING_PRESENT]]",
