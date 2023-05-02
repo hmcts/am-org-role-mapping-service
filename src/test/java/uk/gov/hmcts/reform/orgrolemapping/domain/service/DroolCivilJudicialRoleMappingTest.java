@@ -32,6 +32,7 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -403,6 +404,51 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
             assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
             assertNull(r.getEndTime());
         });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "CIVIL Designated Civil Judge-Salaried,Salaried",
+            "CIVIL Circuit Judge-Salaried,Salaried",
+            "CIVIL Specialist Circuit Judge-Salaried,Salaried",
+            "CIVIL Senior Circuit Judge-Salaried,Salaried",
+            "CIVIL High Court Judge-Salaried,Salaried",
+            "CIVIL Deputy Circuit Judge-Fee-Paid,Fee-Paid"
+    })
+    void shouldReturnJudgeRolesV11(String setOffice,String contractType) throws IOException {
+
+        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+
+        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
+        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
+                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
+        judicialBooking.setLocationId("location1");
+        judicialBooking.setRegionId("1");
+        judicialBookings = Set.of(judicialBooking);
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_1", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+
+        assertEquals(1, roleAssignments.size());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals("judge", roleAssignments.get(0).getRoleName());
+
+        roleAssignments.forEach(r -> assertEquals(contractType, r.getAttributes().get("contractType").asText()));
+
+        RoleAssignment role = roleAssignments.stream().filter(r -> "judge".equals(r.getRoleName())).findFirst()
+                .get();
+
+        if (setOffice.equals("CIVIL Deputy Circuit Judge-Fee-Paid")) {
+            assertNotNull(role.getAttributes().get("baseLocation"));
+        } else {
+            assertNull(role.getAttributes().get("baseLocation"));
+        }
+
+        assertNotNull(role.getAttributes().get("region"));
     }
 }
 
