@@ -27,12 +27,4 @@
         <notes>https://tools.hmcts.net/jira/browse/AM-2776 springframework</notes>
         <cve>CVE-2023-20863</cve>
     </suppress>
-    <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-2786 spring boot</notes>
-        <cve>CVE-2023-20873</cve>
-    </suppress>
-    <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-2787 spring security</notes>
-        <cve>CVE-2023-20862</cve>
-    </suppress>
 </suppressions>
