@@ -5,7 +5,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     Given an appropriate test context as detailed in the test data source
 
   @S-081
-  @FeatureToggle(DB:publiclaw_wa_1_0=on)
+  @FeatureToggle(DB:publiclaw_wa_1_0=off)
   Scenario: must successfully create org role mapping for Legal Caseworker and Senior Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-081_DeleteDataForRoleAssignments],
@@ -19,7 +19,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-081_DeleteDataForRoleAssignments].
 
   @S-082
-  @FeatureToggle(DB:publiclaw_wa_1_0=on)
+  @FeatureToggle(DB:publiclaw_wa_1_0=off)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader and Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-082_DeleteDataForRoleAssignments],
@@ -33,7 +33,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-082_DeleteDataForRoleAssignments].
 
   @S-083
-  @FeatureToggle(DB:publiclaw_wa_1_0=on)
+  @FeatureToggle(DB:publiclaw_wa_1_0=off)
   Scenario: must successfully create org role mapping for CTSC Team Leader and CTSC Admin
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-083_DeleteDataForRoleAssignments],
@@ -47,7 +47,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-083_DeleteDataForRoleAssignments].
 
   @S-084
-  @FeatureToggle(DB:publiclaw_wa_1_0=on)
+  @FeatureToggle(DB:publiclaw_wa_1_0=off)
   Scenario: must successfully create judicial role mapping for Deputy District Judge- Fee-Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-084_DeleteDataForRoleAssignments],
@@ -61,7 +61,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-084_DeleteDataForRoleAssignments].
 
   @S-085
-  @FeatureToggle(DB:publiclaw_wa_1_0=on)
+  @FeatureToggle(DB:publiclaw_wa_1_0=off)
   Scenario: must successfully create judicial role mapping for Designated Family Judge- Salaried
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-085_DeleteDataForRoleAssignments],
