@@ -127,19 +127,21 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //sscs_tribunal_judge_fee_paid_joh
     @ParameterizedTest
     @CsvSource({
-            "Tribunal Member Medical,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
-            "Tribunal Member Disability,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal Member Financially Qualified,Fee Paid,BBA3,fee-paid-financial,'hearing_work,priority'",
-            "Tribunal Member Lay,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal Member Optometrist,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority'",
-            "Tribunal Member Service,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal Member,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority'",
-            "Tribunal Judge,Fee Paid,BBA3,fee-paid-judge,'hearing_work,decision_making_work,routine_work,priority'"
+            "Tribunal Member Medical,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority','373'",
+            "Tribunal Member Disability,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority','373'",
+            "Tribunal Member Financially Qualified,Fee Paid,BBA3,fee-paid-financial,'hearing_work,priority','362'",
+            "Tribunal Member Lay,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority','373'",
+            "Tribunal Member Optometrist,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority','373'",
+            "Tribunal Member Service,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority','373'",
+            "Tribunal Member,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority','373'",
+            "Tribunal Judge,Fee Paid,BBA3,fee-paid-judge,'hearing_work,decision_making_work,routine_work,priority','373'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles(String appointment, String appointmentType,
-                                                       String serviceCode, String roleNameOutput, String workTypes) {
+                                                       String serviceCode, String roleNameOutput, String workTypes,
+                                                       String ticketCodes) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setTicketCodes(List.of(ticketCodes));
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.setBaseLocationId("1032");
@@ -162,7 +164,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         assertEquals(roleNameOutput, roleAssignments.get(0).getRoleName());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
-        assertEquals("[373]", roleAssignments.get(0).getAuthorisations().toString());
+        assertTrue(roleAssignments.get(0).getAuthorisations().contains(ticketCodes));
         assertEquals("primary location", roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
         assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
 
