@@ -66,7 +66,7 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    if ($joh.getOffice().contains("Salaried")) {
     attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   } else{
+   } else {
     attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    }
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing_work,hearing_work,post_hearing_work,"
@@ -210,7 +210,11 @@ when
                                         "SSCS Tribunal Member Service-Fee Paid", "SSCS Tribunal Member Financially Qualified"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   if ($joh.getOffice().contains("Salaried")) {
+    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   } else {
+    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
