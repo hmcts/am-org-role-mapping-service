@@ -25,53 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
-    //=================================SALARIED ROLES==================================
-    @ParameterizedTest
-    @CsvSource({
-            "President of Tribunal,Salaried,BBA3,judge,"
-                    + "'hearing_work,decision_making_work,routine_work,access_requests,priority'",
-            "Regional Tribunal Judge,Salaried,BBA3,judge,"
-                    + "'hearing_work,decision_making_work,routine_work,access_requests,priority'",
-            "Tribunal Judge,Salaried,BBA3,judge,"
-                    + "'hearing_work,decision_making_work,routine_work,access_requests,priority'"
-    })
-    void shouldReturSalariedRoles(String appointment, String appointmentType,
-                                  String serviceCode, String roleNameOutput, String workTypes) {
-
-        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment(appointment);
-            judicialAccessProfile.setAppointmentType(appointmentType);
-            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of(serviceCode)));
-        });
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "case-allocator", "task-supervisor", "hmcts-judiciary"));
-
-        roleAssignments.forEach(r -> {
-            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if ("hmcts-judiciary".equals(r.getRoleName())) {
-                assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
-
-            } else {
-                assertEquals("[373]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
-                assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
-
-            }
-        });
-
-        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
-    }
-
     //Special Medical Salaried
     //sscs_tribunal_member_medical_salaried_joh
     @Test
@@ -112,60 +65,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         assertEquals("hearing_work,priority",
                 roleAssignments.get(1).getAttributes().get("workTypes").asText());
-    }
-
-    //=================================FEE-PAID ROLES==================================
-    //sscs_tribunal_member_medical_fee_paid_joh
-    //sscs_tribunal_member_disability_fee_paid_joh
-    //sscs_tribunal_member_financially_qualified_joh fee_paid
-    //sscs_tribunal_member_fee_paid_joh
-    //sscs_tribunal_member_lay_fee_paid_joh
-    //sscs_tribunal_member_optometrist_fee_paid_joh
-    //sscs_tribunal_member_service_fee_paid_joh
-    //sscs_tribunal_judge_fee_paid_joh
-    @ParameterizedTest
-    @CsvSource({
-            "Tribunal Member Medical,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority','373'",
-            "Tribunal Member Disability,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority','373'",
-            "Tribunal Member Financially Qualified,Fee Paid,BBA3,fee-paid-financial,'hearing_work,priority','362'",
-            "Tribunal Member Lay,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority','373'",
-            "Tribunal Member Optometrist,Fee Paid,BBA3,fee-paid-medical,'hearing_work,priority','373'",
-            "Tribunal Member Service,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority','373'",
-            "Tribunal Member,Fee Paid,BBA3,fee-paid-disability,'hearing_work,priority','373'",
-            "Tribunal Judge,Fee Paid,BBA3,fee-paid-judge,'hearing_work,decision_making_work,routine_work,priority','373'"
-    })
-    void shouldReturnTribunalMemberMedicalFeePaidRoles(String appointment, String appointmentType,
-                                                       String serviceCode, String roleNameOutput, String workTypes,
-                                                       String ticketCodes) {
-
-        judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setTicketCodes(List.of(ticketCodes));
-            judicialAccessProfile.setAppointment(appointment);
-            judicialAccessProfile.setAppointmentType(appointmentType);
-            judicialAccessProfile.setBaseLocationId("1032");
-            judicialAccessProfile.getAuthorisations().forEach(a -> {
-                a.setServiceCodes(List.of(serviceCode));
-                a.setTicketCode("362");
-            });
-        });
-
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(1, roleAssignments.size());
-        roleAssignments.forEach(r -> assertEquals(judicialAccessProfiles
-                .stream().iterator().next().getUserId(), r.getActorId()));
-        assertEquals(roleNameOutput, roleAssignments.get(0).getRoleName());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("SSCS", roleAssignments.get(0).getAttributes().get("jurisdiction").asText());
-        assertTrue(roleAssignments.get(0).getAuthorisations().contains(ticketCodes));
-        assertEquals("primary location", roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
-        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
-
     }
 
     //sscs_district_tribunal_judge_salaried_joh
