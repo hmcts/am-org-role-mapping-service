@@ -18,6 +18,40 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
+ * SSCS "leadership-judge" Org role mapping.
+ */
+
+rule "sscs_leadership_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("leadership-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : sscs_leadership_judge_org_role");
+end;
+
+/*
  * SSCS "judge" Org role mapping.
  */
 
@@ -25,15 +59,21 @@ rule "sscs_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal Judge-Salaried"))
+                                        "SSCS Tribunal Judge-Salaried", "SSCS Tribunal Judge-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                     + "access_requests,priority"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if ($joh.getOffice().contains("Salaried")) {
+    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   } else{
+    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   }
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing_work,hearing_work,post_hearing_work,"
+                                                                     + "decision_making_work,routine_work,priority"));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -60,15 +100,15 @@ end;
 rule "sscs_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal Member Medical-Salaried",
-                                        "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
+  $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -95,15 +135,15 @@ end;
 rule "sscs_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal Member Medical-Salaried",
-                                        "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
+  $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -123,6 +163,39 @@ then
 end;
 
 /*
+ * SSCS "specific-access-approver-judicary" Org role mapping.
+ */
+
+rule "sscs_specific_access_approver_judicary_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-judicary")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : sscs_specific_access_approver_judicary_org_role");
+end;
+
+/*
  * SSCS "hmcts-judiciary" Org role mapping.
  */
 
@@ -130,8 +203,12 @@ rule "sscs_hmcts_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS District Tribunal Judge-Salaried", "SSCS Tribunal Member Medical-Salaried",
-                                        "SSCS Regional Medical Member-Salaried", "SSCS Tribunal Judge-Salaried"))
+                                        "SSCS Tribunal Judge-Salaried", "SSCS Tribunal Judge-Fee Paid",
+                                        "SSCS Tribunal Member Medical-Salaried", "SSCS Regional Medical Member-Salaried",
+                                        "SSCS Tribunal Member Medical-Fee Paid", "SSCS Tribunal Member Optometrist-Fee Paid",
+                                        "SSCS Tribunal Member Disability-Fee Paid", "SSCS Tribunal Member-Fee Paid",
+                                        "SSCS Tribunal Member Lay-Fee Paid", "SSCS Tribunal Member Service-Fee Paid",
+                                        "SSCS Tribunal Member Financially Qualified"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
       attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -165,8 +242,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                      + "priority"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing_work,hearing_work,post_hearing_work,"
+                                                                        + "decision_making_work,routine_work,priority"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
@@ -200,8 +277,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                      + "priority"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
@@ -262,8 +338,7 @@ end;
 rule "sscs_fee_paid_disability_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("SSCS Tribunal Member Disability-Fee Paid", "SSCS Tribunal Member-Fee Paid",
-                                        "SSCS Tribunal Member Lay-Fee Paid", "SSCS Tribunal Member Service-Fee Paid"))
+  $joh: JudicialOfficeHolder(office == "SSCS Tribunal Member Disability-Fee Paid")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
@@ -287,6 +362,40 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : sscs_fee_paid_disability_org_role");
+end;
+
+/*
+ * SSCS "fee-paid-tribunal-member" Org role mapping.
+ */
+
+rule "sscs_fee_paid_tribunal_member_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("SSCS Tribunal Member-Fee Paid", "SSCS Tribunal Member Lay-Fee Paid",
+                                        "SSCS Tribunal Member Service-Fee Paid"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("fee-paid-tribunal-member")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : sscs_fee_paid_tribunal_member_org_role");
 end;
 
 /*
