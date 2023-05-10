@@ -163,10 +163,10 @@ then
 end;
 
 /*
- * SSCS "specific-access-approver-judicary" Org role mapping.
+ * SSCS "specific-access-approver-judiciary" Org role mapping.
  */
 
-rule "sscs_specific_access_approver_judicary_org_role"
+rule "sscs_specific_access_approver_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried"))
@@ -183,7 +183,7 @@ then
       .actorId($joh.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("specific-access-approver-judicary")
+      .roleName("specific-access-approver-judiciary")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -192,7 +192,7 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : sscs_specific_access_approver_judicary_org_role");
+      logMsg("Rule : sscs_specific_access_approver_judiciary_org_role");
 end;
 
 /*

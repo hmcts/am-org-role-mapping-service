@@ -19,8 +19,8 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SSCS President of Tribunal-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,specific-access-approver-judicary,hmcts-judiciary'",
-            "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,specific-access-approver-judicary,hmcts-judiciary'",
+            "SSCS President of Tribunal-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
+            "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
             "SSCS Tribunal Judge-Salaried,'judge,hmcts-judiciary'",
             "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'",
 
@@ -59,7 +59,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
                 assertNull(r.getAttributes().get("workTypes"));
             } else if (("task-supervisor").equals(r.getRoleName())) {
                 assertNull(r.getAttributes().get("workTypes"));
-            } else if (("specific-access-approver-judicary").equals(r.getRoleName())) {
+            } else if (("specific-access-approver-judiciary").equals(r.getRoleName())) {
                 assertThat(r.getAttributes().get("workTypes").asText().split(","),
                         arrayContainingInAnyOrder("access_requests"));
             } else if (("hmcts-judiciary").equals(r.getRoleName())) {
