@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-081_DeleteDataForRoleAssignments",
+  "_guid_": "S-094_DeleteDataForRoleAssignments",
   "productName": "Role Assignment Service",
   "operationName": "Delete Role Assignments by Process",
   "method": "DELETE",
@@ -24,7 +24,7 @@
       "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
     },
     "body": {
-      "_extends_": "S-081_SingleUserMultipleCaseworkerRolesIds"
+      "_extends_": "S-094_JRDCircuitJudgeFeePaidUser"
     }
   },
 

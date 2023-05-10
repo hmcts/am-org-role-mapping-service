@@ -1,10 +1,10 @@
 {
-  "_guid_": "S-081",
-  "title": "must successfully create org role mapping for Legal Caseworker and Senior Legal Caseworker",
+  "_guid_": "S-093",
+  "title": "must successfully create org role mapping for CTSC Team Leader and CTSC Admin",
   "_extends_": "F-009_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Legal Caseworker role",
-    "contains the actorId of the user just published who has Senior Legal Caseworker role"
+    "contains the actorId of the user just published who has CTSC Team Leader role",
+    "contains the actorId of the user just published who has CTSC Admin"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
@@ -15,16 +15,9 @@
       "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
     },
     "body": {
-      "queryRequests":[
+      "queryRequests": [
         {
-          "actorId": "${[scenarioContext][childContexts][S-081_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "roleName": ["hmcts-legal-operations"]
-        },
-        {
-          "actorId": "${[scenarioContext][childContexts][S-081_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "attributes": {
-            "jurisdiction": ["PUBLICLAW"]
-          }
+          "actorId": "${[scenarioContext][childContexts][S-093_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
         }
       ]
     }
@@ -34,54 +27,68 @@
     "body": {
       "roleAssignmentResponse": [
         {
-          "__ordering__": "UNORDERED",
-          "__elementId__": "roleName"
-        },
-        {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "case-allocator",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
-            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "routine_work"
           }
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-manager",
+          "roleName": "ctsc",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N",
+            "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PUBLICLAW"
+            "jurisdiction": "PUBLICLAW",
+            "workTypes": "routine_work"
           }
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
+          "roleName": "ctsc-team-leader",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PUBLICLAW",
+            "workTypes": "routine_work,access_requests"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -95,89 +102,66 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-legal-operations",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": true,
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N"
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PUBLICLAW"
           }
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "senior-tribunal-caseworker",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
+          "roleName": "hmcts-ctsc",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "CTSC",
+          "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PUBLICLAW",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,decision_making_work,applications,access_requests"
+            "substantive": "N"
           }
         },{
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
-          "actorId" : "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType" : "ORGANISATION",
-          "roleName" : "specific-access-approver-legal-ops",
+          "roleName" : "specific-access-approver-ctsc",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
+          "roleCategory" : "CTSC",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "N",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "PUBLICLAW",
-            "region" : "[[ANYTHING_PRESENT]]",
             "workTypes" : "access_requests"
           }
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "task-supervisor",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work,access_requests"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "tribunal-caseworker",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PUBLICLAW",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,decision_making_work,applications"
+            "workTypes": "access_requests"
           }
         }
       ]

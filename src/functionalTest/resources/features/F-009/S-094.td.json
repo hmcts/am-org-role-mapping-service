@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-084",
+  "_guid_": "S-094",
   "title": "must successfully create judicial role mapping for Deputy Circuit Judge - fee-paid appointment",
   "_extends_": "F-009_Test_Data_Base",
   "specs": [
@@ -16,11 +16,11 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][childContexts][S-084_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": "${[scenarioContext][childContexts][S-094_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "roleName": ["hmcts-judiciary"]
         },
         {
-          "actorId": "${[scenarioContext][childContexts][S-084_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": "${[scenarioContext][childContexts][S-094_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["PUBLICLAW"]
           }
