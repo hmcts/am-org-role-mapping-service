@@ -31,6 +31,7 @@ public class SwaggerPublisher extends BaseTest {
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
+
     @DisplayName("Generate swagger documentation")
     @Test
     @Disabled
