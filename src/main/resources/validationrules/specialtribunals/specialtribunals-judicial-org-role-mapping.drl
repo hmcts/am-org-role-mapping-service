@@ -266,10 +266,10 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   if ($joh.getOffice().equalsIgnoreCase("Tribunal Member-Fee Paid")) {
+   if ($joh.getOffice().equalsIgnoreCase("SPECIALTRIBUNALS Tribunal Member-Fee Paid")) {
     attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
                                                                                + "applications,priority"));
-   } else if ($joh.getOffice().equalsIgnoreCase("Tribunal Member Lay-Fee Paid")) {
+   } else if ($joh.getOffice().equalsIgnoreCase("SPECIALTRIBUNALS Tribunal Member Lay-Fee Paid")) {
     attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
    }
   insert(
@@ -330,7 +330,7 @@ end;
 rule "specialtribunals_fee_paid_medical_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office == "Tribunal Member Medical-Fee Paid")
+  $joh: JudicialOfficeHolder(office == "SPECIALTRIBUNALS Tribunal Member Medical-Fee Paid")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
