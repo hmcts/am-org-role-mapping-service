@@ -1,6 +1,7 @@
 # Keep hub.Dockerfile aligned to this file as far as possible
 ARG JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
-ARG APP_INSIGHTS_AGENT_VERSION=3.2.6
+# renovate: datasource=github-releases depName=microsoft/ApplicationInsights-Java
+ARG APP_INSIGHTS_AGENT_VERSION=3.4.12
 
 # Application image
 

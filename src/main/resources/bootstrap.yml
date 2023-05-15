@@ -13,4 +13,5 @@ spring:
         caseworker-topic-primary-send-listen-shared-access-key: AMQP_CRD_SHARED_ACCESS_KEY_VALUE
         judicial-topic-primary-send-listen-shared-access-key: AMQP_JRD_SHARED_ACCESS_KEY_VALUE
         org-role-mapping-service-POSTGRES-PASS: ORG_ROLE_MAPPING_DB_PASSWORD
+        app-insights-connection-string: app-insights-connection-string
 

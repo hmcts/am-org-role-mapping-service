@@ -1,6 +1,6 @@
 {
-  "connectionString": "${file:/mnt/secrets/am/AppInsightsInstrumentationKey}",
+  "connectionString": "${file:/mnt/secrets/am/app-insights-connection-string}",
   "role": {
-    "name": "HMCTS Access Management Role Mapping Service"
+    "name": "am-org-role-mapping-service"
   }
 }

@@ -19,7 +19,7 @@ java:
   keyVaults:
     am:
       secrets:
-        - AppInsightsInstrumentationKey
+        - app-insights-connection-string
         - am-org-role-mapping-service-s2s-secret
         - role-assignment-service-LD-SDK-KEY
         - orm-IDAM-CLIENT-ID
