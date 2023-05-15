@@ -5,17 +5,78 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolSscsJudicialRoleMappingTest extends DroolBase {
+
+    static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
+
+    {
+        expectedRoleNameWorkTypesMap.put("leadership-judge", null);
+        expectedRoleNameWorkTypesMap.put("judge", "pre_hearing_work,hearing_work,post_hearing_work,"
+                + "decision_making_work,routine_work,priority");
+        expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("task-supervisor", null);
+        expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
+        expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "pre_hearing_work,hearing_work,post_hearing_work,"
+                + "decision_making_work,routine_work,priority");
+        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
+        expectedRoleNameWorkTypesMap.put("medical", "hearing_work,priority");
+        expectedRoleNameWorkTypesMap.put("fee-paid-medical", "hearing_work,priority");
+        expectedRoleNameWorkTypesMap.put("fee-paid-disability", "hearing_work,priority");
+        expectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
+    }
+
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
+        assertEquals(ActorIdType.IDAM, r.getActorIdType());
+        assertEquals(RoleType.ORGANISATION, r.getRoleType());
+        assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
+        assertNull(r.getAttributes().get("bookable"));
+
+        String primaryLocation = null;
+        if (r.getAttributes().get("primaryLocation") != null) {
+            primaryLocation = r.getAttributes().get("primaryLocation").asText();
+        }
+
+        if (r.getRoleName().equals("hmcts-judiciary")) {
+            assertEquals(Classification.PRIVATE, r.getClassification());
+            assertEquals(GrantType.BASIC, r.getGrantType());
+            assertTrue(r.isReadOnly());
+            assertNull(primaryLocation);
+        } else {
+            assertEquals(Classification.PUBLIC, r.getClassification());
+            assertEquals(GrantType.STANDARD, r.getGrantType());
+            assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+            assertFalse(r.isReadOnly());
+            assertEquals("2", primaryLocation);
+        }
+
+        //region assertions
+        if (r.getRoleName().equals("hmcts-judiciary") || List.of("leadership-judge", "judge", "case-allocator", "task-supervisor").contains(r.getRoleName())
+                && office.contains("President of Tribunal")) {
+            assertNull(r.getAttributes().get("region"));
+        } else {
+            assertEquals(regionId, r.getAttributes().get("region").asText());
+        }
+
+        String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+        String actualWorkTypes = null;
+        if (r.getAttributes().get("workTypes") != null) {
+            actualWorkTypes = r.getAttributes().get("workTypes").asText();
+        }
+        assertEquals(expectedWorkTypes, actualWorkTypes);
+    }
 
     @ParameterizedTest
     @CsvSource({
@@ -35,39 +96,14 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(expectedRoles.split(",")));
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        boolean allAssignmentsHaveFeePaidContractType = roleAssignments.stream()
-                .allMatch(ra -> ra.getAttributes().get("contractType").asText().equals("Salaried"));
-        assertTrue(allAssignmentsHaveFeePaidContractType);
-
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-            if (!r.getRoleName().equalsIgnoreCase("hmcts-judiciary")) {
-                assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
-            }
-            //assert work types
-            if (("leadership-judge").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("judge").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("pre_hearing_work", "hearing_work",
-                                "post_hearing_work", "decision_making_work",
-                                "routine_work", "priority"));
-            } else if (("case-allocator").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("task-supervisor").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("specific-access-approver-judiciary").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("access_requests"));
-            } else if (("hmcts-judiciary").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("medical").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("hearing_work", "priority"));
-            }
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
 
@@ -93,47 +129,15 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(expectedRoles.split(",")));
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        boolean allAssignmentsHaveFeePaidContractType = roleAssignments.stream()
-                .allMatch(ra -> ra.getAttributes().get("contractType").asText().equals("Fee-Paid"));
-        assertTrue(allAssignmentsHaveFeePaidContractType);
-
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-                    if (!r.getRoleName().equalsIgnoreCase("hmcts-judiciary")) {
-                        assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
-                    }
-                    //assert work types
-                    if (("fee-paid-judge").equals(r.getRoleName())) {
-                        assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("pre_hearing_work", "hearing_work",
-                                        "post_hearing_work", "decision_making_work",
-                                        "routine_work", "priority"));
-                    } else if (("judge").equals(r.getRoleName())) {
-                        assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("pre_hearing_work", "hearing_work",
-                                        "post_hearing_work", "decision_making_work",
-                                        "routine_work", "priority"));
-                    } else if (("hmcts-judiciary").equals(r.getRoleName())) {
-                        assertNull(r.getAttributes().get("workTypes"));
-                    } else if (("fee-paid-medical").equals(r.getRoleName())) {
-                        assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("hearing_work", "priority"));
-                    } else if (("fee-paid-disability").equals(r.getRoleName())) {
-                        assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("hearing_work", "priority"));
-                    } else if (("regional-centre-team-leader").equals(r.getRoleName())) {
-                        assertNull(r.getAttributes().get("workTypes"));
-                    } else if (("fee-paid-tribunal-member").equals(r.getRoleName())) {
-                        assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("hearing_work", "priority"));
-                    } else if (("fee-paid-financial").equals(r.getRoleName())) {
-                        assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("hearing_work", "priority"));
-                    }
-                });
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+        });
     }
 
 
