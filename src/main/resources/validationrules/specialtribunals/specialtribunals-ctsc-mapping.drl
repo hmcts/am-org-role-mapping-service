@@ -136,7 +136,7 @@ end;
 rule "specialtribunals_case_allocator_ctsc_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "9", serviceCode == "BBA2", !suspended,
+  $cap: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BBA2", !suspended,
                         caseAllocatorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();

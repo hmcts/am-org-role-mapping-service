@@ -116,7 +116,8 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "9,BBA2,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,specific-access-approver-ctsc',Y,Y",
-            "10,BBA2,'ctsc,hmcts-ctsc,task-supervisor',Y,N"
+            "10,BBA2,'ctsc,hmcts-ctsc,task-supervisor',Y,N",
+            "10,BBA2,'ctsc,hmcts-ctsc,task-supervisor,case-allocator',Y,Y"
     })
     void shouldReturnSpecialTribunalsCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                                    String taskSupervisorFlag, String caseAllocatorFlag) {
