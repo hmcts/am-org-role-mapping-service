@@ -276,4 +276,63 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
             }
         });
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            "17,BBA2,'cica',N,N"
+    })
+    void shouldReturnSpecialTribunalsOtherGovDepMappings(String roleId, String serviceCode, String expectedRoles,
+                                                        String taskSupervisorFlag, String caseAllocatorFlag) {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+
+        List<String> skillCodes = List.of("specialtribunals", "test", "ctsc");
+        CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
+        cap.setServiceCode(serviceCode);
+        cap.setSuspended(false);
+        cap.setRoleId(roleId);
+        cap.setTaskSupervisorFlag(taskSupervisorFlag);
+        cap.setCaseAllocatorFlag(caseAllocatorFlag);
+        cap.setRegionId("LDN");
+        cap.setSkillCodes(skillCodes);
+        allProfiles.add(cap);
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("specialtribunals_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(expectedRoles.split(",")));
+        roleAssignments.forEach(r -> {
+            assertEquals("OTHER_GOV_DEPT", r.getRoleCategory().toString());
+            assertEquals("ORGANISATION", r.getRoleType().toString());
+        });
+
+        roleAssignments.forEach(r -> {
+            //assert region
+            assertNull(r.getAttributes().get("region"));
+            //assert work types
+            if (("cica").equals(r.getRoleName())) {
+                assertNull(r.getAttributes().get("workTypes"));
+            }
+            //assert classification
+            List<String> rolesWithPublicClassification = List.of("cica");
+            if (rolesWithPublicClassification.contains(r.getRoleName())) {
+                assertEquals(r.getClassification().toString(), "PUBLIC");
+            } else {
+                assertEquals(r.getClassification().toString(), "PRIVATE");
+            }
+            //assert grant type
+            List<String> rolesWithStandardGrantType = List.of("cica");
+            if (rolesWithStandardGrantType.contains(r.getRoleName())) {
+                assertEquals(r.getGrantType().toString(), "STANDARD");
+            } else {
+                assertEquals(r.getGrantType().toString(), "BASIC");
+            }
+        });
+    }
 }
