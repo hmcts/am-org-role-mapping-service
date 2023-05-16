@@ -242,32 +242,3 @@ then
       .build());
       logMsg("Rule : specialtribunals_regional_centre_admin_org_role");
 end;
-
-/*
- * 9: SPECIALTRIBUNALS admin "specific-access-approver-ctsc" Org role mapping.
- */
-
-rule "specialtribunals_specific_access_approver_ctsc_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "9", serviceCode == "BBA2", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
-
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.ADMIN)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("specific-access-approver-ctsc")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PRIVATE)
-      .readOnly(false)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : specialtribunals_specific_access_approver_ctsc_org_role");
-end;
