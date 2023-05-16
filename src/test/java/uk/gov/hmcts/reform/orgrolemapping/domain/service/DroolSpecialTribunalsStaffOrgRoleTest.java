@@ -198,7 +198,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,specific-access-approver-legal-operations',Y,Y",
+            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,specific-access-approver-legal-ops',Y,Y",
             "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y"
     })
     void shouldReturnSpecialTribunalsCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
@@ -255,7 +255,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
                 assertNull(r.getAttributes().get("workTypes"));
             } else if (("case-allocator").equals(r.getRoleName())) {
                 assertNull(r.getAttributes().get("workTypes"));
-            } else if (("specific-access-approver-legal-operations").equals(r.getRoleName())) {
+            } else if (("specific-access-approver-legal-ops").equals(r.getRoleName())) {
                 assertEquals("access_requests", r.getAttributes().get("workTypes").asText());
             }
             //assert classification
@@ -268,7 +268,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
             }
             //assert grant type
             List<String> rolesWithStandardGrantType = List.of("senior-tribunal-caseworker", "tribunal-caseworker",
-                    "task-supervisor", "case-allocator", "specific-access-approver-legal-operations");
+                    "task-supervisor", "case-allocator", "specific-access-approver-legal-ops");
             if (rolesWithStandardGrantType.contains(r.getRoleName())) {
                 assertEquals(r.getGrantType().toString(), "STANDARD");
             } else {

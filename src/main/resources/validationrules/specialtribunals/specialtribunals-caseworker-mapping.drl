@@ -158,7 +158,7 @@ then
 end;
 
 /*
- * 6: SPECIALTRIBUNALS staff "specific-access-approver-legal-operations" Org role mapping.
+ * 6: SPECIALTRIBUNALS staff "specific-access-approver-legal-ops" Org role mapping.
  */
 
 rule "specialtribunals_specific_access_approver_legal_operations_org_role"
@@ -177,7 +177,7 @@ then
       .actorId($cap.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("specific-access-approver-legal-operations")
+      .roleName("specific-access-approver-legal-ops")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PRIVATE)
       .readOnly(false)
