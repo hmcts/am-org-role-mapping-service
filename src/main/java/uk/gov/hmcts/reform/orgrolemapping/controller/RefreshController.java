@@ -30,6 +30,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
+
 @RestController
 @Slf4j
 public class RefreshController {
@@ -53,8 +56,8 @@ public class RefreshController {
     @Operation(summary = "refresh",
             security =
                     {
-                            @SecurityRequirement(name = "Authorization"),
-                            @SecurityRequirement(name = "ServiceAuthorization")
+                            @SecurityRequirement(name = AUTHORIZATION),
+                            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
                     })
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     @ApiResponse(
@@ -64,7 +67,8 @@ public class RefreshController {
     )
     @ApiResponse(
             responseCode = "400",
-            description = V1.Error.INVALID_REQUEST
+            description = V1.Error.INVALID_REQUEST,
+            content = @Content()
     )
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -86,8 +90,8 @@ public class RefreshController {
     @Operation(summary = "refreshes judicial role assignments",
             security =
                     {
-                            @SecurityRequirement(name = "Authorization"),
-                            @SecurityRequirement(name = "ServiceAuthorization")
+                            @SecurityRequirement(name = AUTHORIZATION),
+                            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
                     })
     @ApiResponse(
             responseCode = "200",
@@ -96,11 +100,13 @@ public class RefreshController {
     )
     @ApiResponse(
             responseCode = "400",
-            description = V1.Error.INVALID_REQUEST
+            description = V1.Error.INVALID_REQUEST,
+            content = @Content()
     )
     @ApiResponse(
             responseCode = "422",
-            description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED
+            description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED,
+            content = @Content()
     )
     public ResponseEntity<Object> judicialRefresh(@RequestHeader(value = "x-correlation-id", required = false)
                                                               String correlationId,
