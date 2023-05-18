@@ -56,17 +56,12 @@ rule "specialtribunals_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SPECIALTRIBUNALS President of Tribunal-Salaried",
-                                        "SPECIALTRIBUNALS Tribunal Judge-Salaried",
-                                        "SPECIALTRIBUNALS Tribunal Judge-Fee Paid"))
+                                        "SPECIALTRIBUNALS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   if ($joh.getOffice().contains("Salaried")) {
-    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   } else {
-    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   }
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
                                                                         + "applications,priority"));
   insert(
@@ -85,6 +80,43 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : specialtribunals_judge_org_role");
+end;
+
+/*
+ * 2.1: SPECIALTRIBUNALS "judge" Org role mapping.
+ * this judge has 'y' under the '... and has a booking? ...' column
+ * when fee paid judges use the booking service, they are temporarily given judge org role
+ */
+
+rule "specialtribunals_judge_org_role_for_fee_paid_judge"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office == "SPECIALTRIBUNALS Tribunal Judge-Fee Paid")
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+      $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
+                                                                        + "applications,priority"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($bk.getBeginTime())
+       .endTime($bk.getEndTime())
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : specialtribunals_judge_org_role_for_fee_paid_judge");
 end;
 
 /*
