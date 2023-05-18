@@ -53,7 +53,7 @@ def versions = [
         drools         : '7.73.0.Final',
         log4JVersion   : '2.20.0',
         logbackVersion : '1.2.10',
-        launchDarklySdk: '5.10.5',
+        launchDarklySdk: '5.10.8',
         netty_version  : '4.1.90.Final'
 
 ]
