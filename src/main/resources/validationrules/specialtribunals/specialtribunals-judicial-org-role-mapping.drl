@@ -241,7 +241,7 @@ then
       .roleType(RoleType.ORGANISATION)
       .roleName("specific-access-approver-judiciary")
       .grantType(GrantType.STANDARD)
-      .classification(Classification.PRIVATE)
+      .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)

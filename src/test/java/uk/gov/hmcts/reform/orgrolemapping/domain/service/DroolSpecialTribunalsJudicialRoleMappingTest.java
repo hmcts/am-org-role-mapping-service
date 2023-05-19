@@ -63,12 +63,6 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
             assertEquals(GrantType.BASIC, r.getGrantType());
             assertTrue(r.isReadOnly());
             assertNull(primaryLocation);
-        } else if (r.getRoleName().equals("specific-access-approver-judiciary")) {
-            assertEquals(Classification.PRIVATE, r.getClassification());
-            assertEquals(GrantType.STANDARD, r.getGrantType());
-            assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
-            assertFalse(r.isReadOnly());
-            assertEquals("2", primaryLocation);
         } else {
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
