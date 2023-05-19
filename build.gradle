@@ -546,6 +546,7 @@ dependencyManagement {
 }
 
 project.ext {
+    pacticipant = 'accessMgmt_orgRoleMapping'
     pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
