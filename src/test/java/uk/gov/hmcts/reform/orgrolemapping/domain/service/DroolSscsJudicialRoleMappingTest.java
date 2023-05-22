@@ -4,12 +4,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.*;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -109,7 +114,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary'",
+            "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
             "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary'",
             "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary'",
             "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary'",
@@ -122,6 +127,36 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles) {
 
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(expectedRoles.split(",")));
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        String regionId = allProfiles.iterator().next().getRegionId();
+        roleAssignments.forEach(r -> {
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary'",
+    })
+    void shouldReturnFeePaidRolesWithBooking(String setOffice, String expectedRoles) throws IOException {
+
+        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
+        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
+                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
+        judicialBooking.setLocationId("2");
+        judicialBookings = Set.of(judicialBooking);
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
