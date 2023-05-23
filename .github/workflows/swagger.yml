@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - AM-2798_Publish_Swagger_Docs
   workflow_dispatch:
 
 jobs:

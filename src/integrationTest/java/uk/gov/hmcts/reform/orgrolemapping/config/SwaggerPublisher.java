@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -18,7 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Built-in feature which saves service's swagger specs in temporary directory.
- * Each travis run on master should automatically save and upload (if updated) documentation.
+ * Each run of workflow .github/workflows/swagger.yml on master should automatically save and upload (if updated)
+ * documentation.
  */
 public class SwaggerPublisher extends BaseTest {
 
@@ -34,7 +34,6 @@ public class SwaggerPublisher extends BaseTest {
 
     @DisplayName("Generate swagger documentation")
     @Test
-    @Disabled
     public void generateDocs() throws Exception {
         byte[] specs = mockMvc.perform(get("/v3/api-docs"))
                 .andExpect(status().isOk())
