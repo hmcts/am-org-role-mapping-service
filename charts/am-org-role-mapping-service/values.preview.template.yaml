@@ -3,18 +3,12 @@ java:
   ingressHost: ${SERVICE_FQDN}
 
   secrets:
-    AMQP_SHARED_ACCESS_KEY_VALUE:
-      secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
+    SB_ACCESS_KEY:
+      secretRef: am-sb-preview
       key: primaryKey
-    AMQP_HOST:
-      secretRef: servicebus-secret-namespace-{{ .Release.Name }}-servicebus
-      key: namespaceName
-    CRD_SUBSCRIPTION_NAME:
-      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-caseworker-topic
-      key: subscriptionName
-    JRD_SUBSCRIPTION_NAME:
-      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-rd-judicial-topic
-      key: subscriptionName
+    SB_CONNECTION_STRING:
+      secretRef: am-sb-preview
+      key: connectionString
 
   keyVaults:
     am:
@@ -34,13 +28,13 @@ java:
     JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.service.core-compute-aat.internal
     LAUNCH_DARKLY_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
-    AMQP_HOST: "$(AMQP_HOST)"
-    CRD_SUBSCRIPTION_NAME: "$(CRD_SUBSCRIPTION_NAME)"
-    JRD_SUBSCRIPTION_NAME: "$(JRD_SUBSCRIPTION_NAME)"
-    CRD_TOPIC_NAME: rd-caseworker-topic
-    JRD_TOPIC_NAME: rd-judicial-topic
-    AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
-    AMQP_JRD_SHARED_ACCESS_KEY_VALUE: "$(AMQP_SHARED_ACCESS_KEY_VALUE)"
+    AMQP_HOST: "am-sb-preview.servicebus.windows.net"
+    CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-servicebus-rd-caseworker-topic"
+    JRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-servicebus-rd-judicial-topic"
+    CRD_TOPIC_NAME: "{{ .Release.Name}}-servicebus-rd-caseworker-topic"
+    JRD_TOPIC_NAME: "{{ .Release.Name}}-servicebus-rd-judicial-topic"
+    AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "$(SB_ACCESS_KEY)"
+    AMQP_JRD_SHARED_ACCESS_KEY_VALUE: "$(SB_ACCESS_KEY)"
     ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql"
     ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.auth.database}}"
     ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
@@ -52,11 +46,11 @@ java:
     enabled: true
     auth:
       port: 5432
+
 servicebus:
   enabled: true
-  teamName: RD
-  resourceGroup: rd-aks
-  serviceplan: standard
+  resourceGroup: "am-aso-preview-rg"
+  sbNamespace: "am"
   setup:
     topics:
       - name: rd-caseworker-topic
