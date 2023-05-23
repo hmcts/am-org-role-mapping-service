@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.springdoc.core.Constants.DEFAULT_API_DOCS_URL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,7 +36,7 @@ public class SwaggerPublisher extends BaseTest {
     @DisplayName("Generate swagger documentation")
     @Test
     public void generateDocs() throws Exception {
-        byte[] specs = mockMvc.perform(get("/v3/api-docs"))
+        byte[] specs = mockMvc.perform(get(DEFAULT_API_DOCS_URL))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
