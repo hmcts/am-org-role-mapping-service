@@ -7,7 +7,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.io.IOException;
@@ -19,7 +23,10 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
@@ -75,9 +82,12 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
         assertNull(r.getAttributes().get("region"));
 
         //work types assertions
-        if (office.equalsIgnoreCase("SPECIALTRIBUNALS Tribunal Member-Fee Paid") && r.getRoleName().equalsIgnoreCase("fee-paid-tribunal-member")) {
-            employmentExpectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,decision_making_work,routine_work,applications,priority");
-        } else if (office.equalsIgnoreCase("SPECIALTRIBUNALS Tribunal Member Lay-Fee Paid") && r.getRoleName().equalsIgnoreCase("fee-paid-tribunal-member")) {
+        if (office.equalsIgnoreCase("SPECIALTRIBUNALS Tribunal Member-Fee Paid")
+                && r.getRoleName().equalsIgnoreCase("fee-paid-tribunal-member")) {
+            employmentExpectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member",
+                    "hearing_work,decision_making_work,routine_work,applications,priority");
+        } else if (office.equalsIgnoreCase("SPECIALTRIBUNALS Tribunal Member Lay-Fee Paid")
+                && r.getRoleName().equalsIgnoreCase("fee-paid-tribunal-member")) {
             employmentExpectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
         }
         String expectedWorkTypes = employmentExpectedRoleNameWorkTypesMap.get(r.getRoleName());
@@ -90,8 +100,10 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SPECIALTRIBUNALS President of Tribunal-Salaried,'senior-judge,judge,case-allocator,task-supervisor,hmcts-judiciary,specific-access-approver-judiciary'",
-            "SPECIALTRIBUNALS Tribunal Judge-Salaried,'judge,case-allocator,task-supervisor,hmcts-judiciary,specific-access-approver-judiciary'",
+            "SPECIALTRIBUNALS President of Tribunal-Salaried,'senior-judge,judge,case-allocator,task-supervisor,"
+                    + "hmcts-judiciary,specific-access-approver-judiciary'",
+            "SPECIALTRIBUNALS Tribunal Judge-Salaried,'judge,case-allocator,task-supervisor,hmcts-judiciary,"
+                    + "specific-access-approver-judiciary'",
             "SPECIALTRIBUNALS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'"
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles) {

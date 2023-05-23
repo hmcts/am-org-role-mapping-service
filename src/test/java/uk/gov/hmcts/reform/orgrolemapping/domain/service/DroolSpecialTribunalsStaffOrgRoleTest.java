@@ -1,16 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +16,6 @@ import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,11 +24,15 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin',N,N",
-            "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,specific-access-approver-admin',Y,N",
-            "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,case-allocator,specific-access-approver-admin',N,Y",
-            "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator,specific-access-approver-admin',Y,Y",
+            "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
+                    + "specific-access-approver-admin',Y,N",
+            "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,case-allocator,"
+                    + "specific-access-approver-admin',N,Y",
+            "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
+                    + "case-allocator,specific-access-approver-admin',Y,Y",
             "4,BBA2,'hearing-centre-admin,hmcts-admin',N,N",
-            "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,task-supervisor,case-allocator,specific-access-approver-admin',Y,Y",
+            "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,task-supervisor,"
+                    + "case-allocator,specific-access-approver-admin',Y,Y",
             "13,BBA2,'regional-centre-admin,hmcts-admin',N,N"
     })
     void shouldReturnSpecialTribunalsAdminMappings(String roleId, String serviceCode, String expectedRoles,
@@ -67,55 +67,56 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
         });
 
         roleAssignments.forEach(r -> {
-                    if (r.getRoleName().equals("hmcts-admin")) {
-                        assertNull(r.getAttributes().get("jurisdiction"));
-                        assertNull(r.getAttributes().get("primaryLocation"));
-                    } else {
-                        assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
-                        assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    }
-                    //assert region
-                    assertNull(r.getAttributes().get("region"));
-                    //assert work types
-                    if (("hearing-centre-team-leader").equals(r.getRoleName())) {
-                        assertNull(r.getAttributes().get("workTypes"));
-                    } else if (("hearing-centre-admin").equals(r.getRoleName())) {
-                        assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("applications", "hearing_work",
-                                        "routine_work", "priority"));
-                    } else if (("hmcts-admin").equals(r.getRoleName())) {
-                        assertNull(r.getAttributes().get("workTypes"));
-                    } else if (("task-supervisor").equals(r.getRoleName())) {
-                        assertNull(r.getAttributes().get("workTypes"));
-                    } else if (("case-allocator").equals(r.getRoleName())) {
-                        assertNull(r.getAttributes().get("workTypes"));
-                    } else if (("specific-access-approver-admin").equals(r.getRoleName())) {
-                        assertEquals("access_requests", r.getAttributes().get("workTypes").asText());
-                    }
-                    //assert classification
-                    List<String> rolesWithPublicClassification = List.of("hearing-centre-team-leader", "hearing-centre-admin",
-                                                                        "task-supervisor", "case-allocator", "regional-centre-team-leader",
-                                                                        "regional-centre-admin");
-                    if (rolesWithPublicClassification.contains(r.getRoleName())) {
-                        assertEquals(r.getClassification().toString(), "PUBLIC");
-                    } else {
-                        assertEquals(r.getClassification().toString(), "PRIVATE");
-                    }
-                    //assert grant type
-                    List<String> rolesWithStandardGrantType = List.of("hearing-centre-team-leader", "hearing-centre-admin",
-                            "task-supervisor", "case-allocator", "specific-access-approver-admin", "regional-centre-team-leader",
-                            "regional-centre-admin");
-                    if (rolesWithStandardGrantType.contains(r.getRoleName())) {
-                        assertEquals(r.getGrantType().toString(), "STANDARD");
-                    } else {
-                        assertEquals(r.getGrantType().toString(), "BASIC");
-                    }
-                });
+            if (r.getRoleName().equals("hmcts-admin")) {
+                assertNull(r.getAttributes().get("jurisdiction"));
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
+                assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
+            }
+            //assert region
+            assertNull(r.getAttributes().get("region"));
+            //assert work types
+            if (("hearing-centre-team-leader").equals(r.getRoleName())) {
+                assertNull(r.getAttributes().get("workTypes"));
+            } else if (("hearing-centre-admin").equals(r.getRoleName())) {
+                assertThat(r.getAttributes().get("workTypes").asText().split(","),
+                        arrayContainingInAnyOrder("applications", "hearing_work",
+                                "routine_work", "priority"));
+            } else if (("hmcts-admin").equals(r.getRoleName())) {
+                assertNull(r.getAttributes().get("workTypes"));
+            } else if (("task-supervisor").equals(r.getRoleName())) {
+                assertNull(r.getAttributes().get("workTypes"));
+            } else if (("case-allocator").equals(r.getRoleName())) {
+                assertNull(r.getAttributes().get("workTypes"));
+            } else if (("specific-access-approver-admin").equals(r.getRoleName())) {
+                assertEquals("access_requests", r.getAttributes().get("workTypes").asText());
+            }
+            //assert classification
+            List<String> rolesWithPublicClassification = List.of("hearing-centre-team-leader", "hearing-centre-admin",
+                                                                "task-supervisor", "case-allocator",
+                                                                "regional-centre-team-leader", "regional-centre-admin");
+            if (rolesWithPublicClassification.contains(r.getRoleName())) {
+                assertEquals(r.getClassification().toString(), "PUBLIC");
+            } else {
+                assertEquals(r.getClassification().toString(), "PRIVATE");
+            }
+            //assert grant type
+            List<String> rolesWithStandardGrantType = List.of("hearing-centre-team-leader", "hearing-centre-admin",
+                    "task-supervisor", "case-allocator", "specific-access-approver-admin",
+                    "regional-centre-team-leader", "regional-centre-admin");
+            if (rolesWithStandardGrantType.contains(r.getRoleName())) {
+                assertEquals(r.getGrantType().toString(), "STANDARD");
+            } else {
+                assertEquals(r.getGrantType().toString(), "BASIC");
+            }
+        });
     }
 
     @ParameterizedTest
     @CsvSource({
-            "9,BBA2,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,specific-access-approver-ctsc',Y,Y",
+            "9,BBA2,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,specific-access-approver-ctsc'"
+                    + ",Y,Y",
             "10,BBA2,'ctsc,hmcts-ctsc,task-supervisor',Y,N",
             "10,BBA2,'ctsc,hmcts-ctsc,task-supervisor,case-allocator',Y,Y"
     })
@@ -199,7 +200,8 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,specific-access-approver-legal-ops',Y,Y",
+            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                    + "case-allocator,specific-access-approver-legal-ops',Y,Y",
             "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y"
     })
     void shouldReturnSpecialTribunalsCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
