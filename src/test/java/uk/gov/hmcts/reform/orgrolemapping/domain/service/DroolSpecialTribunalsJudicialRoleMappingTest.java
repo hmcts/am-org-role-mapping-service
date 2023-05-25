@@ -31,26 +31,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
 
-    static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
+    static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     {
-        employmentExpectedRoleNameWorkTypesMap.put("senior-judge", null);
-        employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,"
+        expectedRoleNameWorkTypesMap.put("senior-judge", null);
+        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,"
                 + "applications,priority");
-        employmentExpectedRoleNameWorkTypesMap.put("case-allocator", null);
-        employmentExpectedRoleNameWorkTypesMap.put("task-supervisor", null);
-        employmentExpectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
-        employmentExpectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,"
+        expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("task-supervisor", null);
+        expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
+        expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,"
                 + "routine_work,applications,priority");
-        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,decision_making_work,"
+        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,decision_making_work,"
                 + "routine_work,applications,priority");
-        employmentExpectedRoleNameWorkTypesMap.put("medical", "hearing_work,decision_making_work,"
+        expectedRoleNameWorkTypesMap.put("medical", "hearing_work,decision_making_work,"
                 + "routine_work,priority");
-        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-medical", "hearing_work,decision_making_work,"
+        expectedRoleNameWorkTypesMap.put("fee-paid-medical", "hearing_work,decision_making_work,"
                 + "routine_work,applications,priority");
-        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-disability", "hearing_work,priority");
-        employmentExpectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
+        expectedRoleNameWorkTypesMap.put("fee-paid-disability", "hearing_work,priority");
+        expectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String office) {
@@ -82,15 +82,15 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
         assertNull(r.getAttributes().get("region"));
 
         //work types assertions
-        if (office.equalsIgnoreCase("SPECIALTRIBUNALS Tribunal Member-Fee Paid")
+        if (office.equalsIgnoreCase("ST_CIC Tribunal Member-Fee Paid")
                 && r.getRoleName().equalsIgnoreCase("fee-paid-tribunal-member")) {
-            employmentExpectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member",
+            expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member",
                     "hearing_work,decision_making_work,routine_work,applications,priority");
-        } else if (office.equalsIgnoreCase("SPECIALTRIBUNALS Tribunal Member Lay-Fee Paid")
+        } else if (office.equalsIgnoreCase("ST_CIC Tribunal Member Lay-Fee Paid")
                 && r.getRoleName().equalsIgnoreCase("fee-paid-tribunal-member")) {
-            employmentExpectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
+            expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
         }
-        String expectedWorkTypes = employmentExpectedRoleNameWorkTypesMap.get(r.getRoleName());
+        String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
         String actualWorkTypes = null;
         if (r.getAttributes().get("workTypes") != null) {
             actualWorkTypes = r.getAttributes().get("workTypes").asText();
@@ -100,11 +100,11 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SPECIALTRIBUNALS President of Tribunal-Salaried,'senior-judge,judge,case-allocator,task-supervisor,"
+            "ST_CIC President of Tribunal-Salaried,'senior-judge,judge,case-allocator,task-supervisor,"
                     + "hmcts-judiciary,specific-access-approver-judiciary'",
-            "SPECIALTRIBUNALS Tribunal Judge-Salaried,'judge,case-allocator,task-supervisor,hmcts-judiciary,"
+            "ST_CIC Tribunal Judge-Salaried,'judge,case-allocator,task-supervisor,hmcts-judiciary,"
                     + "specific-access-approver-judiciary'",
-            "SPECIALTRIBUNALS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'"
+            "ST_CIC Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'"
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles) {
 
@@ -112,7 +112,7 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("specialtribunals_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -129,12 +129,12 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SPECIALTRIBUNALS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-            "SPECIALTRIBUNALS Tribunal Member-Fee Paid,'fee-paid-tribunal-member'",
-            "SPECIALTRIBUNALS Tribunal Member Medical-Fee Paid,'fee-paid-medical'",
-            "SPECIALTRIBUNALS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member'",
-            "SPECIALTRIBUNALS Tribunal Member Disability-Fee Paid,'fee-paid-disability'",
-            "SPECIALTRIBUNALS Tribunal Member Financially Qualified-Fee Paid,'fee-paid-financial'"
+            "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
+            "ST_CIC Tribunal Member-Fee Paid,'fee-paid-tribunal-member'",
+            "ST_CIC Tribunal Member Medical-Fee Paid,'fee-paid-medical'",
+            "ST_CIC Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member'",
+            "ST_CIC Tribunal Member Disability-Fee Paid,'fee-paid-disability'",
+            "ST_CIC Tribunal Member Financially Qualified-Fee Paid,'fee-paid-financial'"
     })
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles) {
 
@@ -142,7 +142,7 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("specialtribunals_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -159,7 +159,7 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SPECIALTRIBUNALS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'"
+            "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'"
     })
     void shouldReturnFeePaidRolesWithBooking(String setOffice, String expectedRoles) throws IOException {
 
@@ -172,7 +172,7 @@ public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("specialtribunals_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());

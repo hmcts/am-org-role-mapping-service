@@ -41,7 +41,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> skillCodes = List.of("specialtribunals", "test", "ctsc");
+        List<String> skillCodes = List.of("st_cic", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -54,7 +54,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("specialtribunals_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -126,7 +126,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> skillCodes = List.of("specialtribunals", "test", "ctsc");
+        List<String> skillCodes = List.of("st_cic", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -139,7 +139,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("specialtribunals_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -210,7 +210,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> skillCodes = List.of("specialtribunals", "test", "ctsc");
+        List<String> skillCodes = List.of("st_cic", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -223,7 +223,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("specialtribunals_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -290,7 +290,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
-        List<String> skillCodes = List.of("specialtribunals", "test", "ctsc");
+        List<String> skillCodes = List.of("st_cic", "test", "ctsc");
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
@@ -303,7 +303,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("specialtribunals_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());

@@ -17,12 +17,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
- * 1: SPECIALTRIBUNALS ctsc "ctsc-team-leader" Org role mapping.
+ * 1: ST_CIC ctsc "ctsc-team-leader" Org role mapping.
  */
 
-rule "specialtribunals_ctsc_team_leader_org_role"
+rule "st_cic_ctsc_team_leader_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId == "9", serviceCode == "BBA2", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -42,16 +42,16 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : specialtribunals_ctsc_team_leader_org_role");
+      logMsg("Rule : st_cic_ctsc_team_leader_org_role");
 end;
 
 /*
- * 2: SPECIALTRIBUNALS ctsc "ctsc" Org role mapping.
+ * 2: ST_CIC ctsc "ctsc" Org role mapping.
  */
 
-rule "specialtribunals_ctsc_org_role"
+rule "st_cic_ctsc_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BBA2", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -71,16 +71,16 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : specialtribunals_ctsc_org_role");
+      logMsg("Rule : st_cic_ctsc_org_role");
 end;
 
 /*
- * 3: SPECIALTRIBUNALS ctsc "hmcts_ctsc" Org role mapping.
+ * 3: ST_CIC ctsc "hmcts_ctsc" Org role mapping.
  */
 
-rule "specialtribunals_hmcts_ctsc_org_role"
+rule "st_cic_hmcts_ctsc_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BBA2", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -97,16 +97,16 @@ then
       .readOnly(true)
       .attributes(attribute)
       .build());
-      logMsg("Rule : specialtribunals_hmcts_ctsc_org_role");
+      logMsg("Rule : st_cic_hmcts_ctsc_org_role");
 end;
 
 /*
- * 4: SPECIALTRIBUNALS ctsc "task-supervisor" Org role mapping.
+ * 4: ST_CIC ctsc "task-supervisor" Org role mapping.
  */
 
-rule "specialtribunals_task_supervisor_ctsc_org_role"
+rule "st_cic_task_supervisor_ctsc_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BBA2", !suspended,
                         taskSupervisorFlag == "Y")
 then
@@ -126,16 +126,16 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : specialtribunals_task_supervisor_ctsc_org_role");
+      logMsg("Rule : st_cic_task_supervisor_ctsc_org_role");
 end;
 
 /*
- * 5: SPECIALTRIBUNALS ctsc "case-allocator" Org role mapping.
+ * 5: ST_CIC ctsc "case-allocator" Org role mapping.
  */
 
-rule "specialtribunals_case_allocator_ctsc_org_role"
+rule "st_cic_case_allocator_ctsc_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BBA2", !suspended,
                         caseAllocatorFlag == "Y")
 then
@@ -155,16 +155,16 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : specialtribunals_case_allocator_ctsc_org_role");
+      logMsg("Rule : st_cic_case_allocator_ctsc_org_role");
 end;
 
 /*
- * 6: SPECIALTRIBUNALS admin "specific-access-approver-ctsc" Org role mapping.
+ * 6: ST_CIC admin "specific-access-approver-ctsc" Org role mapping.
  */
 
-rule "specialtribunals_specific_access_approver_ctsc_org_role"
+rule "st_cic_specific_access_approver_ctsc_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $cap: CaseWorkerAccessProfile(roleId == "9", serviceCode == "BBA2", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -184,5 +184,5 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : specialtribunals_specific_access_approver_ctsc_org_role");
+      logMsg("Rule : st_cic_specific_access_approver_ctsc_org_role");
 end;
