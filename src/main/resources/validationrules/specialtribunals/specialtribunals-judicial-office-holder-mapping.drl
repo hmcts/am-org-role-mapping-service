@@ -25,12 +25,12 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
 
 /*
- * 1: "SPECIALTRIBUNALS President of Tribunal-Salaried" business role mapping to JOH.
+ * 1: "ST_CIC President of Tribunal-Salaried" business role mapping to JOH.
  */
 
-rule "specialtribunals_president_of_tribunal_salaried_joh"
+rule "st_cic_president_of_tribunal_salaried_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "President of Tribunal",
                                appointmentType == "Salaried",
@@ -40,7 +40,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SPECIALTRIBUNALS President of Tribunal-Salaried")
+      .office("ST_CIC President of Tribunal-Salaried")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -50,15 +50,15 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : specialtribunals_president_of_tribunal_salaried_joh");
+      logMsg("Rule : st_cic_president_of_tribunal_salaried_joh");
 end;
 
 /*
- * 2: "SPECIALTRIBUNALS Tribunal Judge-Fee Paid" business role mapping to JOH.
+ * 2: "ST_CIC Tribunal Judge-Fee Paid" business role mapping to JOH.
  */
-rule "specialtribunals_tribunal_judge_fee_paid_joh"
+rule "st_cic_tribunal_judge_fee_paid_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Judge",
                                appointmentType == "Fee Paid",
@@ -68,7 +68,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SPECIALTRIBUNALS Tribunal Judge-Fee Paid")
+      .office("ST_CIC Tribunal Judge-Fee Paid")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -78,15 +78,15 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : specialtribunals_tribunal_judge_fee_paid_joh");
+      logMsg("Rule : st_cic_tribunal_judge_fee_paid_joh");
 end;
 
 /*
- * 3: "SPECIALTRIBUNALS Tribunal Judge-Salaried" business role mapping to JOH.
+ * 3: "ST_CIC Tribunal Judge-Salaried" business role mapping to JOH.
  */
-rule "specialtribunals_tribunal_judge_salaried_joh"
+rule "st_cic_tribunal_judge_salaried_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Judge",
                                appointmentType == "Salaried",
@@ -96,7 +96,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SPECIALTRIBUNALS Tribunal Judge-Salaried")
+      .office("ST_CIC Tribunal Judge-Salaried")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -106,15 +106,15 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : specialtribunals_tribunal_judge_salaried_joh");
+      logMsg("Rule : st_cic_tribunal_judge_salaried_joh");
 end;
 
 /*
- * 4: "SPECIALTRIBUNALS Tribunal Member-Fee Paid" business role mapping to JOH.
+ * 4: "ST_CIC Tribunal Member-Fee Paid" business role mapping to JOH.
  */
-rule "specialtribunals_tribunal_member_fee_paid_joh"
+rule "st_cic_tribunal_member_fee_paid_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member",
                                appointmentType == "Fee Paid",
@@ -125,7 +125,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SPECIALTRIBUNALS Tribunal Member-Fee Paid")
+      .office("ST_CIC Tribunal Member-Fee Paid")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -135,15 +135,15 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : specialtribunals_tribunal_member_fee_paid_joh");
+      logMsg("Rule : st_cic_tribunal_member_fee_paid_joh");
 end;
 
 /*
- * 5: "SPECIALTRIBUNALS Tribunal Member Lay-Fee Paid" business role mapping to JOH.
+ * 5: "ST_CIC Tribunal Member Lay-Fee Paid" business role mapping to JOH.
  */
-rule "specialtribunals_tribunal_member_lay_fee_paid_joh"
+rule "st_cic_tribunal_member_lay_fee_paid_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member Lay",
                                appointmentType == "Fee Paid",
@@ -154,7 +154,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SPECIALTRIBUNALS Tribunal Member Lay-Fee Paid")
+      .office("ST_CIC Tribunal Member Lay-Fee Paid")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -164,15 +164,15 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : specialtribunals_tribunal_member_lay_fee_paid_joh");
+      logMsg("Rule : st_cic_tribunal_member_lay_fee_paid_joh");
 end;
 
 /*
- * 6: "SPECIALTRIBUNALS Tribunal Member Medical-Salaried" business role mapping to JOH.
+ * 6: "ST_CIC Tribunal Member Medical-Salaried" business role mapping to JOH.
  */
-rule "specialtribunals_tribunal_member_medical_salaried_joh"
+rule "st_cic_tribunal_member_medical_salaried_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member Medical",
                                appointmentType == "Salaried",
@@ -183,7 +183,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SPECIALTRIBUNALS Tribunal Member Medical-Salaried")
+      .office("ST_CIC Tribunal Member Medical-Salaried")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -193,15 +193,15 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : specialtribunals_tribunal_member_medical_salaried_joh");
+      logMsg("Rule : st_cic_tribunal_member_medical_salaried_joh");
 end;
 
 /*
- * 7: "SPECIALTRIBUNALS Tribunal Member Medical-Fee Paid" business role mapping to JOH.
+ * 7: "ST_CIC Tribunal Member Medical-Fee Paid" business role mapping to JOH.
  */
-rule "specialtribunals_tribunal_member_medical_fee_paid_joh"
+rule "st_cic_tribunal_member_medical_fee_paid_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member Medical",
                                appointmentType == "Fee Paid",
@@ -212,7 +212,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SPECIALTRIBUNALS Tribunal Member Medical-Fee Paid")
+      .office("ST_CIC Tribunal Member Medical-Fee Paid")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -222,15 +222,15 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : specialtribunals_tribunal_member_medical_fee_paid_joh");
+      logMsg("Rule : st_cic_tribunal_member_medical_fee_paid_joh");
 end;
 
 /*
- * 8: "SPECIALTRIBUNALS Tribunal Member Disability-Fee Paid" business role mapping to JOH.
+ * 8: "ST_CIC Tribunal Member Disability-Fee Paid" business role mapping to JOH.
  */
-rule "specialtribunals_tribunal_member_disability_fee_paid_joh"
+rule "st_cic_tribunal_member_disability_fee_paid_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member Disability",
                                appointmentType == "Fee Paid",
@@ -241,7 +241,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SPECIALTRIBUNALS Tribunal Member Disability-Fee Paid")
+      .office("ST_CIC Tribunal Member Disability-Fee Paid")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -251,15 +251,15 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : specialtribunals_tribunal_member_disability_fee_paid_joh");
+      logMsg("Rule : st_cic_tribunal_member_disability_fee_paid_joh");
 end;
 
 /*
- * 9: "SPECIALTRIBUNALS Tribunal Member Financially Qualified-Fee Paid" business role mapping to JOH.
+ * 9: "ST_CIC Tribunal Member Financially Qualified-Fee Paid" business role mapping to JOH.
  */
-rule "specialtribunals_tribunal_member_financially_qualified_fee_paid_joh"
+rule "st_cic_tribunal_member_financially_qualified_fee_paid_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SPECIALTRIBUNALS_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member Financial",
                                appointmentType == "Fee Paid",
@@ -270,7 +270,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("SPECIALTRIBUNALS Tribunal Member Financially Qualified-Fee Paid")
+      .office("ST_CIC Tribunal Member Financially Qualified-Fee Paid")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -280,5 +280,5 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : specialtribunals_tribunal_member_financially_qualified_fee_paid_joh");
+      logMsg("Rule : st_cic_tribunal_member_financially_qualified_fee_paid_joh");
 end;
