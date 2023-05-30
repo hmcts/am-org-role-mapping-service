@@ -27,4 +27,8 @@
         <notes>https://tools.hmcts.net/jira/browse/AM-2776 springframework</notes>
         <cve>CVE-2023-20863</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2816 tomcat</notes>
+        <cve>CVE-2023-28709</cve>
+    </suppress>
 </suppressions>
