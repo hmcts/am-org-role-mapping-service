@@ -1,23 +1,29 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.HandlerMethod;
 
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
+
 @Configuration
-@SecurityScheme(name = "Authorization", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
-@SecurityScheme(name = "ServiceAuthorization", type = SecuritySchemeType.APIKEY,
-        in = SecuritySchemeIn.HEADER, bearerFormat = "JWT", description = "ServiceAuthorization")
 public class SwaggerConfiguration {
+
+    private static final String DESCRIPTION = "API to provision various organisation roles for staff & judicial users"
+            + " based on the service specific mapping rules.";
 
     @Bean
     public GroupedOpenApi publicApi(OperationCustomizer customGlobalHeaders) {
@@ -28,20 +34,53 @@ public class SwaggerConfiguration {
     }
 
     @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .components(new Components()
+                        .addSecuritySchemes(
+                                AUTHORIZATION,
+                                new SecurityScheme()
+                                        .name(AUTHORIZATION)
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
+                                        .description("Valid IDAM user token, (Bearer keyword is "
+                                                + "added automatically)")
+                        )
+                        .addSecuritySchemes(SERVICE_AUTHORIZATION,
+                                new SecurityScheme()
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name(SERVICE_AUTHORIZATION)
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
+                                        .description("Valid Service-to-Service JWT token for a "
+                                                + "whitelisted micro-service")
+                        )
+                )
+                .info(new Info().title("AM Organisational Role Mapping Service")
+                        .description(DESCRIPTION))
+                .externalDocs(new ExternalDocumentation()
+                        .description("README")
+                        .url("https://github.com/hmcts/am-org-role-mapping-service#readme"))
+                .addSecurityItem(new SecurityRequirement().addList(AUTHORIZATION))
+                .addSecurityItem(new SecurityRequirement().addList(SERVICE_AUTHORIZATION));
+    }
+
+    @Bean
     public OperationCustomizer customGlobalHeaders() {
         return (Operation customOperation, HandlerMethod handlerMethod) -> {
             Parameter serviceAuthorizationHeader = new Parameter()
                     .in(ParameterIn.HEADER.toString())
                     .schema(new StringSchema())
-                    .name("ServiceAuthorization")
-                    .description("Keyword `Bearer` followed by a service-to-service token "
-                            + "for a whitelisted micro-service")
+                    .name(SERVICE_AUTHORIZATION)
+                    .description("Valid Service-to-Service JWT token for a whitelisted micro-service")
                     .required(true);
             Parameter authorizationHeader = new Parameter()
                     .in(ParameterIn.HEADER.toString())
                     .schema(new StringSchema())
-                    .name("Authorization")
-                    .description("Authorization token")
+                    .name(AUTHORIZATION)
+                    .description("Keyword `Bearer` followed by a valid IDAM user token")
                     .required(true);
             customOperation.addParametersItem(authorizationHeader);
             customOperation.addParametersItem(serviceAuthorizationHeader);

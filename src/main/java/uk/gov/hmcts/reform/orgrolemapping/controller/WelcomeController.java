@@ -17,10 +17,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
+
+import static org.springdoc.core.Constants.SWAGGER_UI_URL;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 
 @RestController
 @Slf4j
@@ -38,8 +43,8 @@ public class WelcomeController {
     }
 
     @GetMapping(value = "/swagger")
-    public String index() {
-        return "redirect:swagger-ui.html";
+    public RedirectView swaggerRedirect() {
+        return new RedirectView(SWAGGER_UI_URL, true, false);
     }
 
     @GetMapping(value = "/welcome")
@@ -57,8 +62,8 @@ public class WelcomeController {
     @Operation(summary = "creates multiple role assignments based upon user profile mapping rules",
             security =
                     {
-                            @SecurityRequirement(name = "Authorization"),
-                            @SecurityRequirement(name = "ServiceAuthorization")
+                            @SecurityRequirement(name = AUTHORIZATION),
+                            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
                     })
     @ApiResponse(
             responseCode = "200",
@@ -67,7 +72,8 @@ public class WelcomeController {
     )
     @ApiResponse(
             responseCode = "400",
-            description = V1.Error.INVALID_REQUEST
+            description = V1.Error.INVALID_REQUEST,
+            content = @Content()
     )
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest,
                                                    @RequestHeader(value = "userType")
