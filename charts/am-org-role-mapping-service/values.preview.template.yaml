@@ -1,6 +1,12 @@
 java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+#  overidding dev memory and cpu limits to make it match with standard limits
+#  https://github.com/hmcts/chart-java/blob/master/java/values.yaml
+  devmemoryRequests: 1024Mi
+  devcpuRequests: 250m
+  devmemoryLimits: 2048Mi
+  devcpuLimits: 1500m
 
   secrets:
     SB_ACCESS_KEY:
@@ -42,6 +48,7 @@ java:
     ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.auth.port}}"
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
     RUN_LD_ON_STARTUP: true
+    APPLICATION_LOGGING_LEVEL: DEBUG
   postgresql:
     enabled: true
     auth:
