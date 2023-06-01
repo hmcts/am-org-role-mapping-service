@@ -321,7 +321,7 @@ dependencies {
     implementation group: 'org.springframework.security', name:'spring-security-oauth2-resource-server', version: versions.springSecurity
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.0'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.6'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.5'
     implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.3.7'
     implementation group: 'org.springframework', name: 'spring-core', version: versions.spring
     implementation group: 'org.springframework', name: 'spring-beans', version: versions.spring
@@ -339,7 +339,6 @@ dependencies {
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.8'
-//    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.5'
     implementation group: 'com.github.hmcts', name:'properties-volume-spring-boot-starter', version:'0.1.1'
     implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
