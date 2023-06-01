@@ -1,10 +1,12 @@
 java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
-  devmemoryRequests: 2048Mi
-  devcpuRequests: 2000m
-  devmemoryLimits: 4096Mi
-  devcpuLimits: 4000m
+#  overidding dev memory and cpu limits to make it match with standard limits
+#  https://github.com/hmcts/chart-java/blob/master/java/values.yaml
+  devmemoryRequests: 1024Mi
+  devcpuRequests: 250m
+  devmemoryLimits: 2048Mi
+  devcpuLimits: 1500m
 
   secrets:
     SB_ACCESS_KEY:
