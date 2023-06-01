@@ -26,10 +26,11 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "10,ABA3,'ctsc,hmcts-ctsc',N,N",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc',N,N",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor,case-allocator',Y,Y",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,case-allocator',N,Y",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor',Y,N"
+            "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N",
+            "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor,"
+                    + "case-allocator',Y,Y",
+            "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,case-allocator',N,Y",
+            "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor',Y,N"
     })
     void shouldReturnPublicLawCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                            String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -82,11 +83,13 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "4,ABA3,'hearing-centre-admin,hmcts-admin',N,N",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin',N,N",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,"
+            "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin',N,N",
+            "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
                     + "task-supervisor,case-allocator',Y,Y",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,task-supervisor',Y,N",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,case-allocator',N,Y",
+            "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
+                    + "task-supervisor',Y,N",
+            "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
+                    + "case-allocator',N,Y",
 
     })
     void shouldReturnPublicLawAdminMappings(String roleId, String serviceCode, String expectedRoles,
@@ -147,13 +150,14 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "2,ABA3,'tribunal-caseworker,hmcts-legal-operations',N,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
-                    + "task-supervisor',Y,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
-                    + "case-allocator',N,Y",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
-                    + "task-supervisor,case-allocator',Y,Y",
+            "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                    + "specific-access-approver-legal-ops',N,N",
+            "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                    + "specific-access-approver-legal-ops,task-supervisor',Y,N",
+            "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                    + "specific-access-approver-legal-ops,case-allocator',N,Y",
+            "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                    + "specific-access-approver-legal-ops,task-supervisor,case-allocator',Y,Y",
     })
     void shouldReturnPublicLawCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
                                                   String taskSupervisorFlag, String caseAllocatorFlag) {
