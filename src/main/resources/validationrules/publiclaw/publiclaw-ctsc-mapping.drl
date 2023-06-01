@@ -23,7 +23,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "publiclaw_ctsc_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "10", serviceCode == "ABA3", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "ABA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
