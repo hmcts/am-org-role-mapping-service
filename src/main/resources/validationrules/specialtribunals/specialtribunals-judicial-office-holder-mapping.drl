@@ -32,7 +32,7 @@ rule "st_cic_president_of_tribunal_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
-                               appointment == "President of Tribunal",
+                               appointment == "President of Tribunals",
                                appointmentType == "Salaried",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "BBA2") ))
