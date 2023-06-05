@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
+public class DroolStcicStaffOrgRoleTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
@@ -35,7 +35,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
                     + "case-allocator,specific-access-approver-admin',Y,Y",
             "13,BBA2,'regional-centre-admin,hmcts-admin',N,N"
     })
-    void shouldReturnSpecialTribunalsAdminMappings(String roleId, String serviceCode, String expectedRoles,
+    void shouldReturnStcicAdminMappings(String roleId, String serviceCode, String expectedRoles,
                                        String taskSupervisorFlag, String caseAllocatorFlag) {
 
         judicialAccessProfiles.clear();
@@ -120,7 +120,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
             "10,BBA2,'ctsc,hmcts-ctsc,task-supervisor',Y,N",
             "10,BBA2,'ctsc,hmcts-ctsc,task-supervisor,case-allocator',Y,Y"
     })
-    void shouldReturnSpecialTribunalsCtscMappings(String roleId, String serviceCode, String expectedRoles,
+    void shouldReturnStcicCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                                    String taskSupervisorFlag, String caseAllocatorFlag) {
 
         judicialAccessProfiles.clear();
@@ -204,7 +204,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
                     + "case-allocator,specific-access-approver-legal-ops',Y,Y",
             "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y"
     })
-    void shouldReturnSpecialTribunalsCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
+    void shouldReturnStcicCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
                                                   String taskSupervisorFlag, String caseAllocatorFlag) {
 
         judicialAccessProfiles.clear();
@@ -284,7 +284,7 @@ public class DroolSpecialTribunalsStaffOrgRoleTest extends DroolBase {
     @CsvSource({
             "17,BBA2,'cica',N,N"
     })
-    void shouldReturnSpecialTribunalsOtherGovDepMappings(String roleId, String serviceCode, String expectedRoles,
+    void shouldReturnStcicOtherGovDepMappings(String roleId, String serviceCode, String expectedRoles,
                                                         String taskSupervisorFlag, String caseAllocatorFlag) {
 
         judicialAccessProfiles.clear();

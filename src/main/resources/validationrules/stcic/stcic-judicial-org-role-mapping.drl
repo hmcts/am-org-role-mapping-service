@@ -1,4 +1,4 @@
-package validationrules.specialtribunals;
+package validationrules.stcic;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;

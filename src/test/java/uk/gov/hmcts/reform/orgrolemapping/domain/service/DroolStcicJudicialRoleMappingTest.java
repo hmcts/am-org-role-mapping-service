@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DroolSpecialTribunalsJudicialRoleMappingTest extends DroolBase {
+public class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
