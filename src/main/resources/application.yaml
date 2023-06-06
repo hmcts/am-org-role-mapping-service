@@ -28,7 +28,7 @@ security:
     - "/health"
     - "/actuator/**"
     - "/loggers/**"
-    - "/am/role-assignments/fetchFlagStatus"
+    - "/am/role-mapping/fetchFlagStatus"
     - "/swagger"
     - "/swagger-ui.html"
     - "/swagger-ui/**"
