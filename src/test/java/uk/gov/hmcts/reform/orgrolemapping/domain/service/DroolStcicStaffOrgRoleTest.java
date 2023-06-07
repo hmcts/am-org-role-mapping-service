@@ -95,7 +95,8 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             //assert classification
             List<String> rolesWithPublicClassification = List.of("hearing-centre-team-leader", "hearing-centre-admin",
                                                                 "task-supervisor", "case-allocator",
-                                                                "regional-centre-team-leader", "regional-centre-admin");
+                                                                "regional-centre-team-leader", "regional-centre-admin",
+                                                                "specific-access-approver-admin");
             if (rolesWithPublicClassification.contains(r.getRoleName())) {
                 assertEquals(r.getClassification().toString(), "PUBLIC");
             } else {
@@ -181,7 +182,7 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             }
             //assert classification
             List<String> rolesWithPublicClassification = List.of("ctsc-team-leader", "ctsc",
-                    "task-supervisor", "case-allocator");
+                    "task-supervisor", "case-allocator", "specific-access-approver-ctsc");
             if (rolesWithPublicClassification.contains(r.getRoleName())) {
                 assertEquals(r.getClassification().toString(), "PUBLIC");
             } else {
@@ -263,7 +264,7 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             }
             //assert classification
             List<String> rolesWithPublicClassification = List.of("senior-tribunal-caseworker", "tribunal-caseworker",
-                    "task-supervisor", "case-allocator");
+                    "task-supervisor", "case-allocator", "specific-access-approver-legal-ops");
             if (rolesWithPublicClassification.contains(r.getRoleName())) {
                 assertEquals(r.getClassification().toString(), "PUBLIC");
             } else {

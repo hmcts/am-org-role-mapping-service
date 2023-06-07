@@ -179,7 +179,7 @@ then
       .roleType(RoleType.ORGANISATION)
       .roleName("specific-access-approver-admin")
       .grantType(GrantType.STANDARD)
-      .classification(Classification.PRIVATE)
+      .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
       .build());
