@@ -6,7 +6,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -172,6 +171,82 @@ class AssignmentRequestBuilderTest {
     @Test
     void validateAuthorisation_emptyList() {
         boolean authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(), "BFA1");
+        assertFalse(authorisation);
+    }
+
+    @Test
+    void validateAuthorisationEmploymentTicketDescription() {
+
+        assertTrue(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(Authorisation.builder()
+                .serviceCodes(List.of("BHA1"))
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BHA1"));
+    }
+
+    @Test
+    void validateAuthorisationEmploymentTicketDescriptionEngland() {
+
+        assertTrue(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(Authorisation.builder()
+                .ticketDescription(AssignmentRequestBuilder.EMPLOYMENT_TICKET_DESCRIPTION_ENGLAND)
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BHA1"));
+    }
+
+    @Test
+    void validateAuthorisationEmploymentTicketDescriptionScotland() {
+
+        assertTrue(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(Authorisation.builder()
+                .ticketDescription(AssignmentRequestBuilder.EMPLOYMENT_TICKET_DESCRIPTION_SCOTLAND)
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BHA1"));
+    }
+
+    @Test
+    void validateEmptyAuthorisationEmploymentTicketDescription() {
+
+        List<Authorisation> authorisations = Collections.emptyList();
+
+        assertFalse(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(authorisations, "BHA1"));
+    }
+
+    @Test
+    void validateNullAuthorisationEmploymentTicketDescription() {
+
+        assertFalse(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(null, "BHA1"));
+    }
+
+    @Test
+    void validateNonEmploymentAuthorisationEmploymentTicketDescription() {
+
+        assertFalse(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(Authorisation.builder()
+                .serviceCodes(List.of("BHA2"))
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BHA1"));
+    }
+
+    @Test
+    void validateAuthorisationEmploymentTicketDescriptionEngland_inValidEndDate() {
+        Authorisation authorisation = Authorisation.builder()
+                .endDate(LocalDateTime.now().minusDays(2))
+                .serviceCodes(List.of("BHA1"))
+                .ticketDescription(AssignmentRequestBuilder.EMPLOYMENT_TICKET_DESCRIPTION_ENGLAND)
+                .build();
+        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(authorisation),
+                "BHA1");
+        assertFalse(isValidAuthorisation);
+    }
+
+    @Test
+    void validateAuthorisationEmploymentTicketDescriptionScotland_inValidEndDate() {
+        Authorisation authorisation = Authorisation.builder()
+                .endDate(LocalDateTime.now().minusDays(2))
+                .serviceCodes(List.of("BHA1"))
+                .ticketDescription(AssignmentRequestBuilder.EMPLOYMENT_TICKET_DESCRIPTION_SCOTLAND)
+                .build();
+        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(authorisation),
+                "BHA1");
+        assertFalse(isValidAuthorisation);
+    }
+
+    @Test
+    void validateAuthorisationEmploymentTicketDescription_emptyList() {
+        boolean authorisation = AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(), "BHA1");
         assertFalse(authorisation);
     }
 

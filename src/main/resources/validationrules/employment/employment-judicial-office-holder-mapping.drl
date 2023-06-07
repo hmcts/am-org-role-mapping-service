@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.addAndGetTicketCodes;
-import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
+import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription
 
 
 /*
@@ -35,7 +35,7 @@ when
                                appointment == "President of Tribunal",
                                appointmentType == "Salaried",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (validateAuthorisation(authorisations, "BHA1") ))
+                               (validateAuthorisationEmploymentTicketDescription(authorisations, "BHA1") ))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -63,7 +63,7 @@ when
                                appointment == "Vice President",
                                appointmentType == "Salaried",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (validateAuthorisation(authorisations, "BHA1") ))
+                               (validateAuthorisationEmploymentTicketDescription(authorisations, "BHA1") ))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -91,7 +91,7 @@ when
                                appointment == "Regional Employment Judge",
                                appointmentType == "Salaried",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (validateAuthorisation(authorisations, "BHA1") ))
+                               (validateAuthorisationEmploymentTicketDescription(authorisations, "BHA1") ))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -119,7 +119,7 @@ when
                                appointment == "Employment Judge",
                                appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (validateAuthorisation(authorisations, "BHA1") ))
+                               (validateAuthorisationEmploymentTicketDescription(authorisations, "BHA1") ))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -147,7 +147,7 @@ when
                                appointment == "Employment Judge",
                                appointmentType == "Fee Paid",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (validateAuthorisation(authorisations, "BHA1") ))
+                               (validateAuthorisationEmploymentTicketDescription(authorisations, "BHA1") ))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -176,7 +176,7 @@ when
                                appointmentType == "Fee Paid",
                                baseLocationId in ("1036","1037"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (validateAuthorisation(authorisations, "BHA1") ))
+                               (validateAuthorisationEmploymentTicketDescription(authorisations, "BHA1") ))
 then
   insert(
       JudicialOfficeHolder.builder()
@@ -205,7 +205,7 @@ when
                                appointmentType == "Fee Paid",
                                baseLocationId in ("1036","1037"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (validateAuthorisation(authorisations, "BHA1") ))
+                               (validateAuthorisationEmploymentTicketDescription(authorisations, "BHA1") ))
 then
   insert(
       JudicialOfficeHolder.builder()

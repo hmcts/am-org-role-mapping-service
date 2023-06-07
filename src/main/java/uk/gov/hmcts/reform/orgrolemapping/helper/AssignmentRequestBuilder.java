@@ -45,6 +45,8 @@ public class AssignmentRequestBuilder {
     public static final String ROLE_NAME_TCW = "tribunal-caseworker";
     public static final String ROLE_NAME_SJ = "judge";
     public static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
+    public static final String EMPLOYMENT_TICKET_DESCRIPTION_ENGLAND = "Others - Employment Tribunal England & Wales";
+    public static final String EMPLOYMENT_TICKET_DESCRIPTION_SCOTLAND = "Others - Employment Tribunal (Scotland)";
 
     private AssignmentRequestBuilder() {
         //not meant to be instantiated.
@@ -218,6 +220,21 @@ public class AssignmentRequestBuilder {
                     && (authorisation.getEndDate() == null
                     || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
 
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean validateAuthorisationEmploymentTicketDescription(List<Authorisation> authorisations, String serviceCode) {
+
+        if (!CollectionUtils.isEmpty(authorisations)) {
+            return authorisations.stream().anyMatch(authorisation ->
+                (authorisation.getServiceCodes() != null && authorisation.getServiceCodes().contains(serviceCode)
+                    || (authorisation.getTicketDescription() != null
+                        && (authorisation.getTicketDescription().equals(EMPLOYMENT_TICKET_DESCRIPTION_ENGLAND)
+                        ||  authorisation.getTicketDescription().equals(EMPLOYMENT_TICKET_DESCRIPTION_SCOTLAND))))
+                && (authorisation.getEndDate() == null
+                    || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
         } else {
             return false;
         }
