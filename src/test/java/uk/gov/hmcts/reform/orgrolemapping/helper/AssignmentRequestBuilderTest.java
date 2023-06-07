@@ -177,7 +177,8 @@ class AssignmentRequestBuilderTest {
     @Test
     void validateAuthorisationEmploymentTicketDescription() {
 
-        assertTrue(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(Authorisation.builder()
+        assertTrue(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(
+                Authorisation.builder()
                 .serviceCodes(List.of("BHA1"))
                 .endDate(LocalDateTime.now().plusDays(1)).build()), "BHA1"));
     }
@@ -185,7 +186,8 @@ class AssignmentRequestBuilderTest {
     @Test
     void validateAuthorisationEmploymentTicketDescriptionEngland() {
 
-        assertTrue(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(Authorisation.builder()
+        assertTrue(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(
+                Authorisation.builder()
                 .ticketDescription(AssignmentRequestBuilder.EMPLOYMENT_TICKET_DESCRIPTION_ENGLAND)
                 .endDate(LocalDateTime.now().plusDays(1)).build()), "BHA1"));
     }
@@ -193,8 +195,18 @@ class AssignmentRequestBuilderTest {
     @Test
     void validateAuthorisationEmploymentTicketDescriptionScotland() {
 
-        assertTrue(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(Authorisation.builder()
+        assertTrue(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(
+                Authorisation.builder()
                 .ticketDescription(AssignmentRequestBuilder.EMPLOYMENT_TICKET_DESCRIPTION_SCOTLAND)
+                .endDate(LocalDateTime.now().plusDays(1)).build()), "BHA1"));
+    }
+
+    @Test
+    void validateAuthorisationNotEmploymentTicketDescription() {
+
+        assertFalse(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(
+                Authorisation.builder()
+                .ticketDescription("Some other non employment ticket description")
                 .endDate(LocalDateTime.now().plusDays(1)).build()), "BHA1"));
     }
 
@@ -215,7 +227,8 @@ class AssignmentRequestBuilderTest {
     @Test
     void validateNonEmploymentAuthorisationEmploymentTicketDescription() {
 
-        assertFalse(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(Authorisation.builder()
+        assertFalse(AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(
+                Authorisation.builder()
                 .serviceCodes(List.of("BHA2"))
                 .endDate(LocalDateTime.now().plusDays(1)).build()), "BHA1"));
     }
@@ -227,8 +240,8 @@ class AssignmentRequestBuilderTest {
                 .serviceCodes(List.of("BHA1"))
                 .ticketDescription(AssignmentRequestBuilder.EMPLOYMENT_TICKET_DESCRIPTION_ENGLAND)
                 .build();
-        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(authorisation),
-                "BHA1");
+        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(
+                List.of(authorisation), "BHA1");
         assertFalse(isValidAuthorisation);
     }
 
@@ -239,14 +252,15 @@ class AssignmentRequestBuilderTest {
                 .serviceCodes(List.of("BHA1"))
                 .ticketDescription(AssignmentRequestBuilder.EMPLOYMENT_TICKET_DESCRIPTION_SCOTLAND)
                 .build();
-        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(authorisation),
-                "BHA1");
+        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(
+                List.of(authorisation), "BHA1");
         assertFalse(isValidAuthorisation);
     }
 
     @Test
     void validateAuthorisationEmploymentTicketDescription_emptyList() {
-        boolean authorisation = AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(List.of(), "BHA1");
+        boolean authorisation = AssignmentRequestBuilder.validateAuthorisationEmploymentTicketDescription(
+                List.of(), "BHA1");
         assertFalse(authorisation);
     }
 
