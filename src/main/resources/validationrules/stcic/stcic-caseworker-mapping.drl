@@ -106,7 +106,7 @@ end;
 rule "st_cic_task_supervisor_legal_ops_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("1","2","4","13"), serviceCode == "BBA2", !suspended,
+  $cap: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BBA2", !suspended,
                         taskSupervisorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -135,7 +135,7 @@ end;
 rule "st_cic_case_allocator_legal_ops_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("1","2","4","13"), serviceCode == "BBA2", !suspended,
+  $cap: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BBA2", !suspended,
                         caseAllocatorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
