@@ -103,11 +103,11 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
             }
         };
 
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        /*ExecutorService executorService = Executors.newFixedThreadPool(1);
         receiveClient.registerMessageHandler(
                 messageHandler, new MessageHandlerOptions(1,
                         false, Duration.ofHours(1), Duration.ofMinutes(5)),
-                executorService);
+                executorService);*/
         return null;
 
     }
