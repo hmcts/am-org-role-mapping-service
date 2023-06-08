@@ -1,0 +1,284 @@
+package validationrules.specialtribunals;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.lang.String;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.addAndGetTicketCodes;
+import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
+
+/*
+ * 1: "ST_CIC President of Tribunal-Salaried" business role mapping to JOH.
+ */
+
+rule "st_cic_president_of_tribunal_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "President of Tribunals",
+                               appointmentType == "Salaried",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC President of Tribunal-Salaried")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_president_of_tribunal_salaried_joh");
+end;
+
+/*
+ * 2: "ST_CIC Tribunal Judge-Fee Paid" business role mapping to JOH.
+ */
+rule "st_cic_tribunal_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Judge",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC Tribunal Judge-Fee Paid")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_tribunal_judge_fee_paid_joh");
+end;
+
+/*
+ * 3: "ST_CIC Tribunal Judge-Salaried" business role mapping to JOH.
+ */
+rule "st_cic_tribunal_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Judge",
+                               appointmentType == "Salaried",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC Tribunal Judge-Salaried")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_tribunal_judge_salaried_joh");
+end;
+
+/*
+ * 4: "ST_CIC Tribunal Member-Fee Paid" business role mapping to JOH.
+ */
+rule "st_cic_tribunal_member_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Member",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC Tribunal Member-Fee Paid")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_tribunal_member_fee_paid_joh");
+end;
+
+/*
+ * 5: "ST_CIC Tribunal Member Lay-Fee Paid" business role mapping to JOH.
+ */
+rule "st_cic_tribunal_member_lay_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Member Lay",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC Tribunal Member Lay-Fee Paid")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_tribunal_member_lay_fee_paid_joh");
+end;
+
+/*
+ * 6: "ST_CIC Tribunal Member Medical-Salaried" business role mapping to JOH.
+ */
+rule "st_cic_tribunal_member_medical_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Member Medical",
+                               appointmentType == "Salaried",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC Tribunal Member Medical-Salaried")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_tribunal_member_medical_salaried_joh");
+end;
+
+/*
+ * 7: "ST_CIC Tribunal Member Medical-Fee Paid" business role mapping to JOH.
+ */
+rule "st_cic_tribunal_member_medical_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Member Medical",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC Tribunal Member Medical-Fee Paid")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_tribunal_member_medical_fee_paid_joh");
+end;
+
+/*
+ * 8: "ST_CIC Tribunal Member Disability-Fee Paid" business role mapping to JOH.
+ */
+rule "st_cic_tribunal_member_disability_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Member Disability",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC Tribunal Member Disability-Fee Paid")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_tribunal_member_disability_fee_paid_joh");
+end;
+
+/*
+ * 9: "ST_CIC Tribunal Member Financially Qualified-Fee Paid" business role mapping to JOH.
+ */
+rule "st_cic_tribunal_member_financially_qualified_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Tribunal Member Financial",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC Tribunal Member Financially Qualified-Fee Paid")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_tribunal_member_financially_qualified_fee_paid_joh");
+end;
