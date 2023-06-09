@@ -4,7 +4,7 @@ package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageHandler;
-//import com.microsoft.azure.servicebus.MessageHandlerOptions;
+import com.microsoft.azure.servicebus.MessageHandlerOptions;
 import com.microsoft.azure.servicebus.ReceiveMode;
 import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
@@ -27,8 +27,8 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -103,11 +103,11 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
             }
         };
 
-        /*ExecutorService executorService = Executors.newFixedThreadPool(1);
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
         receiveClient.registerMessageHandler(
                 messageHandler, new MessageHandlerOptions(1,
                         false, Duration.ofHours(1), Duration.ofMinutes(5)),
-                executorService);*/
+                executorService);
         return null;
 
     }
