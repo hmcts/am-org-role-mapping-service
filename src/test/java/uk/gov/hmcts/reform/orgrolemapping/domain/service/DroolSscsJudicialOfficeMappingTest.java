@@ -366,7 +366,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("leadership-judge", "task-supervisor", "case-allocator", "specific-access-approver-judiciary", "hmcts-judiciary", "judge"));
+                containsInAnyOrder("leadership-judge", "task-supervisor", "case-allocator",
+                        "specific-access-approver-judiciary", "hmcts-judiciary", "judge"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {

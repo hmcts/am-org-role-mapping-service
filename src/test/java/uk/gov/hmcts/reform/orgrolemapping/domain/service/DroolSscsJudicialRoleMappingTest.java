@@ -7,7 +7,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.io.IOException;
@@ -19,7 +23,10 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolSscsJudicialRoleMappingTest extends DroolBase {
@@ -70,7 +77,8 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         }
 
         //region assertions
-        if (r.getRoleName().equals("hmcts-judiciary") || List.of("leadership-judge", "judge", "case-allocator", "task-supervisor").contains(r.getRoleName())
+        if (r.getRoleName().equals("hmcts-judiciary")
+                || List.of("leadership-judge", "judge", "case-allocator", "task-supervisor").contains(r.getRoleName())
                 && office.contains("President of Tribunal")) {
             assertNull(r.getAttributes().get("region"));
         } else {
@@ -87,8 +95,10 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SSCS President of Tribunal-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
-            "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
+            "SSCS President of Tribunal-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,"
+                    + "specific-access-approver-judiciary,hmcts-judiciary'",
+            "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,"
+                    + "specific-access-approver-judiciary,hmcts-judiciary'",
             "SSCS Tribunal Judge-Salaried,'judge,hmcts-judiciary'",
             "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'",
 
