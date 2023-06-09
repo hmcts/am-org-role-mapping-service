@@ -26,10 +26,14 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,specific-access-approver-admin',N,N",
-            "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,task-supervisor,specific-access-approver-admin',Y,N",
-            "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,case-allocator,specific-access-approver-admin',N,Y",
-            "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,task-supervisor,case-allocator,specific-access-approver-admin',Y,Y",
+            "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
+                    + "specific-access-approver-admin',N,N",
+            "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
+                    + "task-supervisor,specific-access-approver-admin',Y,N",
+            "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
+                    + "case-allocator,specific-access-approver-admin',N,Y",
+            "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
+                    + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y",
             "4,BBA3,'hmcts-admin,hearing-centre-admin',N,N",
             "4,BBA3,'hmcts-admin,task-supervisor,hearing-centre-admin',Y,N",
             "4,BBA3,'hmcts-admin,case-allocator,hearing-centre-admin',N,Y",
@@ -38,10 +42,14 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
             "5,BBA3,'clerk,task-supervisor,hmcts-admin',Y,N",
             "5,BBA3,'clerk,case-allocator,hmcts-admin',N,Y",
             "5,BBA3,'clerk,task-supervisor,case-allocator,hmcts-admin',Y,Y",
-            "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,specific-access-approver-admin',N,N",
-            "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,task-supervisor,specific-access-approver-admin',Y,N",
-            "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,case-allocator,specific-access-approver-admin',N,Y",
-            "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,task-supervisor,case-allocator,specific-access-approver-admin',Y,Y",
+            "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
+                    + "specific-access-approver-admin',N,N",
+            "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
+                    + "task-supervisor,specific-access-approver-admin',Y,N",
+            "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
+                    + "case-allocator,specific-access-approver-admin',N,Y",
+            "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
+                    + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y",
             "13,BBA3,'hmcts-admin,regional-centre-admin',N,N",
             "13,BBA3,'hmcts-admin,task-supervisor,regional-centre-admin',Y,N",
             "13,BBA3,'hmcts-admin,case-allocator,regional-centre-admin',N,Y",
@@ -77,9 +85,9 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
             assertEquals("ADMIN", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
-        List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader","hearing-centre-admin",
-                "specific-access-approver-admin", "clerk", "specific-access-approver-admin", "regional-centre-team-leader",
-                "regional-centre-admin");
+        List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader",
+                "hearing-centre-admin", "specific-access-approver-admin", "clerk",
+                "specific-access-approver-admin", "regional-centre-team-leader", "regional-centre-admin");
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
@@ -119,7 +127,8 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
             "9,BBA3,'hmcts-ctsc,ctsc,ctsc-team-leader,specific-access-approver-ctsc',N,N",
             "9,BBA3,'hmcts-ctsc,ctsc,ctsc-team-leader,task-supervisor,specific-access-approver-ctsc',Y,N",
             "9,BBA3,'hmcts-ctsc,ctsc,ctsc-team-leader,case-allocator,specific-access-approver-ctsc',N,Y",
-            "9,BBA3,'hmcts-ctsc,ctsc,ctsc-team-leader,task-supervisor,case-allocator,specific-access-approver-ctsc',Y,Y",
+            "9,BBA3,'hmcts-ctsc,ctsc,ctsc-team-leader,task-supervisor,case-allocator,specific-access-approver-ctsc',"
+                    + "Y,Y",
             "10,BBA3,'hmcts-ctsc,ctsc',N,N",
             "10,BBA3,'hmcts-ctsc,task-supervisor,ctsc',Y,N",
             "10,BBA3,'hmcts-ctsc,case-allocator,ctsc',N,Y",
@@ -183,10 +192,14 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N",
-            "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,specific-access-approver-legal-ops',Y,N",
-            "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,case-allocator,specific-access-approver-legal-ops',N,Y",
-            "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,specific-access-approver-legal-ops',Y,Y",
+            "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                    + "specific-access-approver-legal-ops',N,N",
+            "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                    + "specific-access-approver-legal-ops',Y,N",
+            "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,case-allocator,"
+                    + "specific-access-approver-legal-ops',N,Y",
+            "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                    + "case-allocator,specific-access-approver-legal-ops',Y,Y",
             "2,BBA3,'tribunal-caseworker,hmcts-legal-operations',N,N",
             "2,BBA3,'tribunal-caseworker,task-supervisor,hmcts-legal-operations',Y,N",
             "2,BBA3,'tribunal-caseworker,case-allocator,hmcts-legal-operations',N,Y",
