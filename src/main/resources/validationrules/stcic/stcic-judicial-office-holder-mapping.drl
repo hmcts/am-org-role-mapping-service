@@ -28,11 +28,11 @@ import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuild
  * 1: "ST_CIC President of Tribunal-Salaried" business role mapping to JOH.
  */
 
-rule "st_cic_president_of_tribunal_salaried_joh"
+rule "st_cic_president_of_tribunals_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
-                               appointment == "President of Tribunal",
+                               appointment == "President of Tribunals",
                                appointmentType == "Salaried",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "BBA2") ))
@@ -40,7 +40,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("ST_CIC President of Tribunal-Salaried")
+      .office("ST_CIC President of Tribunals-Salaried")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -50,7 +50,7 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : st_cic_president_of_tribunal_salaried_joh");
+      logMsg("Rule : st_cic_president_of_tribunals_salaried_joh");
 end;
 
 /*

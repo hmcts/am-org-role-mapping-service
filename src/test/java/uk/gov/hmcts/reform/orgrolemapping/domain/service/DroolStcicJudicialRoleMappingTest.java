@@ -100,7 +100,7 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "ST_CIC President of Tribunal-Salaried,'senior-judge,judge,case-allocator,task-supervisor,"
+            "ST_CIC President of Tribunals-Salaried,'senior-judge,judge,case-allocator,task-supervisor,"
                     + "hmcts-judiciary,specific-access-approver-judiciary'",
             "ST_CIC Tribunal Judge-Salaried,'judge,case-allocator,task-supervisor,hmcts-judiciary,"
                     + "specific-access-approver-judiciary'",
