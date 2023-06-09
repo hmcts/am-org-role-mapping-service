@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringJUnitWebConfig
 @SpringBootTest
 @AutoConfigureMockMvc
+@Disabled
 class SwaggerPublisher {
 
     @Autowired
@@ -30,7 +31,6 @@ class SwaggerPublisher {
 
     @DisplayName("Generate swagger documentation")
     @Test
-    @Disabled
     void generateDocs() throws Exception {
         byte[] specs = mvc.perform(get("/v2/api-docs"))
             .andExpect(status().isOk())
