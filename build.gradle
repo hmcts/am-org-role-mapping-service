@@ -294,6 +294,13 @@ repositories {
     }
 }
 
+tasks.withType(Test) {
+    useJUnitPlatform()
+
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
 
 dependencies {
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web', version: versions.springBoot) {

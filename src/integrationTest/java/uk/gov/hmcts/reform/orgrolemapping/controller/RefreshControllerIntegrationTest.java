@@ -1,13 +1,15 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,17 +20,22 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
@@ -58,15 +65,12 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -75,8 +79,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUserRequest;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("itest")
+@EnableConfigurationProperties
 public class RefreshControllerIntegrationTest extends BaseTest {
+
+    private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
 
@@ -89,7 +100,9 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
 
     private MockMvc mockMvc;
-    private JdbcTemplate template;
+
+    @Autowired
+    private RefreshController controller;
 
     @Inject
     private WebApplicationContext wac;
@@ -97,7 +110,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Autowired
     private DataSource ds;
 
-    @MockBean
+    @Autowired
     private CRDFeignClient crdFeignClient;
 
     @MockBean
@@ -112,9 +125,11 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @MockBean
     private RequestMappingService requestMappingService;
 
-
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
+
+    @MockBean
+    private AuthTokenGenerator serviceTokenGenerator;
 
     @Mock
     private Authentication authentication;
@@ -122,8 +137,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Mock
     private SecurityContext securityContext;
 
-
-
+    private JdbcTemplate template;
 
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
@@ -131,16 +145,17 @@ public class RefreshControllerIntegrationTest extends BaseTest {
             StandardCharsets.UTF_8
     );
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         template = new JdbcTemplate(ds);
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-        MockitoAnnotations.openMocks(this);
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
-        MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
 
+        wiremockFixtures.resetRequests();
+        // stub idam and s2s request
+        wiremockFixtures.stubIdam();
     }
 
     @Test
@@ -151,15 +166,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals("NEW", refreshJob.getStatus());
 
-        mockCRDService();
+        // stub crd request
+        wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
+
         mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
 
-        mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
+        controller.refresh(jobId, null);
 
         Thread.sleep(1000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
@@ -176,15 +188,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         logger.info(" RefreshJob record With Only JobId to process Aborted");
         Long jobId = 1L;
 
-        mockCRDService();
+        // stub crd request
+        wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
+
         mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
 
-        mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
+        controller.refresh(jobId, null);
 
         Thread.sleep(1000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
@@ -201,15 +210,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         logger.info(" RefreshJob record With Only JobId to process Non recoverable retain same state");
         Long jobId = 1L;
 
-        mockCRDService();
+        // stub crd request
+        wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
+
         mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
 
-        mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
+        controller.refresh(jobId, null);
 
         Thread.sleep(5000);
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
@@ -225,15 +231,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         logger.info(" RefreshJob record With Only JobId to process Partial Success");
         Long jobId = 1L;
 
-        mockCRDService();
+        // stub crd request
+        wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
+
         mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
 
-        mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
+        controller.refresh(jobId, null);
 
         Thread.sleep(1000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
@@ -250,15 +253,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         logger.info(" RefreshJob record With Only JobId to process Partial Success");
         Long jobId = 1L;
 
-        mockCRDService();
+        // stub crd request
+        wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
+
         mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
 
-        mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
+        controller.refresh(jobId, null);
 
         Thread.sleep(2000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
@@ -271,8 +271,11 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithFailedUsersToComplete() throws Exception {
-        logger.info(" RefreshJob record With JobId and failed UserIds to process successful");
+        logger.info("RefreshJob record With JobId and failed UserIds to process successful");
         Long jobId = 3L;
+
+        // stub crd request
+        wiremockFixtures.stubForGetCaseworkerDetailsById(buildUserRequest(), buildCaseWorkerProfileResponse());
 
         //Verify before job
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
@@ -282,24 +285,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertEquals(ABORTED, linkedJob.getStatus());
         assertNotEquals(0, linkedJob.getUserIds().length);
 
-        doReturn(new ResponseEntity<>(IntTestDataBuilder
-                .buildListOfUserProfiles(false, false, "1", "2",
-                        ROLE_NAME_STCW, ROLE_NAME_TCW,
-                        true, true, false,
-                        true, "BFA1", "BFA2",
-                        false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
         mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
 
-        mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest()))
-                .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
+        controller.refresh(jobId, buildUserRequest());
 
         Thread.sleep(1000);
-        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        logger.info("-- Refresh Role Assignment record updated successfully --");
         refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
         assertEquals(0, refreshJob.getUserIds().length);
@@ -312,7 +303,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         mockMvc.perform(post(URL)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
+                .content(mapper.writeValueAsBytes(buildUserRequest())))
                 .andExpect(status().is(400))
                 .andReturn();
     }
@@ -335,7 +326,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
                 .param("jobId", "abc")
-                .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
+                .content(mapper.writeValueAsBytes(buildUserRequest())))
                 .andExpect(status().is(400))
                 .andReturn();
     }
@@ -358,15 +349,9 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals("NEW", refreshJob.getStatus());
 
-        doThrow(RuntimeException.class).when(crdFeignClient).getCaseworkerDetailsByServiceName(
-                anyString(), anyInt(), anyInt(), anyString(), anyString());
+        wiremockFixtures.stubForFailureGetCaseworkerDetailsByServiceName();
 
-        mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
+        controller.refresh(jobId, null);
 
         refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals("NEW", refreshJob.getStatus());// failed process should change the status to IN-PROGRESS
@@ -380,17 +365,12 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals("NEW", refreshJob.getStatus());
 
-        doThrow(RuntimeException.class).doThrow(RuntimeException.class).doReturn(buildUserProfileResponse())
-                .when(crdFeignClient).getCaseworkerDetailsByServiceName(
-                anyString(), anyInt(), anyInt(), anyString(), anyString());
+        // stub crd request
+        wiremockFixtures.stubForFailureRetryAndSuccessGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
+
         mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
 
-        mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
+        controller.refresh(jobId, null);
 
         Thread.sleep(9000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
@@ -412,7 +392,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders())
                 .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                        .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                        .refreshRequest(buildUserRequest()).build())))
                 .andExpect(status().is(200))
                 .andReturn();
         var contentAsString = result.getResponse().getContentAsString();
@@ -433,7 +413,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders())
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                                .refreshRequest(buildUserRequest()).build())))
                 .andExpect(status().is(422))
                 .andReturn();
         var contentAsString = result.getResponse().getContentAsString();
@@ -454,7 +434,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders())
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                                .refreshRequest(buildUserRequest()).build())))
                 .andExpect(status().isOk())
                 .andReturn();
         var contentAsString = result.getResponse().getContentAsString();
@@ -477,7 +457,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders())
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                                .refreshRequest(buildUserRequest()).build())))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
         String contentAsString = result.getResponse().getContentAsString();
@@ -497,7 +477,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders())
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                                .refreshRequest(buildUserRequest()).build())))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.errorDescription")
                         .value(containsString(FAILED_ROLE_REFRESH)))
@@ -575,21 +555,21 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @NotNull
-    private ResponseEntity<List<CaseWorkerProfilesResponse>> buildUserProfileResponse() {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "2");
-        return new ResponseEntity<>(IntTestDataBuilder
+    private List<CaseWorkerProfilesResponse> buildUserProfileResponse() {
+        return IntTestDataBuilder
                 .buildListOfUserProfilesResponse("IAC", false, "1", "2", ROLE_NAME_STCW,
                         ROLE_NAME_TCW, true, true, false,
-                        true, "BFA1", "BFA2", false),
-                headers, HttpStatus.OK);
+                        true, "BFA1", "BFA2", false);
     }
 
-
-    private void mockCRDService() {
-        ResponseEntity<List<CaseWorkerProfilesResponse>> userProfilesResponse = buildUserProfileResponse();
-        doReturn(userProfilesResponse).when(crdFeignClient).getCaseworkerDetailsByServiceName(
-                anyString(), anyInt(), anyInt(), anyString(), anyString());
+    @NotNull
+    private List<CaseWorkerProfile> buildCaseWorkerProfileResponse() {
+        return IntTestDataBuilder
+                .buildListOfUserProfiles(false, false, "1", "2",
+                        ROLE_NAME_STCW, ROLE_NAME_TCW,
+                        true, true, false,
+                        true, "BFA1", "BFA2",
+                        false);
     }
 
     @SuppressWarnings("unchecked")
@@ -634,5 +614,4 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         };
         return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, rm, jobId);
     }
-
 }
