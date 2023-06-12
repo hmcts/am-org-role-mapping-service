@@ -494,8 +494,6 @@ dependencies {
     testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     testImplementation 'com.github.hmcts:fortify-client:1.2.0:all'
 
-    // testImplementation group: 'io.github.fabianlinz', name: 'serenity-junit5', version: '1.6.0'
-
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity

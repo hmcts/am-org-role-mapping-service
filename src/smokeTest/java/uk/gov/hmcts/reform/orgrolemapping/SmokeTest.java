@@ -9,13 +9,14 @@ import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.befta.util.EnvironmentVariableUtils;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
@@ -37,8 +38,6 @@ public class SmokeTest {
     @Value("${launchdarkly.sdk.key}")
     private String sdkKey;
 
-    UserTokenProviderConfig config;
-
     @MockBean
     private CRDTopicConsumer crdTopicConsumer;
 
@@ -51,7 +50,6 @@ public class SmokeTest {
     @MockBean
     private JRDTopicPublisher jrdTopicPublisher;
 
-
     @MockBean
     private CRDMessagingConfiguration crdMessagingConfiguration;
 
@@ -61,18 +59,12 @@ public class SmokeTest {
     @Rule
     public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator(this);
 
-    @Before
-    public void setUp() {
-        config = new UserTokenProviderConfig();
-    }
-
-
     @Tag("smoke")
     @Test
     @FeatureFlagToggle("orm-base-flag")
     public void should_receive_response_for_welcomeAPI() {
 
-        var targetInstance = config.getOrgRoleMappingUrl();
+        var targetInstance = EnvironmentVariableUtils.getRequiredVariable("TEST_URL");
         RestAssured.useRelaxedHTTPSValidation();
 
         Response response = SerenityRest
