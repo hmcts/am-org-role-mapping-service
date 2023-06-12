@@ -86,10 +86,10 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
                     } else if (("hearing-centre-admin").equals(r.getRoleName())) {
                         assertEquals("hearing_work,routine_work,applications,amendments",
                                 r.getAttributes().get("workTypes").asText());
-                    }else if (("specific-access-approver-admin").equals(r.getRoleName())) {
+                    } else if (("specific-access-approver-admin").equals(r.getRoleName())) {
                         assertEquals("access_requests",
                                 r.getAttributes().get("workTypes").asText());
-                    }else if (("clerk").equals(r.getRoleName())) {
+                    } else if (("clerk").equals(r.getRoleName())) {
                         assertEquals("hearing_work,routine_work,applications,amendments",
                                 r.getAttributes().get("workTypes").asText());
                     }
