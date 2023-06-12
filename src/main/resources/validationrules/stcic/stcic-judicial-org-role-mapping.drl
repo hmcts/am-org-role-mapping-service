@@ -24,7 +24,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "st_cic_senior_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office == "ST_CIC President of Tribunals-Salaried")
+  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
+                                        "ST_CIC Principal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -56,7 +57,8 @@ rule "st_cic_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
-                                        "ST_CIC Tribunal Judge-Salaried"))
+                                        "ST_CIC Tribunal Judge-Salaried",
+                                        "ST_CIC Principal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -127,7 +129,8 @@ rule "st_cic_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
-                                        "ST_CIC Tribunal Judge-Salaried"))
+                                        "ST_CIC Tribunal Judge-Salaried",
+                                        "ST_CIC Principal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -159,7 +162,8 @@ rule "st_cic_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
-                                        "ST_CIC Tribunal Judge-Salaried"))
+                                        "ST_CIC Tribunal Judge-Salaried",
+                                        "ST_CIC Principal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -191,6 +195,7 @@ rule "st_cic_hmcts_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
+                                        "ST_CIC Principal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Fee Paid",
                                         "ST_CIC Tribunal Member Medical-Salaried"))
@@ -226,6 +231,7 @@ rule "st_cic_specific_access_approver_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
+                                        "ST_CIC Principal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -252,7 +258,38 @@ then
 end;
 
 /*
- * 7: ST_CIC "fee-paid-judge" Org role mapping.
+ * 7: ST_CIC "leadership-judge" Org role mapping.
+ */
+
+rule "st_cic_leadership_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office == "ST_CIC Principal Judge-Salaried")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("leadership-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : st_cic_leadership_judge_org_role");
+end;
+
+/*
+ * 8: ST_CIC "fee-paid-judge" Org role mapping.
  */
 
 rule "st_cic_fee_paid_judge_org_role"
@@ -285,7 +322,7 @@ then
 end;
 
 /*
- * 8: ST_CIC "fee-paid-tribunal-member" Org role mapping.
+ * 9: ST_CIC "fee-paid-tribunal-member" Org role mapping.
  */
 
 rule "st_cic_fee_paid_tribunal_member_org_role"
@@ -323,7 +360,7 @@ then
 end;
 
 /*
- * 9: ST_CIC "medical" Org role mapping.
+ * 10: ST_CIC "medical" Org role mapping.
  */
 
 rule "st_cic_medical_org_role"
@@ -356,7 +393,7 @@ then
 end;
 
 /*
- * 10: ST_CIC "fee-paid-medical" Org role mapping.
+ * 11: ST_CIC "fee-paid-medical" Org role mapping.
  */
 
 rule "st_cic_fee_paid_medical_org_role"
@@ -389,7 +426,7 @@ then
 end;
 
 /*
- * 11: ST_CIC "fee-paid-disability" Org role mapping.
+ * 12: ST_CIC "fee-paid-disability" Org role mapping.
  */
 
 rule "st_cic_fee_paid_disability_org_role"
@@ -421,7 +458,7 @@ then
 end;
 
 /*
- * 12: ST_CIC "fee-paid-financial" Org role mapping.
+ * 13: ST_CIC "fee-paid-financial" Org role mapping.
  */
 
 rule "st_cic_fee_paid_financial_org_role"
