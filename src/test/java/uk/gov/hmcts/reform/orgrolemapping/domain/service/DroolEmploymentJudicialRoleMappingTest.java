@@ -101,7 +101,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
             "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
                     + "hmcts-judiciary,specific-access-approver-judiciary"
     })
-    void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRolesRoles(String setOffice,
+    void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRoles(String setOffice,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
 
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
