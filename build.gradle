@@ -515,6 +515,7 @@ dependencies {
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    smokeTestImplementation group: 'io.github.fabianlinz', name: 'serenity-junit5', version: '1.6.0'
     smokeTestImplementation sourceSets.main.runtimeClasspath
     smokeTestImplementation sourceSets.test.runtimeClasspath
     smokeTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
