@@ -54,7 +54,36 @@ then
 end;
 
 /*
- * 2: "ST_CIC Tribunal Judge-Fee Paid" business role mapping to JOH.
+ * 2: "ST_CIC Principal Judge-Salaried" business role mapping to JOH.
+ */
+
+rule "st_cic_principal_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Principal Judge",
+                               appointmentType == "Salaried",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BBA2") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("ST_CIC Principal Judge-Salaried")
+      .jurisdiction("ST_CIC")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : st_cic_principal_judge_salaried_joh");
+end;
+
+/*
+ * 3: "ST_CIC Tribunal Judge-Fee Paid" business role mapping to JOH.
  */
 rule "st_cic_tribunal_judge_fee_paid_joh"
 when
@@ -82,7 +111,7 @@ then
 end;
 
 /*
- * 3: "ST_CIC Tribunal Judge-Salaried" business role mapping to JOH.
+ * 4: "ST_CIC Tribunal Judge-Salaried" business role mapping to JOH.
  */
 rule "st_cic_tribunal_judge_salaried_joh"
 when
@@ -110,7 +139,7 @@ then
 end;
 
 /*
- * 4: "ST_CIC Tribunal Member-Fee Paid" business role mapping to JOH.
+ * 5: "ST_CIC Tribunal Member-Fee Paid" business role mapping to JOH.
  */
 rule "st_cic_tribunal_member_fee_paid_joh"
 when
@@ -139,7 +168,7 @@ then
 end;
 
 /*
- * 5: "ST_CIC Tribunal Member Lay-Fee Paid" business role mapping to JOH.
+ * 6: "ST_CIC Tribunal Member Lay-Fee Paid" business role mapping to JOH.
  */
 rule "st_cic_tribunal_member_lay_fee_paid_joh"
 when
@@ -168,7 +197,7 @@ then
 end;
 
 /*
- * 6: "ST_CIC Tribunal Member Medical-Salaried" business role mapping to JOH.
+ * 7: "ST_CIC Tribunal Member Medical-Salaried" business role mapping to JOH.
  */
 rule "st_cic_tribunal_member_medical_salaried_joh"
 when
@@ -197,7 +226,7 @@ then
 end;
 
 /*
- * 7: "ST_CIC Tribunal Member Medical-Fee Paid" business role mapping to JOH.
+ * 8: "ST_CIC Tribunal Member Medical-Fee Paid" business role mapping to JOH.
  */
 rule "st_cic_tribunal_member_medical_fee_paid_joh"
 when
@@ -226,7 +255,7 @@ then
 end;
 
 /*
- * 8: "ST_CIC Tribunal Member Disability-Fee Paid" business role mapping to JOH.
+ * 9: "ST_CIC Tribunal Member Disability-Fee Paid" business role mapping to JOH.
  */
 rule "st_cic_tribunal_member_disability_fee_paid_joh"
 when
@@ -255,7 +284,7 @@ then
 end;
 
 /*
- * 9: "ST_CIC Tribunal Member Financially Qualified-Fee Paid" business role mapping to JOH.
+ * 10: "ST_CIC Tribunal Member Financially Qualified-Fee Paid" business role mapping to JOH.
  */
 rule "st_cic_tribunal_member_financially_qualified_fee_paid_joh"
 when

@@ -41,6 +41,7 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("task-supervisor", null);
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
+        expectedRoleNameWorkTypesMap.put("leadership-judge", null);
         expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,"
                 + "routine_work,applications,priority");
         expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,decision_making_work,"
@@ -82,12 +83,12 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertNull(r.getAttributes().get("region"));
 
         //work types assertions
-        if (office.equalsIgnoreCase("ST_CIC Tribunal Member-Fee Paid")
-                && r.getRoleName().equalsIgnoreCase("fee-paid-tribunal-member")) {
+        if (office.equals("ST_CIC Tribunal Member-Fee Paid")
+                && r.getRoleName().equals("fee-paid-tribunal-member")) {
             expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member",
                     "hearing_work,decision_making_work,routine_work,applications,priority");
-        } else if (office.equalsIgnoreCase("ST_CIC Tribunal Member Lay-Fee Paid")
-                && r.getRoleName().equalsIgnoreCase("fee-paid-tribunal-member")) {
+        } else if (office.equals("ST_CIC Tribunal Member Lay-Fee Paid")
+                && r.getRoleName().equals("fee-paid-tribunal-member")) {
             expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
         }
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
@@ -101,6 +102,8 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "ST_CIC President of Tribunals-Salaried,'senior-judge,judge,case-allocator,task-supervisor,"
+                    + "hmcts-judiciary,specific-access-approver-judiciary'",
+            "ST_CIC Principal Judge-Salaried,'leadership-judge,senior-judge,judge,case-allocator,task-supervisor,"
                     + "hmcts-judiciary,specific-access-approver-judiciary'",
             "ST_CIC Tribunal Judge-Salaried,'judge,case-allocator,task-supervisor,hmcts-judiciary,"
                     + "specific-access-approver-judiciary'",
