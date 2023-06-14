@@ -79,7 +79,7 @@ end;
 rule "publiclaw_tribunal_caseworker_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "2", serviceCode == "ABA3", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "ABA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
