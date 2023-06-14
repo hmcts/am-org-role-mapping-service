@@ -126,19 +126,26 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-            "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary'",
-            "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary'",
-            "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary'",
-            "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary'",
-            "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary'",
-            "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary'",
-            "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary'"
+            "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true",
+            // ^ judge RA will be created if a booking created
+            "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false",
+            // ^ judge RA will not be created as there is no booking
+            "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false",
+            "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false",
+            "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false",
+            "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
+            "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
+            "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
+            "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false"
 
     })
-    void shouldReturnFeePaidRoles(String setOffice, String expectedRoles) {
+    void shouldReturnFeePaidRoles(String setOffice, String expectedRoles, boolean withBooking) throws IOException {
 
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+
+        if (withBooking) {
+            createBooking(setOffice);
+        }
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
@@ -157,35 +164,12 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         });
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary'",
-    })
-    void shouldReturnFeePaidRolesWithBooking(String setOffice, String expectedRoles) throws IOException {
-
+    void createBooking(String setOffice) throws IOException {
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
         JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
         judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("2");
         judicialBookings = Set.of(judicialBooking);
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(expectedRoles.split(",")));
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        String regionId = allProfiles.iterator().next().getRegionId();
-        roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
-        });
     }
-
-
 }
