@@ -23,7 +23,7 @@
           }
         },
         {
-          "actorId": "${[scenarioContext][childContexts][S-084_DeleteDataRoleAssignments][testData][request][body][userIds]}",
+          "actorId": "${[scenarioContext][childContexts][S-084_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["CIVIL"]
           }
