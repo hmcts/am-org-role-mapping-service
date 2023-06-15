@@ -58,7 +58,7 @@
             "contractType": "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
-            "region": "1",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -95,8 +95,7 @@
           "beginTime": "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N",
-            "contractType": "[[ANYTHING_PRESENT]]"
+            "substantive": "N"
           }
         },
         {
@@ -112,7 +111,8 @@
           "beginTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N"
+            "substantive": "N",
+            "contractType": "[[ANYTHING_PRESENT]]"
           }
         }
       ]
