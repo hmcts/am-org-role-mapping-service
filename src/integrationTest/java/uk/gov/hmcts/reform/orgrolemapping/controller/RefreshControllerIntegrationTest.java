@@ -12,9 +12,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.Authentication;
@@ -24,31 +22,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 
@@ -56,11 +41,9 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -68,17 +51,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.setSecurityAuthorities;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUserRequest;
 
 @ExtendWith(SpringExtension.class)
@@ -98,6 +84,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String URL = "/am/role-mapping/refresh";
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
+    private static final String CORRELATION_ID = "38a90097-434e-47ee-8ea1-9ea2a267f51d";
 
     private MockMvc mockMvc;
 
@@ -109,21 +96,6 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     @Autowired
     private DataSource ds;
-
-    @Autowired
-    private CRDFeignClient crdFeignClient;
-
-    @MockBean
-    private JRDFeignClient jrdFeignClient;
-
-    @MockBean
-    private JBSFeignClient jbsFeignClient;
-
-    @MockBean
-    private RASFeignClient rasFeignClient;
-
-    @MockBean
-    private RequestMappingService requestMappingService;
 
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
@@ -149,8 +121,11 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void setUp() throws Exception {
         template = new JdbcTemplate(ds);
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
+        setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
+
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
 
         wiremockFixtures.resetRequests();
@@ -168,8 +143,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
         // stub crd request
         wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
-
-        mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
+        // stub RAS
+        wiremockFixtures.stubRoleAssignmentServiceWithStatus(CREATED);
 
         controller.refresh(jobId, null);
 
@@ -190,19 +165,19 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
         // stub crd request
         wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
-
-        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
+        // stub RAS request
+        wiremockFixtures.stubRoleAssignmentServiceError();
 
         controller.refresh(jobId, null);
 
-        Thread.sleep(1000);
+        // allow time for createRoleAssignment to fail 3 times as per @Retryable configuration
+        Thread.sleep(9000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(ABORTED, refreshJob.getStatus());
         assertNotNull(refreshJob.getUserIds());
         assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
-
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
@@ -212,12 +187,13 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
         // stub crd request
         wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
-
-        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
+        // stub RAS request
+        wiremockFixtures.stubRoleAssignmentServiceError();
 
         controller.refresh(jobId, null);
 
-        Thread.sleep(5000);
+        // allow time for createRoleAssignment to fail 3 times as per @Retryable configuration
+        Thread.sleep(9000);
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         logger.info(" -- Refresh Role Assignment record updated -- " + refreshJob.getStatus());
         assertEquals("ABORTED", refreshJob.getStatus());
@@ -233,19 +209,19 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
         // stub crd request
         wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
-
-        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
+        // stub RAS request
+        wiremockFixtures.stubRoleAssignmentServiceError();
 
         controller.refresh(jobId, null);
 
-        Thread.sleep(1000);
+        // allow time for createRoleAssignment to fail 3 times as per @Retryable configuration
+        Thread.sleep(9000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(ABORTED, refreshJob.getStatus());
         assertNotNull(refreshJob.getUserIds());
         assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
     }
-
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
@@ -255,12 +231,13 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
         // stub crd request
         wiremockFixtures.stubForGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
-
-        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
+        // stub RAS request
+        wiremockFixtures.stubRoleAssignmentServiceError();
 
         controller.refresh(jobId, null);
 
-        Thread.sleep(2000);
+        // allow time for createRoleAssignment to fail 3 times as per @Retryable configuration
+        Thread.sleep(9000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(ABORTED, refreshJob.getStatus());
@@ -276,6 +253,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
         // stub crd request
         wiremockFixtures.stubForGetCaseworkerDetailsById(buildUserRequest(), buildCaseWorkerProfileResponse());
+        // stub RAS
+        wiremockFixtures.stubRoleAssignmentServiceWithStatus(CREATED);
 
         //Verify before job
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
@@ -285,8 +264,6 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertEquals(ABORTED, linkedJob.getStatus());
         assertNotEquals(0, linkedJob.getUserIds().length);
 
-        mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
-
         controller.refresh(jobId, buildUserRequest());
 
         Thread.sleep(1000);
@@ -295,6 +272,189 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertEquals(COMPLETED, refreshJob.getStatus());
         assertEquals(0, refreshJob.getUserIds().length);
         assertNotNull(refreshJob.getLog());
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
+    public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
+        logger.info(" RefreshJob record With Only JobId to process fail");
+        Long jobId = 1L;
+        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals("NEW", refreshJob.getStatus());
+
+        // stub crd request
+        wiremockFixtures.stubForFailureGetCaseworkerDetailsByServiceName();
+
+        controller.refresh(jobId, null);
+
+        refreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals("NEW", refreshJob.getStatus());// failed process should change the status to IN-PROGRESS
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
+    public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
+        logger.info(" RefreshJob record With JobId retry success third time to process successful");
+        Long jobId = 1L;
+        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals("NEW", refreshJob.getStatus());
+
+        // stub crd request
+        wiremockFixtures.stubForFailureRetryAndSuccessGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
+        // stub RAS
+        wiremockFixtures.stubRoleAssignmentServiceWithStatus(CREATED);
+
+        controller.refresh(jobId, null);
+
+        Thread.sleep(9000);
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        refreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals(COMPLETED, refreshJob.getStatus());
+        assertEquals(0, refreshJob.getUserIds().length);
+        assertNotNull(refreshJob.getLog());
+    }
+
+    @Test
+    public void shouldProcessRefreshRoleAssignmentsWithJudicialProfiles() throws Exception {
+        logger.info(" Refresh role assignments successfully with valid user profiles");
+        var uuid = UUID.randomUUID().toString();
+
+        // stub RAS
+        wiremockFixtures.stubRoleAssignmentServiceWithStatus(CREATED);
+        // stub jrd request
+        wiremockFixtures.stubForGetJudicialDetailsById(OK, uuid);
+        // stub jbs request
+        wiremockFixtures.stubForGetJudicialBookingByUserIds(uuid);
+
+        var result = controller.judicialRefresh(CORRELATION_ID, getJudicialRefreshRequest());
+
+        assertTrue(result.getStatusCode().is2xxSuccessful());
+        var contentAsString = Objects.requireNonNull(result.getBody()).toString();
+        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignments()
+            throws Exception {
+        logger.info(" Refresh role assignments failed with valid user profiles");
+        var uuid = UUID.randomUUID().toString();
+
+        // stub RAS request
+        wiremockFixtures.stubRoleAssignmentServiceWithStatus(UNPROCESSABLE_ENTITY);
+        // stub jrd request
+        wiremockFixtures.stubForGetJudicialDetailsById(OK, uuid);
+        // stub jbs request
+        wiremockFixtures.stubForGetJudicialBookingByUserIds(uuid);
+
+        var result = controller.judicialRefresh(CORRELATION_ID, getJudicialRefreshRequest());
+
+        assertTrue(result.getStatusCode().is4xxClientError());
+        var contentAsString = Objects.requireNonNull(result.getBody()).toString();
+        assertTrue(contentAsString.contains(Constants.FAILED_ROLE_REFRESH));
+        logger.info(" -- Refresh Role Assignment record fail to update -- ");
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialBookings()
+            throws Exception {
+        logger.info(" Refresh role assignments with empty bookings");
+        var uuid = UUID.randomUUID().toString();
+
+        // stub RAS
+        wiremockFixtures.stubRoleAssignmentServiceWithStatus(CREATED);
+        // stub jrd request
+        wiremockFixtures.stubForGetJudicialDetailsById(OK, uuid);
+        // stub jbs request
+        wiremockFixtures.stubForGetJudicialBookingByUserIds();
+
+        var result = controller.judicialRefresh(CORRELATION_ID, getJudicialRefreshRequest());
+
+        assertTrue(result.getStatusCode().is2xxSuccessful());
+        var contentAsString = Objects.requireNonNull(result.getBody()).toString();
+        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
+        logger.info(" -- Refresh Role Assignment record updated without bookings -- ");
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withNotFoundJudicialProfiles()
+            throws Exception {
+        logger.info(" Refresh role assignments with empty bookings");
+
+        // stub RAS
+        wiremockFixtures.stubRoleAssignmentServiceWithStatus(CREATED);
+        // stub jrd request
+        wiremockFixtures.stubForGetJudicialDetailsByIdFailure(NOT_FOUND);
+        // stub jbs request
+        wiremockFixtures.stubForGetJudicialBookingByUserIds();
+
+        var result = controller.judicialRefresh(CORRELATION_ID, getJudicialRefreshRequest());
+
+        assertTrue(result.getStatusCode().is2xxSuccessful());
+        var contentAsString = Objects.requireNonNull(result.getBody()).toString();
+        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
+    }
+
+    //TODO: fix issue with response
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialProfiles()
+            throws Exception {
+        logger.info(" Refresh role assignments with empty bookings");
+
+        // stub RAS request
+        wiremockFixtures.stubRoleAssignmentServiceError();
+        // stub jrd request
+        wiremockFixtures.stubForGetJudicialDetailsByIdFailure(NOT_FOUND);
+        // stub jbs request
+        wiremockFixtures.stubForGetJudicialBookingByUserIds();
+
+        var result = controller.judicialRefresh(CORRELATION_ID, getJudicialRefreshRequest());
+
+        assertTrue(result.getStatusCode().is4xxClientError());
+        var contentAsString = Objects.requireNonNull(result.getBody()).toString();
+        assertTrue(contentAsString.contains(Constants.FAILED_ROLE_REFRESH));
+    }
+
+    @Test
+    public void shouldRejectJudicialRefreshRequest_withEmptyBody() throws Exception {
+        logger.info(" Refresh request rejected with empty request");
+
+        Exception exception = assertThrows(BadRequestException.class, () ->
+                controller.judicialRefresh(CORRELATION_ID, JudicialRefreshRequest.builder().build()));
+
+        var contentAsString = exception.getMessage();
+        assertTrue(contentAsString.contains("Empty user request"));
+    }
+
+    @Test
+    public void shouldRejectJudicialRefreshRequest_withEmptyUserList() throws Exception {
+        logger.info(" Refresh request rejected with empty user request");
+
+        JudicialRefreshRequest request = JudicialRefreshRequest.builder()
+                .refreshRequest(UserRequest.builder().userIds(Collections.emptyList()).build())
+                .build();
+
+        Exception exception = assertThrows(BadRequestException.class, () ->
+                controller.judicialRefresh(CORRELATION_ID, request));
+
+        var contentAsString = exception.getMessage();
+        assertTrue(contentAsString.contains("Empty user request"));
+    }
+
+    @Test
+    public void shouldRejectJudicialRefreshRequest_withInvalidUserIdFormat() throws Exception {
+        logger.info(" Refresh role assignments failed with invalid valid user profiles format");
+
+        JudicialRefreshRequest request = JudicialRefreshRequest.builder()
+                .refreshRequest(UserRequest.builder().userIds(List.of("abc-123$")).build()).build();
+
+        Exception exception = assertThrows(BadRequestException.class, () ->
+                controller.judicialRefresh(CORRELATION_ID, request));
+
+        var contentAsString = exception.getMessage();
+        assertTrue(contentAsString.contains(
+                "The input parameter: \"abc-123$\", does not comply with the required pattern")
+        );
     }
 
     @Test
@@ -341,217 +501,9 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                 .andReturn();
     }
 
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
-    public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
-        logger.info(" RefreshJob record With Only JobId to process fail");
-        Long jobId = 1L;
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals("NEW", refreshJob.getStatus());
-
-        wiremockFixtures.stubForFailureGetCaseworkerDetailsByServiceName();
-
-        controller.refresh(jobId, null);
-
-        refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals("NEW", refreshJob.getStatus());// failed process should change the status to IN-PROGRESS
-    }
-
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
-    public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
-        logger.info(" RefreshJob record With JobId retry success third time to process successful");
-        Long jobId = 1L;
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals("NEW", refreshJob.getStatus());
-
-        // stub crd request
-        wiremockFixtures.stubForFailureRetryAndSuccessGetCaseworkerDetailsByServiceName(buildUserProfileResponse());
-
-        mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
-
-        controller.refresh(jobId, null);
-
-        Thread.sleep(9000);
-        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
-        refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
-        assertNotNull(refreshJob.getLog());
-    }
-
-    @Test
-    public void shouldProcessRefreshRoleAssignmentsWithJudicialProfiles() throws Exception {
-        logger.info(" Refresh role assignments successfully with valid user profiles");
-        var uuid = UUID.randomUUID().toString();
-        doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
-        doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
-        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
-
-        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                        .refreshRequest(buildUserRequest()).build())))
-                .andExpect(status().is(200))
-                .andReturn();
-        var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
-        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
-    }
-
-    @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignments()
-            throws Exception {
-        logger.info(" Refresh role assignments failed with valid user profiles");
-        var uuid = UUID.randomUUID().toString();
-        doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
-        doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
-        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
-                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(buildUserRequest()).build())))
-                .andExpect(status().is(422))
-                .andReturn();
-        var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains(Constants.FAILED_ROLE_REFRESH));
-        logger.info(" -- Refresh Role Assignment record fail to update -- ");
-    }
-
-    @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialBookings()
-            throws Exception {
-        logger.info(" Refresh role assignments with empty bookings");
-        var uuid = UUID.randomUUID().toString();
-        doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
-        doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
-        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
-
-        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
-                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(buildUserRequest()).build())))
-                .andExpect(status().isOk())
-                .andReturn();
-        var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
-        logger.info(" -- Refresh Role Assignment record updated without bookings -- ");
-    }
-
-    @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withNotFoundJudicialProfiles()
-            throws Exception {
-        logger.info(" Refresh role assignments with empty bookings");
-        ResponseEntity response = ResponseEntity.status(404).body(Map.of(
-                "errorDescription", "The User Profile data could not be found",
-                "status", "Not Found"));
-        doReturn(response).when(jrdFeignClient).getJudicialDetailsById(any(), any());
-        doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
-        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
-
-        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
-                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(buildUserRequest()).build())))
-                .andExpect(status().is2xxSuccessful())
-                .andReturn();
-        String contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
-    }
-
-    @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialProfiles()
-            throws Exception {
-        logger.info(" Refresh role assignments with empty bookings");
-        ResponseEntity response = ResponseEntity.status(501).body(Map.of(
-                "errorDescription", "The User Profile data could not be found",
-                "status", "Not Found"));
-        doReturn(response).when(jrdFeignClient).getJudicialDetailsById(any(), any());
-
-        mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
-                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(buildUserRequest()).build())))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.errorDescription")
-                        .value(containsString(FAILED_ROLE_REFRESH)))
-                .andReturn();
-    }
-
-    @Test
-    public void shouldRejectJudicialRefreshRequest_withEmptyBody() throws Exception {
-        logger.info(" Refresh request rejected with empty request");
-        mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
-                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder().build())))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorDescription")
-                        .value(containsString("Empty user request")))
-                .andReturn();
-    }
-
-    @Test
-    public void shouldRejectJudicialRefreshRequest_withEmptyUserList() throws Exception {
-        logger.info(" Refresh request rejected with empty user request");
-        JudicialRefreshRequest request = JudicialRefreshRequest.builder()
-                .refreshRequest(UserRequest.builder().userIds(Collections.emptyList()).build()).build();
-        mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
-                        .content(mapper.writeValueAsBytes(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorDescription")
-                        .value(containsString("Empty user request")))
-                .andReturn();
-
-    }
-
-    @Test
-    public void shouldRejectJudicialRefreshRequest_withInvalidUserIdFormat() throws Exception {
-        logger.info(" Refresh role assignments failed with invalid valid user profiles format");
-
-        JudicialRefreshRequest request = JudicialRefreshRequest.builder()
-                .refreshRequest(UserRequest.builder().userIds(List.of("abc-123$")).build()).build();
-        mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
-                        .content(mapper.writeValueAsBytes(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorDescription")
-                        .value(containsString("The input parameter: \"abc-123$\", "
-                                + "does not comply with the required pattern")))
-                .andReturn();
-    }
-
-    private ResponseEntity<JudicialBookingResponse> buildJudicialBookingsResponse(String... userIds) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "" + userIds.length);
-        List<JudicialBooking> bookings = new ArrayList<>();
-        for (var userId:userIds) {
-            bookings.add(JudicialBooking.builder().beginTime(ZonedDateTime.now())
-                    .endTime(ZonedDateTime.now().plusDays(5)).userId(userId)
-                    .locationId("location").regionId("region").build());
-        }
-        return new ResponseEntity<>(new JudicialBookingResponse(bookings), headers, HttpStatus.OK);
-    }
-
-    private ResponseEntity<List<JudicialProfile>> buildJudicialProfilesResponse(String... userIds) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "" + userIds.length);
-        List<JudicialProfile> bookings = new ArrayList<>();
-        for (var userId:userIds) {
-            bookings.add(JudicialProfile.builder().sidamId(userId)
-                    .appointments(List.of(Appointment.builder().appointment("Tribunal Judge")
-                            .appointmentType("Fee Paid").build())).build());
-        }
-        return new ResponseEntity<>(bookings, headers, HttpStatus.OK);
+    @NotNull
+    private JudicialRefreshRequest getJudicialRefreshRequest() {
+        return JudicialRefreshRequest.builder().refreshRequest(buildUserRequest()).build();
     }
 
     @NotNull
@@ -572,33 +524,17 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         false);
     }
 
-    @SuppressWarnings("unchecked")
-    private void mockRequestMappingServiceWithStatus(HttpStatus status) {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
-                new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
-                        false))))))
-                .when(requestMappingService).createAssignments(any(), any());
-    }
-
-    @SuppressWarnings("unchecked")
-    private void mockRequestMappingServiceBookingParamWithStatus(HttpStatus status) {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
-                new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
-                        false))))))
-                .when(requestMappingService).createAssignments(any(), any(), any());
-    }
-
     @NotNull
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer user1");
         var s2SToken = MockUtils.generateDummyS2SToken(AUTHORISED_SERVICE);
         headers.add("ServiceAuthorization", "Bearer " + s2SToken);
-        headers.add(Constants.CORRELATION_ID_HEADER_NAME, "38a90097-434e-47ee-8ea1-9ea2a267f51d");
+        headers.add(Constants.CORRELATION_ID_HEADER_NAME, CORRELATION_ID);
         return headers;
     }
 
-    public RefreshJobEntity getRecordsFromRefreshJobTable(Long jobId) {
+    private RefreshJobEntity getRecordsFromRefreshJobTable(Long jobId) {
 
         var rm = (RowMapper<RefreshJobEntity>) (ResultSet result, int rowNum) -> {
             var entity = new RefreshJobEntity();
@@ -612,6 +548,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
             }
             return entity;
         };
+
         return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, rm, jobId);
     }
 }
