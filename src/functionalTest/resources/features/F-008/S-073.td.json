@@ -16,11 +16,11 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][childContexts][S-074_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": "${[scenarioContext][childContexts][S-073_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "roleName": ["hmcts-judiciary"]
         },
         {
-          "actorId": "${[scenarioContext][childContexts][S-074_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": "${[scenarioContext][childContexts][S-073_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["PRIVATELAW"]
           }
