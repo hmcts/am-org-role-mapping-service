@@ -92,12 +92,13 @@
           "grantType": "BASIC",
           "roleCategory": "JUDICIAL",
           "readOnly": true,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
             "contractType": "[[ANYTHING_PRESENT]]"
-          },
+          }
+        },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
