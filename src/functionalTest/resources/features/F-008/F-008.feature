@@ -5,7 +5,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     Given an appropriate test context as detailed in the test data source
 
   @S-071.v1_0
-  @FeatureToggle(DB:privatelaw_wa_1_0=on) @FeatureToggle(DB:privatelaw_wa_1_1=off)
+  @FeatureToggle(DB:privatelaw_wa_1_0=on)
   Scenario: must successfully create org role mapping for Legal Caseworker and Senior Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-071_DeleteDataForRoleAssignments],
@@ -19,7 +19,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-071_DeleteDataForRoleAssignments].
 
   @S-071.v1_1
-  @FeatureToggle(DB:privatelaw_wa_1_0=on) @FeatureToggle(DB:privatelaw_wa_1_1=on)
+  @FeatureToggle(DB:privatelaw_wa_1_1=on)
   Scenario: must successfully create org role mapping for Legal Caseworker and Senior Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-071_DeleteDataForRoleAssignments],
