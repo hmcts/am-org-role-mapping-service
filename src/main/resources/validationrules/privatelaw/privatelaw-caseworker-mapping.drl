@@ -50,6 +50,7 @@ end;
 rule "privatelaw_tribunal_caseworker_org_role"
 when
   $f: FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.PRIVATELAW_WA_1_1.getValue())
   $cap: CaseWorkerAccessProfile(roleId == "2", serviceCode == "ABA5", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
