@@ -16,13 +16,21 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": ["670a2a93-3911-4332-8c60-d38d56b53266"],
+          "actorId": "${[scenarioContext][childContexts][S-073_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "roleName": ["hmcts-judiciary"]
         },
         {
-          "actorId": ["670a2a93-3911-4332-8c60-d38d56b53266"],
+          "actorId": "${[scenarioContext][childContexts][S-073_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "roleName": ["hearing-viewer"],
           "attributes": {
             "jurisdiction": ["PRIVATELAW"]
+          }
+        },
+        {
+          "actorId": "${[scenarioContext][childContexts][S-073_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "attributes": {
+            "jurisdiction": ["PRIVATELAW"],
+            "contractType": ["Fee-Paid"]
           }
         }
       ]
@@ -35,7 +43,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "fee-paid-judge",
           "classification": "PUBLIC",
@@ -50,7 +58,7 @@
             "contractType": "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
-            "region": "1",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes" : "[[ANYTHING_PRESENT]]"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -58,7 +66,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -77,7 +85,23 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-judiciary",
           "classification": "PRIVATE",
@@ -87,7 +111,8 @@
           "beginTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N"
+            "substantive": "N",
+            "contractType": "[[ANYTHING_PRESENT]]"
           }
         }
       ]
