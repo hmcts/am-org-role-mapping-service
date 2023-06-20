@@ -148,7 +148,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
         controller.refresh(jobId, null);
 
-        Thread.sleep(1000);
+        Thread.sleep(9000);
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());

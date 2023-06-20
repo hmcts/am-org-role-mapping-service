@@ -66,7 +66,10 @@ public class WiremockFixtures {
     }
 
     private RoleAssignmentRequestResource getRoleAssignmentRequestResource() {
-        return new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(false));
+        var roleAssignmentRequestResource =
+                new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(false));
+        roleAssignmentRequestResource.getRoleAssignmentRequest().getRequest().setReference("test ref");
+        return roleAssignmentRequestResource;
     }
 
     public void stubRoleAssignmentServiceError() throws JsonProcessingException {
