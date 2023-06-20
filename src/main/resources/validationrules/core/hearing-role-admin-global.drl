@@ -26,7 +26,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "global_hearing_manager_admin"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile((roleId in ("3","4","5","9","10","12","13") && serviceCode in ("BBA3"))
+  $up: CaseWorkerAccessProfile((roleId in ("3","4","5","12","13") && serviceCode in ("BBA3"))
                                  || (roleId in ("3","4") && serviceCode in ("ABA3","ABA5"))
                                  || (roleId in ("3","4","6","11") && serviceCode in ("AAA6","AAA7")),
                                  !suspended)
@@ -56,7 +56,7 @@ end;
 rule "global_hearing_viewer_admin"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-  $up: CaseWorkerAccessProfile((roleId in ("3","4","5","9","10","12","13") && serviceCode in ("BBA3"))
+  $up: CaseWorkerAccessProfile((roleId in ("3","4","5","12","13") && serviceCode in ("BBA3"))
                                 || (roleId in ("3","4") && serviceCode in ("ABA3","ABA5"))
                                 || (roleId in ("3","4","6","11") && serviceCode in ("AAA6","AAA7")),
                                 !suspended)
