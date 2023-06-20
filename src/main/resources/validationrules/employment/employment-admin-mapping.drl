@@ -139,7 +139,7 @@ end;
 rule "employment_admin_hmcts_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("3","12"), serviceCode == "BHA1", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("3","12","4","13","5"), serviceCode == "BHA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
   insert(
@@ -243,31 +243,6 @@ then
 end;
 
 /*
- * employment admin "hmcts-admin" Org role mapping.
- */
-
-rule "employment_admin_hmcts_admin_Admin_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("4","13"), serviceCode == "BHA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.ADMIN)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("hmcts-admin")
-      .grantType(GrantType.BASIC)
-      .classification(Classification.PRIVATE)
-      .readOnly(true)
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : employment_admin_hmcts_admin_Admin_org_role");
-end;
-
-/*
  * employment admin "clerk" Org role mapping.
  */
 
@@ -294,29 +269,4 @@ then
         .attributes(attribute)
         .build());
         logMsg("Rule : employment_admin_clerk_org_role");
-end;
-
-/*
- * employment admin "hmcts-admin" clerk Org role mapping.
- */
-
-rule "employment_admin_hmcts_admin_clerk_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId =="5", serviceCode == "BHA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-  insert(
-        RoleAssignment.builder()
-        .actorIdType(ActorIdType.IDAM)
-        .actorId($cap.getId())
-        .roleCategory(RoleCategory.ADMIN)
-        .roleType(RoleType.ORGANISATION)
-        .roleName("hmcts-admin")
-        .grantType(GrantType.BASIC)
-        .classification(Classification.PRIVATE)
-        .readOnly(true)
-        .attributes(attribute)
-        .build());
-        logMsg("Rule : employment_admin_hmcts_admin_clerk_org_role");
 end;

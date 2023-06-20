@@ -35,7 +35,9 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
                     + "task-supervisor',Y,N",
             "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
                     + "case-allocator',N,Y",
-
+            "4,BHA1,'hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator',Y,Y",
+            "13,BHA1,'regional-centre-admin,hmcts-admin,task-supervisor,case-allocator',Y,Y",
+            "5,BHA1,'clerk,hmcts-admin,task-supervisor,case-allocator',Y,Y",
     })
     void shouldReturnEmploymentAdminMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -84,8 +86,13 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
                     } else if (("hearing-centre-admin").equals(r.getRoleName())) {
                         assertEquals("hearing_work,routine_work,applications,amendments",
                                 r.getAttributes().get("workTypes").asText());
+                    } else if (("specific-access-approver-admin").equals(r.getRoleName())) {
+                        assertEquals("access_requests",
+                                r.getAttributes().get("workTypes").asText());
+                    } else if (("clerk").equals(r.getRoleName())) {
+                        assertEquals("hearing_work,routine_work,applications,amendments",
+                                r.getAttributes().get("workTypes").asText());
                     }
-
 
                 });
     }
@@ -142,6 +149,9 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
                     //assert work types
                     if (("ctsc").equals(r.getRoleName())) {
                         assertEquals("hearing_work,routine_work,applications,amendments",
+                                r.getAttributes().get("workTypes").asText());
+                    } else if (("specific-access-approver-ctsc").equals(r.getRoleName())) {
+                        assertEquals("access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     }
                 });
