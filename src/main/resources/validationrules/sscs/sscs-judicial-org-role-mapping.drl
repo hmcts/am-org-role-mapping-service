@@ -281,7 +281,9 @@ then
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing_work,hearing_work,post_hearing_work,"
                                                                         + "decision_making_work,routine_work,priority"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
+   if ($joh.getTicketCodes().contains("368")) {
+    attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
