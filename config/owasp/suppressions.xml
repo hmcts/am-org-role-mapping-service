@@ -16,18 +16,6 @@
         <cve>CVE-2022-1471</cve>
     </suppress>
     <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-2737 spring</notes>
-        <cve>CVE-2023-20861</cve>
-    </suppress>
-    <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-2740 spring</notes>
-        <cve>CVE-2023-20860</cve>
-    </suppress>
-    <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-2776 springframework</notes>
-        <cve>CVE-2023-20863</cve>
-    </suppress>
-    <suppress>
         <notes>https://tools.hmcts.net/jira/browse/AM-2823 springboot</notes>
         <cve>CVE-2023-20883</cve>
     </suppress>
