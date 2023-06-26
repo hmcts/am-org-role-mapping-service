@@ -12,7 +12,11 @@
       "_extends_": "Common_200_Response_Headers"
     },
     "body" : {
-      "arrayInMap" : [ {
+      "arrayInMap" : [
+        {
+          "__elementId__": "roleName"
+        },
+        {
         "roleAssignmentResponse" : {
           "roleRequest" : {
             "id" : "[[ANYTHING_PRESENT]]",
@@ -28,11 +32,7 @@
             "log" : "Duplicate Request: Requested Assignments are already live.",
             "byPassOrgDroolRule" : true
           },
-          "requestedRoles" : [
-          {
-            "__elementId__": "roleName"
-          },
-          {
+          "requestedRoles" : [ {
             "id" : "[[ANYTHING_PRESENT]]",
             "actorIdType" : "IDAM",
             "actorId" : "[[ANYTHING_PRESENT]]",
