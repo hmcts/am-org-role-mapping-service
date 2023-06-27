@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress until="2023-07-05">
-    <notes>suppressing due to no working updated version for jackson</notes>
+    <notes>suppressing due to no working updated version for jackson
+        https://tools.hmcts.net/jira/browse/AM-2840 json-java</notes>
     <cve>CVE-2022-45688</cve>
     </suppress>
    <suppress>
