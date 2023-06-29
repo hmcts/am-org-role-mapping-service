@@ -154,6 +154,9 @@ task functional(type: JavaExec) {
     // '--add-opens=...' added to suppress 'WARNING: An illegal reflective access operation has occurred' in uk.gov.hmcts.befta.util.CucumberStepAnnotationUtils
     jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
 
+    // Configure array order in FTAs
+    environment "DEFAULT_COLLECTION_ASSERTION_MODE", "UNORDERED"
+
     finalizedBy {
         generateCucumberReports.enabled = true
         generateCucumberReports {
