@@ -21,7 +21,7 @@ plugins {
     id 'org.sonarqube' version '4.0.0.2929'
     id 'au.com.dius.pact' version '4.3.12'
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
-    id 'org.owasp.dependencycheck' version '8.1.0'
+    id 'org.owasp.dependencycheck' version '8.1.2'
 }
 
 apply plugin: "info.solidsoft.pitest"
@@ -41,7 +41,7 @@ def versions = [
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
         springBoot     : '2.6.6',
-        spring         : '5.3.25',
+        spring         : '5.3.27',
         springSecurity : '5.7.8',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
@@ -153,6 +153,9 @@ task functional(type: JavaExec) {
            ]
     // '--add-opens=...' added to suppress 'WARNING: An illegal reflective access operation has occurred' in uk.gov.hmcts.befta.util.CucumberStepAnnotationUtils
     jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+
+    // Configure array order in FTAs
+    environment "DEFAULT_COLLECTION_ASSERTION_MODE", "UNORDERED"
 
     finalizedBy {
         generateCucumberReports.enabled = true
