@@ -28,8 +28,4 @@
         <notes>https://tools.hmcts.net/jira/browse/AM-2851 guava</notes>
         <cve>CVE-2023-2976</cve>
     </suppress>
-    <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-2852 tomcat</notes>
-        <cve>CVE-2023-34981</cve>
-    </suppress>
 </suppressions>
