@@ -16,6 +16,9 @@ function String getJurisdictionFromServiceCode(String serviceCode) {
             case "ABA3":
                 result = "PUBLICLAW";
                 break;
+            case "BHA1":
+                result = "EMPLOYMENT";
+                break;
         }
         return result;
 }
