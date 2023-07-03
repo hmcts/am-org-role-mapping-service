@@ -69,7 +69,7 @@ class PersistenceServiceTest {
 
     @Test
     void getFlagStatus() {
-        String flagName = "iac_1_1";
+        String flagName = "publiclaw_wa_1_0";
         String env = "pr";
         when(flagConfigRepository.findByFlagNameAndEnv(flagName, env)).thenReturn(getFlagConfig(Boolean.TRUE));
         boolean response = sut.getStatusByParam(flagName, env);
@@ -79,7 +79,7 @@ class PersistenceServiceTest {
 
     @Test
     void getFlagStatusFalse() {
-        String flagName = "iac_1_1";
+        String flagName = "publiclaw_wa_1_0";
         String env = "";
         when(flagConfigRepository.findByFlagNameAndEnv(any(), any())).thenReturn(getFlagConfig(Boolean.TRUE));
         boolean response = sut.getStatusByParam(flagName, env);
@@ -89,7 +89,7 @@ class PersistenceServiceTest {
 
     @Test
     void getFlagWhenStatusIsFalse() {
-        String flagName = "iac_1_1";
+        String flagName = "publiclaw_wa_1_0";
         String env = "pr";
         when(flagConfigRepository.findByFlagNameAndEnv(flagName, env)).thenReturn(getFlagConfig(Boolean.FALSE));
         boolean response = sut.getStatusByParam(flagName, env);
@@ -99,7 +99,7 @@ class PersistenceServiceTest {
 
     @Test
     void getFlagStatusWhenEnvIsEmpty() {
-        String flagName = "iac_1_1";
+        String flagName = "publiclaw_wa_1_0";
         when(flagConfigRepository.findByFlagNameAndEnv(any(), any())).thenReturn(getFlagConfig(Boolean.TRUE));
         boolean response = sut.getStatusByParam(flagName, "");
         assertTrue(response);
@@ -117,8 +117,8 @@ class PersistenceServiceTest {
     private FlagConfig getFlagConfig(Boolean status) {
         return FlagConfig.builder()
                 .env("pr")
-                .flagName("iac_1_1")
-                .serviceName("iac")
+                .flagName("publiclaw_wa_1_0")
+                .serviceName("publiclaw")
                 .status(status)
                 .build();
     }

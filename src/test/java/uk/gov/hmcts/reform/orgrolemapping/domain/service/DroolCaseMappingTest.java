@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +34,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -51,7 +52,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -71,7 +72,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -104,7 +105,7 @@ class  DroolCaseMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -143,7 +144,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -185,7 +186,7 @@ class  DroolCaseMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -224,7 +225,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -269,7 +270,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -313,7 +314,7 @@ class  DroolCaseMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -354,7 +355,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -394,7 +395,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -431,7 +432,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -449,7 +450,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -467,7 +468,7 @@ class  DroolCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());

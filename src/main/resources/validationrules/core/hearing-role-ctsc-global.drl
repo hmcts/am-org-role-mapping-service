@@ -25,7 +25,6 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  */
  rule "global_hearing_manager_ctsc"
  when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
    $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3","ABA5")),
                                                                 !suspended)
 
@@ -54,7 +53,6 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
   */
  rule "global_hearing_viewer_ctsc"
  when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
    $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3","ABA5"))
                                  || (roleId in ("9","10") && serviceCode in ("AAA6","AAA7")),
                                                                            !suspended)

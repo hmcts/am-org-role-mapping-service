@@ -25,7 +25,6 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 
  rule "global_hearing_viewer_judicial"
  when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
    $joh: JudicialOfficeHolder(office in ("SSCS Judge", "Family Judge",
    "PUBLICLAW District Judge - Salaried", "PUBLICLAW District Judge (MC) - SPTW",
    "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",
@@ -64,7 +63,6 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 
   rule "global_hearing_manager_judicial"
   when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
     $joh: JudicialOfficeHolder(office in (
     "PUBLICLAW District Judge - Salaried", "PUBLICLAW District Judge (MC) - SPTW",
     "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",

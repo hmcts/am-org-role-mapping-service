@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +49,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId, false));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -77,7 +78,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -125,7 +126,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -143,7 +144,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(emptyList());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -161,14 +162,14 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
+        assertEquals(7, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("tribunal-caseworker", "tribunal-caseworker",
-                        "registrar", "registrar", "hmcts-legal-operations"));
+                        "registrar", "registrar", "hmcts-legal-operations", "hearing-viewer", "hearing-manager"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
-            if (!roleAssignment.getRoleName().contains("hmcts")) {
+            if (!roleAssignment.getRoleName().contains("hmcts") && !roleAssignment.getRoleName().contains("hearing")) {
                 assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
@@ -199,15 +200,15 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(9, roleAssignments.size());
+        assertEquals(11, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("tribunal-caseworker", "hmcts-legal-operations", "registrar",
-                        "case-allocator","task-supervisor","task-supervisor",
-                        "tribunal-caseworker", "registrar", "case-allocator"));
+                        "case-allocator","task-supervisor","task-supervisor", "tribunal-caseworker",
+                        "registrar", "case-allocator", "hearing-viewer", "hearing-manager"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
-            if (!roleAssignment.getRoleName().contains("hmcts")) {
+            if (!roleAssignment.getRoleName().contains("hmcts") && !roleAssignment.getRoleName().contains("hearing")) {
                 assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
@@ -234,13 +235,14 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
+        assertEquals(7, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-admin","superuser", "superuser", "clerk", "clerk"));
+                containsInAnyOrder("hmcts-admin","superuser", "superuser",
+                        "clerk", "clerk", "hearing-viewer", "hearing-manager"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
-            if (!roleAssignment.getRoleName().contains("hmcts")) {
+            if (!roleAssignment.getRoleName().contains("hmcts") && !roleAssignment.getRoleName().contains("hearing")) {
                 assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
@@ -275,14 +277,15 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(9, roleAssignments.size());
+        assertEquals(11, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("hmcts-admin","superuser", "superuser","clerk","clerk",
-                        "task-supervisor", "task-supervisor","case-allocator", "case-allocator"));
+                        "task-supervisor", "task-supervisor","case-allocator", "case-allocator",
+                        "hearing-viewer", "hearing-manager"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
-            if (!roleAssignment.getRoleName().contains("hmcts")) {
+            if (!roleAssignment.getRoleName().contains("hmcts") && !roleAssignment.getRoleName().contains("hearing")) {
                 assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
@@ -317,16 +320,18 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("dwp", "hmrc","dwp", "hmrc"));
+                containsInAnyOrder("dwp", "hmrc","dwp", "hmrc", "listed-hearing-viewer"));
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.OTHER_GOV_DEPT, roleAssignment.getRoleCategory());
-            assertThat(new String[]{"7", "6"},
-                    ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
-            assertEquals("applications,hearing_work,routine_work,priority",
+            if (!roleAssignment.getRoleName().equals("listed-hearing-viewer")) {
+                assertThat(new String[]{"7", "6"},
+                        ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
+                assertEquals("applications,hearing_work,routine_work,priority",
                         roleAssignment.getAttributes().get("workTypes").asText());
+            }
         });
     }
 

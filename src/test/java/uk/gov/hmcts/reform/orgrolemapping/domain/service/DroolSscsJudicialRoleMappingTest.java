@@ -37,6 +37,8 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
     })
     void shouldReturnSalariedRoles(String setOffice, @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
 
+        allProfiles.clear();
+
         judicialOfficeHolders.forEach(joh -> {
             joh.setOffice(setOffice);
             joh.setRegionId("7");
@@ -62,7 +64,6 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
                         ArrayMatching.hasItemInArray(r.getAttributes().get("region").asText()));
             }
         });
-
     }
 
     @ParameterizedTest
@@ -79,6 +80,8 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
     })
     void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) {
 
+        allProfiles.clear();
+
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
@@ -92,7 +95,9 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
 
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+        });
     }
-
-
 }

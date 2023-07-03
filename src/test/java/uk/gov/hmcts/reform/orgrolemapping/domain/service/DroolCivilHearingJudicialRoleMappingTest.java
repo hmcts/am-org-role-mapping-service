@@ -35,12 +35,10 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("Circuit Judge",
                         "Salaried",
                         false,
-                        true,
                         List.of(""),
                         List.of("circuit-judge", "hmcts-judiciary", "hearing-viewer")),
                 Arguments.of("Deputy Circuit Judge",
                         "Fee Paid",
-                        true,
                         true,
                         List.of("Deputy District Judge"),
                         List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary",
@@ -48,13 +46,11 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("Deputy District Judge- Sitting in Retirement",
                         "Fee Paid",
                         true,
-                        true,
                         List.of("Deputy District Judge"),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary",
                                 "hearing-viewer")),
                 Arguments.of("Deputy District Judge- Fee-Paid",
                         "Fee Paid",
-                        true,
                         true,
                         List.of(""),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary",
@@ -62,34 +58,29 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("District Judge",
                         "Salaried",
                         true,
-                        true,
                         List.of(""),
                         List.of("judge", "hmcts-judiciary",
                                 "hearing-viewer")),
                 Arguments.of("High Court Judge",
                         "Salaried",
                         true,
-                        true,
                         List.of(""),
                         List.of("circuit-judge", "hmcts-judiciary",
                                 "hearing-viewer")),
             Arguments.of("Senior Circuit Judge",
-                "Salaried",
-                true,
-                true,
-                List.of(""),
-                List.of("circuit-judge", "hmcts-judiciary",
-                    "hearing-viewer")),
+                        "Salaried",
+                        true,
+                        List.of(""),
+                        List.of("circuit-judge", "hmcts-judiciary",
+                            "hearing-viewer")),
             Arguments.of("Specialist Circuit Judge",
-                "Salaried",
-                true,
-                true,
-                List.of(""),
-                List.of("circuit-judge", "hmcts-judiciary",
-                    "hearing-viewer")),
+                        "Salaried",
+                        true,
+                        List.of(""),
+                        List.of("circuit-judge", "hmcts-judiciary",
+                            "hearing-viewer")),
                 Arguments.of("Recorder", "Fee Paid",
                         false,
-                        true,
                         List.of("Recorder - Fee Paid"),
                         List.of("fee-paid-judge","hmcts-judiciary",
                                 "hearing-viewer"))
@@ -99,12 +90,14 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @MethodSource("endToEndData")
     void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
-            String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
+            String appointment, String appointmentType, boolean addBooking,
             List<String> assignedRoles, List<String> expectedRoleNames) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         judicialBookings.clear();
+
         if (addBooking) {
             JudicialBooking booking = JudicialBooking.builder()
                     .userId(userId).locationId("Scotland").regionId("1")
@@ -133,10 +126,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
-                );
+                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build()));
 
         //assertions
         assertFalse(roleAssignments.isEmpty());
@@ -174,6 +164,5 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                 assertEquals("London", r.getAttributes().get("primaryLocation").asText());
             }
         });
-
     }
 }

@@ -32,6 +32,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
     @Test
     void shouldReturnCivilCaseworkerMappings() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -48,9 +49,10 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
+        assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("tribunal-caseworker", "hmcts-legal-operations"));
+                containsInAnyOrder("tribunal-caseworker", "hmcts-legal-operations",
+                        "hearing-manager", "hearing-viewer"));
         roleAssignments.forEach(r -> {
             assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
@@ -59,15 +61,18 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
                 .forEach(r -> {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
-                    assertEquals("decision_making_work", r.getAttributes().get("workTypes").asText());
-                    assertEquals("region1", r.getAttributes().get("region").asText());
-                    assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
+                    if ("tribunal-caseworker".equals(r.getRoleName())) {
+                        assertEquals("decision_making_work", r.getAttributes().get("workTypes").asText());
+                        assertEquals("region1", r.getAttributes().get("region").asText());
+                        assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
+                    }
                 });
     }
 
     @Test
     void shouldReturnCivilCaseworkerMappingsForSeniorTribunalCaseworker() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -87,63 +92,67 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
+        assertEquals(6, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("senior-tribunal-caseworker", "hmcts-legal-operations", "task-supervisor",
-                        "case-allocator"));
-        roleAssignments.forEach(r -> {
-            assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
-            assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(skillCodes, r.getAuthorisations());
-            }
-        });
+                        "case-allocator", "hearing-viewer", "hearing-manager"));
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).collect(Collectors.toList())
-                .forEach(r -> {
+        roleAssignments.forEach(r -> {
+            if (!r.getRoleName().equals("hearing-viewer") && !r.getRoleName().equals("hearing-manager")) {
+                assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
+                assertEquals("ORGANISATION", r.getRoleType().toString());
+                if (!r.getRoleName().contains("hmcts")) {
+                    assertEquals(skillCodes, r.getAuthorisations());
+                }
+
+                if (r.getGrantType().equals(GrantType.STANDARD)) {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
                     if ("senior-tribunal-caseworker".equals(r.getRoleName())
-                        || "task-supervisor".equals(r.getRoleName())) {
+                            || "task-supervisor".equals(r.getRoleName())) {
                         assertEquals("decision_making_work,access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     }
                     assertEquals("region1", r.getAttributes().get("region").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                });
+                }
+            }
+        });
     }
 
 
     static Stream<Arguments> generateData() {
         return Stream.of(
-                Arguments.of("3", Arrays.asList("hmcts-admin", "hearing-centre-team-leader"),
-                        2, Collections.singletonList("hearing_work,access_requests")),
-                Arguments.of("10", Arrays.asList("hmcts-ctsc", "ctsc"),
-                        2, Arrays.asList("routine_work")),
-                Arguments.of("9", Arrays.asList("hmcts-ctsc", "ctsc-team-leader"),
-                        2, Arrays.asList("routine_work,access_requests")),
-                Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin"),
-                        2, Collections.singletonList("hearing_work")),
-                Arguments.of("1", Arrays.asList("senior-tribunal-caseworker","hmcts-legal-operations"),
-                        2, List.of("decision_making_work,access_requests")),
-                Arguments.of("2", Arrays.asList("tribunal-caseworker","hmcts-legal-operations"),
-                        2, List.of("decision_making_work")),
-                Arguments.of("6", Arrays.asList("hmcts-admin", "nbc-team-leader"),
-                        2, Arrays.asList("routine_work,access_requests")),
-                Arguments.of("11", Arrays.asList("hmcts-admin","national-business-centre"),
-                        2, Arrays.asList("routine_work"))
+                Arguments.of("3", Arrays.asList("hmcts-admin", "hearing-centre-team-leader",
+                        "hearing-manager", "hearing-viewer"), 4,
+                        Collections.singletonList("hearing_work,access_requests")),
+                Arguments.of("10", Arrays.asList("hmcts-ctsc", "ctsc", "hearing-viewer"),
+                        3, Arrays.asList("routine_work")),
+                Arguments.of("9", Arrays.asList("hmcts-ctsc", "ctsc-team-leader", "hearing-viewer"),
+                        3, Arrays.asList("routine_work,access_requests")),
+                Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin",
+                        "hearing-manager", "hearing-viewer"), 4, Collections.singletonList("hearing_work")),
+                Arguments.of("1", Arrays.asList("senior-tribunal-caseworker",
+                        "hmcts-legal-operations", "hearing-manager", "hearing-viewer"), 4,
+                        List.of("decision_making_work,access_requests")),
+                Arguments.of("2", Arrays.asList("tribunal-caseworker","hmcts-legal-operations",
+                        "hearing-manager", "hearing-viewer"), 4, List.of("decision_making_work")),
+                Arguments.of("6", Arrays.asList("hmcts-admin", "nbc-team-leader", "hearing-manager", "hearing-viewer"),
+                        4, Arrays.asList("routine_work,access_requests")),
+                Arguments.of("11", Arrays.asList("hmcts-admin","national-business-centre",
+                        "hearing-manager", "hearing-viewer"), 4, Arrays.asList("routine_work"))
         );
     }
 
     static Stream<Arguments> generateDatav11() {
         return Stream.of(
-                Arguments.of("1", Arrays.asList("tribunal-caseworker"),
-                        1, Arrays.asList("decision_making_work"), RoleCategory.LEGAL_OPERATIONS),
-                Arguments.of("3", Arrays.asList("hearing-centre-admin"),
-                        1, Collections.singletonList("hearing_work"), RoleCategory.ADMIN),
-                Arguments.of("6", Arrays.asList("national-business-centre"),
-                        1, Arrays.asList("routine_work"), RoleCategory.ADMIN),
-                Arguments.of("9", Arrays.asList("ctsc"),
-                        1, Arrays.asList("routine_work"), RoleCategory.CTSC)
+                Arguments.of("1", Arrays.asList("tribunal-caseworker", "hearing-manager", "hearing-viewer"),
+                        3, Arrays.asList("decision_making_work"), RoleCategory.LEGAL_OPERATIONS),
+                Arguments.of("3", Arrays.asList("hearing-centre-admin", "hearing-manager", "hearing-viewer"),
+                        3, Collections.singletonList("hearing_work"), RoleCategory.ADMIN),
+                Arguments.of("6", Arrays.asList("national-business-centre", "hearing-manager", "hearing-viewer"),
+                        3, Arrays.asList("routine_work"), RoleCategory.ADMIN),
+                Arguments.of("9", Arrays.asList("ctsc", "hearing-viewer"),
+                        2, Arrays.asList("routine_work"), RoleCategory.CTSC)
         );
     }
 
@@ -151,6 +160,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
     @MethodSource("generateData")
     void shouldReturnCivilAdminMappings(String roleId, List<String> roleNames, int roleCount, List<String> workTypes) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -176,33 +186,34 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 containsInAnyOrder(roleNames.toArray()));
 
         roleAssignments.forEach(r -> {
-            assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(skillCodes, r.getAuthorisations());
-            }
-        });
+            if (!r.getRoleName().equals("hearing-viewer") && !r.getRoleName().equals("hearing-manager")) {
+                assertEquals("ORGANISATION", r.getRoleType().toString());
+                if (!r.getRoleName().contains("hmcts")) {
+                    assertEquals(skillCodes, r.getAuthorisations());
+                }
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> {
+                if (r.getGrantType().equals(GrantType.STANDARD)) {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
                     if (!(roleId.equals("10") || roleId.equals("9"))) {
                         assertEquals("region1", r.getAttributes().get("region").asText());
                     }
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                });
+                }
 
-        List<Map<String, JsonNode>> list = roleAssignments.stream()
-                .map(RoleAssignment::getAttributes).toList();
-        List<String> workTypesCombined = new ArrayList<>();
+                List<Map<String, JsonNode>> list = roleAssignments.stream()
+                        .map(RoleAssignment::getAttributes).toList();
+                List<String> workTypesCombined = new ArrayList<>();
 
-        for (Map<String, JsonNode> e : list) {
-            if (e.containsKey("workTypes")) {
-                workTypesCombined.add(e.entrySet().stream()
-                    .filter(a -> a.getKey().equals("workTypes"))
-                    .map(Map.Entry::getValue).findFirst().get().textValue());
+                for (Map<String, JsonNode> e : list) {
+                    if (e.containsKey("workTypes")) {
+                        workTypesCombined.add(e.entrySet().stream()
+                                .filter(a -> a.getKey().equals("workTypes"))
+                                .map(Map.Entry::getValue).findFirst().get().textValue());
+                    }
+                }
+                assertThat(workTypesCombined, containsInAnyOrder(workTypes.toArray()));
             }
-        }
-        assertThat(workTypesCombined,containsInAnyOrder(workTypes.toArray()));
+        });
     }
 
     @ParameterizedTest
@@ -213,6 +224,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                                             List<String> workTypes,
                                             RoleCategory expectedRoleCategory) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -238,15 +250,14 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 containsInAnyOrder(roleNames.toArray()));
 
         roleAssignments.forEach(r -> {
-            assertEquals("ORGANISATION", r.getRoleType().toString());
-            assertEquals(expectedRoleCategory, r.getRoleCategory());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(skillCodes, r.getAuthorisations());
-            }
-        });
+            if (!r.getRoleName().equals("hearing-viewer") && !r.getRoleName().equals("hearing-manager")) {
+                assertEquals("ORGANISATION", r.getRoleType().toString());
+                assertEquals(expectedRoleCategory, r.getRoleCategory());
+                if (!r.getRoleName().contains("hmcts")) {
+                    assertEquals(skillCodes, r.getAuthorisations());
+                }
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> {
+                if (r.getGrantType().equals(GrantType.STANDARD)) {
                     assertEquals("CIVIL", r.getAttributes().get("jurisdiction").asText());
                     if (!(roleId.equals("10") || roleId.equals("9"))) {
                         assertEquals("region1", r.getAttributes().get("region").asText());
@@ -254,20 +265,21 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                         assertFalse(r.getAttributes().containsKey("region"));
                     }
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                });
+                }
 
-        List<Map<String, JsonNode>> list = roleAssignments.stream()
-                .map(RoleAssignment::getAttributes).toList();
-        List<String> workTypesCombined = new ArrayList<>();
+                List<Map<String, JsonNode>> list = roleAssignments.stream()
+                        .map(RoleAssignment::getAttributes).toList();
+                List<String> workTypesCombined = new ArrayList<>();
 
-        for (Map<String, JsonNode> e : list) {
-            if (e.containsKey("workTypes")) {
-                workTypesCombined.add(e.entrySet().stream()
-                        .filter(a -> a.getKey().equals("workTypes"))
-                        .map(Map.Entry::getValue).findFirst().get().textValue());
+                for (Map<String, JsonNode> e : list) {
+                    if (e.containsKey("workTypes")) {
+                        workTypesCombined.add(e.entrySet().stream()
+                                .filter(a -> a.getKey().equals("workTypes"))
+                                .map(Map.Entry::getValue).findFirst().get().textValue());
+                    }
+                }
+                assertThat(workTypesCombined, containsInAnyOrder(workTypes.toArray()));
             }
-        }
-        assertThat(workTypesCombined, containsInAnyOrder(workTypes.toArray()));
+        });
     }
-
 }

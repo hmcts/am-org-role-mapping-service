@@ -9,7 +9,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,16 +26,20 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "10,ABA5,'ctsc,hmcts-ctsc',N,N",
-            "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N",
+            "10,ABA5,'ctsc,hmcts-ctsc,hearing-viewer,hearing-manager',N,N",
+            "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,"
+                    + "hearing-viewer,hearing-manager',N,N",
             "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,"
-                    + "specific-access-approver-ctsc',Y,Y",
-            "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc',N,Y",
-            "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N"
+                    + "specific-access-approver-ctsc,hearing-viewer,hearing-manager',Y,Y",
+            "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc,"
+                    + "hearing-viewer,hearing-manager',N,Y",
+            "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc,"
+                    + "hearing-viewer,hearing-manager',Y,N"
     })
     void shouldReturnPrivateLawCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                             String taskSupervisorFlag, String caseAllocatorFlag) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -64,7 +67,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("CTSC", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
+            if (!r.getRoleName().contains("hmcts") && !r.getRoleName().contains("hearing")) {
                 assertEquals(skillCodes,r.getAuthorisations());
             }
 
@@ -87,19 +90,20 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "4,ABA5,'hearing-centre-admin,hmcts-admin',N,N",
+            "4,ABA5,'hearing-centre-admin,hmcts-admin,hearing-viewer,hearing-manager',N,N",
             "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,"
-                    + "specific-access-approver-admin',N,N",
+                    + "specific-access-approver-admin,hearing-viewer,hearing-manager',N,N",
             "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
-                    + "specific-access-approver-admin',Y,N",
+                    + "specific-access-approver-admin,hearing-viewer,hearing-manager',Y,N",
             "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,case-allocator,"
-                    + "specific-access-approver-admin',N,Y",
+                    + "specific-access-approver-admin,hearing-viewer,hearing-manager',N,Y",
             "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator,"
-                     + "specific-access-approver-admin',Y,Y",
+                     + "specific-access-approver-admin,hearing-viewer,hearing-manager',Y,Y",
     })
     void shouldReturnPrivateLawAdminMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
@@ -126,7 +130,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("ADMIN", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
+            if (!r.getRoleName().contains("hmcts") && !r.getRoleName().contains("hearing")) {
                 assertEquals(skillCodes, r.getAuthorisations());
             }
         });
@@ -157,15 +161,16 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,false",
-            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N,false",
+            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations,hearing-viewer,hearing-manager',N,N,false",
+            "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
+                    + "hearing-viewer,hearing-manager',N,N,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
-                    + "specific-access-approver-legal-ops',Y,N,false",
+                    + "specific-access-approver-legal-ops,hearing-viewer,hearing-manager',Y,N,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
-                    + "specific-access-approver-legal-ops',N,Y,false",
+                    + "specific-access-approver-legal-ops,hearing-viewer,hearing-manager',N,Y,false",
             "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,"
-                    + "specific-access-approver-legal-ops',Y,Y,false",
-            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,true",
+                    + "specific-access-approver-legal-ops,hearing-viewer,hearing-manager',Y,Y,false",
+            "2,ABA5,'tribunal-caseworker,hmcts-legal-operations,hearing-viewer,hearing-manager',N,N,true",
     })
     void shouldReturnPrivateLawCaseWorkerMappings(String roleId,
                                                   String serviceCode,
@@ -174,6 +179,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
                                                   String caseAllocatorFlag,
                                                   String privateLawV11IsEnabled) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
@@ -204,7 +210,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
+            if (!r.getRoleName().contains("hmcts") && !r.getRoleName().contains("hearing")) {
                 assertEquals(skillCodes, r.getAuthorisations());
             }
         });
@@ -240,6 +246,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
     @Test
     void shouldNotReturnCtsRoles_disabledFlag() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
@@ -256,6 +263,9 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
                 buildExecuteKieSession(getFeatureFlags("privatelaw_wa_1_0", false));
 
         //assertion
-        assertTrue(roleAssignments.isEmpty());
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(2, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("hearing-manager", "hearing-viewer"));
     }
 }

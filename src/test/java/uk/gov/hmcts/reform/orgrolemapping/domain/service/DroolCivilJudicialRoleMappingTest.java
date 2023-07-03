@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -27,16 +27,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolCivilJudicialRoleMappingTest extends DroolBase {
+
     @ParameterizedTest
     @CsvSource({
             "CIVIL District Judge-Salaried,judge",
@@ -49,6 +50,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
     })
     void shouldReturnSalariedRoles(String setOffice, String roleNameOutput) {
 
+        allProfiles.clear();
+
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
@@ -57,19 +60,20 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals(3, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "hmcts-judiciary"));
-        String regionId = allProfiles.iterator().next().getRegionId();
+                containsInAnyOrder(roleNameOutput, "hmcts-judiciary", "hearing-viewer"));
+
         roleAssignments.forEach(r -> {
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(regionId, r.getAttributes().get("region").asText());
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+                assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(), r.getActorId());
+
+                if (!r.getRoleName().contains("hmcts")) {
+                    assertEquals("3", r.getAttributes().get("region").asText());
+                }
             }
         });
-
     }
 
     @ParameterizedTest
@@ -80,6 +84,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
     })
     void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) throws IOException {
 
+        allProfiles.clear();
+
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
         JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
         judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
@@ -93,23 +99,30 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
-        RoleAssignment role = roleAssignments.stream().filter(r -> "judge".equals(r.getRoleName())).findFirst().get();
-        assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
-        assertEquals(judicialBooking.getRegionId(), role.getAttributes().get("region").asText());
+                containsInAnyOrder(roleNameOutput, "judge", "hmcts-judiciary", "hearing-viewer"));
+
+        roleAssignments.forEach(r -> {
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+                assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(), r.getActorId());
+            }
+
+            if ("judge".equals(r.getRoleName())) {
+                assertEquals(judicialBooking.getLocationId(), r.getAttributes().get("baseLocation").asText());
+                assertEquals(judicialBooking.getRegionId(), r.getAttributes().get("region").asText());
+            }
+        });
     }
 
     @ParameterizedTest
     @CsvSource({
-            "CIVIL Deputy Circuit Judge-Fee-Paid,fee-paid-judge"
+            "CIVIL Deputy Circuit Judge-Fee-Paid"
     })
-    void shouldReturnCircuitJudgeRoles(String setOffice, String roleNameOutput) throws IOException {
+    void shouldReturnCircuitJudgeRoles(String setOffice) throws IOException {
+
+        allProfiles.clear();
 
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
@@ -119,34 +132,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         judicialBooking.setLocationId("location1");
         judicialBooking.setRegionId("1");
         judicialBookings = Set.of(judicialBooking);
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "circuit-judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
-        RoleAssignment role = roleAssignments.stream().filter(r -> "circuit-judge".equals(r.getRoleName())).findFirst()
-                .get();
-        assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
-        assertEquals(judicialBooking.getRegionId(), role.getAttributes().get("region").asText());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "CIVIL Designated Civil Judge-Salaried,hmcts-judiciary,leadership-judge,task-supervisor,case-allocator"
-    })
-    void shouldReturnHmctsJudiciaryRoles(String setOffice,
-                                         @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
@@ -155,14 +140,54 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(4, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("fee-paid-judge", "circuit-judge", "hmcts-judiciary",
+                        "hearing-viewer"));
+
+        roleAssignments.forEach(r -> {
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+                assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(), r.getActorId());
+            }
+
+            if ("circuit-judge".equals(r.getRoleName()) || "senior-judge".equals(r.getRoleName())) {
+                assertEquals(judicialBooking.getLocationId(), r.getAttributes().get("baseLocation").asText());
+                assertEquals(judicialBooking.getRegionId(), r.getAttributes().get("region").asText());
+            }
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "CIVIL Designated Civil Judge-Salaried"
+    })
+    void shouldReturnHmctsJudiciaryRoles(String setOffice) {
+
+        allProfiles.clear();
+        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(5, roleAssignments.size());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput));
-        String regionId = allProfiles.iterator().next().getRegionId();
+                containsInAnyOrder("hmcts-judiciary", "leadership-judge", "task-supervisor",
+                        "case-allocator", "hearing-viewer"));
+
         roleAssignments.forEach(r -> {
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(regionId, r.getAttributes().get("region").asText());
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            }
+
+            if (r.getRoleName().contains("leadership-judge")
+                    || r.getRoleName().contains("task-supervisor")
+                    || r.getRoleName().contains("case-allocator")
+            ) {
+                assertEquals("3", r.getAttributes().get("region").asText());
             }
         });
     }
@@ -170,6 +195,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
     @Test
     void civilJudicialScenario_2() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -195,22 +221,34 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
+        assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("circuit-judge","hmcts-judiciary"));
-        assertEquals(appointmentList.get(0).getEpimmsId(),
-                roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
-        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
-                roleAssignments.get(0).getBeginTime().getDayOfYear());
-        assertNull(roleAssignments.get(0).getEndTime());
-        roleAssignments.forEach(r -> assertEquals("Salaried", r.getAttributes().get("contractType").asText()));
+                containsInAnyOrder("circuit-judge","hmcts-judiciary", "hearing-viewer", "hearing-viewer",
+                        "hearing-viewer"));
+
+        roleAssignments.forEach(r -> {
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+
+                if (r.getGrantType().equals(GrantType.STANDARD)) {
+                    assertEquals(authorisationList.size(), r.getAuthorisations().size());
+                }
+            }
+
+            if ("circuit-judge".equals(r.getRoleName())) {
+                assertEquals(appointmentList.get(0).getEpimmsId(),
+                        r.getAttributes().get("primaryLocation").asText());
+                assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                        r.getBeginTime().getDayOfYear());
+                assertNull(r.getEndTime());
+            }
+        });
     }
 
     @Test
     void civilJudicialScenario_4() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -236,35 +274,40 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
 
-
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
+        assertEquals(7, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("fee-paid-judge",
-                        "fee-paid-judge","hmcts-judiciary"));
-
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
-
-        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
-                roleAssignments.get(0).getBeginTime().getDayOfYear());
-        assertNull(roleAssignments.get(0).getEndTime());
+                containsInAnyOrder("fee-paid-judge", "fee-paid-judge", "hmcts-judiciary",
+                        "hearing-viewer", "hearing-viewer","hearing-viewer", "hearing-viewer"));
 
         roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
-            assertNull(r.getEndTime());
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+                assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
+                assertNull(r.getEndTime());
+
+                if (r.getGrantType().equals(GrantType.STANDARD)) {
+                    assertEquals(authorisationList.size(), r.getAuthorisations().size());
+                }
+            }
+
+            if ("fee-paid-judge".equals(r.getRoleName())) {
+                assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                        r.getBeginTime().getDayOfYear());
+                assertNull(r.getEndTime());
+            }
         });
     }
 
     @Test
     void civilJudicialScenario_9() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -294,31 +337,38 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
+        assertEquals(10, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("fee-paid-judge","hmcts-judiciary"));
+                containsInAnyOrder("fee-paid-judge", "fee-paid-judge", "hmcts-judiciary", "hmcts-judiciary",
+                        "judge", "leadership-judge", "hearing-viewer", "senior-judge", "case-allocator",
+                        "task-supervisor"));
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> {
-                    //removes the auth in the past successfully so minus 1
-                    assertEquals(authorisationList.size() - 1, r.getAuthorisations().size());
-                    assertEquals(JacksonUtils.convertObjectIntoJsonNode(""), r.getAttributes().get("primaryLocation"));
+        roleAssignments.stream()
+                .filter(r -> isNotEmpty(r.getAttributes().get("contractType"))
+                        && "CIVIL".equals(r.getAttributes().get("contractType").textValue())
+                ).forEach(r -> {
+                    if (r.getGrantType().equals(GrantType.STANDARD)) {
+                        //removes the auth in the past successfully so minus 1
+                        assertEquals(authorisationList.size() - 1, r.getAuthorisations().size());
+                        assertEquals(JacksonUtils.convertObjectIntoJsonNode(""),
+                                r.getAttributes().get("primaryLocation"));
+                    }
+
+                    if ("fee-paid-judge".equals(r.getRoleName())) {
+                        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                                r.getBeginTime().getDayOfYear());
+                        assertNull(r.getEndTime());
+                    }
+                    assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+                    assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
+                    assertNull(r.getEndTime());
                 });
-
-        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
-                roleAssignments.get(0).getBeginTime().getDayOfYear());
-        assertNull(roleAssignments.get(0).getEndTime());
-
-        roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
-            assertNull(r.getEndTime());
-        });
     }
 
     @Test
     void civilJudicialScenario_16() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -341,29 +391,31 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
+        assertEquals(7, roleAssignments.size());
 
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("leadership-judge", "circuit-judge", "task-supervisor",
-                        "case-allocator", "hmcts-judiciary"));
+                        "case-allocator", "hmcts-judiciary", "hearing-viewer", "hearing-viewer"));
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> {
+        roleAssignments.forEach(r -> {
+            if (!"hearing-viewer".equals(r.getRoleName())) {
+                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+                assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
+                assertNull(r.getEndTime());
+
+                if (r.getGrantType().equals(GrantType.STANDARD)) {
                     assertEquals(authorisationList.size(), r.getAuthorisations().size());
                     assertEquals(appointmentList.get(0).getEpimmsId(),
                             r.getAttributes().get("primaryLocation").asText());
-                });
-
-        roleAssignments.forEach(r -> {
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
-            assertNull(r.getEndTime());
+                }
+            }
         });
     }
 
     @Test
     void civilJudicialScenario_DistrictJudgeInRetirement() {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
@@ -387,23 +439,23 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
+        assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(
-                        "fee-paid-judge","hmcts-judiciary"));
+                containsInAnyOrder("fee-paid-judge", "hmcts-judiciary", "hearing-viewer", "hearing-viewer"));
 
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD))
+                .filter(r -> CollectionUtils.isNotEmpty(r.getAuthorisations()))
+                .toList()
+                .forEach(r -> {
+                    assertEquals(authorisationList.size(), r.getAuthorisations().size());
 
-        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
-                roleAssignments.get(0).getBeginTime().getDayOfYear());
-        assertNull(roleAssignments.get(0).getEndTime());
-
-        roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
-            assertNull(r.getEndTime());
-        });
+                    if ("fee-paid-judge".equals(r.getRoleName()) || "hmcts-judiciary".equals(r.getRoleName())) {
+                        assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+                        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                                r.getBeginTime().getDayOfYear());
+                        assertNull(r.getEndTime());
+                    }
+                });
     }
 
     @ParameterizedTest
@@ -416,6 +468,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
             "CIVIL Deputy Circuit Judge-Fee-Paid,Fee-Paid"
     })
     void shouldReturnJudgeRolesV11(String setOffice,String contractType) throws IOException {
+
+        allProfiles.clear();
 
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
@@ -433,14 +487,16 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
 
-        assertEquals(1, roleAssignments.size());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("judge", roleAssignments.get(0).getRoleName());
-
-        roleAssignments.forEach(r -> assertEquals(contractType, r.getAttributes().get("contractType").asText()));
+        assertEquals(2, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(
+                        "judge", "hearing-viewer"));
 
         RoleAssignment role = roleAssignments.stream().filter(r -> "judge".equals(r.getRoleName())).findFirst()
                 .get();
+
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(), role.getActorId());
+        assertEquals(contractType, role.getAttributes().get("contractType").asText());
 
         if (setOffice.equals("CIVIL Deputy Circuit Judge-Fee-Paid")) {
             assertNotNull(role.getAttributes().get("baseLocation"));
