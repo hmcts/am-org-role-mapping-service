@@ -25,13 +25,13 @@ public class CRDService {
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 3))
     public <T> ResponseEntity<List<T>> fetchCaseworkerDetailsByServiceName(String serviceName,
-                                                                                          Integer pageSize,
-                                                                                          Integer pageNumber,
-                                                                                          String sortDirection,
-                                                                                          String sortColumn) {
+                                                                           Integer pageSize,
+                                                                           Integer pageNumber,
+                                                                           String sortDirection,
+                                                                           String sortColumn) {
+
         return crdFeignClient.getCaseworkerDetailsByServiceName(serviceName, pageSize,
                 pageNumber, sortDirection, sortColumn);
 
     }
-
 }
