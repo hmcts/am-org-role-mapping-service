@@ -28,14 +28,18 @@ security:
     - "/health"
     - "/actuator/**"
     - "/loggers/**"
-    - "/am/role-assignments/fetchFlagStatus"
+    - "/am/role-mapping/fetchFlagStatus"
+    - "/swagger"
     - "/swagger-ui.html"
-    - "/swagger-resources/**"
-    - "/v2/api-docs"
-    - "/webjars/springfox-swagger-ui/**"
+    - "/swagger-ui/**"
+    - "/v3/api-docs/**"
     - "/search/**"
     - "/csrf"
     - "/error"
+    - "/status/health"
+    - "/welcome"
+    - "/health/liveness"
+    - "/send*"
     - "/favicon.ico"
   authorisedRoles:
   authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service}
@@ -45,6 +49,7 @@ spring:
     name: Organisation Role Mapping Service
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
   jackson:
     default-property-inclusion: NON_NULL
     serialization:

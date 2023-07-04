@@ -80,6 +80,7 @@ public class OrgRoleMappingProviderTestForRefresh {
     @BeforeEach
     void beforeCreate(PactVerificationContext context) {
         MockMvcTestTarget testTarget = new MockMvcTestTarget();
+        //System.getProperties().setProperty("pact.verifier.publishResults", "true");
         testTarget.setControllers(new RefreshController(
                 refreshOrchestrator, judicialRefreshOrchestrator
         ));

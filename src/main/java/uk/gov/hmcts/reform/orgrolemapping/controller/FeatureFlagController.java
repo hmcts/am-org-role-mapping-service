@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import uk.gov.hmcts.reform.orgrolemapping.util.PersistenceUtil;
 
 @RestController
+@Hidden
 public class FeatureFlagController {
 
     @Autowired
