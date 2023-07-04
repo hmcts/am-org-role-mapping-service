@@ -28,7 +28,7 @@ security:
     - "/health"
     - "/actuator/**"
     - "/loggers/**"
-    - "/am/role-assignments/fetchFlagStatus"
+    - "/am/role-mapping/fetchFlagStatus"
     - "/swagger"
     - "/swagger-ui.html"
     - "/swagger-ui/**"
@@ -65,6 +65,7 @@ spring:
             non_contextual_creation: true
   flyway.enabled: ${ENABLE_DB_MIGRATE:true}
   flyway.locations: classpath:db/migration
+  flyway.out-of-order: true
   datasource:
     url: jdbc:postgresql://${ORG_ROLE_MAPPING_DB_HOST:localhost}:${ORG_ROLE_MAPPING_DB_PORT:5451}/${ORG_ROLE_MAPPING_DB_NAME:org_role_mapping}${ORG_ROLE_MAPPING_DB_OPTIONS:?stringtype=unspecified}
     username: ${ORG_ROLE_MAPPING_DB_USERNAME:}
