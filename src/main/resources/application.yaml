@@ -171,3 +171,9 @@ dbFeature:
     enable: ${DB_FEATURE_FLAG_ENABLE:}
     disable: ${DB_FEATURE_FLAG_DISABLE:}
 logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    operationsSorter: method
+  writer-with-order-by-keys: true
