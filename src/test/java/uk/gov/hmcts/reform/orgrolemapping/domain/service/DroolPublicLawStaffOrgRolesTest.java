@@ -70,11 +70,11 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                     assertEquals(skillCodes,r.getAuthorisations());
                     //assert work types
                     if (("ctsc").equals(r.getRoleName())) {
-                        assertEquals("routine_work",
+                        assertEquals("routine_work,applications,decision_making_work",
                                 r.getAttributes().get("workTypes").asText());
 
                     } else if (("ctsc-team-leader").equals(r.getRoleName())) {
-                        assertEquals("routine_work,access_requests",
+                        assertEquals("routine_work,applications,decision_making_work,access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     }
                 });
@@ -139,7 +139,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                         assertEquals("routine_work,access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (("hearing-centre-admin").equals(r.getRoleName())) {
-                        assertEquals("routine_work,decision_making_work",
+                        assertEquals("routine_work",
                                 r.getAttributes().get("workTypes").asText());
                     }
 
@@ -204,10 +204,10 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                     }
                     //assert work types
                     if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("hearing_work,decision_making_work,applications,access_requests",
+                        assertEquals("hearing_work,routine_work,decision_making_work,applications,access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (("tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("hearing_work,decision_making_work,applications",
+                        assertEquals("hearing_work,decision_making_work,applications,routine_work",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (Objects.equals("task-supervisor", r.getRoleName())) {
                         assertEquals("routine_work,access_requests",
