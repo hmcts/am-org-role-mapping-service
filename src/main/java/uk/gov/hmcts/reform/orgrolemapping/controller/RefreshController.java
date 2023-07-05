@@ -53,10 +53,8 @@ public class RefreshController {
             consumes = {"application/json"}
     )
     @Operation(summary = "refreshes caseworker role assignments",
-            description = """
-                    operation can only be executed by services that are authorised to call the refresh controller
-                     otherwise an invalid request error will be returned.
-                    """,
+            description = "operation can only be executed by services that are authorised to call the refresh "
+                    + "controller otherwise an invalid request error will be returned",
             security =
                     {
                             @SecurityRequirement(name = AUTHORIZATION),
