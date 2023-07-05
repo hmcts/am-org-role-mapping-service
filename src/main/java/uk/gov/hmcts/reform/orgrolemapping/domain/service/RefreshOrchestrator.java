@@ -32,6 +32,7 @@ import java.util.Set;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.NullCheckBiPredicate;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nullCheckPredicate;
@@ -104,6 +105,9 @@ public class RefreshOrchestrator {
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
         if (refreshJobEntity.isEmpty()) {
             throw new UnprocessableEntityException("Provided refresh job couldn't be retrieved.");
+        } else if (!NEW.equalsIgnoreCase(refreshJobEntity.get().getStatus())) {
+            // TODO: validate the status of the refresh job. If the status is not NEW, we should return error
+            //  which error to throw?
         } else {
             log.info("The refresh job {} retrieved from the DB to run {}", refreshJobEntity.get().getJobId(),
                     refreshJobEntity.get().getRoleCategory());
