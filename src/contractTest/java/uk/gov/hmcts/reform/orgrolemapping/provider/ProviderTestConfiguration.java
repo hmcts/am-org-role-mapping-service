@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import uk.gov.hmcts.reform.authorisation.validators.ServiceAuthTokenValidator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
@@ -68,7 +69,7 @@ public class ProviderTestConfiguration {
     @Primary
     public RefreshOrchestrator refreshOrchestrator() {
         return new RefreshOrchestrator(getRetrieveDataService(), getRequestMappingService(),
-                getParseRequestService(), crdService, persistenceService,
+                getParseRequestService(), crdService, persistenceService, securityUtils,
                 "1", "descending", "1");
     }
 

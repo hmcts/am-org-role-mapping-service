@@ -24,6 +24,8 @@ import static org.mockito.ArgumentMatchers.any;
 
 class RefreshControllerTest {
 
+    private static final String S2S_TOKEN = "refresh_token";
+
     @Mock
     private RefreshOrchestrator refreshOrchestrator;
 

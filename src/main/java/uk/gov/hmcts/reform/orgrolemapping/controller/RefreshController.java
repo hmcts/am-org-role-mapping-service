@@ -75,7 +75,7 @@ public class RefreshController {
     @Hidden
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
-        refreshOrchestrator.validate(jobId,userRequest);
+        refreshOrchestrator.validate(jobId, userRequest);
         return refreshOrchestrator.refresh(jobId, userRequest);
 
     }

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -20,6 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Each run of workflow .github/workflows/swagger.yml on master should automatically save and upload (if updated)
  * documentation.
  */
+@TestPropertySource(properties = {
+        "refresh.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch"})
 public class SwaggerPublisher extends BaseTest {
 
     private MockMvc mockMvc;

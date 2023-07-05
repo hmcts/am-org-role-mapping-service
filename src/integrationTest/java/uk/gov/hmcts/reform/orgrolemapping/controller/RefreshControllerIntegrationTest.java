@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -44,6 +45,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
+import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -67,6 +69,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -76,13 +79,15 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
 
+@TestPropertySource(properties = {
+        "refresh.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch"})
 public class RefreshControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
 
     private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
             + " comments, log FROM refresh_jobs where job_id=?";
-    private static final String AUTHORISED_SERVICE = "orm_batch";
+    private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String URL = "/am/role-mapping/refresh";
@@ -112,18 +117,17 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @MockBean
     private RequestMappingService requestMappingService;
 
-
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
+
+    @MockBean
+    private SecurityUtils securityUtils;
 
     @Mock
     private Authentication authentication;
 
     @Mock
     private SecurityContext securityContext;
-
-
-
 
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
@@ -140,7 +144,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         SecurityContextHolder.setContext(securityContext);
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
-
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
     }
 
     @Test
