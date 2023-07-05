@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,11 @@ public class RefreshController {
             produces = V1.MediaType.MAP_ASSIGNMENTS,
             consumes = {"application/json"}
     )
-    @Operation(summary = "refresh",
+    @Operation(summary = "refreshes caseworker role assignments",
+            description = """
+                    operation can only be executed by services that are authorised to call the refresh controller
+                     otherwise an invalid request error will be returned.
+                    """,
             security =
                     {
                             @SecurityRequirement(name = AUTHORIZATION),
@@ -72,14 +75,12 @@ public class RefreshController {
     )
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Hidden
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
         return refreshOrchestrator.refresh(jobId, userRequest);
 
     }
-
 
     @PostMapping(
             path = "/am/role-mapping/judicial/refresh",
