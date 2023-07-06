@@ -176,7 +176,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             }
             if (List.of("tribunal-caseworker", "registrar").contains(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
-                assertEquals("applications,hearing_work,routine_work,priority,decision_making_work",
+                assertEquals("pre_hearing_work,post_hearing_work,applications,hearing_work,"
+                                + "routine_work,priority,decision_making_work",
                         roleAssignment.getAttributes().get("workTypes").asText());
             }
         });
@@ -215,7 +216,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
             }
             if (List.of("tribunal-caseworker", "registrar").contains(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
-                assertEquals("applications,hearing_work,routine_work,priority,decision_making_work",
+                assertEquals("pre_hearing_work,post_hearing_work,applications,hearing_work,"
+                                + "routine_work,priority,decision_making_work",
                         roleAssignment.getAttributes().get("workTypes").asText());
             }
         });
@@ -224,7 +226,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     @Test
     void shouldReturnSscsAdminOrgRolesForRoleId() {
         allProfiles.clear();
-        Stream.of(4, 5, 9, 10, 12, 13).forEach(roleId ->
+        Stream.of(3, 4, 5, 12, 13).forEach(roleId ->
                 allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId + "", "BBA3",
                         false)));
 
@@ -234,9 +236,14 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
+        // additional roleAssignments get created due to different regions
+        assertEquals(13, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-admin","superuser", "superuser", "clerk", "clerk"));
+                containsInAnyOrder("hmcts-admin", "clerk", "clerk",
+                        "hearing-centre-admin", "hearing-centre-admin", "hearing-centre-team-leader",
+                        "hearing-centre-team-leader", "specific-access-approver-admin",
+                        "specific-access-approver-admin", "regional-centre-team-leader", "regional-centre-team-leader",
+                        "regional-centre-admin", "regional-centre-admin"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
@@ -252,7 +259,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
                         roleAssignment.getAttributes().get("workTypes").asText());
             } else if ("clerk".equals(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
-                assertEquals("applications,hearing_work,routine_work,priority",
+                assertEquals("pre_hearing_work,post_hearing_work,decision_making_work,"
+                                + "applications,hearing_work,routine_work,priority",
                         roleAssignment.getAttributes().get("workTypes").asText());
             }
         });
@@ -261,7 +269,7 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
     @Test
     void shouldReturnSscsAdminOrgRolesForRoleId_caseAndTaskSupervisor() {
         allProfiles.clear();
-        Stream.of(4, 5, 9, 10, 12, 13).forEach(roleId -> {
+        Stream.of(3, 4, 5, 12, 13).forEach(roleId -> {
             CaseWorkerAccessProfile profile = TestDataBuilder.buildUserAccessProfile(roleId + "",
                     "BBA3", false);
             profile.setCaseAllocatorFlag("Y");
@@ -275,14 +283,21 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(9, roleAssignments.size());
+        // additional roleAssignments get created due to different regions
+        assertEquals(15, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-admin","superuser", "superuser","clerk","clerk",
-                        "task-supervisor", "task-supervisor","case-allocator", "case-allocator"));
+                containsInAnyOrder("hmcts-admin","clerk","clerk",
+                        "task-supervisor","case-allocator", "hearing-centre-team-leader", "hearing-centre-team-leader",
+                        "hearing-centre-admin", "hearing-centre-admin", "specific-access-approver-admin",
+                        "specific-access-approver-admin", "regional-centre-team-leader", "regional-centre-team-leader",
+                        "regional-centre-admin", "regional-centre-admin"));
 
         roleAssignments.forEach(roleAssignment -> {
             assertEquals(RoleCategory.ADMIN, roleAssignment.getRoleCategory());
-            if (!roleAssignment.getRoleName().contains("hmcts")) {
+            if (roleAssignment.getRoleName().contains("task-supervisor")
+                    || roleAssignment.getRoleName().contains("case-allocator")) {
+                assertNull(roleAssignment.getAttributes().get("region"));
+            } else if (!roleAssignment.getRoleName().contains("hmcts")) {
                 assertThat(new String[]{"7", "6"},
                         ArrayMatching.hasItemInArray(roleAssignment.getAttributes().get("region").asText()));
             } else {
@@ -294,7 +309,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
                         roleAssignment.getAttributes().get("workTypes").asText());
             } else if ("clerk".equals(roleAssignment.getRoleName())) {
                 assertEquals("SSCS", roleAssignment.getAttributes().get("jurisdiction").asText());
-                assertEquals("applications,hearing_work,routine_work,priority",
+                assertEquals("pre_hearing_work,post_hearing_work,decision_making_work,"
+                                + "applications,hearing_work,routine_work,priority",
                         roleAssignment.getAttributes().get("workTypes").asText());
             }
         });
