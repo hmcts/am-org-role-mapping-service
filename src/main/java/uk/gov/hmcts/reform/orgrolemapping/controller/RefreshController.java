@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -71,7 +70,6 @@ public class RefreshController {
             description = V1.Error.INVALID_REQUEST,
             content = @Content()
     )
-    @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {

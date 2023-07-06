@@ -27,6 +27,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
@@ -59,6 +60,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -144,12 +146,13 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         SecurityContextHolder.setContext(securityContext);
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
-        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
     }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+
         logger.info(" RefreshJob record With Only JobId to process successful");
         Long jobId = 1L;
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
@@ -173,10 +176,11 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertNotNull(refreshJob.getLog());
     }
 
-
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+
         logger.info(" RefreshJob record With Only JobId to process Aborted");
         Long jobId = 1L;
 
@@ -202,6 +206,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+
         logger.info(" RefreshJob record With Only JobId to process Non recoverable retain same state");
         Long jobId = 1L;
 
@@ -226,6 +232,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+
         logger.info(" RefreshJob record With Only JobId to process Partial Success");
         Long jobId = 1L;
 
@@ -251,6 +259,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+
         logger.info(" RefreshJob record With Only JobId to process Partial Success");
         Long jobId = 1L;
 
@@ -275,6 +285,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithFailedUsersToComplete() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+
         logger.info(" RefreshJob record With JobId and failed UserIds to process successful");
         Long jobId = 3L;
 
@@ -355,8 +367,30 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithInvalidServiceToken() throws Exception {
+        logger.info("Refresh request rejected with invalid service token");
+
+        final String expectedErrorMessage = "Invoking service is not permitted to call the Refresh API";
+
+        when(securityUtils.getServiceName()).thenReturn("ccd_gw");
+
+        MvcResult result = mockMvc.perform(post(URL)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .param("jobId", String.valueOf(1L)))
+                .andExpect(status().is(400))
+                .andReturn();
+
+        assertTrue(result.getResolvedException() instanceof BadRequestException);
+        assertThat(result.getResolvedException().getMessage(), equalTo(expectedErrorMessage));
+        assertThat(result.getResponse().getContentAsString(), containsString(expectedErrorMessage));
+    }
+
+    @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+
         logger.info(" RefreshJob record With Only JobId to process fail");
         Long jobId = 1L;
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
@@ -379,6 +413,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+
         logger.info(" RefreshJob record With JobId retry success third time to process successful");
         Long jobId = 1L;
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
@@ -638,5 +674,4 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         };
         return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, rm, jobId);
     }
-
 }
