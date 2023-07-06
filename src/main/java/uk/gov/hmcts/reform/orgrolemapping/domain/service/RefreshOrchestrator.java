@@ -108,8 +108,7 @@ public class RefreshOrchestrator {
         if (refreshJobEntity.isEmpty()) {
             throw new UnprocessableEntityException("Provided refresh job couldn't be retrieved.");
         } else if (!NEW.equalsIgnoreCase(refreshJobEntity.get().getStatus())) {
-            // TODO: validate the status of the refresh job. If the status is not NEW, we should return error
-            //  which error to throw?
+            throw new UnprocessableEntityException("Provided refresh job is in an invalid state.");
         } else {
             log.info("The refresh job {} retrieved from the DB to run {}", refreshJobEntity.get().getJobId(),
                     refreshJobEntity.get().getRoleCategory());
