@@ -141,7 +141,10 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
     })
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles, boolean withBooking) throws IOException {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(setOffice);
+            joh.setTicketCodes(List.of("368"));
+        });
 
         if (withBooking) {
             createBooking(setOffice);
