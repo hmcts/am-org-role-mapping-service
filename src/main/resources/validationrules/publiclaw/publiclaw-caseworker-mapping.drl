@@ -26,7 +26,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,access_requests"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,decision_making_work,applications,access_requests"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
   insert(
       RoleAssignment.builder()
@@ -79,12 +79,12 @@ end;
 rule "publiclaw_tribunal_caseworker_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "2", serviceCode == "ABA3", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "ABA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,routine_work"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(

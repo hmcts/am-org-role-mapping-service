@@ -28,14 +28,18 @@ security:
     - "/health"
     - "/actuator/**"
     - "/loggers/**"
-    - "/am/role-assignments/fetchFlagStatus"
+    - "/am/role-mapping/fetchFlagStatus"
+    - "/swagger"
     - "/swagger-ui.html"
-    - "/swagger-resources/**"
-    - "/v2/api-docs"
-    - "/webjars/springfox-swagger-ui/**"
+    - "/swagger-ui/**"
+    - "/v3/api-docs/**"
     - "/search/**"
     - "/csrf"
     - "/error"
+    - "/status/health"
+    - "/welcome"
+    - "/health/liveness"
+    - "/send*"
     - "/favicon.ico"
   authorisedRoles:
   authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service}
@@ -45,6 +49,7 @@ spring:
     name: Organisation Role Mapping Service
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
   jackson:
     default-property-inclusion: NON_NULL
     serialization:
@@ -60,6 +65,7 @@ spring:
             non_contextual_creation: true
   flyway.enabled: ${ENABLE_DB_MIGRATE:true}
   flyway.locations: classpath:db/migration
+  flyway.out-of-order: true
   datasource:
     url: jdbc:postgresql://${ORG_ROLE_MAPPING_DB_HOST:localhost}:${ORG_ROLE_MAPPING_DB_PORT:5451}/${ORG_ROLE_MAPPING_DB_NAME:org_role_mapping}${ORG_ROLE_MAPPING_DB_OPTIONS:?stringtype=unspecified}
     username: ${ORG_ROLE_MAPPING_DB_USERNAME:}
@@ -165,3 +171,9 @@ dbFeature:
     enable: ${DB_FEATURE_FLAG_ENABLE:}
     disable: ${DB_FEATURE_FLAG_DISABLE:}
 logging.level.uk.gov.hmcts: ${APPLICATION_LOGGING_LEVEL:INFO}
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    operationsSorter: method
+  writer-with-order-by-keys: true

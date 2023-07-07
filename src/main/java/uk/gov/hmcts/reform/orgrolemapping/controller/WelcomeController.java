@@ -1,7 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +17,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
+import static org.springdoc.core.Constants.SWAGGER_UI_URL;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
+
 @RestController
 @Slf4j
 @NoArgsConstructor
+@Hidden
 public class WelcomeController {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
@@ -33,8 +43,8 @@ public class WelcomeController {
     }
 
     @GetMapping(value = "/swagger")
-    public String index() {
-        return "redirect:swagger-ui.html";
+    public RedirectView swaggerRedirect() {
+        return new RedirectView(SWAGGER_UI_URL, true, false);
     }
 
     @GetMapping(value = "/welcome")
@@ -49,18 +59,22 @@ public class WelcomeController {
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.OK)
-    //@ApiOperation("creates multiple role assignments based upon user profile mapping rules")
-    @ApiResponses({
-            @ApiResponse(
-                    code = 200,
-                    message = "OK",
-                    response = Object.class
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = V1.Error.INVALID_REQUEST
-            )
-    })
+    @Operation(summary = "creates multiple role assignments based upon user profile mapping rules",
+            security =
+                    {
+                            @SecurityRequirement(name = AUTHORIZATION),
+                            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+                    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = V1.Error.INVALID_REQUEST,
+            content = @Content()
+    )
     public ResponseEntity<Object> createOrgMapping(@RequestBody UserRequest userRequest,
                                                    @RequestHeader(value = "userType")
                                                            UserType userType) {
