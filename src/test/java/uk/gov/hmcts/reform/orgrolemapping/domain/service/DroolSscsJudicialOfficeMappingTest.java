@@ -25,6 +25,96 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
+
+    //=================================SALARIED ROLES==================================
+    @ParameterizedTest
+    @CsvSource({
+            "President of Tribunal,Salaried,BBA3,'leadership-judge,judge,case-allocator,task-supervisor,"
+                    + "specific-access-approver-judiciary,hmcts-judiciary'",
+            "Regional Tribunal Judge,Salaried,BBA3,'leadership-judge,judge,case-allocator,task-supervisor,"
+                    + "specific-access-approver-judiciary,hmcts-judiciary'",
+            "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge'"
+    })
+    void shouldReturSalariedRoles(String appointment, String appointmentType,
+                                  String serviceCode, String expectedRoles) {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment(appointment);
+            judicialAccessProfile.setAppointmentType(appointmentType);
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of(serviceCode)));
+        });
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(expectedRoles.split(",")));
+
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[373]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+            }
+        });
+    }
+
+    //=================================FEE-PAID ROLES==================================
+    @ParameterizedTest
+    @CsvSource({
+            "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary'",
+            "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary'",
+            "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary'",
+            "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary'",
+            "Tribunal Member,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
+            "Tribunal Member Lay,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
+            "Tribunal Member Service,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
+            "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary'"
+    })
+    void shouldReturnTribunalMemberMedicalFeePaidRoles2(String appointment, String appointmentType,
+                                                       String serviceCode, String expectedRoles) {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment(appointment);
+            judicialAccessProfile.setAppointmentType(appointmentType);
+            judicialAccessProfile.setBaseLocationId("1032");
+            judicialAccessProfile.setTicketCodes(List.of("362"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> {
+                a.setServiceCodes(List.of(serviceCode));
+                a.setTicketCode("362");
+            });
+        });
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[362]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+            }
+        });
+    }
+
     //Special Medical Salaried
     //sscs_tribunal_member_medical_salaried_joh
     @Test
