@@ -12,7 +12,11 @@
       "_extends_": "Common_200_Response_Headers"
     },
     "body" : {
-      "arrayInMap" : [ {
+      "arrayInMap" : [
+        {
+          "__elementId__": "roleName"
+        },
+        {
         "roleAssignmentResponse" : {
           "roleRequest" : {
             "id" : "[[ANYTHING_PRESENT]]",
