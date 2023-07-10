@@ -32,7 +32,6 @@ public class TestController {
         this.persistenceService = persistenceService;
     }
 
-
     @PostMapping(
             path = "/am/test/job",
             consumes = {"application/json"}
@@ -59,7 +58,7 @@ public class TestController {
     }
 
     @GetMapping(value = "/am/test/jobs/{jobId}")
-    public ResponseEntity<Object>  fetchJob(@Parameter(required = true)
+    public ResponseEntity<Object> fetchJob(@Parameter(required = true)
                                             @PathVariable("jobId") Long jobId) {
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
         return ResponseEntity.status(HttpStatus.OK).body(refreshJobEntity.isPresent() ? refreshJobEntity
@@ -67,7 +66,7 @@ public class TestController {
     }
 
     @DeleteMapping(value = "/am/test/jobs/{jobId}")
-    public ResponseEntity<Object>  removeJob(@Parameter(required = true)
+    public ResponseEntity<Object> removeJob(@Parameter(required = true)
                                              @PathVariable("jobId") Long jobId) {
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
         if (refreshJobEntity.isPresent()) {
