@@ -22,6 +22,9 @@
     "body" : {
       "roleAssignmentResponse" : [
         {
+          "__elementId__": "roleName"
+        },
+        {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
           "actorId" : "[[ANYTHING_PRESENT]]",
