@@ -96,6 +96,8 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
                     //assert region
                     if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
+                    } else {
+                        assertNull(r.getAttributes().get("region"));
                     }
                     //assert work types
                     if (("hearing-centre-team-leader").equals(r.getRoleName())) {
@@ -240,7 +242,8 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
-        List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker");
+        List<String> roleNamesWithRegionAttribute = List.of("senior-tribunal-caseworker", "tribunal-caseworker",
+                                                        "specific-access-approver-legal-ops", "registrar");
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
@@ -249,6 +252,11 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
                     //assert region
                     if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
+                    } else if (r.getRoleName().equals("task-supervisor") && !roleId.equals("1")
+                        || r.getRoleName().equals("case-allocator") && !roleId.equals("1")) {
+                        assertEquals("LDN", r.getAttributes().get("region").asText());
+                    } else {
+                        assertNull(r.getAttributes().get("region"));
                     }
                     //assert work types
                     if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
@@ -271,6 +279,66 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
                                         "routine_work", "priority", "applications"));
                     }
                 });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "14,BBA3,'dwp',N,N",
+            "15,BBA3,'hmrc',N,N"
+    })
+    void shouldReturnStcicOtherGovDepMappings(String roleId, String serviceCode, String expectedRoles,
+                                              String taskSupervisorFlag, String caseAllocatorFlag) {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+        List<String> skillCodes = List.of("sscs", "test", "ctsc");
+        CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
+        cap.setServiceCode(serviceCode);
+        cap.setSuspended(false);
+        cap.setRoleId(roleId);
+        cap.setTaskSupervisorFlag(taskSupervisorFlag);
+        cap.setCaseAllocatorFlag(caseAllocatorFlag);
+        cap.setRegionId("LDN");
+        cap.setSkillCodes(skillCodes);
+
+        allProfiles.add(cap);
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(expectedRoles.split(",")));
+        roleAssignments.forEach(r -> {
+            assertEquals("OTHER_GOV_DEPT", r.getRoleCategory().toString());
+            assertEquals("ORGANISATION", r.getRoleType().toString());
+        });
+
+        List<String> roleNamesWithRegionAttribute = List.of("dwp", "hmrc");
+
+        roleAssignments.forEach(r -> {
+            assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
+            assertEquals(r.getClassification().toString(), "PUBLIC");
+            assertEquals(r.getGrantType().toString(), "STANDARD");
+
+            if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
+                assertEquals("LDN", r.getAttributes().get("region").asText());
+            }
+            //assert work types
+            if (("dwp").equals(r.getRoleName())) {
+                assertThat(r.getAttributes().get("workTypes").asText().split(","),
+                        arrayContainingInAnyOrder("applications", "hearing_work",
+                                "routine_work", "priority"));
+            } else if (("hmrc").equals(r.getRoleName())) {
+                assertThat(r.getAttributes().get("workTypes").asText().split(","),
+                        arrayContainingInAnyOrder("applications", "hearing_work",
+                                "routine_work", "priority"));
+            }
+        });
     }
 
     @Test
