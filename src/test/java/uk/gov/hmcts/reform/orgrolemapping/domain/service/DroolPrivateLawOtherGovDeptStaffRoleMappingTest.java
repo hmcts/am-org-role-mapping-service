@@ -39,7 +39,7 @@ public class DroolPrivateLawOtherGovDeptStaffRoleMappingTest extends DroolBase {
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
             assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
             assertThat(r.getRoleName())
-                    .matches(s -> Stream.of("listed-hearing-viewer", "caseworker-privatelaw-cafcass-cymru")
+                    .matches(s -> Stream.of("listed-hearing-viewer", "caseworker-privatelaw-externaluser-viewonly")
                             .anyMatch(s::contains));
         });
     }

@@ -43,9 +43,9 @@ then
 end;
 
 /*
- * Private Law "caseworker-privatelaw-cafcass-cymru" Org role mapping.
+ * Private Law "caseworker-privatelaw-externaluser-viewonly" Org role mapping.
  */
-rule "private_law_cymru_caseworker_cafcass_other_gov_dept"
+rule "private_law_caseworker_externaluser_viewonly_other_gov_dept"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_2.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("TBC"), serviceCode in ("ABA5"), !suspended)
@@ -60,11 +60,11 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.OTHER_GOV_DEPT)
       .roleType(RoleType.ORGANISATION)
-      .roleName("caseworker-privatelaw-cafcass-cymru")
+      .roleName("caseworker-privatelaw-externaluser-viewonly")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : private_law_cymru_caseworker_cafcass_other_gov_dept");
+      logMsg("Rule : private_law_caseworker_externaluser_viewonly_other_gov_dept");
 end;
