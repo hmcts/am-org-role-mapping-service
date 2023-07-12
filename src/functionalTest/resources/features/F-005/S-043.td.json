@@ -55,8 +55,7 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "271588",
-            "jurisdiction": "SSCS",
-            "region" : "2"
+            "jurisdiction": "SSCS"
           }
         },
         {
@@ -162,6 +161,43 @@
           "actorIdType": "IDAM",
           "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
           "roleType": "ORGANISATION",
+          "roleName": "regional-centre-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "271588",
+            "jurisdiction": "SSCS",
+            "region" : "2",
+            "workTypes": "pre_hearing_work,post_hearing_work,decision_making_work,applications,hearing_work,routine_work,priority"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType": "ORGANISATION",
+          "roleName": "regional-centre-team-leader",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "271588",
+            "jurisdiction": "SSCS",
+            "region" : "2"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "roleType": "ORGANISATION",
           "roleName": "registrar",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
@@ -173,7 +209,7 @@
             "primaryLocation": "271588",
             "jurisdiction": "SSCS",
             "region" : "2",
-            "workTypes": "applications,hearing_work,routine_work,priority,decision_making_work"
+            "workTypes": "pre_hearing_work,post_hearing_work,applications,hearing_work,routine_work,priority,decision_making_work"
           }
         },
         {
@@ -181,18 +217,18 @@
           "actorIdType": "IDAM",
           "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
           "roleType": "ORGANISATION",
-          "roleName": "superuser",
+          "roleName": "specific-access-approver-admin",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
           "readOnly": false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
+            "substantive": "N",
             "primaryLocation": "271588",
             "jurisdiction": "SSCS",
             "region" : "2",
-            "workTypes": "applications,hearing_work,routine_work,priority,access_requests"
+            "workTypes": "access_requests"
           }
         },
         {
@@ -209,8 +245,7 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "271588",
-            "jurisdiction": "SSCS",
-            "region" : "2"
+            "jurisdiction": "SSCS"
           }
         },
         {
