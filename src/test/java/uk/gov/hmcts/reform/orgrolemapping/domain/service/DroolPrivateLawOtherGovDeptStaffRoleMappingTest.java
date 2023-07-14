@@ -22,7 +22,7 @@ public class DroolPrivateLawOtherGovDeptStaffRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "TBC,ABA5,PRIVATELAW"
+            "18,ABA5,PRIVATELAW"
     })
     void shouldReturnListedHearingViewerCaseWorker_otherGovDept(String roleId, String serviceCode,
                                                                 String jurisdiction) {
