@@ -21,7 +21,56 @@
     "_extends_": "Common_200_Response",
     "body" : {
       "roleAssignmentResponse" : [
-        {
+      {
+        "__elementId__": "roleName,attributes.jurisdiction"
+      },
+      {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "[[ANYTHING_PRESENT]]",
+        "roleType" : "ORGANISATION",
+        "roleName" : "judge",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "JUDICIAL",
+        "readOnly" : false,
+        "beginTime" : "[[ANYTHING_PRESENT]]",
+        "endTime" : "[[ANYTHING_PRESENT]]",
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "Y",
+          "contractType" : "[[ANYTHING_PRESENT]]",
+          "primaryLocation" : "[[ANYTHING_PRESENT]]",
+          "jurisdiction" : "SSCS",
+          "region" : "[[ANYTHING_PRESENT]]",
+          "workTypes" : "pre_hearing_work,hearing_work,post_hearing_work,decision_making_work,routine_work,priority"
+        },
+        "authorisations" : "[[ANYTHING_PRESENT]]"
+      },
+      {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "[[ANYTHING_PRESENT]]",
+        "roleType" : "ORGANISATION",
+        "roleName" : "judge",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "JUDICIAL",
+        "readOnly" : false,
+        "beginTime" : "[[ANYTHING_PRESENT]]",
+        "endTime" : "[[ANYTHING_PRESENT]]",
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "Y",
+          "contractType" : "[[ANYTHING_PRESENT]]",
+          "primaryLocation" : "[[ANYTHING_PRESENT]]",
+          "jurisdiction" : "SSCS",
+          "region" : "[[ANYTHING_PRESENT]]",
+          "workTypes" : "pre_hearing_work,hearing_work,post_hearing_work,decision_making_work,routine_work,priority"
+        },
+        "authorisations" : "[[ANYTHING_PRESENT]]"
+      },
+      {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
         "actorId" : "[[ANYTHING_PRESENT]]",

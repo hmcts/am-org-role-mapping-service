@@ -57,7 +57,7 @@ import java.util.UUID;
 public class TestDataBuilder {
 
     private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
-    private static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
+    public static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
     private static String id_3 = "invalid_id";
 
     private static final String PROCESS_ID = "staff-organisational-role-mapping";

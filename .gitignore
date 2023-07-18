@@ -22,3 +22,6 @@ bin/main/application.yaml
 target/
 .idea
 .gradle
+
+lib/applicationinsights-agent-*.jar
+lib/applicationinsights.log

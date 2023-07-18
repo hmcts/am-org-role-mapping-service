@@ -25,7 +25,7 @@
           "actorIdType": "IDAM",
           "actorId": "cbb51593-aaca-4da3-ab67-7200d8d31af6",
           "roleType": "ORGANISATION",
-          "roleName": "clerk",
+          "roleName": "hearing-centre-admin",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
@@ -36,7 +36,7 @@
             "primaryLocation": "21153",
             "jurisdiction": "SSCS",
             "region" : "2",
-            "workTypes": "applications,hearing_work,routine_work,priority"
+            "workTypes": "pre_hearing_work,post_hearing_work,decision_making_work,applications,hearing_work,routine_work,priority"
           }
         },
         {

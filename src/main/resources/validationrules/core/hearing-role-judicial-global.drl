@@ -26,20 +26,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  rule "global_hearing_viewer_judicial"
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-   $joh: JudicialOfficeHolder(office in ("SSCS Judge", "Family Judge",
-   "PUBLICLAW District Judge - Salaried", "PUBLICLAW District Judge (MC) - SPTW",
-   "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",
-   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
-   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
-   "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
-   "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
-   "PUBLICLAW Magistrate - Voluntary", "PUBLICLAW Designated Family Judge - Salaried",
-   "PUBLICLAW Deputy Circuit Judge - Fee Paid", "PUBLICLAW District Judge (MC) - Salaried", "PUBLICLAW Recorder - Fee Paid",
-   "CIVIL Circuit Judge-Salaried","CIVIL Deputy Circuit Judge-Fee-Paid","CIVIL Specialist Circuit Judge-Salaried",
-   "CIVIL Deputy District Judge-Fee-Paid","CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
-   "CIVIL District Judge-Salaried","CIVIL Recorder-Fee-Paid","CIVIL Senior Circuit Judge-Salaried",
-   "CIVIL High Court Judge-Salaried","CIVIL Designated Civil Judge-Salaried","CIVIL Presiding Judge-Salaried",
-   "CIVIL Resident Judge-Salaried"))
+   $joh: JudicialOfficeHolder(office in ("SSCS Judge", "Family Judge") ||
+        jurisdiction in ("PUBLICLAW", "CIVIL", "EMPLOYMENT"))
  then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($joh.getJurisdiction()));

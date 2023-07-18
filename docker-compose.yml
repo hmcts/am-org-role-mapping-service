@@ -21,7 +21,7 @@ services:
       - JUDICIAL_REF_APP_URL=http://localhost:8091
       - ROLE_ASSIGNMENT_APP_URL=http://localhost:4096
       - ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE=openid profile roles authorities
-      - AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY
+      - app-insights-connection-string
       - REFORM_SERVICE_NAME=am-org-role-mapping-service
       - REFORM_TEAM=am
       - REFORM_ENVIRONMENT=local

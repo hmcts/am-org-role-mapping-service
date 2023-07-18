@@ -15,7 +15,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestra
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.springdoc.core.Constants.SWAGGER_UI_URL;
 
 class WelcomeControllerTest {
 
@@ -32,8 +35,12 @@ class WelcomeControllerTest {
     }
 
     @Test
-    void index() {
-        assertEquals("redirect:swagger-ui.html", sut.index());
+    void swaggerRedirect() {
+        var response = sut.swaggerRedirect();
+
+        assertNotNull(response);
+        assertTrue(response.isRedirectView());
+        assertEquals(SWAGGER_UI_URL, response.getUrl());
     }
 
     @Test
