@@ -23,12 +23,12 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "publiclaw_ctsc_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "10", serviceCode == "ABA3", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "ABA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,applications,decision_making_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -86,7 +86,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,applications,decision_making_work,access_requests"));
 
   insert(
       RoleAssignment.builder()

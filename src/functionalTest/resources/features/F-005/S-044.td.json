@@ -19,7 +19,11 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body" : {
-      "roleAssignmentResponse" : [ {
+      "roleAssignmentResponse" : [
+      {
+        "__elementId__": "roleName"
+      },
+      {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
         "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
@@ -115,7 +119,7 @@
           "primaryLocation" : "[[ANYTHING_PRESENT]]",
           "jurisdiction" : "SSCS",
           "region" : "[[ANYTHING_PRESENT]]",
-          "workTypes" : "applications,hearing_work,routine_work,priority,decision_making_work"
+          "workTypes" : "pre_hearing_work,post_hearing_work,applications,hearing_work,routine_work,priority,decision_making_work"
         }
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
@@ -133,7 +137,7 @@
           "primaryLocation" : "[[ANYTHING_PRESENT]]",
           "jurisdiction" : "SSCS",
           "region" :"[[ANYTHING_PRESENT]]",
-          "workTypes" : "applications,hearing_work,routine_work,priority,decision_making_work"
+          "workTypes" : "pre_hearing_work,post_hearing_work,applications,hearing_work,routine_work,priority,decision_making_work"
         }
       } ]
     }
