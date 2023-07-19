@@ -9,4 +9,8 @@
         <notes>https://tools.hmcts.net/jira/browse/AM-2839 jackson-databind</notes>
         <cve>CVE-2023-35116</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2869 spring-hateoas</notes>
+        <cve>CVE-2023-34036</cve>
+    </suppress>
 </suppressions>
