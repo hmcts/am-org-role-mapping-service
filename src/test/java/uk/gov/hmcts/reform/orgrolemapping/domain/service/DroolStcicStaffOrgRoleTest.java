@@ -221,9 +221,18 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
+            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                    + "specific-access-approver-legal-ops',N,N",
+            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                    + "specific-access-approver-legal-ops',Y,N",
+            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                    + "case-allocator,specific-access-approver-legal-ops',N,Y",
             "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
                     + "case-allocator,specific-access-approver-legal-ops',Y,Y",
-            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y"
+            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations',N,N",
+            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,task-supervisor',Y,N",
+            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,case-allocator',N,Y",
+            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y",
     })
     void shouldReturnStcicCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
                                                   String taskSupervisorFlag, String caseAllocatorFlag) {
