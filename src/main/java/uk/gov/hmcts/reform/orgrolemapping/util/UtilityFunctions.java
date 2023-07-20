@@ -14,7 +14,8 @@ public final class UtilityFunctions {
             case "BBA3":
                 result = "SSCS";
                 break;
-            case "AAA6", "AAA7":
+            case "AAA6":
+            case "AAA7":
                 result = "CIVIL";
                 break;
             case "ABA5":
