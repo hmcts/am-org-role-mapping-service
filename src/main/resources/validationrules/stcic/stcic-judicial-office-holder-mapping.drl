@@ -25,7 +25,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
 
 /*
- * 1: "ST_CIC President of Tribunal-Salaried" business role mapping to JOH.
+ * 1: "ST_CIC President of Tribunals-Salaried" business role mapping to JOH.
  */
 
 rule "st_cic_president_of_tribunals_salaried_joh"
