@@ -24,7 +24,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "st_cic_senior_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
+  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
                                         "ST_CIC Principal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -56,7 +56,7 @@ end;
 rule "st_cic_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
+  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried",
                                         "ST_CIC Principal Judge-Salaried"))
 then
@@ -128,7 +128,7 @@ end;
 rule "st_cic_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
+  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried",
                                         "ST_CIC Principal Judge-Salaried"))
 then
@@ -161,7 +161,7 @@ end;
 rule "st_cic_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
+  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried",
                                         "ST_CIC Principal Judge-Salaried"))
 then
@@ -194,7 +194,7 @@ end;
 rule "st_cic_hmcts_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
+  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
                                         "ST_CIC Principal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Fee Paid",
@@ -230,7 +230,7 @@ end;
 rule "st_cic_specific_access_approver_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunals-Salaried",
+  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
                                         "ST_CIC Principal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried"))
 then

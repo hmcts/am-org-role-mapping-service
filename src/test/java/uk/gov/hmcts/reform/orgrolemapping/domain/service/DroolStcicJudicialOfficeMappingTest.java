@@ -27,9 +27,9 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
     //=================================SALARIED ROLES==================================
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunals,Salaried,BBA2,N,'senior-judge,judge,case-allocator,task-supervisor,"
+            "President of Tribunal,Salaried,BBA2,N,'senior-judge,judge,case-allocator,task-supervisor,"
                     + "hmcts-judiciary,specific-access-approver-judiciary'",
-            "President of Tribunals,Salaried,BBA2,Y,'senior-judge,judge,case-allocator,task-supervisor,"
+            "President of Tribunal,Salaried,BBA2,Y,'senior-judge,judge,case-allocator,task-supervisor,"
                     + "hmcts-judiciary,specific-access-approver-judiciary'",
             "Principal Judge,Salaried,BBA2,N,'leadership-judge,senior-judge,judge,case-allocator,task-supervisor,"
                     + "hmcts-judiciary,specific-access-approver-judiciary'",
@@ -139,7 +139,7 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
     // Invalid authorisation(expired enddate) and valid appointment(Salaried) and base location(1032)
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunals",
+            "President of Tribunal",
             "Principal Judge",
             "Tribunal Judge",
             "Tribunal Member Medical"
@@ -195,7 +195,7 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
     //Invalid authorisation(wrong servicecode) and valid appointment and base location(1032)
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunals",
+            "President of Tribunal",
             "Principal Judge",
             "Tribunal Judge",
             "Tribunal Member Medical"
