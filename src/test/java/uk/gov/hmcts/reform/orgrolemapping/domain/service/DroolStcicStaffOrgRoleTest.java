@@ -31,9 +31,21 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
                     + "case-allocator,specific-access-approver-admin',Y,Y",
             "4,BBA2,'hearing-centre-admin,hmcts-admin',N,N",
+            "4,BBA2,'hearing-centre-admin,hmcts-admin,task-supervisor',Y,N",
+            "4,BBA2,'hearing-centre-admin,hmcts-admin,case-allocator',N,Y",
+            "4,BBA2,'hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator',Y,Y",
+            "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,"
+                    + "specific-access-approver-admin',N,N",
+            "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,task-supervisor,"
+                    + "specific-access-approver-admin',Y,N",
+            "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,"
+                    + "case-allocator,specific-access-approver-admin',N,Y",
             "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,task-supervisor,"
                     + "case-allocator,specific-access-approver-admin',Y,Y",
-            "13,BBA2,'regional-centre-admin,hmcts-admin',N,N"
+            "13,BBA2,'regional-centre-admin,hmcts-admin',N,N",
+            "13,BBA2,'regional-centre-admin,hmcts-admin,task-supervisor',Y,N",
+            "13,BBA2,'regional-centre-admin,hmcts-admin,case-allocator',N,Y",
+            "13,BBA2,'regional-centre-admin,hmcts-admin,task-supervisor,case-allocator',Y,Y"
     })
     void shouldReturnStcicAdminMappings(String roleId, String serviceCode, String expectedRoles,
                                        String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -116,9 +128,17 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
+            "9,BBA2,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc'"
+                    + ",N,N",
+            "9,BBA2,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc'"
+                    + ",Y,N",
+            "9,BBA2,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc'"
+                    + ",N,Y",
             "9,BBA2,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,specific-access-approver-ctsc'"
                     + ",Y,Y",
+            "10,BBA2,'ctsc,hmcts-ctsc',N,N",
             "10,BBA2,'ctsc,hmcts-ctsc,task-supervisor',Y,N",
+            "10,BBA2,'ctsc,hmcts-ctsc,case-allocator',N,Y",
             "10,BBA2,'ctsc,hmcts-ctsc,task-supervisor,case-allocator',Y,Y"
     })
     void shouldReturnStcicCtscMappings(String roleId, String serviceCode, String expectedRoles,
@@ -201,9 +221,18 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
+            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                    + "specific-access-approver-legal-ops',N,N",
+            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                    + "specific-access-approver-legal-ops',Y,N",
+            "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                    + "case-allocator,specific-access-approver-legal-ops',N,Y",
             "1,BBA2,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
                     + "case-allocator,specific-access-approver-legal-ops',Y,Y",
-            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y"
+            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations',N,N",
+            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,task-supervisor',Y,N",
+            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,case-allocator',N,Y",
+            "2,BBA2,'tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y",
     })
     void shouldReturnStcicCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
                                                   String taskSupervisorFlag, String caseAllocatorFlag) {
