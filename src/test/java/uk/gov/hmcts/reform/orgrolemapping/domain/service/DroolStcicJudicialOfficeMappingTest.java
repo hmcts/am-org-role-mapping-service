@@ -70,12 +70,11 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            assertNull(r.getAttributes().get("primaryLocation"));
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
             } else {
                 assertEquals("[373]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
                 assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
             }
         });
@@ -125,12 +124,11 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            assertNull(r.getAttributes().get("primaryLocation"));
             if ("hmcts-judiciary".equals(r.getRoleName())) {
                 assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
             } else {
                 assertEquals("[376]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
                 assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
             }
         });

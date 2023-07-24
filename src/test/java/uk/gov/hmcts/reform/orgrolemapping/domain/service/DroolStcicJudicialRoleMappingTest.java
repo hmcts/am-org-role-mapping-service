@@ -66,17 +66,17 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
             primaryLocation = r.getAttributes().get("primaryLocation").asText();
         }
 
+        assertNull(primaryLocation);
+
         if (r.getRoleName().equals("hmcts-judiciary")) {
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
             assertTrue(r.isReadOnly());
-            assertNull(primaryLocation);
         } else {
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
             assertFalse(r.isReadOnly());
-            assertEquals("2", primaryLocation);
         }
 
         //region assertions

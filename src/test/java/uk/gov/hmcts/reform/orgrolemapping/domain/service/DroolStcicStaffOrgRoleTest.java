@@ -79,12 +79,12 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
         });
 
         roleAssignments.forEach(r -> {
+            assertNull(r.getAttributes().get("primaryLocation"));
+
             if (r.getRoleName().equals("hmcts-admin")) {
                 assertNull(r.getAttributes().get("jurisdiction"));
-                assertNull(r.getAttributes().get("primaryLocation"));
             } else {
                 assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
-                assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             }
             //assert region
             assertNull(r.getAttributes().get("region"));
@@ -173,12 +173,12 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
         });
 
         roleAssignments.forEach(r -> {
+            assertNull(r.getAttributes().get("primaryLocation"));
+
             if (r.getRoleName().equals("hmcts-ctsc")) {
                 assertNull(r.getAttributes().get("jurisdiction"));
-                assertNull(r.getAttributes().get("primaryLocation"));
             } else {
                 assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
-                assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             }
             //assert region
             assertNull(r.getAttributes().get("region"));
@@ -266,12 +266,12 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
         });
 
         roleAssignments.forEach(r -> {
+            assertNull(r.getAttributes().get("primaryLocation"));
+
             if (r.getRoleName().equals("hmcts-legal-operations")) {
                 assertNull(r.getAttributes().get("jurisdiction"));
-                assertNull(r.getAttributes().get("primaryLocation"));
             } else {
                 assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
-                assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             }
             //assert region
             assertNull(r.getAttributes().get("region"));

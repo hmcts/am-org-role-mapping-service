@@ -47,7 +47,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_president_of_tribunal_salaried_joh");
@@ -76,7 +75,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_principal_judge_salaried_joh");
@@ -104,7 +102,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_tribunal_judge_fee_paid_joh");
@@ -132,7 +129,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_tribunal_judge_salaried_joh");
@@ -161,7 +157,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_tribunal_member_fee_paid_joh");
@@ -190,7 +185,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_tribunal_member_lay_fee_paid_joh");
@@ -219,7 +213,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_tribunal_member_medical_salaried_joh");
@@ -248,7 +241,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_tribunal_member_medical_fee_paid_joh");
@@ -277,7 +269,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_tribunal_member_disability_fee_paid_joh");
@@ -306,7 +297,6 @@ then
       .endTime($jap.getEndTime())
       .regionId($jap.getRegionId())
       .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : st_cic_tribunal_member_financially_qualified_fee_paid_joh");
