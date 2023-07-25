@@ -95,13 +95,12 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SSCS President of Tribunal-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,"
-                    + "specific-access-approver-judiciary,hmcts-judiciary'",
-            "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,"
-                    + "specific-access-approver-judiciary,hmcts-judiciary'",
-            "SSCS Tribunal Judge-Salaried,'judge,hmcts-judiciary'",
-            "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'",
-
+        "SSCS President of Tribunal-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,"
+                + "specific-access-approver-judiciary,hmcts-judiciary'",
+        "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,"
+                + "specific-access-approver-judiciary,hmcts-judiciary'",
+        "SSCS Tribunal Judge-Salaried,'judge,hmcts-judiciary'",
+        "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'",
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles) {
 
@@ -126,18 +125,17 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true",
-            // ^ judge RA will be created if a booking created
-            "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false",
-            // ^ judge RA will not be created as there is no booking
-            "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false",
-            "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false",
-            "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false",
-            "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
-            "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
-            "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
-            "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false"
-
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true",
+        // ^ judge RA will be created if a booking created
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false",
+        // ^ judge RA will not be created as there is no booking
+        "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false",
+        "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false",
+        "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false",
+        "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
+        "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
+        "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
+        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false"
     })
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles, boolean withBooking) throws IOException {
 

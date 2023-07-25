@@ -55,10 +55,10 @@ public class RefreshController {
     )
     @Operation(summary = "refresh",
             security =
-                    {
-                            @SecurityRequirement(name = AUTHORIZATION),
-                            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
-                    })
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     @ApiResponse(
             responseCode = "202",
@@ -89,10 +89,10 @@ public class RefreshController {
     @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "refreshes judicial role assignments",
             security =
-                    {
-                            @SecurityRequirement(name = AUTHORIZATION),
-                            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
-                    })
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
     @ApiResponse(
             responseCode = "200",
             description = "Successful",
