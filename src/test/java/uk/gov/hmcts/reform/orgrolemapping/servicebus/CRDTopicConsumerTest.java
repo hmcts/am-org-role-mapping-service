@@ -20,7 +20,6 @@ class CRDTopicConsumerTest {
 
     private OrmDeserializer deserializer;
 
-
     @Mock
     public SubscriptionClient subscriptionClient;
 
@@ -39,11 +38,8 @@ class CRDTopicConsumerTest {
         sut.environment = "pr";
         sut.topic = "test1";
 
-
         assertThrows(IllegalArgumentException.class, () -> sut.getSubscriptionClient());
-
     }
-
 
     @Test
     void registerMessageHandlerOnClientTest() throws Exception {
@@ -51,7 +47,5 @@ class CRDTopicConsumerTest {
                 subscriptionClient);
         assertNull(voidCompletableFuture);
     }
-
-
 }
 

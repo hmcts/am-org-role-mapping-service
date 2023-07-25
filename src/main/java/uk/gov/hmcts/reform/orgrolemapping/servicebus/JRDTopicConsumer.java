@@ -99,7 +99,8 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                     }
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
-                    throw new InvalidRequest("Some Network issue");
+                    log.error("Error processing JRD message from service bus : {}", e.getMessage());
+                    throw new InvalidRequest("Error processing message from service bus", e);
                 }
                 log.debug("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
@@ -122,20 +123,13 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
     }
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
-
-
         UserRequest request = deserializer.deserialize(body);
         log.debug("Parsing the message from JRD with size :: {}", request.getUserIds().size());
-        try {
-            ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
-                    UserType.JUDICIAL);
-            log.debug("Role Assignment Service Response JRD {}", response.getStatusCode());
-            result.set(Boolean.TRUE);
-        } catch (Exception e) {
-            log.error("Exception from RAS service : {}", e.getMessage());
-            throw e;
-        }
+
+        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
+                UserType.JUDICIAL);
+
+        log.debug("Role Assignment Service Response JRD: {}", response.getStatusCode());
+        result.set(Boolean.TRUE);
     }
-
-
 }
