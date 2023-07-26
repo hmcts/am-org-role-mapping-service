@@ -94,12 +94,12 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "EMPLOYMENT President of Tribunal-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
-                    + "hmcts-judiciary,specific-access-approver-judiciary",
-            "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
-                    + "hmcts-judiciary,specific-access-approver-judiciary",
-            "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
-                    + "hmcts-judiciary,specific-access-approver-judiciary"
+        "EMPLOYMENT President of Tribunal-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
+        "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
+        "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                + "hmcts-judiciary,specific-access-approver-judiciary"
     })
     void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRoles(String setOffice,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -125,7 +125,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "EMPLOYMENT Employment Judge-Salaried,judge,hmcts-judiciary"
+        "EMPLOYMENT Employment Judge-Salaried,judge,hmcts-judiciary"
     })
     void shouldReturnEmploymentJudgeSalariedRoles(String setOffice,
                                                   @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -151,7 +151,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "EMPLOYMENT Employment Judge-Fee-Paid,fee-paid-judge,hmcts-judiciary"
+        "EMPLOYMENT Employment Judge-Fee-Paid,fee-paid-judge,hmcts-judiciary"
     })
     void shouldReturnEmploymentJudgeFeePaidRoles(String setOffice,
                                                   @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -176,8 +176,8 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "EMPLOYMENT Tribunal Member-Fee-Paid,tribunal-member,hmcts-judiciary",
-            "EMPLOYMENT Tribunal Member Lay-Fee-Paid,tribunal-member,hmcts-judiciary"
+        "EMPLOYMENT Tribunal Member-Fee-Paid,tribunal-member,hmcts-judiciary",
+        "EMPLOYMENT Tribunal Member Lay-Fee-Paid,tribunal-member,hmcts-judiciary"
     })
     void shouldReturnTribunalMemberFeePaidRoles(String setOffice,
                                                  @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
