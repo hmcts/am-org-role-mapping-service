@@ -52,7 +52,7 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/welcome,GET,orm-base-flag"
+        "/welcome,GET,orm-base-flag"
     })
     void getLaunchDarklyFlagName_Get(String url, String method, String flag)  {
         when(request.getRequestURI()).thenReturn(url);
@@ -62,7 +62,7 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/am/role-mapping/refresh,POST,orm-refresh-role"
+        "/am/role-mapping/refresh,POST,orm-refresh-role"
     })
     void getLaunchDarklyFlagName_Post(String url, String method, String flag)  {
         when(request.getRequestURI()).thenReturn(url);
@@ -72,7 +72,7 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/welcome,DELETE,orm-base-flag"
+        "/welcome,DELETE,orm-base-flag"
     })
     void getLaunchDarklyFlagName_Delete(String url, String method, String flag)  {
         when(request.getMethod()).thenReturn(method);
@@ -81,7 +81,7 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/welcome,GET,orm-base-flag"
+        "/welcome,GET,orm-base-flag"
     })
     void getPositiveResponseForFlag(String url, String method, String flag) throws Exception {
         when(request.getRequestURI()).thenReturn(url);
@@ -93,7 +93,7 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/welcome,GET,orm-base-flag"
+        "/welcome,GET,orm-base-flag"
     })
     void getNegativeResponseForFlag(String url, String method, String flag) {
         when(request.getRequestURI()).thenReturn(url);
@@ -107,7 +107,7 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            ",GET,orm-base-flag"
+        ",GET,orm-base-flag"
     })
     void expectExceptionForNonRegisteredURI(String url, String method, String flag) {
         when(request.getRequestURI()).thenReturn(url);
@@ -119,7 +119,7 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            ",POST,orm-base-flag"
+        ",POST,orm-base-flag"
     })
     void expectExceptionForRequestMethod(String url, String method, String flag) {
         when(request.getRequestURI()).thenReturn(url);
@@ -131,7 +131,7 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/welcome,GET,orm-base-flag"
+        "/welcome,GET,orm-base-flag"
     })
     void expectExceptionForInvalidFlagName(String url, String method, String flag) {
         when(request.getRequestURI()).thenReturn(url);
@@ -144,7 +144,7 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/url,GET,orm-base-flag"
+        "/url,GET,orm-base-flag"
     })
     void getLdFlagGetCaseNullUrlForbidden(String url, String method, String flag) {
         url = null;
@@ -157,8 +157,8 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/welcome,GET,orm-base-flag",
-            "/am/role-mapping/refresh,POST,orm-refresh-role",
+        "/welcome,GET,orm-base-flag",
+        "/am/role-mapping/refresh,POST,orm-refresh-role",
     })
     void getLdFlagGetCase(String url, String method, String flag) {
         when(request.getRequestURI()).thenReturn(url);
@@ -169,8 +169,8 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "GET",
-            "POST",
+        "GET",
+        "POST",
     })
     void getLdFlagCase(String method) {
         when(request.getRequestURI()).thenReturn("/am/dummy");

@@ -39,13 +39,13 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsA
 class DroolCivilJudicialRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
-            "CIVIL District Judge-Salaried,judge",
-            "CIVIL Presiding Judge-Salaried,judge",
-            "CIVIL Resident Judge-Salaried,judge",
-            "CIVIL Circuit Judge-Salaried,circuit-judge",
-            "CIVIL Specialist Circuit Judge-Salaried,circuit-judge",
-            "CIVIL Senior Circuit Judge-Salaried,circuit-judge",
-            "CIVIL High Court Judge-Salaried,circuit-judge"
+        "CIVIL District Judge-Salaried,judge",
+        "CIVIL Presiding Judge-Salaried,judge",
+        "CIVIL Resident Judge-Salaried,judge",
+        "CIVIL Circuit Judge-Salaried,circuit-judge",
+        "CIVIL Specialist Circuit Judge-Salaried,circuit-judge",
+        "CIVIL Senior Circuit Judge-Salaried,circuit-judge",
+        "CIVIL High Court Judge-Salaried,circuit-judge"
     })
     void shouldReturnSalariedRoles(String setOffice, String roleNameOutput) {
 
@@ -74,9 +74,9 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "CIVIL Deputy District Judge-Fee-Paid,fee-paid-judge",
-            "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,fee-paid-judge",
-            "CIVIL Recorder-Fee-Paid,fee-paid-judge"
+        "CIVIL Deputy District Judge-Fee-Paid,fee-paid-judge",
+        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,fee-paid-judge",
+        "CIVIL Recorder-Fee-Paid,fee-paid-judge"
     })
     void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) throws IOException {
 
@@ -107,7 +107,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "CIVIL Deputy Circuit Judge-Fee-Paid,fee-paid-judge"
+        "CIVIL Deputy Circuit Judge-Fee-Paid,fee-paid-judge"
     })
     void shouldReturnCircuitJudgeRoles(String setOffice, String roleNameOutput) throws IOException {
 
@@ -141,7 +141,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "CIVIL Designated Civil Judge-Salaried,hmcts-judiciary,leadership-judge,task-supervisor,case-allocator"
+        "CIVIL Designated Civil Judge-Salaried,hmcts-judiciary,leadership-judge,task-supervisor,case-allocator"
     })
     void shouldReturnHmctsJudiciaryRoles(String setOffice,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -408,12 +408,12 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "CIVIL Designated Civil Judge-Salaried,Salaried",
-            "CIVIL Circuit Judge-Salaried,Salaried",
-            "CIVIL Specialist Circuit Judge-Salaried,Salaried",
-            "CIVIL Senior Circuit Judge-Salaried,Salaried",
-            "CIVIL High Court Judge-Salaried,Salaried",
-            "CIVIL Deputy Circuit Judge-Fee-Paid,Fee-Paid"
+        "CIVIL Designated Civil Judge-Salaried,Salaried",
+        "CIVIL Circuit Judge-Salaried,Salaried",
+        "CIVIL Specialist Circuit Judge-Salaried,Salaried",
+        "CIVIL Senior Circuit Judge-Salaried,Salaried",
+        "CIVIL High Court Judge-Salaried,Salaried",
+        "CIVIL Deputy Circuit Judge-Fee-Paid,Fee-Paid"
     })
     void shouldReturnJudgeRolesV11(String setOffice,String contractType) throws IOException {
 
