@@ -38,12 +38,10 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
 
-
     public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                         OrmDeserializer deserializer) {
+                            OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
-
     }
 
     @Bean
@@ -71,9 +69,24 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.debug("    Calling registerMessageHandlerOnClient in CRD ");
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        receiveClient.registerMessageHandler(
+                getMessageHandler(receiveClient),
+                new MessageHandlerOptions(
+                        1,
+                        false,
+                        Duration.ofHours(1),
+                        Duration.ofMinutes(5)
+                ),
+                executorService
+        );
+        return null;
 
-        IMessageHandler messageHandler = new IMessageHandler() {
+    }
+
+    public IMessageHandler getMessageHandler(SubscriptionClient receiveClient) {
+        log.debug("    Calling registerMessageHandlerOnClient in CRD ");
+        return new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
@@ -103,14 +116,6 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
                 log.error(exceptionPhase + "-" + throwable.getMessage());
             }
         };
-
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        receiveClient.registerMessageHandler(
-                messageHandler, new MessageHandlerOptions(1,
-                        false, Duration.ofHours(1), Duration.ofMinutes(5)),
-                executorService);
-        return null;
-
     }
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {

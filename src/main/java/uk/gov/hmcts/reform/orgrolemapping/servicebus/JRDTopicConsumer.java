@@ -45,7 +45,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                             OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
-
     }
 
     @Bean
@@ -73,9 +72,24 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.info("    Calling registerMessageHandlerOnClient in JRD ");
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        receiveClient.registerMessageHandler(
+                getMessageHandler(receiveClient),
+                new MessageHandlerOptions(
+                        1,
+                        false,
+                        Duration.ofHours(1),
+                        Duration.ofMinutes(5)
+                ),
+                executorService
+        );
+        return null;
 
-        IMessageHandler messageHandler = new IMessageHandler() {
+    }
+
+    public IMessageHandler getMessageHandler(SubscriptionClient receiveClient) {
+        log.info("    Calling registerMessageHandlerOnClient in JRD ");
+        return new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
@@ -90,7 +104,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                         if (result.get()) {
                             return receiveClient.completeAsync(message.getLockToken());
                         }
-
 
                         log.debug("    getLockToken......{}", message.getLockToken());
                     } else {
@@ -112,14 +125,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                 log.error(exceptionPhase + "-" + throwable.getMessage());
             }
         };
-
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        receiveClient.registerMessageHandler(
-                messageHandler, new MessageHandlerOptions(1,
-                        false, Duration.ofHours(1), Duration.ofMinutes(5)),
-                executorService);
-        return null;
-
     }
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
