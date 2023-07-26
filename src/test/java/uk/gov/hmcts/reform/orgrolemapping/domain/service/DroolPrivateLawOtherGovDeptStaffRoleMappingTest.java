@@ -46,13 +46,15 @@ class DroolPrivateLawOtherGovDeptStaffRoleMappingTest extends DroolBase {
             assertEquals(RoleCategory.OTHER_GOV_DEPT, r.getRoleCategory());
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
             assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
-            assertEquals("123456", r.getAttributes().get("primaryLocation").asText());
-            assertEquals("1", r.getAttributes().get("region").asText());
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertThat(r.getRoleName())
                     .matches(s -> Stream.of("listed-hearing-viewer", "caseworker-privatelaw-externaluser-viewonly")
                             .anyMatch(s::contains));
+
+            if ("caseworker-privatelaw-externaluser-viewonly".equals(r.getRoleName())) {
+                assertEquals("1", r.getAttributes().get("region").asText());
+            }
         });
     }
 }
