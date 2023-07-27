@@ -70,8 +70,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 
 
 @TestPropertySource(properties = {
-        "dbFeature.flags.enable=iac_jrd_1_0",
-        "refresh.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch"})
+    "dbFeature.flags.enable=iac_jrd_1_0",
+    "refresh.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch"})
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);

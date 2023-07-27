@@ -82,7 +82,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
 
 @TestPropertySource(properties = {
-        "refresh.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch"})
+    "refresh.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch"})
 public class RefreshControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
