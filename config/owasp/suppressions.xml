@@ -10,7 +10,7 @@
         <cve>CVE-2023-35116</cve>
     </suppress>
     <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-2851 guava</notes>
-        <cve>CVE-2023-2976</cve>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2885 okio</notes>
+        <cve>CVE-2023-3635</cve>
     </suppress>
 </suppressions>

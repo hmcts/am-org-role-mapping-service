@@ -26,18 +26,18 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "3,BHA1,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin',N,N",
-            "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin'"
-                    + ",N,N",
-            "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
-                    + "task-supervisor,case-allocator',Y,Y",
-            "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
-                    + "task-supervisor',Y,N",
-            "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
-                    + "case-allocator',N,Y",
-            "4,BHA1,'hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator',Y,Y",
-            "13,BHA1,'regional-centre-admin,hmcts-admin,task-supervisor,case-allocator',Y,Y",
-            "5,BHA1,'clerk,hmcts-admin,task-supervisor,case-allocator',Y,Y",
+        "3,BHA1,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin',N,N",
+        "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin'"
+                + ",N,N",
+        "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
+                + "task-supervisor,case-allocator',Y,Y",
+        "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
+                + "task-supervisor',Y,N",
+        "12,BHA1,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,specific-access-approver-admin,"
+                + "case-allocator',N,Y",
+        "4,BHA1,'hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator',Y,Y",
+        "13,BHA1,'regional-centre-admin,hmcts-admin,task-supervisor,case-allocator',Y,Y",
+        "5,BHA1,'clerk,hmcts-admin,task-supervisor,case-allocator',Y,Y",
     })
     void shouldReturnEmploymentAdminMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -99,12 +99,12 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "10,BHA1,'ctsc,hmcts-ctsc',N,N",
-            "9,BHA1,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N",
-            "9,BHA1,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,"
-                    + "specific-access-approver-ctsc',Y,Y",
-            "9,BHA1,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc',N,Y",
-            "9,BHA1,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N"
+        "10,BHA1,'ctsc,hmcts-ctsc',N,N",
+        "9,BHA1,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N",
+        "9,BHA1,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,"
+                + "specific-access-approver-ctsc',Y,Y",
+        "9,BHA1,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc',N,Y",
+        "9,BHA1,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N"
     })
     void shouldReturnEmploymentCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                             String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -160,14 +160,14 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "2,BHA1,'tribunal-caseworker,hmcts-legal-operations',N,N",
-            "1,BHA1,'tribunal-caseworker,senior-tribunal-caseworker,hmcts-legal-operations,"
-                    + "specific-access-approver-legal-ops',N,N",
-            "1,BHA1,'tribunal-caseworker,senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
-                    + "specific-access-approver-legal-ops',Y,N",
-            "1,BHA1,'tribunal-caseworker,senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
-                    + "specific-access-approver-legal-ops',N,Y",
-            "1,BHA1,'tribunal-caseworker,senior-tribunal-caseworker,hmcts-legal-operations,"
+        "2,BHA1,'tribunal-caseworker,hmcts-legal-operations',N,N",
+        "1,BHA1,'tribunal-caseworker,senior-tribunal-caseworker,hmcts-legal-operations,"
+                + "specific-access-approver-legal-ops',N,N",
+        "1,BHA1,'tribunal-caseworker,senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                + "specific-access-approver-legal-ops',Y,N",
+        "1,BHA1,'tribunal-caseworker,senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
+                + "specific-access-approver-legal-ops',N,Y",
+        "1,BHA1,'tribunal-caseworker,senior-tribunal-caseworker,hmcts-legal-operations,"
                     + "task-supervisor,case-allocator,specific-access-approver-legal-ops',Y,Y"
     })
     void shouldReturnEmploymentCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
