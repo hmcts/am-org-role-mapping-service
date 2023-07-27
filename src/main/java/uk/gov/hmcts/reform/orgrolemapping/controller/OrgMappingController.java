@@ -47,10 +47,10 @@ public class OrgMappingController {
     @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "creates multiple role assignments based upon user profile mapping rules",
             security =
-                    {
-                            @SecurityRequirement(name = AUTHORIZATION),
-                            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
-                    })
+                {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+                })
     @ApiResponse(
             responseCode = "200",
             description = "OK",
