@@ -29,11 +29,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //=================================SALARIED ROLES==================================
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunal,Salaried,BBA3,'leadership-judge,judge,case-allocator,task-supervisor,"
-                    + "specific-access-approver-judiciary,hmcts-judiciary'",
-            "Regional Tribunal Judge,Salaried,BBA3,'leadership-judge,judge,case-allocator,task-supervisor,"
-                    + "specific-access-approver-judiciary,hmcts-judiciary'",
-            "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge'"
+        "President of Tribunal,Salaried,BBA3,'leadership-judge,judge,case-allocator,task-supervisor,"
+                + "specific-access-approver-judiciary,hmcts-judiciary'",
+        "Regional Tribunal Judge,Salaried,BBA3,'leadership-judge,judge,case-allocator,task-supervisor,"
+                + "specific-access-approver-judiciary,hmcts-judiciary'",
+        "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge'"
     })
     void shouldReturSalariedRoles(String appointment, String appointmentType,
                                   String serviceCode, String expectedRoles) {
@@ -71,14 +71,14 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //=================================FEE-PAID ROLES==================================
     @ParameterizedTest
     @CsvSource({
-            "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary'",
-            "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary'",
-            "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary'",
-            "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary'",
-            "Tribunal Member,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
-            "Tribunal Member Lay,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
-            "Tribunal Member Service,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
-            "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary'"
+        "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary'",
+        "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary'",
+        "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary'",
+        "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary'",
+        "Tribunal Member,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "Tribunal Member Lay,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "Tribunal Member Service,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles2(String appointment, String appointmentType,
                                                        String serviceCode, String expectedRoles) {
@@ -203,10 +203,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     // Invalid authorisation(expired enddate) and valid appointment(Salaried)
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunal",
-            "Regional Tribunal Judge",
-            "Tribunal Member Medical",
-            "Tribunal Judge"
+        "President of Tribunal",
+        "Regional Tribunal Judge",
+        "Tribunal Member Medical",
+        "Tribunal Judge"
     })
     void shouldNotReturnSalariedRolesExpiredEndDate(String appointment) {
 
@@ -229,10 +229,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //Invalid authorisation(wrong servicecode) and valid appointment
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunal,AAA",
-            "Regional Tribunal Judge,AAA",
-            "Tribunal Member Medical,AAA",
-            "Tribunal Judge,AAA"
+        "President of Tribunal,AAA",
+        "Regional Tribunal Judge,AAA",
+        "Tribunal Member Medical,AAA",
+        "Tribunal Judge,AAA"
     })
     void shouldNotReturnSalariedRolesExpiredEndDate(String appointment, String serviceCode) {
 
@@ -255,14 +255,14 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     // Invalid authorisation(expired enddate) and valid appointment(Fee-Paid)
     @ParameterizedTest
     @CsvSource({
-            "Tribunal Member Medical",
-            "Tribunal Member Disability",
-            "Tribunal Member Financially Qualified",
-            "Tribunal Member Lay",
-            "Tribunal Member Optometrist",
-            "Tribunal Member Service",
-            "Tribunal Member",
-            "Tribunal Judge"
+        "Tribunal Member Medical",
+        "Tribunal Member Disability",
+        "Tribunal Member Financially Qualified",
+        "Tribunal Member Lay",
+        "Tribunal Member Optometrist",
+        "Tribunal Member Service",
+        "Tribunal Member",
+        "Tribunal Judge"
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment) {
 
@@ -285,14 +285,14 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //Invalid authorisation(wrong servicecode) and valid appointment
     @ParameterizedTest
     @CsvSource({
-            "Tribunal Member Medical,AAA",
-            "Tribunal Member Disability,AAA",
-            "Tribunal Member Financially Qualified,AAA",
-            "Tribunal Member Lay,AAA",
-            "Tribunal Member Optometrist,AAA",
-            "Tribunal Member Service,AAA",
-            "Tribunal Member,AAA",
-            "Tribunal Judge,AAA"
+        "Tribunal Member Medical,AAA",
+        "Tribunal Member Disability,AAA",
+        "Tribunal Member Financially Qualified,AAA",
+        "Tribunal Member Lay,AAA",
+        "Tribunal Member Optometrist,AAA",
+        "Tribunal Member Service,AAA",
+        "Tribunal Member,AAA",
+        "Tribunal Judge,AAA"
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment,
                                                            String serviceCode) {
@@ -316,10 +316,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunal,AAA",
-            "Regional Tribunal Judge,AAA",
-            "Tribunal Member Medical,AAA",
-            "Tribunal Judge,AAA"
+        "President of Tribunal,AAA",
+        "Regional Tribunal Judge,AAA",
+        "Tribunal Member Medical,AAA",
+        "Tribunal Judge,AAA"
     })
     void shouldNotReturnSalariedExpiredDateandWServiceode(String appointment, String serviceCode) {
 
@@ -343,14 +343,14 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
     @ParameterizedTest
     @CsvSource({
-            "Tribunal Member Medical,AAA",
-            "Tribunal Member Disability,AAA",
-            "Tribunal Member Financially Qualified,AAA",
-            "Tribunal Member Lay,AAA",
-            "Tribunal Member Optometrist,AAA",
-            "Tribunal Member Service,AAA",
-            "Tribunal Member,AAA",
-            "Tribunal Judge,AAA"
+        "Tribunal Member Medical,AAA",
+        "Tribunal Member Disability,AAA",
+        "Tribunal Member Financially Qualified,AAA",
+        "Tribunal Member Lay,AAA",
+        "Tribunal Member Optometrist,AAA",
+        "Tribunal Member Service,AAA",
+        "Tribunal Member,AAA",
+        "Tribunal Judge,AAA"
     })
     void shouldNotReturnFeePaidRolesExpiredDateandWServiceode(String appointment,
                                                               String serviceCode) {
