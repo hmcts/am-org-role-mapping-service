@@ -55,10 +55,10 @@ public class RefreshController {
             description = "operation can only be executed by services that are authorised to call the refresh "
                     + "controller otherwise an invalid request error will be returned",
             security =
-                    {
-                            @SecurityRequirement(name = AUTHORIZATION),
-                            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
-                    })
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     @ApiResponse(
             responseCode = "202",
@@ -86,10 +86,10 @@ public class RefreshController {
     @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "refreshes judicial role assignments",
             security =
-                    {
-                            @SecurityRequirement(name = AUTHORIZATION),
-                            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
-                    })
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
     @ApiResponse(
             responseCode = "200",
             description = "Successful",

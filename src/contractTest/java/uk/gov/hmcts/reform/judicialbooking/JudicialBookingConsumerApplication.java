@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 @SpringBootApplication
 @EnableFeignClients(clients = {
-        JBSFeignClient.class
+    JBSFeignClient.class
 })
 public class JudicialBookingConsumerApplication {
 
