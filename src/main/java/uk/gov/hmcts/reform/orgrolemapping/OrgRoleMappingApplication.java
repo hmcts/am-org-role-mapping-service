@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.idam.client.IdamApi;
 @EnableRetry
 @EnableAsync
 @EnableFeignClients(basePackages = {
-        "uk.gov.hmcts.reform.orgrolemapping"}, basePackageClasses = {IdamApi.class, ServiceAuthorisationApi.class})
+    "uk.gov.hmcts.reform.orgrolemapping"}, basePackageClasses = {IdamApi.class, ServiceAuthorisationApi.class})
 public class OrgRoleMappingApplication {
 
     public static void main(final String[] args) {
