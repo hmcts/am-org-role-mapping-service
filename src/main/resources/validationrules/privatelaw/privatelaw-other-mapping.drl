@@ -16,6 +16,32 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 import function uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getJurisdictionFromServiceCode;
 
 /*
+ * Private Law "listed-hearing-viewer" Org role mapping.
+ */
+rule "private_law_cymru_caseworker_hearing_viewer_other_gov_dept"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_2.getValue())
+  $up: CaseWorkerAccessProfile(roleId in ("18"), serviceCode in ("ABA5"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(getJurisdictionFromServiceCode($up.getServiceCode())));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.OTHER_GOV_DEPT)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("listed-hearing-viewer")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : private_law_cymru_caseworker_hearing_viewer_other_gov_dept");
+end;
+
+/*
  * Private Law "caseworker-privatelaw-externaluser-viewonly" Org role mapping.
  */
 rule "private_law_caseworker_externaluser_viewonly_other_gov_dept"
