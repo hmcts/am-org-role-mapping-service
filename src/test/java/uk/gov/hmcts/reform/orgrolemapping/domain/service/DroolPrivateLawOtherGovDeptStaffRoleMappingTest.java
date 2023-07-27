@@ -25,7 +25,7 @@ class DroolPrivateLawOtherGovDeptStaffRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "18,ABA5,PRIVATELAW"
+        "18,ABA5,PRIVATELAW"
     })
     void shouldReturnListedHearingViewerCaseWorker_otherGovDept(String roleId,
                                                                 String serviceCode,
@@ -41,20 +41,17 @@ class DroolPrivateLawOtherGovDeptStaffRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
+        assertEquals(1, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals(RoleCategory.OTHER_GOV_DEPT, r.getRoleCategory());
             assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), r.getActorId());
             assertEquals(jurisdiction, r.getAttributes().get("jurisdiction").asText());
+            assertEquals("1", r.getAttributes().get("region").asText());
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertThat(r.getRoleName())
-                    .matches(s -> Stream.of("listed-hearing-viewer", "caseworker-privatelaw-externaluser-viewonly")
+                    .matches(s -> Stream.of("caseworker-privatelaw-externaluser-viewonly")
                             .anyMatch(s::contains));
-
-            if ("caseworker-privatelaw-externaluser-viewonly".equals(r.getRoleName())) {
-                assertEquals("1", r.getAttributes().get("region").asText());
-            }
         });
     }
 }
