@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -36,6 +37,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.NullCheckBiPredicate;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nullCheckPredicate;
+import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVICE;
 
 @Service
 @Slf4j
@@ -50,11 +52,9 @@ public class RefreshOrchestrator {
 
     private String sortDirection;
     private String sortColumn;
+    private List<String> authorisedServices;
 
     String pageSize;
-
-    @Value("${refresh.authorisedServices}")
-    private List<String> authorisedServices;
 
     @Autowired
     public RefreshOrchestrator(RetrieveDataService retrieveDataService,
@@ -64,7 +64,8 @@ public class RefreshOrchestrator {
                                SecurityUtils securityUtils,
                                @Value("${refresh.Job.pageSize}") String pageSize,
                                @Value("${refresh.Job.sortDirection}") String sortDirection,
-                               @Value("${refresh.Job.sortColumn}") String sortColumn) {
+                               @Value("${refresh.Job.sortColumn}") String sortColumn,
+                               @Value("${refresh.Job.authorisedServices}") List<String> authorisedServices) {
         this.retrieveDataService = retrieveDataService;
         this.requestMappingService = requestMappingService;
         this.parseRequestService = parseRequestService;
@@ -74,9 +75,16 @@ public class RefreshOrchestrator {
         this.pageSize = pageSize;
         this.sortDirection = sortDirection;
         this.sortColumn = sortColumn;
+        this.authorisedServices = authorisedServices;
     }
 
     public void validate(Long jobId, UserRequest userRequest) {
+        // Ensure only permitted service is invoking caseworker refresh API
+        final String serviceName = securityUtils.getServiceName();
+        if (!authorisedServices.contains(serviceName)) {
+            throw new UnauthorizedServiceException(UNAUTHORIZED_SERVICE);
+        }
+
         if (jobId == null) {
             throw new BadRequestException("Invalid JobId request");
         }
@@ -85,12 +93,6 @@ public class RefreshOrchestrator {
             // Extract and Validate received users List
             parseRequestService.validateUserRequest(userRequest);
             log.info("Validated userIds {}", userRequest.getUserIds());
-        }
-
-        // Ensure only permitted service is invoking caseworker refresh API
-        final String serviceName = securityUtils.getServiceName();
-        if (!authorisedServices.contains(serviceName)) {
-            throw new BadRequestException("Invoking service is not permitted to call the Refresh API");
         }
     }
 

@@ -158,7 +158,7 @@ refresh:
     pageSize: ${REFRESH_JOB_PAGE_SIZE:400}
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
-  authorisedServices: am_org_role_mapping_service,am_role_assignment_refresh_batch
+    authorisedServices: am_org_role_mapping_service,am_role_assignment_refresh_batch
 
 dbFeature:
   flags:

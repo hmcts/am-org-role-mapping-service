@@ -21,6 +21,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import java.util.List;
+
 @TestConfiguration
 public class ProviderTestConfiguration {
 
@@ -67,9 +69,18 @@ public class ProviderTestConfiguration {
     @Bean
     @Primary
     public RefreshOrchestrator refreshOrchestrator() {
-        return new RefreshOrchestrator(getRetrieveDataService(), getRequestMappingService(),
-                getParseRequestService(), crdService, persistenceService, securityUtils,
-                "1", "descending", "1");
+        return new RefreshOrchestrator(
+                getRetrieveDataService(),
+                getRequestMappingService(),
+                getParseRequestService(),
+                crdService,
+                persistenceService,
+                securityUtils,
+                "1",
+                "descending",
+                "1",
+                List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch")
+        );
     }
 
     @Bean

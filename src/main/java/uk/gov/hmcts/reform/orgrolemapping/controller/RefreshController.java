@@ -70,6 +70,11 @@ public class RefreshController {
             description = V1.Error.INVALID_REQUEST,
             content = @Content()
     )
+    @ApiResponse(
+            responseCode = "403",
+            description = V1.Error.UNAUTHORIZED_SERVICE,
+            content = @Content()
+    )
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
