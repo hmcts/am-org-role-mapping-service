@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -41,15 +40,7 @@ class CRDTopicConsumerTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-
         sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
-
-        ReflectionTestUtils.setField(sut, "host", "test");
-        ReflectionTestUtils.setField(sut, "sharedAccessKeyName", "test");
-        ReflectionTestUtils.setField(sut, "topic", "test");
-        ReflectionTestUtils.setField(sut, "sharedAccessKeyValue", "test");
-        ReflectionTestUtils.setField(sut, "subscription", "test");
-        ReflectionTestUtils.setField(sut, "environment", "local");
     }
 
     //@Test
