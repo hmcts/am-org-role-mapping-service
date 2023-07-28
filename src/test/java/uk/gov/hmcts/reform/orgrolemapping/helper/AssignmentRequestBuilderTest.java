@@ -6,9 +6,9 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 
 
@@ -125,6 +125,15 @@ class AssignmentRequestBuilderTest {
                     assertNotNull(appointment.getAppointment());
                 });
         assertEquals(2, judicialAccessProfiles.size());
+    }
+
+    @Test
+    void convertUserProfileToJudicialAccessProfileV2() throws IOException {
+        JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileV2();
+        judicialProfile.getAppointments().get(0).setAppointment("1");
+        judicialProfile.getAppointments().get(1).setAppointment("2");
+        Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
+                .convertProfileToJudicialAccessProfileV2(judicialProfile);
     }
 
     @Test
