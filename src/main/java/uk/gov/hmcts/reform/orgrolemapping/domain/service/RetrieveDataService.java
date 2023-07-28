@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
 import feign.FeignException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +40,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListIn
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class RetrieveDataService {
     /*
     //1. Fetching multiple case-worker user details from CRD
@@ -62,9 +60,15 @@ public class RetrieveDataService {
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final JRDService jrdService;
-
-    @Value("${feign.client.config.jrdClient.url}")
     private final String jrdAPIVersion;
+
+    public RetrieveDataService(ParseRequestService parseRequestService, CRDService crdService, JRDService jrdService,
+                               @Value("${feign.client.config.jrdClient.url}") String jrdAPIVersion) {
+        this.parseRequestService = parseRequestService;
+        this.crdService = crdService;
+        this.jrdService = jrdService;
+        this.jrdAPIVersion = jrdAPIVersion;
+    }
 
     public Map<String, Set<UserAccessProfile>> retrieveProfiles(UserRequest userRequest, UserType userType)
             throws UnprocessableEntityException {
