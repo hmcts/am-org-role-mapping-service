@@ -38,4 +38,19 @@ class JRDServiceTest {
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
+    @Test
+    void fetchJudicialUserProfilesV2Test() throws IOException {
+        JRDUserRequest userRequest = JRDUserRequest.builder()
+                .sidamIds(Set.of("123e4567-e89b-42d3-a456-556642445000", "123e4567-e89b-42d3-a456-556642445111"))
+                .build();
+
+        JudicialProfile userProfile = TestDataBuilder.buildJudicialProfile();
+        doReturn(ResponseEntity.status(HttpStatus.CREATED).body(List.of(userProfile))).when(jrdFeignClient)
+                .getJudicialDetailsById(userRequest, 10);
+
+        ResponseEntity<List<JudicialProfile>> responseEntity = sut.fetchJudicialProfilesV2(userRequest);
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+    }
+
 }
