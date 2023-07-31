@@ -53,7 +53,7 @@ public class RefreshController {
     )
     @Operation(summary = "refreshes caseworker role assignments",
             description = "operation can only be executed by services that are authorised to call the refresh "
-                    + "controller otherwise an invalid request error will be returned",
+                    + "controller otherwise an unauthorized service error will be returned",
             security =
             {
                 @SecurityRequirement(name = AUTHORIZATION),
@@ -68,6 +68,11 @@ public class RefreshController {
     @ApiResponse(
             responseCode = "400",
             description = V1.Error.INVALID_REQUEST,
+            content = @Content()
+    )
+    @ApiResponse(
+            responseCode = "403",
+            description = V1.Error.UNAUTHORIZED_SERVICE,
             content = @Content()
     )
     @Transactional(propagation = Propagation.REQUIRES_NEW)

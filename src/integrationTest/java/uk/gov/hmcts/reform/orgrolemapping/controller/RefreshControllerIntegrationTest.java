@@ -27,7 +27,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
@@ -80,9 +80,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
+import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVICE;
 
 @TestPropertySource(properties = {
-    "refresh.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch"})
+    "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch"})
 public class RefreshControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
@@ -370,20 +371,17 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidServiceToken() throws Exception {
         logger.info("Refresh request rejected with invalid service token");
 
-        final String expectedErrorMessage = "Invoking service is not permitted to call the Refresh API";
-
         when(securityUtils.getServiceName()).thenReturn("ccd_gw");
 
         MvcResult result = mockMvc.perform(post(URL)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders())
                 .param("jobId", String.valueOf(1L)))
-                .andExpect(status().is(400))
+                .andExpect(status().is(403))
                 .andReturn();
 
-        assertTrue(result.getResolvedException() instanceof BadRequestException);
-        assertThat(result.getResolvedException().getMessage(), equalTo(expectedErrorMessage));
-        assertThat(result.getResponse().getContentAsString(), containsString(expectedErrorMessage));
+        assertTrue(result.getResolvedException() instanceof UnauthorizedServiceException);
+        assertThat(result.getResolvedException().getMessage(), equalTo(UNAUTHORIZED_SERVICE));
     }
 
     @Test

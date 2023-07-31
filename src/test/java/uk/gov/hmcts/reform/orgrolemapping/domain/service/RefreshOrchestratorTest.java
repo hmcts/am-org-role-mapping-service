@@ -35,9 +35,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
@@ -74,16 +74,12 @@ class RefreshOrchestratorTest {
             securityUtils,
             "1",
             "descending",
-            "1");
+            "1",
+            List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch"));
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        ReflectionTestUtils.setField(
-                sut,
-                "authorisedServices",
-                List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch")
-        );
     }
 
     @Test
@@ -294,11 +290,12 @@ class RefreshOrchestratorTest {
     @DisplayName("invalidServiceTokenTest_validate")
     void invalidServiceTokenTest_validate() {
         String errorMessage = "Invoking service is not permitted to call the Refresh API";
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
         Mockito.when(securityUtils.getServiceName()).thenReturn("ccd_gw");
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () ->
-                sut.validate(1L, TestDataBuilder.buildUserRequest()));
+        UnauthorizedServiceException exception = assertThrows(UnauthorizedServiceException.class, () ->
+                sut.validate(1L, userRequest));
         assertTrue(exception.getLocalizedMessage().contains(errorMessage));
     }
 
