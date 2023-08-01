@@ -68,7 +68,6 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
 
     @Bean
     @Qualifier("crdConsumer")
-    @WithSpan(value = "CRD Azure Service Bus Topic", kind = SpanKind.SERVER)
     CompletableFuture<Void> registerCRDMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
@@ -78,6 +77,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
+            @WithSpan(value = "CRD Azure Service Bus Topic", kind = SpanKind.SERVER)
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
                 log.debug("    Calling onMessageAsync in CRD.....{}", message);
                 List<byte[]> body = message.getMessageBody().getBinaryData();

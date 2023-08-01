@@ -71,7 +71,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     @Bean
     @Qualifier("jrdConsumer")
-    @WithSpan(value = "JRD Azure Service Bus Topic", kind = SpanKind.SERVER)
     CompletableFuture<Void> registerJRDMessageHandlerOnClient(@Autowired @Qualifier("jrdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
@@ -81,6 +80,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
+            @WithSpan(value = "JRD Azure Service Bus Topic", kind = SpanKind.SERVER)
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
                 log.debug("    Calling onMessageAsync in JRD.....{}", message);
                 List<byte[]> body = message.getMessageBody().getBinaryData();
