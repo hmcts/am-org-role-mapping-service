@@ -101,13 +101,13 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "ST_CIC President of Tribunal-Salaried,'senior-judge,judge,case-allocator,task-supervisor,"
-                    + "hmcts-judiciary,specific-access-approver-judiciary'",
-            "ST_CIC Principal Judge-Salaried,'leadership-judge,senior-judge,judge,case-allocator,task-supervisor,"
-                    + "hmcts-judiciary,specific-access-approver-judiciary'",
-            "ST_CIC Tribunal Judge-Salaried,'judge,case-allocator,task-supervisor,hmcts-judiciary,"
-                    + "specific-access-approver-judiciary'",
-            "ST_CIC Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'"
+        "ST_CIC President of Tribunal-Salaried,'senior-judge,judge,case-allocator,task-supervisor,"
+                + "hmcts-judiciary,specific-access-approver-judiciary'",
+        "ST_CIC Principal Judge-Salaried,'leadership-judge,senior-judge,judge,case-allocator,task-supervisor,"
+                + "hmcts-judiciary,specific-access-approver-judiciary'",
+        "ST_CIC Tribunal Judge-Salaried,'judge,case-allocator,task-supervisor,hmcts-judiciary,"
+                + "specific-access-approver-judiciary'",
+        "ST_CIC Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'"
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles) {
 
@@ -132,12 +132,12 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-            "ST_CIC Tribunal Member-Fee Paid,'fee-paid-tribunal-member'",
-            "ST_CIC Tribunal Member Medical-Fee Paid,'fee-paid-medical'",
-            "ST_CIC Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member'",
-            "ST_CIC Tribunal Member Disability-Fee Paid,'fee-paid-disability'",
-            "ST_CIC Tribunal Member Financially Qualified-Fee Paid,'fee-paid-financial'"
+        "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
+        "ST_CIC Tribunal Member-Fee Paid,'fee-paid-tribunal-member'",
+        "ST_CIC Tribunal Member Medical-Fee Paid,'fee-paid-medical'",
+        "ST_CIC Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member'",
+        "ST_CIC Tribunal Member Disability-Fee Paid,'fee-paid-disability'",
+        "ST_CIC Tribunal Member Financially Qualified-Fee Paid,'fee-paid-financial'"
     })
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles) {
 
@@ -162,7 +162,7 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'"
+        "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'"
     })
     void shouldReturnFeePaidRolesWithBooking(String setOffice, String expectedRoles) throws IOException {
 
