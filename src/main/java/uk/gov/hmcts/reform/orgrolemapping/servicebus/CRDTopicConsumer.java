@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
-
 import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageHandler;
@@ -9,6 +8,8 @@ import com.microsoft.azure.servicebus.ReceiveMode;
 import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import io.opentelemetry.api.trace.SpanKind;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
 
     @Bean
     @Qualifier("crdConsumer")
+    @WithSpan(value = "CRD Azure Service Bus Topic", kind = SpanKind.SERVER)
     CompletableFuture<Void> registerCRDMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
