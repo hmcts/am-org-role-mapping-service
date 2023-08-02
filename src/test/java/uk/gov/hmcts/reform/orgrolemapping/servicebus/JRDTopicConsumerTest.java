@@ -72,7 +72,7 @@ class JRDTopicConsumerTest {
         String request = mapper.writeValueAsString(userRequest);
 
         when(deserializer.deserialize(any())).thenReturn(userRequest);
-        when(bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest, UserType.CASEWORKER))
+        when(bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest, UserType.JUDICIAL))
                 .thenThrow(RuntimeException.class);
 
         IMessageHandler handler = sut.getMessageHandler(subscriptionClient);
