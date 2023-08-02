@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class JRDTopicConsumerTest {
+class JRDTopicConsumerTest {
 
     @Mock
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
