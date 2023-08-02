@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -17,6 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.time.ZonedDateTime;
@@ -34,58 +37,66 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_JOB;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_JOB;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.NullCheckBiPredicate;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.PredicateValidator.nullCheckPredicate;
+import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVICE;
 
 @Service
 @Slf4j
 public class RefreshOrchestrator {
 
     private final RetrieveDataService retrieveDataService;
-
     private final RequestMappingService<UserAccessProfile> requestMappingService;
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final PersistenceService persistenceService;
-
-
-    String pageSize;
-
+    private final SecurityUtils securityUtils;
 
     private String sortDirection;
-
-
     private String sortColumn;
+    private List<String> authorisedServices;
+
+    String pageSize;
 
     @Autowired
     public RefreshOrchestrator(RetrieveDataService retrieveDataService,
                                RequestMappingService<UserAccessProfile> requestMappingService,
                                ParseRequestService parseRequestService,
                                CRDService crdService, PersistenceService persistenceService,
+                               SecurityUtils securityUtils,
                                @Value("${refresh.Job.pageSize}") String pageSize,
                                @Value("${refresh.Job.sortDirection}") String sortDirection,
-                               @Value("${refresh.Job.sortColumn}") String sortColumn) {
+                               @Value("${refresh.Job.sortColumn}") String sortColumn,
+                               @Value("${refresh.Job.authorisedServices}") List<String> authorisedServices) {
         this.retrieveDataService = retrieveDataService;
         this.requestMappingService = requestMappingService;
         this.parseRequestService = parseRequestService;
         this.crdService = crdService;
         this.persistenceService = persistenceService;
+        this.securityUtils = securityUtils;
         this.pageSize = pageSize;
         this.sortDirection = sortDirection;
         this.sortColumn = sortColumn;
+        this.authorisedServices = authorisedServices;
     }
 
     public void validate(Long jobId, UserRequest userRequest) {
+        // Ensure only permitted service is invoking caseworker refresh API
+        final String serviceName = securityUtils.getServiceName();
+        if (!authorisedServices.contains(serviceName)) {
+            throw new UnauthorizedServiceException(UNAUTHORIZED_SERVICE);
+        }
+
         if (jobId == null) {
             throw new BadRequestException("Invalid JobId request");
         }
 
-
         if (userRequest != null && nullCheckPredicate.test(userRequest.getUserIds())) {
-            //Extract and Validate received users List
+            // Extract and Validate received users List
             parseRequestService.validateUserRequest(userRequest);
             log.info("Validated userIds {}", userRequest.getUserIds());
         }
     }
 
+    @Async
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
         var startTime = System.currentTimeMillis();
