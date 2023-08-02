@@ -19,6 +19,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
 
 import feign.FeignException;
 import org.junit.jupiter.api.Assertions;
@@ -112,6 +114,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .status(NEW)
                                 .build()));
 
         ResponseEntity<Object> response = sut.refresh(1L, TestDataBuilder.buildUserRequest());
@@ -138,6 +141,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .status(NEW)
                                 .build()));
 
         assertNull(sut.refresh(1L, TestDataBuilder.buildUserRequest()));
@@ -151,6 +155,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .status(NEW)
                                 .build()));
         List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
         userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
@@ -203,6 +208,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.JUDICIAL.toString())
+                                .status(NEW)
                                 .build()));
         List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
         userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
@@ -253,6 +259,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .status(NEW)
                                 .build()));
 
         Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
@@ -637,6 +644,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.JUDICIAL.toString())
+                                .status(NEW)
                                 .build()));
 
         ResponseEntity<Object> response = refreshOrchestrator.refresh(1L, TestDataBuilder.buildUserRequest());
@@ -647,8 +655,8 @@ class RefreshOrchestratorTest {
     }
 
     @Test
-    @DisplayName("refreshRoleAssignmentRecords_Exception")
-    void refreshRoleAssignmentRecords_Exception() {
+    @DisplayName("refreshRoleAssignmentRecordsCouldNotBeRetrieved_Exception")
+    void refreshRoleAssignmentRecordsCouldNotBeRetrieved_Exception() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         String uee = "Provided refresh job couldn't be retrieved.";
         UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
@@ -656,4 +664,22 @@ class RefreshOrchestratorTest {
         assertTrue(exception.getLocalizedMessage().contains(uee));
     }
 
+    @Test
+    @DisplayName("refreshRoleAssignmentRecordsInvalidStatus_Exception")
+    void refreshRoleAssignmentRecordsInvalidStatus_Exception() {
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        String uee = "Provided refresh job is in an invalid state.";
+
+        Mockito.when(persistenceService.fetchRefreshJobById(any()))
+                .thenReturn(Optional.of(
+                        RefreshJobEntity.builder()
+                                .roleCategory(RoleCategory.JUDICIAL.toString())
+                                .status(COMPLETED)
+                                .build()));
+
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
+                sut.refresh(1L, userRequest));
+
+        assertTrue(exception.getLocalizedMessage().contains(uee));
+    }
 }

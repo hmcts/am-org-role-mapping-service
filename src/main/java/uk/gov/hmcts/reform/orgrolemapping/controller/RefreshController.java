@@ -71,8 +71,18 @@ public class RefreshController {
             content = @Content()
     )
     @ApiResponse(
+            responseCode = "400",
+            description = V1.Error.INVALID_REQUEST,
+            content = @Content()
+    )
+    @ApiResponse(
             responseCode = "403",
             description = V1.Error.UNAUTHORIZED_SERVICE,
+            content = @Content()
+    )
+    @ApiResponse(
+            responseCode = "422",
+            description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED,
             content = @Content()
     )
     @Transactional(propagation = Propagation.REQUIRES_NEW)
