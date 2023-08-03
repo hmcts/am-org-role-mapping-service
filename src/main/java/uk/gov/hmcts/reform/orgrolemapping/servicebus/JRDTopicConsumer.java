@@ -71,6 +71,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     @Bean
     @Qualifier("jrdConsumer")
+    @ConditionalOnProperty(name= "amqp.jrd.enabled", havingValue = "true")
     CompletableFuture<Void> registerJRDMessageHandlerOnClient(@Autowired @Qualifier("jrdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {

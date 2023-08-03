@@ -69,6 +69,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
 
     @Bean
     @Qualifier("crdConsumer")
+    @ConditionalOnProperty(name= "amqp.crd.enabled", havingValue = "true")
     CompletableFuture<Void> registerCRDMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
