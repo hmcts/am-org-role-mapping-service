@@ -19,6 +19,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
 
 import feign.FeignException;
 import org.junit.jupiter.api.Assertions;
@@ -35,6 +37,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
@@ -46,6 +49,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 class RefreshOrchestratorTest {
@@ -58,7 +62,7 @@ class RefreshOrchestratorTest {
     private final CRDService crdService = mock(CRDService.class);
     private final PersistenceService persistenceService = mock(PersistenceService.class);
     private final FeignException feignClientException = mock(FeignException.NotFound.class);
-
+    private final SecurityUtils securityUtils = mock(SecurityUtils.class);
 
     @InjectMocks
     private final RefreshOrchestrator sut = new RefreshOrchestrator(
@@ -67,9 +71,11 @@ class RefreshOrchestratorTest {
             parseRequestService,
             crdService,
             persistenceService,
+            securityUtils,
             "1",
             "descending",
-            "1");
+            "1",
+            List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch"));
 
     @BeforeEach
     public void setUp() {
@@ -108,6 +114,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .status(NEW)
                                 .build()));
 
         ResponseEntity<Object> response = sut.refresh(1L, TestDataBuilder.buildUserRequest());
@@ -134,6 +141,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .status(NEW)
                                 .build()));
 
         assertNull(sut.refresh(1L, TestDataBuilder.buildUserRequest()));
@@ -147,6 +155,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .status(NEW)
                                 .build()));
         List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
         userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
@@ -199,6 +208,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.JUDICIAL.toString())
+                                .status(NEW)
                                 .build()));
         List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
         userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
@@ -249,6 +259,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.LEGAL_OPERATIONS.toString())
+                                .status(NEW)
                                 .build()));
 
         Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
@@ -267,16 +278,32 @@ class RefreshOrchestratorTest {
     void nullJobIdTest_validate() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         String errorMessage = "Invalid JobId request";
+        Mockito.when(securityUtils.getServiceName())
+                .thenReturn("am_role_assignment_refresh_batch");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () ->
                 sut.validate(null, userRequest));
         assertTrue(exception.getLocalizedMessage().contains(errorMessage));
+    }
 
+    @Test
+    @DisplayName("invalidServiceTokenTest_validate")
+    void invalidServiceTokenTest_validate() {
+        String errorMessage = "Invoking service is not permitted to call the Refresh API";
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+        Mockito.when(securityUtils.getServiceName()).thenReturn("ccd_gw");
+
+        UnauthorizedServiceException exception = assertThrows(UnauthorizedServiceException.class, () ->
+                sut.validate(1L, userRequest));
+        assertTrue(exception.getLocalizedMessage().contains(errorMessage));
     }
 
     @Test
     void validateTest() {
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+        Mockito.when(securityUtils.getServiceName())
+                .thenReturn("am_role_assignment_refresh_batch");
         sut.validate(1L, TestDataBuilder.buildUserRequest());
         Mockito.verify(parseRequestService, Mockito.times(1)).validateUserRequest(any());
     }
@@ -285,12 +312,16 @@ class RefreshOrchestratorTest {
     void validateTest_emptyUserIds() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         userRequest.setUserIds(new ArrayList<>());
+        Mockito.when(securityUtils.getServiceName())
+                .thenReturn("am_role_assignment_refresh_batch");
         sut.validate(1L, userRequest);
         Mockito.verify(parseRequestService, Mockito.times(0)).validateUserRequest(any());
     }
 
     @Test
     void validateTest_nullRequest() {
+        Mockito.when(securityUtils.getServiceName())
+                .thenReturn("am_role_assignment_refresh_batch");
         sut.validate(1L, null);
         Mockito.verify(parseRequestService, Mockito.times(0)).validateUserRequest(any());
     }
@@ -613,6 +644,7 @@ class RefreshOrchestratorTest {
                 .thenReturn(Optional.of(
                         RefreshJobEntity.builder()
                                 .roleCategory(RoleCategory.JUDICIAL.toString())
+                                .status(NEW)
                                 .build()));
 
         ResponseEntity<Object> response = refreshOrchestrator.refresh(1L, TestDataBuilder.buildUserRequest());
@@ -623,8 +655,8 @@ class RefreshOrchestratorTest {
     }
 
     @Test
-    @DisplayName("refreshRoleAssignmentRecords_Exception")
-    void refreshRoleAssignmentRecords_Exception() {
+    @DisplayName("refreshRoleAssignmentRecordsCouldNotBeRetrieved_Exception")
+    void refreshRoleAssignmentRecordsCouldNotBeRetrieved_Exception() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
         String uee = "Provided refresh job couldn't be retrieved.";
         UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
@@ -632,4 +664,22 @@ class RefreshOrchestratorTest {
         assertTrue(exception.getLocalizedMessage().contains(uee));
     }
 
+    @Test
+    @DisplayName("refreshRoleAssignmentRecordsInvalidStatus_Exception")
+    void refreshRoleAssignmentRecordsInvalidStatus_Exception() {
+        UserRequest userRequest = TestDataBuilder.buildUserRequest();
+        String uee = "Provided refresh job is in an invalid state.";
+
+        Mockito.when(persistenceService.fetchRefreshJobById(any()))
+                .thenReturn(Optional.of(
+                        RefreshJobEntity.builder()
+                                .roleCategory(RoleCategory.JUDICIAL.toString())
+                                .status(COMPLETED)
+                                .build()));
+
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
+                sut.refresh(1L, userRequest));
+
+        assertTrue(exception.getLocalizedMessage().contains(uee));
+    }
 }
