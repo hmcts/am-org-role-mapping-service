@@ -5,14 +5,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -53,7 +51,9 @@ public class RefreshController {
             produces = V1.MediaType.MAP_ASSIGNMENTS,
             consumes = {"application/json"}
     )
-    @Operation(summary = "refresh",
+    @Operation(summary = "refreshes caseworker role assignments",
+            description = "operation can only be executed by services that are authorised to call the refresh "
+                    + "controller otherwise an unauthorized service error will be returned",
             security =
             {
                 @SecurityRequirement(name = AUTHORIZATION),
@@ -70,16 +70,28 @@ public class RefreshController {
             description = V1.Error.INVALID_REQUEST,
             content = @Content()
     )
-    @Async
+    @ApiResponse(
+            responseCode = "400",
+            description = V1.Error.INVALID_REQUEST,
+            content = @Content()
+    )
+    @ApiResponse(
+            responseCode = "403",
+            description = V1.Error.UNAUTHORIZED_SERVICE,
+            content = @Content()
+    )
+    @ApiResponse(
+            responseCode = "422",
+            description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED,
+            content = @Content()
+    )
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Hidden
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
-        refreshOrchestrator.validate(jobId,userRequest);
+        refreshOrchestrator.validate(jobId, userRequest);
         return refreshOrchestrator.refresh(jobId, userRequest);
 
     }
-
 
     @PostMapping(
             path = "/am/role-mapping/judicial/refresh",
