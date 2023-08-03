@@ -11,17 +11,23 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,8 +35,23 @@ import java.util.stream.Stream;
 class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
-    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "task-supervisor", "case-allocator",
-            "specific-access-approver-judiciary", "fee-paid-judge");
+
+    static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
+
+    {
+        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,routine_work,decision_making_work,"
+                + "applications");
+        expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
+        expectedRoleNameWorkTypesMap.put("leadership-judge", "hearing_work,decision_making_work,applications,"
+                + "access_requests");
+        expectedRoleNameWorkTypesMap.put("task-supervisor", "hearing_work,routine_work,decision_making_work,"
+                + "applications,access_requests");
+        expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,routine_work,"
+                + "decision_making_work,applications");
+        expectedRoleNameWorkTypesMap.put("magistrate", null);
+    }
 
     static Stream<Arguments> endToEndData() {
         return Stream.of(
@@ -244,31 +265,41 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
         roleAssignments.forEach(r -> {
+            assertEquals(ActorIdType.IDAM, r.getActorIdType());
             assertEquals(userId, r.getActorId());
-            if (!r.getRoleName().contains("hmcts-judiciary")) {
+            assertEquals(RoleType.ORGANISATION, r.getRoleType());
+            assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
+
+            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+            String actualWorkTypes = null;
+            if (r.getAttributes().get("workTypes") != null) {
+                actualWorkTypes = r.getAttributes().get("workTypes").asText();
+            }
+            assertEquals(expectedWorkTypes, actualWorkTypes);
+
+            String primaryLocation = null;
+            if (r.getAttributes().get("primaryLocation") != null) {
+                primaryLocation = r.getAttributes().get("primaryLocation").asText();
+            }
+
+            if (!r.getRoleName().equals("hmcts-judiciary")) {
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
                 assertEquals("ABA3", r.getAuthorisations().get(0));
-                assertEquals("London", r.getAttributes().get("primaryLocation").asText());
-                if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
-                    assertEquals("hearing_work,decision_making_work,applications",
-                            r.getAttributes().get("workTypes").asText());
+                assertEquals("London", primaryLocation);
+                assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
+                assertFalse(r.isReadOnly());
+
+                if (!r.getRoleName().equals("hearing-viewer")
+                        && !r.getRoleName().equals("hearing-manager")) {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
-                } else if (r.getRoleName().contains("leadership-judge")) {
-                    assertEquals("LDN", r.getAttributes().get("region").asText());
-                    assertEquals("access_requests",
-                            r.getAttributes().get("workTypes").asText());
                 }
             } else {
                 assertEquals(Classification.PRIVATE, r.getClassification());
                 assertEquals(GrantType.BASIC, r.getGrantType());
-            }
-            if (r.getRoleName().contains("magistrate")) {
-                assertEquals(Classification.PUBLIC, r.getClassification());
-                assertEquals(GrantType.STANDARD, r.getGrantType());
-                assertEquals("ABA3", r.getAuthorisations().get(0));
-                assertEquals("LDN", r.getAttributes().get("region").asText());
-                assertEquals("London", r.getAttributes().get("primaryLocation").asText());
+                assertTrue(r.isReadOnly());
+                assertNull(r.getAttributes().get("jurisdiction"));
+                assertNull(primaryLocation);
             }
         });
 

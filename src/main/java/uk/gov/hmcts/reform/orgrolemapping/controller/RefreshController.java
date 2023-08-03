@@ -1,15 +1,16 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestr
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
+
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 
 @RestController
 @Slf4j
@@ -47,28 +51,47 @@ public class RefreshController {
             produces = V1.MediaType.MAP_ASSIGNMENTS,
             consumes = {"application/json"}
     )
+    @Operation(summary = "refreshes caseworker role assignments",
+            description = "operation can only be executed by services that are authorised to call the refresh "
+                    + "controller otherwise an unauthorized service error will be returned",
+            security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
     @ResponseStatus(code = HttpStatus.ACCEPTED)
-    //@ApiOperation("refreshes role assignments")
-    @ApiResponses({
-            @ApiResponse(
-                    code = 202,
-                    message = "Accepted",
-                    response = Object.class
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = V1.Error.INVALID_REQUEST
-            )
-    })
-    @Async
+    @ApiResponse(
+            responseCode = "202",
+            description = "Accepted",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = V1.Error.INVALID_REQUEST,
+            content = @Content()
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = V1.Error.INVALID_REQUEST,
+            content = @Content()
+    )
+    @ApiResponse(
+            responseCode = "403",
+            description = V1.Error.UNAUTHORIZED_SERVICE,
+            content = @Content()
+    )
+    @ApiResponse(
+            responseCode = "422",
+            description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED,
+            content = @Content()
+    )
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
-        refreshOrchestrator.validate(jobId,userRequest);
+        refreshOrchestrator.validate(jobId, userRequest);
         return refreshOrchestrator.refresh(jobId, userRequest);
 
     }
-
 
     @PostMapping(
             path = "/am/role-mapping/judicial/refresh",
@@ -76,22 +99,27 @@ public class RefreshController {
             consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.OK)
-    @ApiOperation("refreshes judicial role assignments")
-    @ApiResponses({
-            @ApiResponse(
-                    code = 200,
-                    message = "Successful",
-                    response = Object.class
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = V1.Error.INVALID_REQUEST
-            ),
-            @ApiResponse(
-                    code = 422,
-                    message = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED
-            )
-    })
+    @Operation(summary = "refreshes judicial role assignments",
+            security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+            responseCode = "200",
+            description = "Successful",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = V1.Error.INVALID_REQUEST,
+            content = @Content()
+    )
+    @ApiResponse(
+            responseCode = "422",
+            description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED,
+            content = @Content()
+    )
     public ResponseEntity<Object> judicialRefresh(@RequestHeader(value = "x-correlation-id", required = false)
                                                               String correlationId,
                                                   @Validated @NonNull @RequestBody

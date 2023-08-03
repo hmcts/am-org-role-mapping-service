@@ -28,8 +28,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "BBA3,SSCS",
-            "ABA5,PRIVATELAW"
+        "BBA3,SSCS",
+        "ABA5,PRIVATELAW"
 
     })
     void shouldReturnHearingJudicialRoles(String serviceCode, String jurisdiction) {
@@ -57,10 +57,10 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "BBA3",
-            "ABA5",
-            "AAA6",
-            "BFA1"
+        "BBA3",
+        "ABA5",
+        "AAA6",
+        "BFA1"
     })
     void shouldReturnEmptyRoles_expiredAuthorisation(String serviceCode) {
 
@@ -79,8 +79,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "false,BBA3",
-            "true,DUMMY"
+        "false,BBA3",
+        "true,DUMMY"
     })
     void shouldReturnEmptyRoles(boolean ldFlag, String serviceCode) {
 
@@ -99,12 +99,12 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "'3,4,5,9,10,12,13',BBA3,SSCS",
-            "'3,4',ABA3,PUBLICLAW",
-            "'3,4',ABA5,PRIVATELAW",
-            "'3,4,6,11',AAA6,CIVIL",
-            "'3,4,5,6,7,8',BFA1,IA"
-
+        "'3,4,5,12,13',BBA3,SSCS",
+        "'3,4',ABA3,PUBLICLAW",
+        "'3,4',ABA5,PRIVATELAW",
+        "'3,4,6,11',AAA6,CIVIL",
+        "'3,4,5,12,13',BHA1,EMPLOYMENT",
+        "'3,4,5,6,7,8',BFA1,IA"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Admin(String roleId, String serviceCode,
                                                              String jurisdiction) {
@@ -130,10 +130,11 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "'9,10',ABA5,PRIVATELAW",
-            "'9,10',ABA3,PUBLICLAW",
-            "'9,10',AAA6,CIVIL",
-            "'9,10',BFA1,IA"
+        "'9,10',ABA5,PRIVATELAW",
+        "'9,10',ABA3,PUBLICLAW",
+        "'9,10',AAA6,CIVIL",
+        "'9,10',BHA1,EMPLOYMENT",
+        "'9,10',BFA1,IA"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Ctsc(String roleId, String serviceCode,
                                                              String jurisdiction) {
@@ -164,16 +165,17 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "2,BBA3,SSCS",
-            "1,BBA3,SSCS",
-            "2,ABA5,PRIVATELAW",
-            "1,ABA3,PUBLICLAW",
-            "2,ABA3,PUBLICLAW",     
-            "1,ABA5,PRIVATELAW",
-            "1,AAA6,CIVIL",
-            "2,AAA6,CIVIL",
-            "1,BFA1,IA"
-            
+        "2,BBA3,SSCS",
+        "1,BBA3,SSCS",
+        "2,ABA5,PRIVATELAW",
+        "1,ABA3,PUBLICLAW",
+        "2,ABA3,PUBLICLAW",
+        "1,ABA5,PRIVATELAW",
+        "1,AAA6,CIVIL",
+        "2,AAA6,CIVIL",
+        "1,BHA1,EMPLOYMENT",
+        "2,BHA1,EMPLOYMENT",
+        "1,BFA1,IA"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_LegalOps(String roleId, String serviceCode,
                                                                 String jurisdiction) {
@@ -198,11 +200,10 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "14,BBA3,SSCS",
-            "15,BBA3,SSCS",
-            "14,ABA5,PRIVATELAW",
-            "15,ABA5,PRIVATELAW"
-
+        "14,BBA3,SSCS",
+        "15,BBA3,SSCS",
+        "14,ABA5,PRIVATELAW",
+        "15,ABA5,PRIVATELAW"
     })
     void shouldReturnListedHearingViewerCaseWorker_otherGovDept(String roleId, String serviceCode,
                                                                 String jurisdiction) {
