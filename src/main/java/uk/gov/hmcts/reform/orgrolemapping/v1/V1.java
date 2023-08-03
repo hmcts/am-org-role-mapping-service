@@ -23,6 +23,7 @@ public final class V1 {
         public static final String INVALID_REQUEST = "Request is not valid as per validation rule";
         public static final String UNPROCESSABLE_ENTITY_REQUEST_REJECTED =
                 "Unprocessable entity as request has been rejected";
+        public static final String UNAUTHORIZED_SERVICE = "Invoking service is not permitted to call the Refresh API";
 
     }
 }
