@@ -59,7 +59,11 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
-        assertNull(r.getAttributes().get("bookable"));
+        if (!r.getRoleName().equals("fee-paid-judge")) {
+            assertNull(r.getAttributes().get("bookable"));
+        } else {
+            assertTrue(r.getAttributes().get("bookable").asBoolean());
+        }
 
         String primaryLocation = null;
         if (r.getAttributes().get("primaryLocation") != null) {
