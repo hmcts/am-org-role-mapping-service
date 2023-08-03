@@ -29,6 +29,7 @@ java:
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
     AMQP_HOST: rd-servicebus-{{ .Values.global.environment }}.servicebus.windows.net
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
+    AMQP_ENABLED: true
     TRUST_ALL_CERTS: "true"
     CRD_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}
     CRD_SUBSCRIPTION_NAME: rd-caseworker-subscription-{{ .Values.global.environment }}

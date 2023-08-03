@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -48,6 +49,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
 
     @Bean
     @Qualifier("crdConsumer")
+    @ConditionalOnProperty(name= "amqp.crd.enabled", havingValue = "true")
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
         logServiceBusVariables();
@@ -67,6 +69,7 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
 
     @Bean
     @Qualifier("crdConsumer")
+    @ConditionalOnProperty(name= "amqp.enabled", havingValue = "true")
     CompletableFuture<Void> registerCRDMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {

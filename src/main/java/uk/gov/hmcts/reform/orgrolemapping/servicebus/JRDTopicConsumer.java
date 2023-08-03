@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -50,6 +51,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     @Bean
     @Qualifier("jrdConsumer")
+    @ConditionalOnProperty(name= "amqp.jrd.enabled", havingValue = "true")
     public SubscriptionClient getSubscriptionClient1() throws URISyntaxException, ServiceBusException,
             InterruptedException {
         logServiceBusVariables();
@@ -69,6 +71,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     @Bean
     @Qualifier("jrdConsumer")
+    @ConditionalOnProperty(name= "amqp.enabled", havingValue = "true")
     CompletableFuture<Void> registerJRDMessageHandlerOnClient(@Autowired @Qualifier("jrdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
