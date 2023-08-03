@@ -1,7 +1,15 @@
-package validationrules.core;
+package uk.gov.hmcts.reform.orgrolemapping.util;
 
-function String getJurisdictionFromServiceCode(String serviceCode) {
-    String result = null;
+import javax.inject.Singleton;
+
+@Singleton
+public final class UtilityFunctions {
+
+    private UtilityFunctions() {
+    }
+
+    public static String getJurisdictionFromServiceCode(final String serviceCode) {
+        String result = null;
         switch (serviceCode) {
             case "BBA3":
                 result = "SSCS";
@@ -16,9 +24,15 @@ function String getJurisdictionFromServiceCode(String serviceCode) {
             case "ABA3":
                 result = "PUBLICLAW";
                 break;
+            case "BHA1":
+                result = "EMPLOYMENT";
+                break;
             case "BFA1":
                 result = "IA";
                 break;
+            default:
+                break;
         }
         return result;
+    }
 }

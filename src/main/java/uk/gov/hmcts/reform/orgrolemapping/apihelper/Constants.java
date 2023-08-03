@@ -44,6 +44,7 @@ public class Constants {
     public static final String SERVICE_AUTHORIZATION2 = "ServiceAuthorization";
     public static final String ASB_PUBLISH_ERROR = "There was an error in communication with Azure Service Bus."
             + " Please try again later.";
+    public static final String NEW = "NEW";
     public static final String ABORTED = "ABORTED";
     public static final String COMPLETED = "COMPLETED";
     public static final String FAILED_JOB = "Job is failed for userIds ::  %s ";
