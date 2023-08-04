@@ -112,8 +112,11 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
             }
 
             public void notifyException(Throwable throwable, ExceptionPhase exceptionPhase) {
-                log.error("Exception occurred.");
-                log.error(exceptionPhase + "-" + throwable.getMessage());
+                log.error(
+                        "An error occurred when Calling onMessageAsync in CRD. Phase: {}",
+                        exceptionPhase,
+                        throwable
+                );
             }
         };
     }
