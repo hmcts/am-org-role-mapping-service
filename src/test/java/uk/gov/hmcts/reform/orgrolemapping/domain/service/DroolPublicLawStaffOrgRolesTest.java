@@ -25,11 +25,12 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "10,ABA3,'ctsc,hmcts-ctsc',N,N",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc',N,N",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor,case-allocator',Y,Y",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,case-allocator',N,Y",
-            "9,ABA3,'ctsc-team-leader,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor',Y,N"
+        "10,ABA3,'ctsc,hmcts-ctsc',N,N",
+        "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N",
+        "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor,"
+                + "case-allocator',Y,Y",
+        "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,case-allocator',N,Y",
+        "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor',Y,N"
     })
     void shouldReturnPublicLawCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                            String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -69,11 +70,11 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                     assertEquals(skillCodes,r.getAuthorisations());
                     //assert work types
                     if (("ctsc").equals(r.getRoleName())) {
-                        assertEquals("routine_work",
+                        assertEquals("routine_work,applications,decision_making_work",
                                 r.getAttributes().get("workTypes").asText());
 
                     } else if (("ctsc-team-leader").equals(r.getRoleName())) {
-                        assertEquals("routine_work,access_requests",
+                        assertEquals("routine_work,applications,decision_making_work,access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     }
                 });
@@ -81,13 +82,14 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "4,ABA3,'hearing-centre-admin,hmcts-admin',N,N",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin',N,N",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,"
-                    + "task-supervisor,case-allocator',Y,Y",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,task-supervisor',Y,N",
-            "3,ABA3,'hearing-centre-team-leader,hmcts-admin,specific-access-approver-admin,case-allocator',N,Y",
-
+        "4,ABA3,'hearing-centre-admin,hmcts-admin',N,N",
+        "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin',N,N",
+        "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
+                + "task-supervisor,case-allocator',Y,Y",
+        "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
+                + "task-supervisor',Y,N",
+        "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
+                + "case-allocator',N,Y",
     })
     void shouldReturnPublicLawAdminMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -136,7 +138,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                         assertEquals("routine_work,access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (("hearing-centre-admin").equals(r.getRoleName())) {
-                        assertEquals("routine_work,decision_making_work",
+                        assertEquals("routine_work",
                                 r.getAttributes().get("workTypes").asText());
                     }
 
@@ -146,14 +148,15 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "2,ABA3,'tribunal-caseworker,hmcts-legal-operations',N,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
-                    + "task-supervisor',Y,N",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
-                    + "case-allocator',N,Y",
-            "1,ABA3,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops,"
-                    + "task-supervisor,case-allocator',Y,Y",
+        "2,ABA3,'tribunal-caseworker,hmcts-legal-operations',N,N",
+        "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                + "specific-access-approver-legal-ops',N,N",
+        "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                + "specific-access-approver-legal-ops,task-supervisor',Y,N",
+        "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                + "specific-access-approver-legal-ops,case-allocator',N,Y",
+        "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+                + "specific-access-approver-legal-ops,task-supervisor,case-allocator',Y,Y",
     })
     void shouldReturnPublicLawCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
                                                   String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -200,10 +203,10 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                     }
                     //assert work types
                     if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("hearing_work,decision_making_work,applications,access_requests",
+                        assertEquals("hearing_work,routine_work,decision_making_work,applications,access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (("tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("hearing_work,decision_making_work,applications",
+                        assertEquals("hearing_work,decision_making_work,applications,routine_work",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (Objects.equals("task-supervisor", r.getRoleName())) {
                         assertEquals("routine_work,access_requests",

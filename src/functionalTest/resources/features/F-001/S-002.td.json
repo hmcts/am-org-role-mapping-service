@@ -15,7 +15,11 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "roleAssignmentResponse" : [ {
+      "roleAssignmentResponse" : [
+      {
+        "__elementId__": "roleName"
+      },
+      {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
         "actorId" : "[[ANYTHING_PRESENT]]",
