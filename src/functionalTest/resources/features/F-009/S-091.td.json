@@ -121,7 +121,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,decision_making_work,applications,access_requests"
+            "workTypes": "hearing_work,routine_work,decision_making_work,applications,access_requests"
           }
         },{
           "id" : "[[ANYTHING_PRESENT]]",
@@ -177,7 +177,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,decision_making_work,applications"
+            "workTypes": "hearing_work,decision_making_work,applications,routine_work"
           }
         }
       ]

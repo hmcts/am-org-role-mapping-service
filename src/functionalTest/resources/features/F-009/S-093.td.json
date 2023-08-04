@@ -59,7 +59,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
-            "workTypes": "routine_work"
+            "workTypes": "routine_work,applications,decision_making_work"
           }
         },
         {
@@ -77,7 +77,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
-            "workTypes": "routine_work,access_requests"
+            "workTypes": "routine_work,applications,decision_making_work,access_requests"
           }
         },
         {
