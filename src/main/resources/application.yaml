@@ -134,7 +134,7 @@ feign:
         url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
       jrdClient:
         url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
-        version: 1
+        v2Active: false
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
 
