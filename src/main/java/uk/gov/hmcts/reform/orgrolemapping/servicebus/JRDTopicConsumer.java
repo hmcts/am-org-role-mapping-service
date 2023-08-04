@@ -8,6 +8,8 @@ import com.microsoft.azure.servicebus.ReceiveMode;
 import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import io.opentelemetry.api.trace.SpanKind;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +80,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
         IMessageHandler messageHandler = new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
+            @WithSpan(value = "JRD Azure Service Bus Topic", kind = SpanKind.SERVER)
             public CompletableFuture<Void> onMessageAsync(IMessage message) {
                 log.debug("    Calling onMessageAsync in JRD.....{}", message);
                 List<byte[]> body = message.getMessageBody().getBinaryData();
