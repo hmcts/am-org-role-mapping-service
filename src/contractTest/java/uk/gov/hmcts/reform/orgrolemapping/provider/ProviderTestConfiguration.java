@@ -33,7 +33,7 @@ public class ProviderTestConfiguration {
     @Bean
     @Primary
     public RetrieveDataService getRetrieveDataService() {
-        return new RetrieveDataService(getParseRequestService(), crdService, jrdService,"1");
+        return new RetrieveDataService(getParseRequestService(), crdService, jrdService,false);
     }
 
     @Bean
