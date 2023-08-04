@@ -63,7 +63,7 @@ public class RetrieveDataService {
     private final String jrdAPIVersion;
 
     public RetrieveDataService(ParseRequestService parseRequestService, CRDService crdService, JRDService jrdService,
-                               @Value("${feign.client.config.jrdClient.url}") String jrdAPIVersion) {
+                               @Value("${feign.client.config.jrdClient.version}") String jrdAPIVersion) {
         this.parseRequestService = parseRequestService;
         this.crdService = crdService;
         this.jrdService = jrdService;
@@ -96,12 +96,7 @@ public class RetrieveDataService {
         } else if (userType.equals(UserType.JUDICIAL)) {
             log.info("Calling JRD Service");
             try {
-                if (isJrdApiV2()) {
-                    response = jrdService.fetchJudicialProfilesV2(
-                            JRDUserRequest.builder().sidamIds(uniqueUsers).build());
-                } else {
-                    response = jrdService.fetchJudicialProfiles(JRDUserRequest.builder().sidamIds(uniqueUsers).build());
-                }
+                response = jrdService.fetchJudicialProfiles(JRDUserRequest.builder().sidamIds(uniqueUsers).build());
                 log.debug("Execution time of JRD Response : {} ms",
                         (Math.subtractExact(System.currentTimeMillis(), startTime))
                 );

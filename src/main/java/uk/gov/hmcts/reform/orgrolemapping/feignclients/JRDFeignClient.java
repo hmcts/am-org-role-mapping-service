@@ -23,8 +23,4 @@ public interface JRDFeignClient {
     @PostMapping(value = "/refdata/judicial/users")
     <T> ResponseEntity<List<T>> getJudicialDetailsById(JRDUserRequest userRequest,
                                                        @RequestHeader(name = "page_size") Integer pageSize);
-
-    @PostMapping(value = "/refdata/judicial/users/v2")
-    <T> ResponseEntity<List<T>> getJudicialDetailsByIdV2(JRDUserRequest userRequest,
-                                                       @RequestHeader(name = "page_size") Integer pageSize);
 }

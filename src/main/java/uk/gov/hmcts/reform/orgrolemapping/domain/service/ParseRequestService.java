@@ -3,11 +3,13 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
@@ -25,6 +27,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NUMBER_TEXT
 public class ParseRequestService implements ParseRequestBase<Object> {
     //1. This will parse the list of userIds.
     //2. This will parse and validate the user details.
+
+    @Value("${feign.client.config.jrdClient.version}")
+    private String jrdAPIVersion;
 
     public void validateUserRequest(UserRequest userRequest) {
 
@@ -54,8 +59,13 @@ public class ParseRequestService implements ParseRequestBase<Object> {
                 List<CaseWorkerProfile> caseworkerUserProfiles = retrievedProfiles;
                 caseworkerUserProfiles.forEach(userProfile -> userIdsRetrieved.add(userProfile.getId()));
             } else if (userType.equals(UserType.JUDICIAL)) {
-                List<JudicialProfile> judicialUserProfiles = retrievedProfiles;
-                judicialUserProfiles.forEach(judicialProfile -> userIdsRetrieved.add(judicialProfile.getSidamId()));
+                if (jrdAPIVersion != null && jrdAPIVersion.equals("2")) {
+                    List<JudicialProfileV2> judicialUserProfiles = retrievedProfiles;
+                    judicialUserProfiles.forEach(judicialProfile -> userIdsRetrieved.add(judicialProfile.getSidamId()));
+                } else {
+                    List<JudicialProfile> judicialUserProfiles = retrievedProfiles;
+                    judicialUserProfiles.forEach(judicialProfile -> userIdsRetrieved.add(judicialProfile.getSidamId()));
+                }
             }
             List<String> userIdsNotRetrieved = userRequest.getUserIds().stream().filter(userId -> !userIdsRetrieved
                     .contains(userId)).toList();
@@ -68,7 +78,11 @@ public class ParseRequestService implements ParseRequestBase<Object> {
         if (userType.equals(UserType.CASEWORKER)) {
             caseworkerProfileValidation(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
         } else if (userType.equals(UserType.JUDICIAL)) {
-            judicialProfileValidation(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
+            if (jrdAPIVersion != null && jrdAPIVersion.equals("2")) {
+                judicialProfileValidationV2(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
+            } else {
+                judicialProfileValidation(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
+            }
         }
     }
 
@@ -109,6 +123,23 @@ public class ParseRequestService implements ParseRequestBase<Object> {
     }
 
     private void judicialProfileValidation(List<JudicialProfile> judicialProfiles,
+                                           AtomicInteger invalidUserProfilesCount,
+                                           Set<Object> invalidJudicialProfiles) {
+
+        judicialProfiles.forEach(userProfile -> {
+            AtomicBoolean isInvalid = new AtomicBoolean(false);
+            if (CollectionUtils.isEmpty(userProfile.getAppointments())) {
+                log.error("Appointment is not available for the judicialUserProfile :: {}", userProfile.getSidamId());
+                invalidJudicialProfiles.add(userProfile);
+                isInvalid.set(true);
+            }
+            if (isInvalid.get()) {
+                invalidUserProfilesCount.getAndIncrement();
+            }
+        });
+    }
+
+    private void judicialProfileValidationV2(List<JudicialProfileV2> judicialProfiles,
                                            AtomicInteger invalidUserProfilesCount,
                                            Set<Object> invalidJudicialProfiles) {
 
