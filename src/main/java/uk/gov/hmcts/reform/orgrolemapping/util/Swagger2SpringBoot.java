@@ -5,10 +5,8 @@ import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
-import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 @SpringBootApplication
-@EnableSwagger2WebMvc
 @ComponentScan(basePackages = {"uk.gov.hmcts.reform.orgrolemapping"})
 public class Swagger2SpringBoot implements CommandLineRunner {
 
@@ -17,7 +15,7 @@ public class Swagger2SpringBoot implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... arg0) throws Exception {
+    public void run(String... arg0) {
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
             throw new ExitException();
         }
