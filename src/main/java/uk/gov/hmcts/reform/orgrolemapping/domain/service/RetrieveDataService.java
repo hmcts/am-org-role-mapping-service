@@ -60,14 +60,14 @@ public class RetrieveDataService {
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final JRDService jrdService;
-    private final String jrdAPIVersion;
+    private final Boolean v2Active;
 
     public RetrieveDataService(ParseRequestService parseRequestService, CRDService crdService, JRDService jrdService,
-                               @Value("${feign.client.config.jrdClient.version}") String jrdAPIVersion) {
+                               @Value("${feign.client.config.jrdClient.v2Active}") Boolean v2Active) {
         this.parseRequestService = parseRequestService;
         this.crdService = crdService;
         this.jrdService = jrdService;
-        this.jrdAPIVersion = jrdAPIVersion;
+        this.v2Active = v2Active;
     }
 
     public Map<String, Set<UserAccessProfile>> retrieveProfiles(UserRequest userRequest, UserType userType)
@@ -101,7 +101,7 @@ public class RetrieveDataService {
                         (Math.subtractExact(System.currentTimeMillis(), startTime))
                 );
                 if (response.getStatusCode().is2xxSuccessful()) {
-                    if (isJrdApiV2()) {
+                    if (v2Active != null && v2Active) {
                         Objects.requireNonNull(response.getBody()).forEach(o ->
                                 profiles.add(convertInJudicialProfileV2(o)));
                     } else {
@@ -128,10 +128,6 @@ public class RetrieveDataService {
                 (Math.subtractExact(System.currentTimeMillis(), startTime))
         );
         return usersAccessProfiles;
-    }
-
-    private boolean isJrdApiV2() {
-        return (jrdAPIVersion != null && jrdAPIVersion.equals("2"));
     }
 
     public Map<String, Set<UserAccessProfile>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
@@ -185,7 +181,7 @@ public class RetrieveDataService {
                 caseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                         AssignmentRequestBuilder.convertUserProfileToCaseworkerAccessProfile(userProfile)));
             } else if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.JUDICIAL)) {
-                if (isJrdApiV2()) {
+                if (v2Active != null && v2Active) {
                     validProfiles.forEach(userProfile -> {
                         JudicialProfileV2 judicialProfile = (JudicialProfileV2) userProfile;
                         usersAccessProfiles.put(judicialProfile.getSidamId(),

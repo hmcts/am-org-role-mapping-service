@@ -28,8 +28,8 @@ public class ParseRequestService implements ParseRequestBase<Object> {
     //1. This will parse the list of userIds.
     //2. This will parse and validate the user details.
 
-    @Value("${feign.client.config.jrdClient.version}")
-    private String jrdAPIVersion;
+    @Value("${feign.client.config.jrdClient.v2Active}")
+    private Boolean v2Active;
 
     public void validateUserRequest(UserRequest userRequest) {
 
@@ -59,7 +59,7 @@ public class ParseRequestService implements ParseRequestBase<Object> {
                 List<CaseWorkerProfile> caseworkerUserProfiles = retrievedProfiles;
                 caseworkerUserProfiles.forEach(userProfile -> userIdsRetrieved.add(userProfile.getId()));
             } else if (userType.equals(UserType.JUDICIAL)) {
-                if (jrdAPIVersion != null && jrdAPIVersion.equals("2")) {
+                if (v2Active != null && v2Active) {
                     List<JudicialProfileV2> judicialUserProfiles = retrievedProfiles;
                     judicialUserProfiles.forEach(judicialProfile -> userIdsRetrieved.add(judicialProfile.getSidamId()));
                 } else {
@@ -78,7 +78,7 @@ public class ParseRequestService implements ParseRequestBase<Object> {
         if (userType.equals(UserType.CASEWORKER)) {
             caseworkerProfileValidation(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
         } else if (userType.equals(UserType.JUDICIAL)) {
-            if (jrdAPIVersion != null && jrdAPIVersion.equals("2")) {
+            if (v2Active != null && v2Active) {
                 judicialProfileValidationV2(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
             } else {
                 judicialProfileValidation(retrievedProfiles, invalidUserProfilesCount, invalidProfiles);
