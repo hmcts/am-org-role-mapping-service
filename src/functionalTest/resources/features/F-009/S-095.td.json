@@ -17,10 +17,21 @@
       "queryRequests":[
         {
           "actorId": "${[scenarioContext][childContexts][S-095_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "roleName": ["hmcts-judiciary"]
+          "roleName": ["hmcts-judiciary"],
+          "attributes": {
+            "contractType" : ["Salaried"]
+          }
         },
         {
           "actorId": "${[scenarioContext][childContexts][S-095_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "attributes": {
+            "jurisdiction": ["PUBLICLAW"],
+            "contractType": ["Salaried"]
+          }
+         },
+        {
+          "actorId": "${[scenarioContext][childContexts][S-095_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "roleName": ["hearing-manager","hearing-viewer"],
           "attributes": {
             "jurisdiction": ["PUBLICLAW"]
           }
@@ -126,7 +137,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,decision_making_work,applications"
+            "workTypes": "hearing_work,routine_work,decision_making_work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -148,7 +159,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "access_requests"
+            "workTypes": "hearing_work,decision_making_work,applications,access_requests"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
         },
@@ -192,7 +203,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,decision_making_work,applications,access_requests"
+            "workTypes": "hearing_work,routine_work,decision_making_work,applications,access_requests"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
         }

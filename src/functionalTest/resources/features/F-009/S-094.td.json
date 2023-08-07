@@ -17,10 +17,6 @@
       "queryRequests":[
         {
           "actorId": "${[scenarioContext][childContexts][S-094_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "roleName": ["hmcts-judiciary"]
-        },
-        {
-          "actorId": "${[scenarioContext][childContexts][S-094_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["PUBLICLAW"]
           }
@@ -35,7 +31,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "fee-paid-judge",
           "classification": "PUBLIC",
@@ -51,14 +47,14 @@
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes" : "hearing_work,decision_making_work,applications"
+            "workTypes" : "hearing_work,routine_work,decision_making_work,applications"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
@@ -77,7 +73,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -92,22 +88,6 @@
             "jurisdiction": "PUBLICLAW"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "670a2a93-3911-4332-8c60-d38d56b53266",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-judiciary",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "JUDICIAL",
-          "readOnly": true,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N"
-          }
         }
       ]
     }
