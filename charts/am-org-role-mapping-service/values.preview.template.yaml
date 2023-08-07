@@ -59,7 +59,7 @@ servicebus:
   enabled: true
   releaseNameOverride: ${SERVICE_NAME}-asb
   resourceGroup: "am-aso-preview-rg"
-  sbNamespace: "am"
+  sbNamespace: am-sb-preview
   setup:
     topics:
       - name: crd-topic
