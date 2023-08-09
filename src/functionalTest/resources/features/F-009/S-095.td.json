@@ -48,7 +48,7 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "case-allocator ",
+          "roleName": "case-allocator",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",

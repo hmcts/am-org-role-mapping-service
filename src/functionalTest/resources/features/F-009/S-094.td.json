@@ -42,7 +42,7 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "bookable": "true",
-            "substantive": "Y",
+            "substantive": "N",
             "contractType": "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
