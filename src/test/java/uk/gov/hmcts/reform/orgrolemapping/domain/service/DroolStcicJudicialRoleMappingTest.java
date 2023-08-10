@@ -54,7 +54,7 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String office) {
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
@@ -84,7 +84,31 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         }
 
         //region assertions
-        assertNull(r.getAttributes().get("region"));
+        switch (r.getRoleName()) {
+            case "specific-access-approver-judiciary":
+            case "leadership-judge":
+            case "fee-paid-judge":
+            case "fee-paid-tribunal-member":
+            case "medical":
+            case "fee-paid-medical":
+            case "fee-paid-disability":
+            case "fee-paid-financial":
+                assertEquals(regionId, r.getAttributes().get("region").asText());
+                break;
+            case "senior-judge":
+            case "judge":
+            case "case-allocator":
+            case "task-supervisor":
+                if (!office.equals("ST_CIC President of Tribunal-Salaried")) {
+                    assertEquals(regionId, r.getAttributes().get("region").asText());
+                } else {
+                    assertNull(r.getAttributes().get("region"));
+                }
+                break;
+            default:
+                assertNull(r.getAttributes().get("region"));
+                break;
+        }
 
         //work types assertions
         if (office.equals("ST_CIC Tribunal Member-Fee Paid")
@@ -127,10 +151,10 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertNull(r.getAttributes().get("region"));
-            assertCommonRoleAssignmentAttributes(r, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
 
@@ -157,10 +181,10 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertNull(r.getAttributes().get("region"));
-            assertCommonRoleAssignmentAttributes(r, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
 
@@ -187,10 +211,10 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertNull(r.getAttributes().get("region"));
-            assertCommonRoleAssignmentAttributes(r, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
 }
