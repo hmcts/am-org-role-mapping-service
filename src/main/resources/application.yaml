@@ -114,13 +114,6 @@ idam:
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
 
-testS2S:
-  api:
-    url: "/testS2SAuthorization"
-integrationTest:
-  api:
-    url: "/"
-
 feign:
   client:
     config:
@@ -166,6 +159,7 @@ refresh:
     pageSize: ${REFRESH_JOB_PAGE_SIZE:400}
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
+    authorisedServices: am_org_role_mapping_service,am_role_assignment_refresh_batch
 
 dbFeature:
   flags:
