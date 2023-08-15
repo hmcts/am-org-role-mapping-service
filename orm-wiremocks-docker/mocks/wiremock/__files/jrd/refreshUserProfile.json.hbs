@@ -1,0 +1,257 @@
+[
+
+  {{#each (jsonPath request.body '$.sidam_ids') as | sidamId|}}
+    {{#if (eq sidamId 'civil-SCJ')  }}
+  {
+    "sidam_id": "{{sidamId}}",
+    "retirement_date": null,
+    "active_flag": "true",
+    "appointments": [
+      {
+        "base_location_id": "954",
+        "epimms_id": "1234",
+        "cft_region_id": "3",
+        "cft_region": "North East",
+        "is_principal_appointment": "true",
+        "appointment": "Senior Circuit Judge",
+        "appointment_type": "Salaried",
+        "service_codes": [
+          null
+        ],
+        "start_date": "2020-01-01",
+        "end_date": null,
+        "appointment_id": "10001",
+        "role_name_id": "75",
+        "type": "Courts",
+        "contract_type_id": "0"
+      }
+    ],
+    "authorisations": [
+      {
+        "jurisdiction": "Civil",
+        "ticket_description": "Civil Authorisation",
+        "ticket_code": "294",
+        "service_codes": [
+          "AAA1",
+          "AAA2",
+          "AAA3",
+          "AAA4",
+          "AAA5",
+          "AAA6",
+          "AAA7"
+        ],
+        "start_date": "2020-01-01",
+        "end_date": null,
+        "appointment_id": "10001",
+        "authorisation_id": "20001",
+        "jurisdiction_id": "24"
+      },
+      {
+        "jurisdiction": "Crime",
+        "ticket_description": "Court of Appeal Criminal Division",
+        "ticket_code": "307",
+        "service_codes": [
+          " "
+        ],
+        "start_date": "2019-01-01",
+        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
+        "appointment_id": "10001",
+        "authorisation_id": "20002",
+        "jurisdiction_id": "25"
+      },
+      {
+        "jurisdiction": "Crime",
+        "ticket_description": "Criminal Authorisation",
+        "ticket_code": "306",
+        "service_codes": [
+          " "
+        ],
+        "start_date": "2020-01-01",
+        "end_date": null,
+        "appointment_id": "10001",
+        "authorisation_id": "20003",
+        "jurisdiction_id": "25"
+      }
+    ],
+    "roles": [
+      {
+        "jurisdiction_role_name": "Resident Judge",
+        "start_date": "2018-01-01T00:00",
+        "end_date": "{{now offset='-1 years' format='yyyy'}}-01-01T00:00",
+        "jurisdiction_role_id": "30001"
+      },
+      {
+        "jurisdiction_role_name": "Resident Judge",
+        "start_date": "{{now offset='-1 years' format='yyyy'}}-01-02T00:00",
+        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
+        "jurisdiction_role_id": "30002"
+      }
+    ]
+  }
+    {{/if}}
+
+    {{#if (eq sidamId 'privatelaw-SCJ')  }}
+  {
+    "sidam_id": "{{sidamId}}",
+    "retirement_date": null,
+    "active_flag": "true",
+    "appointments": [
+      {
+        "base_location_id": "766",
+        "epimms_id": "2345",
+        "cft_region_id": "1",
+        "cft_region": "London",
+        "is_principal_appointment": "false",
+        "appointment": "Deputy District Judge- Fee-Paid",
+        "appointment_type": "Fee-paid",
+        "service_codes": [
+          null
+        ],
+        "start_date": "2003-01-01",
+        "end_date": null,
+        "appointment_id": "10002",
+        "role_name_id": "24",
+        "type": "Courts",
+        "contract_type_id": "1"
+      },
+      {
+        "base_location_id": "1029",
+        "epimms_id": null,
+        "cft_region_id": "12",
+        "cft_region": "National",
+        "is_principal_appointment": "false",
+        "appointment": "Tribunal Judge",
+        "appointment_type": "Salaried",
+        "service_codes": [],
+        "start_date": "2010-01-01",
+        "end_date": null,
+        "appointment_id": "10003",
+        "role_name_id": "84",
+        "type": "Tribunals",
+        "contract_type_id": "0"
+      },
+      {
+        "base_location_id": "939",
+        "epimms_id": "3456",
+        "cft_region_id": "3",
+        "cft_region": "North East",
+        "is_principal_appointment": "true",
+        "appointment": "Senior Circuit Judge",
+        "appointment_type": "Salaried",
+        "service_codes": [
+          null
+        ],
+        "start_date": "2013-01-01",
+        "end_date": null,
+        "appointment_id": "10004",
+        "role_name_id": "75",
+        "type": "Courts",
+        "contract_type_id": "0"
+      }
+    ],
+    "authorisations": [
+      {
+        "jurisdiction": "Family",
+        "ticket_description": "Ancillary Relief Appeals",
+        "ticket_code": "402",
+        "service_codes": [],
+        "start_date": "2013-01-01",
+        "end_date": null,
+        "appointment_id": "10004",
+        "authorisation_id": "20004",
+        "jurisdiction_id": "26"
+      },
+      {
+        "jurisdiction": "Family",
+        "ticket_description": "Court of Protection",
+        "ticket_code": "313",
+        "service_codes": [
+          "ABA7"
+        ],
+        "start_date": "2015-01-01",
+        "end_date": null,
+        "appointment_id": "10004",
+        "authorisation_id": "20005",
+        "jurisdiction_id": "26"
+      },
+      {
+        "jurisdiction": "Family",
+        "ticket_description": "Financial Remedy",
+        "ticket_code": "410",
+        "service_codes": [
+          "ABA2"
+        ],
+        "start_date": "2019-01-01",
+        "end_date": null,
+        "appointment_id": "10004",
+        "authorisation_id": "20006",
+        "jurisdiction_id": "26"
+      },
+      {
+        "jurisdiction": "Family",
+        "ticket_description": "Private Law",
+        "ticket_code": "315",
+        "service_codes": [
+          "ABA5"
+        ],
+        "start_date": "2008-01-01",
+        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
+        "appointment_id": "10004",
+        "authorisation_id": "20007",
+        "jurisdiction_id": "26"
+      },
+      {
+        "jurisdiction": "Family",
+        "ticket_description": "Public Law",
+        "ticket_code": "316",
+        "service_codes": [
+          "ABA3"
+        ],
+        "start_date": "2007-01-01",
+        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
+        "appointment_id": "10004",
+        "authorisation_id": "20008",
+        "jurisdiction_id": "26"
+      },
+      {
+        "jurisdiction": "Family",
+        "ticket_description": "Section 9-1 Family",
+        "ticket_code": "317",
+        "service_codes": [
+          "ABA5",
+          "ABA3"
+        ],
+        "start_date": "2013-01-01",
+        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
+        "appointment_id": "10004",
+        "authorisation_id": "20009",
+        "jurisdiction_id": "26"
+      },
+      {
+        "jurisdiction": "Tribunals",
+        "ticket_description": "Special Educational Needs and Disability",
+        "ticket_code": "358",
+        "service_codes": [
+          " "
+        ],
+        "start_date": "2010-01-01",
+        "end_date": "{{now offset='-3 years' format='yyyy'}}-01-01",
+        "appointment_id": "10003",
+        "authorisation_id": "20010",
+        "jurisdiction_id": "27"
+      }
+    ],
+    "roles": [
+      {
+        "jurisdiction_role_name": "Designated Family Judge",
+        "start_date": "2013-01-01T00:00",
+        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01T00:00",
+        "jurisdiction_role_id": "1380"
+      }
+    ]
+  }
+    {{/if}}
+
+    {{#unless @last}},{{/unless}}
+  {{/each}}
+]
