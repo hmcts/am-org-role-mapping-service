@@ -32,10 +32,9 @@ public class RdFeignClientInterceptor {
                         + securityUtils.getServiceAuthorizationHeader());
                 requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer "
                         + idamRepository.getManageUserToken(oidcAdminConfiguration.getUserId()));
+                requestTemplate.header(HttpHeaders.CONTENT_TYPE, "application/json");
                 if (v2Active != null && v2Active && requestTemplate.url().contains("judicial")) {
-                    requestTemplate.header(HttpHeaders.CONTENT_TYPE, "application/vnd.jrd.api+json;Version=2.0");
-                } else {
-                    requestTemplate.header(HttpHeaders.CONTENT_TYPE, "application/json");
+                    requestTemplate.header(HttpHeaders.ACCEPT, "application/vnd.jrd.api+json;Version=2.0");
                 }
             }
         };

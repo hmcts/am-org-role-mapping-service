@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -20,10 +20,10 @@ public class AuthorisationV2 implements Serializable {
 
     private String ticketCode;
     private String jurisdiction;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String ticketDescription;
-    private List<String> serviceCode;
+    private List<String> serviceCodes;
     private String appointmentId;
     private String authorisationId;
     private String jurisdictionId;

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -200,7 +201,7 @@ public class AssignmentRequestBuilder {
         if (judicialProfile.getAuthorisations() != null) {
             judicialProfile.getAuthorisations().forEach(authorisation -> {
                     if (authorisation.getTicketCode() != null && (authorisation.getEndDate() == null
-                            || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0)) {
+                            || authorisation.getEndDate().compareTo(LocalDate.now()) >= 0)) {
                         ticketCodes.add(authorisation.getTicketCode());
                     }
                 }
