@@ -175,7 +175,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         "2,AAA6,CIVIL",
         "1,BHA1,EMPLOYMENT",
         "2,BHA1,EMPLOYMENT",
-        "1,BFA1,IA"
+        "1,BFA1,IA",
+        "2,BFA1,IA"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_LegalOps(String roleId, String serviceCode,
                                                                 String jurisdiction) {
