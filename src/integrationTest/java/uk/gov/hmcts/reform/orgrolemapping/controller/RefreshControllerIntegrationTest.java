@@ -490,7 +490,8 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     //@Test
     //@DisabledIfSystemProperty(named = "feign.client.config.jrdClient.v2Active", matches = "(yes|true)")
-    //@DisabledIf("#DisabledIf{systemProperties['feign.client.config.jrdClient.v2Active'].toLowerCase().contains('true')}")
+    //@DisabledIf(
+    // "#DisabledIf{systemProperties['feign.client.config.jrdClient.v2Active'].toLowerCase().contains('true')}")
     //@DisabledIf(value = "#{'${feign.client.config.jrdClient.v2Active}' == 'true'}", loadContext = true)
     //@DisabledIf(value = "${feign.client.config.jrdClient.v2Active == 'true'}", loadContext = true)
     //@DisabledIf("#{systemProperties['feign.client.config.jrdClient.v2Active'].toLowerCase().contains('true')}")
