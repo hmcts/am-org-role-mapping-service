@@ -69,8 +69,14 @@ public class ParseRequestService implements ParseRequestBase<Object> {
             }
             List<String> userIdsNotRetrieved = userRequest.getUserIds().stream().filter(userId -> !userIdsRetrieved
                     .contains(userId)).toList();
+
             if (userType.equals(UserType.JUDICIAL)) {
-                userIdsNotRetrieved.forEach(o -> invalidProfiles.add(JudicialProfile.builder().sidamId(o).build()));
+                if (v2Active != null && v2Active) {
+                    userIdsNotRetrieved.forEach(o ->
+                            invalidProfiles.add(JudicialProfileV2.builder().sidamId(o).build()));
+                } else {
+                    userIdsNotRetrieved.forEach(o -> invalidProfiles.add(JudicialProfile.builder().sidamId(o).build()));
+                }
             }
             log.error("User profiles couldn't be found for the following userIds :: {}", userIdsNotRetrieved);
         }
