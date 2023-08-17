@@ -210,9 +210,7 @@ public class AssignmentRequestBuilder {
 
         List<String> roles = new ArrayList<>();
         if (judicialProfile.getRoles() != null) {
-            judicialProfile.getRoles().forEach(role -> {
-                roles.add(role.getJudiciaryRoleName());
-            });
+            judicialProfile.getRoles().forEach(role -> roles.add(role.getJudiciaryRoleName()));
         }
 
         judicialProfile.getAppointments().forEach(appointment -> {

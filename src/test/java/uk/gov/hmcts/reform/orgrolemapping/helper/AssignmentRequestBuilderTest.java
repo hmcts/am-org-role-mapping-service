@@ -136,6 +136,21 @@ class AssignmentRequestBuilderTest {
         judicialProfile.getAppointments().get(1).setAppointment("2");
         Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
                 .convertProfileToJudicialAccessProfileV2(judicialProfile);
+
+        judicialAccessProfiles.stream()
+                .filter(obj -> obj instanceof JudicialAccessProfile)
+                .map(JudicialAccessProfile.class::cast)
+                .forEach(appointment -> {
+                    assertNotNull(appointment.getUserId());
+                    assertNotNull(appointment.getBeginTime());
+                    assertNotNull(appointment.getEndTime());
+                    //assertNotNull(appointment.getRegionId());
+                    assertNotNull(appointment.getBaseLocationId());
+                    assertNotNull(appointment.getTicketCodes());
+                    assertEquals(2, appointment.getTicketCodes().size());
+                    assertNotNull(appointment.getAppointment());
+                });
+        assertEquals(2, judicialAccessProfiles.size());
     }
 
     @Test
