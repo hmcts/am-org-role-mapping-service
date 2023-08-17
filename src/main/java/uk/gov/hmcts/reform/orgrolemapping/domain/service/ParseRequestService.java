@@ -28,12 +28,16 @@ public class ParseRequestService implements ParseRequestBase<Object> {
     //1. This will parse the list of userIds.
     //2. This will parse and validate the user details.
 
-    //@Value("${feign.client.config.jrdClient.v2Active}")
+    @Value("${feign.client.config.jrdClient.v2Active}")
     private Boolean v2Active;
 
-    public ParseRequestService(@Value("${feign.client.config.jrdClient.v2Active}") Boolean v2Active) {
+    void setV2Active(Boolean v2Active) {
         this.v2Active = v2Active;
     }
+
+    //public ParseRequestService(@Value("${feign.client.config.jrdClient.v2Active}") Boolean v2Active) {
+    //    this.v2Active = v2Active;
+    //}
 
     public void validateUserRequest(UserRequest userRequest) {
 

@@ -36,8 +36,8 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 @RunWith(MockitoJUnitRunner.class)
 class ParseRequestServiceTest {
 
-    ParseRequestService sut = new ParseRequestService(false);
-    ParseRequestService sutV2 = new ParseRequestService(true);
+    ParseRequestService sut = new ParseRequestService();
+    ParseRequestService sutV2 = new ParseRequestService();
     Set<JudicialProfile> invalidJudicialProfiles = new HashSet<>();
     Set<JudicialProfileV2> invalidJudicialProfilesV2 = new HashSet<>();
     UserRequest judicialUser = TestDataBuilder.buildUserRequest();
@@ -49,6 +49,7 @@ class ParseRequestServiceTest {
     void setupReadFromFile() throws IOException {
         judicialProfile = TestDataBuilder.buildJudicialProfile();
         judicialProfileV2 = TestDataBuilder.buildJudicialProfileV2();
+        sutV2.setV2Active(true);
     }
 
     HashSet<CaseWorkerProfile> invalidProfiles;
@@ -223,6 +224,12 @@ class ParseRequestServiceTest {
     //@Value("${feign.client.config.jrdClient.v2Active}")
     //@SetSystemProperty(key = "feign.client.config.jrdClient.v2Active", value = "true")
     void validateJudicialProfilesV2Test() {
+
+        //assertEquals("true", System.getProperty("feign.client.config.jrdClient.v2Active"));
+
+        //ParseRequestService sut1 = new ParseRequestService();
+        //sut1.setV2Active(true);
+
         UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
 
         sutV2.validateUserProfiles(Collections.singletonList(judicialProfileV2),
