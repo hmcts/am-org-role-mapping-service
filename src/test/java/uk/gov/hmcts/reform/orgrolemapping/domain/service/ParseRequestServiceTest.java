@@ -19,12 +19,15 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+//import org.junitpioneer.jupiter.SetSystemProperty;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+//import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -33,15 +36,19 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 @RunWith(MockitoJUnitRunner.class)
 class ParseRequestServiceTest {
 
-    ParseRequestService sut = new ParseRequestService();
+    ParseRequestService sut = new ParseRequestService(false);
+    ParseRequestService sutV2 = new ParseRequestService(true);
     Set<JudicialProfile> invalidJudicialProfiles = new HashSet<>();
+    Set<JudicialProfileV2> invalidJudicialProfilesV2 = new HashSet<>();
     UserRequest judicialUser = TestDataBuilder.buildUserRequest();
     AtomicInteger mockInteger = mock(AtomicInteger.class);
     JudicialProfile judicialProfile;
+    JudicialProfileV2 judicialProfileV2;
 
     @BeforeEach
     void setupReadFromFile() throws IOException {
         judicialProfile = TestDataBuilder.buildJudicialProfile();
+        judicialProfileV2 = TestDataBuilder.buildJudicialProfileV2();
     }
 
     HashSet<CaseWorkerProfile> invalidProfiles;
@@ -209,6 +216,19 @@ class ParseRequestServiceTest {
                 judicialUserRequest,
                 new AtomicInteger(),
                 invalidJudicialProfiles,
+                UserType.JUDICIAL);
+    }
+
+    @Test
+    //@Value("${feign.client.config.jrdClient.v2Active}")
+    //@SetSystemProperty(key = "feign.client.config.jrdClient.v2Active", value = "true")
+    void validateJudicialProfilesV2Test() {
+        UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
+
+        sutV2.validateUserProfiles(Collections.singletonList(judicialProfileV2),
+                judicialUserRequest,
+                new AtomicInteger(),
+                invalidJudicialProfilesV2,
                 UserType.JUDICIAL);
     }
 

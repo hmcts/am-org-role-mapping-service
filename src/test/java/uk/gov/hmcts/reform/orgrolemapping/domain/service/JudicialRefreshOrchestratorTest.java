@@ -45,7 +45,7 @@ class JudicialRefreshOrchestratorTest {
             = (RequestMappingService<UserAccessProfile>)mock(RequestMappingService.class);
 
     private final RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
-    private final ParseRequestService parseRequestService = new ParseRequestService();
+    private final ParseRequestService parseRequestService = new ParseRequestService(true);
     private final JudicialBookingService judicialBookingService = mock(JudicialBookingService.class);
 
     @InjectMocks
