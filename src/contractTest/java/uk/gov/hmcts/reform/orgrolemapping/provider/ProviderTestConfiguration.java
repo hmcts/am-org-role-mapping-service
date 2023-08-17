@@ -54,7 +54,7 @@ public class ProviderTestConfiguration {
     @Bean
     @Primary
     public ParseRequestService getParseRequestService() {
-        return new ParseRequestService(true);
+        return new ParseRequestService();
     }
 
     @MockBean
