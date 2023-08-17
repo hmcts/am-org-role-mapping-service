@@ -183,6 +183,8 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             if (r.getRoleName().equals("hmcts-ctsc")) {
                 assertNull(r.getAttributes().get("jurisdiction"));
                 assertNull(r.getAttributes().get("primaryLocation"));
+            } else if (r.getRoleName().equals("specific-access-approver-ctsc")) {
+                assertNull(r.getAttributes().get("primaryLocation"));
             } else {
                 assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
                 assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
