@@ -63,7 +63,7 @@ public class RetrieveDataService {
     private final Boolean v2Active;
 
     public RetrieveDataService(ParseRequestService parseRequestService, CRDService crdService, JRDService jrdService,
-                               @Value("${feign.client.config.jrdClient.v2Active}") Boolean v2Active) {
+                               @Value("${feign.client.config.jrdClient.v2Active:false}") Boolean v2Active) {
         this.parseRequestService = parseRequestService;
         this.crdService = crdService;
         this.jrdService = jrdService;

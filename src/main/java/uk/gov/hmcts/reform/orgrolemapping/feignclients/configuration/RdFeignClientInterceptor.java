@@ -21,7 +21,7 @@ public class RdFeignClientInterceptor {
     @Autowired
     OIdcAdminConfiguration oidcAdminConfiguration;
 
-    @Value("${feign.client.config.jrdClient.v2Active}")
+    @Value("${feign.client.config.jrdClient.v2Active:false}")
     private Boolean v2Active;
 
     @Bean
