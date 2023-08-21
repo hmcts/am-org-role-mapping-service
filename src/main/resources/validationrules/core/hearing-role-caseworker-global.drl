@@ -29,7 +29,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getJuri
    $up: CaseWorkerAccessProfile((roleId in ("1","2","16") && serviceCode in ("BBA3"))
                                   || (roleId in ("1","2") && serviceCode in ("ABA3","ABA5"))
                                   || (roleId in ("1","2") && serviceCode in ("AAA6","AAA7"))
-                                  || (roleId in ("1","2") && serviceCode in ("BHA1")),
+                                  || (roleId in ("1","2") && serviceCode in ("BHA1"))
+                                  || (roleId in ("1","2") && serviceCode in ("BFA1")),
                                   !suspended)
  then
     Map<String,JsonNode> attribute = new HashMap<>();
@@ -60,7 +61,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getJuri
    $up: CaseWorkerAccessProfile((roleId in ("1","2","16") && serviceCode in ("BBA3"))
                                   || (roleId in ("1","2") && serviceCode in ("ABA3","ABA5"))
                                   || (roleId in ("1","2") && serviceCode in ("AAA6","AAA7"))
-                                  || (roleId in ("1","2") && serviceCode in ("BHA1")),
+                                  || (roleId in ("1","2") && serviceCode in ("BHA1"))
+                                  || (roleId in ("1","2") && serviceCode in ("BFA1")),
                                  !suspended)
  then
     Map<String,JsonNode> attribute = new HashMap<>();
