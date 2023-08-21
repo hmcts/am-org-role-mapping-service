@@ -143,6 +143,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
             String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
             List<String> assignedRoles, List<String> expectedRoleNames, String baseLocationId) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         judicialBookings.clear();
@@ -183,7 +184,6 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                 roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
         assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
-        String regionId = allProfiles.iterator().next().getRegionId();
         //assertions
         roleAssignments.forEach(r -> {
             assertEquals(userId, r.getActorId());

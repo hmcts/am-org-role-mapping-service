@@ -70,11 +70,11 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                     assertEquals(skillCodes,r.getAuthorisations());
                     //assert work types
                     if (("ctsc").equals(r.getRoleName())) {
-                        assertEquals("routine_work,applications,decision_making_work",
+                        assertEquals("routine_work,applications,decision_making_work,error_management",
                                 r.getAttributes().get("workTypes").asText());
 
                     } else if (("ctsc-team-leader").equals(r.getRoleName())) {
-                        assertEquals("routine_work,applications,decision_making_work,access_requests",
+                        assertEquals("routine_work,applications,decision_making_work,access_requests,error_management",
                                 r.getAttributes().get("workTypes").asText());
                     }
                 });
