@@ -78,6 +78,9 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
+        List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader", "hearing-centre-admin",
+            "specific-access-approver-admin", "regional-centre-team-leader", "regional-centre-admin");
+
         roleAssignments.forEach(r -> {
             if (r.getRoleName().equals("hmcts-admin")) {
                 assertNull(r.getAttributes().get("jurisdiction"));
@@ -87,7 +90,11 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
                 assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             }
             //assert region
-            assertNull(r.getAttributes().get("region"));
+            if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
+                assertEquals("LDN", r.getAttributes().get("region").asText());
+            } else {
+                assertNull(r.getAttributes().get("region"));
+            }
             //assert work types
             if (("hearing-centre-team-leader").equals(r.getRoleName())) {
                 assertNull(r.getAttributes().get("workTypes"));
@@ -265,6 +272,9 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
+        List<String> roleNamesWithRegionAttribute = List.of("senior-tribunal-caseworker", "tribunal-caseworker",
+                "specific-access-approver-legal-ops");
+
         roleAssignments.forEach(r -> {
             if (r.getRoleName().equals("hmcts-legal-operations")) {
                 assertNull(r.getAttributes().get("jurisdiction"));
@@ -274,7 +284,14 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
                 assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             }
             //assert region
-            assertNull(r.getAttributes().get("region"));
+            if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
+                assertEquals("LDN", r.getAttributes().get("region").asText());
+            } else if (r.getRoleName().equals("task-supervisor") && !roleId.equals("1")
+                    || r.getRoleName().equals("case-allocator") && !roleId.equals("1")) {
+                assertEquals("LDN", r.getAttributes().get("region").asText());
+            } else {
+                assertNull(r.getAttributes().get("region"));
+            }
             //assert work types
             if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
                 assertNull(r.getAttributes().get("workTypes"));
@@ -347,7 +364,7 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             //assert region
-            assertNull(r.getAttributes().get("region"));
+            assertEquals("LDN", r.getAttributes().get("region").asText());
             //assert work types
             if (("cica").equals(r.getRoleName())) {
                 assertNull(r.getAttributes().get("workTypes"));
