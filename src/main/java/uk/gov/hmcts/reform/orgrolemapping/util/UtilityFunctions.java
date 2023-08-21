@@ -27,6 +27,9 @@ public final class UtilityFunctions {
             case "BHA1":
                 result = "EMPLOYMENT";
                 break;
+            case "BFA1":
+                result = "IA";
+                break;
             default:
                 break;
         }

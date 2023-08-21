@@ -20,6 +20,74 @@
         "__elementId__": "roleName"
       },
       {
+        "id": "[[ANYTHING_PRESENT]]",
+        "actorIdType": "IDAM",
+        "actorId": "[[ANYTHING_PRESENT]]",
+        "roleType": "ORGANISATION",
+        "roleName": "hearing-manager",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "[[ANYTHING_PRESENT]]",
+        "attributes": {
+          "substantive": "N",
+          "primaryLocation": "[[ANYTHING_PRESENT]]",
+          "jurisdiction": "IA"
+        }
+      },
+      {
+        "id": "[[ANYTHING_PRESENT]]",
+        "actorIdType": "IDAM",
+        "actorId": "[[ANYTHING_PRESENT]]",
+        "roleType": "ORGANISATION",
+        "roleName": "hearing-manager",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "[[ANYTHING_PRESENT]]",
+        "attributes": {
+          "substantive": "N",
+          "primaryLocation": "[[ANYTHING_PRESENT]]",
+          "jurisdiction": "IA"
+        }
+      },
+      {
+        "id": "[[ANYTHING_PRESENT]]",
+        "actorIdType": "IDAM",
+        "actorId": "[[ANYTHING_PRESENT]]",
+        "roleType": "ORGANISATION",
+        "roleName": "hearing-viewer",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "[[ANYTHING_PRESENT]]",
+        "attributes": {
+          "substantive": "N",
+          "primaryLocation": "[[ANYTHING_PRESENT]]",
+          "jurisdiction": "IA"
+        }
+      },
+      {
+        "id": "[[ANYTHING_PRESENT]]",
+        "actorIdType": "IDAM",
+        "actorId": "[[ANYTHING_PRESENT]]",
+        "roleType": "ORGANISATION",
+        "roleName": "hearing-viewer",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "[[ANYTHING_PRESENT]]",
+        "attributes": {
+          "substantive": "N",
+          "primaryLocation": "[[ANYTHING_PRESENT]]",
+          "jurisdiction": "IA"
+        }
+      },
+      {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
         "actorId" : "[[ANYTHING_PRESENT]]",
