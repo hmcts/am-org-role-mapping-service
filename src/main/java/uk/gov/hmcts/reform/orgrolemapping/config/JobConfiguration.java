@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Component
@@ -22,6 +23,8 @@ public class JobConfiguration implements CommandLineRunner {
     private final FeatureConditionEvaluator featureConditionEvaluator;
 
     private final String jobDetail;
+
+    private final String refreshJobsConfigSplitter = ":";
 
 
     @Autowired
@@ -38,24 +41,29 @@ public class JobConfiguration implements CommandLineRunner {
     public void run(String... args) {
         if (StringUtils.isNotEmpty(jobDetail) && featureConditionEvaluator
                 .isFlagEnabled("am_org_role_mapping_service", "orm-refresh-job-enable")) {
-            String[] jobAttributes = jobDetail.split("-");
-            log.info("Job {} inserting into refresh table", jobDetail);
-            if (jobAttributes.length < 4) {
-                return;
-            }
-            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder().build();
-            if (jobAttributes.length > 4) {
-                Optional<RefreshJobEntity> refreshJob = refreshJobsRepository.findById(Long.valueOf(jobAttributes[4]));
-                refreshJobEntity = refreshJob.orElse(refreshJobEntity);
+            // change to handle multiple services for refresh job for https://tools.hmcts.net/jira/browse/AM-2902
+            String[] refreshJobsConfig = jobDetail.split(refreshJobsConfigSplitter);
+            for(String refreshJobConfig:refreshJobsConfig) {
+                String[] refreshJobAttributes = refreshJobConfig.split("-");
+                log.info("Job {} inserting into refresh table", refreshJobConfig);
+                if (refreshJobAttributes.length < 4) {
+                    return;
+                }
+                RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder().build();
+                if (refreshJobAttributes.length > 4) {
+                    Optional<RefreshJobEntity> refreshJob = refreshJobsRepository.findById(Long.valueOf(refreshJobAttributes[4]));
+                    refreshJobEntity = refreshJob.orElse(refreshJobEntity);
+                }
+
+                refreshJobEntity.setRoleCategory(refreshJobAttributes[0]);
+                refreshJobEntity.setJurisdiction(refreshJobAttributes[1]);
+                refreshJobEntity.setStatus(refreshJobAttributes[2]);
+                refreshJobEntity.setLinkedJobId(Long.valueOf(refreshJobAttributes[3]));
+                refreshJobEntity.setCreated(ZonedDateTime.now());
+
+                persistJobDetail(refreshJobEntity);
             }
 
-            refreshJobEntity.setRoleCategory(jobAttributes[0]);
-            refreshJobEntity.setJurisdiction(jobAttributes[1]);
-            refreshJobEntity.setStatus(jobAttributes[2]);
-            refreshJobEntity.setLinkedJobId(Long.valueOf(jobAttributes[3]));
-            refreshJobEntity.setCreated(ZonedDateTime.now());
-
-            persistJobDetail(refreshJobEntity);
         } else {
             log.warn("LD flag 'orm-refresh-job-enable' is not enabled");
         }

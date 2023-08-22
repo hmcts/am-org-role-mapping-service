@@ -173,6 +173,7 @@ public class RefreshOrchestrator {
         log.info("fetching details from RD for :: {} ", userType);
         try {
             if (userType.equals(UserType.CASEWORKER)) {
+                log.info("Refresh Job For CaseWorker/Staff Service ");
                 //Call to CRD Service to retrieve the total number of records in first call
                 ResponseEntity<List<Object>> response = crdService
                         .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
@@ -188,7 +189,6 @@ public class RefreshOrchestrator {
                     pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
                 }
 
-
                 //call to CRD
                 for (var page = 0; page < pageNumber; page++) {
                     ResponseEntity<List<Object>> userProfilesResponse = crdService
@@ -200,6 +200,10 @@ public class RefreshOrchestrator {
 
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles, userType);
                 }
+            } else if (userType.equals(UserType.JUDICIAL)) {
+                log.info("Refresh Job For Judicial Service");
+            } else {
+                log.error("UNKNOWN Service Refresh Job");
             }
         } catch (FeignException.NotFound feignClientException) {
 
