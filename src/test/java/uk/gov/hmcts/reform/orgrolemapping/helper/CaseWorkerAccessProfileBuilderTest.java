@@ -5,6 +5,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.util.List;
@@ -76,9 +77,27 @@ class CaseWorkerAccessProfileBuilderTest {
     }
 
     @Test
+    void buildJudicialProfilesTestV2() {
+        List<JudicialProfileV2> judicialProfiles =
+                UserAccessProfileBuilder.buildJudicialProfileV2(TestDataBuilder.buildRefreshRoleRequest(),
+                        "judicialProfileSampleV2.json");
+        assertNotNull(judicialProfiles);
+        assertEquals(2, judicialProfiles.size());
+        assertThat(judicialProfiles.stream().map(JudicialProfileV2::getSidamId).collect(Collectors.toList()),
+                containsInAnyOrder(id_1, id_2));
+    }
+
+    @Test
     void buildJudicialProfiles_BadRequest() {
         JRDUserRequest userRequest = TestDataBuilder.buildRefreshRoleRequest();
         assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder
                 .buildJudicialProfile(userRequest, ""));
+    }
+
+    @Test
+    void buildJudicialProfiles_BadRequestV2() {
+        JRDUserRequest userRequest = TestDataBuilder.buildRefreshRoleRequest();
+        assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder
+                .buildJudicialProfileV2(userRequest, ""));
     }
 }
