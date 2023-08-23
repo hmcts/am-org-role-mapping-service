@@ -19,10 +19,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-//import org.junitpioneer.jupiter.SetSystemProperty;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-//import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
@@ -221,15 +219,7 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    //@Value("${feign.client.config.jrdClient.v2Active}")
-    //@SetSystemProperty(key = "feign.client.config.jrdClient.v2Active", value = "true")
     void validateJudicialProfilesV2Test() {
-
-        //assertEquals("true", System.getProperty("feign.client.config.jrdClient.v2Active"));
-
-        //ParseRequestService sut1 = new ParseRequestService();
-        //sut1.setV2Active(true);
-
         UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
 
         sutV2.validateUserProfiles(Collections.singletonList(judicialProfileV2),
