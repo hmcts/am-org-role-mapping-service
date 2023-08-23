@@ -144,7 +144,7 @@ class AssignmentRequestBuilderTest {
                     assertNotNull(appointment.getUserId());
                     assertNotNull(appointment.getBeginTime());
                     assertNotNull(appointment.getEndTime());
-                    //assertNotNull(appointment.getRegionId());
+                    assertNotNull(appointment.getRegionId());
                     assertNotNull(appointment.getBaseLocationId());
                     assertNotNull(appointment.getTicketCodes());
                     assertEquals(2, appointment.getTicketCodes().size());
@@ -202,7 +202,7 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
-    void convertUserProfileToJudicialAccessProfileWitoutAuthorisation() throws IOException {
+    void convertUserProfileToJudicialAccessProfileWithoutAuthorisation() throws IOException {
 
         JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
         judicialProfile.getAppointments().get(0).setAppointment("1");
@@ -228,7 +228,7 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
-    void convertUserProfileToJudicialAccessProfileWitoutAuthorisationV2() throws IOException {
+    void convertUserProfileToJudicialAccessProfileWithoutAuthorisationV2() throws IOException {
 
         JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileV2();
         judicialProfile.getAppointments().get(0).setAppointment("1");

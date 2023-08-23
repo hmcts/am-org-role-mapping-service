@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -27,6 +29,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
@@ -35,6 +38,11 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+
+import static uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getContractTypeFromAppointment;
+import static uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.localDateToLocalDateTime;
+import static uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.localDateToZonedDateTime;
+import static uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.stringListToDistinctList;
 
 @Setter
 @Slf4j
@@ -197,50 +205,99 @@ public class AssignmentRequestBuilder {
 
     public static Set<UserAccessProfile> convertProfileToJudicialAccessProfileV2(JudicialProfileV2 judicialProfile) {
         Set<UserAccessProfile> judicialAccessProfiles = new HashSet<>();
-        Set<String> ticketCodes = new HashSet<>();
-        if (judicialProfile.getAuthorisations() != null) {
-            judicialProfile.getAuthorisations().forEach(authorisation -> {
-                    if (authorisation.getTicketCode() != null && (authorisation.getEndDate() == null
-                            || authorisation.getEndDate().compareTo(LocalDate.now()) >= 0)) {
-                        ticketCodes.add(authorisation.getTicketCode());
-                    }
-                }
-            );
-        }
 
-        List<String> roles = new ArrayList<>();
-        if (judicialProfile.getRoles() != null) {
-            judicialProfile.getRoles().forEach(role -> roles.add(role.getJudiciaryRoleName()));
-        }
+        List<String> roles = getActiveRoles(judicialProfile.getRoles()).stream()
+            .map(RoleV2::getJudiciaryRoleName)
+            .distinct()
+            .toList();
 
+        // flatten for each appointment
         judicialProfile.getAppointments().forEach(appointment -> {
-            var judicialAccessProfile = JudicialAccessProfile.builder().build();
-            judicialAccessProfile.setUserId(judicialProfile.getSidamId());
+            var associatedAuthorisations = getAuthorisationsByAppointmentId(
+                judicialProfile.getAuthorisations(),
+                appointment.getAppointmentId()
+            );
 
+            var ticketCodes = getActiveTicketCodes(associatedAuthorisations);
 
+            var serviceCodes = stringListToDistinctList(appointment.getServiceCodes());
+            // NB: need at least 1 service code: so add null if missing
+            if (serviceCodes.isEmpty()) {
+                serviceCodes.add(null);
+            }
 
-            judicialAccessProfile.setRoles(roles);
-            judicialAccessProfile.setBeginTime(appointment.getStartDate() == null ? null :
-                    appointment.getStartDate().atStartOfDay(ZoneId.of("UTC")));
-            judicialAccessProfile.setEndTime(appointment.getEndDate() != null ? appointment.getEndDate()
-                    .atStartOfDay(ZoneId.of("UTC")) : null);
-            //judicialAccessProfile.setRegionId(appointment.getCftRegionId());
-            // change from epimmsid to base location as part of SSCS
-            judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
-            judicialAccessProfile.setTicketCodes(List.copyOf(ticketCodes));
-            judicialAccessProfile.setAppointment(appointment.getAppointment());
-            judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
-
-
-
-            //judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
-            //judicialAccessProfile.setServiceCode(appointment.getServiceCode());
-            judicialAccessProfile.setPrimaryLocationId("true"
-                    .equalsIgnoreCase(appointment.getIsPrincipalAppointment()) ? appointment.getEpimmsId() : "");
-            judicialAccessProfiles.add(judicialAccessProfile);
+            // flatten for each appointment.serviceCode
+            serviceCodes.forEach(serviceCode -> {
+                var judicialAccessProfile = JudicialAccessProfile.builder()
+                    .userId(judicialProfile.getSidamId())
+                    .roles(roles)
+                    .beginTime(localDateToZonedDateTime(appointment.getStartDate()))
+                    .endTime(localDateToZonedDateTime(appointment.getEndDate()))
+                    .regionId(appointment.getCftRegionID())
+                    .baseLocationId(appointment.getBaseLocationId())
+                    .ticketCodes(List.copyOf(ticketCodes))
+                    .appointment(appointment.getAppointment())
+                    .contractTypeId(appointment.getContractTypeId())
+                    .appointmentType(getContractTypeFromAppointment(appointment))
+                    .authorisations(associatedAuthorisations)
+                    .serviceCode(serviceCode)
+                    .primaryLocationId("true".equalsIgnoreCase(
+                            appointment.getIsPrincipalAppointment()) ? appointment.getEpimmsId() : ""
+                    )
+                    .build();
+                judicialAccessProfiles.add(judicialAccessProfile);
+            });
         });
+
         return judicialAccessProfiles;
     }
+
+    private static List<Authorisation> getAuthorisationsByAppointmentId(List<AuthorisationV2> authorisations,
+                                                                        String appointmentId) {
+        return authorisations != null
+            ? authorisations.stream()
+                .filter(authorisation ->
+                    // authorisation either not mapped to any appointment or matched to current appointment
+                    (authorisation.getAppointmentId() == null || authorisation.getAppointmentId().equals(appointmentId))
+                )
+                // convert to legacy format
+                .map(AssignmentRequestBuilder::authorisationV2ToV1)
+                .toList()
+            : new ArrayList<>();
+    }
+
+    private static List<RoleV2> getActiveRoles(List<RoleV2> roles) {
+        return roles != null
+            ? roles.stream()
+                .filter(role -> (role.getJudiciaryRoleName() != null)
+                    // AND end date not set or is valid
+                    && (role.getEndDate() == null || !role.getEndDate().isBefore(LocalDate.now()))
+                )
+                .toList()
+            : new ArrayList<>();
+    }
+
+    private static List<String> getActiveTicketCodes(List<Authorisation> authorisations) {
+        return authorisations.stream()
+            .filter(authorisation -> (authorisation.getTicketCode() != null)
+                // AND end date not set or is valid
+                && (authorisation.getEndDate() == null || !authorisation.getEndDate().isBefore(LocalDateTime.now()))
+            )
+            .map(Authorisation::getTicketCode)
+            .toList();
+    }
+
+    private static Authorisation authorisationV2ToV1(AuthorisationV2 authorisationV2) {
+        return Authorisation.builder()
+            .ticketCode(authorisationV2.getTicketCode())
+            .ticketDescription(authorisationV2.getTicketDescription())
+            .jurisdiction(authorisationV2.getJurisdiction())
+            .startDate(localDateToLocalDateTime(authorisationV2.getStartDate()))
+            .endDate(localDateToLocalDateTime(authorisationV2.getEndDate()))
+            .serviceCodes(stringListToDistinctList(authorisationV2.getServiceCodes()))
+            .build();
+    }
+
 
     public static Request buildJudicialRequest(Boolean replaceExisting) {
 

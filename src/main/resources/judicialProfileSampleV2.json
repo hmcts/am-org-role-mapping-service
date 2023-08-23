@@ -22,7 +22,8 @@
       "end_date": "2022-04-28",
       "appointment": "Employment Judge",
       "appointment_type": "Salaried",
-      "service_codes": ["BFA1","BFA2"]
+      "service_codes": ["BFA1"],
+      "appointment_id": "10001"
     },
     {
       "base_location_id": "1351",
@@ -34,7 +35,8 @@
       "end_date": "2022-04-28",
       "appointment": "Tribunal Judge",
       "appointment_type": "Fee Paid",
-      "service_codes": ["BFA1","BFA2"]
+      "service_codes": null,
+      "appointment_id": "10002"
     }
   ],
   "authorisations": [
@@ -44,8 +46,8 @@
       "start_date": "2022-04-28T16:00:49",
       "service_codes": ["BFA1"],
       "ticket_code": "373",
-      "end_date": "2022-04-28T16:00:49",
-      "appointment_id": "some appointment id",
+      "end_date": "2052-04-28T16:00:49",
+      "appointment_id": "10001",
       "authorisation_id": "some authorisation id",
       "jurisdiction_id": "some jurisdiction id"
     },
@@ -55,7 +57,7 @@
       "start_date": "2022-04-28T16:00:49",
       "service_codes": ["BFA1"],
       "ticket_code": "373",
-      "appointment_id": "some appointment id 2",
+      "appointment_id": "10002",
       "authorisation_id": "some authorisation id 2",
       "jurisdiction_id": "some jurisdiction id 2"
     },
@@ -65,7 +67,7 @@
       "start_date": "2022-04-28T16:00:49",
       "service_codes": ["BFA2"],
       "ticket_code": "374",
-      "appointment_id": "some appointment id 3",
+      "appointment_id": null,
       "authorisation_id": "some authorisation id 3",
       "jurisdiction_id": "some jurisdiction id 3"
     }
@@ -75,13 +77,19 @@
       "judiciary_role_name":"some judiciary role name",
       "judiciary_role_id":"some judiciary role id",
       "start_date":"2022-04-28T16:00:49",
-      "end_date":"2022-04-28T16:00:49"
+      "end_date":"2052-04-28T16:00:49"
     },
     {
       "judiciary_role_name":"some judiciary role name 2",
       "judiciary_role_id":"some judiciary role id 2",
       "start_date":"2022-04-28T16:00:49",
       "end_date":"2022-04-28T16:00:49"
+    },
+    {
+      "judiciary_role_name":"some judiciary role name 3",
+      "judiciary_role_id":"some judiciary role id 3",
+      "start_date":"2022-04-28T16:00:49",
+      "end_date":null
     }
   ]
 }
