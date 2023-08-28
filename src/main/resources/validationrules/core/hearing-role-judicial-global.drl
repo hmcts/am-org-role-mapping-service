@@ -27,7 +27,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
    $joh: JudicialOfficeHolder(office in ("SSCS Judge", "Family Judge") ||
-        jurisdiction in ("PUBLICLAW", "CIVIL", "EMPLOYMENT"))
+        jurisdiction in ("PUBLICLAW", "CIVIL", "EMPLOYMENT", "IA"))
  then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($joh.getJurisdiction()));

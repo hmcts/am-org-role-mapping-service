@@ -102,6 +102,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
             String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
             List<String> assignedRoles, List<String> expectedRoleNames) {
 
+        allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         judicialBookings.clear();
