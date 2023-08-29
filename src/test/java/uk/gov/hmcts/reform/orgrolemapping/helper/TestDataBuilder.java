@@ -30,6 +30,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -496,6 +497,22 @@ public class TestDataBuilder {
                 .build();
     }
 
+    public static JudicialProfileV2 buildJudicialProfileWithParamsV2(
+            List<AppointmentV2> appointments, List<AuthorisationV2> authorisations, List<RoleV2> roles) {
+        return JudicialProfileV2.builder()
+                .sidamId("111")
+                .objectId("fa88df1d-4204-4039-8e2a-fa11d4c643ec")
+                .knownAs("Penney")
+                .surname("Azcarate")
+                .fullName("Penney Azcarate")
+                .postNominals("The Honourable")
+                .emailId("EMP42867@ejudiciary.net")
+                .appointments(appointments)
+                .authorisations(authorisations)
+                .roles(roles)
+                .build();
+    }
+
     public static Appointment buildAppointmentWithParams(String epimms, String isPrinciple, String appointment,
                                                          String appointmentType, LocalDate startDate, LocalDate endDate,
                                                          List<String> roles, String serviceCode) {
@@ -540,7 +557,6 @@ public class TestDataBuilder {
                 .appointmentType(appointmentType)
                 .startDate(startDate)
                 .endDate(endDate)
-                //.roles(roles)
                 .serviceCodes(serviceCodes)
                 .build();
     }
