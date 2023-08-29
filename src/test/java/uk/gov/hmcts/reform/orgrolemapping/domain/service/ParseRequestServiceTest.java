@@ -219,7 +219,7 @@ class ParseRequestServiceTest {
     }
 
     @Test
-    void validateJudicialProfilesV2Test() {
+    void validateJudicialProfilesTestV2() {
         UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
 
         sutV2.validateUserProfiles(Collections.singletonList(judicialProfileV2),

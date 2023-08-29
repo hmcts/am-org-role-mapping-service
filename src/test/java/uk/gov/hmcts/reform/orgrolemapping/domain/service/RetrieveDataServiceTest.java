@@ -151,7 +151,7 @@ class RetrieveDataServiceTest {
     }
 
     @Test
-    void retrieveJudicialProfilesV2Test() throws IOException {
+    void retrieveJudicialProfilesTestV2() throws IOException {
         JudicialProfileV2 profile = TestDataBuilder.buildJudicialProfileV2();
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
@@ -189,7 +189,7 @@ class RetrieveDataServiceTest {
     }
 
     @Test
-    void retrieveJudicialProfilesV2TestWithInvalid() throws IOException {
+    void retrieveJudicialProfilesTestWithInvalidV2() throws IOException {
         JudicialProfileV2 profile = TestDataBuilder.buildJudicialProfileV2();
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
