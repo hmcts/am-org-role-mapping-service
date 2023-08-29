@@ -502,7 +502,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfilesV2_withFailedRoleAssignments()
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignmentsV2()
             throws Exception {
         logger.info(" Refresh role assignments failed with valid user profiles");
         var uuid = UUID.randomUUID().toString();
@@ -544,7 +544,7 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     }
 
     @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfilesV2_withEmptyJudicialBookings()
+    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialBookingsV2()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
         var uuid = UUID.randomUUID().toString();
