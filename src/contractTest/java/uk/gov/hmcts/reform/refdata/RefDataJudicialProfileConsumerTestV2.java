@@ -148,16 +148,6 @@ public class RefDataJudicialProfileConsumerTestV2 {
                 .stringType("personal_code", "1234")
                 .stringType("post_nominals", "Mr")
                 .stringType("initials", "I N")
-//                .stringType("object_id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470")
-//                .minArrayLike("appointments", 1, r -> r
-//                        .stringType("location_id", "1")
-//                )
-//                .minArrayLike("authorisations", 1, r -> r
-//                        .stringType("jurisdiction", "IA")
-//                )
-//                .minArrayLike("roles", 1, r -> r
-//                        .stringType("jurisdiction_role_name", "role name example")
-//                )
         )).build();
     }
 
