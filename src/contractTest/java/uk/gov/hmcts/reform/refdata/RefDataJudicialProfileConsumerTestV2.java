@@ -41,7 +41,7 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_judicial", port = "8991")
+@PactTestFor(providerName = "referenceData_judicialv2", port = "8991")
 @ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
 @TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
@@ -140,17 +140,24 @@ public class RefDataJudicialProfileConsumerTestV2 {
     private DslPart createJrdProfilesResponse() {
         return newJsonArray(o -> o.object(ob -> ob
                 .stringType("sidam_id", SIDAM_ID)
-                .stringType("object_id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470")
-                .stringType("email_id", "e@mail.com")
-                .minArrayLike("appointments", 1, r -> r
-                        .stringType("location_id", "1")
-                )
-                .minArrayLike("authorisations", 1, r -> r
-                        .stringType("jurisdiction", "IA")
-                )
-                .minArrayLike("roles", 1, r -> r
-                        .stringType("jurisdiction_role_name", "role name example")
-                )
+                .stringType("full_name", "testFullName")
+                .stringType("known_As", "testKnownAs")
+                .stringType("surname", "surname")
+                .stringType("email_id", "test@test.com")
+                .stringType("tile", "Family Judge")
+                .stringType("personal_code", "1234")
+                .stringType("post_nominals", "Mr")
+                .stringType("initials", "I N")
+//                .stringType("object_id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470")
+//                .minArrayLike("appointments", 1, r -> r
+//                        .stringType("location_id", "1")
+//                )
+//                .minArrayLike("authorisations", 1, r -> r
+//                        .stringType("jurisdiction", "IA")
+//                )
+//                .minArrayLike("roles", 1, r -> r
+//                        .stringType("jurisdiction_role_name", "role name example")
+//                )
         )).build();
     }
 
