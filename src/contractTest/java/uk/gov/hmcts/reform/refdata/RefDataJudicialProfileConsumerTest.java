@@ -4,6 +4,9 @@ import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+//import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
+//import au.com.dius.pact.provider.junitsupport.loader.PactUrl;
+//import au.com.dius.pact.provider.junitsupport.loader.VersionSelector;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
@@ -15,7 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
+//import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,10 +45,15 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_judicial", port = "8991")
+//@PactTestFor(providerName = "referenceData_judicial", port = "8991")
+@PactTestFor(providerName = "referenceData_judicial")
 @ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
-@TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
+//@TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+//@PactBroker(scheme = "https",
+//        host = "pact-broker.platform.hmcts.net",
+//        port = "443")
+//@PactUrl(urls = {"https://pact-broker.platform.hmcts.net:443"})
 public class RefDataJudicialProfileConsumerTest {
 
     private static final String JRD_GET_PROFILES_URL = "/refdata/judicial/users";
@@ -56,6 +64,7 @@ public class RefDataJudicialProfileConsumerTest {
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
+        System.getProperties().setProperty("pact.verifier.publishResults", "true");
     }
 
     @After
