@@ -15,7 +15,7 @@ plugins {
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.2'
-    id 'org.springframework.boot' version '2.6.15'
+    id 'org.springframework.boot' version '2.7.15'
     id 'info.solidsoft.pitest' version '1.7.4'
     id 'com.github.ben-manes.versions' version '0.45.0'
     id 'org.sonarqube' version '4.0.0.2929'
@@ -40,7 +40,7 @@ def versions = [
         reformLogging  : '6.0.1',
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
-        springBoot     : '2.7.12',
+        springBoot     : '2.7.15',
         spring         : '5.3.29',
         springSecurity : '5.7.10',
         springHystrix  : '2.1.1.RELEASE',
@@ -380,11 +380,11 @@ dependencies {
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.36.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.13.4'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.8'
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.9'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '32.0.1-jre'
-    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.7'
+    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.8'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.25'

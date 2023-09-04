@@ -13,4 +13,8 @@
         <notes>https://tools.hmcts.net/jira/browse/AM-2885 okio</notes>
         <cve>CVE-2023-3635</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2923 tomcat</notes>
+        <cve>CVE-2023-41080</cve>
+    </suppress>
 </suppressions>
