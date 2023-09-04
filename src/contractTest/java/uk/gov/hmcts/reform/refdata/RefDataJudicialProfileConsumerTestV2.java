@@ -62,7 +62,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "referenceData_judicial", consumer = "accessMgmt_orgRoleMapping")
+    @Pact(provider = "referenceData_judicialv2", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact getJrdProfilesListOfIds(PactDslWithProvider builder) throws JsonProcessingException {
 
         return builder
@@ -100,7 +100,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
 
     }
 
-    @Pact(provider = "referenceData_judicial", consumer = "accessMgmt_orgRoleMapping")
+    @Pact(provider = "referenceData_judicialv2", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact getJrdProfilesServiceName(PactDslWithProvider builder) throws JsonProcessingException {
 
         return builder
