@@ -104,7 +104,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
     public RequestResponsePact getJrdProfilesServiceName(PactDslWithProvider builder) throws JsonProcessingException {
 
         return builder
-                .given("return judicial user profiles along with their active appointments and authorisations")
+                .given("return judicial user profiles v2 along with their active appointments and authorisations")
                 .uponReceiving("the api returns judicial user profiles "
                         + "based on the provided service name")
                 .path(JRD_GET_PROFILES_URL)
