@@ -153,7 +153,6 @@ public class RefDataJudicialProfileConsumerTestV2 {
 
     @NotNull
     private Map<String, String> getResponseHeaders() {
-        //Map<String, String> responseHeaders = Map.of("Content-Type", "application/json");
         Map<String, String> responseHeaders = Map.of("Content-Type", "application/vnd.jrd.api+json;Version=2.0");
         return responseHeaders;
     }
