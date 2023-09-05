@@ -141,10 +141,10 @@ public class RefDataJudicialProfileConsumerTestV2 {
         return newJsonArray(o -> o.object(ob -> ob
                 .stringType("sidam_id", SIDAM_ID)
                 .stringType("full_name", "testFullName")
-                .stringType("known_As", "testKnownAs")
+                .stringType("known_as", "testKnownAs")
                 .stringType("surname", "surname")
                 .stringType("email_id", "test@test.com")
-                .stringType("tile", "Family Judge")
+                .stringType("title", "Family Judge")
                 .stringType("personal_code", "1234")
                 .stringType("post_nominals", "Mr")
                 .stringType("initials", "I N")
