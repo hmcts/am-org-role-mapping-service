@@ -202,7 +202,10 @@ public class AssignmentRequestBuilder {
         return judicialAccessProfiles;
     }
 
-    public static Set<UserAccessProfile> convertProfileToJudicialAccessProfileV2(JudicialProfileV2 judicialProfile) {
+    public static Set<UserAccessProfile> convertProfileToJudicialAccessProfileV2(
+            JudicialProfileV2 judicialProfile,
+            boolean filterAuthorisationsByAppointmentId
+    ) {
         Set<UserAccessProfile> judicialAccessProfiles = new HashSet<>();
 
         List<String> roles = getActiveRoles(judicialProfile.getRoles()).stream()
@@ -212,9 +215,10 @@ public class AssignmentRequestBuilder {
 
         // flatten for each appointment
         judicialProfile.getAppointments().forEach(appointment -> {
-            var associatedAuthorisations = getAuthorisationsByAppointmentId(
-                judicialProfile.getAuthorisations(),
-                appointment.getAppointmentId()
+            var associatedAuthorisations = getV1Authorisations(
+                filterAuthorisationsByAppointmentId
+                ? getAuthorisationsByAppointmentId(judicialProfile.getAuthorisations(), appointment.getAppointmentId())
+                : judicialProfile.getAuthorisations()
             );
 
             var ticketCodes = getActiveTicketCodes(associatedAuthorisations);
@@ -234,7 +238,7 @@ public class AssignmentRequestBuilder {
                     .endTime(localDateToZonedDateTime(appointment.getEndDate()))
                     .regionId(appointment.getCftRegionID())
                     .baseLocationId(appointment.getBaseLocationId())
-                    .ticketCodes(List.copyOf(ticketCodes))
+                    .ticketCodes(stringListToDistinctList(ticketCodes))
                     .appointment(appointment.getAppointment())
                     .contractTypeId(appointment.getContractTypeId())
                     .appointmentType(getContractTypeFromAppointment(appointment))
@@ -249,20 +253,6 @@ public class AssignmentRequestBuilder {
         });
 
         return judicialAccessProfiles;
-    }
-
-    private static List<Authorisation> getAuthorisationsByAppointmentId(List<AuthorisationV2> authorisations,
-                                                                        String appointmentId) {
-        return authorisations != null
-            ? authorisations.stream()
-                .filter(authorisation ->
-                    // authorisation either not mapped to any appointment or matched to current appointment
-                    (authorisation.getAppointmentId() == null || authorisation.getAppointmentId().equals(appointmentId))
-                )
-                // convert to legacy format
-                .map(AssignmentRequestBuilder::authorisationV2ToV1)
-                .toList()
-            : new ArrayList<>();
     }
 
     private static List<RoleV2> getActiveRoles(List<RoleV2> roles) {
@@ -284,6 +274,27 @@ public class AssignmentRequestBuilder {
             )
             .map(Authorisation::getTicketCode)
             .toList();
+    }
+
+    private static List<AuthorisationV2> getAuthorisationsByAppointmentId(List<AuthorisationV2> authorisations,
+                                                                          String appointmentId) {
+        return authorisations != null
+            ? authorisations.stream()
+                .filter(authorisation ->
+                    // authorisation either not mapped to any appointment or matched to current appointment
+                    (authorisation.getAppointmentId() == null || authorisation.getAppointmentId().equals(appointmentId))
+                )
+                .toList()
+            : new ArrayList<>();
+    }
+
+    private static List<Authorisation> getV1Authorisations(List<AuthorisationV2> authorisations) {
+        return authorisations != null
+            ? authorisations.stream()
+                // convert to legacy format
+                .map(AssignmentRequestBuilder::authorisationV2ToV1)
+                .toList()
+            : new ArrayList<>();
     }
 
     private static Authorisation authorisationV2ToV1(AuthorisationV2 authorisationV2) {
@@ -341,4 +352,5 @@ public class AssignmentRequestBuilder {
                 .attributes(JacksonUtils.convertValue(buildAttributesFromFile("judicialAttributes.json")))
                 .build();
     }
+
 }

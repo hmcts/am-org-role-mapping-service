@@ -53,8 +53,8 @@ class RetrieveDataServiceTest {
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
 
 
-    RetrieveDataService sutJrdV1 = new RetrieveDataService(parseRequestService, crdService, jrdService, false);
-    RetrieveDataService sutJrdV2 = new RetrieveDataService(parseRequestService, crdService, jrdService, true);
+    RetrieveDataService sutJrdV1 = new RetrieveDataService(parseRequestService, crdService, jrdService, false, false);
+    RetrieveDataService sutJrdV2 = new RetrieveDataService(parseRequestService, crdService, jrdService, true, true);
 
 
     @Test

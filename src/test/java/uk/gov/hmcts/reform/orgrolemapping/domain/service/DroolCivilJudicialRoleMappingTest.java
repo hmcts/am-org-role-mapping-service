@@ -229,7 +229,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 LocalDate.now(),LocalDate.now().minusYears(1L),null,null));
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
@@ -329,7 +330,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 LocalDate.now().minusYears(1L),null,null,null));
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
@@ -434,7 +436,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 Arrays.asList("Diversity Role Models", "Pool of Judges", "Resident Immigration Judge"), "BFA1"));
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
@@ -529,7 +532,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 .build());
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList, roles));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList, roles),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
@@ -617,7 +621,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 LocalDate.now().minusYears(1L),null,null,null));
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
