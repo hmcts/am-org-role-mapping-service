@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.Judicial.ContractType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.ContractType;
 
 import javax.inject.Singleton;
 import java.time.LocalDate;

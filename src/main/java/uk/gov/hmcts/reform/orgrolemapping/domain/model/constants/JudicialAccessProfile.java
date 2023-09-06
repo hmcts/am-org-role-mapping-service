@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.model.constants;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public final class Judicial {
+public final class JudicialAccessProfile {
 
     @UtilityClass
     public static final class ContractType {

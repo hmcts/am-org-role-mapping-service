@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.Judicial;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,16 +26,16 @@ class UtilityFunctionsTest {
     @ParameterizedTest
     @CsvSource(
         value = {
-            "0," + Judicial.ContractType.SALARIED,
-            "1," + Judicial.ContractType.FEE_PAID,
-            "2," + Judicial.ContractType.VOLUNTARY,
-            "3," + Judicial.ContractType.SPTW,
-            "4," + Judicial.ContractType.SPTW,
-            "5," + Judicial.ContractType.SPTW,
-            "6," + Judicial.ContractType.SPTW,
-            "7," + Judicial.ContractType.SPTW,
-            "8," + Judicial.ContractType.SPTW,
-            "9," + Judicial.ContractType.SPTW,
+            "0," + JudicialAccessProfile.ContractType.SALARIED,
+            "1," + JudicialAccessProfile.ContractType.FEE_PAID,
+            "2," + JudicialAccessProfile.ContractType.VOLUNTARY,
+            "3," + JudicialAccessProfile.ContractType.SPTW,
+            "4," + JudicialAccessProfile.ContractType.SPTW,
+            "5," + JudicialAccessProfile.ContractType.SPTW,
+            "6," + JudicialAccessProfile.ContractType.SPTW,
+            "7," + JudicialAccessProfile.ContractType.SPTW,
+            "8," + JudicialAccessProfile.ContractType.SPTW,
+            "9," + JudicialAccessProfile.ContractType.SPTW,
             "unknown," + FALLBACK_APPOINTMENT_TYPE,
             "null," + FALLBACK_APPOINTMENT_TYPE
         },
