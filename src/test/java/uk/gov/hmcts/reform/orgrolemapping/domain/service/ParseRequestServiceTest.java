@@ -46,7 +46,7 @@ class ParseRequestServiceTest {
     void setupReadFromFile() throws IOException {
         judicialProfile = TestDataBuilder.buildJudicialProfile();
         judicialProfileV2 = TestDataBuilder.buildJudicialProfileV2();
-        sut.setV2Active(null);
+        sut.setV2Active(false);
     }
 
     HashSet<CaseWorkerProfile> invalidProfiles;
