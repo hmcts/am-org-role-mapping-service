@@ -35,7 +35,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 class ParseRequestServiceTest {
 
     ParseRequestService sut = new ParseRequestService();
-    ParseRequestService sutV2 = new ParseRequestService();
     Set<JudicialProfile> invalidJudicialProfiles = new HashSet<>();
     Set<JudicialProfileV2> invalidJudicialProfilesV2 = new HashSet<>();
     UserRequest judicialUser = TestDataBuilder.buildUserRequest();
@@ -47,7 +46,7 @@ class ParseRequestServiceTest {
     void setupReadFromFile() throws IOException {
         judicialProfile = TestDataBuilder.buildJudicialProfile();
         judicialProfileV2 = TestDataBuilder.buildJudicialProfileV2();
-        sutV2.setV2Active(true);
+        sut.setV2Active(null);
     }
 
     HashSet<CaseWorkerProfile> invalidProfiles;
@@ -220,9 +219,11 @@ class ParseRequestServiceTest {
 
     @Test
     void validateJudicialProfilesTestV2() {
+        sut.setV2Active(true);
+
         UserRequest judicialUserRequest = TestDataBuilder.buildUserRequestIndividual();
 
-        sutV2.validateUserProfiles(Collections.singletonList(judicialProfileV2),
+        sut.validateUserProfiles(Collections.singletonList(judicialProfileV2),
                 judicialUserRequest,
                 new AtomicInteger(),
                 invalidJudicialProfilesV2,
@@ -252,6 +253,20 @@ class ParseRequestServiceTest {
     }
 
     @Test
+    void judicialValidationTest_NoAppointmentV2() {
+        sut.setV2Active(true);
+
+        judicialProfileV2.setAppointments(Collections.emptyList());
+
+        sut.validateUserProfiles(Collections.singletonList(judicialProfileV2),
+                judicialUser,
+                mockInteger,
+                invalidJudicialProfilesV2,
+                UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(1)).getAndIncrement();
+    }
+
+    @Test
     void judicialValidationTest_NotAllProfilesRetrived() throws IOException {
 
         sut.validateUserProfiles(List.of(judicialProfile),
@@ -260,6 +275,18 @@ class ParseRequestServiceTest {
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
         assertEquals(judicialUser.getUserIds().size(), invalidJudicialProfiles.size());
+    }
+
+    @Test
+    void judicialValidationTest_NotAllProfilesRetrivedV2() throws IOException {
+        sut.setV2Active(true);
+
+        sut.validateUserProfiles(List.of(judicialProfileV2),
+                judicialUser,
+                mockInteger,
+                invalidJudicialProfilesV2,
+                UserType.JUDICIAL);
+        assertEquals(judicialUser.getUserIds().size(), invalidJudicialProfilesV2.size());
     }
 
     @Test
@@ -285,6 +312,20 @@ class ParseRequestServiceTest {
     }
 
     @Test
+    void judicialValidationTest_NoAuthorisationV2() {
+        sut.setV2Active(true);
+
+        judicialProfileV2.setAuthorisations(Collections.emptyList());
+
+        sut.validateUserProfiles(Collections.singletonList(judicialProfileV2),
+                judicialUser,
+                mockInteger,
+                invalidJudicialProfilesV2,
+                UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(0)).getAndIncrement();
+    }
+
+    @Test
     void judicialValidationTest_NoAuthorisationId() {
         judicialProfile.getAuthorisations().get(0).setTicketCode("");
         judicialProfile.getAuthorisations().get(1).setTicketCode("");
@@ -294,6 +335,22 @@ class ParseRequestServiceTest {
                 judicialUser,
                 mockInteger,
                 invalidJudicialProfiles,
+                UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(0)).getAndIncrement();
+    }
+
+    @Test
+    void judicialValidationTest_NoAuthorisationIdV2() {
+        sut.setV2Active(true);
+
+        judicialProfileV2.getAuthorisations().get(0).setTicketCode("");
+        judicialProfileV2.getAuthorisations().get(1).setTicketCode("");
+        judicialProfileV2.getAuthorisations().get(2).setTicketCode("");
+
+        sut.validateUserProfiles(Collections.singletonList(judicialProfileV2),
+                judicialUser,
+                mockInteger,
+                invalidJudicialProfilesV2,
                 UserType.JUDICIAL);
         Mockito.verify(mockInteger, Mockito.times(0)).getAndIncrement();
     }
