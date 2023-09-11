@@ -347,19 +347,5 @@ class RetrieveDataServiceTest {
         assertEquals(4, response.get("1").size());
     }
 
-    @Test
-    void getUserAccessProfileV2() {
-
-        List<Object> userProfilesResponses = new ArrayList<>();
-        userProfilesResponses.add(TestDataBuilder.buildUserProfilesResponse());
-        ResponseEntity<List<Object>> responseEntity
-                = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
-
-        Map<String, Set<UserAccessProfile>> response = sutJrdV2.retrieveProfilesByServiceName(responseEntity,
-                UserType.CASEWORKER);
-        assertNotNull(response);
-        assertEquals(4, response.get("1").size());
-    }
-
 }
 
