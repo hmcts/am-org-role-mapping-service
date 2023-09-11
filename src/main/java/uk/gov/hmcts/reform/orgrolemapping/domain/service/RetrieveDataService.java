@@ -2,9 +2,9 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 
 import feign.FeignException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -31,13 +32,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfileV2;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInCaseWorkerProfileResponse;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class RetrieveDataService {
     /*
     //1. Fetching multiple case-worker user details from CRD
@@ -58,6 +60,15 @@ public class RetrieveDataService {
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final JRDService jrdService;
+    private final Boolean v2Active;
+
+    public RetrieveDataService(ParseRequestService parseRequestService, CRDService crdService, JRDService jrdService,
+                               @Value("${feign.client.config.jrdClient.v2Active:false}") Boolean v2Active) {
+        this.parseRequestService = parseRequestService;
+        this.crdService = crdService;
+        this.jrdService = jrdService;
+        this.v2Active = v2Active;
+    }
 
     public Map<String, Set<UserAccessProfile>> retrieveProfiles(UserRequest userRequest, UserType userType)
             throws UnprocessableEntityException {
@@ -90,7 +101,13 @@ public class RetrieveDataService {
                         (Math.subtractExact(System.currentTimeMillis(), startTime))
                 );
                 if (response.getStatusCode().is2xxSuccessful()) {
-                    Objects.requireNonNull(response.getBody()).forEach(o -> profiles.add(convertInJudicialProfile(o)));
+                    if (v2Active != null && v2Active) {
+                        Objects.requireNonNull(response.getBody()).forEach(o ->
+                                profiles.add(convertInJudicialProfileV2(o)));
+                    } else {
+                        Objects.requireNonNull(response.getBody()).forEach(o ->
+                                profiles.add(convertInJudicialProfile(o)));
+                    }
                 } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
                     uniqueUsers.forEach(o -> usersAccessProfiles.put(o, Collections.emptySet()));
                 } else {
@@ -164,13 +181,25 @@ public class RetrieveDataService {
                 caseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                         AssignmentRequestBuilder.convertUserProfileToCaseworkerAccessProfile(userProfile)));
             } else if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.JUDICIAL)) {
-
-                List<JudicialProfile> validJudicialProfiles = (List<JudicialProfile>) (Object) validProfiles;
-                validJudicialProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getSidamId(),
-                        convertProfileToJudicialAccessProfile(userProfile)));
-                Set<JudicialProfile> invalidJProfiles = (Set<JudicialProfile>)(Set<?>) invalidProfiles;
-                invalidJProfiles.forEach(profile ->
-                        usersAccessProfiles.put(profile.getSidamId(), Collections.emptySet()));
+                if (v2Active != null && v2Active) {
+                    validProfiles.forEach(userProfile -> {
+                        JudicialProfileV2 judicialProfile = (JudicialProfileV2) userProfile;
+                        usersAccessProfiles.put(judicialProfile.getSidamId(),
+                                convertProfileToJudicialAccessProfileV2(judicialProfile));
+                    });
+                    Set<JudicialProfileV2> invalidJProfiles = (Set<JudicialProfileV2>)(Set<?>) invalidProfiles;
+                    invalidJProfiles.forEach(profile ->
+                            usersAccessProfiles.put(profile.getSidamId(), Collections.emptySet()));
+                } else {
+                    validProfiles.forEach(userProfile -> {
+                        JudicialProfile judicialProfile = (JudicialProfile) userProfile;
+                        usersAccessProfiles.put(judicialProfile.getSidamId(),
+                                convertProfileToJudicialAccessProfile(judicialProfile));
+                    });
+                    Set<JudicialProfile> invalidJProfiles = (Set<JudicialProfile>)(Set<?>) invalidProfiles;
+                    invalidJProfiles.forEach(profile ->
+                            usersAccessProfiles.put(profile.getSidamId(), Collections.emptySet()));
+                }
             }
             Map<String, Integer> userAccessProfileCount = new HashMap<>();
             usersAccessProfiles.forEach((k, v) -> {

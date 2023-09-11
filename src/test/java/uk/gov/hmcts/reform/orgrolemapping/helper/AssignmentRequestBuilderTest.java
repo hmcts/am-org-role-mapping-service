@@ -5,14 +5,16 @@ import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -128,6 +130,30 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
+    void convertUserProfileToJudicialAccessProfileV2() throws IOException {
+        JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileV2();
+        judicialProfile.getAppointments().get(0).setAppointment("1");
+        judicialProfile.getAppointments().get(1).setAppointment("2");
+        Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
+                .convertProfileToJudicialAccessProfileV2(judicialProfile);
+
+        judicialAccessProfiles.stream()
+                .filter(obj -> obj instanceof JudicialAccessProfile)
+                .map(JudicialAccessProfile.class::cast)
+                .forEach(appointment -> {
+                    assertNotNull(appointment.getUserId());
+                    assertNotNull(appointment.getBeginTime());
+                    assertNotNull(appointment.getEndTime());
+                    //assertNotNull(appointment.getRegionId());
+                    assertNotNull(appointment.getBaseLocationId());
+                    assertNotNull(appointment.getTicketCodes());
+                    assertEquals(2, appointment.getTicketCodes().size());
+                    assertNotNull(appointment.getAppointment());
+                });
+        assertEquals(2, judicialAccessProfiles.size());
+    }
+
+    @Test
     void validateIACAuthorisation() {
 
         assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
@@ -202,6 +228,33 @@ class AssignmentRequestBuilderTest {
     }
 
     @Test
+    void convertUserProfileToJudicialAccessProfileWitoutAuthorisationV2() throws IOException {
+
+        JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileV2();
+        judicialProfile.getAppointments().get(0).setAppointment("1");
+        judicialProfile.getAppointments().get(1).setAppointment("2");
+        judicialProfile.setAuthorisations(null);
+        Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
+                .convertProfileToJudicialAccessProfileV2(judicialProfile);
+
+        judicialAccessProfiles.stream()
+                .filter(obj -> obj instanceof JudicialAccessProfile)
+                .map(JudicialAccessProfile.class::cast)
+                .forEach(appointment -> {
+                    assertNotNull(appointment.getUserId());
+                    assertNotNull(appointment.getBeginTime());
+                    assertNotNull(appointment.getEndTime());
+                    //not mapping yet in V2
+                    //assertNotNull(appointment.getRegionId());
+                    assertNotNull(appointment.getBaseLocationId());
+                    assertNotNull(appointment.getTicketCodes());
+                    assertEquals(0, appointment.getTicketCodes().size());
+                    assertNotNull(appointment.getAppointment());
+                });
+        assertEquals(2, judicialAccessProfiles.size());
+    }
+
+    @Test
     void convertUserProfileToJudicialAccessProfileWithDiffTicketCode() throws IOException {
         JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
         judicialProfile.getAppointments().get(0).setAppointment("1");
@@ -222,6 +275,37 @@ class AssignmentRequestBuilderTest {
                     assertNotNull(appointment.getUserId());
                     assertNotNull(appointment.getBeginTime());
                     assertNotNull(appointment.getRegionId());
+                    assertNotNull(appointment.getBaseLocationId());
+                    assertNotNull(appointment.getTicketCodes());
+                    assertEquals(2, appointment.getTicketCodes().size());
+                    Assertions.assertThat(List.of("374","372")).hasSameElementsAs(appointment.getTicketCodes());
+                    assertNotNull(appointment.getAppointment());
+                });
+        assertEquals(2, judicialAccessProfiles.size());
+    }
+
+    @Test
+    void convertUserProfileToJudicialAccessProfileWithDiffTicketCodeV2() throws IOException {
+        JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileV2();
+        judicialProfile.getAppointments().get(0).setAppointment("1");
+        judicialProfile.getAppointments().get(0).setEndDate(null);
+        judicialProfile.getAppointments().get(0).setIsPrincipalAppointment("False");
+        judicialProfile.getAppointments().get(1).setAppointment("2");
+        judicialProfile.setAuthorisations(List.of(AuthorisationV2.builder().ticketCode("374").build(),
+                AuthorisationV2.builder().endDate(LocalDate.now().plusDays(1)).build(),
+                AuthorisationV2.builder().ticketCode("373").endDate(LocalDate.now().minusDays(1)).build(),
+                AuthorisationV2.builder().ticketCode("372").endDate(LocalDate.now().plusDays(1)).build()));
+        Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
+                .convertProfileToJudicialAccessProfileV2(judicialProfile);
+
+        judicialAccessProfiles.stream()
+                .filter(obj -> obj instanceof JudicialAccessProfile)
+                .map(JudicialAccessProfile.class::cast)
+                .forEach(appointment -> {
+                    assertNotNull(appointment.getUserId());
+                    assertNotNull(appointment.getBeginTime());
+                    //not mapping yet in V2
+                    //assertNotNull(appointment.getRegionId());
                     assertNotNull(appointment.getBaseLocationId());
                     assertNotNull(appointment.getTicketCodes());
                     assertEquals(2, appointment.getTicketCodes().size());

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -186,6 +188,53 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
             judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
             judicialAccessProfile.setServiceCode(appointment.getServiceCode());
+            judicialAccessProfile.setPrimaryLocationId("true"
+                    .equalsIgnoreCase(appointment.getIsPrincipalAppointment()) ? appointment.getEpimmsId() : "");
+            judicialAccessProfiles.add(judicialAccessProfile);
+        });
+        return judicialAccessProfiles;
+    }
+
+    public static Set<UserAccessProfile> convertProfileToJudicialAccessProfileV2(JudicialProfileV2 judicialProfile) {
+        Set<UserAccessProfile> judicialAccessProfiles = new HashSet<>();
+        Set<String> ticketCodes = new HashSet<>();
+        if (judicialProfile.getAuthorisations() != null) {
+            judicialProfile.getAuthorisations().forEach(authorisation -> {
+                    if (authorisation.getTicketCode() != null && (authorisation.getEndDate() == null
+                            || authorisation.getEndDate().compareTo(LocalDate.now()) >= 0)) {
+                        ticketCodes.add(authorisation.getTicketCode());
+                    }
+                }
+            );
+        }
+
+        List<String> roles = new ArrayList<>();
+        if (judicialProfile.getRoles() != null) {
+            judicialProfile.getRoles().forEach(role -> roles.add(role.getJudiciaryRoleName()));
+        }
+
+        judicialProfile.getAppointments().forEach(appointment -> {
+            var judicialAccessProfile = JudicialAccessProfile.builder().build();
+            judicialAccessProfile.setUserId(judicialProfile.getSidamId());
+
+
+
+            judicialAccessProfile.setRoles(roles);
+            judicialAccessProfile.setBeginTime(appointment.getStartDate() == null ? null :
+                    appointment.getStartDate().atStartOfDay(ZoneId.of("UTC")));
+            judicialAccessProfile.setEndTime(appointment.getEndDate() != null ? appointment.getEndDate()
+                    .atStartOfDay(ZoneId.of("UTC")) : null);
+            //judicialAccessProfile.setRegionId(appointment.getCftRegionId());
+            // change from epimmsid to base location as part of SSCS
+            judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
+            judicialAccessProfile.setTicketCodes(List.copyOf(ticketCodes));
+            judicialAccessProfile.setAppointment(appointment.getAppointment());
+            judicialAccessProfile.setAppointmentType(appointment.getAppointmentType());
+
+
+
+            //judicialAccessProfile.setAuthorisations(judicialProfile.getAuthorisations());
+            //judicialAccessProfile.setServiceCode(appointment.getServiceCode());
             judicialAccessProfile.setPrimaryLocationId("true"
                     .equalsIgnoreCase(appointment.getIsPrincipalAppointment()) ? appointment.getEpimmsId() : "");
             judicialAccessProfiles.add(judicialAccessProfile);
