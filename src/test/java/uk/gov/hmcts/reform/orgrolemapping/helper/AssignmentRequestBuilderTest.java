@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.ContractType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -709,9 +709,9 @@ class AssignmentRequestBuilderTest {
                             },
                             () -> assertEquals(REGION_ID, accessProfile.getRegionId()),
                             () -> assertEquals(BASE_LOCATION_ID, accessProfile.getBaseLocationId()),
-                            // NB: Contract Type/ Appointment Type needs conversion
+                            // NB: Contract Type / Appointment Type needs conversion
                             () -> assertEquals(CONTRACT_TYPE_ID, accessProfile.getContractTypeId()),
-                            () -> assertEquals(ContractType.FEE_PAID, accessProfile.getAppointmentType())
+                            () -> assertEquals(AppointmentType.FEE_PAID, accessProfile.getAppointmentType())
                         );
 
                         // verify authorisation mappings

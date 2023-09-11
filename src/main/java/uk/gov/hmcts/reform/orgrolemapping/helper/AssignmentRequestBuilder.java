@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getContractTypeFromAppointment;
+import static uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getAppointmentTypeFromAppointment;
 import static uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.localDateToLocalDateTime;
 import static uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.localDateToZonedDateTime;
 import static uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.stringListToDistinctList;
@@ -241,7 +241,7 @@ public class AssignmentRequestBuilder {
                     .ticketCodes(stringListToDistinctList(ticketCodes))
                     .appointment(appointment.getAppointment())
                     .contractTypeId(appointment.getContractTypeId())
-                    .appointmentType(getContractTypeFromAppointment(appointment))
+                    .appointmentType(getAppointmentTypeFromAppointment(appointment))
                     .authorisations(associatedAuthorisations)
                     .serviceCode(serviceCode)
                     .primaryLocationId("true".equalsIgnoreCase(

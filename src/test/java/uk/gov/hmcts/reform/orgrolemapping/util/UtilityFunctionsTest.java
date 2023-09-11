@@ -26,22 +26,22 @@ class UtilityFunctionsTest {
     @ParameterizedTest
     @CsvSource(
         value = {
-            "0," + JudicialAccessProfile.ContractType.SALARIED,
-            "1," + JudicialAccessProfile.ContractType.FEE_PAID,
-            "2," + JudicialAccessProfile.ContractType.VOLUNTARY,
-            "3," + JudicialAccessProfile.ContractType.SPTW,
-            "4," + JudicialAccessProfile.ContractType.SPTW,
-            "5," + JudicialAccessProfile.ContractType.SPTW,
-            "6," + JudicialAccessProfile.ContractType.SPTW,
-            "7," + JudicialAccessProfile.ContractType.SPTW,
-            "8," + JudicialAccessProfile.ContractType.SPTW,
-            "9," + JudicialAccessProfile.ContractType.SPTW,
+            "0," + JudicialAccessProfile.AppointmentType.SALARIED,
+            "1," + JudicialAccessProfile.AppointmentType.FEE_PAID,
+            "2," + JudicialAccessProfile.AppointmentType.VOLUNTARY,
+            "3," + JudicialAccessProfile.AppointmentType.SPTW,
+            "4," + JudicialAccessProfile.AppointmentType.SPTW,
+            "5," + JudicialAccessProfile.AppointmentType.SPTW,
+            "6," + JudicialAccessProfile.AppointmentType.SPTW,
+            "7," + JudicialAccessProfile.AppointmentType.SPTW,
+            "8," + JudicialAccessProfile.AppointmentType.SPTW,
+            "9," + JudicialAccessProfile.AppointmentType.SPTW,
             "unknown," + FALLBACK_APPOINTMENT_TYPE,
             "null," + FALLBACK_APPOINTMENT_TYPE
         },
         nullValues = { "null" }
     )
-    void shouldReturnCorrectContractTypeFromAppointment(String inputContractTypeId, String expectedOutput) {
+    void shouldReturnCorrectAppointmentTypeFromAppointment(String inputContractTypeId, String expectedOutput) {
 
         // GIVEN
         var appointment = AppointmentV2.builder()
@@ -50,7 +50,7 @@ class UtilityFunctionsTest {
                 .build();
 
         // WHEN
-        var output = UtilityFunctions.getContractTypeFromAppointment(appointment);
+        var output = UtilityFunctions.getAppointmentTypeFromAppointment(appointment);
 
         // THEN
         assertEquals(expectedOutput, output);
