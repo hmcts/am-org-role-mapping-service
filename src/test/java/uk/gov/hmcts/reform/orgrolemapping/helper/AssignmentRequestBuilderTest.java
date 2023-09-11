@@ -25,10 +25,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -216,6 +218,7 @@ class AssignmentRequestBuilderTest {
         private static final String AUTH_2_FUTURE_END_DATE = "Auth-2";
         private static final String AUTH_3_EXPIRED_END_DATE = "Auth-3";
         private static final String AUTH_4_EXTRA = "Auth-4";
+        private static final String AUTH_5_EXTRA = "Auth-5";
 
         private static final String ROLE_1_NO_END_DATE = "Role-1";
         private static final String ROLE_2_FUTURE_END_DATE = "Role-2";
@@ -313,6 +316,8 @@ class AssignmentRequestBuilderTest {
                     builder.endDate(LocalDate.now().minusDays(2L)).judiciaryRoleName(ROLE_NAME_3);
                 case ROLE_4_DUPLICATE_NAME -> // NB: duplicate role name as ROLE_1_NO_END_DATE
                     builder.endDate(LocalDate.now().plusMonths(2L)).judiciaryRoleName(ROLE_NAME_1_AND_4);
+                case "null" ->
+                    builder.judiciaryRoleName(null);
                 default -> {
                 }
             }
@@ -490,8 +495,9 @@ class AssignmentRequestBuilderTest {
                     buildAppointmentsList(List.of(APP_1_NO_END_DATE)),
                     buildAuthorisationsList(
                             APP_1_NO_END_DATE,
-                            List.of(AUTH_1_NO_END_DATE, AUTH_2_FUTURE_END_DATE, AUTH_4_EXTRA),
-                            List.of(TICKET_CODE_1, TICKET_CODE_2, TICKET_CODE_1) // NB: duplicate ticket code
+                            List.of(AUTH_1_NO_END_DATE, AUTH_2_FUTURE_END_DATE, AUTH_4_EXTRA, AUTH_5_EXTRA),
+                            // NB: duplicate ticket code + null should be ignored in response
+                            Arrays.asList(TICKET_CODE_1, TICKET_CODE_2, TICKET_CODE_1, null)
                     )
             );
 
@@ -615,8 +621,10 @@ class AssignmentRequestBuilderTest {
             JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileWithParamsV2(
                     buildAppointmentsList(List.of(APP_1_NO_END_DATE)),
                     null,
-                    // NB: duplicate ticket code
-                    buildRolesList(List.of(ROLE_1_NO_END_DATE, ROLE_2_FUTURE_END_DATE, ROLE_4_DUPLICATE_NAME))
+                    buildRolesList(
+                        // NB: duplicate role + null should be ignored in response
+                        List.of(ROLE_1_NO_END_DATE, ROLE_2_FUTURE_END_DATE, ROLE_4_DUPLICATE_NAME, "null")
+                    )
             );
 
             // WHEN
@@ -747,7 +755,9 @@ class AssignmentRequestBuilderTest {
             switch (csv) {
                 case "null" -> output = null;
                 case "empty" -> output = new ArrayList<>();
-                default -> output = new ArrayList<>(List.of(csv.split("\\|")));
+                default -> output = Stream.of(csv.split("\\|"))
+                        .map(item -> "null".equalsIgnoreCase(item) ? null : item)
+                        .toList();
             }
             return output;
         }
@@ -757,7 +767,7 @@ class AssignmentRequestBuilderTest {
             "null,1,empty",
             "empty,1,empty",
             SERVICE_CODE_1 + ",1," + SERVICE_CODE_1,
-            SERVICE_CODE_1 + "||" + SERVICE_CODE_1 + "|,1," + SERVICE_CODE_1, // i.e. repeated and empty
+            SERVICE_CODE_1 + "|null|" + SERVICE_CODE_1 + "|,1," + SERVICE_CODE_1, // i.e. repeated, empty and null
             SERVICE_CODE_1 + "|" + SERVICE_CODE_2 + ",2," + SERVICE_CODE_1 + "|" + SERVICE_CODE_2
         })
         void convertUserProfileToJudicialAccessProfileV2_withAppointmentServiceCode(String inputServiceCodeCsv,
@@ -816,7 +826,7 @@ class AssignmentRequestBuilderTest {
         private static void assertCommonAuthorisationFields(Authorisation authorisation) {
             assertAll(
                     () -> assertNotNull(authorisation),
-                    () -> assertNotNull(authorisation.getTicketCode()),
+                    // NB: there are some test using ticket code set to null
                     () -> assertNotNull(authorisation.getTicketDescription()),
                     () -> assertNotNull(authorisation.getJurisdiction()),
                     () -> assertNotNull(authorisation.getStartDate()),
