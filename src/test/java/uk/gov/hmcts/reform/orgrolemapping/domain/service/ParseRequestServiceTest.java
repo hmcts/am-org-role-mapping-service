@@ -212,9 +212,10 @@ class ParseRequestServiceTest {
 
         sut.validateUserProfiles(Collections.singletonList(judicialProfile),
                 judicialUserRequest,
-                new AtomicInteger(),
+                mockInteger,
                 invalidJudicialProfiles,
                 UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(0)).getAndIncrement();
     }
 
     @Test
@@ -225,9 +226,10 @@ class ParseRequestServiceTest {
 
         sut.validateUserProfiles(Collections.singletonList(judicialProfileV2),
                 judicialUserRequest,
-                new AtomicInteger(),
+                mockInteger,
                 invalidJudicialProfilesV2,
                 UserType.JUDICIAL);
+        Mockito.verify(mockInteger, Mockito.times(0)).getAndIncrement();
     }
 
     @Test
