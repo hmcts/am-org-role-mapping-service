@@ -558,6 +558,17 @@ public class TestDataBuilder {
                 .build();
     }
 
+    public static List<RoleV2> buildListOfRolesV2(List<String> roleNames,
+                                                  LocalDate startDate,
+                                                  LocalDate endDate) {
+        return roleNames.stream()
+                .map(roleName -> RoleV2.builder()
+                        .judiciaryRoleName(roleName)
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .build())
+                .toList();
+    }
 
     public static Authorisation buildAuthorisationWithParams(String jurisdiction,
                                                              String ticketCode,
