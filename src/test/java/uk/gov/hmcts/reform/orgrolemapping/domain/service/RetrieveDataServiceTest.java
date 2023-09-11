@@ -232,7 +232,7 @@ class RetrieveDataServiceTest {
 
         doReturn(ResponseEntity
             .ok(buildJudicialProfile(TestDataBuilder.buildRefreshRoleRequest(),
-            "judicialProfileSample.json"))).when(jrdService).fetchJudicialProfiles(any());
+            "judicialProfileSampleV2.json"))).when(jrdService).fetchJudicialProfiles(any());
 
 
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
