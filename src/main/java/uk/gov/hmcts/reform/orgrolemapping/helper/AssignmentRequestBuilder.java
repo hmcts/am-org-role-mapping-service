@@ -209,7 +209,7 @@ public class AssignmentRequestBuilder {
         Set<UserAccessProfile> judicialAccessProfiles = new HashSet<>();
 
         List<String> roles = getActiveRoles(judicialProfile.getRoles()).stream()
-            .map(RoleV2::getJudiciaryRoleName)
+            .map(RoleV2::getJurisdictionRoleName)
             .distinct()
             .toList();
 
@@ -258,7 +258,7 @@ public class AssignmentRequestBuilder {
     private static List<RoleV2> getActiveRoles(List<RoleV2> roles) {
         return roles != null
             ? roles.stream()
-                .filter(role -> (role.getJudiciaryRoleName() != null)
+                .filter(role -> (role.getJurisdictionRoleName() != null)
                     // AND end date not set or is valid
                     && (role.getEndDate() == null || !role.getEndDate().isBefore(LocalDate.now()))
                 )
