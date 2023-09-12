@@ -563,7 +563,7 @@ public class TestDataBuilder {
                                                   LocalDate endDate) {
         return roleNames.stream()
                 .map(roleName -> RoleV2.builder()
-                        .judiciaryRoleName(roleName)
+                        .jurisdictionRoleName(roleName)
                         .startDate(startDate)
                         .endDate(endDate)
                         .build())

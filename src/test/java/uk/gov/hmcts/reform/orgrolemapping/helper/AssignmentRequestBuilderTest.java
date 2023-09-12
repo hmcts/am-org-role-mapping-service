@@ -305,19 +305,19 @@ class AssignmentRequestBuilderTest {
         private RoleV2 buildRole(String roleId) {
 
             var builder = RoleV2.builder()
-                .judiciaryRoleId(roleId)
+                .jurisdictionRoleId(roleId)
                 .startDate(LocalDate.now().minusYears(10L));
             switch (roleId) {
                 case ROLE_1_NO_END_DATE ->
-                    builder.endDate(null).judiciaryRoleName(ROLE_NAME_1_AND_4);
+                    builder.endDate(null).jurisdictionRoleName(ROLE_NAME_1_AND_4);
                 case ROLE_2_FUTURE_END_DATE ->
-                    builder.endDate(LocalDate.now().plusYears(2L)).judiciaryRoleName(ROLE_NAME_2);
+                    builder.endDate(LocalDate.now().plusYears(2L)).jurisdictionRoleName(ROLE_NAME_2);
                 case ROLE_3_EXPIRED_END_DATE ->
-                    builder.endDate(LocalDate.now().minusDays(2L)).judiciaryRoleName(ROLE_NAME_3);
+                    builder.endDate(LocalDate.now().minusDays(2L)).jurisdictionRoleName(ROLE_NAME_3);
                 case ROLE_4_DUPLICATE_NAME -> // NB: duplicate role name as ROLE_1_NO_END_DATE
-                    builder.endDate(LocalDate.now().plusMonths(2L)).judiciaryRoleName(ROLE_NAME_1_AND_4);
+                    builder.endDate(LocalDate.now().plusMonths(2L)).jurisdictionRoleName(ROLE_NAME_1_AND_4);
                 case "null" ->
-                    builder.judiciaryRoleName(null);
+                    builder.jurisdictionRoleName(null);
                 default -> {
                 }
             }
