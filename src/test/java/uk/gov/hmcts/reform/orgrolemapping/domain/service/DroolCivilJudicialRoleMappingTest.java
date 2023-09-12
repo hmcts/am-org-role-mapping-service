@@ -222,14 +222,19 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         List<AppointmentV2> appointmentList = new ArrayList<>();
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 "487294","TRUE","Circuit Judge", "SPTW",
-                LocalDate.now().minusYears(1L),null,
-                Collections.singletonList("Pool of Judges"),null));
+                LocalDate.now().minusYears(1L), null, null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 null,"FALSE","Tribunal Judge","Fee Paid",
-                LocalDate.now(),LocalDate.now().minusYears(1L),null,null));
+                LocalDate.now(), LocalDate.now().minusYears(1L), null));
+        var roles = TestDataBuilder.buildListOfRolesV2(
+                List.of("Pool of Judges"),
+                LocalDate.now().minusYears(1L),
+                null
+        );
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList, roles),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
@@ -317,19 +322,20 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         List<AppointmentV2> appointmentList = new ArrayList<>();
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 "487294","TRUE","Recorder", "Fee Paid",
-                LocalDate.now().minusYears(1L),null,null,null));
+                LocalDate.now().minusYears(1L),null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 "487294","FALSE","Deputy District Judge- Fee-Paid","Fee Paid",
-                LocalDate.now().minusYears(1L),null,null,null));
+                LocalDate.now().minusYears(1L),null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 null,"FALSE","Tribunal Judge","Fee Paid",
-                LocalDate.now().minusYears(1L),null,null,null));
+                LocalDate.now().minusYears(1L),null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 null,"FALSE","Employment Judge","Fee Paid",
-                LocalDate.now().minusYears(1L),null,null,null));
+                LocalDate.now().minusYears(1L),null,null));
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
@@ -424,17 +430,22 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         List<AppointmentV2> appointmentList = new ArrayList<>();
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 "487294","FALSE","Recorder", "Fee Paid",
-                LocalDate.now().minusDays(20L),null,null,null));
+                LocalDate.now().minusDays(20L),null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 "487294","FALSE","Deputy Upper Tribunal Judge","Fee Paid",
-                LocalDate.now().minusYears(1L),null,null,null));
+                LocalDate.now().minusYears(1L),null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 null,"TRUE","Tribunal Judge","Fee Paid",
-                LocalDate.now().minusYears(1L),null,
-                Arrays.asList("Diversity Role Models", "Pool of Judges", "Resident Immigration Judge"), "BFA1"));
+                LocalDate.now().minusYears(1L),null, "BFA1"));
+        var roles = TestDataBuilder.buildListOfRolesV2(
+                Arrays.asList("Diversity Role Models", "Pool of Judges", "Resident Immigration Judge"),
+                LocalDate.now().minusYears(1L),
+                null
+        );
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList, roles),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
@@ -523,13 +534,14 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         List<AppointmentV2> appointmentList = new ArrayList<>();
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 "886493","TRUE","Senior Circuit Judge", "Salaried",
-                LocalDate.now().minusYears(1L),null, Collections.singletonList("Designated Civil Judge"),null));
+                LocalDate.now().minusYears(1L),null, null));
 
         List<RoleV2> roles = Collections.singletonList(RoleV2.builder().judiciaryRoleName("Designated Civil Judge")
                 .build());
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList, roles));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList, roles),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
@@ -614,10 +626,11 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         List<AppointmentV2> appointmentList = new ArrayList<>();
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 "487294","FALSE","Deputy District Judge- Sitting in Retirement","Fee Paid",
-                LocalDate.now().minusYears(1L),null,null,null));
+                LocalDate.now().minusYears(1L),null,null));
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
-                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList));
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());

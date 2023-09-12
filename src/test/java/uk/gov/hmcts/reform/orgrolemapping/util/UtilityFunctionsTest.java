@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.Judicial;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,22 +26,22 @@ class UtilityFunctionsTest {
     @ParameterizedTest
     @CsvSource(
         value = {
-            "0," + Judicial.ContractType.SALARIED,
-            "1," + Judicial.ContractType.FEE_PAID,
-            "2," + Judicial.ContractType.VOLUNTARY,
-            "3," + Judicial.ContractType.SPTW,
-            "4," + Judicial.ContractType.SPTW,
-            "5," + Judicial.ContractType.SPTW,
-            "6," + Judicial.ContractType.SPTW,
-            "7," + Judicial.ContractType.SPTW,
-            "8," + Judicial.ContractType.SPTW,
-            "9," + Judicial.ContractType.SPTW,
+            "0," + JudicialAccessProfile.AppointmentType.SALARIED,
+            "1," + JudicialAccessProfile.AppointmentType.FEE_PAID,
+            "2," + JudicialAccessProfile.AppointmentType.VOLUNTARY,
+            "3," + JudicialAccessProfile.AppointmentType.SPTW,
+            "4," + JudicialAccessProfile.AppointmentType.SPTW,
+            "5," + JudicialAccessProfile.AppointmentType.SPTW,
+            "6," + JudicialAccessProfile.AppointmentType.SPTW,
+            "7," + JudicialAccessProfile.AppointmentType.SPTW,
+            "8," + JudicialAccessProfile.AppointmentType.SPTW,
+            "9," + JudicialAccessProfile.AppointmentType.SPTW,
             "unknown," + FALLBACK_APPOINTMENT_TYPE,
             "null," + FALLBACK_APPOINTMENT_TYPE
         },
         nullValues = { "null" }
     )
-    void shouldReturnCorrectContractTypeFromAppointment(String inputContractTypeId, String expectedOutput) {
+    void shouldReturnCorrectAppointmentTypeFromAppointment(String inputContractTypeId, String expectedOutput) {
 
         // GIVEN
         var appointment = AppointmentV2.builder()
@@ -50,7 +50,7 @@ class UtilityFunctionsTest {
                 .build();
 
         // WHEN
-        var output = UtilityFunctions.getContractTypeFromAppointment(appointment);
+        var output = UtilityFunctions.getAppointmentTypeFromAppointment(appointment);
 
         // THEN
         assertEquals(expectedOutput, output);

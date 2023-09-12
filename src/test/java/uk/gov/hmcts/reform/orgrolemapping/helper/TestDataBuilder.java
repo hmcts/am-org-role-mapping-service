@@ -535,8 +535,8 @@ public class TestDataBuilder {
     }
 
     public static AppointmentV2 buildAppointmentWithParamsV2(String epimms, String isPrinciple, String appointment,
-                                                         String appointmentType, LocalDate startDate, LocalDate endDate,
-                                                         List<String> roles, String serviceCode) {
+                                                             String appointmentType, LocalDate startDate,
+                                                             LocalDate endDate, String serviceCode) {
         List<String> serviceCodes;
         if (serviceCode != null) {
             serviceCodes = List.of(serviceCode);
@@ -547,11 +547,8 @@ public class TestDataBuilder {
         return AppointmentV2.builder()
                 .baseLocationId("827")
                 .epimmsId(epimms)
-                //.courtName("Fairfax County Courthouse")
-                .cftRegionID("NULL")
+                .cftRegionID("1")
                 .cftRegion("South East")
-                //.locationId("1")
-                //.location("South East")
                 .isPrincipalAppointment(isPrinciple)
                 .appointment(appointment)
                 .appointmentType(appointmentType)
@@ -561,6 +558,17 @@ public class TestDataBuilder {
                 .build();
     }
 
+    public static List<RoleV2> buildListOfRolesV2(List<String> roleNames,
+                                                  LocalDate startDate,
+                                                  LocalDate endDate) {
+        return roleNames.stream()
+                .map(roleName -> RoleV2.builder()
+                        .judiciaryRoleName(roleName)
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .build())
+                .toList();
+    }
 
     public static Authorisation buildAuthorisationWithParams(String jurisdiction,
                                                              String ticketCode,

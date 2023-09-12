@@ -4,6 +4,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,14 +61,21 @@ public class RetrieveDataService {
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final JRDService jrdService;
-    private final Boolean v2Active;
+    private final boolean v2Active;
+    private final boolean v2FilterAuthorisationsByAppointmentId;
 
-    public RetrieveDataService(ParseRequestService parseRequestService, CRDService crdService, JRDService jrdService,
-                               @Value("${feign.client.config.jrdClient.v2Active:false}") Boolean v2Active) {
+    public RetrieveDataService(ParseRequestService parseRequestService,
+                               CRDService crdService,
+                               JRDService jrdService,
+                               @Value("${feign.client.config.jrdClient.v2Active:false}")
+                               Boolean v2Active,
+                               @Value("${feign.client.config.jrdClient.v2FilterAuthorisationsByAppointmentId:false}")
+                               Boolean v2FilterAuthorisationsByAppointmentId) {
         this.parseRequestService = parseRequestService;
         this.crdService = crdService;
         this.jrdService = jrdService;
-        this.v2Active = v2Active;
+        this.v2Active = BooleanUtils.isTrue(v2Active);
+        this.v2FilterAuthorisationsByAppointmentId = BooleanUtils.isTrue(v2FilterAuthorisationsByAppointmentId);
     }
 
     public Map<String, Set<UserAccessProfile>> retrieveProfiles(UserRequest userRequest, UserType userType)
@@ -101,7 +109,7 @@ public class RetrieveDataService {
                         (Math.subtractExact(System.currentTimeMillis(), startTime))
                 );
                 if (response.getStatusCode().is2xxSuccessful()) {
-                    if (v2Active != null && v2Active) {
+                    if (this.v2Active) {
                         Objects.requireNonNull(response.getBody()).forEach(o ->
                                 profiles.add(convertInJudicialProfileV2(o)));
                     } else {
@@ -181,11 +189,14 @@ public class RetrieveDataService {
                 caseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                         AssignmentRequestBuilder.convertUserProfileToCaseworkerAccessProfile(userProfile)));
             } else if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.JUDICIAL)) {
-                if (v2Active != null && v2Active) {
+                if (this.v2Active) {
                     validProfiles.forEach(userProfile -> {
                         JudicialProfileV2 judicialProfile = (JudicialProfileV2) userProfile;
                         usersAccessProfiles.put(judicialProfile.getSidamId(),
-                                convertProfileToJudicialAccessProfileV2(judicialProfile));
+                                convertProfileToJudicialAccessProfileV2(
+                                    judicialProfile,
+                                    v2FilterAuthorisationsByAppointmentId
+                                ));
                     });
                     Set<JudicialProfileV2> invalidJProfiles = (Set<JudicialProfileV2>)(Set<?>) invalidProfiles;
                     invalidJProfiles.forEach(profile ->

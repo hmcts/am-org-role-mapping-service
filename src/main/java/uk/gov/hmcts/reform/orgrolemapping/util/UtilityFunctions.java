@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.Judicial.ContractType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
 
 import javax.inject.Singleton;
 import java.time.LocalDate;
@@ -20,15 +20,16 @@ public final class UtilityFunctions {
     private UtilityFunctions() {
     }
 
-    public static String getContractTypeFromAppointment(final AppointmentV2 appointment) {
+    public static String getAppointmentTypeFromAppointment(final AppointmentV2 appointment) {
         String result = appointment.getAppointmentType(); // fallback
 
+        // load ContractTypeId and convert into v1 constant
         if (appointment.getContractTypeId() != null) {
             switch (appointment.getContractTypeId()) {
-                case "0" -> result = ContractType.SALARIED;
-                case "1" -> result = ContractType.FEE_PAID;
-                case "2" -> result = ContractType.VOLUNTARY;
-                case "3", "4", "5", "6", "7", "8", "9" -> result = ContractType.SPTW;
+                case "0" -> result = AppointmentType.SALARIED;
+                case "1" -> result = AppointmentType.FEE_PAID;
+                case "2" -> result = AppointmentType.VOLUNTARY;
+                case "3", "4", "5", "6", "7", "8", "9" -> result = AppointmentType.SPTW;
                 default -> log.warn(
                         "Judicial ContractTypeId not recognised: {} - '{}'",
                         appointment.getContractTypeId(),
