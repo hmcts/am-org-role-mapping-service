@@ -17,8 +17,8 @@ import java.time.LocalDate;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class RoleV2 implements Serializable {
 
-    private String judiciaryRoleName;
-    private String judiciaryRoleId;
+    private String jurisdictionRoleName;
+    private String jurisdictionRoleId;
     private LocalDate startDate;
     private LocalDate endDate;
 }

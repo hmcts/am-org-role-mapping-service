@@ -74,20 +74,20 @@
   ],
   "roles": [
     {
-      "judiciary_role_name":"some judiciary role name",
-      "judiciary_role_id":"some judiciary role id",
+      "jurisdiction_role_name":"some judiciary role name",
+      "jurisdiction_role_id":"some judiciary role id",
       "start_date":"2022-04-28T16:00:49",
       "end_date":"2052-04-28T16:00:49"
     },
     {
-      "judiciary_role_name":"some judiciary role name 2",
-      "judiciary_role_id":"some judiciary role id 2",
+      "jurisdiction_role_name":"some judiciary role name 2",
+      "jurisdiction_role_id":"some judiciary role id 2",
       "start_date":"2022-04-28T16:00:49",
       "end_date":"2022-04-28T16:00:49"
     },
     {
-      "judiciary_role_name":"some judiciary role name 3",
-      "judiciary_role_id":"some judiciary role id 3",
+      "jurisdiction_role_name":"some judiciary role name 3",
+      "jurisdiction_role_id":"some judiciary role id 3",
       "start_date":"2022-04-28T16:00:49",
       "end_date":null
     }

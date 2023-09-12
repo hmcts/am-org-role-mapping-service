@@ -536,7 +536,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 "886493","TRUE","Senior Circuit Judge", "Salaried",
                 LocalDate.now().minusYears(1L),null, null));
 
-        List<RoleV2> roles = Collections.singletonList(RoleV2.builder().judiciaryRoleName("Designated Civil Judge")
+        List<RoleV2> roles = Collections.singletonList(RoleV2.builder().jurisdictionRoleName("Designated Civil Judge")
                 .build());
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
