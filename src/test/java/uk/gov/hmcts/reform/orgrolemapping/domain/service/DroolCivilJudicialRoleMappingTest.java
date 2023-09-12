@@ -7,12 +7,15 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -209,6 +212,52 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
     }
 
     @Test
+    void civilJudicialScenario_2V2() {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+
+        List<AuthorisationV2> authorisationList = TestDataBuilder.buildListOfAuthorisationsV2(1);
+
+        List<AppointmentV2> appointmentList = new ArrayList<>();
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                "487294","TRUE","Circuit Judge", "SPTW",
+                LocalDate.now().minusYears(1L), null, null));
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                null,"FALSE","Tribunal Judge","Fee Paid",
+                LocalDate.now(), LocalDate.now().minusYears(1L), null));
+        var roles = TestDataBuilder.buildListOfRolesV2(
+                List.of("Pool of Judges"),
+                LocalDate.now().minusYears(1L),
+                null
+        );
+
+        Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList, roles),
+                false);
+
+        judicialAccessProfiles = userAccessProfiles.stream()
+                .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(2, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("circuit-judge","hmcts-judiciary"));
+        assertEquals(appointmentList.get(0).getEpimmsId(),
+                roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
+                .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
+        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                roleAssignments.get(0).getBeginTime().getDayOfYear());
+        assertNull(roleAssignments.get(0).getEndTime());
+        roleAssignments.forEach(r -> assertEquals("Salaried", r.getAttributes().get("contractType").asText()));
+    }
+
+    @Test
     void civilJudicialScenario_4() {
 
         judicialAccessProfiles.clear();
@@ -236,6 +285,60 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
 
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(3, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("fee-paid-judge",
+                        "fee-paid-judge","hmcts-judiciary"));
+
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
+                .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
+
+        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                roleAssignments.get(0).getBeginTime().getDayOfYear());
+        assertNull(roleAssignments.get(0).getEndTime());
+
+        roleAssignments.forEach(r -> {
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
+            assertNull(r.getEndTime());
+        });
+    }
+
+    @Test
+    void civilJudicialScenario_4V2() {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+
+        List<AuthorisationV2> authorisationList = TestDataBuilder.buildListOfAuthorisationsV2(2);
+
+        List<AppointmentV2> appointmentList = new ArrayList<>();
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                "487294","TRUE","Recorder", "Fee Paid",
+                LocalDate.now().minusYears(1L),null,null));
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                "487294","FALSE","Deputy District Judge- Fee-Paid","Fee Paid",
+                LocalDate.now().minusYears(1L),null,null));
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                null,"FALSE","Tribunal Judge","Fee Paid",
+                LocalDate.now().minusYears(1L),null,null));
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                null,"FALSE","Employment Judge","Fee Paid",
+                LocalDate.now().minusYears(1L),null,null));
+
+        Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList),
+                false);
+
+        judicialAccessProfiles = userAccessProfiles.stream()
+                .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
@@ -317,6 +420,65 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
     }
 
     @Test
+    void civilJudicialScenario_9V2() {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+
+        List<AuthorisationV2> authorisationList = TestDataBuilder.buildListOfAuthorisationsV2(3);
+
+        List<AppointmentV2> appointmentList = new ArrayList<>();
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                "487294","FALSE","Recorder", "Fee Paid",
+                LocalDate.now().minusDays(20L),null,null));
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                "487294","FALSE","Deputy Upper Tribunal Judge","Fee Paid",
+                LocalDate.now().minusYears(1L),null,null));
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                null,"TRUE","Tribunal Judge","Fee Paid",
+                LocalDate.now().minusYears(1L),null, "BFA1"));
+        var roles = TestDataBuilder.buildListOfRolesV2(
+                Arrays.asList("Diversity Role Models", "Pool of Judges", "Resident Immigration Judge"),
+                LocalDate.now().minusYears(1L),
+                null
+        );
+
+        Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList, roles),
+                false);
+
+        judicialAccessProfiles = userAccessProfiles.stream()
+                .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(2, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("fee-paid-judge","hmcts-judiciary"));
+
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
+                .forEach(r -> {
+                    //removes the auth in the past successfully so minus 1
+                    assertEquals(authorisationList.size() - 1, r.getAuthorisations().size());
+                    assertEquals(JacksonUtils.convertObjectIntoJsonNode(""), r.getAttributes().get("primaryLocation"));
+                });
+
+        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                roleAssignments.get(0).getBeginTime().getDayOfYear());
+        assertNull(roleAssignments.get(0).getEndTime());
+
+        roleAssignments.forEach(r -> {
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
+            assertNull(r.getEndTime());
+        });
+    }
+
+    @Test
     void civilJudicialScenario_16() {
 
         judicialAccessProfiles.clear();
@@ -362,6 +524,53 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
     }
 
     @Test
+    void civilJudicialScenario_16V2() {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+
+        List<AuthorisationV2> authorisationList = TestDataBuilder.buildListOfAuthorisationsV2(4);
+
+        List<AppointmentV2> appointmentList = new ArrayList<>();
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                "886493","TRUE","Senior Circuit Judge", "Salaried",
+                LocalDate.now().minusYears(1L),null, null));
+
+        List<RoleV2> roles = Collections.singletonList(RoleV2.builder().judiciaryRoleName("Designated Civil Judge")
+                .build());
+
+        Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList, roles),
+                false);
+
+        judicialAccessProfiles = userAccessProfiles.stream()
+                .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(5, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder("leadership-judge", "circuit-judge", "task-supervisor",
+                        "case-allocator", "hmcts-judiciary"));
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
+                .forEach(r -> {
+                    assertEquals(authorisationList.size(), r.getAuthorisations().size());
+                    assertEquals(appointmentList.get(0).getEpimmsId(),
+                            r.getAttributes().get("primaryLocation").asText());
+                });
+
+        roleAssignments.forEach(r -> {
+            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
+            assertNull(r.getEndTime());
+        });
+    }
+
+    @Test
     void civilJudicialScenario_DistrictJudgeInRetirement() {
 
         judicialAccessProfiles.clear();
@@ -376,6 +585,52 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfile(
                 TestDataBuilder.buildJudicialProfileWithParams(appointmentList, authorisationList));
+
+        judicialAccessProfiles = userAccessProfiles.stream()
+                .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
+
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(2, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(
+                        "fee-paid-judge","hmcts-judiciary"));
+
+        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
+                .forEach(r -> assertEquals(authorisationList.size(), r.getAuthorisations().size()));
+
+        assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(),
+                roleAssignments.get(0).getBeginTime().getDayOfYear());
+        assertNull(roleAssignments.get(0).getEndTime());
+
+        roleAssignments.forEach(r -> {
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
+            assertNull(r.getEndTime());
+        });
+    }
+
+    @Test
+    void civilJudicialScenario_DistrictJudgeInRetirementV2() {
+
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+
+        List<AuthorisationV2> authorisationList = TestDataBuilder.buildListOfAuthorisationsV2(2);
+
+        List<AppointmentV2> appointmentList = new ArrayList<>();
+        appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
+                "487294","FALSE","Deputy District Judge- Sitting in Retirement","Fee Paid",
+                LocalDate.now().minusYears(1L),null,null));
+
+        Set<UserAccessProfile> userAccessProfiles = AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2(
+                TestDataBuilder.buildJudicialProfileWithParamsV2(appointmentList, authorisationList),
+                false);
 
         judicialAccessProfiles = userAccessProfiles.stream()
                 .map(obj -> (JudicialAccessProfile) obj).collect(Collectors.toSet());
