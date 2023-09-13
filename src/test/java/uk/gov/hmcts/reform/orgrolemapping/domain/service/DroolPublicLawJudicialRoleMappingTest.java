@@ -210,7 +210,82 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         true,
                         List.of("Recorder - Fee Paid"),
                         List.of("fee-paid-judge","hmcts-judiciary",
-                                "hearing-viewer", "hearing-manager"))
+                                "hearing-viewer", "hearing-manager")),
+                Arguments.of("Tribunal Judge", "Salaried",
+                        false,
+                        false,
+                        List.of("Tribunal Judge - Salaried"),
+                        List.of("judge","hmcts-judiciary")),
+                Arguments.of("Employment Judge", "Salaried",
+                        false,
+                        false,
+                        List.of("Employment Judge - Salaried"),
+                        List.of("judge","hmcts-judiciary")),
+                Arguments.of("Specialist Circuit Judge", "Salaried",
+                        false,
+                        false,
+                        List.of("Specialist Circuit Judge - Salaried"),
+                        List.of("judge","hmcts-judiciary")),
+                Arguments.of("Senior Circuit Judge", "Salaried",
+                        false,
+                        false,
+                        List.of("Senior Circuit Judge - Salaried"),
+                        List.of("judge","hmcts-judiciary")),
+                Arguments.of("Circuit Judge (sitting in retirement)", "Fee Paid",
+                        true,
+                        false,
+                        List.of("Circuit Judge - Sitting in Retirement - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
+                //no Judicial Booking, no judge role
+                Arguments.of("Circuit Judge (sitting in retirement)", "Fee Paid",
+                        false,
+                        false,
+                        List.of("Circuit Judge - Sitting in Retirement - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary")),
+                Arguments.of("Recorder (sitting in retirement)", "Fee Paid",
+                        true,
+                        false,
+                        List.of("Recorder - Sitting in Retirement - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
+                //no Judicial Booking, no judge role
+                Arguments.of("Recorder (sitting in retirement)", "Fee Paid",
+                        false,
+                        false,
+                        List.of("Recorder - Sitting in Retirement - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary")),
+                Arguments.of("Deputy Upper Tribunal Judge", "Fee Paid",
+                        true,
+                        false,
+                        List.of("Deputy Upper Tribunal Judge - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
+                //no Judicial Booking, no judge role
+                Arguments.of("Deputy Upper Tribunal Judge", "Fee Paid",
+                        false,
+                        false,
+                        List.of("Deputy Upper Tribunal Judge - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary")),
+                Arguments.of("District Judge (MC)- Sitting in Retirement", "Fee Paid",
+                        true,
+                        false,
+                        List.of("District Judge (MC) - Sitting in Retirement - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
+                //no Judicial Booking, no judge role
+                Arguments.of("District Judge (MC)- Sitting in Retirement", "Fee Paid",
+                        false,
+                        false,
+                        List.of("District Judge (MC) - Sitting in Retirement - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary")),
+                Arguments.of("District Judge- Sitting in Retirement -Fee Paid", "Fee Paid",
+                        true,
+                        false,
+                        List.of("District Judge - Sitting in Retirement - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
+                //no Judicial Booking, no judge role
+                Arguments.of("District Judge- Sitting in Retirement -Fee Paid", "Fee Paid",
+                        false,
+                        false,
+                        List.of("District Judge - Sitting in Retirement - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary"))
         );
     }
 
@@ -254,7 +329,8 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(
                         List.of(FeatureFlag.builder().flagName("publiclaw_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
+                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build(),
+                                FeatureFlag.builder().flagName("publiclaw_wa_1_1").status(true).build())
                 );
 
         //assertions
