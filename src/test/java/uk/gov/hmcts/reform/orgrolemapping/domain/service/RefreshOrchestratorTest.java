@@ -1,27 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
-
 import feign.FeignException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,16 +18,21 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
 
 @RunWith(MockitoJUnitRunner.class)
 class RefreshOrchestratorTest {
@@ -63,6 +46,7 @@ class RefreshOrchestratorTest {
     private final PersistenceService persistenceService = mock(PersistenceService.class);
     private final FeignException feignClientException = mock(FeignException.NotFound.class);
     private final SecurityUtils securityUtils = mock(SecurityUtils.class);
+    private final JudicialBookingService judicialBookingService = mock(JudicialBookingService.class);
 
     @InjectMocks
     private final RefreshOrchestrator sut = new RefreshOrchestrator(
@@ -72,6 +56,7 @@ class RefreshOrchestratorTest {
             crdService,
             persistenceService,
             securityUtils,
+            judicialBookingService,
             "1",
             "descending",
             "1",
@@ -619,22 +604,20 @@ class RefreshOrchestratorTest {
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
         Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
         Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
-                .id("1")
+
+        userAccessProfileSet.add(JudicialAccessProfile.builder()
+                .userId("1")
                 .roleId("1")
-                .roleName("roleName")
-                .primaryLocationName("primary")
                 .primaryLocationId("1")
-                .areaOfWorkId("1")
                 .serviceCode("1")
-                .suspended(false)
                 .build());
+
         userAccessProfiles.put("1", userAccessProfileSet);
         RefreshOrchestrator refreshOrchestrator = Mockito.spy(sut);
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
                 .thenReturn(userAccessProfiles);
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.JUDICIAL)))
+        Mockito.when(requestMappingService.createAssignments(any(), any(),eq(UserType.JUDICIAL)))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(Collections.emptyList())));
 

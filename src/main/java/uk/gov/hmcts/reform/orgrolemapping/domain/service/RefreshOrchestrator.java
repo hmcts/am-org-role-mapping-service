@@ -13,9 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
@@ -30,6 +28,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
@@ -43,18 +43,16 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
 @Service
 @Slf4j
 public class RefreshOrchestrator {
-
     private final RetrieveDataService retrieveDataService;
     private final RequestMappingService<UserAccessProfile> requestMappingService;
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final PersistenceService persistenceService;
     private final SecurityUtils securityUtils;
-
+    private final JudicialBookingService judicialBookingService;
     private String sortDirection;
     private String sortColumn;
     private List<String> authorisedServices;
-
     String pageSize;
 
     @Autowired
@@ -63,6 +61,7 @@ public class RefreshOrchestrator {
                                ParseRequestService parseRequestService,
                                CRDService crdService, PersistenceService persistenceService,
                                SecurityUtils securityUtils,
+                               JudicialBookingService judicialBookingService,
                                @Value("${refresh.Job.pageSize}") String pageSize,
                                @Value("${refresh.Job.sortDirection}") String sortDirection,
                                @Value("${refresh.Job.sortColumn}") String sortColumn,
@@ -73,6 +72,7 @@ public class RefreshOrchestrator {
         this.crdService = crdService;
         this.persistenceService = persistenceService;
         this.securityUtils = securityUtils;
+        this.judicialBookingService = judicialBookingService;
         this.pageSize = pageSize;
         this.sortDirection = sortDirection;
         this.sortColumn = sortColumn;
@@ -165,7 +165,6 @@ public class RefreshOrchestrator {
     protected ResponseEntity<Object> refreshJobByServiceName(Map<String, HttpStatus> responseCodeWithUserId,
                                                              RefreshJobEntity refreshJobEntity, UserType userType) {
 
-
         ResponseEntity<Object> responseEntity = null;
 
         //validate the role Category
@@ -188,7 +187,6 @@ public class RefreshOrchestrator {
                     pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
                 }
 
-
                 //call to CRD
                 for (var page = 0; page < pageNumber; page++) {
                     ResponseEntity<List<Object>> userProfilesResponse = crdService
@@ -202,7 +200,6 @@ public class RefreshOrchestrator {
                 }
             }
         } catch (FeignException.NotFound feignClientException) {
-
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
             responseCodeWithUserId.put("", HttpStatus.resolve(feignClientException.status()));
         }
@@ -212,10 +209,28 @@ public class RefreshOrchestrator {
         return responseEntity;
     }
 
+    //This service is triggered when a Refresh JOB is triggered
     @SuppressWarnings("unchecked")
     protected ResponseEntity<Object> prepareResponseCodes(Map<String, HttpStatus> responseCodeWithUserId, Map<String,
             Set<UserAccessProfile>> userAccessProfiles, UserType userType) {
-        ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
+        ResponseEntity<Object> responseEntity;
+        if( userType.equals(UserType.JUDICIAL)) {
+            //extract unique userids from userAccessProfiles
+            List<String> userIds = new ArrayList<>();
+
+            for( Set<UserAccessProfile> userAccessProfileSet:userAccessProfiles.values() ) {
+                List<UserAccessProfile> userAccessProfileList = userAccessProfileSet.stream().toList();
+                for(UserAccessProfile userAccessProfile:userAccessProfileList){
+                    userIds.add(((JudicialAccessProfile)userAccessProfile).getUserId());
+                }
+            }
+            List<String> uniqueUserIds = userIds.stream().distinct().toList();
+            List<JudicialBooking> judicialBookings = judicialBookingService.fetchJudicialBookingsInBatches(uniqueUserIds,pageSize);
+            log.info("Judicial Refresh for {} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
+            responseEntity = requestMappingService.createAssignments(userAccessProfiles,judicialBookings, userType);
+        } else {
+            responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
+        }
 
         ((List<ResponseEntity<Object>>)
                 Objects.requireNonNull(responseEntity.getBody())).forEach(entity -> {
@@ -230,7 +245,6 @@ public class RefreshOrchestrator {
         log.info("Status code map from RAS {} ", responseCodeWithUserId);
         return responseEntity;
     }
-
 
     protected void buildSuccessAndFailureBucket(Map<String, HttpStatus> responseCodeWithUserId,
                                                 RefreshJobEntity refreshJobEntity) {

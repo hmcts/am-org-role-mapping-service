@@ -76,6 +76,7 @@ public class ProviderTestConfiguration {
                 crdService,
                 persistenceService,
                 securityUtils,
+                judicialBookingService,
                 "1",
                 "descending",
                 "1",

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -34,6 +35,8 @@ public class BulkAssignmentOrchestrator {
 
     private final RequestMappingService<UserAccessProfile> requestMappingService;
 
+    private final  JudicialBookingService judicialBookingService;
+
 
     @SuppressWarnings("unchecked")
     public ResponseEntity<Object> createBulkAssignmentsRequest(UserRequest userRequest, UserType userType) {
@@ -52,16 +55,28 @@ public class BulkAssignmentOrchestrator {
             throw new ResourceNotFoundException("User details couldn't be found in RD :: " + userRequest.getUserIds());
         }
 
-        //call the requestMapping service to determine role name and create role assignment requests
-        ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
+        ResponseEntity<Object> responseEntity = null;
+        //ASB calls this  if UserType.JUDICIAL then pass judicialBookings
+        if( userType.equals(UserType.JUDICIAL)) {
+            List<JudicialBooking> judicialBookings = judicialBookingService.fetchJudicialBookings(userRequest);
+            log.info("Judicial User {} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
+            responseEntity = requestMappingService.createAssignments(userAccessProfiles,judicialBookings, userType);
+        } else if (userType.equals(UserType.CASEWORKER)) {
+            log.info("Creating assignments for Staff/Caseworker UserType");
+            responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
+        } else {
+            log.info("UserType not supported {}",userType);
+        }
 
         log.debug("Execution time of createBulkAssignmentsRequest() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
         List<Object> roleAssignmentResponses = new ArrayList<>();
-        ((List<ResponseEntity<Object>>)
-                Objects.requireNonNull(responseEntity.getBody())).forEach(entity ->
-                roleAssignmentResponses.add(entity.getBody()));
+        if ( null != responseEntity) {
+            ((List<ResponseEntity<Object>>)
+                    Objects.requireNonNull(responseEntity.getBody())).forEach(entity ->
+                    roleAssignmentResponses.add(entity.getBody()));
+        }
 
         return ResponseEntity.ok(roleAssignmentResponses);
     }
