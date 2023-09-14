@@ -95,7 +95,49 @@
               "substantive" : "N",
               "primaryLocation" : "[[ANYTHING_PRESENT]]"
             }
-          }
+          },
+            {
+              "id": "[[ANYTHING_PRESENT]]",
+              "actorIdType": "IDAM",
+              "actorId": "[[ANYTHING_PRESENT]]",
+              "roleType": "ORGANISATION",
+              "roleName": "hearing-manager",
+              "classification": "PUBLIC",
+              "grantType": "STANDARD",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "process": "staff-organisational-role-mapping",
+              "reference": "[[ANYTHING_PRESENT]]",
+              "status": "LIVE",
+              "created": "[[ANYTHING_PRESENT]]",
+              "log": "[[ANYTHING_PRESENT]]",
+              "attributes": {
+                "primaryLocation": "[[ANYTHING_PRESENT]]",
+                "jurisdiction": "IA",
+                "substantive": "N"
+              }
+            },
+            {
+              "id": "[[ANYTHING_PRESENT]]",
+              "actorIdType": "IDAM",
+              "actorId": "[[ANYTHING_PRESENT]]",
+              "roleType": "ORGANISATION",
+              "roleName": "hearing-viewer",
+              "classification": "PUBLIC",
+              "grantType": "STANDARD",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "process": "staff-organisational-role-mapping",
+              "reference": "[[ANYTHING_PRESENT]]",
+              "status": "LIVE",
+              "created": "[[ANYTHING_PRESENT]]",
+              "log": "[[ANYTHING_PRESENT]]",
+              "attributes": {
+                "primaryLocation": "[[ANYTHING_PRESENT]]",
+                "jurisdiction": "IA",
+                "substantive": "N"
+              }
+            }
           ]
         }
       }
