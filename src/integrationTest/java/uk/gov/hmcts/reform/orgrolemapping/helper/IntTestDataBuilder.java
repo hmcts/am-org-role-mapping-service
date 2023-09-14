@@ -28,7 +28,7 @@ public class IntTestDataBuilder {
     private static final String ID_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     private static final String ID_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
-    private static final String LONDON ="London";
+    private static final String LONDON = "London";
 
     private IntTestDataBuilder() {
     }

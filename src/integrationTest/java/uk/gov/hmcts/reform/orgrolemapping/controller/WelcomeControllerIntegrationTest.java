@@ -75,8 +75,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
-    private static final String CASEWORKER ="CASEWORKER";
-    private static final String JUDICIAL ="JUDICIAL";
+    private static final String CASEWORKER = "CASEWORKER";
+    private static final String JUDICIAL = "JUDICIAL";
     private transient MockMvc mockMvc;
     @Mock
     private Authentication authentication;
@@ -141,7 +141,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private static final String RAS_UPDATE_ROLE_TCW_STCW = "RASUpdateRoleTcwStcw";
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
-    private static final String ROLE_NAME_HMCTS_JUD="hmcts-judiciary";
+    private static final String ROLE_NAME_HMCTS_JUD = "hmcts-judiciary";
     private static final String USERID_74 = "123e4567-e89b-42d3-a456-556642445674";
     private static final String USERID_9c = "21334a2b-79ce-44eb-9168-2d49a744be9c";
     private static final String  STAFF_URI = "/am/role-mapping/staff/users";
