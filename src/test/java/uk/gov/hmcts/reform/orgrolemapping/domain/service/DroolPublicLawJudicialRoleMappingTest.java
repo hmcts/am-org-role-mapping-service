@@ -200,6 +200,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         List.of("High Court Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary",
                                 "hearing-viewer", "hearing-manager")),
+                // hearing-manager excluded from Magistrate
                 Arguments.of("Magistrate", "Voluntary",
                         false,
                         true,
