@@ -33,8 +33,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -53,7 +51,6 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -81,7 +78,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVICE;
+
 
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch"})
@@ -594,18 +593,6 @@ public class RefreshControllerIntegrationTest extends BaseTest {
                         .value(containsString("The input parameter: \"abc-123$\", "
                                 + "does not comply with the required pattern")))
                 .andReturn();
-    }
-
-    private ResponseEntity<JudicialBookingResponse> buildJudicialBookingsResponse(String... userIds) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "" + userIds.length);
-        List<JudicialBooking> bookings = new ArrayList<>();
-        for (var userId:userIds) {
-            bookings.add(JudicialBooking.builder().beginTime(ZonedDateTime.now())
-                    .endTime(ZonedDateTime.now().plusDays(5)).userId(userId)
-                    .locationId("location").regionId("region").build());
-        }
-        return new ResponseEntity<>(new JudicialBookingResponse(bookings), headers, HttpStatus.OK);
     }
 
     private ResponseEntity<List<JudicialProfile>> buildJudicialProfilesResponse(String... userIds) {

@@ -35,6 +35,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
@@ -66,6 +67,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
 
 
@@ -74,6 +76,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
 
+    private static final String CASEWORKER ="CASEWORKER";
+
+    private static final String JUDICIAL ="JUDICIAL";
     private transient MockMvc mockMvc;
 
     @Mock
@@ -90,6 +95,9 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
     @MockBean
     private JRDFeignClient jrdFeignClient;
+
+    @MockBean
+    private JBSFeignClient jbsFeignClient;
 
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluator;
@@ -134,9 +142,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     private static final String RAS_DELETE_FLAG_TRUE = "RASDeleteFlagTrue";
     private static final String RAS_DROOL_RULE_FAIL = "RASDroolRuleFail";
     private static final String RAS_UPDATE_ROLE_TCW_STCW = "RASUpdateRoleTcwStcw";
-
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
+    private static final String ROLE_NAME_HMCTS_JUD="hmcts-judiciary";
+    private static final String USERID_74 = "123e4567-e89b-42d3-a456-556642445674";
+    private static final String USERID_9c = "21334a2b-79ce-44eb-9168-2d49a744be9c";
+    private static final String  STAFF_URI = "/am/role-mapping/staff/users";
     UserRequest userRequest;
     List<JudicialProfile> judicialProfiles;
 
@@ -190,15 +201,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                         false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(List.of(USERID_74))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S1:");
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_ONE_ROLE);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -221,13 +231,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         UserRequest request = UserRequest.builder()
                 .userIds(List.of("123e4567-e89b-42d3-a456-556642445676"))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S2:");
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_MULTI_ROLE);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -250,13 +259,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         UserRequest request = UserRequest.builder()
                 .userIds(Arrays.asList("123e4567-e89b-42d3-a456-556642445000", "123e4567-e89b-42d3-a456-556642445111"))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S3:");
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_MULTI_USER_ONE_ROLE);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -280,13 +288,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         UserRequest request = UserRequest.builder()
                 .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9v"))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S6:");
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DELETE_FLAG_TRUE);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -306,15 +313,14 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(List.of(USERID_74))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S8:");
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DROOL_RULE_FAIL);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -337,13 +343,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         UserRequest request = UserRequest.builder()
                 .userIds(List.of("123e4567-e89b-42d3-a456-556642445000"))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S9:");
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_UPDATE_ROLE_TCW_STCW);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -367,14 +372,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(List.of(USERID_9c))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S11:");
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -396,14 +400,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(List.of(USERID_9c))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S12:");
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -424,14 +427,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(List.of(USERID_9c))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S13:");
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -453,14 +455,13 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(List.of("21334a2b-79ce-44eb-9168-2d49a744be9c"))
+                .userIds(List.of(USERID_9c))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S16:");
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -483,12 +484,11 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         UserRequest request = UserRequest.builder()
                 .userIds(new ArrayList<>())
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S17:");
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(400))
                 .andReturn();
@@ -509,15 +509,15 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(List.of(USERID_74))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S18:");
+
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_DELETE_FLAG_TRUE);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
@@ -538,21 +538,21 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 .when(crdFeignClient).getCaseworkerDetailsById(any());
 
         UserRequest request = UserRequest.builder()
-                .userIds(List.of("123e4567-e89b-42d3-a456-556642445674"))
+                .userIds(List.of(USERID_74))
                 .build();
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S19:");
+
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_ONE_USER_ONE_ROLE);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("CASEWORKER"))
+                .headers(getHttpHeaders(CASEWORKER))
                 .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().is(200))
                 .andReturn();
 
         var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("senior-tribunal-caseworker"));
+        assertTrue(contentAsString.contains(ROLE_NAME_STCW));
 
         assertResponse(result, Status.APPROVED, 1, Status.LIVE, request.getUserIds());
     }
@@ -571,20 +571,22 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         doReturn(ResponseEntity.ok(judicialProfiles))
                 .when(jrdFeignClient).getJudicialDetailsById(any(), any());
 
+        doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
 
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+
+        logger.info(" createOrgRoleMappingTest...S20:");
+
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_TRIBUNAL_JUDGE_FEE_PAID);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("JUDICIAL"))
+                .headers(getHttpHeaders(JUDICIAL))
                 .content(mapper.writeValueAsBytes(userRequest)))
                 .andExpect(status().is(200))
                 .andReturn();
 
         var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("hmcts-judiciary"));
+        assertTrue(contentAsString.contains(ROLE_NAME_HMCTS_JUD));
         assertTrue(contentAsString.contains("fee-paid-judge"));
 
         assertResponse(result, Status.APPROVED, 2, Status.LIVE, userRequest.getUserIds());
@@ -600,20 +602,21 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         doReturn(ResponseEntity.ok(judicialProfiles))
                 .when(jrdFeignClient).getJudicialDetailsById(any(), any());
 
+        doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
 
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S21:");
+
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_TRIBUNAL_JUDGE_SALARIED_PAID);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("JUDICIAL"))
+                .headers(getHttpHeaders(JUDICIAL))
                 .content(mapper.writeValueAsBytes(userRequest)))
                 .andExpect(status().is(200))
                 .andReturn();
 
         var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("hmcts-judiciary"));
+        assertTrue(contentAsString.contains(ROLE_NAME_HMCTS_JUD));
         assertTrue(contentAsString.contains("case-allocator"));
         assertTrue(contentAsString.contains("judge"));
 
@@ -633,20 +636,21 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         doReturn(ResponseEntity.ok(judicialProfiles))
                 .when(jrdFeignClient).getJudicialDetailsById(any(), any());
 
+        doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
 
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S22:");
+
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_ASSISTANT_RESIDENT_JUDGE_ROLES);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("JUDICIAL"))
+                .headers(getHttpHeaders(JUDICIAL))
                 .content(mapper.writeValueAsBytes(userRequest)))
                 .andExpect(status().is(200))
                 .andReturn();
 
         var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("hmcts-judiciary"));
+        assertTrue(contentAsString.contains(ROLE_NAME_HMCTS_JUD));
         assertTrue(contentAsString.contains("case-allocator"));
         assertTrue(contentAsString.contains("judge"));
         assertTrue(contentAsString.contains("leadership-judge"));
@@ -669,20 +673,21 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
         doReturn(ResponseEntity.ok(judicialProfiles))
                 .when(jrdFeignClient).getJudicialDetailsById(any(), any());
 
+        doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
 
-        logger.info(" createOrgRoleMappingTest...");
-        var uri = "/am/role-mapping/staff/users";
+        logger.info(" createOrgRoleMappingTest...S23:");
+
         setRoleAssignmentWireMock(HttpStatus.CREATED, RAS_RESPONSE_TRIBUNAL_JUDGE_FEE_PAID);
 
-        MvcResult result = mockMvc.perform(post(uri)
+        MvcResult result = mockMvc.perform(post(STAFF_URI)
                 .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders("JUDICIAL"))
+                .headers(getHttpHeaders(JUDICIAL))
                 .content(mapper.writeValueAsBytes(userRequest)))
                 .andExpect(status().is(200))
                 .andReturn();
 
         var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains("hmcts-judiciary"));
+        assertTrue(contentAsString.contains(ROLE_NAME_HMCTS_JUD));
         assertTrue(contentAsString.contains("fee-paid-judge"));
 
         assertResponse(result, Status.APPROVED, 2, Status.LIVE, userRequest.getUserIds());

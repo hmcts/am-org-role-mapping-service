@@ -1,13 +1,15 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,11 +20,12 @@ import java.util.UUID;
 
 public class IntTestDataBuilder {
 
-    private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
-    private static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
+    private static final String ID_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
+    private static final String ID_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
 
-    private static final String PROCESS_ID = "staff-organisational-role-mapping";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
+
+    private static final String LONDON ="London";
 
     private IntTestDataBuilder() {
     }
@@ -38,7 +41,7 @@ public class IntTestDataBuilder {
     }
 
     public static UserRequest buildUserRequest() {
-        List<String> users = List.of(id_1,id_2);
+        List<String> users = List.of(ID_1, ID_2);
         return UserRequest.builder().userIds(users).build();
     }
 
@@ -113,7 +116,7 @@ public class IntTestDataBuilder {
                 .workArea(buildListOfWorkAreas(enableWorkAreaList, workArea1, workArea2))
                 .createdTime(LocalDateTime.now())
                 .lastUpdatedTime(LocalDateTime.now().minusDays(1L))
-                .region("London").regionId(1234L)
+                .region(LONDON).regionId(1234L)
                 .userType("Secret Agent")
                 .userTypeId("007")
                 .suspended(suspended)
@@ -135,11 +138,11 @@ public class IntTestDataBuilder {
                                                                   String workArea2,
                                                                   boolean suspended) {
         List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
-        caseWorkerProfiles.add(buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
+        caseWorkerProfiles.add(buildUserProfile(ID_1, multiRole, roleId1, roleId2, roleName1, roleName2,
                 enableLocationList, primaryLocation1, primaryLocation2,
                 enableWorkAreaList, workArea1, workArea2, suspended));
         if (multiProfiles) {
-            caseWorkerProfiles.add(buildUserProfile(id_2, multiRole, roleId1, roleId2, roleName1, roleName2,
+            caseWorkerProfiles.add(buildUserProfile(ID_2, multiRole, roleId1, roleId2, roleName1, roleName2,
                     enableLocationList, primaryLocation1, primaryLocation2,
                     enableWorkAreaList, workArea1, workArea2, suspended));
         }
@@ -147,8 +150,8 @@ public class IntTestDataBuilder {
     }
 
     public static CaseWorkerAccessProfile buildUserAccessProfile(boolean suspended) {
-        return CaseWorkerAccessProfile.builder().id(id_1).suspended(suspended).areaOfWorkId("London")
-                .primaryLocationId("LDN").primaryLocationName("London").roleId(RoleType.ORGANISATION.toString())
+        return CaseWorkerAccessProfile.builder().id(ID_1).suspended(suspended).areaOfWorkId(LONDON)
+                .primaryLocationId("LDN").primaryLocationName(LONDON).roleId(RoleType.ORGANISATION.toString())
                 .serviceCode("ServiceCode").roleName(ROLE_NAME_TCW).build();
     }
 
@@ -163,7 +166,7 @@ public class IntTestDataBuilder {
                                                                                       boolean suspended2) {
 
         HashMap<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
-        userAccessProfiles.put(id_1, buildUserAccessProfileSet(suspended1, suspended2));
+        userAccessProfiles.put(ID_1, buildUserAccessProfileSet(suspended1, suspended2));
         return userAccessProfiles;
     }
 
@@ -180,12 +183,22 @@ public class IntTestDataBuilder {
                                                                                    String workArea1,
                                                                                    String workArea2,
                                                                                    boolean suspended) {
-        CaseWorkerProfile profile = buildUserProfile(id_1, multiRole, roleId1, roleId2, roleName1, roleName2,
+        CaseWorkerProfile profile = buildUserProfile(ID_1, multiRole, roleId1, roleId2, roleName1, roleName2,
                 enableLocationList, primaryLocation1, primaryLocation2,
                 enableWorkAreaList, workArea1, workArea2, suspended);
-        List<CaseWorkerProfilesResponse> userProfiles =
-                List.of(CaseWorkerProfilesResponse.builder().serviceName(service).userProfile(profile).build());
-
-        return userProfiles;
+        return List.of(CaseWorkerProfilesResponse.builder().serviceName(service).userProfile(profile).build());
     }
+
+    public static ResponseEntity<JudicialBookingResponse> buildJudicialBookingsResponse(String... userIds) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("total_records", "" + userIds.length);
+        List<JudicialBooking> bookings = new ArrayList<>();
+        for (var userId:userIds) {
+            bookings.add(JudicialBooking.builder().beginTime(ZonedDateTime.now())
+                    .endTime(ZonedDateTime.now().plusDays(5)).userId(userId)
+                    .locationId("location").regionId("region").build());
+        }
+        return new ResponseEntity<>(new JudicialBookingResponse(bookings), headers, HttpStatus.OK);
+    }
+
 }
