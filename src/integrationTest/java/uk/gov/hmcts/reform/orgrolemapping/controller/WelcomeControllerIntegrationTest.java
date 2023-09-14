@@ -75,12 +75,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
-
     private static final String CASEWORKER ="CASEWORKER";
-
     private static final String JUDICIAL ="JUDICIAL";
     private transient MockMvc mockMvc;
-
     @Mock
     private Authentication authentication;
 
@@ -188,10 +185,8 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
                 result.getResponse().getContentAsString());
     }
 
-
     @DisplayName("S1: must successfully create org role mapping for single user with one role assignment")
     public void createOrgRoleMappingForSingleUserWithOneRoleAssignment() throws Exception {
-
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2",
@@ -248,7 +243,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S3: must successfully create org role mapping for multiple users each has single role assignment")
     public void createOrgRoleMappingForMultipleUsersWithOneRoleAssignment() throws Exception {
 
-
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(true, false, "1", "2", ROLE_NAME_STCW,
                         ROLE_NAME_TCW,
@@ -275,7 +269,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Test
     @DisplayName("S6: must successfully delete org role mapping when delete flag is true")
     public void createOrgRoleMappingDeleteOrgRoleMappingTrue() throws Exception {
-
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
@@ -332,7 +325,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S9: must successfully create org role mapping for an update of role TCW to STCW")
     public void createOrgRoleMappingUpdateRole() throws Exception {
 
-
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
                         ROLE_NAME_TCW,
@@ -363,7 +355,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S11: must receive an error message when there is no primary location")
     public void createOrgRoleMappingErrorWhenNoPrimaryLocation() throws Exception {
 
-
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
                         ROLE_NAME_TCW,
@@ -390,7 +381,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Test
     @DisplayName("S12: must receive an error message when no base location list is provided")
     public void createOrgRoleMappingErrorWhenNoLocationList() throws Exception {
-
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
@@ -445,7 +435,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @Test
     @DisplayName("S16: must receive an error message when no work area list is provided")
     public void createOrgRoleMappingErrorWhenNoWorkArea() throws Exception {
-
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2", ROLE_NAME_STCW,
@@ -529,7 +518,6 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S19: drools must map correct role name based on roleId")
     public void createOrgRoleMappingDroolsMustMapCorrectRoleName() throws Exception {
 
-
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(false, false,
                         "1", "2", "ROLE_NAME_TCW", ROLE_NAME_TCW,
@@ -565,14 +553,12 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     @DisplayName("S20: drools must map correct roles name based on appointments & appointment type")
     public void createOrgRolesForIACTribunalJudge_FeePaidThroughMapping() throws Exception {
 
-
         judicialProfiles.get(0).getAppointments().remove(0);
 
         doReturn(ResponseEntity.ok(judicialProfiles))
                 .when(jrdFeignClient).getJudicialDetailsById(any(), any());
 
         doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
-
 
         logger.info(" createOrgRoleMappingTest...S20:");
 
