@@ -57,9 +57,10 @@ public class BulkAssignmentOrchestrator {
 
         ResponseEntity<Object> responseEntity = null;
         //ASB calls this  if UserType.JUDICIAL then pass judicialBookings
-        if( userType.equals(UserType.JUDICIAL)) {
+        if (userType.equals(UserType.JUDICIAL)) {
             List<JudicialBooking> judicialBookings = judicialBookingService.fetchJudicialBookings(userRequest);
-            log.info("Judicial User {} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
+            log.info("Judicial User {} profile(s) got {} booking(s)", userAccessProfiles.size(),
+                    judicialBookings.size());
             responseEntity = requestMappingService.createAssignments(userAccessProfiles,judicialBookings, userType);
         } else if (userType.equals(UserType.CASEWORKER)) {
             log.info("Creating assignments for Staff/Caseworker UserType");
@@ -72,7 +73,7 @@ public class BulkAssignmentOrchestrator {
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
         List<Object> roleAssignmentResponses = new ArrayList<>();
-        if ( null != responseEntity) {
+        if (null != responseEntity) {
             ((List<ResponseEntity<Object>>)
                     Objects.requireNonNull(responseEntity.getBody())).forEach(entity ->
                     roleAssignmentResponses.add(entity.getBody()));

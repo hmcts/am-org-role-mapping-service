@@ -13,7 +13,12 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
@@ -28,8 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
@@ -214,19 +217,21 @@ public class RefreshOrchestrator {
     protected ResponseEntity<Object> prepareResponseCodes(Map<String, HttpStatus> responseCodeWithUserId, Map<String,
             Set<UserAccessProfile>> userAccessProfiles, UserType userType) {
         ResponseEntity<Object> responseEntity;
-        if( userType.equals(UserType.JUDICIAL)) {
+        if (userType.equals(UserType.JUDICIAL)) {
             //extract unique userids from userAccessProfiles
             List<String> userIds = new ArrayList<>();
 
-            for( Set<UserAccessProfile> userAccessProfileSet:userAccessProfiles.values() ) {
+            for (Set<UserAccessProfile> userAccessProfileSet:userAccessProfiles.values()) {
                 List<UserAccessProfile> userAccessProfileList = userAccessProfileSet.stream().toList();
-                for(UserAccessProfile userAccessProfile:userAccessProfileList){
+                for (UserAccessProfile userAccessProfile:userAccessProfileList) {
                     userIds.add(((JudicialAccessProfile)userAccessProfile).getUserId());
                 }
             }
             List<String> uniqueUserIds = userIds.stream().distinct().toList();
-            List<JudicialBooking> judicialBookings = judicialBookingService.fetchJudicialBookingsInBatches(uniqueUserIds,pageSize);
-            log.info("Judicial Refresh for {} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
+            List<JudicialBooking> judicialBookings =
+                    judicialBookingService.fetchJudicialBookingsInBatches(uniqueUserIds,pageSize);
+            log.info("Judicial Refresh for {} profile(s) got {} booking(s)", userAccessProfiles.size(),
+                    judicialBookings.size());
             responseEntity = requestMappingService.createAssignments(userAccessProfiles,judicialBookings, userType);
         } else {
             responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);

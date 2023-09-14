@@ -91,6 +91,7 @@ public class RequestMappingService<T> {
         return responseEntity;
 
     }
+
     //we might change pass the judicial bookings
     public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles, UserType userType) {
         return createAssignments(usersAccessProfiles, Collections.emptyList(), userType);

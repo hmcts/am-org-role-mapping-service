@@ -91,6 +91,7 @@ class BulkAssignmentOrchestratorTest {
         Mockito.verify(requestMappingService, Mockito.times(1))
                 .createAssignments(Mockito.any(),Mockito.any());
     }
+
     @Test
     @SuppressWarnings("unchecked")
     void createJudicialBulkAssignmentsRequestTest() {
@@ -127,6 +128,7 @@ class BulkAssignmentOrchestratorTest {
         Mockito.verify(requestMappingService, Mockito.times(1))
                 .createAssignments(Mockito.any(),Mockito.any(),Mockito.any());
     }
+
     @Test
     @SuppressWarnings("unchecked")
     void createBulkAssignmentsRequestForJudicial() {

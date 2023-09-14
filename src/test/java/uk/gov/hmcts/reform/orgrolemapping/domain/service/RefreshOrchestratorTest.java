@@ -18,19 +18,37 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
 

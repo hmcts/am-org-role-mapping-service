@@ -44,7 +44,7 @@ public class JudicialBookingService {
                 .stream()
                 .collect(Collectors.groupingBy(gr -> counter.getAndIncrement() / defaultBatchSize))
                 .values()
-                .forEach( batchUserIds -> {
+                .forEach(batchUserIds -> {
                     UserRequest userRequest = UserRequest.builder().userIds(batchUserIds).build();
                     judicialBookings.addAll(fetchJudicialBookings(userRequest));
                 });
