@@ -23,7 +23,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "publiclaw_salaried_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("PUBLICLAW District Judge - Salaried", "PUBLICLAW District Judge (MC) - SPTW",
+  $joh: JudicialOfficeHolder(office in ("PUBLICLAW District Judge - Salaried",
   "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried", "PUBLICLAW Designated Family Judge - Salaried",
   "PUBLICLAW District Judge (MC) - Salaried", "PUBLICLAW Specialist Circuit Judge - Salaried",
   "PUBLICLAW Senior Circuit Judge - Salaried", "PUBLICLAW Tribunal Judge - Salaried", "PUBLICLAW Employment Judge - Salaried"))
@@ -130,7 +130,7 @@ rule "publiclaw_hmcts_judiciary_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in (
-  "PUBLICLAW District Judge - Salaried", "PUBLICLAW District Judge (MC) - SPTW",
+  "PUBLICLAW District Judge - Salaried",
   "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",
   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
