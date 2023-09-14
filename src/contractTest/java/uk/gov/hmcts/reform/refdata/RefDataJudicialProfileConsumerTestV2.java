@@ -148,6 +148,40 @@ public class RefDataJudicialProfileConsumerTestV2 {
                 .stringType("personal_code", "1234")
                 .stringType("post_nominals", "Mr")
                 .stringType("initials", "I N")
+                .minArrayLike("appointments", 1, r -> r
+                        .stringType("base_location_id", "1351")
+                        .stringType("epimms_id", "839746")
+                        .stringType("cft_region_id", "2")
+                        .stringType("cft_region", "North")
+                        .stringType("is_principal_appointment", "TRUE")
+                        .stringType("start_date", "2020-04-28")
+                        .stringType("end_date", "2052-04-28")
+                        .stringType("appointment", "Employment Judge")
+                        .stringType("appointment_type", "Salaried")
+                        .minArrayLike("service_codes", 1, s -> s
+                                .stringType("BFA1")
+                        )
+                        .stringType("appointment_id", "10001")
+                )
+                .minArrayLike("authorisations", 1, r -> r
+                        .stringType("jurisdiction", "Languages")
+                        .stringType("ticket_description", "Welsh")
+                        .stringType("start_date", "2022-04-28T16:00:49")
+                        .minArrayLike("service_codes", 1, s -> s
+                                .stringType("BFA1")
+                        )
+                        .stringType("ticket_code", "373")
+                        .stringType("end_date", "2052-04-28T16:00:49")
+                        .stringType("appointment_id", "10001")
+                        .stringType("authorisation_id", "123")
+                        .stringType("jurisdiction_id", "456")
+                )
+                .minArrayLike("roles", 1, r -> r
+                        .stringType("jurisdiction_role_name", "some jurisdiction role name")
+                        .stringType("jurisdiction_role_id", "some jurisdiction role id")
+                        .stringType("start_date", "2022-04-29T16:00:49")
+                        .stringType("end_date", "2052-04-29T16:00:49")
+                )
         )).build();
     }
 
