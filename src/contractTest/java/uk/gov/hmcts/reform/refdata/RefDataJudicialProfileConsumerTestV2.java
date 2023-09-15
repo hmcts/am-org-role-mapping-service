@@ -158,18 +158,18 @@ public class RefDataJudicialProfileConsumerTestV2 {
                         .stringType("end_date", "2052-04-28")
                         .stringType("appointment", "Employment Judge")
                         .stringType("appointment_type", "Salaried")
-                        .minArrayLike("service_codes", 1, s -> s
-                                .stringType("BFA1")
-                        )
+                        .array("service_codes", (s) -> {
+                            s.stringType("BFA1");
+                        })
                         .stringType("appointment_id", "10001")
                 )
                 .minArrayLike("authorisations", 1, r -> r
                         .stringType("jurisdiction", "Languages")
                         .stringType("ticket_description", "Welsh")
                         .stringType("start_date", "2022-04-28T16:00:49")
-                        .minArrayLike("service_codes", 1, s -> s
-                                .stringType("BFA1")
-                        )
+                        .array("service_codes", (s) -> {
+                            s.stringType("BFA1");
+                        })
                         .stringType("ticket_code", "373")
                         .stringType("end_date", "2052-04-28T16:00:49")
                         .stringType("appointment_id", "10001")
