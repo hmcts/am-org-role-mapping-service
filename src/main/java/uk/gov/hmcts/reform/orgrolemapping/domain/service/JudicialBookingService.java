@@ -37,7 +37,7 @@ public class JudicialBookingService {
     public List<JudicialBooking> fetchJudicialBookingsInBatches(List<String> userIds,String batchSize) {
         log.info(" fetching Judicial Bookings for userIds {} and the batchSize is {}", userIds,batchSize);
         List<JudicialBooking> judicialBookings = new ArrayList<>();
-        final int defaultBatchSize = Integer.getInteger(batchSize);
+        final int defaultBatchSize = Integer.parseInt(batchSize);
         AtomicInteger counter = new AtomicInteger();
 
         userIds

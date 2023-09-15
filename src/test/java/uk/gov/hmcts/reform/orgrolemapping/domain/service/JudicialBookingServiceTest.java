@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +23,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 class JudicialBookingServiceTest {
-
 
     JBSFeignClient feignClient = mock(JBSFeignClient.class);
 
@@ -68,4 +68,33 @@ class JudicialBookingServiceTest {
 
         assertEquals(0, responseEntity.size());
     }
+
+    @Test
+    void testFetchJudicialBookingsInBatchesEmptyUsers() {
+        List<String> userIds = Collections.emptyList();
+        String batchSize = "400";
+
+        List<JudicialBooking> judBookings = sut.fetchJudicialBookingsInBatches(userIds,batchSize);
+        assertEquals(0,judBookings.size());
+    }
+
+    @Test
+    void testFetchJudicialBookingsInBatchesWithUsers() {
+        List<String> userIds = Arrays.asList("1","2");
+
+        List<JudicialBooking> expectedBookings = new ArrayList<>();
+        expectedBookings.add(JudicialBooking.builder().userId("1").build());
+        expectedBookings.add(JudicialBooking.builder().userId("2").build());
+
+        UserRequest userRequest = UserRequest.builder().userIds(List.of("1","2")).build();
+        JudicialBookingRequest bookingRequest = new JudicialBookingRequest(userRequest);
+
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(new JudicialBookingResponse(expectedBookings)))
+                .when(feignClient).getJudicialBookingByUserIds(bookingRequest);
+
+        String batchSize = "400";
+        List<JudicialBooking> actualBookings = sut.fetchJudicialBookingsInBatches(userIds,batchSize);
+        assertEquals(expectedBookings.size(),actualBookings.size());
+    }
+
 }
