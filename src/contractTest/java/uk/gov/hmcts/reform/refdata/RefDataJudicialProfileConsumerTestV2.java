@@ -166,12 +166,12 @@ public class RefDataJudicialProfileConsumerTestV2 {
                 .minArrayLike("authorisations", 1, r -> r
                         .stringType("jurisdiction")
                         .stringType("ticket_description")
-                        .date("start_date", "yyyy-MM-dd'T'HH:mm:ss")
+                        .date("start_date", "yyyy-MM-ddTHH:mm:ss")
                         .array("service_codes", (s) -> {
                             s.stringType("BFA1");
                         })
                         .stringType("ticket_code")
-                        .date("end_date", "yyyy-MM-dd'T'HH:mm:ss")
+                        .date("end_date", "yyyy-MM-ddTHH:mm:ss")
                         .stringType("appointment_id")
                         .stringType("authorisation_id")
                         .stringType("jurisdiction_id")
@@ -179,8 +179,8 @@ public class RefDataJudicialProfileConsumerTestV2 {
                 .minArrayLike("roles", 1, r -> r
                         .stringType("jurisdiction_role_name")
                         .stringType("jurisdiction_role_id")
-                        .date("start_date", "yyyy-MM-dd'T'HH:mm:ss")
-                        .date("end_date", "yyyy-MM-dd'T'HH:mm:ss")
+                        .date("start_date", "yyyy-MM-ddTHH:mm:ss")
+                        .date("end_date", "yyyy-MM-ddTHH:mm:ss")
                 )
         )).build();
     }
