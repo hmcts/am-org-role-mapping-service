@@ -180,8 +180,8 @@ public class RefDataJudicialProfileConsumerTestV2 {
                 .minArrayLike("roles", 1, r -> r
                         .stringType("jurisdiction_role_name")
                         .stringType("jurisdiction_role_id")
-                        .datetime("start_date", DateTimeFormatter.ISO_LOCAL_DATE_TIME.toString())
-                        .datetime("end_date", DateTimeFormatter.ISO_LOCAL_DATE_TIME.toString())
+                        .datetime("start_date", "yyyy-MM-ddTHH:mm:ss")
+                        .datetime("end_date", "yyyy-MM-ddTHH:mm:ss")
                 )
         )).build();
     }
