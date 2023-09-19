@@ -6,7 +6,7 @@ import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -32,7 +32,7 @@ public class CRDMessagingConfiguration {
     String environment;
 
     @Bean("crdPublisher")
-    @ConditionalOnProperty(name = "amqp.crd.enabled", havingValue = "true")
+    @ConditionalOnExpression("${testing.support.enabled} && ${amqp.crd.enabled}")
     public ServiceBusSenderClient getServiceBusSenderClient() {
         log.debug("Getting the ServiceBusSenderClient in CRD");
         logServiceBusVariables();

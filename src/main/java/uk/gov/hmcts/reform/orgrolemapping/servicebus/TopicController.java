@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 @Slf4j
 @NoArgsConstructor
 @Hidden
-@ConditionalOnExpression("${amqp.crd.enabled} || ${amqp.jrd.enabled}")
+@ConditionalOnExpression("${testing.support.enabled} && (${amqp.crd.enabled} || ${amqp.jrd.enabled})")
 public class TopicController {
 
     JRDTopicPublisher jrdTopicPublisher;

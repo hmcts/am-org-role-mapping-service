@@ -44,6 +44,7 @@ java:
     ORG_ROLE_MAPPING_DB_USERNAME: am@am-org-role-mapping-service-postgres-db-v11-{{ .Values.global.environment }}
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified&sslmode=require"
     REFRESH_JOB:
+    TESTING_SUPPORT_ENABLED: false
     APPLICATION_LOGGING_LEVEL: INFO
     RUN_LD_ON_STARTUP: true
 servicebus:

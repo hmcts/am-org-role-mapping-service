@@ -164,6 +164,10 @@ refresh:
     sortColumn: ${REFRESH_JOB_SORT_COL:}
     authorisedServices: am_org_role_mapping_service,am_role_assignment_refresh_batch
 
+testing:
+  support:
+    enabled: ${TESTING_SUPPORT_ENABLED:false}
+
 dbFeature:
   flags:
     enable: ${DB_FEATURE_FLAG_ENABLE:}
