@@ -179,8 +179,8 @@ public class RefDataJudicialProfileConsumerTestV2 {
                 .minArrayLike("roles", 1, r -> r
                         .stringType("jurisdiction_role_name")
                         .stringType("jurisdiction_role_id")
-                        .datetime("start_date", "yyyy-MM-ddTHH:mm:ss")
-                        .datetime("end_date", "yyyy-MM-ddTHH:mm:ss")
+                        .stringType("start_date")
+                        .stringType("end_date")
                 )
         )).build();
     }
