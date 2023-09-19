@@ -6,6 +6,7 @@ import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -31,6 +32,7 @@ public class JRDMessagingConfiguration {
     String environment;
 
     @Bean("jrdPublisher")
+    @ConditionalOnProperty(name = "amqp.jrd.enabled", havingValue = "true")
     public ServiceBusSenderClient getServiceBusSenderClient() {
         log.debug("Getting the ServiceBusSenderClient in JRD");
         logServiceBusVariables();

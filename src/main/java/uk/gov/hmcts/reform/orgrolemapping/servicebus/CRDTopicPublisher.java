@@ -8,6 +8,7 @@ import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 @Slf4j
 @Service
+@ConditionalOnProperty(name = "amqp.crd.enabled", havingValue = "true")
 public class CRDTopicPublisher extends CRDMessagingConfiguration {
 
     @Autowired
