@@ -31,6 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
+import java.time.format.DateTimeFormatter;
 
 import java.util.Map;
 import java.util.Set;
@@ -179,8 +180,8 @@ public class RefDataJudicialProfileConsumerTestV2 {
                 .minArrayLike("roles", 1, r -> r
                         .stringType("jurisdiction_role_name")
                         .stringType("jurisdiction_role_id")
-                        .datetime("start_date", "yyyy-MM-dd'T'HH:mm:ss")
-                        .datetime("end_date", "yyyy-MM-dd'T'HH:mm:ss")
+                        .datetime("start_date", DateTimeFormatter.ISO_LOCAL_DATE_TIME.toString())
+                        .datetime("end_date", "yyyy-MM-ddTHH:mm:ss")
                 )
         )).build();
     }
