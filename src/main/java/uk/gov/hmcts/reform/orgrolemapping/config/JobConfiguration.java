@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Optional;
 
 @Component
@@ -24,7 +23,7 @@ public class JobConfiguration implements CommandLineRunner {
 
     private final String jobDetail;
 
-    private final String refreshJobsConfigSplitter = ":";
+    private static final String REFRESH_JOBS_CONFIG_SPLITTER = ":";
 
 
     @Autowired
@@ -42,8 +41,8 @@ public class JobConfiguration implements CommandLineRunner {
         if (StringUtils.isNotEmpty(jobDetail) && featureConditionEvaluator
                 .isFlagEnabled("am_org_role_mapping_service", "orm-refresh-job-enable")) {
             // change to handle multiple services for refresh job for https://tools.hmcts.net/jira/browse/AM-2902
-            String[] refreshJobsConfig = jobDetail.split(refreshJobsConfigSplitter);
-            for(String refreshJobConfig:refreshJobsConfig) {
+            String[] refreshJobsConfig = jobDetail.split(REFRESH_JOBS_CONFIG_SPLITTER);
+            for (String refreshJobConfig:refreshJobsConfig) {
                 String[] refreshJobAttributes = refreshJobConfig.split("-");
                 log.info("Job {} inserting into refresh table", refreshJobConfig);
                 if (refreshJobAttributes.length < 4) {
@@ -51,7 +50,8 @@ public class JobConfiguration implements CommandLineRunner {
                 }
                 RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder().build();
                 if (refreshJobAttributes.length > 4) {
-                    Optional<RefreshJobEntity> refreshJob = refreshJobsRepository.findById(Long.valueOf(refreshJobAttributes[4]));
+                    Optional<RefreshJobEntity> refreshJob = refreshJobsRepository
+                            .findById(Long.valueOf(refreshJobAttributes[4]));
                     refreshJobEntity = refreshJob.orElse(refreshJobEntity);
                 }
 
