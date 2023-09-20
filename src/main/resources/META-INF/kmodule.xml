@@ -7,7 +7,8 @@
                     validationrules.civil,
                     validationrules.privatelaw,
                     validationrules.publiclaw,
-                    validationrules.employment">
+                    validationrules.employment,
+                    validationrules.stcic">
         <ksession name="org-role-mapping-validation-session" type="stateless"/>
     </kbase>
 </kmodule>
