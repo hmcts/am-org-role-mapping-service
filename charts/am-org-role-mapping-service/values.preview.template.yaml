@@ -8,13 +8,7 @@ java:
   devmemoryLimits: 2048Mi
   devcpuLimits: 1500m
 
-  secrets:
-    SB_ACCESS_KEY:
-      secretRef: am-sb-preview
-      key: primaryKey
-    SB_CONNECTION_STRING:
-      secretRef: am-sb-preview
-      key: connectionString
+  # Test AM-2894 with ASB integration disabled
 
   keyVaults:
     am:
@@ -38,12 +32,12 @@ java:
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
     AMQP_ENABLED: false # Test AM-2894 with ASB integration disabled
-    CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-crd-topic"
-    JRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-jrd-topic"
-    CRD_TOPIC_NAME: "{{ .Release.Name}}-asb-crd-topic"
-    JRD_TOPIC_NAME: "{{ .Release.Name}}-asb-jrd-topic"
-    AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "$(SB_ACCESS_KEY)"
-    AMQP_JRD_SHARED_ACCESS_KEY_VALUE: "$(SB_ACCESS_KEY)"
+    CRD_SUBSCRIPTION_NAME: "bad-value" # Test AM-2894 with ASB integration disabled
+    JRD_SUBSCRIPTION_NAME: "bad-value" # Test AM-2894 with ASB integration disabled
+    CRD_TOPIC_NAME: "bad-value" # Test AM-2894 with ASB integration disabled
+    JRD_TOPIC_NAME: "bad-value" # Test AM-2894 with ASB integration disabled
+    AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "bad-value" # Test AM-2894 with ASB integration disabled
+    AMQP_JRD_SHARED_ACCESS_KEY_VALUE: $bad-value" # Test AM-2894 with ASB integration disabled
     ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql"
     ORG_ROLE_MAPPING_DB_NAME: "{{ .Values.postgresql.auth.database}}"
     ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
@@ -58,13 +52,4 @@ java:
       port: 5432
 
 servicebus:
-  enabled: true
-  releaseNameOverride: ${SERVICE_NAME}-asb
-  resourceGroup: "am-aso-preview-rg"
-  sbNamespace: am-servicebus-preview
-  setup:
-    topics:
-      - name: crd-topic
-        subscriptionNeeded: yes
-      - name: jrd-topic
-        subscriptionNeeded: yes
+  enabled: false # Test AM-2894 with ASB integration disabled
