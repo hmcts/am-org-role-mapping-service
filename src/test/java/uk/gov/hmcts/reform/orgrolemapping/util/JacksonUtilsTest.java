@@ -59,6 +59,12 @@ class JacksonUtilsTest {
     }
 
     @Test
+    void convertInJudicialProfileV2() throws IOException {
+        JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
+        assertNotNull(JacksonUtils.convertInJudicialProfileV2(judicialProfile));
+    }
+
+    @Test
     void convertInRoleAssignmentResource() {
         RoleAssignmentRequestResource from = new RoleAssignmentRequestResource(AssignmentRequest.builder().build());
         assertNotNull(JacksonUtils.convertRoleAssignmentResource(from));

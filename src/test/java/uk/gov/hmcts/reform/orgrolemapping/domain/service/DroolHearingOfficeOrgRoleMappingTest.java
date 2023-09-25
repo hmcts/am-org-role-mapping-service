@@ -34,6 +34,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnHearingJudicialRoles(String serviceCode, String jurisdiction) {
 
+        allProfiles.clear();
         judicialAccessProfiles.forEach(judicialAccessProfile -> judicialAccessProfile.getAuthorisations().forEach(a ->
                 a.setServiceCodes(List.of(serviceCode))));
         //Execute Kie session
@@ -58,10 +59,12 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @CsvSource({
         "BBA3",
         "ABA5",
-        "AAA6"
+        "AAA6",
+        "BFA1"
     })
     void shouldReturnEmptyRoles_expiredAuthorisation(String serviceCode) {
 
+        allProfiles.clear();
         judicialAccessProfiles.forEach(jap -> jap.getAuthorisations().forEach(a -> {
             a.setServiceCodes(List.of(serviceCode));
             a.setEndDate(LocalDateTime.now().minusDays(1));
@@ -81,6 +84,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnEmptyRoles(boolean ldFlag, String serviceCode) {
 
+        allProfiles.clear();
         judicialAccessProfiles.forEach(jap -> jap.getAuthorisations().forEach(a ->
                 a.setServiceCodes(List.of(serviceCode))));
         List.of("2","4","5","9","10","12","13","14","15").forEach(a ->
@@ -99,10 +103,13 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         "'3,4',ABA3,PUBLICLAW",
         "'3,4',ABA5,PRIVATELAW",
         "'3,4,6,11',AAA6,CIVIL",
-        "'3,4,5,12,13',BHA1,EMPLOYMENT"
+        "'3,4,5,12,13',BHA1,EMPLOYMENT",
+        "'3,4,5,6,7,8',BFA1,IA"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Admin(String roleId, String serviceCode,
                                                              String jurisdiction) {
+
+        allProfiles.clear();
         List<String> roleIds = List.of(roleId.split(","));
         roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
 
@@ -126,10 +133,13 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         "'9,10',ABA5,PRIVATELAW",
         "'9,10',ABA3,PUBLICLAW",
         "'9,10',AAA6,CIVIL",
-        "'9,10',BHA1,EMPLOYMENT"
+        "'9,10',BHA1,EMPLOYMENT",
+        "'9,10',BFA1,IA"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Ctsc(String roleId, String serviceCode,
                                                              String jurisdiction) {
+
+        allProfiles.clear();
         List<String> roleIds = List.of(roleId.split(","));
         roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
 
@@ -164,10 +174,14 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         "1,AAA6,CIVIL",
         "2,AAA6,CIVIL",
         "1,BHA1,EMPLOYMENT",
-        "2,BHA1,EMPLOYMENT"
+        "2,BHA1,EMPLOYMENT",
+        "1,BFA1,IA",
+        "2,BFA1,IA"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_LegalOps(String roleId, String serviceCode,
                                                                 String jurisdiction) {
+
+        allProfiles.clear();
         allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
@@ -194,6 +208,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     })
     void shouldReturnListedHearingViewerCaseWorker_otherGovDept(String roleId, String serviceCode,
                                                                 String jurisdiction) {
+
+        allProfiles.clear();
         allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session

@@ -13,8 +13,10 @@ import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
@@ -23,10 +25,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -419,6 +423,15 @@ public class TestDataBuilder {
                 JudicialProfile.class);
     }
 
+    public static JudicialProfileV2 buildJudicialProfileV2() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
+        return objectMapper.readValue(
+                new File("src/main/resources/judicialProfileSampleV2.json"),
+                JudicialProfileV2.class);
+    }
+
     public static JudicialBooking buildJudicialBooking() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -469,6 +482,37 @@ public class TestDataBuilder {
                 .build();
     }
 
+    public static JudicialProfileV2 buildJudicialProfileWithParamsV2(
+            List<AppointmentV2> appointments, List<AuthorisationV2> authorisations) {
+        return JudicialProfileV2.builder()
+                .sidamId("111")
+                .objectId("fa88df1d-4204-4039-8e2a-fa11d4c643ec")
+                .knownAs("Penney")
+                .surname("Azcarate")
+                .fullName("Penney Azcarate")
+                .postNominals("The Honourable")
+                .emailId("EMP42867@ejudiciary.net")
+                .appointments(appointments)
+                .authorisations(authorisations)
+                .build();
+    }
+
+    public static JudicialProfileV2 buildJudicialProfileWithParamsV2(
+            List<AppointmentV2> appointments, List<AuthorisationV2> authorisations, List<RoleV2> roles) {
+        return JudicialProfileV2.builder()
+                .sidamId("111")
+                .objectId("fa88df1d-4204-4039-8e2a-fa11d4c643ec")
+                .knownAs("Penney")
+                .surname("Azcarate")
+                .fullName("Penney Azcarate")
+                .postNominals("The Honourable")
+                .emailId("EMP42867@ejudiciary.net")
+                .appointments(appointments)
+                .authorisations(authorisations)
+                .roles(roles)
+                .build();
+    }
+
     public static Appointment buildAppointmentWithParams(String epimms, String isPrinciple, String appointment,
                                                          String appointmentType, LocalDate startDate, LocalDate endDate,
                                                          List<String> roles, String serviceCode) {
@@ -490,7 +534,41 @@ public class TestDataBuilder {
                 .build();
     }
 
+    public static AppointmentV2 buildAppointmentWithParamsV2(String epimms, String isPrinciple, String appointment,
+                                                             String appointmentType, LocalDate startDate,
+                                                             LocalDate endDate, String serviceCode) {
+        List<String> serviceCodes;
+        if (serviceCode != null) {
+            serviceCodes = List.of(serviceCode);
+        } else {
+            serviceCodes = null;
+        }
 
+        return AppointmentV2.builder()
+                .baseLocationId("827")
+                .epimmsId(epimms)
+                .cftRegionID("1")
+                .cftRegion("South East")
+                .isPrincipalAppointment(isPrinciple)
+                .appointment(appointment)
+                .appointmentType(appointmentType)
+                .startDate(startDate)
+                .endDate(endDate)
+                .serviceCodes(serviceCodes)
+                .build();
+    }
+
+    public static List<RoleV2> buildListOfRolesV2(List<String> roleNames,
+                                                  LocalDate startDate,
+                                                  LocalDate endDate) {
+        return roleNames.stream()
+                .map(roleName -> RoleV2.builder()
+                        .jurisdictionRoleName(roleName)
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .build())
+                .toList();
+    }
 
     public static Authorisation buildAuthorisationWithParams(String jurisdiction,
                                                              String ticketCode,
@@ -499,6 +577,22 @@ public class TestDataBuilder {
                                                              LocalDateTime startDate,
                                                              LocalDateTime endDate) {
         return Authorisation.builder()
+                .jurisdiction(jurisdiction)
+                .ticketCode(ticketCode)
+                .ticketDescription(ticketDescription)
+                .startDate(startDate)
+                .endDate(endDate)
+                .serviceCodes(serviceCodes)
+                .build();
+    }
+
+    public static AuthorisationV2 buildAuthorisationWithParamsV2(String jurisdiction,
+                                                             String ticketCode,
+                                                             String ticketDescription,
+                                                             List<String> serviceCodes,
+                                                             LocalDate startDate,
+                                                             LocalDate endDate) {
+        return AuthorisationV2.builder()
                 .jurisdiction(jurisdiction)
                 .ticketCode(ticketCode)
                 .ticketDescription(ticketDescription)
@@ -553,6 +647,73 @@ public class TestDataBuilder {
                 LocalDateTime.now().minusYears(2L));
 
         List<Authorisation> authorisationList;
+
+        switch (setNumber) {
+            case 1:
+                authorisationList = Arrays.asList(auth, auth2, auth3, auth4, auth5, auth6, auth7, auth8);
+                break;
+            case 2:
+                authorisationList = Arrays.asList(auth, auth3, auth4, auth5, auth6);
+                break;
+            case 3:
+                authorisationList = Arrays.asList(auth, auth3, auth4, auth9,  auth12);
+                break;
+            case 4:
+                authorisationList = Arrays.asList(auth, auth5, auth10, auth11);
+                break;
+            default:
+                authorisationList = Collections.singletonList(auth);
+        }
+
+        return authorisationList;
+
+    }
+
+    public static List<AuthorisationV2> buildListOfAuthorisationsV2(int setNumber) {
+        AuthorisationV2 auth = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Civil", "294",
+                "Civil Authorisation", Collections.singletonList("AAA6"), null, null);
+
+        AuthorisationV2 auth2 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Family", "313",
+                "Court of Protection", Collections.singletonList("ABA7"), null, null);
+
+        AuthorisationV2 auth3 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Tribunals", "374",
+                "First Tier - Health, Education and Social Care", null, LocalDate.now().minusYears(20L), null);
+
+        AuthorisationV2 auth4 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Tribunals", "342",
+                "Mental Health", Collections.singletonList("BCA2"),
+                LocalDate.now().minusYears(15L), LocalDate.now().plusYears(1L));
+
+        AuthorisationV2 auth5 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Family", "315",
+                "Private Law", Collections.singletonList("ABA5"),
+                LocalDate.now().minusYears(9L), LocalDate.now().plusYears(14L));
+
+        AuthorisationV2 auth6 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Family", "316",
+                "Public Law", Collections.singletonList("ABA3"),
+                LocalDate.now().minusYears(9L), LocalDate.now().plusYears(14L));
+
+        AuthorisationV2 auth7 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Tribunals", "356",
+                "Restricted Patients Panel", null,
+                LocalDate.now().minusYears(7L), LocalDate.now().plusYears(1L));
+
+        AuthorisationV2 auth8 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Family", "317",
+                "Section 9-1 Family", null,
+                LocalDate.now().minusYears(3L), LocalDate.now().plusYears(3L));
+
+        AuthorisationV2 auth9 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Civil", "290",
+                "Administrative Court", null,
+                LocalDate.now().minusYears(3L), LocalDate.now().plusYears(3L));
+
+        AuthorisationV2 auth10 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Civil", "300",
+                "Section 9(1) Chancery", null, null, null);
+
+        AuthorisationV2 auth11 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Family", "301",
+                "Section 9(1) Queens Bench", null, null, null);
+
+        AuthorisationV2 auth12 = TestDataBuilder.buildAuthorisationWithParamsV2("Authorisation Tribunals", "372",
+                "Upper - Immigration and Asylum", null, LocalDate.now().minusYears(10L),
+                LocalDate.now().minusYears(2L));
+
+        List<AuthorisationV2> authorisationList;
 
         switch (setNumber) {
             case 1:

@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/refdata/judicial/users",
+    "headers": {
+      "accept": {
+        "equalTo": "application/vnd.jrd.api+json;Version=2.0",
+        "caseInsensitive": true
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/vnd.jrd.api+json;Version=2.0"
+    },
+    "bodyFileName": "jrd/refreshUserProfile.json.hbs",
+    "transformers": ["response-template"]
+  }
+}
