@@ -53,15 +53,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
   rule "global_hearing_manager_judicial"
   when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
-    $joh: JudicialOfficeHolder(office in (
-    "PUBLICLAW District Judge - Salaried", "PUBLICLAW District Judge (MC) - SPTW",
-    "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",
-    "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
-    "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
-    "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
-    "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
-    "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW District Judge (MC) - Salaried",
-    "PUBLICLAW Deputy Circuit Judge - Fee Paid","PUBLICLAW Recorder - Fee Paid"))
+    $joh: JudicialOfficeHolder( jurisdiction in ("PUBLICLAW") &&
+                                office not in ("PUBLICLAW Magistrate - Voluntary"))
   then
      Map<String,JsonNode> attribute = new HashMap<>();
      attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode($joh.getJurisdiction()));
