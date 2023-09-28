@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import java.io.InputStream;
@@ -163,6 +164,31 @@ public class UserAccessProfileBuilder {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
                 JudicialProfile judicialProfile = objectMapper.readValue(inputStream, JudicialProfile.class);
+                judicialProfile.setSidamId(userId);
+                judicialProfilesProfiles.add(judicialProfile);
+
+
+            } catch (Exception e) {
+                throw new BadRequestException("Either the user request is not valid or sample json is missing.");
+            }
+
+
+        });
+        return new ArrayList<>(judicialProfilesProfiles);
+    }
+
+    public static List<JudicialProfileV2> buildJudicialProfileV2(JRDUserRequest userRequest, String resource) {
+
+        Set<JudicialProfileV2> judicialProfilesProfiles = new LinkedHashSet<>();
+
+
+        userRequest.getSidamIds().forEach(userId -> {
+            try (InputStream inputStream =
+                         UserAccessProfileBuilder.class.getClassLoader()
+                                 .getResourceAsStream(resource)) {
+                assert inputStream != null;
+                ObjectMapper objectMapper = getObjectMapper();
+                JudicialProfileV2 judicialProfile = objectMapper.readValue(inputStream, JudicialProfileV2.class);
                 judicialProfile.setSidamId(userId);
                 judicialProfilesProfiles.add(judicialProfile);
 
