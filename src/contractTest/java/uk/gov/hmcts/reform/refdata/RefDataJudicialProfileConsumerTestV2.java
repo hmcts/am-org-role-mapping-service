@@ -148,6 +148,40 @@ public class RefDataJudicialProfileConsumerTestV2 {
                 .stringType("personal_code", "1234")
                 .stringType("post_nominals", "Mr")
                 .stringType("initials", "I N")
+                .minArrayLike("appointments", 1, r -> r
+                        .stringType("base_location_id")
+                        .stringType("epimms_id")
+                        .stringType("cft_region_id")
+                        .stringType("cft_region")
+                        .stringType("is_principal_appointment")
+                        .date("start_date", "yyyy-MM-dd")
+                        .date("end_date", "yyyy-MM-dd")
+                        .stringType("appointment")
+                        .stringType("appointment_type")
+                        .array("service_codes", (s) -> {
+                            s.stringType("BFA1");
+                        })
+                        .stringType("appointment_id")
+                )
+                .minArrayLike("authorisations", 1, r -> r
+                        .stringType("jurisdiction")
+                        .stringType("ticket_description")
+                        .date("start_date", "yyyy-MM-dd")
+                        .minArrayLike("service_codes", 0, (s) -> {
+                            s.stringType("BFA1");
+                        })
+                        .stringType("ticket_code")
+                        .date("end_date", "yyyy-MM-dd")
+                        .stringType("appointment_id")
+                        .stringType("authorisation_id")
+                        .stringType("jurisdiction_id")
+                )
+                .minArrayLike("roles", 1, r -> r
+                        .stringType("jurisdiction_role_name")
+                        .stringType("jurisdiction_role_id")
+                        .stringType("start_date")
+                        .stringType("end_date")
+                )
         )).build();
     }
 

@@ -43,10 +43,10 @@
     {
       "jurisdiction": "Languages",
       "ticket_description": "Welsh",
-      "start_date": "2022-04-28T16:00:49",
+      "start_date": "2022-04-28",
       "service_codes": ["BFA1"],
       "ticket_code": "373",
-      "end_date": "2052-04-28T16:00:49",
+      "end_date": "2052-04-28",
       "appointment_id": "10001",
       "authorisation_id": "some authorisation id",
       "jurisdiction_id": "some jurisdiction id"
@@ -54,7 +54,8 @@
     {
       "jurisdiction": "Languages",
       "ticket_description": "Welsh",
-      "start_date": "2022-04-28T16:00:49",
+      "start_date": "2022-04-28",
+      "end_date": null,
       "service_codes": ["BFA1"],
       "ticket_code": "373",
       "appointment_id": "10002",
