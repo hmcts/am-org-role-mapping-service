@@ -200,6 +200,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         List.of("High Court Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary",
                                 "hearing-viewer", "hearing-manager")),
+                // hearing-manager excluded from Magistrate
                 Arguments.of("Magistrate", "Voluntary",
                         false,
                         true,
@@ -210,7 +211,82 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         true,
                         List.of("Recorder - Fee Paid"),
                         List.of("fee-paid-judge","hmcts-judiciary",
-                                "hearing-viewer", "hearing-manager"))
+                                "hearing-viewer", "hearing-manager")),
+                Arguments.of("Tribunal Judge", "Salaried",
+                        false,
+                        true,
+                        List.of("Tribunal Judge - Salaried"),
+                        List.of("judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                Arguments.of("Employment Judge", "Salaried",
+                        false,
+                        true,
+                        List.of("Employment Judge - Salaried"),
+                        List.of("judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                Arguments.of("Specialist Circuit Judge", "Salaried",
+                        false,
+                        true,
+                        List.of("Specialist Circuit Judge - Salaried"),
+                        List.of("judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                Arguments.of("Senior Circuit Judge", "Salaried",
+                        false,
+                        true,
+                        List.of("Senior Circuit Judge - Salaried"),
+                        List.of("judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                Arguments.of("Circuit Judge (sitting in retirement)", "Fee Paid",
+                        true,
+                        true,
+                        List.of("Circuit Judge - Sitting in Retirement - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                //no Judicial Booking, no judge role
+                Arguments.of("Circuit Judge (sitting in retirement)", "Fee Paid",
+                        false,
+                        true,
+                        List.of("Circuit Judge - Sitting in Retirement - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                Arguments.of("Recorder (sitting in retirement)", "Fee Paid",
+                        true,
+                        true,
+                        List.of("Recorder - Sitting in Retirement - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                //no Judicial Booking, no judge role
+                Arguments.of("Recorder (sitting in retirement)", "Fee Paid",
+                        false,
+                        true,
+                        List.of("Recorder - Sitting in Retirement - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                Arguments.of("Deputy Upper Tribunal Judge", "Fee Paid",
+                        true,
+                        true,
+                        List.of("Deputy Upper Tribunal Judge - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                //no Judicial Booking, no judge role
+                Arguments.of("Deputy Upper Tribunal Judge", "Fee Paid",
+                        false,
+                        true,
+                        List.of("Deputy Upper Tribunal Judge - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                Arguments.of("District Judge (MC)- Sitting in Retirement", "Fee Paid",
+                        true,
+                        true,
+                        List.of("District Judge (MC) - Sitting in Retirement - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                //no Judicial Booking, no judge role
+                Arguments.of("District Judge (MC)- Sitting in Retirement", "Fee Paid",
+                        false,
+                        true,
+                        List.of("District Judge (MC) - Sitting in Retirement - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                Arguments.of("District Judge (sitting in retirement)", "Fee Paid",
+                        true,
+                        true,
+                        List.of("District Judge - Sitting in Retirement - Fee Paid"),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
+                //no Judicial Booking, no judge role
+                Arguments.of("District Judge (sitting in retirement)", "Fee Paid",
+                        false,
+                        true,
+                        List.of("District Judge - Sitting in Retirement - Fee Paid"),
+                        List.of("fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager"))
         );
     }
 
@@ -254,7 +330,8 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(
                         List.of(FeatureFlag.builder().flagName("publiclaw_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
+                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build(),
+                                FeatureFlag.builder().flagName("publiclaw_wa_1_1").status(true).build())
                 );
 
         //assertions
