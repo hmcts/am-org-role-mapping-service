@@ -65,7 +65,7 @@
     {
       "jurisdiction": "Languages",
       "ticket_description": "Welsh",
-      "start_date": "2022-04-28T16:00:49",
+      "start_date": "2022-04-28",
       "service_codes": ["BFA2"],
       "ticket_code": "374",
       "appointment_id": null,
@@ -77,19 +77,19 @@
     {
       "jurisdiction_role_name":"some judiciary role name",
       "jurisdiction_role_id":"some judiciary role id",
-      "start_date":"2022-04-28T16:00:49",
-      "end_date":"2052-04-28T16:00:49"
+      "start_date":"2022-04-28T00:00:00",
+      "end_date":"2052-04-28T00:00:00"
     },
     {
       "jurisdiction_role_name":"some judiciary role name 2",
       "jurisdiction_role_id":"some judiciary role id 2",
-      "start_date":"2022-04-28T16:00:49",
-      "end_date":"2022-04-28T16:00:49"
+      "start_date":"2022-04-28T00:00:00",
+      "end_date":"2022-04-28T00:00:00"
     },
     {
       "jurisdiction_role_name":"some judiciary role name 3",
       "jurisdiction_role_id":"some judiciary role id 3",
-      "start_date":"2022-04-28T16:00:49",
+      "start_date":"2022-04-28T00:00:00",
       "end_date":null
     }
   ]
