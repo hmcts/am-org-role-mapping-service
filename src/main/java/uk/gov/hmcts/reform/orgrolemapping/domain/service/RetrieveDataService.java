@@ -11,7 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesV2Response;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 
@@ -28,7 +36,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2;
-import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.*;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfileV2;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInCaseWorkerProfileResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInJudicialProfileResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInJudicialProfileV2Response;
 
 @Service
 @Slf4j
