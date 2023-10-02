@@ -27,4 +27,13 @@ public class JRDFeignClientFallback  implements JRDFeignClient {
         return ResponseEntity.ok((List<T>) new ArrayList<>(buildJudicialProfile(userRequest,
                 "judicialProfileSample.json")));
     }
+
+    @Override
+    public <T> ResponseEntity<List<T>> getJudicialDetailsByServiceName(JRDUserRequest userRequest, Integer pageSize,
+                                                                       Integer pageNumber, String sortDirection,
+                                                                       String sortColumn) {
+        return getJudicialDetailsById(userRequest,pageSize);
+    }
+
+
 }

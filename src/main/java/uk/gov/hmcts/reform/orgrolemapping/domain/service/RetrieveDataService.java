@@ -11,13 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 
@@ -34,10 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2;
-import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
-import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfile;
-import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfileV2;
-import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInCaseWorkerProfileResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.*;
 
 @Service
 @Slf4j
@@ -140,16 +131,46 @@ public class RetrieveDataService {
 
     public Map<String, Set<UserAccessProfile>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
                                                                      userProfileResponsesEntity, UserType userType) {
-        //check the response if it's not null
-        List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
-                Objects
-                        .requireNonNull(convertListInCaseWorkerProfileResponse(
-                                requireNonNull(userProfileResponsesEntity.getBody())));
-
         //Fetch the user profile from the response
         List<Object> userProfiles = new ArrayList<>();
-        caseWorkerProfilesResponse.forEach(cwpr -> userProfiles.add(cwpr
-                .getUserProfile()));
+        if (userType.equals(UserType.CASEWORKER)){
+            log.info("Caseworker Service");
+            List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
+                    Objects
+                            .requireNonNull(convertListInCaseWorkerProfileResponse(
+                                    requireNonNull(userProfileResponsesEntity.getBody())));
+
+
+            caseWorkerProfilesResponse.forEach(cwpr -> userProfiles.add(cwpr
+                    .getUserProfile()));
+        } else if (userType.equals(UserType.JUDICIAL)){
+            log.info("Judicial Service");
+            if (this.v2Active) {
+                log.info("v2 Active");
+                List<JudicialProfilesV2Response> judicialProfilesV2Responses =
+                        Objects
+                                .requireNonNull(convertListInJudicialProfileV2Response(
+                                        requireNonNull(userProfileResponsesEntity.getBody())));
+
+
+                judicialProfilesV2Responses.forEach(jwpr -> userProfiles.add(jwpr
+                        .getJudicialProfile()));
+            } else {
+                log.info("v2 is not Active");
+                List<JudicialProfilesResponse> judicialProfilesResponses =
+                        Objects
+                                .requireNonNull(convertListInJudicialProfileResponse(
+                                        requireNonNull(userProfileResponsesEntity.getBody())));
+
+
+                judicialProfilesResponses.forEach(jwpr -> userProfiles.add(jwpr
+                        .getJudicialProfile()));
+            }
+        } else {
+            log.info("{} Invalid UserType", userType);
+        }
+        //check the response if it's not null
+
 
         //Collect the userIds to build the UserRequest
         var userRequest = UserRequest.builder().userIds(Collections.emptyList()).build();

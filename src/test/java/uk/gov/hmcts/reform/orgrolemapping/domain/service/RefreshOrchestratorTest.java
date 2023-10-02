@@ -60,6 +60,7 @@ class RefreshOrchestratorTest {
     private final RetrieveDataService retrieveDataService = mock(RetrieveDataService.class);
     private final ParseRequestService parseRequestService = mock(ParseRequestService.class);
     private final CRDService crdService = mock(CRDService.class);
+    private final JRDService jrdService = mock(JRDService.class);
     private final PersistenceService persistenceService = mock(PersistenceService.class);
     private final FeignException feignClientException = mock(FeignException.NotFound.class);
     private final SecurityUtils securityUtils = mock(SecurityUtils.class);
@@ -70,6 +71,7 @@ class RefreshOrchestratorTest {
             requestMappingService,
             parseRequestService,
             crdService,
+            jrdService,
             persistenceService,
             securityUtils,
             "1",
@@ -219,8 +221,8 @@ class RefreshOrchestratorTest {
                 = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
 
 
-        doReturn(responseEntity).when(crdService)
-                .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+        doReturn(responseEntity).when(jrdService)
+                .fetchJudicialDetailsByServiceName(any(), any(), any(), any(), any());
 
         Mockito.doNothing().when(parseRequestService)
                 .validateUserRequest(any());
@@ -249,7 +251,8 @@ class RefreshOrchestratorTest {
 
         ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
 
-        assertNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response);
     }
 
 
