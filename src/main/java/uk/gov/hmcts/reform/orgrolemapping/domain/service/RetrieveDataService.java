@@ -146,7 +146,7 @@ public class RetrieveDataService {
                                                                      userProfileResponsesEntity, UserType userType) {
         //Fetch the user profile from the response
         List<Object> userProfiles = new ArrayList<>();
-        if (userType.equals(UserType.CASEWORKER)){
+        if (userType.equals(UserType.CASEWORKER)) {
             log.info("Caseworker Service");
             List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
                     Objects
@@ -156,7 +156,7 @@ public class RetrieveDataService {
 
             caseWorkerProfilesResponse.forEach(cwpr -> userProfiles.add(cwpr
                     .getUserProfile()));
-        } else if (userType.equals(UserType.JUDICIAL)){
+        } else if (userType.equals(UserType.JUDICIAL)) {
             log.info("Judicial Service");
             if (this.v2Active) {
                 log.info("v2 Active");
