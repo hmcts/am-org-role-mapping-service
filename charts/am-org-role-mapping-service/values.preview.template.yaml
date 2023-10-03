@@ -29,7 +29,7 @@ java:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # temporary override of ROLE_ASSIGNMENT_APP_URL to test hmcts/am-role-assignment-service#1996
-    ROLE_ASSIGNMENT_APP_URL: https://am-role-assignment-service-pr-1996.preview.platform.hmcts.net
+    ROLE_ASSIGNMENT_APP_URL: https://am-role-assignment-service-pr-2005.preview.platform.hmcts.net
     JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.service.core-compute-aat.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
