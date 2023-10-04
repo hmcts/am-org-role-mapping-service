@@ -401,7 +401,7 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksondata
     implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.jacksondata, ext: 'pom'
 
-    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.4'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
     implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.2'
 
