@@ -10,7 +10,11 @@
         <cve>CVE-2023-35116</cve>
     </suppress>
     <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-2885 okio</notes>
-        <cve>CVE-2023-3635</cve>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2953 plexus</notes>
+        <cve>CVE-2022-4244</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2952 plexus</notes>
+        <cve>CVE-2022-4245</cve>
     </suppress>
 </suppressions>

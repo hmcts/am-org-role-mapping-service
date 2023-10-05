@@ -1,0 +1,21 @@
+---
+version: '2.4'
+
+services:
+  # RD Wiremock to simulate JRD and CRD APIs.
+  orm-rd-wiremock:
+    container_name: orm-rd-wiremock
+    image: wiremock/wiremock:latest
+    command: 
+      - -verbose
+      - -global-response-templating
+    volumes:
+      - ./../mocks/wiremock:/home/wiremock:rw
+    ports:
+      - 4099:8080
+    networks:
+      - am-network
+
+networks:
+  am-network:
+    external: true
