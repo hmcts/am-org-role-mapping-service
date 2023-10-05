@@ -167,6 +167,7 @@ public class AssignmentRequestBuilder {
         return caseWorkerAccessProfiles;
     }
 
+    @SuppressWarnings("deprecation")
     public static Set<UserAccessProfile> convertProfileToJudicialAccessProfile(JudicialProfile judicialProfile) {
         Set<UserAccessProfile> judicialAccessProfiles = new HashSet<>();
         Set<String> ticketCodes = new HashSet<>();
@@ -203,6 +204,7 @@ public class AssignmentRequestBuilder {
         return judicialAccessProfiles;
     }
 
+    @SuppressWarnings("deprecation")
     public static Set<UserAccessProfile> convertProfileToJudicialAccessProfileV2(
             JudicialProfileV2 judicialProfile,
             boolean filterAuthorisationsByAppointmentId
