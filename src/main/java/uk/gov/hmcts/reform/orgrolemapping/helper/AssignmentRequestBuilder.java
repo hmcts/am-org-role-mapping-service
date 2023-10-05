@@ -188,6 +188,7 @@ public class AssignmentRequestBuilder {
             judicialAccessProfile.setEndTime(appointment.getEndDate() != null ? appointment.getEndDate()
                     .atStartOfDay(ZoneId.of("UTC")) : null);
             judicialAccessProfile.setRegionId(appointment.getLocationId());
+            judicialAccessProfile.setCftRegionIdV1(appointment.getCftRegionID());
             // change from epimmsid to base location as part of SSCS
             judicialAccessProfile.setBaseLocationId(appointment.getBaseLocationId());
             judicialAccessProfile.setTicketCodes(List.copyOf(ticketCodes));
@@ -237,6 +238,7 @@ public class AssignmentRequestBuilder {
                     .beginTime(localDateToZonedDateTime(appointment.getStartDate()))
                     .endTime(localDateToZonedDateTime(appointment.getEndDate()))
                     .regionId(appointment.getCftRegionID())
+                    .cftRegionIdV1(appointment.getCftRegionID())
                     .baseLocationId(appointment.getBaseLocationId())
                     .ticketCodes(stringListToDistinctList(ticketCodes))
                     .appointment(appointment.getAppointment())
