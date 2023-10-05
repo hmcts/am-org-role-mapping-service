@@ -21,6 +21,11 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
     private ZonedDateTime endTime;
     private List<String> ticketCodes;
     private String regionId;
+    /**
+     * @deprecated This field is deprecated & may be removed after AM/RD v2 go live. Use regionId instead. See COT-546
+     */
+    @Deprecated(forRemoval = true)
+    private String cftRegionIdV1;
     private String baseLocationId;
     private String contractTypeId;
     private String appointment;
