@@ -22,6 +22,8 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
     private List<String> ticketCodes;
     private String regionId;
     /**
+     * Field to be used to store region for ET & SSCS using cft_region_id from rd-judicial-api instead of location_id.
+     *
      * @deprecated This field is deprecated & may be removed after AM/RD v2 go live. Use regionId instead. See COT-546
      */
     @Deprecated(forRemoval = true)
