@@ -200,6 +200,36 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         });
     }
 
+    @SuppressWarnings("deprecation")
+    @ParameterizedTest
+    @CsvSource({
+            "President of Tribunal,Salaried",
+            "Vice President,Salaried",
+            "Regional Employment Judge,Salaried",
+            "Employment Judge,Salaried",
+            "Employment Judge,Fee Paid",
+            "Tribunal Member,Fee Paid"
+    })
+    void shouldReturnCftRegionIdV1FromJapAsRegion(String appointment, String appointmentType) {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment(appointment);
+            judicialAccessProfile.setAppointmentType(appointmentType);
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BHA1")));
+            judicialAccessProfile.setCftRegionIdV1("cft_region_id_v1");
+            judicialAccessProfile.setRegionId("location_id");
+        });
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("employment_wa_1_0", true));
+
+        roleAssignments.forEach(r -> {
+            if (r.getAttributes().get("region") != null) {
+                assertEquals("cft_region_id_v1", r.getAttributes().get("region").asText());
+            }
+        });
+    }
 
 }
 

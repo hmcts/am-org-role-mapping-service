@@ -488,4 +488,41 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
+    @SuppressWarnings("deprecation")
+    @ParameterizedTest
+    @CsvSource({
+            "President of Tribunal,Salaried",
+            "Regional Tribunal Judge,Salaried",
+            "Tribunal Judge,Salaried",
+            "Tribunal Judge,Fee Paid",
+            "Tribunal Member Medical,Salaried",
+            "Tribunal Member Medical,Fee Paid",
+            "Tribunal Member Optometrist,Fee Paid",
+            "Tribunal Member Disability,Fee Paid",
+            "Tribunal Member,Fee Paid",
+            "Tribunal Member Lay,Fee Paid",
+            "Tribunal Member Service,Fee Paid",
+            "Tribunal Member Financially Qualified,Fee Paid"
+    })
+    void shouldReturnCftRegionIdV1FromJapAsRegion(String appointment, String appointmentType) {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment(appointment);
+            judicialAccessProfile.setAppointmentType(appointmentType);
+            judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
+            judicialAccessProfile.setCftRegionIdV1("cft_region_id_v1");
+            judicialAccessProfile.setRegionId("location_id");
+        });
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+
+        roleAssignments.forEach(r -> {
+            if (r.getAttributes().get("region") != null) {
+                assertEquals("cft_region_id_v1", r.getAttributes().get("region").asText());
+            }
+        });
+    }
+
 }
