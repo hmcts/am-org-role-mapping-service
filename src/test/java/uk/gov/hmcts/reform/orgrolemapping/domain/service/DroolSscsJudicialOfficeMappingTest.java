@@ -491,18 +491,18 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @SuppressWarnings("deprecation")
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunal,Salaried",
-            "Regional Tribunal Judge,Salaried",
-            "Tribunal Judge,Salaried",
-            "Tribunal Judge,Fee Paid",
-            "Tribunal Member Medical,Salaried",
-            "Tribunal Member Medical,Fee Paid",
-            "Tribunal Member Optometrist,Fee Paid",
-            "Tribunal Member Disability,Fee Paid",
-            "Tribunal Member,Fee Paid",
-            "Tribunal Member Lay,Fee Paid",
-            "Tribunal Member Service,Fee Paid",
-            "Tribunal Member Financially Qualified,Fee Paid"
+        "President of Tribunal,Salaried",
+        "Regional Tribunal Judge,Salaried",
+        "Tribunal Judge,Salaried",
+        "Tribunal Judge,Fee Paid",
+        "Tribunal Member Medical,Salaried",
+        "Tribunal Member Medical,Fee Paid",
+        "Tribunal Member Optometrist,Fee Paid",
+        "Tribunal Member Disability,Fee Paid",
+        "Tribunal Member,Fee Paid",
+        "Tribunal Member Lay,Fee Paid",
+        "Tribunal Member Service,Fee Paid",
+        "Tribunal Member Financially Qualified,Fee Paid"
     })
     void shouldReturnCftRegionIdV1FromJapAsRegion(String appointment, String appointmentType) {
 

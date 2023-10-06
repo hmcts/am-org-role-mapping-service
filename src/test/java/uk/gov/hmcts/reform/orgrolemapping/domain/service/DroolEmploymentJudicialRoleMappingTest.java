@@ -203,12 +203,12 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
     @SuppressWarnings("deprecation")
     @ParameterizedTest
     @CsvSource({
-            "President of Tribunal,Salaried",
-            "Vice President,Salaried",
-            "Regional Employment Judge,Salaried",
-            "Employment Judge,Salaried",
-            "Employment Judge,Fee Paid",
-            "Tribunal Member,Fee Paid"
+        "President of Tribunal,Salaried",
+        "Vice President,Salaried",
+        "Regional Employment Judge,Salaried",
+        "Employment Judge,Salaried",
+        "Employment Judge,Fee Paid",
+        "Tribunal Member,Fee Paid"
     })
     void shouldReturnCftRegionIdV1FromJapAsRegion(String appointment, String appointmentType) {
 
