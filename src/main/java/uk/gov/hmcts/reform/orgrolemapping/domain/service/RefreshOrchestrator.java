@@ -183,12 +183,7 @@ public class RefreshOrchestrator {
                                 sortDirection, sortColumn);
 
                 // 2 step to find out the total number of records from header
-                var totalRecords = response.getHeaders().getFirst("total_records");
-                assert totalRecords != null;
-                double pageNumber = 0;
-                if (Integer.parseInt(pageSize) > 0) {
-                    pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
-                }
+                double pageNumber = getPageCountFromResponse(response);
 
                 //call to CRD
                 for (var page = 0; page < pageNumber; page++) {
@@ -210,12 +205,7 @@ public class RefreshOrchestrator {
                                 sortDirection, sortColumn);
 
                 // 2 step to find out the total number of records from header
-                var totalRecords = response.getHeaders().getFirst("total_records");
-                assert totalRecords != null;
-                double pageNumber = 0;
-                if (Integer.parseInt(pageSize) > 0) {
-                    pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
-                }
+                double pageNumber = getPageCountFromResponse(response);
 
                 //call to JRD
                 for (var page = 0; page < pageNumber; page++) {
@@ -228,8 +218,6 @@ public class RefreshOrchestrator {
 
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles, userType);
                 }
-            } else {
-                log.error("UNKNOWN Service Refresh Job");
             }
         } catch (FeignException.NotFound feignClientException) {
 
@@ -300,5 +288,15 @@ public class RefreshOrchestrator {
         }
     }
 
+    private double getPageCountFromResponse(ResponseEntity<List<Object>> response) {
+        var totalRecords = response.getHeaders().getFirst("total_records");
+        assert totalRecords != null;
+        double pageNumber = 1;  // i.e. default of 1 when no pagination
+        if (Integer.parseInt(pageSize) > 0) {
+            pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
+        }
+
+        return pageNumber;
+    }
 
 }

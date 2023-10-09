@@ -17,8 +17,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesV2Response;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -88,25 +86,15 @@ public class JacksonUtils {
         return caseWorkerProfilesResponses;
     }
 
-    public static List<JudicialProfilesV2Response> convertListInJudicialProfileV2Response(List<Object> from) {
-        List<JudicialProfilesV2Response> judicialProfilesResponses = new ArrayList<>();
+    public static List<JudicialProfileV2> convertListInJudicialProfileV2(List<Object> from) {
+        List<JudicialProfileV2> judicialProfileV2s = new ArrayList<>();
         for (Object obj : from) {
-            judicialProfilesResponses.add(MAPPER.convertValue(obj, new TypeReference<>() {
-            }));
+            judicialProfileV2s.add(convertInJudicialProfileV2(obj));
         }
 
-        return judicialProfilesResponses;
+        return judicialProfileV2s;
     }
 
-    public static List<JudicialProfilesResponse> convertListInJudicialProfileResponse(List<Object> from) {
-        List<JudicialProfilesResponse> judicialProfilesResponses = new ArrayList<>();
-        for (Object obj : from) {
-            judicialProfilesResponses.add(MAPPER.convertValue(obj, new TypeReference<>() {
-            }));
-        }
-
-        return judicialProfilesResponses;
-    }
 
     public static JudicialProfile convertInJudicialProfile(Object from) {
         return MAPPER.convertValue(from, new TypeReference<>() {

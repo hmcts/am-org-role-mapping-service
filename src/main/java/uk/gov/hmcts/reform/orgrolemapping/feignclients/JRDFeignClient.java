@@ -27,7 +27,7 @@ public interface JRDFeignClient {
     <T> ResponseEntity<List<T>> getJudicialDetailsById(JRDUserRequest userRequest,
                                                        @RequestHeader(name = "page_size") Integer pageSize);
 
-    @GetMapping(value = "/refdata/judicial/users")
+    @PostMapping(value = "/refdata/judicial/users")
     <T> ResponseEntity<List<T>> getJudicialDetailsByServiceName(
             @RequestBody JRDUserRequest userRequest,
             @RequestParam(value = "page_size", required = false) Integer pageSize,

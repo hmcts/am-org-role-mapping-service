@@ -1,31 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
-
 import feign.FeignException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -51,8 +30,34 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfileV2;
+
 @RunWith(MockitoJUnitRunner.class)
 class RefreshOrchestratorTest {
+
+    private static final String JURISDICTION = "LDN";
+    private static final int PAGE_SIZE = 400;
 
     @SuppressWarnings("unchecked")
     private final RequestMappingService<UserAccessProfile> requestMappingService
@@ -74,7 +79,7 @@ class RefreshOrchestratorTest {
             jrdService,
             persistenceService,
             securityUtils,
-            "1",
+            String.valueOf(PAGE_SIZE),
             "descending",
             "1",
             List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch"));
@@ -329,147 +334,336 @@ class RefreshOrchestratorTest {
         Mockito.verify(parseRequestService, Mockito.times(0)).validateUserRequest(any());
     }
 
-    @Test
-    void refreshJobByServiceName() {
+    @Nested
+    class RefreshJobByServiceNameForCaseworker {
 
-        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
-        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
-        MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("total_records", "4");
+        void setUpMocks(int totalRecords) {
 
-        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
-                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
+            List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
+            userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
+            MultiValueMap<String, String> headers = new HttpHeaders();
+            headers.add("total_records", String.valueOf(totalRecords));
+
+            ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
+                    = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
 
 
-        doReturn(responseEntity).when(crdService)
-                .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+            doReturn(responseEntity).when(crdService)
+                    .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+            Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+                    .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+        }
 
-        RefreshJobEntity refreshJobEntity =
-                RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
-        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+        @Test
+        void refreshJobByServiceName() {
 
-        Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
-        responseCodeWithUserId.put("1234", HttpStatus.CREATED);
-        sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
-        verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
-        verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
-        verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
-        verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+            // GIVEN
+            setUpMocks(4);
+
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory(RoleCategory.ADMIN.name())
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+
+            // WHEN
+            sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
+
+            // THEN
+            verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
+            verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
+            verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
+            verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+            // verify pagination calls
+            verify(crdService, Mockito.atLeast(1))
+                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(PAGE_SIZE), eq(0), any(), any());
+            // verify no second pagination call: i.e. no pagination as total number of records < default page size
+            verify(crdService, Mockito.never())
+                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(PAGE_SIZE), eq(1), any(), any());
+        }
+
+        @Test
+        void refreshJobByServiceWithInvalidRoleCategory() {
+
+            // GIVEN
+            setUpMocks(4);
+
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory("ABC")
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+
+            // WHEN / THEN
+            Assertions.assertThrows(BadRequestException.class, () ->
+                    sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER)
+            );
+        }
+
+        @Test
+        void refreshJobByServiceNameWithNoPageSize() {
+
+            // GIVEN
+            setUpMocks(4);
+
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory(RoleCategory.ADMIN.name())
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+
+            // WHEN
+            sut.pageSize = "0";
+            sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
+
+            // THEN
+            verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
+            // verify pagination calls
+            verify(crdService, Mockito.atLeast(1))
+                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(0), eq(0), any(), any());
+            // verify no second pagination call: i.e. pagination disabled
+            verify(crdService, Mockito.never())
+                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(0), eq(1), any(), any());
+        }
+
+        @Test
+        void refreshJobByServiceNameWithDecimalPageSize() {
+
+            // GIVEN
+            setUpMocks(3);
+
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory(RoleCategory.ADMIN.name())
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+
+            // WHEN
+            sut.pageSize = "2";  // NB:  pagination test as pagesSize < total records
+            sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
+
+            // THEN
+            verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
+            // verify pagination calls
+            // NB: first page is called twice as first call extracts the total record count
+            verify(crdService,  Mockito.times(2))
+                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(2), eq(0), any(), any());
+            verify(crdService,  Mockito.times(1))
+                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(2), eq(1), any(), any());
+            // NB: page 3 (i.e. index 2)  never loaded
+            verify(crdService,  Mockito.never())
+                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(2), eq(2), any(), any());
+        }
+
+        @Test
+        void refreshJobByServiceName_FeignException() {
+
+            // GIVEN
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+
+            Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
+                            any(), any(), any(), any(), any()))
+                    .thenThrow(feignClientException);
+
+            Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+                    .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory(RoleCategory.ADMIN.name())
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+
+            // WHEN
+            sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
+
+            // THEN
+            verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
+            verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
+            verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
+            verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+        }
+
     }
 
-    @Test
-    void refreshJobByServiceWithInvalidRoleCategory() {
+    @Nested
+    class RefreshJobByServiceNameForJudicial {
 
-        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
-        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
-        MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("total_records", "4");
+        void setUpMocks(int totalRecords) {
 
-        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
-            = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
+            List<Object> userProfilesResponseList = new ArrayList<>(buildJudicialProfileV2(
+                    TestDataBuilder.buildRefreshRoleRequest(), "judicialProfileSampleV2.json"
+            ));
+            MultiValueMap<String, String> headers = new HttpHeaders();
+            headers.add("total_records", String.valueOf(totalRecords));
 
+            ResponseEntity<List<Object>> responseEntity
+                    = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
 
-        doReturn(responseEntity).when(crdService)
-            .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+            doReturn(responseEntity).when(jrdService)
+                    .fetchJudicialDetailsByServiceName(any(), any(), any(), any(), any());
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
-            .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+            Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.JUDICIAL)))
+                    .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+        }
 
-        RefreshJobEntity refreshJobEntity =
-            RefreshJobEntity.builder().roleCategory("ABC").jurisdiction("LDN").build();
-        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+        @Test
+        void refreshJobByServiceName() {
 
-        Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
-        responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+            // GIVEN
+            setUpMocks(4);
 
-        Assertions.assertThrows(BadRequestException.class, () ->
-            sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER)
-        );
-    }
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory(RoleCategory.JUDICIAL.name())
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
 
-    @Test
-    void refreshJobByServiceNameWithNoPageSize() {
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
 
-        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
-        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
-        MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("total_records", "4");
+            // WHEN
+            sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL);
 
-        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
-            = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
+            // THEN
+            verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
+            verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
+            verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
+            verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+            // verify pagination calls
+            verify(jrdService, Mockito.atLeast(1))
+                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(PAGE_SIZE), eq(0), any(), any());
+            // verify no second pagination call: i.e. no pagination as total number of records < default page size
+            verify(jrdService, Mockito.never())
+                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(PAGE_SIZE), eq(1), any(), any());
+        }
 
+        @Test
+        void refreshJobByServiceWithInvalidRoleCategory() {
 
-        doReturn(responseEntity).when(crdService)
-            .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+            // GIVEN
+            setUpMocks(4);
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
-            .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory("ABC")
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
 
-        RefreshJobEntity refreshJobEntity =
-            RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
-        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
 
-        Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
-        responseCodeWithUserId.put("1234", HttpStatus.CREATED);
-        sut.pageSize = "0";
-        sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
-        verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
-    }
+            // WHEN / THEN
+            Assertions.assertThrows(BadRequestException.class, () ->
+                    sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL)
+            );
+        }
 
-    @Test
-    void refreshJobByServiceNameWithDecimalPageSize() {
+        @Test
+        void refreshJobByServiceNameWithNoPageSize() {
 
-        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
-        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
-        MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("total_records", "3");
+            // GIVEN
+            setUpMocks(4);
 
-        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
-            = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory(RoleCategory.JUDICIAL.name())
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
 
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
 
-        doReturn(responseEntity).when(crdService)
-            .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+            // WHEN
+            sut.pageSize = "0";
+            sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL);
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
-            .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+            // THEN
+            verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
+            // verify pagination calls
+            verify(jrdService, Mockito.atLeast(1))
+                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(0), eq(0), any(), any());
+            // verify no second pagination call: i.e. pagination disabled
+            verify(jrdService, Mockito.never())
+                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(0), eq(1), any(), any());
+        }
 
-        RefreshJobEntity refreshJobEntity =
-            RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
-        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+        @Test
+        void refreshJobByServiceNameWithDecimalPageSize() {
 
-        Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
-        responseCodeWithUserId.put("1234", HttpStatus.CREATED);
-        sut.pageSize = "2";
-        sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
-        verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
-    }
+            // GIVEN
+            setUpMocks(3);
 
-    @Test
-    void refreshJobByServiceName_FeignException() {
-        Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
-        responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory(RoleCategory.JUDICIAL.name())
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
 
-        Mockito.when(crdService.fetchCaseworkerDetailsByServiceName(
-                any(), any(), any(), any(), any()))
-                .thenThrow(feignClientException);
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+            // WHEN
+            sut.pageSize = "2";  // NB:  pagination test as pagesSize < total records
+            sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL);
 
-        RefreshJobEntity refreshJobEntity =
-                RefreshJobEntity.builder().roleCategory(RoleCategory.ADMIN.name()).jurisdiction("LDN").build();
-        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+            // THEN
+            verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
+            // verify pagination calls
+            // NB: first page is called twice as first call extracts the total record count
+            verify(jrdService,  Mockito.times(2))
+                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(2), eq(0), any(), any());
+            verify(jrdService,  Mockito.times(1))
+                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(2), eq(1), any(), any());
+            // NB: page 3 (i.e. index 2)  never loaded
+            verify(jrdService,  Mockito.never())
+                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(2), eq(2), any(), any());
+        }
 
-        sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
+        @Test
+        void refreshJobByServiceName_FeignException() {
 
-        verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
-        verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
-        verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
-        verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+            // GIVEN
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+
+            Mockito.when(jrdService.fetchJudicialDetailsByServiceName(
+                            any(), any(), any(), any(), any()))
+                    .thenThrow(feignClientException);
+
+            Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.JUDICIAL)))
+                    .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory(RoleCategory.JUDICIAL.name())
+                    .jurisdiction(JURISDICTION)
+                    .build();
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+
+            // WHEN
+            sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL);
+
+            // THEN
+            verify(refreshJobEntitySpy, Mockito.times(1)).setStatus(any());
+            verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
+            verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
+            verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+        }
+
     }
 
     @Test

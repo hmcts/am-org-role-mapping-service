@@ -13,8 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesV2Response;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
@@ -40,8 +38,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfileV2;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInCaseWorkerProfileResponse;
-import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInJudicialProfileResponse;
-import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInJudicialProfileV2Response;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInJudicialProfileV2;
 
 @Service
 @Slf4j
@@ -160,30 +157,17 @@ public class RetrieveDataService {
             log.info("Judicial Service");
             if (this.v2Active) {
                 log.info("v2 Active");
-                List<JudicialProfilesV2Response> judicialProfilesV2Responses =
+                List<JudicialProfileV2> judicialProfilesV2Responses =
                         Objects
-                                .requireNonNull(convertListInJudicialProfileV2Response(
+                                .requireNonNull(convertListInJudicialProfileV2(
                                         requireNonNull(userProfileResponsesEntity.getBody())));
 
-
-                judicialProfilesV2Responses.forEach(jwpr -> userProfiles.add(jwpr
-                        .getJudicialProfile()));
+                userProfiles.addAll(judicialProfilesV2Responses);
             } else {
                 log.info("v2 is not Active");
-                List<JudicialProfilesResponse> judicialProfilesResponses =
-                        Objects
-                                .requireNonNull(convertListInJudicialProfileResponse(
-                                        requireNonNull(userProfileResponsesEntity.getBody())));
-
-
-                judicialProfilesResponses.forEach(jwpr -> userProfiles.add(jwpr
-                        .getJudicialProfile()));
+                log.warn("retrieveProfilesByServiceName not implemented for JRD V1");
             }
-        } else {
-            log.info("{} Invalid UserType", userType);
         }
-        //check the response if it's not null
-
 
         //Collect the userIds to build the UserRequest
         var userRequest = UserRequest.builder().userIds(Collections.emptyList()).build();

@@ -12,14 +12,15 @@ import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesV2Response;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
@@ -28,6 +29,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
@@ -36,12 +38,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -291,20 +287,6 @@ public class TestDataBuilder {
                         "workArea1",
                         "workArea2",
                         false))
-                .build();
-    }
-
-    public static JudicialProfilesResponse buildJudicialProfilesResponse() throws IOException {
-        return  JudicialProfilesResponse.builder()
-                .serviceName("ccd_service_name")
-                .judicialProfile(buildJudicialProfile())
-                .build();
-    }
-
-    public static JudicialProfilesV2Response buildJudicialProfilesV2Response() throws IOException {
-        return  JudicialProfilesV2Response.builder()
-                .serviceName("ccd_service_name")
-                .judicialProfile(buildJudicialProfileV2())
                 .build();
     }
 

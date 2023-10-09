@@ -392,29 +392,33 @@ class RetrieveDataServiceTest {
     @Test
     void getUserAccessProfileJudicial() throws IOException {
 
-        List<Object> userProfilesResponses = new ArrayList<>();
-        userProfilesResponses.add(TestDataBuilder.buildJudicialProfilesResponse());
+        // NB: this is not implemented for JRD V1:  however if run it shouldn't fail.
         ResponseEntity<List<Object>> responseEntity
-                = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
+                = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 
         Map<String, Set<UserAccessProfile>> response = sutJrdV1.retrieveProfilesByServiceName(responseEntity,
                 UserType.JUDICIAL);
+
         assertNotNull(response);
-        assertEquals(2, response.get("37395").size());
+        assertEquals(0, response.size());
     }
 
     @Test
     void getUserAccessProfileJudicialV2() throws IOException {
 
-        List<Object> userProfilesResponses = new ArrayList<>();
-        userProfilesResponses.add(TestDataBuilder.buildJudicialProfilesV2Response());
+        List<Object> userProfilesResponses = new ArrayList<>(buildJudicialProfileV2(
+                TestDataBuilder.buildRefreshRoleRequest(), "judicialProfileSampleV2.json"
+        ));
         ResponseEntity<List<Object>> responseEntity
                 = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
 
         Map<String, Set<UserAccessProfile>> response = sutJrdV2.retrieveProfilesByServiceName(responseEntity,
                 UserType.JUDICIAL);
-        assertNotNull(response);
-        assertEquals(2, response.get("37396").size());
-    }
-}
 
+        assertNotNull(response);
+        assertEquals(userProfilesResponses.size(), response.size());
+        // verify at least one profile.  NB: size 2 as two appointments in "judicialProfileSampleV2.json"
+        assertEquals(2, response.get(TestDataBuilder.id_2).size());
+    }
+
+}
