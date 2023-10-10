@@ -67,3 +67,32 @@ module "org-role-mapping-database-v11" {
   common_tags        = var.common_tags
   postgresql_version = "11"
 }
+
+resource "azurerm_key_vault_secret" "POSTGRES-PASS-V15" {
+  name          = join("-", [var.component, "POSTGRES-PASS-V15"])
+  value         = module.org-role-mapping-database-v15.password
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
+
+module "org-role-mapping-database-v15" {
+  source             = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=master"
+
+  providers = {
+      azurerm.postgres_network = azurerm.postgres_network
+      }
+
+  admin_user_object_id = var.jenkins_AAD_objectId
+  business_area        = "cft"
+  name               = join("-", [var.product-V15,var.component-V15])
+  product            = var.product-V15
+  env                = var.env
+  component          = var.component-V15
+  common_tags        = var.common_tags
+  pgsql_version      = "15"
+
+  pgsql_databases = [
+      {
+        name = var.database_name
+      }
+    ]
+}
