@@ -9,4 +9,16 @@
         <notes>https://tools.hmcts.net/jira/browse/AM-2839 jackson-databind</notes>
         <cve>CVE-2023-35116</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2953 plexus</notes>
+        <cve>CVE-2022-4244</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2952 plexus</notes>
+        <cve>CVE-2022-4245</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2968 netty</notes>
+        <cve>CVE-2023-4586</cve>
+    </suppress>
 </suppressions>
