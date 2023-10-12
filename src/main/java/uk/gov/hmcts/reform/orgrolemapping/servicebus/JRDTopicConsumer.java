@@ -48,7 +48,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                             OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
-
     }
 
     @Bean
@@ -78,9 +77,24 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.info("    Calling registerMessageHandlerOnClient in JRD ");
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        receiveClient.registerMessageHandler(
+                getMessageHandler(receiveClient),
+                new MessageHandlerOptions(
+                        1,
+                        false,
+                        Duration.ofHours(1),
+                        Duration.ofMinutes(5)
+                ),
+                executorService
+        );
+        return null;
 
-        IMessageHandler messageHandler = new IMessageHandler() {
+    }
+
+    public IMessageHandler getMessageHandler(SubscriptionClient receiveClient) {
+        log.info("    Calling registerMessageHandlerOnClient in JRD ");
+        return new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
             @WithSpan(value = "JRD Azure Service Bus Topic", kind = SpanKind.SERVER)
@@ -97,7 +111,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                             return receiveClient.completeAsync(message.getLockToken());
                         }
 
-
                         log.debug("    getLockToken......{}", message.getLockToken());
                     } else {
                         log.info("The JRD feature flag is currently disabled. This message would be suppressed");
@@ -105,7 +118,8 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
                     }
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
-                    throw new InvalidRequest("Some Network issue");
+                    log.error("Error processing JRD message from service bus : {}", e.getMessage());
+                    throw new InvalidRequest("Error processing message from service bus", e);
                 }
                 log.debug("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
@@ -113,35 +127,23 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
             }
 
             public void notifyException(Throwable throwable, ExceptionPhase exceptionPhase) {
-                log.error("Exception occurred.");
-                log.error(exceptionPhase + "-" + throwable.getMessage());
+                log.error(
+                        "An error occurred when Calling onMessageAsync in JRD. Phase: {}",
+                        exceptionPhase,
+                        throwable
+                );
             }
         };
-
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        receiveClient.registerMessageHandler(
-                messageHandler, new MessageHandlerOptions(1,
-                        false, Duration.ofHours(1), Duration.ofMinutes(5)),
-                executorService);
-        return null;
-
     }
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
-
-
         UserRequest request = deserializer.deserialize(body);
         log.debug("Parsing the message from JRD with size :: {}", request.getUserIds().size());
-        try {
-            ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
-                    UserType.JUDICIAL);
-            log.debug("Role Assignment Service Response JRD {}", response.getStatusCode());
-            result.set(Boolean.TRUE);
-        } catch (Exception e) {
-            log.error("Exception from RAS service : {}", e.getMessage());
-            throw e;
-        }
+
+        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
+                UserType.JUDICIAL);
+
+        log.debug("Role Assignment Service Response JRD: {}", response.getStatusCode());
+        result.set(Boolean.TRUE);
     }
-
-
 }

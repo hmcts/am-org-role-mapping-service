@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +10,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import static org.springdoc.core.Constants.SWAGGER_UI_URL;
 
 @RestController
-@Slf4j
 @Hidden
 public class WelcomeController {
 

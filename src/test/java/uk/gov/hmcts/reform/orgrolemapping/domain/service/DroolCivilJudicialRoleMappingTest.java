@@ -79,7 +79,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
     @CsvSource({
         "CIVIL Deputy District Judge-Fee-Paid,fee-paid-judge",
         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,fee-paid-judge",
-        "CIVIL Recorder-Fee-Paid,fee-paid-judge"
+        "CIVIL Recorder-Fee-Paid,fee-paid-judge",
+        "CIVIL District Judge- Sitting in Retirement-Fee-Paid,fee-paid-judge"
     })
     void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) throws IOException {
 
