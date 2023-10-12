@@ -1,4 +1,3 @@
-
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
 import com.microsoft.azure.servicebus.IMessageHandler;
@@ -22,11 +21,10 @@ import java.util.concurrent.CompletableFuture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-class CRDTopicConsumerTest {
+class JRDTopicConsumerTest {
 
     @Mock
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
@@ -37,27 +35,17 @@ class CRDTopicConsumerTest {
     @Mock
     public SubscriptionClient subscriptionClient;
 
-    CRDTopicConsumer sut;
+    JRDTopicConsumer sut;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
-    }
-
-    //@Test
-    void getSubscriptionClientThrowsServiceBusException() {
-        sut.host = "http://test.com";
-        sut.subscription = "test";
-        sut.environment = "pr";
-        sut.topic = "test1";
-
-        assertThrows(IllegalArgumentException.class, () -> sut.getSubscriptionClient());
+        sut = new JRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
     }
 
     @Test
     void registerMessageHandlerOnClientTest() throws Exception {
-        CompletableFuture<Void> voidCompletableFuture = sut.registerCRDMessageHandlerOnClient(subscriptionClient);
+        CompletableFuture<Void> voidCompletableFuture = sut.registerJRDMessageHandlerOnClient(subscriptionClient);
         assertNull(voidCompletableFuture);
     }
 
@@ -84,8 +72,8 @@ class CRDTopicConsumerTest {
         String request = mapper.writeValueAsString(userRequest);
 
         when(deserializer.deserialize(any())).thenReturn(userRequest);
-        when(bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest, UserType.CASEWORKER))
-            .thenThrow(RuntimeException.class);
+        when(bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest, UserType.JUDICIAL))
+                .thenThrow(RuntimeException.class);
 
         IMessageHandler handler = sut.getMessageHandler(subscriptionClient);
 
@@ -96,4 +84,3 @@ class CRDTopicConsumerTest {
         }
     }
 }
-
