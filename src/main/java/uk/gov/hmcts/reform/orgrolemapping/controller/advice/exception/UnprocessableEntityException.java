@@ -8,8 +8,7 @@ public class UnprocessableEntityException extends RuntimeException {
 
     private static final long serialVersionUID = 7L;
 
-    public UnprocessableEntityException(String  message) {
+    public UnprocessableEntityException(String message) {
         super(message);
-
     }
 }
