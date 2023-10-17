@@ -21,4 +21,16 @@
         <notes>https://tools.hmcts.net/jira/browse/AM-2968 netty</notes>
         <cve>CVE-2023-4586</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2987 tomcat</notes>
+        <cve>CVE-2023-42794</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2988 tomcat</notes>
+        <cve>CVE-2023-42795</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-2989 tomcat</notes>
+        <cve>CVE-2023-45648</cve>
+    </suppress>
 </suppressions>
