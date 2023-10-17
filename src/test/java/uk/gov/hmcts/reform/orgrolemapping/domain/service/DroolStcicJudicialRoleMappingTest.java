@@ -84,31 +84,7 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         }
 
         //region assertions
-        switch (r.getRoleName()) {
-            case "specific-access-approver-judiciary":
-            case "leadership-judge":
-            case "fee-paid-judge":
-            case "fee-paid-tribunal-member":
-            case "medical":
-            case "fee-paid-medical":
-            case "fee-paid-disability":
-            case "fee-paid-financial":
-                assertEquals(regionId, r.getAttributes().get("region").asText());
-                break;
-            case "senior-judge":
-            case "judge":
-            case "case-allocator":
-            case "task-supervisor":
-                if (!office.equals("ST_CIC President of Tribunal-Salaried")) {
-                    assertEquals(regionId, r.getAttributes().get("region").asText());
-                } else {
-                    assertNull(r.getAttributes().get("region"));
-                }
-                break;
-            default:
-                assertNull(r.getAttributes().get("region"));
-                break;
-        }
+        assertNull(r.getAttributes().get("region"));
 
         //work types assertions
         if (office.equals("ST_CIC Tribunal Member-Fee Paid")
