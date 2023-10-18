@@ -45,6 +45,7 @@ def versions = [
         springSecurity : '5.7.10',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
+        tomcat         : '9.0.82',
         pact_version   : '4.1.41',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
@@ -380,7 +381,7 @@ dependencies {
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.42.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.13.4'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.9'
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '32.0.1-jre'
@@ -394,8 +395,8 @@ dependencies {
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.80'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.80'
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: versions.tomcat
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: versions.tomcat
 
     implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksondata
@@ -460,7 +461,7 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-transport-classes-epoll', version: versions.netty_version
     implementation group: 'io.netty', name: 'netty-transport-classes-kqueue', version: versions.netty_version
 
-    testImplementation('com.opentable.components:otj-pg-embedded:1.0.1')
+    testImplementation('com.opentable.components:otj-pg-embedded:1.0.2')
     testImplementation('com.github.tomakehurst:wiremock-jre8-standalone:2.35.1')
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
 
