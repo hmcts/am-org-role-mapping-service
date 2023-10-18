@@ -40,12 +40,10 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
 
-
     public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                         OrmDeserializer deserializer) {
+                            OrmDeserializer deserializer) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
-
     }
 
     @Bean
@@ -75,9 +73,24 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
 
-        log.debug("    Calling registerMessageHandlerOnClient in CRD ");
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        receiveClient.registerMessageHandler(
+                getMessageHandler(receiveClient),
+                new MessageHandlerOptions(
+                        1,
+                        false,
+                        Duration.ofHours(1),
+                        Duration.ofMinutes(5)
+                ),
+                executorService
+        );
+        return null;
 
-        IMessageHandler messageHandler = new IMessageHandler() {
+    }
+
+    public IMessageHandler getMessageHandler(SubscriptionClient receiveClient) {
+        log.debug("    Calling registerMessageHandlerOnClient in CRD ");
+        return new IMessageHandler() {
             // callback invoked when the message handler loop has obtained a message
             @SneakyThrows
             @WithSpan(value = "CRD Azure Service Bus Topic", kind = SpanKind.SERVER)
@@ -96,42 +109,31 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
                     log.debug("    getLockToken......{}", message.getLockToken());
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
-                    throw new InvalidRequest("Some Network issue");
+                    log.error("Error processing CRD message from service bus : {}", e.getMessage());
+                    throw new InvalidRequest("Error processing message from service bus", e);
                 }
                 log.debug("Finally getLockedUntilUtc" + message.getLockedUntilUtc());
                 return null;
             }
 
             public void notifyException(Throwable throwable, ExceptionPhase exceptionPhase) {
-                log.error("Exception occurred.");
-                log.error(exceptionPhase + "-" + throwable.getMessage());
+                log.error(
+                        "An error occurred when Calling onMessageAsync in CRD. Phase: {}",
+                        exceptionPhase,
+                        throwable
+                );
             }
         };
-
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        receiveClient.registerMessageHandler(
-                messageHandler, new MessageHandlerOptions(1,
-                        false, Duration.ofHours(1), Duration.ofMinutes(5)),
-                executorService);
-        return null;
-
     }
 
     private void processMessage(List<byte[]> body, AtomicBoolean result) {
-
-        log.info("    Parsing the message in CRD");
         UserRequest request = deserializer.deserialize(body);
-        try {
-            ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
-                    UserType.CASEWORKER);
-            log.info("----Role Assignment Service Response CRD  {}", response.getStatusCode());
-            result.set(Boolean.TRUE);
-        } catch (Exception e) {
-            log.error("Exception from RAS service : {}", e.getMessage());
-            throw e;
-        }
+        log.debug("Parsing the message from CRD with size :: {}", request.getUserIds().size());
+
+        ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request,
+                UserType.CASEWORKER);
+
+        log.info("Role Assignment Service Response CRD: {}", response.getStatusCode());
+        result.set(Boolean.TRUE);
     }
-
-
 }
-

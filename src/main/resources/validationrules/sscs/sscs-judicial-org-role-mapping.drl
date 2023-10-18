@@ -65,7 +65,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing_work,hearing_work,post_hearing_work,"
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing,hearing_work,post_hearing,"
                                                                      + "decision_making_work,routine_work,priority"));
    if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
@@ -105,7 +105,7 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
          $bk.getLocationId():$joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing_work,hearing_work,post_hearing_work,"
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing,hearing_work,post_hearing,"
                                                                      + "decision_making_work,routine_work,priority"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
@@ -278,7 +278,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing_work,hearing_work,post_hearing_work,"
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing,hearing_work,post_hearing,"
                                                                         + "decision_making_work,routine_work,priority"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    if ($joh.getTicketCodes() != null && $joh.getTicketCodes().contains("368")) {
