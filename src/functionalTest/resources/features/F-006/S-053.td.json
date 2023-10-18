@@ -33,7 +33,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "2",
-            "workTypes": "applications,hearing_work,routine_work,priority",
+            "workTypes": "applications,hearing_work,routine_work,priority,pre_hearing",
             "substantive" : "Y"
           }
         },
@@ -52,7 +52,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "2",
-            "workTypes": "applications,hearing_work,routine_work,priority",
+            "workTypes": "applications,hearing_work,routine_work,priority,pre_hearing",
             "substantive" : "Y"
           }
         }

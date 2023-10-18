@@ -104,8 +104,8 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
                         assertNull(r.getAttributes().get("workTypes"));
                     } else if (("hearing-centre-admin").equals(r.getRoleName())) {
                         assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("pre_hearing_work", "hearing_work",
-                                        "post_hearing_work", "decision_making_work",
+                                arrayContainingInAnyOrder("pre_hearing", "hearing_work",
+                                        "post_hearing", "decision_making_work",
                                         "routine_work", "priority", "applications"));
                     } else if (("task-supervisor").equals(r.getRoleName())) {
                         assertNull(r.getAttributes().get("workTypes"));
@@ -117,9 +117,16 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
                         assertNull(r.getAttributes().get("workTypes"));
                     } else if (("regional-centre-admin").equals(r.getRoleName())) {
                         assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("pre_hearing_work", "hearing_work",
-                                        "post_hearing_work", "decision_making_work",
+                                arrayContainingInAnyOrder("pre_hearing", "hearing_work",
+                                        "post_hearing", "decision_making_work",
                                         "routine_work", "priority", "applications"));
+                    } else if (("clerk").equals(r.getRoleName())) {
+                        assertThat(r.getAttributes().get("workTypes").asText().split(","),
+                                arrayContainingInAnyOrder("pre_hearing", "hearing_work",
+                                        "post_hearing", "decision_making_work",
+                                        "routine_work", "priority", "applications"));
+                    } else {
+                        assertNull(r.getAttributes().get("workTypes"));
                     }
                 });
     }
@@ -177,8 +184,8 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
                     //assert work types
                     if (("ctsc").equals(r.getRoleName())) {
                         assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("pre_hearing_work", "hearing_work",
-                                        "post_hearing_work", "decision_making_work",
+                                arrayContainingInAnyOrder("pre_hearing", "hearing_work",
+                                        "post_hearing", "decision_making_work",
                                         "routine_work", "priority", "applications"));
                     } else if (("ctsc-team-leader").equals(r.getRoleName())) {
                         assertNull(r.getAttributes().get("workTypes"));
@@ -188,6 +195,8 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
                         assertNull(r.getAttributes().get("workTypes"));
                     } else if (("specific-access-approver-ctsc").equals(r.getRoleName())) {
                         assertEquals("access_requests", r.getAttributes().get("workTypes").asText());
+                    } else {
+                        assertNull(r.getAttributes().get("workTypes"));
                     }
                 });
     }
@@ -263,8 +272,8 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
                         assertNull(r.getAttributes().get("workTypes"));
                     } else if (("tribunal-caseworker").equals(r.getRoleName())) {
                         assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("pre_hearing_work", "hearing_work",
-                                        "post_hearing_work", "decision_making_work",
+                                arrayContainingInAnyOrder("pre_hearing", "hearing_work",
+                                        "post_hearing", "decision_making_work",
                                         "routine_work", "priority", "applications"));
                     } else if (("task-supervisor").equals(r.getRoleName())) {
                         assertNull(r.getAttributes().get("workTypes"));
@@ -274,9 +283,11 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
                         assertEquals("access_requests", r.getAttributes().get("workTypes").asText());
                     } else if (("registrar").equals(r.getRoleName())) {
                         assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                                arrayContainingInAnyOrder("pre_hearing_work", "hearing_work",
-                                        "post_hearing_work", "decision_making_work",
+                                arrayContainingInAnyOrder("pre_hearing", "hearing_work",
+                                        "post_hearing", "decision_making_work",
                                         "routine_work", "priority", "applications"));
+                    } else {
+                        assertNull(r.getAttributes().get("workTypes"));
                     }
                 });
     }
@@ -332,11 +343,13 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
             if (("dwp").equals(r.getRoleName())) {
                 assertThat(r.getAttributes().get("workTypes").asText().split(","),
                         arrayContainingInAnyOrder("applications", "hearing_work",
-                                "routine_work", "priority"));
+                                "routine_work", "priority", "pre_hearing"));
             } else if (("hmrc").equals(r.getRoleName())) {
                 assertThat(r.getAttributes().get("workTypes").asText().split(","),
                         arrayContainingInAnyOrder("applications", "hearing_work",
-                                "routine_work", "priority"));
+                                "routine_work", "priority", "pre_hearing"));
+            } else {
+                assertNull(r.getAttributes().get("workTypes"));
             }
         });
     }

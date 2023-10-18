@@ -172,7 +172,7 @@
             "primaryLocation": "271588",
             "jurisdiction": "SSCS",
             "region" : "2",
-            "workTypes": "pre_hearing_work,post_hearing_work,decision_making_work,applications,hearing_work,routine_work,priority"
+            "workTypes": "pre_hearing,post_hearing,decision_making_work,applications,hearing_work,routine_work,priority"
           }
         },
         {
@@ -209,7 +209,7 @@
             "primaryLocation": "271588",
             "jurisdiction": "SSCS",
             "region" : "2",
-            "workTypes": "pre_hearing_work,post_hearing_work,applications,hearing_work,routine_work,priority,decision_making_work"
+            "workTypes": "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
           }
         },
         {
