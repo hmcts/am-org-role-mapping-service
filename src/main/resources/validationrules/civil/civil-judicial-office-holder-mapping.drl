@@ -352,3 +352,30 @@ then
       .build());
       logMsg("Rule : civil_resident_judge_salaried_joh");
 end;
+
+/*
+ * "CIVIL District Judge- Sitting in Retirement" business role business role mapping to JOH.
+ */
+rule "civil_district_judge_sitting_in_retirement_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_2.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge- Sitting in Retirement",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("CIVIL District Judge- Sitting in Retirement-Fee-Paid")
+      .jurisdiction("CIVIL")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : civil_district_judge_sitting_in_retirement_fee_paid_joh");
+end;

@@ -35,13 +35,13 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     {
         expectedRoleNameWorkTypesMap.put("leadership-judge", null);
-        expectedRoleNameWorkTypesMap.put("judge", "pre_hearing_work,hearing_work,post_hearing_work,"
+        expectedRoleNameWorkTypesMap.put("judge", "pre_hearing,hearing_work,post_hearing,"
                 + "decision_making_work,routine_work,priority");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", null);
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "pre_hearing_work,hearing_work,post_hearing_work,"
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "pre_hearing,hearing_work,post_hearing,"
                 + "decision_making_work,routine_work,priority");
         expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
         expectedRoleNameWorkTypesMap.put("medical", "hearing_work,priority");
