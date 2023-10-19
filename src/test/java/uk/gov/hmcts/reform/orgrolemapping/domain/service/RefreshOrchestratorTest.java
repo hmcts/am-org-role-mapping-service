@@ -221,7 +221,7 @@ class RefreshOrchestratorTest {
         ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
                 = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
 
-//TODO NBP but after AM-2902 mergerd into Master
+        //TODO NBP but after AM-2902 mergerd into Master
         doReturn(responseEntity).when(crdService)
                 .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
 
