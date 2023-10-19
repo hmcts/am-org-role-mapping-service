@@ -36,7 +36,7 @@
             "primaryLocation": "21153",
             "jurisdiction": "SSCS",
             "region" : "2",
-            "workTypes": "applications,hearing_work,routine_work,priority"
+            "workTypes": "applications,hearing_work,routine_work,priority,pre_hearing"
           }
         },
         {
