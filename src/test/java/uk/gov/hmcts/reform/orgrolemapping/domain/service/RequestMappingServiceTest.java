@@ -274,7 +274,8 @@ class RequestMappingServiceTest {
                         .body(AssignmentRequestBuilder.buildJudicialAssignmentRequest(false)));
 
         ResponseEntity<Object> responseEntity =
-            requestMappingService.createJudicialAssignments(TestDataBuilder.buildJudicialAccessProfileMap(), Collections.emptyList());
+            requestMappingService.createJudicialAssignments(TestDataBuilder.buildJudicialAccessProfileMap(),
+                    Collections.emptyList());
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
