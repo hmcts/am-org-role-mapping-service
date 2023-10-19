@@ -2,6 +2,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -81,8 +82,7 @@ class RequestMappingServiceTest {
         Mockito.when(persistenceService.getStatusByParam("iac_1_1", "pr"))
                 .thenReturn(true);
         ResponseEntity<Object> responseEntity =
-                sut.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
-                        false), UserType.CASEWORKER);
+                sut.createCaseworkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false, false));
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -142,8 +142,7 @@ class RequestMappingServiceTest {
         Mockito.when(persistenceService.getStatusByParam("iac_1_1", "pr"))
                 .thenReturn(true);
         ResponseEntity<Object> responseEntity =
-                sut.createAssignments(TestDataBuilder.buildUserAccessProfileMap(false,
-                        false),UserType.CASEWORKER);
+                sut.createCaseworkerAssignments(TestDataBuilder.buildUserAccessProfileMap(false, false));
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -177,8 +176,8 @@ class RequestMappingServiceTest {
                 .thenReturn(content);
         Mockito.when(persistenceService.getStatusByParam("iac_1_1", "pr"))
                 .thenReturn(true);
-        ResponseEntity<Object> responseEntity = sut.createAssignments(
-                TestDataBuilder.buildUserAccessProfileMap(false, false),UserType.CASEWORKER);
+        ResponseEntity<Object> responseEntity = sut.createCaseworkerAssignments(
+                TestDataBuilder.buildUserAccessProfileMap(false, false));
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
@@ -275,8 +274,7 @@ class RequestMappingServiceTest {
                         .body(AssignmentRequestBuilder.buildJudicialAssignmentRequest(false)));
 
         ResponseEntity<Object> responseEntity =
-            requestMappingService.createAssignments(TestDataBuilder.buildJudicialAccessProfileMap(),
-                        UserType.JUDICIAL);
+            requestMappingService.createJudicialAssignments(TestDataBuilder.buildJudicialAccessProfileMap(), Collections.emptyList());
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),

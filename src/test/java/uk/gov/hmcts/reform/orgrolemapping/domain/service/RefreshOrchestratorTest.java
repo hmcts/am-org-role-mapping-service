@@ -107,7 +107,7 @@ class RefreshOrchestratorTest {
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
                 .thenReturn(userAccessProfiles);
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(Collections.emptyList())));
 
@@ -134,7 +134,7 @@ class RefreshOrchestratorTest {
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
                 .thenThrow(FeignException.NotFound.class);
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(Collections.emptyList())));
 
@@ -192,7 +192,7 @@ class RefreshOrchestratorTest {
         doReturn(userAccessProfiles).when(retrieveDataService)
                 .retrieveProfiles(any(), eq(UserType.CASEWORKER));
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
@@ -221,7 +221,7 @@ class RefreshOrchestratorTest {
         ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
                 = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
 
-
+//TODO NBP but after AM-2902 mergerd into Master
         doReturn(responseEntity).when(crdService)
                 .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
 
@@ -244,8 +244,8 @@ class RefreshOrchestratorTest {
 
         doReturn(userAccessProfiles).when(retrieveDataService)
                 .retrieveProfiles(any(), eq(UserType.JUDICIAL));
-
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.JUDICIAL)))
+        //TODO should call Judicial but after AM-2902 mergerd into Master
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
@@ -344,7 +344,7 @@ class RefreshOrchestratorTest {
         doReturn(responseEntity).when(crdService)
                 .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         RefreshJobEntity refreshJobEntity =
@@ -375,7 +375,7 @@ class RefreshOrchestratorTest {
         doReturn(responseEntity).when(crdService)
             .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
             .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         RefreshJobEntity refreshJobEntity =
@@ -405,7 +405,7 @@ class RefreshOrchestratorTest {
         doReturn(responseEntity).when(crdService)
             .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
             .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         RefreshJobEntity refreshJobEntity =
@@ -434,7 +434,7 @@ class RefreshOrchestratorTest {
         doReturn(responseEntity).when(crdService)
             .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
             .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         RefreshJobEntity refreshJobEntity =
@@ -457,7 +457,7 @@ class RefreshOrchestratorTest {
                 any(), any(), any(), any(), any()))
                 .thenThrow(feignClientException);
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         RefreshJobEntity refreshJobEntity =
@@ -491,7 +491,7 @@ class RefreshOrchestratorTest {
                 .build());
         userAccessProfiles.put("1", userAccessProfileSet);
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
 
         ResponseEntity<Object> result = sut.prepareResponseCodes(responseEntityMap, userAccessProfiles,
@@ -525,7 +525,7 @@ class RefreshOrchestratorTest {
             .buildAssignmentRequest(false))),
             ResponseEntity.ok(new RoleAssignmentRequestResource(AssignmentRequestBuilder
                 .buildAssignmentRequest(false))));
-        Mockito.when(requestMappingService.createAssignments(any(), eq(UserType.CASEWORKER)))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
             .thenReturn((ResponseEntity.status(HttpStatus.OK)
                     .body(responseEntities)));
 
@@ -635,7 +635,7 @@ class RefreshOrchestratorTest {
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
                 .thenReturn(userAccessProfiles);
 
-        Mockito.when(requestMappingService.createAssignments(any(), any(),eq(UserType.JUDICIAL)))
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(Collections.emptyList())));
 

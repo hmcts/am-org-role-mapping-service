@@ -462,7 +462,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTest {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
                 new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
                         false))))))
-                .when(requestMappingService).createAssignments(any(), any());
+                .when(requestMappingService).createCaseworkerAssignments(any());
     }
 
     @SuppressWarnings("unchecked")
@@ -470,7 +470,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTest {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
                 new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
                         false))))))
-                .when(requestMappingService).createAssignments(any(), any(), any());
+                .when(requestMappingService).createJudicialAssignments(any(), any());
     }
 
     @NotNull

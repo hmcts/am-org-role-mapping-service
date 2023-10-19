@@ -61,10 +61,10 @@ public class BulkAssignmentOrchestrator {
             List<JudicialBooking> judicialBookings = judicialBookingService.fetchJudicialBookings(userRequest);
             log.info("Judicial User {} profile(s) got {} booking(s)", userAccessProfiles.size(),
                     judicialBookings.size());
-            responseEntity = requestMappingService.createAssignments(userAccessProfiles,judicialBookings, userType);
+            responseEntity = requestMappingService.createJudicialAssignments(userAccessProfiles, judicialBookings);
         } else if (userType.equals(UserType.CASEWORKER)) {
             log.info("Creating assignments for Staff/Caseworker UserType");
-            responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
+            responseEntity = requestMappingService.createCaseworkerAssignments(userAccessProfiles);
         } else {
             log.info("UserType not supported {}",userType);
         }

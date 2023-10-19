@@ -104,7 +104,7 @@ class JudicialRefreshOrchestratorTest {
         List<JudicialBooking> bookingsList = List.of(TestDataBuilder.buildJudicialBooking());
         Mockito.when(judicialBookingService.fetchJudicialBookings(any())).thenReturn(bookingsList);
 
-        Mockito.when(requestMappingService.createAssignments(any(), any(), eq(UserType.JUDICIAL)))
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(List.of(ResponseEntity.status(HttpStatus.CREATED)
                                 .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));
@@ -133,7 +133,7 @@ class JudicialRefreshOrchestratorTest {
         List<JudicialBooking> bookingsList = List.of(TestDataBuilder.buildJudicialBooking());
         Mockito.when(judicialBookingService.fetchJudicialBookings(any())).thenReturn(bookingsList);
 
-        Mockito.when(requestMappingService.createAssignments(any(), any(), eq(UserType.JUDICIAL)))
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(List.of(ResponseEntity.status(HttpStatus.CREATED)
                                 .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));
@@ -164,7 +164,7 @@ class JudicialRefreshOrchestratorTest {
                 List.of(JudicialBooking.builder().userId(userId).endTime(ZonedDateTime.now().plusDays(5)).build());
         Mockito.when(judicialBookingService.fetchJudicialBookings(any())).thenReturn(bookingsList);
 
-        Mockito.when(requestMappingService.createAssignments(any(), any(), eq(UserType.JUDICIAL)))
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(List.of(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                                 .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));
@@ -195,7 +195,7 @@ class JudicialRefreshOrchestratorTest {
                 List.of(JudicialBooking.builder().userId(userId).endTime(ZonedDateTime.now().plusDays(5)).build());
         Mockito.when(judicialBookingService.fetchJudicialBookings(any())).thenReturn(bookingsList);
 
-        Mockito.when(requestMappingService.createAssignments(any(), any(), eq(UserType.JUDICIAL)))
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(List.of(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                                 .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));
@@ -214,7 +214,7 @@ class JudicialRefreshOrchestratorTest {
         Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
                 .thenReturn(Collections.emptyList());
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(Collections.emptyList()), eq(UserType.JUDICIAL)))
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), eq(Collections.emptyList())))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(List.of(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                                 .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));
@@ -243,7 +243,7 @@ class JudicialRefreshOrchestratorTest {
         Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
                 .thenReturn(Collections.emptyList());
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(Collections.emptyList()), eq(UserType.JUDICIAL)))
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), eq(Collections.emptyList())))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(List.of(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                                 .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));
@@ -272,7 +272,7 @@ class JudicialRefreshOrchestratorTest {
         Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
                 .thenReturn(Collections.emptyList());
 
-        Mockito.when(requestMappingService.createAssignments(any(), eq(Collections.emptyList()), eq(UserType.JUDICIAL)))
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), eq(Collections.emptyList())))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(List.of(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                                 .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));

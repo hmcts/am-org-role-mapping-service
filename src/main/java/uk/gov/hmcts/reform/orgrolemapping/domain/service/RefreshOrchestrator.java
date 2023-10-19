@@ -232,9 +232,9 @@ public class RefreshOrchestrator {
                     judicialBookingService.fetchJudicialBookingsInBatches(uniqueUserIds,pageSize);
             log.info("Judicial Refresh for {} profile(s) got {} booking(s)", userAccessProfiles.size(),
                     judicialBookings.size());
-            responseEntity = requestMappingService.createAssignments(userAccessProfiles,judicialBookings, userType);
+            responseEntity = requestMappingService.createJudicialAssignments(userAccessProfiles, judicialBookings);
         } else {
-            responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
+            responseEntity = requestMappingService.createCaseworkerAssignments(userAccessProfiles);
         }
 
         ((List<ResponseEntity<Object>>)

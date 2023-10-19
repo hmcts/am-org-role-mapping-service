@@ -64,7 +64,7 @@ class BulkAssignmentOrchestratorTest {
         List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
                 .buildAssignmentRequest(false)));
 
-        Mockito.when(requestMappingService.createAssignments(Mockito.any(), Mockito.any()))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(Mockito.any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
@@ -89,7 +89,7 @@ class BulkAssignmentOrchestratorTest {
         Mockito.verify(retrieveDataService, Mockito.times(1))
                 .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
         Mockito.verify(requestMappingService, Mockito.times(1))
-                .createAssignments(Mockito.any(),Mockito.any());
+                .createCaseworkerAssignments(Mockito.any());
     }
 
     @Test
@@ -101,7 +101,7 @@ class BulkAssignmentOrchestratorTest {
         List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
                 .buildAssignmentRequest(false)));
 
-        Mockito.when(requestMappingService.createAssignments(Mockito.any(),Mockito.any(), Mockito.any()))
+        Mockito.when(requestMappingService.createJudicialAssignments(Mockito.any(),Mockito.any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
@@ -126,7 +126,7 @@ class BulkAssignmentOrchestratorTest {
         Mockito.verify(retrieveDataService, Mockito.times(1))
                 .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
         Mockito.verify(requestMappingService, Mockito.times(1))
-                .createAssignments(Mockito.any(),Mockito.any(),Mockito.any());
+                .createJudicialAssignments(Mockito.any(),Mockito.any());
     }
 
     @Test
@@ -138,7 +138,7 @@ class BulkAssignmentOrchestratorTest {
         List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
                 .buildJudicialAssignmentRequest(false)));
 
-        Mockito.when(requestMappingService.createAssignments(Mockito.any(), Mockito.any(),Mockito.any()))
+        Mockito.when(requestMappingService.createJudicialAssignments(Mockito.any(), Mockito.any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
@@ -162,7 +162,7 @@ class BulkAssignmentOrchestratorTest {
         Mockito.verify(retrieveDataService, Mockito.times(1))
                 .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
         Mockito.verify(requestMappingService, Mockito.times(1))
-                .createAssignments(Mockito.any(),Mockito.any(),Mockito.any());
+                .createJudicialAssignments(Mockito.any(),Mockito.any());
     }
 
     @Test
