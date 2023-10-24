@@ -100,7 +100,6 @@ class JudicialBookingServiceTest {
 
     @Test
     void testFetchJudicialBookingsInBatchesWithUsersIn3Batches() {
-        List<String> userIds = Arrays.asList("1","2","3","4","5");
 
         List<JudicialBooking> expectedBookings1 = new ArrayList<>();
         expectedBookings1.add(JudicialBooking.builder().userId("1").build());
@@ -132,9 +131,11 @@ class JudicialBookingServiceTest {
                 .when(feignClient).getJudicialBookingByUserIds(bookingRequest3);
 
         String batchSize = "2";
+        List<String> userIds = Arrays.asList("1","2","3","4","5");
         List<JudicialBooking> actualBookings = sut.fetchJudicialBookingsInBatches(userIds,batchSize);
         assertEquals(5,actualBookings.size());
     }
+
     @Test
     void testFetchJudicialBookingsInBatchesWithUsersNoBatchSize() {
         List<String> userIds = Arrays.asList("1","2","3","4","5");

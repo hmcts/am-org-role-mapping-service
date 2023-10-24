@@ -19,7 +19,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

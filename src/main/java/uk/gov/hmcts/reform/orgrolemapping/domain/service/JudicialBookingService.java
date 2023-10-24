@@ -38,7 +38,7 @@ public class JudicialBookingService {
         log.info(" fetching Judicial Bookings for userIds {} and the batchSize is {}", userIds,batchSize);
         List<JudicialBooking> judicialBookings = new ArrayList<>();
 
-        final int defaultBatchSize = (validBatchSize(batchSize)) ? Integer.parseInt(batchSize): userIds.size();
+        final int defaultBatchSize = (validBatchSize(batchSize)) ? Integer.parseInt(batchSize) : userIds.size();
         AtomicInteger counter = new AtomicInteger();
 
         userIds
@@ -53,12 +53,15 @@ public class JudicialBookingService {
         return judicialBookings;
     }
 
-    private boolean validBatchSize(String batchSize){
-        if (batchSize == null)
+    private boolean validBatchSize(String batchSize) {
+        if (batchSize == null) {
             return false;
-        for (char c : batchSize.toCharArray())
-            if (c < '0' || c > '9')
+        }
+        for (char c : batchSize.toCharArray()) {
+            if (c < '0' || c > '9') {
                 return false;
+            }
+        }
         return true;
     }
 
