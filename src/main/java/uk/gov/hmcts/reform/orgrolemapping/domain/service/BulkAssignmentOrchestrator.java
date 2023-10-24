@@ -66,8 +66,6 @@ public class BulkAssignmentOrchestrator {
         } else if (userType.equals(UserType.CASEWORKER)) {
             log.info("Creating assignments for Staff/Caseworker UserType");
             responseEntity = requestMappingService.createCaseworkerAssignments(userAccessProfiles);
-        } else {
-            log.info("UserType not supported {}",userType);
         }
 
         log.debug("Execution time of createBulkAssignmentsRequest() : {} ms",

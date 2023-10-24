@@ -635,6 +635,9 @@ class RefreshOrchestratorTest {
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
                 .thenReturn(userAccessProfiles);
 
+        Mockito.when(judicialBookingService.fetchJudicialBookingsInBatches(any(),any()))
+                .thenReturn(Collections.emptyList());
+
         Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
                         .body(Collections.emptyList())));
@@ -650,6 +653,8 @@ class RefreshOrchestratorTest {
 
         ResponseEntity<Object> response = refreshOrchestrator.refresh(1L, TestDataBuilder.buildUserRequest());
         Mockito.verify(refreshOrchestrator,Mockito.times(1)).buildSuccessAndFailureBucket(any(),any());
+
+        Mockito.verify(judicialBookingService,Mockito.times(1)).fetchJudicialBookingsInBatches(any(),any());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response);

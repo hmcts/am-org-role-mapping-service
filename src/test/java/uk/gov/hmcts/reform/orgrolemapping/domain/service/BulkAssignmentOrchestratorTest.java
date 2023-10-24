@@ -12,20 +12,20 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -57,14 +57,14 @@ class BulkAssignmentOrchestratorTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void createBulkAssignmentsRequestTest() {
+    void createBulkAssignmentsRequestForCaseworker() {
 
         doReturn(TestDataBuilder.buildUserAccessProfileMap(false, false)).when(retrieveDataService)
-                .retrieveProfiles(Mockito.any(),Mockito.any());
+                .retrieveProfiles(any(), any());
         List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
                 .buildAssignmentRequest(false)));
 
-        Mockito.when(requestMappingService.createCaseworkerAssignments(Mockito.any()))
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
@@ -85,11 +85,11 @@ class BulkAssignmentOrchestratorTest {
         assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
 
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserRequest(Mockito.any(UserRequest.class));
+                .validateUserRequest(any(UserRequest.class));
         Mockito.verify(retrieveDataService, Mockito.times(1))
-                .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
+                .retrieveProfiles(any(UserRequest.class), any());
         Mockito.verify(requestMappingService, Mockito.times(1))
-                .createCaseworkerAssignments(Mockito.any());
+                .createCaseworkerAssignments(any());
     }
 
     @Test
@@ -97,11 +97,11 @@ class BulkAssignmentOrchestratorTest {
     void createJudicialBulkAssignmentsRequestTest() {
 
         doReturn(TestDataBuilder.buildUserAccessProfileMap(false, false)).when(retrieveDataService)
-                .retrieveProfiles(Mockito.any(),Mockito.any());
+                .retrieveProfiles(any(), any());
         List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
                 .buildAssignmentRequest(false)));
 
-        Mockito.when(requestMappingService.createJudicialAssignments(Mockito.any(),Mockito.any()))
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
@@ -122,11 +122,11 @@ class BulkAssignmentOrchestratorTest {
         assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
 
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserRequest(Mockito.any(UserRequest.class));
+                .validateUserRequest(any(UserRequest.class));
         Mockito.verify(retrieveDataService, Mockito.times(1))
-                .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
+                .retrieveProfiles(any(UserRequest.class), any());
         Mockito.verify(requestMappingService, Mockito.times(1))
-                .createJudicialAssignments(Mockito.any(),Mockito.any());
+                .createJudicialAssignments(any(), any());
     }
 
     @Test
@@ -134,11 +134,14 @@ class BulkAssignmentOrchestratorTest {
     void createBulkAssignmentsRequestForJudicial() {
 
         doReturn(TestDataBuilder.buildJudicialAccessProfileMap()).when(retrieveDataService)
-                .retrieveProfiles(Mockito.any(),Mockito.any());
+                .retrieveProfiles(any(), any());
         List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
                 .buildJudicialAssignmentRequest(false)));
 
-        Mockito.when(requestMappingService.createJudicialAssignments(Mockito.any(), Mockito.any()))
+        Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
+                        .thenReturn(Collections.emptyList());
+
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
         ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
@@ -158,18 +161,20 @@ class BulkAssignmentOrchestratorTest {
         assertEquals(RoleCategory.JUDICIAL, roleAssignment.getRoleCategory());
 
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserRequest(Mockito.any(UserRequest.class));
+                .validateUserRequest(any(UserRequest.class));
         Mockito.verify(retrieveDataService, Mockito.times(1))
-                .retrieveProfiles(Mockito.any(UserRequest.class),Mockito.any());
+                .retrieveProfiles(any(UserRequest.class), any());
         Mockito.verify(requestMappingService, Mockito.times(1))
-                .createJudicialAssignments(Mockito.any(),Mockito.any());
+                .createJudicialAssignments(any(), any());
+        Mockito.verify(judicialBookingService, Mockito.times(1))
+                .fetchJudicialBookings(any());
     }
 
     @Test
     void createBulkAssignmentsRequestForJudicial_clientNotAvailable() {
         UserRequest request = TestDataBuilder.buildUserRequest();
         doThrow(FeignException.NotFound.class).when(retrieveDataService)
-                .retrieveProfiles(Mockito.any(),Mockito.any());
+                .retrieveProfiles(any(), any());
         Assert.assertThrows(ResourceNotFoundException.class, () ->
                 sut.createBulkAssignmentsRequest(request, UserType.JUDICIAL));
     }

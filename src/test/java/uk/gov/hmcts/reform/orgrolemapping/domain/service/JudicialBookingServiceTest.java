@@ -97,4 +97,62 @@ class JudicialBookingServiceTest {
         assertEquals(expectedBookings.size(),actualBookings.size());
     }
 
+
+    @Test
+    void testFetchJudicialBookingsInBatchesWithUsersIn3Batches() {
+        List<String> userIds = Arrays.asList("1","2","3","4","5");
+
+        List<JudicialBooking> expectedBookings1 = new ArrayList<>();
+        expectedBookings1.add(JudicialBooking.builder().userId("1").build());
+        expectedBookings1.add(JudicialBooking.builder().userId("2").build());
+
+        List<JudicialBooking> expectedBookings2 = new ArrayList<>();
+        expectedBookings2.add(JudicialBooking.builder().userId("3").build());
+        expectedBookings2.add(JudicialBooking.builder().userId("4").build());
+
+        List<JudicialBooking> expectedBookings3 = new ArrayList<>();
+        expectedBookings3.add(JudicialBooking.builder().userId("5").build());
+
+        UserRequest userRequest1 = UserRequest.builder().userIds(List.of("1","2")).build();
+        JudicialBookingRequest bookingRequest1 = new JudicialBookingRequest(userRequest1);
+
+        UserRequest userRequest2 = UserRequest.builder().userIds(List.of("3","4")).build();
+        JudicialBookingRequest bookingRequest2 = new JudicialBookingRequest(userRequest2);
+
+        UserRequest userRequest3 = UserRequest.builder().userIds(List.of("5")).build();
+        JudicialBookingRequest bookingRequest3 = new JudicialBookingRequest(userRequest3);
+
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(new JudicialBookingResponse(expectedBookings1)))
+                .when(feignClient).getJudicialBookingByUserIds(bookingRequest1);
+
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(new JudicialBookingResponse(expectedBookings2)))
+                .when(feignClient).getJudicialBookingByUserIds(bookingRequest2);
+
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(new JudicialBookingResponse(expectedBookings3)))
+                .when(feignClient).getJudicialBookingByUserIds(bookingRequest3);
+
+        String batchSize = "2";
+        List<JudicialBooking> actualBookings = sut.fetchJudicialBookingsInBatches(userIds,batchSize);
+        assertEquals(5,actualBookings.size());
+    }
+    @Test
+    void testFetchJudicialBookingsInBatchesWithUsersNoBatchSize() {
+        List<String> userIds = Arrays.asList("1","2","3","4","5");
+
+        List<JudicialBooking> expectedBookings = new ArrayList<>();
+        expectedBookings.add(JudicialBooking.builder().userId("1").build());
+        expectedBookings.add(JudicialBooking.builder().userId("2").build());
+        expectedBookings.add(JudicialBooking.builder().userId("3").build());
+        expectedBookings.add(JudicialBooking.builder().userId("4").build());
+        expectedBookings.add(JudicialBooking.builder().userId("5").build());
+
+        UserRequest userRequest = UserRequest.builder().userIds(List.of("1","2","3","4","5")).build();
+        JudicialBookingRequest bookingRequest = new JudicialBookingRequest(userRequest);
+
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(new JudicialBookingResponse(expectedBookings)))
+                .when(feignClient).getJudicialBookingByUserIds(bookingRequest);
+
+        List<JudicialBooking> actualBookings = sut.fetchJudicialBookingsInBatches(userIds,null);
+        assertEquals(5,actualBookings.size());
+    }
 }
