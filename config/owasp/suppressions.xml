@@ -18,7 +18,11 @@
         <cve>CVE-2022-4245</cve>
     </suppress>
     <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-2968 netty</notes>
+        <notes>https://tools.hmcts.net/jira/browse/AM-3002 json-java</notes>
+        <cve>CVE-2023-5072</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-3012 netty</notes>
         <cve>CVE-2023-4586</cve>
     </suppress>
 </suppressions>
