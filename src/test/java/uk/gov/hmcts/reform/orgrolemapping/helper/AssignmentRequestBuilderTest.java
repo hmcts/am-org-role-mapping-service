@@ -124,6 +124,7 @@ class AssignmentRequestBuilderTest {
     @DisplayName("Convert JUDICIAL UserProfile To JudicialAccessProfile")
     class ConvertUserProfileToJudicialAccessProfile {
 
+        @SuppressWarnings("deprecation")
         @Test
         void convertUserProfileToJudicialAccessProfile() throws IOException {
             JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
@@ -140,6 +141,7 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getBeginTime());
                         assertNotNull(appointment.getEndTime());
                         assertNotNull(appointment.getRegionId());
+                        assertNotNull(appointment.getCftRegionIdV1());
                         assertNotNull(appointment.getBaseLocationId());
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(2, appointment.getTicketCodes().size());
@@ -148,6 +150,7 @@ class AssignmentRequestBuilderTest {
             assertEquals(2, judicialAccessProfiles.size());
         }
 
+        @SuppressWarnings("deprecation")
         @Test
         void convertUserProfileToJudicialAccessProfileWithoutAuthorisation() throws IOException {
 
@@ -166,6 +169,7 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getBeginTime());
                         assertNotNull(appointment.getEndTime());
                         assertNotNull(appointment.getRegionId());
+                        assertNotNull(appointment.getCftRegionIdV1());
                         assertNotNull(appointment.getBaseLocationId());
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(0, appointment.getTicketCodes().size());
@@ -174,6 +178,7 @@ class AssignmentRequestBuilderTest {
             assertEquals(2, judicialAccessProfiles.size());
         }
 
+        @SuppressWarnings("deprecation")
         @Test
         void convertUserProfileToJudicialAccessProfileWithDiffTicketCode() throws IOException {
             JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
@@ -195,6 +200,7 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getUserId());
                         assertNotNull(appointment.getBeginTime());
                         assertNotNull(appointment.getRegionId());
+                        assertNotNull(appointment.getCftRegionIdV1());
                         assertNotNull(appointment.getBaseLocationId());
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(2, appointment.getTicketCodes().size());
@@ -810,11 +816,13 @@ class AssignmentRequestBuilderTest {
             assertThat(outputServiceCodes, containsInAnyOrder(expectedServiceCodes.toArray()));
         }
 
+        @SuppressWarnings("deprecation")
         private void assertCommonJudicialAccessProfileFields(JudicialAccessProfile accessProfile) {
             assertAll(
                     () -> assertNotNull(accessProfile.getUserId()),
                     () -> assertNotNull(accessProfile.getBeginTime()),
                     () -> assertNotNull(accessProfile.getRegionId()),
+                    () -> assertNotNull(accessProfile.getCftRegionIdV1()),
                     () -> assertNotNull(accessProfile.getBaseLocationId()),
                     () -> assertNotNull(accessProfile.getTicketCodes()),
                     () -> assertNotNull(accessProfile.getAppointment()),
