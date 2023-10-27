@@ -67,3 +67,51 @@ module "org-role-mapping-database-v11" {
   common_tags        = var.common_tags
   postgresql_version = "11"
 }
+
+resource "azurerm_key_vault_secret" "POSTGRES-PASS-V15" {
+  name          = "${var.component}-POSTGRES-PASS-V15"
+  value         = module.org-role-mapping-database-v15.password
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES-USER-V15" {
+  name         = "${var.component}-POSTGRES-USER-V15"
+  value        = module.org-role-mapping-database-v15.username
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES-HOST-V15" {
+  name         = "${var.component}-POSTGRES-HOST-V15"
+  value        = module.org-role-mapping-database-v15.fqdn
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
+
+module "org-role-mapping-database-v15" {
+  source             = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=master"
+
+  providers = {
+      azurerm.postgres_network = azurerm.postgres_network
+      }
+
+  admin_user_object_id = var.jenkins_AAD_objectId
+  business_area        = "cft"
+  name               = join("-", [local.app_full_name, "postgres-db", "v15"])
+  product            = var.product
+  env                = var.env
+  component          = var.component
+  common_tags        = var.common_tags
+  pgsql_version      = "15"
+
+  pgsql_databases = [
+      {
+        name = var.database_name
+      }
+    ]
+
+  pgsql_server_configuration = [
+      {
+        name  = "azure.extensions"
+        value = "plpgsql,pg_stat_statements,pg_buffercache"
+      }
+    ]
+}
