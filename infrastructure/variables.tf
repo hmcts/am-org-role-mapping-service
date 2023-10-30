@@ -58,26 +58,6 @@ variable "database_storage_mb" {
 
 variable "aks_subscription_id" {
 }
-variable "team_contact" {
-  type        = string
-  description = "The name of your Slack channel people can use to contact your team about your infrastructure"
-  default     = "#am-master-builds"
-}
-variable "destroy_me" {
-  type        = string
-  description = "In the future if this is set to Yes then automation will delete this resource on a schedule. Please set to No unless you know what you are doing"
-  default     = "No"
-}
-variable "sku" {
-  type        = string
-  default     = "Premium"
-  description = "SKU type(Basic, Standard and Premium)"
-}
-
-variable "tenant_id" {
-  type        = string
-  description = "(Required) The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. This is usually sourced from environment variables and not normally required to be specified."
-}
 
 variable "jenkins_AAD_objectId" {
   type        = string
