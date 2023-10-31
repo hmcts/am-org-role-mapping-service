@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -40,75 +41,119 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             "Deputy Circuit Judge");
 
     static Stream<Arguments> endToEndData() {
+        // Parameters String appointment, String appointmentType, List<String> assignedRoles,
+        // List<String> expectedRoleNames boolean privateLawV13IsEnabled
         return Stream.of(
                 Arguments.of("Circuit Judge",
                         "Salaried",
                         List.of(""),
-                        List.of("circuit-judge", "hmcts-judiciary")),
+                        List.of("circuit-judge", "hmcts-judiciary"),
+                        false),
+                Arguments.of("Circuit Judge",
+                        "Salaried",
+                        List.of(""),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary"),
+                        true),
+                Arguments.of("Circuit Judge",
+                        "SPTW",
+                        List.of(""),
+                        List.of("circuit-judge", "hmcts-judiciary"),
+                        false),
+                Arguments.of("Circuit Judge",
+                        "SPTW",
+                        List.of(""),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("Deputy Circuit Judge",
                         "Fee Paid",
                         List.of(""),
-                        List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary"),
+                        false),
+                Arguments.of("Deputy Circuit Judge",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge","circuit-judge", "fee-paid-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("Deputy District Judge - PRFD",
                         "Fee Paid",
                         List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("Deputy District Judge (MC)- Fee paid",
                         "Fee Paid",
                         List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("Deputy District Judge (MC)- Sitting in Retirement",
                         "Fee Paid",
                         List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("Deputy District Judge- Fee-Paid",
                         "Fee Paid",
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("Deputy District Judge- Sitting in Retirement",
                         "Fee Paid",
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("Deputy High Court Judge",
                         "Fee Paid",
                         List.of("Deputy High Court Judge"),
-                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary"),
+                        true),
                 Arguments.of("District Judge",
                         "Salaried",
                         List.of(""),
-                        List.of("judge", "hmcts-judiciary")),
+                        List.of("judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("District Judge (MC)",
                         "SPTW",
                         List.of("District Judge"),
-                        List.of("judge","hmcts-judiciary")),
+                        List.of("judge","hmcts-judiciary"),
+                        true),
                 Arguments.of("High Court Judge",
                         "Salaried",
                         List.of(""),
-                        List.of("circuit-judge", "hmcts-judiciary")),
+                        List.of("circuit-judge", "hmcts-judiciary"),
+                        false),
+                Arguments.of("High Court Judge",
+                        "Salaried",
+                        List.of(""),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("High Court Judge- Sitting in Retirement",
                         "Fee Paid",
                         List.of("High Court Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("Recorder",
                         "Fee Paid",
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("",
                         "",
                         List.of("Designated Family Judge"),
                         List.of("leadership-judge","judge","task-supervisor","hmcts-judiciary","case-allocator",
-                                "specific-access-approver-judiciary")),
+                                "specific-access-approver-judiciary"),
+                        true),
                 Arguments.of("",
                         "",
                         List.of("Family Division Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary")),
+                        List.of("judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("",
                         "",
                         List.of("Senior Family Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary")),
+                        List.of("judge", "hmcts-judiciary"),
+                        true),
                 Arguments.of("Magistrate", "Voluntary",
                         List.of("Magistrates-Voluntary"),
-                        List.of("magistrate")
+                        List.of("magistrate"),
+                        true
                 )
         );
     }
@@ -116,7 +161,8 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @MethodSource("endToEndData")
     void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
-            String appointment, String appointmentType, List<String> assignedRoles, List<String> expectedRoleNames) {
+            String appointment, String appointmentType, List<String> assignedRoles, List<String> expectedRoleNames,
+            boolean privateLawV13IsEnabled) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -142,8 +188,9 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
         );
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("privatelaw_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(List.of(
+                FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build(),
+                FeatureFlag.builder().flagName("privatelaw_wa_1_3").status(privateLawV13IsEnabled).build()));
 
         //assertions
         assertFalse(roleAssignments.isEmpty());
