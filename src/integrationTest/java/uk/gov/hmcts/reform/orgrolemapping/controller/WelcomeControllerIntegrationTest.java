@@ -71,7 +71,10 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.build
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
 
 
-@TestPropertySource(properties = {"dbFeature.flags.enable=iac_jrd_1_0"})
+@TestPropertySource(properties = {
+    "dbFeature.flags.enable=iac_jrd_1_0",
+    "testing.support.enabled=true" // NB: needed for OrgMappingController (needs removing in AM-2877)
+})
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);

@@ -8,6 +8,7 @@ import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 @Slf4j
 @Service
+@ConditionalOnExpression("${testing.support.enabled} && ${amqp.jrd.enabled}")
 public class JRDTopicPublisher extends JRDMessagingConfiguration {
 
     @Autowired
