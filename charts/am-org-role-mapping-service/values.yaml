@@ -14,6 +14,7 @@ java:
         - orm-IDAM-ADMIN-SECRET
         - caseworker-topic-primary-send-listen-shared-access-key
         - org-role-mapping-service-POSTGRES-PASS
+        - org-role-mapping-service-POSTGRES-PASS-V15
         - judicial-topic-primary-send-listen-shared-access-key
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
@@ -40,8 +41,8 @@ java:
     ORG_ROLE_MAPPING_IDAM_ADMIN_USERID: orm.admin@hmcts.NET
     ORG_ROLE_MAPPING_DB_PORT: 5432
     ORG_ROLE_MAPPING_DB_NAME: org_role_mapping
-    ORG_ROLE_MAPPING_DB_HOST: am-org-role-mapping-service-postgres-db-v11-{{ .Values.global.environment }}.postgres.database.azure.com
-    ORG_ROLE_MAPPING_DB_USERNAME: am@am-org-role-mapping-service-postgres-db-v11-{{ .Values.global.environment }}
+    ORG_ROLE_MAPPING_DB_HOST: am-org-role-mapping-service-postgres-db-v15-{{ .Values.global.environment }}.postgres.database.azure.com
+    ORG_ROLE_MAPPING_DB_USERNAME: am@am-org-role-mapping-service-postgres-db-v15-{{ .Values.global.environment }}
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified&sslmode=require"
     REFRESH_JOB:
     TESTING_SUPPORT_ENABLED: false
