@@ -12,6 +12,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.OperationCustomizer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.HandlerMethod;
@@ -29,7 +30,17 @@ public class SwaggerConfiguration {
     public GroupedOpenApi publicApi(OperationCustomizer customGlobalHeaders) {
         return GroupedOpenApi.builder()
                 .group("am-org-role-mapping-service")
-                .pathsToMatch("/**")
+                .pathsToMatch("/am/role-mapping/**")
+                .build();
+    }
+
+    @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
+    @Bean
+    GroupedOpenApi testingSupportApis(OperationCustomizer customGlobalHeaders) {
+        return GroupedOpenApi.builder()
+                .group("testing-support")
+                .displayName("Testing Support")
+                .pathsToMatch("/am/testing-support/**")
                 .build();
     }
 
