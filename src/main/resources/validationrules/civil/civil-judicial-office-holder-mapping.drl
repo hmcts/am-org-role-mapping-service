@@ -354,12 +354,12 @@ then
 end;
 
 /*
- * "CIVIL District Judge- Sitting in Retirement" business role business role mapping to JOH.
+ * "CIVIL District Judge (sitting in retirement)" business role business role mapping to JOH.
  */
 rule "civil_district_judge_sitting_in_retirement_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_2.getValue())
-   $jap: JudicialAccessProfile(appointment == "District Judge- Sitting in Retirement",
+   $jap: JudicialAccessProfile(appointment == "District Judge (sitting in retirement)",
                                appointmentType == "Fee Paid",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
@@ -367,7 +367,7 @@ then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("CIVIL District Judge- Sitting in Retirement-Fee-Paid")
+      .office("CIVIL District Judge (sitting in retirement)-Fee-Paid")
       .jurisdiction("CIVIL")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
