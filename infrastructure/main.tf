@@ -102,6 +102,9 @@ module "org-role-mapping-database-v15" {
   common_tags        = var.common_tags
   pgsql_version      = "15"
 
+  # The original subnet is full, this is required to use the new subnet for new databases
+  subnet_suffix = "expanded"
+
   pgsql_databases = [
       {
         name = var.database_name
@@ -109,9 +112,9 @@ module "org-role-mapping-database-v15" {
     ]
 
   pgsql_server_configuration = [
-      {
-        name  = "azure.extensions"
-        value = "plpgsql,pg_stat_statements,pg_buffercache"
-      }
-    ]
+    {
+      name  = "azure.extensions"
+      value = "plpgsql,pg_stat_statements,pg_buffercache"
+    }
+  ]
 }
