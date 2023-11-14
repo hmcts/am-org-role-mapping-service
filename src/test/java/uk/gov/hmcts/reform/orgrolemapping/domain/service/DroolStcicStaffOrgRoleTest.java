@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DroolStcicStaffOrgRoleTest extends DroolBase {
+class DroolStcicStaffOrgRoleTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
@@ -110,18 +110,18 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
                                                                 "regional-centre-team-leader", "regional-centre-admin",
                                                                 "specific-access-approver-admin");
             if (rolesWithPublicClassification.contains(r.getRoleName())) {
-                assertEquals(r.getClassification().toString(), "PUBLIC");
+                assertEquals("PUBLIC", r.getClassification().toString());
             } else {
-                assertEquals(r.getClassification().toString(), "PRIVATE");
+                assertEquals("PRIVATE", r.getClassification().toString());
             }
             //assert grant type
             List<String> rolesWithStandardGrantType = List.of("hearing-centre-team-leader", "hearing-centre-admin",
                     "task-supervisor", "case-allocator", "specific-access-approver-admin",
                     "regional-centre-team-leader", "regional-centre-admin");
             if (rolesWithStandardGrantType.contains(r.getRoleName())) {
-                assertEquals(r.getGrantType().toString(), "STANDARD");
+                assertEquals("STANDARD", r.getGrantType().toString());
             } else {
-                assertEquals(r.getGrantType().toString(), "BASIC");
+                assertEquals("BASIC", r.getGrantType().toString());
             }
         });
     }
@@ -204,17 +204,17 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             List<String> rolesWithPublicClassification = List.of("ctsc-team-leader", "ctsc",
                     "task-supervisor", "case-allocator", "specific-access-approver-ctsc");
             if (rolesWithPublicClassification.contains(r.getRoleName())) {
-                assertEquals(r.getClassification().toString(), "PUBLIC");
+                assertEquals("PUBLIC", r.getClassification().toString());
             } else {
-                assertEquals(r.getClassification().toString(), "PRIVATE");
+                assertEquals("PRIVATE", r.getClassification().toString());
             }
             //assert grant type
             List<String> rolesWithStandardGrantType = List.of("ctsc-team-leader", "ctsc",
                     "task-supervisor", "case-allocator", "specific-access-approver-ctsc");
             if (rolesWithStandardGrantType.contains(r.getRoleName())) {
-                assertEquals(r.getGrantType().toString(), "STANDARD");
+                assertEquals("STANDARD", r.getGrantType().toString());
             } else {
-                assertEquals(r.getGrantType().toString(), "BASIC");
+                assertEquals("BASIC", r.getGrantType().toString());
             }
         });
     }
@@ -295,17 +295,17 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             List<String> rolesWithPublicClassification = List.of("senior-tribunal-caseworker", "tribunal-caseworker",
                     "task-supervisor", "case-allocator", "specific-access-approver-legal-ops");
             if (rolesWithPublicClassification.contains(r.getRoleName())) {
-                assertEquals(r.getClassification().toString(), "PUBLIC");
+                assertEquals("PUBLIC", r.getClassification().toString()) ;
             } else {
-                assertEquals(r.getClassification().toString(), "PRIVATE");
+                assertEquals("PRIVATE", r.getClassification().toString());
             }
             //assert grant type
             List<String> rolesWithStandardGrantType = List.of("senior-tribunal-caseworker", "tribunal-caseworker",
                     "task-supervisor", "case-allocator", "specific-access-approver-legal-ops");
             if (rolesWithStandardGrantType.contains(r.getRoleName())) {
-                assertEquals(r.getGrantType().toString(), "STANDARD");
+                assertEquals("STANDARD", r.getGrantType().toString());
             } else {
-                assertEquals(r.getGrantType().toString(), "BASIC");
+                assertEquals("BASIC", r.getGrantType().toString());
             }
         });
     }
@@ -355,16 +355,16 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             //assert classification
             List<String> rolesWithPublicClassification = List.of("cica");
             if (rolesWithPublicClassification.contains(r.getRoleName())) {
-                assertEquals(r.getClassification().toString(), "PUBLIC");
+                assertEquals("PUBLIC",r.getClassification().toString());
             } else {
-                assertEquals(r.getClassification().toString(), "PRIVATE");
+                assertEquals("PRIVATE",r.getClassification().toString());
             }
             //assert grant type
             List<String> rolesWithStandardGrantType = List.of("cica");
             if (rolesWithStandardGrantType.contains(r.getRoleName())) {
-                assertEquals(r.getGrantType().toString(), "STANDARD");
+                assertEquals("STANDARD", r.getGrantType().toString() );
             } else {
-                assertEquals(r.getGrantType().toString(), "BASIC");
+                assertEquals("BASIC", r.getGrantType().toString());
             }
         });
     }

@@ -17,11 +17,15 @@ import uk.gov.hmcts.reform.orgrolemapping.util.PersistenceUtil;
 @Hidden
 public class FeatureFlagController {
 
-    @Autowired
     PersistenceService persistenceService;
 
-    @Autowired
     PersistenceUtil persistenceUtil;
+
+    @Autowired
+    public FeatureFlagController(PersistenceService persistenceService, PersistenceUtil persistenceUtil){
+        this.persistenceService = persistenceService;
+        this.persistenceUtil = persistenceUtil;
+    }
 
     @GetMapping(value = "/am/role-mapping/fetchFlagStatus")
     public ResponseEntity<Object> getFeatureFlag(@RequestParam(value = "flagName") String flagName,

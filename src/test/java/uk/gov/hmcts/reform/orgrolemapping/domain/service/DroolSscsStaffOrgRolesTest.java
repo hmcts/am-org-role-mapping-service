@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DroolSscsStaffOrgRolesTest extends DroolBase {
+class DroolSscsStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
@@ -333,8 +333,8 @@ public class DroolSscsStaffOrgRolesTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
             assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-            assertEquals(r.getClassification().toString(), "PUBLIC");
-            assertEquals(r.getGrantType().toString(), "STANDARD");
+            assertEquals("PUBLIC", r.getClassification().toString());
+            assertEquals("STANDARD", r.getGrantType().toString());
 
             if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
                 assertEquals("LDN", r.getAttributes().get("region").asText());
