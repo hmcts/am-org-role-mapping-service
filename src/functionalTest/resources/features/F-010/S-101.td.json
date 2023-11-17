@@ -51,9 +51,7 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "EMPLOYMENT",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work"
+            "jurisdiction": "EMPLOYMENT"
           }
         },
         {
@@ -119,9 +117,7 @@
           "attributes": {
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "EMPLOYMENT",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,routine_work,decision_making_work,applications,access_requests"
+            "jurisdiction": "EMPLOYMENT"
           }
         },{
           "id" : "[[ANYTHING_PRESENT]]",
@@ -138,7 +134,6 @@
             "substantive" : "N",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "EMPLOYMENT",
-            "region" : "[[ANYTHING_PRESENT]]",
             "workTypes" : "access_requests"
           }
         },
@@ -156,9 +151,7 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "EMPLOYMENT",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work,access_requests"
+            "jurisdiction": "EMPLOYMENT"
           }
         },
         {
@@ -177,7 +170,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "EMPLOYMENT",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,decision_making_work,applications,routine_work"
+            "workTypes": "hearing_work,routine_work,applications,amendments"
           }
         }
       ]
