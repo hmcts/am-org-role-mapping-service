@@ -41,7 +41,7 @@ def versions = [
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
         springBoot     : '2.7.17',
-        spring         : '5.3.29',
+        spring         : '5.3.31',
         springSecurity : '5.7.10',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
@@ -50,12 +50,12 @@ def versions = [
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
-        jacksondata    : '2.14.2',
+        jacksondata    : '2.16.0',
         drools         : '7.73.0.Final',
         log4JVersion   : '2.20.0',
         logbackVersion : '1.2.10',
         launchDarklySdk: '5.10.9',
-        netty_version  : '4.1.100.Final'
+        netty_version  : '4.1.101.Final'
 
 ]
 
@@ -404,7 +404,7 @@ dependencies {
 
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.4'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.4'
-    implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.2'
+    implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.4'
 
     //Dependent on drools Jar. Can be removed CVE-2021-26291
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
