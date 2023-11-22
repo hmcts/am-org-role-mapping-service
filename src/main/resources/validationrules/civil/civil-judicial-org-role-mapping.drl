@@ -25,7 +25,7 @@ rule "civil_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL Presiding Judge-Salaried",
-                                         "CIVIL Resident Judge-Salaried"))
+                                        "CIVIL Resident Judge-Salaried", "CIVIL Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
       if($joh.getOffice().contains("Fee-Paid")) {
@@ -233,7 +233,8 @@ when
                                         "CIVIL Deputy District Judge-Fee-Paid",
                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                         "CIVIL Recorder-Fee-Paid",
-                                        "CIVIL District Judge (sitting in retirement)-Fee-Paid"))
+                                        "CIVIL District Judge (sitting in retirement)-Fee-Paid",
+                                        "CIVIL Tribunal Judge-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
@@ -273,7 +274,8 @@ $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL P
                                       "CIVIL Senior Circuit Judge-Salaried", "CIVIL High Court Judge-Salaried",
                                       "CIVIL Deputy Circuit Judge-Fee-Paid", "CIVIL Deputy District Judge-Fee-Paid",
                                       "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
-                                      "CIVIL Recorder-Fee-Paid", "CIVIL District Judge (sitting in retirement)-Fee-Paid"))
+                                      "CIVIL Recorder-Fee-Paid", "CIVIL District Judge (sitting in retirement)-Fee-Paid",
+                                      "CIVIL Tribunal Judge-Salaried", "CIVIL Tribunal Judge-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if($joh.getOffice().contains("Fee-Paid")) {
@@ -379,7 +381,8 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("CIVIL Deputy District Judge-Fee-Paid", "CIVIL Recorder-Fee-Paid",
                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
-                                        "CIVIL District Judge (sitting in retirement)-Fee-Paid"))
+                                        "CIVIL District Judge (sitting in retirement)-Fee-Paid",
+                                        "CIVIL Tribunal Judge-Fee-Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
