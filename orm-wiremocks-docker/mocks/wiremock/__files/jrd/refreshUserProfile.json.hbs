@@ -1,255 +1,798 @@
 [
 
   {{#each (jsonPath request.body '$.sidam_ids') as | sidamId|}}
-    {{#if (eq sidamId 'civil-SCJ')  }}
-  {
-    "sidam_id": "{{sidamId}}",
-    "retirement_date": null,
-    "active_flag": "true",
-    "appointments": [
-      {
-        "base_location_id": "954",
-        "epimms_id": "1234",
-        "cft_region_id": "3",
-        "cft_region": "North East",
-        "is_principal_appointment": "true",
-        "appointment": "Senior Circuit Judge",
-        "appointment_type": "Salaried",
-        "service_codes": [
-          null
-        ],
-        "start_date": "2020-01-01",
-        "end_date": null,
-        "appointment_id": "10001",
-        "role_name_id": "75",
-        "type": "Courts",
-        "contract_type_id": "0"
-      }
-    ],
-    "authorisations": [
-      {
-        "jurisdiction": "Civil",
-        "ticket_description": "Civil Authorisation",
-        "ticket_code": "294",
-        "service_codes": [
-          "AAA1",
-          "AAA2",
-          "AAA3",
-          "AAA4",
-          "AAA5",
-          "AAA6",
-          "AAA7"
-        ],
-        "start_date": "2020-01-01",
-        "end_date": null,
-        "appointment_id": "10001",
-        "authorisation_id": "20001",
-        "jurisdiction_id": "24"
-      },
-      {
-        "jurisdiction": "Crime",
-        "ticket_description": "Court of Appeal Criminal Division",
-        "ticket_code": "307",
-        "service_codes": [
-          " "
-        ],
-        "start_date": "2019-01-01",
-        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
-        "appointment_id": "10001",
-        "authorisation_id": "20002",
-        "jurisdiction_id": "25"
-      },
-      {
-        "jurisdiction": "Crime",
-        "ticket_description": "Criminal Authorisation",
-        "ticket_code": "306",
-        "service_codes": [
-          " "
-        ],
-        "start_date": "2020-01-01",
-        "end_date": null,
-        "appointment_id": "10001",
-        "authorisation_id": "20003",
-        "jurisdiction_id": "25"
-      }
-    ],
-    "roles": [
-      {
-        "jurisdiction_role_name": "Resident Judge",
-        "start_date": "2018-01-01T00:00",
-        "end_date": "{{now offset='-1 years' format='yyyy'}}-01-01T00:00",
-        "jurisdiction_role_id": "30001"
-      },
-      {
-        "jurisdiction_role_name": "Resident Judge",
-        "start_date": "{{now offset='-1 years' format='yyyy'}}-01-02T00:00",
-        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
-        "jurisdiction_role_id": "30002"
-      }
-    ]
-  }
+
+    {{#if (eq sidamId 'f603e559-a5cd-4316-999c-e945cb07ccc9')  }}
+        {
+                "sidam_id": "f603e559-a5cd-4316-999c-e945cb07ccc9",
+                "object_id": "d007bd18-5a2f-4f7b-8ea4-3b0419679905",
+                "known_as": "Michael",
+                "surname": "Morton",
+                "full_name": "District Judge Michael Morton",
+                "post_nominals": null,
+                "email_id": "DJ.Michael.Morton@ejudiciary.net",
+                "personal_code": "410554",
+                "title": "District Judge",
+                "initials": "MM",
+                "retirement_date": "2031-06-28",
+                "active_flag": "true",
+                "appointments": [
+                    {
+                        "base_location_id": "764",
+                        "epimms_id": "36791",
+                        "cft_region_id": "1",
+                        "cft_region": "London",
+                        "is_principal_appointment": "true",
+                        "appointment": "District Judge",
+                        "appointment_type": "Salaried",
+                        "service_codes": [
+                            null
+                        ],
+                        "start_date": "1998-07-06",
+                        "end_date": null,
+                        "appointment_id": "29518",
+                        "role_name_id": "45",
+                        "type": "Courts",
+                        "contract_type_id": "0"
+                    }
+                ],
+                "authorisations": [
+                    {
+                        "jurisdiction": "Civil",
+                        "ticket_description": "Civil Authorisation",
+                        "ticket_code": "294",
+                        "service_codes": [
+                            "AAA1",
+                            "AAA2",
+                            "AAA3",
+                            "AAA4",
+                            "AAA5",
+                            "AAA6",
+                            "AAA7"
+                        ],
+                        "start_date": "1998-07-06",
+                        "end_date": null,
+                        "appointment_id": "29518",
+                        "authorisation_id": "656",
+                        "jurisdiction_id": "24"
+                    },
+                    {
+                        "jurisdiction": "Family",
+                        "ticket_description": "Private Law",
+                        "ticket_code": "315",
+                        "service_codes": [
+                            "ABA5"
+                        ],
+                        "start_date": "2008-04-01",
+                        "end_date": null,
+                        "appointment_id": "29518",
+                        "authorisation_id": "10149",
+                        "jurisdiction_id": "26"
+                    },
+                    {
+                        "jurisdiction": "Family",
+                        "ticket_description": "Public Law",
+                        "ticket_code": "316",
+                        "service_codes": [
+                            "ABA3"
+                        ],
+                        "start_date": "2013-04-25",
+                        "end_date": null,
+                        "appointment_id": "29518",
+                        "authorisation_id": "12110",
+                        "jurisdiction_id": "26"
+                    }
+                ],
+                "roles": [
+                    {
+                        "jurisdiction_role_name": "Appraisal Judge",
+                        "start_date": "2006-09-01T00:00",
+                        "end_date": null,
+                        "jurisdiction_role_id": "18"
+                    }
+                ]
+            }
     {{/if}}
 
-    {{#if (eq sidamId 'privatelaw-SCJ')  }}
-  {
-    "sidam_id": "{{sidamId}}",
-    "retirement_date": null,
-    "active_flag": "true",
-    "appointments": [
-      {
-        "base_location_id": "766",
-        "epimms_id": "2345",
-        "cft_region_id": "1",
-        "cft_region": "London",
-        "is_principal_appointment": "false",
-        "appointment": "Deputy District Judge- Fee-Paid",
-        "appointment_type": "Fee-paid",
-        "service_codes": [
-          null
-        ],
-        "start_date": "2003-01-01",
-        "end_date": null,
-        "appointment_id": "10002",
-        "role_name_id": "24",
-        "type": "Courts",
-        "contract_type_id": "1"
-      },
-      {
-        "base_location_id": "1029",
-        "epimms_id": null,
-        "cft_region_id": "12",
-        "cft_region": "National",
-        "is_principal_appointment": "false",
-        "appointment": "Tribunal Judge",
-        "appointment_type": "Salaried",
-        "service_codes": [],
-        "start_date": "2010-01-01",
-        "end_date": null,
-        "appointment_id": "10003",
-        "role_name_id": "84",
-        "type": "Tribunals",
-        "contract_type_id": "0"
-      },
-      {
-        "base_location_id": "939",
-        "epimms_id": "3456",
-        "cft_region_id": "3",
-        "cft_region": "North East",
-        "is_principal_appointment": "true",
-        "appointment": "Senior Circuit Judge",
-        "appointment_type": "Salaried",
-        "service_codes": [
-          null
-        ],
-        "start_date": "2013-01-01",
-        "end_date": null,
-        "appointment_id": "10004",
-        "role_name_id": "75",
-        "type": "Courts",
-        "contract_type_id": "0"
-      }
-    ],
-    "authorisations": [
-      {
-        "jurisdiction": "Family",
-        "ticket_description": "Ancillary Relief Appeals",
-        "ticket_code": "402",
-        "service_codes": [],
-        "start_date": "2013-01-01",
-        "end_date": null,
-        "appointment_id": "10004",
-        "authorisation_id": "20004",
-        "jurisdiction_id": "26"
-      },
-      {
-        "jurisdiction": "Family",
-        "ticket_description": "Court of Protection",
-        "ticket_code": "313",
-        "service_codes": [
-          "ABA7"
-        ],
-        "start_date": "2015-01-01",
-        "end_date": null,
-        "appointment_id": "10004",
-        "authorisation_id": "20005",
-        "jurisdiction_id": "26"
-      },
-      {
-        "jurisdiction": "Family",
-        "ticket_description": "Financial Remedy",
-        "ticket_code": "410",
-        "service_codes": [
-          "ABA2"
-        ],
-        "start_date": "2019-01-01",
-        "end_date": null,
-        "appointment_id": "10004",
-        "authorisation_id": "20006",
-        "jurisdiction_id": "26"
-      },
-      {
-        "jurisdiction": "Family",
-        "ticket_description": "Private Law",
-        "ticket_code": "315",
-        "service_codes": [
-          "ABA5"
-        ],
-        "start_date": "2008-01-01",
-        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
-        "appointment_id": "10004",
-        "authorisation_id": "20007",
-        "jurisdiction_id": "26"
-      },
-      {
-        "jurisdiction": "Family",
-        "ticket_description": "Public Law",
-        "ticket_code": "316",
-        "service_codes": [
-          "ABA3"
-        ],
-        "start_date": "2007-01-01",
-        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
-        "appointment_id": "10004",
-        "authorisation_id": "20008",
-        "jurisdiction_id": "26"
-      },
-      {
-        "jurisdiction": "Family",
-        "ticket_description": "Section 9-1 Family",
-        "ticket_code": "317",
-        "service_codes": [
-          "ABA5",
-          "ABA3"
-        ],
-        "start_date": "2013-01-01",
-        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01",
-        "appointment_id": "10004",
-        "authorisation_id": "20009",
-        "jurisdiction_id": "26"
-      },
-      {
-        "jurisdiction": "Tribunals",
-        "ticket_description": "Special Educational Needs and Disability",
-        "ticket_code": "358",
-        "service_codes": [
-          " "
-        ],
-        "start_date": "2010-01-01",
-        "end_date": "{{now offset='-3 years' format='yyyy'}}-01-01",
-        "appointment_id": "10003",
-        "authorisation_id": "20010",
-        "jurisdiction_id": "27"
-      }
-    ],
-    "roles": [
-      {
-        "jurisdiction_role_name": "Designated Family Judge",
-        "start_date": "2013-01-01T00:00",
-        "end_date": "{{now offset='1 years' format='yyyy'}}-01-01T00:00",
-        "jurisdiction_role_id": "1380"
-      }
-    ]
-  }
+    {{#if (eq sidamId 'dc4db5a8-fa2e-48bc-a26e-c04275bced5a')  }}
+        {
+            "sidam_id": "dc4db5a8-fa2e-48bc-a26e-c04275bced5a",
+            "object_id": "dd2c73ec-64c2-4a6a-a7a1-b397a81c79f0",
+            "known_as": "Derek",
+            "surname": "Ewing",
+            "full_name": "Mr Derek Ewing",
+            "post_nominals": null,
+            "email_id": "DDJ.Derek.Ewing@ejudiciary.net",
+            "personal_code": "4916693",
+            "title": "Mr",
+            "initials": "DE",
+            "retirement_date": "2034-05-06",
+            "active_flag": "true",
+            "appointments": [
+                {
+                    "base_location_id": "767",
+                    "epimms_id": "20262",
+                    "cft_region_id": "1",
+                    "cft_region": "London",
+                    "is_principal_appointment": "true",
+                    "appointment": "Deputy District Judge- Fee-Paid",
+                    "appointment_type": "Fee-paid",
+                    "service_codes": [
+                        null
+                    ],
+                    "start_date": "1999-03-24",
+                    "end_date": "2024-03-31",
+                    "appointment_id": "29108",
+                    "role_name_id": "24",
+                    "type": "Courts",
+                    "contract_type_id": "1"
+                }
+            ],
+            "authorisations": [
+                {
+                    "jurisdiction": "Civil",
+                    "ticket_description": "Civil Authorisation",
+                    "ticket_code": "294",
+                    "service_codes": [
+                        "AAA1",
+                        "AAA2",
+                        "AAA3",
+                        "AAA4",
+                        "AAA5",
+                        "AAA6",
+                        "AAA7"
+                    ],
+                    "start_date": "1999-03-24",
+                    "end_date": null,
+                    "appointment_id": "29108",
+                    "authorisation_id": "508",
+                    "jurisdiction_id": "24"
+                },
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Private Law",
+                    "ticket_code": "315",
+                    "service_codes": [
+                        "ABA5"
+                    ],
+                    "start_date": "2010-06-30",
+                    "end_date": "2029-05-06",
+                    "appointment_id": "29108",
+                    "authorisation_id": "10818",
+                    "jurisdiction_id": "26"
+                },
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Public Law",
+                    "ticket_code": "316",
+                    "service_codes": [
+                        "ABA3"
+                    ],
+                    "start_date": "2017-08-09",
+                    "end_date": "2029-05-06",
+                    "appointment_id": "29108",
+                    "authorisation_id": "12222",
+                    "jurisdiction_id": "26"
+                }
+            ],
+            "roles": []
+        }
+    {{/if}}
+
+    {{#if (eq sidamId '7faf83c9-8924-4c26-bff3-0a51fb6c9c8f')  }}
+        {
+            "sidam_id": "7faf83c9-8924-4c26-bff3-0a51fb6c9c8f",
+            "object_id": "54391a7e-8d1d-4f26-aa63-32a713fe5014",
+            "known_as": "Angel",
+            "surname": "Morgan",
+            "full_name": "District Judge Angel Morgan",
+            "post_nominals": null,
+            "email_id": "DJ.Angel.Morgan@ejudiciary.net",
+            "personal_code": "4925424",
+            "title": "District Judge",
+            "initials": "AM",
+            "retirement_date": "2041-03-16",
+            "active_flag": "true",
+            "appointments": [
+                {
+                    "base_location_id": "909",
+                    "epimms_id": "231596",
+                    "cft_region_id": "2",
+                    "cft_region": "Midlands",
+                    "is_principal_appointment": "true",
+                    "appointment": "District Judge",
+                    "appointment_type": "SPTW-80%",
+                    "service_codes": [
+                        null
+                    ],
+                    "start_date": "2020-03-02",
+                    "end_date": null,
+                    "appointment_id": "33248",
+                    "role_name_id": "45",
+                    "type": "Courts",
+                    "contract_type_id": "8"
+                }
+            ],
+            "authorisations": [
+                {
+                    "jurisdiction": "Civil",
+                    "ticket_description": "Civil Authorisation",
+                    "ticket_code": "294",
+                    "service_codes": [
+                        "AAA1",
+                        "AAA2",
+                        "AAA3",
+                        "AAA4",
+                        "AAA5",
+                        "AAA6",
+                        "AAA7"
+                    ],
+                    "start_date": "2020-03-02",
+                    "end_date": null,
+                    "appointment_id": "33248",
+                    "authorisation_id": "2797",
+                    "jurisdiction_id": "24"
+                },
+                {
+                    "jurisdiction": "Civil",
+                    "ticket_description": "Financial Remedy",
+                    "ticket_code": "409",
+                    "service_codes": [],
+                    "start_date": "2022-07-01",
+                    "end_date": null,
+                    "appointment_id": "33248",
+                    "authorisation_id": "4177",
+                    "jurisdiction_id": "24"
+                },
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Financial Remedy",
+                    "ticket_code": "410",
+                    "service_codes": [
+                        "ABA2"
+                    ],
+                    "start_date": "2020-03-02",
+                    "end_date": null,
+                    "appointment_id": "33248",
+                    "authorisation_id": "12926",
+                    "jurisdiction_id": "26"
+                },
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Private Law",
+                    "ticket_code": "315",
+                    "service_codes": [
+                        "ABA5"
+                    ],
+                    "start_date": "2021-10-30",
+                    "end_date": null,
+                    "appointment_id": "33248",
+                    "authorisation_id": "10907",
+                    "jurisdiction_id": "26"
+                }
+            ],
+            "roles": []
+        }
+    {{/if}}
+
+    {{#if (eq sidamId '322d8512-82e7-4f69-aa6c-c6b105a99f45')  }}
+        {
+            "sidam_id": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
+            "object_id": "f54a92e3-c856-49df-b801-64323c54b61d",
+            "known_as": "Jennifer",
+            "surname": "Little",
+            "full_name": "The Honourable Mrs Justice Jennifer Little",
+            "post_nominals": "KC",
+            "email_id": "MrsJustice.Little@ejudiciary.net",
+            "personal_code": "4925644",
+            "title": "The Honourable Mrs Justice",
+            "initials": "JL",
+            "retirement_date": "2040-10-21",
+            "active_flag": "true",
+            "appointments": [
+                {
+                    "base_location_id": "749",
+                    "epimms_id": "20262",
+                    "cft_region_id": "1",
+                    "cft_region": "London",
+                    "is_principal_appointment": "true",
+                    "appointment": "High Court Judge",
+                    "appointment_type": "Salaried",
+                    "service_codes": [
+                        null
+                    ],
+                    "start_date": "2018-10-01",
+                    "end_date": null,
+                    "appointment_id": "37105",
+                    "role_name_id": "51",
+                    "type": "Courts",
+                    "contract_type_id": "0"
+                }
+            ],
+            "authorisations": [
+                {
+                    "jurisdiction": "Civil",
+                    "ticket_description": "Administrative Court",
+                    "ticket_code": "290",
+                    "service_codes": [],
+                    "start_date": "2018-10-01",
+                    "end_date": null,
+                    "appointment_id": "37105",
+                    "authorisation_id": "1298",
+                    "jurisdiction_id": "24"
+                },
+                {
+                    "jurisdiction": "Civil",
+                    "ticket_description": "Civil Authorisation",
+                    "ticket_code": "294",
+                    "service_codes": [
+                        "AAA1",
+                        "AAA2",
+                        "AAA3",
+                        "AAA4",
+                        "AAA5",
+                        "AAA6",
+                        "AAA7"
+                    ],
+                    "start_date": "2018-10-01",
+                    "end_date": null,
+                    "appointment_id": "37105",
+                    "authorisation_id": "1914",
+                    "jurisdiction_id": "24"
+                },
+                {
+                    "jurisdiction": "Civil",
+                    "ticket_description": "Media and Communications List",
+                    "ticket_code": "412",
+                    "service_codes": [],
+                    "start_date": "2022-02-23",
+                    "end_date": null,
+                    "appointment_id": "37105",
+                    "authorisation_id": "4551",
+                    "jurisdiction_id": "24"
+                },
+                {
+                    "jurisdiction": "Civil",
+                    "ticket_description": "Ordinary Planning",
+                    "ticket_code": "404",
+                    "service_codes": [],
+                    "start_date": "2018-10-01",
+                    "end_date": null,
+                    "appointment_id": "37105",
+                    "authorisation_id": "4083",
+                    "jurisdiction_id": "24"
+                },
+                {
+                    "jurisdiction": "Crime",
+                    "ticket_description": "Criminal Authorisation",
+                    "ticket_code": "306",
+                    "service_codes": [],
+                    "start_date": "2018-10-01",
+                    "end_date": null,
+                    "appointment_id": "37105",
+                    "authorisation_id": "6797",
+                    "jurisdiction_id": "25"
+                },
+                {
+                    "jurisdiction": "Crime",
+                    "ticket_description": "Serious Sexual Offences",
+                    "ticket_code": "311",
+                    "service_codes": [],
+                    "start_date": "2017-07-14",
+                    "end_date": null,
+                    "appointment_id": "37105",
+                    "authorisation_id": "8377",
+                    "jurisdiction_id": "25"
+                },
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Private Law",
+                    "ticket_code": "315",
+                    "service_codes": [
+                        "ABA5"
+                    ],
+                    "start_date": "2018-02-02",
+                    "end_date": "2035-10-21",
+                    "appointment_id": "37105",
+                    "authorisation_id": "10551",
+                    "jurisdiction_id": "26"
+                }
+            ],
+            "roles": []
+        }
+    {{/if}}
+
+    {{#if (eq sidamId 'cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b')  }}
+        {
+            "sidam_id": "cd0652cd-13c7-4b2b-b61a-1d9ae1c36e9b",
+            "object_id": "57b718a1-0f82-476a-a6e7-3ebb309d3423",
+            "known_as": "Chris",
+            "surname": "Rodriguez",
+            "full_name": "Mr Chris Rodriguez",
+            "post_nominals": null,
+            "email_id": "TribunalJudge.Rodriguez20@ejudiciary.net",
+            "personal_code": "4927398",
+            "title": "Mr",
+            "initials": "CR",
+            "retirement_date": "2059-07-24",
+            "active_flag": "true",
+            "appointments": [
+                {
+                    "base_location_id": "909",
+                    "epimms_id": "231596",
+                    "cft_region_id": "2",
+                    "cft_region": "Midlands",
+                    "is_principal_appointment": "true",
+                    "appointment": "Deputy District Judge- Fee-Paid",
+                    "appointment_type": "Fee-paid",
+                    "service_codes": [
+                        null
+                    ],
+                    "start_date": "2020-05-18",
+                    "end_date": "2024-05-17",
+                    "appointment_id": "45378",
+                    "role_name_id": "24",
+                    "type": "Courts",
+                    "contract_type_id": "1"
+                },
+                {
+                    "base_location_id": "1029",
+                    "epimms_id": null,
+                    "cft_region_id": "12",
+                    "cft_region": "National",
+                    "is_principal_appointment": "false",
+                    "appointment": "Tribunal Judge",
+                    "appointment_type": "Fee-paid",
+                    "service_codes": [],
+                    "start_date": "2019-01-25",
+                    "end_date": "2027-01-24",
+                    "appointment_id": "41608",
+                    "role_name_id": "84",
+                    "type": "Tribunals",
+                    "contract_type_id": "1"
+                }
+            ],
+            "authorisations": [
+                {
+                    "jurisdiction": "Civil",
+                    "ticket_description": "Civil Authorisation",
+                    "ticket_code": "294",
+                    "service_codes": [
+                        "AAA1",
+                        "AAA2",
+                        "AAA3",
+                        "AAA4",
+                        "AAA5",
+                        "AAA6",
+                        "AAA7"
+                    ],
+                    "start_date": "2020-05-18",
+                    "end_date": null,
+                    "appointment_id": "45378",
+                    "authorisation_id": "2540",
+                    "jurisdiction_id": "24"
+                },
+                {
+                    "jurisdiction": "Tribunals",
+                    "ticket_description": "First Tier - Health, Education and Social Care",
+                    "ticket_code": "374",
+                    "service_codes": [
+                        "BCA1",
+                        "BCA2",
+                        "BCA3",
+                        "BCA4"
+                    ],
+                    "start_date": "2019-01-25",
+                    "end_date": null,
+                    "appointment_id": "41608",
+                    "authorisation_id": "29491",
+                    "jurisdiction_id": "27"
+                },
+                {
+                    "jurisdiction": "Tribunals",
+                    "ticket_description": "Mental Health",
+                    "ticket_code": "342",
+                    "service_codes": [
+                        "BCA2"
+                    ],
+                    "start_date": "2019-01-25",
+                    "end_date": null,
+                    "appointment_id": "41608",
+                    "authorisation_id": "15576",
+                    "jurisdiction_id": "27"
+                }
+            ],
+            "roles": []
+        }
+    {{/if}}
+
+    {{#if (eq sidamId '524501bc-9eec-4512-abc3-f6bf1d6f5096')  }}
+        {
+            "sidam_id": "524501bc-9eec-4512-abc3-f6bf1d6f5096",
+            "object_id": "0725f929-764b-463a-b78a-b80110c8fedc",
+            "known_as": "Theodore",
+            "surname": "Wallace",
+            "full_name": "Mr Theodore Wallace",
+            "post_nominals": null,
+            "email_id": "TribunalJudge.Wallace@ejudiciary.net",
+            "personal_code": "4920082",
+            "title": "Mr",
+            "initials": "TW",
+            "retirement_date": "2040-10-27",
+            "active_flag": "true",
+            "appointments": [
+                {
+                    "base_location_id": "1030",
+                    "epimms_id": "",
+                    "cft_region_id": "1",
+                    "cft_region": "London",
+                    "is_principal_appointment": "true",
+                    "appointment": "Tribunal Judge",
+                    "appointment_type": "Salaried",
+                    "service_codes": [
+                        "BFA1"
+                    ],
+                    "start_date": "2005-04-04",
+                    "end_date": null,
+                    "appointment_id": "24974",
+                    "role_name_id": "84",
+                    "type": "Tribunals",
+                    "contract_type_id": "0"
+                }
+            ],
+            "authorisations": [
+                {
+                    "jurisdiction": "Tribunals",
+                    "ticket_description": "First Tier - Immigration and Asylum",
+                    "ticket_code": "373",
+                    "service_codes": [
+                        "BFA1"
+                    ],
+                    "start_date": "2002-04-25",
+                    "end_date": null,
+                    "appointment_id": "24974",
+                    "authorisation_id": "28191",
+                    "jurisdiction_id": "27"
+                }
+            ],
+            "roles": []
+        }
+    {{/if}}
+
+    {{#if (eq sidamId '631d322c-eea7-4d53-bd92-e6ec51bcb390')  }}
+        {
+            "sidam_id": "631d322c-eea7-4d53-bd92-e6ec51bcb390",
+            "object_id": "053fdecf-8b8e-4ce5-a2fb-61228d288a65",
+            "known_as": "Alyssa",
+            "surname": "Young",
+            "full_name": "Ms Alyssa Young",
+            "post_nominals": null,
+            "email_id": "TribunalJudge.Young1@ejudiciary.net",
+            "personal_code": "4914185",
+            "title": "Ms",
+            "initials": "AY",
+            "retirement_date": "2033-12-20",
+            "active_flag": "true",
+            "appointments": [
+                {
+                    "base_location_id": "1029",
+                    "epimms_id": null,
+                    "cft_region_id": "12",
+                    "cft_region": "National",
+                    "is_principal_appointment": "false",
+                    "appointment": "Tribunal Member",
+                    "appointment_type": "Fee-paid",
+                    "service_codes": [],
+                    "start_date": "2002-02-15",
+                    "end_date": null,
+                    "appointment_id": "38084",
+                    "role_name_id": "85",
+                    "type": "Tribunals",
+                    "contract_type_id": "1"
+                },
+                {
+                    "base_location_id": "1030",
+                    "epimms_id": "",
+                    "cft_region_id": "1",
+                    "cft_region": "London",
+                    "is_principal_appointment": "true",
+                    "appointment": "Tribunal Judge",
+                    "appointment_type": "Fee-paid",
+                    "service_codes": [
+                        "BFA1"
+                    ],
+                    "start_date": "1995-11-17",
+                    "end_date": "2025-02-14",
+                    "appointment_id": "25574",
+                    "role_name_id": "84",
+                    "type": "Tribunals",
+                    "contract_type_id": "1"
+                }
+            ],
+            "authorisations": [
+                {
+                    "jurisdiction": "Tribunals",
+                    "ticket_description": "03 - Disability Living Allowance",
+                    "ticket_code": "365",
+                    "service_codes": [
+                        "BBA3"
+                    ],
+                    "start_date": "2018-08-28",
+                    "end_date": "2028-12-20",
+                    "appointment_id": "25574",
+                    "authorisation_id": "23806",
+                    "jurisdiction_id": "27"
+                },
+                {
+                    "jurisdiction": "Tribunals",
+                    "ticket_description": "04 - Incapacity Benefit Employment Support",
+                    "ticket_code": "366",
+                    "service_codes": [
+                        "BBA3"
+                    ],
+                    "start_date": "2018-08-28",
+                    "end_date": "2028-12-20",
+                    "appointment_id": "25574",
+                    "authorisation_id": "26045",
+                    "jurisdiction_id": "27"
+                },
+                {
+                    "jurisdiction": "Tribunals",
+                    "ticket_description": "Asylum Support",
+                    "ticket_code": "320",
+                    "service_codes": [],
+                    "start_date": "2019-11-06",
+                    "end_date": null,
+                    "appointment_id": "25574",
+                    "authorisation_id": "13536",
+                    "jurisdiction_id": "27"
+                },
+                {
+                    "jurisdiction": "Tribunals",
+                    "ticket_description": "First Tier - Immigration and Asylum",
+                    "ticket_code": "373",
+                    "service_codes": [
+                        "BFA1"
+                    ],
+                    "start_date": "1995-11-17",
+                    "end_date": null,
+                    "appointment_id": "25574",
+                    "authorisation_id": "28322",
+                    "jurisdiction_id": "27"
+                },
+                {
+                    "jurisdiction": "Tribunals",
+                    "ticket_description": "Mental Health",
+                    "ticket_code": "342",
+                    "service_codes": [
+                        "BCA2"
+                    ],
+                    "start_date": "2002-02-15",
+                    "end_date": "2004-11-09",
+                    "appointment_id": "38084",
+                    "authorisation_id": "14821",
+                    "jurisdiction_id": "27"
+                },
+                {
+                    "jurisdiction": "Tribunals",
+                    "ticket_description": "Social Security and Child Support",
+                    "ticket_code": "357",
+                    "service_codes": [
+                        "BBA3"
+                    ],
+                    "start_date": "2018-06-08",
+                    "end_date": null,
+                    "appointment_id": "25574",
+                    "authorisation_id": "19752",
+                    "jurisdiction_id": "27"
+                }
+            ],
+            "roles": []
+        }
+    {{/if}}
+
+    {{#if (eq sidamId '0c200a5f-fab8-456e-b6a2-7c64e1de5383')  }}
+        {
+            "sidam_id": "0c200a5f-fab8-456e-b6a2-7c64e1de5383",
+            "object_id": "c61e7b88-f684-40f4-bef2-d7a125b0f77c",
+            "known_as": "Brittany",
+            "surname": "Gonzalez",
+            "full_name": "Her Honour Judge Brittany Gonzalez",
+            "post_nominals": null,
+            "email_id": "HHJ.Brittany.Gonzalez@ejudiciary.net",
+            "personal_code": "4913839",
+            "title": "Her Honour Judge",
+            "initials": "BG",
+            "retirement_date": "2035-04-29",
+            "active_flag": "true",
+            "appointments": [
+                {
+                    "base_location_id": "1017",
+                    "epimms_id": "217250",
+                    "cft_region_id": "7",
+                    "cft_region": "Wales",
+                    "is_principal_appointment": "true",
+                    "appointment": "Circuit Judge",
+                    "appointment_type": "Salaried",
+                    "service_codes": [
+                        null
+                    ],
+                    "start_date": "2008-09-26",
+                    "end_date": null,
+                    "appointment_id": "31055",
+                    "role_name_id": "19",
+                    "type": "Courts",
+                    "contract_type_id": "0"
+                }
+            ],
+            "authorisations": [
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Ancillary Relief Appeals",
+                    "ticket_code": "402",
+                    "service_codes": [],
+                    "start_date": "2008-09-26",
+                    "end_date": "2035-04-29",
+                    "appointment_id": "31055",
+                    "authorisation_id": "14118",
+                    "jurisdiction_id": "26"
+                },
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Financial Remedy",
+                    "ticket_code": "410",
+                    "service_codes": [
+                        "ABA2"
+                    ],
+                    "start_date": "2008-09-26",
+                    "end_date": null,
+                    "appointment_id": "31055",
+                    "authorisation_id": "13874",
+                    "jurisdiction_id": "26"
+                },
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Private Law",
+                    "ticket_code": "315",
+                    "service_codes": [
+                        "ABA5"
+                    ],
+                    "start_date": "2008-04-01",
+                    "end_date": "2035-04-29",
+                    "appointment_id": "31055",
+                    "authorisation_id": "11525",
+                    "jurisdiction_id": "26"
+                },
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Public Law",
+                    "ticket_code": "316",
+                    "service_codes": [
+                        "ABA3"
+                    ],
+                    "start_date": "2008-04-01",
+                    "end_date": "2035-04-29",
+                    "appointment_id": "31055",
+                    "authorisation_id": "12959",
+                    "jurisdiction_id": "26"
+                },
+                {
+                    "jurisdiction": "Family",
+                    "ticket_description": "Section 9-1 Family",
+                    "ticket_code": "317",
+                    "service_codes": [
+                        "ABA5",
+                        "ABA3"
+                    ],
+                    "start_date": "2012-07-02",
+                    "end_date": "2035-04-29",
+                    "appointment_id": "31055",
+                    "authorisation_id": "13942",
+                    "jurisdiction_id": "26"
+                }
+            ],
+            "roles": []
+        }
     {{/if}}
 
     {{#unless @last}},{{/unless}}
