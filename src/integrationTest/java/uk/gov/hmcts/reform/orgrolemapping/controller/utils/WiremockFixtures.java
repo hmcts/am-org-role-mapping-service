@@ -243,6 +243,21 @@ public class WiremockFixtures {
                         .withBody(OBJECT_MAPPER.writeValueAsString(getUserInfoResponse()))
                         .withTransformers("external_user-token-response")));
 
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/.well-known/openid-configuration"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(OBJECT_MAPPER.writeValueAsString(getOpenIdResponse()))
+                        ));
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/jwks"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(OBJECT_MAPPER.writeValueAsString(getOpenIdResponse()))
+                ));
+
     }
 
     private Map<String, Object> getUserInfoResponse() {
@@ -254,6 +269,17 @@ public class WiremockFixtures {
         data1.put("surname","User");
         data1.put("email","dummy@email.com");
         data1.put("roles", List.of("%s"));
+
+        return data1;
+    }
+
+    private Map<String, Object> getOpenIdResponse() {
+        LinkedHashMap<String,Object> data1 = new LinkedHashMap<>();
+
+//        "issuer": "http://localhost:{{request.requestLine.port}}/o",
+        data1.put("issuer", "http://localhost:" + WIRE_MOCK_SERVER.port() + "/o");
+//        http://localhost:{{request.requestLine.port}}/o/jwks
+        data1.put("jwks_uri", "http://localhost:" + WIRE_MOCK_SERVER.port() + "/o/jwks");
 
         return data1;
     }

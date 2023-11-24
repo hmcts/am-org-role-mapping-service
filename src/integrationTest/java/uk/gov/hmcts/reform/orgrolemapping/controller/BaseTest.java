@@ -25,6 +25,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.TestPropertySourceUtils;
+import uk.gov.hmcts.reform.orgrolemapping.TestIdamConfiguration;
 
 
 import javax.annotation.PreDestroy;
