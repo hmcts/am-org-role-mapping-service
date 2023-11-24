@@ -372,6 +372,7 @@ then
       .build());
       logMsg("Rule : v11_civil_judge_org_role_for_fee_paid_judge");
 end;
+
 /*
  * CIVIL "judge" org role can be created by any existing judicial office holder having
  * "CIVIL Deputy Judge-Fee-Paid, CIVIL Recorder-Fee-Paid,CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid" business role.

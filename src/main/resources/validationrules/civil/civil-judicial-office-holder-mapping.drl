@@ -385,7 +385,7 @@ end;
  */
 rule "civil_tribunal_judge_salaried_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_2.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_3.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
                                appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
@@ -412,7 +412,7 @@ end;
  */
 rule "civil_tribunal_judge_fee_paid_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_2.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_3.getValue())
    $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
                                appointmentType == "Fee Paid",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
