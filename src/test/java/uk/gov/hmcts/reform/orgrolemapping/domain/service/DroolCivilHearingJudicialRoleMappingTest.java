@@ -155,7 +155,8 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                 buildExecuteKieSession(
                         List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
                                 FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build(),
-                                FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build())
+                                FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build(),
+                                FeatureFlag.builder().flagName("civil_wa_1_3").status(true).build())
                 );
 
         //assertions
