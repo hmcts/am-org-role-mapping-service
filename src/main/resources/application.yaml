@@ -42,7 +42,7 @@ security:
     - "/send*"
     - "/favicon.ico"
   authorisedRoles:
-  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service,ccd_gw}
+  authorisedServices: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_org_role_mapping_service,am_role_assignment_service}
 
 spring:
   application:
@@ -105,7 +105,7 @@ idam:
     microservice: am_org_role_mapping_service
     url: ${IDAM_S2S_URL:http://localhost:4502}
   s2s-authorised:
-    services: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_role_assignment_service,am_org_role_mapping_service,am_role_assignment_refresh_batch,xui_webapp,ccd_gw}
+    services: ${AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES:am_role_assignment_service,am_org_role_mapping_service,am_role_assignment_refresh_batch,xui_webapp}
   api.url: ${IDAM_USER_URL:http://localhost:5000}
   client:
     id: ${ORM_IDAM_CLIENT_ID:am_docker}
@@ -128,9 +128,9 @@ feign:
       roleAssignmentApp:
         url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
       jrdClient:
-        url: ${JUDICIAL_REF_APP_URL:http://localhost:4099}
-        v2Active: ${JUDICIAL_REF_APP_V2_ACTIVE:true}
-        v2FilterAuthorisationsByAppointmentId:  ${JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID:true}
+        url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
+        v2Active: ${JUDICIAL_REF_APP_V2_ACTIVE:false}
+        v2FilterAuthorisationsByAppointmentId:  ${JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID:false}
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
 
@@ -168,7 +168,7 @@ refresh:
 
 testing:
   support:
-    enabled: ${TESTING_SUPPORT_ENABLED:true}
+    enabled: ${TESTING_SUPPORT_ENABLED:false}
 
 dbFeature:
   flags:
