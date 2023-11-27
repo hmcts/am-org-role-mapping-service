@@ -38,8 +38,6 @@ java:
     JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.service.core-compute-aat.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
-    JUDICIAL_REF_APP_V2_ACTIVE: false
-    JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID: false
     LAUNCH_DARKLY_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
@@ -57,6 +55,8 @@ java:
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
     TESTING_SUPPORT_ENABLED: true
     RUN_LD_ON_STARTUP: true
+    JUDICIAL_REF_APP_V2_ACTIVE: true
+    JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID: true
   postgresql:
     enabled: true
     auth:
