@@ -9,8 +9,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContextInitializer;
@@ -22,7 +25,9 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.lang.NonNull;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
@@ -38,13 +43,14 @@ import java.util.Properties;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 @ContextConfiguration(initializers = {BaseTest.WireMockServerInitializer.class})
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("itest")
+@EnableConfigurationProperties
 public abstract class BaseTest {
 
-    public static final WireMockServer WIRE_MOCK_SERVER = new WireMockServer(
-            options()
-                    .dynamicPort()
-                    .withRootDirectory("classpath:/wiremock-stubs")
-    );
+    public static final WireMockServer WIRE_MOCK_SERVER = new WireMockServer(options().dynamicPort());
+
     protected static final ObjectMapper mapper = new ObjectMapper();
 
     @MockBean

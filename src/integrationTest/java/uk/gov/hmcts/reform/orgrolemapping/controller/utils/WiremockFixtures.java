@@ -232,19 +232,6 @@ public class WiremockFixtures {
     }
 
     public void stubIdam() throws JsonProcessingException {
-        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/o/token"))
-                .willReturn(aResponse()
-                        .withStatus(OK.value())
-                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .withBody(OBJECT_MAPPER.writeValueAsString(getTokenResponse()))));
-
-        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/userinfo"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", APPLICATION_JSON)
-                        .withBody(OBJECT_MAPPER.writeValueAsString(getUserInfoResponse()))
-                        .withTransformers("external_user-token-response")));
-
 
         WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/.well-known/openid-configuration"))
                 .willReturn(aResponse()

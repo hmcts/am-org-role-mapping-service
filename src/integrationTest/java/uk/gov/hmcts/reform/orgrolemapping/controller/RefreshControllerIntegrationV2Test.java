@@ -1,17 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,10 +18,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -68,9 +62,9 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -88,10 +82,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
     "feign.client.config.jrdClient.v2Active=true"})
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("itest")
-@EnableConfigurationProperties
 public class RefreshControllerIntegrationV2Test extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationV2Test.class);
@@ -151,15 +141,15 @@ public class RefreshControllerIntegrationV2Test extends BaseTest {
             StandardCharsets.UTF_8
     );
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         template = new JdbcTemplate(ds);
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-        MockitoAnnotations.openMocks(this);
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
+        wiremockFixtures.resetRequests();
     }
 
     @Test
@@ -206,7 +196,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTest {
                 .andReturn();
     }
 
-    @Ignore("Intermittent AM-2919")
+    @Disabled("Intermittent AM-2919")
     @Test
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidServiceToken() throws Exception {
         logger.info("Refresh request rejected with invalid service token");
@@ -224,7 +214,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTest {
         assertThat(result.getResolvedException().getMessage(), equalTo(UNAUTHORIZED_SERVICE));
     }
 
-    @Ignore("Intermittent AM-2919")
+    @Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
@@ -249,7 +239,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTest {
         assertEquals("NEW", refreshJob.getStatus());// failed process should change the status to IN-PROGRESS
     }
 
-    @Ignore("Intermittent AM-2919")
+    @Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {

@@ -137,6 +137,20 @@ sourceSets {
     }
 }
 
+idea {
+    module {
+        // config to allow Intelij to mark test source and resource files correctly to help linting tools
+        testSources.from(java.sourceSets.functionalTest.java.srcDirs)
+        testSources.from(java.sourceSets.integrationTest.java.srcDirs)
+        testSources.from(java.sourceSets.smokeTest.java.srcDirs)
+        testSources.from(java.sourceSets.contractTest.java.srcDirs)
+        testResources.from(java.sourceSets.functionalTest.resources.srcDirs)
+        testResources.from(java.sourceSets.integrationTest.resources.srcDirs)
+        testResources.from(java.sourceSets.smokeTest.resources.srcDirs)
+        testResources.from(java.sourceSets.contractTest.resources.srcDirs)
+    }
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
