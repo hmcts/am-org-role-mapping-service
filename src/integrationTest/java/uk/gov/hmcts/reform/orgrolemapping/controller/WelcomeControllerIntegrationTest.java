@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.codehaus.plexus.util.StringUtils;
-import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mock;
 import org.slf4j.Logger;
@@ -143,7 +143,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     UserRequest userRequest;
     List<JudicialProfile> judicialProfiles;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         //this.mockMvc = standaloneSetup(this.welcomeController).build()
