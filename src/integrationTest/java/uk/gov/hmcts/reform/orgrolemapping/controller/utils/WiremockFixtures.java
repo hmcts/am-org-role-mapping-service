@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
+import com.nimbusds.jose.JOSEException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.idam.client.models.TokenResponse;
@@ -42,6 +43,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest.WIRE_MOCK_SERVER;
+import static uk.gov.hmcts.reform.orgrolemapping.util.KeyGenerator.getRsaJwk;
 
 public class WiremockFixtures {
 
@@ -255,7 +257,7 @@ public class WiremockFixtures {
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", APPLICATION_JSON)
-                        .withBody(OBJECT_MAPPER.writeValueAsString(getOpenIdResponse()))
+                        .withBody(getJwksResponse())
                 ));
 
     }
@@ -275,13 +277,22 @@ public class WiremockFixtures {
 
     private Map<String, Object> getOpenIdResponse() {
         LinkedHashMap<String,Object> data1 = new LinkedHashMap<>();
-
-//        "issuer": "http://localhost:{{request.requestLine.port}}/o",
         data1.put("issuer", "http://localhost:" + WIRE_MOCK_SERVER.port() + "/o");
-//        http://localhost:{{request.requestLine.port}}/o/jwks
         data1.put("jwks_uri", "http://localhost:" + WIRE_MOCK_SERVER.port() + "/o/jwks");
 
         return data1;
+    }
+
+    private String getJwksResponse() {
+        try {
+            return "{"
+                    + "\"keys\": [" + getRsaJwk().toPublicJWK().toJSONString() + "]"
+                    + "}";
+
+        } catch (JOSEException ex) {
+            throw new RuntimeException(ex);
+        }
+
     }
 
     private TokenResponse getTokenResponse() {

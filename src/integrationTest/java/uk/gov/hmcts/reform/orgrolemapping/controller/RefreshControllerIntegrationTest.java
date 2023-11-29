@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +32,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication;
-import uk.gov.hmcts.reform.orgrolemapping.TestIdamConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
@@ -78,7 +73,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -93,14 +87,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
-import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.setSecurityAuthorities;
 import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVICE;
 
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
     "feign.client.config.jrdClient.v2Active=false"})
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {/*OrgRoleMappingApplication.class,*/TestIdamConfiguration.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("itest")
 @EnableConfigurationProperties
 public class RefreshControllerIntegrationTest extends BaseTest {
@@ -116,13 +109,9 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String URL = "/am/role-mapping/refresh";
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
-    private static final String CORRELATION_ID = "38a90097-434e-47ee-8ea1-9ea2a267f51d";
 
     private MockMvc mockMvc;
-    //private JdbcTemplate template;
-
-    @Autowired
-    private RefreshController controller;
+    private JdbcTemplate template;
 
     @Inject
     private WebApplicationContext wac;
@@ -149,9 +138,6 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     private FeatureConditionEvaluator featureConditionEvaluation;
 
     @MockBean
-    private AuthTokenGenerator serviceTokenGenerator;
-
-    @MockBean
     private SecurityUtils securityUtils;
 
     @Mock
@@ -159,8 +145,6 @@ public class RefreshControllerIntegrationTest extends BaseTest {
 
     @Mock
     private SecurityContext securityContext;
-
-    private JdbcTemplate template;
 
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
@@ -172,15 +156,10 @@ public class RefreshControllerIntegrationTest extends BaseTest {
     public void setUp() throws Exception {
         template = new JdbcTemplate(ds);
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-//        MockitoAnnotations.openMocks(this);
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
-        setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
-
         wiremockFixtures.resetRequests();
-        // stub idam and s2s request
-        wiremockFixtures.stubIdam();
     }
 
     @Disabled("Intermittent AM-2919")
@@ -361,49 +340,49 @@ public class RefreshControllerIntegrationTest extends BaseTest {
         assertNotNull(refreshJob.getLog());
     }
 
-//    @Test
-//    public void shouldFailProcessRefreshRoleAssignmentsWithFailedUsersAndWithOutJobID() throws Exception {
-//        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
-//        mockMvc.perform(post(URL)
-//                .contentType(JSON_CONTENT_TYPE)
-//                .headers(getHttpHeaders())
-//                .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
-//                .andExpect(status().is(400))
-//                .andReturn();
-//    }
-//
-//    @Test
-//    public void shouldFailProcessRefreshRoleAssignmentsWithEmptyJobID() throws Exception {
-//        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
-//        mockMvc.perform(post(URL)
-//                .contentType(JSON_CONTENT_TYPE)
-//                .headers(getHttpHeaders())
-//                .param("jobId", ""))
-//                .andExpect(status().is(400))
-//                .andReturn();
-//    }
-//
-//    @Test
-//    public void shouldFailProcessRefreshRoleAssignmentsWithInvalidJobID() throws Exception {
-//        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
-//        mockMvc.perform(post(URL)
-//                .contentType(JSON_CONTENT_TYPE)
-//                .headers(getHttpHeaders())
-//                .param("jobId", "abc")
-//                .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
-//                .andExpect(status().is(400))
-//                .andReturn();
-//    }
-//
-//    @Test
-//    public void shouldFailProcessRefreshRoleAssignmentsWithOutJobID() throws Exception {
-//        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
-//        mockMvc.perform(post(URL)
-//                .contentType(JSON_CONTENT_TYPE)
-//                .headers(getHttpHeaders()))
-//                .andExpect(status().is(400))
-//                .andReturn();
-//    }
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithFailedUsersAndWithOutJobID() throws Exception {
+        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
+        mockMvc.perform(post(URL)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
+                .andExpect(status().is(400))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithEmptyJobID() throws Exception {
+        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
+        mockMvc.perform(post(URL)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .param("jobId", ""))
+                .andExpect(status().is(400))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithInvalidJobID() throws Exception {
+        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
+        mockMvc.perform(post(URL)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders())
+                .param("jobId", "abc")
+                .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
+                .andExpect(status().is(400))
+                .andReturn();
+    }
+
+    @Test
+    public void shouldFailProcessRefreshRoleAssignmentsWithOutJobID() throws Exception {
+        logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
+        mockMvc.perform(post(URL)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders()))
+                .andExpect(status().is(400))
+                .andReturn();
+    }
 
     @Disabled("Intermittent AM-2919")
     @Test

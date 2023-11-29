@@ -5,8 +5,6 @@ spring:
         provider:
           oidc:
             issuer-uri: http://localhost:${wiremock.server.port:5000}/o
-  main:
-    web-application-type: none
 
 idam:
   s2s-auth:
