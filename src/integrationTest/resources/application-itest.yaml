@@ -10,3 +10,9 @@ idam:
   s2s-auth:
     url: http://localhost:${wiremock.server.port:4502}
   api.url: http://localhost:${wiremock.server.port:5000}
+
+feign:
+  client:
+    config:
+      roleAssignmentApp:
+        url: http://localhost:${wiremock.server.port:4096}

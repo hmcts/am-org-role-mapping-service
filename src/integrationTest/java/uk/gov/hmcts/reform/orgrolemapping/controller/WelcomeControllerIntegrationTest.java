@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -76,6 +77,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 public class WelcomeControllerIntegrationTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
+
+    private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
     private transient MockMvc mockMvc;
 
@@ -166,6 +169,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         judicialProfiles = new ArrayList<>(buildJudicialProfile(JRDUserRequest.builder()
                         .sidamIds(Set.copyOf(userRequest.getUserIds())).build(),"judicialProfileSample.json"));
+        wiremockFixtures.resetRequests();
     }
 
     @Test
@@ -699,14 +703,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
             returnHttpStatus = 201;
         }
 
-        roleAssignmentService.stubFor(WireMock.post(urlEqualTo("/am/role-assignments"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(body)
-                        .withStatus(returnHttpStatus)
-                ));
-
-
+        wiremockFixtures.stubRoleAssignments(body, returnHttpStatus);
     }
 
     private String readJsonFromFile(String fileName) throws IOException {

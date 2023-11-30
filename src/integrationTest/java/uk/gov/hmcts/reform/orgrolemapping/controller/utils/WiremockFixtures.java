@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
 import com.nimbusds.jose.JOSEException;
 import org.springframework.http.HttpStatus;
@@ -231,7 +232,7 @@ public class WiremockFixtures {
         return new JudicialBookingResponse(bookings);
     }
 
-    public void stubIdam() throws JsonProcessingException {
+    public void stubIdamConfig() throws JsonProcessingException {
 
         WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/.well-known/openid-configuration"))
                 .willReturn(aResponse()
@@ -291,5 +292,14 @@ public class WiremockFixtures {
                 "scopeValue",
                 "tokenTypeValue"
         );
+    }
+
+    public void stubRoleAssignments(String body, int returnHttpStatus) {
+        WIRE_MOCK_SERVER.stubFor(WireMock.post(urlEqualTo("/am/role-assignments"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(body)
+                        .withStatus(returnHttpStatus)
+                ));
     }
 }
