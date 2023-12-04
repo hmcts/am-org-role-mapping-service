@@ -31,8 +31,8 @@
           "beginTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "",
-            "jurisdiction": "SSCS",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "IA",
             "substantive" : "N"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
