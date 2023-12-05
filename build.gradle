@@ -15,7 +15,7 @@ plugins {
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.4'
-    id 'org.springframework.boot' version '2.7.17'
+    id 'org.springframework.boot' version '2.7.18'
     id 'info.solidsoft.pitest' version '1.15.0'
     id 'com.github.ben-manes.versions' version '0.45.0'
     id 'org.sonarqube' version '4.0.0.2929'
@@ -40,7 +40,7 @@ def versions = [
         reformLogging  : '6.0.1',
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
-        springBoot     : '2.7.17',
+        springBoot     : '2.7.18',
         spring         : '5.3.31',
         springSecurity : '5.7.10',
         springHystrix  : '2.1.1.RELEASE',

@@ -13,11 +13,15 @@
         <cve>CVE-2023-5072</cve>
     </suppress>
     <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/AM-3012 netty</notes>
-        <cve>CVE-2023-4586</cve>
-    </suppress>
-    <suppress>
         <notes>https://tools.hmcts.net/jira/browse/AM-3065 azure</notes>
         <cve>CVE-2023-36052</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-3085 bouncycastle</notes>
+        <cve>CVE-2023-33202</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-3089 tomcat-embed</notes>
+        <cve>CVE-2023-46589</cve>
     </suppress>
 </suppressions>
