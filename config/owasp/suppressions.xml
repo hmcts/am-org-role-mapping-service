@@ -20,4 +20,12 @@
         <notes>https://tools.hmcts.net/jira/browse/AM-3085 bouncycastle</notes>
         <cve>CVE-2023-33202</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-3088 spring-boot</notes>
+        <cve>CVE-2023-34055</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/AM-3089 tomcat-embed</notes>
+        <cve>CVE-2023-46589</cve>
+    </suppress>
 </suppressions>
