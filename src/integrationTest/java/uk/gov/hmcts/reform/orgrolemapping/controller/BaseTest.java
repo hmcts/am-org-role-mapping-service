@@ -53,13 +53,13 @@ public abstract class BaseTest {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-//    @MockBean
-//    @Qualifier("crdPublisher")
-//    ServiceBusSenderClient serviceBusSenderClient;
-//
-//    @MockBean
-//    @Qualifier("jrdPublisher")
-//    ServiceBusSenderClient serviceBusSenderClientJrd;
+    @MockBean
+    @Qualifier("crdPublisher")
+    ServiceBusSenderClient serviceBusSenderClient;
+
+    @MockBean
+    @Qualifier("jrdPublisher")
+    ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @MockBean(name = "jrdConsumer")
     private SubscriptionClient jrdConsumer;
