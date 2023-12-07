@@ -31,7 +31,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
-
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -45,7 +44,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 @ContextConfiguration(initializers = {BaseTest.WireMockServerInitializer.class})
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("itest")
+//@ActiveProfiles("itest")
 @EnableConfigurationProperties
 public abstract class BaseTest {
 
@@ -53,13 +52,13 @@ public abstract class BaseTest {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    @MockBean
-    @Qualifier("crdPublisher")
-    ServiceBusSenderClient serviceBusSenderClient;
-
-    @MockBean
-    @Qualifier("jrdPublisher")
-    ServiceBusSenderClient serviceBusSenderClientJrd;
+//    @MockBean
+//    @Qualifier("crdPublisher")
+//    ServiceBusSenderClient serviceBusSenderClient;
+//
+//    @MockBean
+//    @Qualifier("jrdPublisher")
+//    ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @MockBean(name = "jrdConsumer")
     private SubscriptionClient jrdConsumer;

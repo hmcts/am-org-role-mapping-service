@@ -6,7 +6,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest;
+import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 
 import javax.inject.Inject;
 import java.io.OutputStream;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     // NB: hide testing-support endpoint from Swagger Publish
     "testing.support.enabled=false"
 })
-public class SwaggerPublisher extends BaseTest {
+public class SwaggerPublisher extends BaseTestIntegration {
 
     private MockMvc mockMvc;
 
