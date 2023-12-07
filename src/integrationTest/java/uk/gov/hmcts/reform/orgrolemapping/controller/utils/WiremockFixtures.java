@@ -53,31 +53,31 @@ public class WiremockFixtures {
         return roleAssignmentRequestResource;
     }
 
-    public void stubRoleAssignmentServiceError() throws JsonProcessingException {
-        AssignmentRequest request = AssignmentRequestBuilder.buildAssignmentRequest(false);
-        request.getRequest().setReference("test ref");
-
-        WIRE_MOCK_SERVER.stubFor(post(urlEqualTo("/am/role-assignments"))
-                .willReturn(aResponse()
-                        .withStatus(UNPROCESSABLE_ENTITY.value())
-                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .withBody(OBJECT_MAPPER.writeValueAsString(request))));
-    }
-
-    private List<JudicialProfile> buildJudicialProfilesResponse(String userId) {
-        List<JudicialProfile> bookings = new ArrayList<>();
-        bookings.add(JudicialProfile.builder()
-                .sidamId(userId)
-                .appointments(
-                        List.of(Appointment.builder()
-                                .appointment("Tribunal Judge")
-                                .appointmentType("Fee Paid")
-                                .build()
-                        )
-                )
-                .build());
-        return bookings;
-    }
+//    public void stubRoleAssignmentServiceError() throws JsonProcessingException {
+//        AssignmentRequest request = AssignmentRequestBuilder.buildAssignmentRequest(false);
+//        request.getRequest().setReference("test ref");
+//
+//        WIRE_MOCK_SERVER.stubFor(post(urlEqualTo("/am/role-assignments"))
+//                .willReturn(aResponse()
+//                        .withStatus(UNPROCESSABLE_ENTITY.value())
+//                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+//                        .withBody(OBJECT_MAPPER.writeValueAsString(request))));
+//    }
+//
+//    private List<JudicialProfile> buildJudicialProfilesResponse(String userId) {
+//        List<JudicialProfile> bookings = new ArrayList<>();
+//        bookings.add(JudicialProfile.builder()
+//                .sidamId(userId)
+//                .appointments(
+//                        List.of(Appointment.builder()
+//                                .appointment("Tribunal Judge")
+//                                .appointmentType("Fee Paid")
+//                                .build()
+//                        )
+//                )
+//                .build());
+//        return bookings;
+//    }
 
     public void stubIdamConfig() throws JsonProcessingException {
 
