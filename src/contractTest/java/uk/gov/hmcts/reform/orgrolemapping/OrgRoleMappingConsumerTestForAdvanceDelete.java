@@ -8,6 +8,7 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
@@ -31,14 +32,14 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+
 @ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
+//@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_roleAssignment_deleteAssignment")
 @PactFolder("pacts")
-@SpringBootTest
-public class OrgRoleMappingConsumerTestForAdvanceDelete {
-
+public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTest {
     private static final String RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL = "/am/role-assignments/query";
     private static final String RAS_ADVANCE_DELETE = RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL + "/delete";
     private static final String ACTOR_ID_ADV = "14a21569-eb80-4681-b62c-6ae2ed069e5f";
