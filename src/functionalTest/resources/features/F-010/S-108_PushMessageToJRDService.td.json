@@ -1,0 +1,10 @@
+{
+  "_guid_": "S-108_PushMessageToJRDService",
+  "_extends_": "PushMessageToJRDProfileProcess",
+
+  "request": {
+    "body": {
+      "_extends_": "108_JRDTribunalMemberFeePaidUser"
+    }
+  }
+}
