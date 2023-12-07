@@ -7,8 +7,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.nimbusds.jose.JOSEException;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,13 +34,6 @@ public class WiremockFixtures {
     public void resetRequests() {
         resetAllRequests();
     }
-
-//    private RoleAssignmentRequestResource getRoleAssignmentRequestResource() {
-//        var roleAssignmentRequestResource =
-//                new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(false));
-//        roleAssignmentRequestResource.getRoleAssignmentRequest().getRequest().setReference("test ref");
-//        return roleAssignmentRequestResource;
-//    }
 
     public void stubIdamConfig() throws JsonProcessingException {
 
