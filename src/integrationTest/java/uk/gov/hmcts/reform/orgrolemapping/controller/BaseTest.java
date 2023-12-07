@@ -90,36 +90,36 @@ public abstract class BaseTest {
         // Force re-initialisation of base types for each test suite
     }
 
-//    @TestConfiguration
-//    static class Configuration {
-//        Connection connection;
-//
-//        @Bean
-//        public EmbeddedPostgres embeddedPostgres() throws IOException {
-//            return EmbeddedPostgres
-//                    .builder()
-//                    .start();
-//        }
-//
-//        @Bean
-//        public DataSource dataSource(@Autowired EmbeddedPostgres pg) throws Exception {
-//
-//            final Properties props = new Properties();
-//            // Instruct JDBC to accept JSON string for JSONB
-//            props.setProperty("stringtype", "unspecified");
-//            props.setProperty("user", "postgres");
-//            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres"), props);
-//            return new SingleConnectionDataSource(connection, true);
-//        }
-//
-//
-//        @PreDestroy
-//        public void contextDestroyed() throws SQLException {
-//            if (connection != null) {
-//                connection.close();
-//            }
-//        }
-//    }
+    @TestConfiguration
+    static class Configuration {
+        Connection connection;
+
+        @Bean
+        public EmbeddedPostgres embeddedPostgres() throws IOException {
+            return EmbeddedPostgres
+                    .builder()
+                    .start();
+        }
+
+        @Bean
+        public DataSource dataSource(@Autowired EmbeddedPostgres pg) throws Exception {
+
+            final Properties props = new Properties();
+            // Instruct JDBC to accept JSON string for JSONB
+            props.setProperty("stringtype", "unspecified");
+            props.setProperty("user", "postgres");
+            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres"), props);
+            return new SingleConnectionDataSource(connection, true);
+        }
+        
+
+        @PreDestroy
+        public void contextDestroyed() throws SQLException {
+            if (connection != null) {
+                connection.close();
+            }
+        }
+    }
 
     public static class WireMockServerInitializer
             implements ApplicationContextInitializer<ConfigurableApplicationContext> {
