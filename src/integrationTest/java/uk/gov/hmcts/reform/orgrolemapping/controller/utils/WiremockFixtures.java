@@ -37,12 +37,12 @@ public class WiremockFixtures {
         resetAllRequests();
     }
 
-    private RoleAssignmentRequestResource getRoleAssignmentRequestResource() {
-        var roleAssignmentRequestResource =
-                new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(false));
-        roleAssignmentRequestResource.getRoleAssignmentRequest().getRequest().setReference("test ref");
-        return roleAssignmentRequestResource;
-    }
+//    private RoleAssignmentRequestResource getRoleAssignmentRequestResource() {
+//        var roleAssignmentRequestResource =
+//                new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(false));
+//        roleAssignmentRequestResource.getRoleAssignmentRequest().getRequest().setReference("test ref");
+//        return roleAssignmentRequestResource;
+//    }
 
     public void stubIdamConfig() throws JsonProcessingException {
 
