@@ -17,13 +17,6 @@
       "queryRequests":[
         {
           "actorId": "${[scenarioContext][childContexts][S-107_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "roleName": ["hmcts-judiciary"],
-          "attributes": {
-            "contractType": ["Fee-Paid"]
-          }
-        },
-        {
-          "actorId": "${[scenarioContext][childContexts][S-107_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["EMPLOYMENT"]
           }
@@ -36,42 +29,6 @@
     "body": {
       "roleAssignmentResponse": [
         {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "EMPLOYMENT"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-judiciary",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "JUDICIAL",
-          "readOnly": true,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "contractType": "Fee-Paid"
-          }
-        },
-        {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
@@ -82,6 +39,7 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
@@ -89,6 +47,26 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "EMPLOYMENT",
             "workTypes": "hearing_work,decision_making_work,routine_work,applications,amendments"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "EMPLOYMENT"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }

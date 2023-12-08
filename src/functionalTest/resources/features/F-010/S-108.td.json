@@ -17,13 +17,6 @@
       "queryRequests":[
         {
           "actorId": "${[scenarioContext][childContexts][S-108_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "roleName": ["hmcts-judiciary"],
-          "attributes": {
-            "contractType": ["Fee-Paid"]
-          }
-        },
-        {
-          "actorId": "${[scenarioContext][childContexts][S-108_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["EMPLOYMENT"]
           }
@@ -46,6 +39,7 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
@@ -59,36 +53,19 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-judiciary",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "JUDICIAL",
-          "readOnly": true,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "contractType": "Fee-Paid"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
-          "roleType": "ORGANISATION",
           "roleName": "tribunal-member",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "EMPLOYMENT",
-            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "hearing_work"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
