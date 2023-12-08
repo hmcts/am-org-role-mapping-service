@@ -17,6 +17,13 @@
       "queryRequests":[
         {
           "actorId": "${[scenarioContext][childContexts][S-107_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "roleName": ["hmcts-judiciary"],
+          "attributes": {
+            "contractType": ["Fee-Paid"]
+          }
+        },
+        {
+          "actorId": "${[scenarioContext][childContexts][S-107_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["EMPLOYMENT"]
           }
