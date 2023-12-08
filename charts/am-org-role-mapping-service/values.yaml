@@ -56,5 +56,9 @@ java:
     TESTING_SUPPORT_ENABLED: false
     APPLICATION_LOGGING_LEVEL: INFO
     RUN_LD_ON_STARTUP: true
+
+am-role-assignment-service:
+  enabled: false
+
 servicebus:
   enabled: false
