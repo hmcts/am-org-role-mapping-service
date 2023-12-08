@@ -4,7 +4,7 @@
 
   "request": {
     "body": {
-      "_extends_": "108_JRDTribunalMemberFeePaidUser"
+      "_extends_": "S-108_JRDTribunalMemberFeePaidUser"
     }
   }
 }
