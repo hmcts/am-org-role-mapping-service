@@ -34,7 +34,7 @@ java:
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-{{ .Release.Name}}.service.core-compute-{{ .Release.Name}}.internal
+    ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-pr-{{BUILD_NUMBER}}.preview.platform.hmcts.net
     JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.service.core-compute-aat.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
@@ -66,8 +66,10 @@ java:
 
 global:
   idamApiUrl: https://idam-api.aat.platform.hmcts.net
+  postgresDBname: javadatabase
   postgresUsername: hmcts
   postgresPassword: hmcts
+  ras-release: "am-role-assignment-service-{{BUILD_NUMBER}}"
   s2sUrl: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
   databaseNamePrefix: ""
 
@@ -76,17 +78,17 @@ am-role-assignment-service:
   java:
     image: 'hmctspublic.azurecr.io/am/role-assignment-service:latest'
     imagePullPolicy: Always
-    ingressHost: am-role-assiqgnment-{{ .Release.Name}}
-    releaseNameOverride: "{{ .Release.Name }}-am-role-assignment-service"
+    ingressHost: "{{ .Values.global.ras-release }}"
+    releaseNameOverride: "{{BUILD_NUMBER}}-am-role-assignment-service"
     environment:
-      ROLE_ASSIGNMENT_DB_HOST: "{{ .Release.Name }}-postgresql"
-      ROLE_ASSIGNMENT_DB_NAME: "{{ .Values.global.databaseNamePrefix }}role-assignment"
+      ROLE_ASSIGNMENT_DB_HOST: "{{ .Values.global.ras-release }}-postgresql"
+      ROLE_ASSIGNMENT_DB_NAME: "{{ .Values.global.postgresDBname }}"
       ROLE_ASSIGNMENT_DB_USERNAME: '{{ tpl .Values.global.postgresUsername $}}'
-      ROLE_ASSIGNMENT_DB_OPTIONS: "?stringtype=unspecified&reWriteBatchedInserts=true&sslmode=require"
+      ROLE_ASSIGNMENT_DB_OPTIONS: "?stringtype=unspecified"
       IDAM_USER_URL: '{{ tpl .Values.global.idamApiUrl $}}'
       IDAM_S2S_URL: '{{ tpl .Values.global.s2sUrl $}}'
       OPEN_ID_API_BASE_URI: "https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net/o"
-      ROLE_ASSIGNMENT_IDAM_ADMIN_USERID: ras-validation-system@hmcts.net
+      ROLE_ASSIGNMENT_IDAM_ADMIN_USERID: "ras-validation-system@hmcts.net"
       APPLICATION_LOGGING_LEVEL: INFO
       BYPASS_ORG_DROOL_RULE: true
       LAUNCH_DARKLY_ENV: pr
