@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+//import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.slf4j.Logger;
@@ -196,7 +196,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTest {
                 .andReturn();
     }
 
-    @Disabled("Intermittent AM-2919")
+    //@Disabled("Intermittent AM-2919")
     @Test
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidServiceToken() throws Exception {
         logger.info("Refresh request rejected with invalid service token");
@@ -214,7 +214,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTest {
         assertThat(result.getResolvedException().getMessage(), equalTo(UNAUTHORIZED_SERVICE));
     }
 
-    @Disabled("Intermittent AM-2919")
+    //@Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
@@ -239,7 +239,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTest {
         assertEquals("NEW", refreshJob.getStatus());// failed process should change the status to IN-PROGRESS
     }
 
-    @Disabled("Intermittent AM-2919")
+    //@Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
