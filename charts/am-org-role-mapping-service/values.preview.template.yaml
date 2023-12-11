@@ -7,7 +7,7 @@ java:
   devcpuRequests: 250m
   devmemoryLimits: 2048Mi
   devcpuLimits: 1500m
-
+ 
   secrets:
     SB_ACCESS_KEY:
       secretRef: am-sb-preview
