@@ -116,7 +116,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "6548dbf7-fde6-4ad0-b7aa-511e39f824fb",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "leadership-judge",
           "classification": "PUBLIC",
