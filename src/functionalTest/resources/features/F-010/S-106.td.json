@@ -1,6 +1,6 @@
 {
   "_guid_": "S-106",
-  "title": "must successfully create judicial role mapping for Regional Employment Judge- Salaried appointment",
+  "title": "must successfully create judicial role mapping for Regional Employment Judge - Salaried appointment",
   "_extends_": "F-010_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
