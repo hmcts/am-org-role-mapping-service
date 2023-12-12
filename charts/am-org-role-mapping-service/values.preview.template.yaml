@@ -34,7 +34,7 @@ java:
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-pr-${CHANGE_ID}.preview.platform.hmcts.net
+    ROLE_ASSIGNMENT_APP_URL: "http://{{ .Release.Name }}-am-role-assignment-service"
     JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.service.core-compute-aat.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
@@ -62,29 +62,32 @@ java:
     auth:
       port: 5432
 
-global:
-  idamApiUrl: https://idam-api.aat.platform.hmcts.net
-  postgresDBname: javadatabase
-  postgresUsername: hmcts
-  postgresPassword: hmcts
-  ras-release: "am-role-assignment-service-${CHANGE_ID}"
-  s2sUrl: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
-  databaseNamePrefix: ""
-
 am-role-assignment-service:
   enabled: true
   java:
     image: 'hmctspublic.azurecr.io/am/role-assignment-service:latest'
     imagePullPolicy: Always
-    ingressHost: "{{ .Values.global.ras-release }}"
-    releaseNameOverride: "${CHANGE_ID}-am-role-assignment-service"
+    ingressHost: am-role-assignment-${SERVICE_FQDN}
+    keyVaults:
+      am:
+        secrets:
+          - name: am-role-assignment-service-s2s-secret
+            alias: AM_ROLE_ASSIGNMENT_SERVICE_SECRET
+          - name: app-insights-connection-string
+            alias: app-insights-connection-string
+          - name: role-assignment-service-IDAM-CLIENT-SECRET
+            alias: ROLE_ASSIGNMENT_IDAM_CLIENT_SECRET
+          - name: role-assignment-service-IDAM-ADMIN-SECRET
+            alias: ROLE_ASSIGNMENT_IDAM_ADMIN_PASSWORD
+          - name: role-assignment-service-LD-SDK-KEY
+            alias: LD_SDK_KEY
     environment:
-      ROLE_ASSIGNMENT_DB_HOST: "{{ .Values.global.ras-release }}-postgresql"
-      ROLE_ASSIGNMENT_DB_NAME: "{{ .Values.global.postgresDBname }}"
-      ROLE_ASSIGNMENT_DB_USERNAME: '{{ tpl .Values.global.postgresUsername $}}'
+      ROLE_ASSIGNMENT_DB_HOST: "{{ .Release.Name }}-postgresql"
+      ROLE_ASSIGNMENT_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
       ROLE_ASSIGNMENT_DB_OPTIONS: "?stringtype=unspecified"
-      IDAM_USER_URL: '{{ tpl .Values.global.idamApiUrl $}}'
-      IDAM_S2S_URL: '{{ tpl .Values.global.s2sUrl $}}'
+      ROLE_ASSIGNMENT_DB_PORT: "{{ .Values.postgresql.auth.port}}"
+      IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+      IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
       OPEN_ID_API_BASE_URI: "https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net/o"
       ROLE_ASSIGNMENT_IDAM_ADMIN_USERID: "ras-validation-system@hmcts.net"
       APPLICATION_LOGGING_LEVEL: INFO
@@ -92,15 +95,6 @@ am-role-assignment-service:
       LAUNCH_DARKLY_ENV: pr
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
-    secrets:
-      LD_SDK_KEY:
-        secretRef: role-assignment-service-LD-SDK-KEY
-        key: key
-        disabled: true
-      ROLE_ASSIGNMENT_DB_PASSWORD:
-        secretRef: "{{ .Values.global.postgresSecret }}"
-        key: PASSWORD
-        disabled: false
 
 servicebus:
   enabled: true
