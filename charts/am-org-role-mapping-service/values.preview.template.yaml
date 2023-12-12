@@ -61,8 +61,8 @@ java:
     enabled: true
     initdbScripts:
       init.sql: |-
-        CREATE DATABASE "role_assignment" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-        CREATE DATABASE "org_role_mapping" WITH OWNER = hmcts ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+        CREATE DATABASE "role_assignment" WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+        CREATE DATABASE "org_role_mapping" WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
     auth:
       port: 5432
 
