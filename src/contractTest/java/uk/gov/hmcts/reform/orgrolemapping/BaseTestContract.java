@@ -19,7 +19,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -31,13 +30,6 @@ public abstract class BaseTestContract extends BaseTest {
     @TestConfiguration
     static class Configuration {
         Connection connection;
-
-        @Bean
-        public EmbeddedPostgres embeddedPostgres() throws IOException {
-            return EmbeddedPostgres
-                    .builder()
-                    .start();
-        }
 
         @Bean
         public DataSource dataSource(@Autowired EmbeddedPostgres pg) throws Exception {
