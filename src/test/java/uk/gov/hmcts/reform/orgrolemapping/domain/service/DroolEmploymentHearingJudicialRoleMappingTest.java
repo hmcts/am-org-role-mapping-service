@@ -89,6 +89,13 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("Employment Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
                         null),
+                Arguments.of("Employment Judge (Sitting in Retirement)",
+                        "Fee Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
                 //Tribunal Member and Lay should get roles tribunal-member,hearing-viewer when baseLocationId = 1036
                 // or 1037
                 Arguments.of("Tribunal Member",
