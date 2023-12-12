@@ -34,7 +34,7 @@ java:
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-pr-${BUILD_NUMBER}.preview.platform.hmcts.net
+    ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-pr-${CHANGE_ID}.preview.platform.hmcts.net
     JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.service.core-compute-aat.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
@@ -69,7 +69,7 @@ global:
   postgresDBname: javadatabase
   postgresUsername: hmcts
   postgresPassword: hmcts
-  ras-release: "am-role-assignment-service-${BUILD_NUMBER}"
+  ras-release: "am-role-assignment-service-${CHANGE_ID}"
   s2sUrl: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
   databaseNamePrefix: ""
 
