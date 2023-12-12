@@ -87,7 +87,6 @@ am-role-assignment-service:
       ROLE_ASSIGNMENT_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
       ROLE_ASSIGNMENT_DB_OPTIONS: "?stringtype=unspecified"
       ROLE_ASSIGNMENT_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
-      ROLE_ASSIGNMENT_DB_PORT: "{{ .Values.postgresql.auth.port}}"
       IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
       IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
       OPEN_ID_API_BASE_URI: "https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net/o"
