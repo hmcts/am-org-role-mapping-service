@@ -59,10 +59,12 @@ java:
     JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID: true
   postgresql:
     enabled: true
-    initdbScripts:
-      init.sql: |-
-        CREATE DATABASE "role_assignment" WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-        CREATE DATABASE "org_role_mapping" WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+    primary:
+      initdb:
+        scripts:
+          init.sql: |
+            CREATE DATABASE role_assignment WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+            CREATE DATABASE org_role_mapping WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
     auth:
       port: 5432
 
