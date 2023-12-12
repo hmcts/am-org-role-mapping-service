@@ -137,6 +137,20 @@ sourceSets {
     }
 }
 
+idea {
+    module {
+        // config to allow Intelij to mark test source and resource files correctly to help linting tools
+        testSources.from(java.sourceSets.functionalTest.java.srcDirs)
+        testSources.from(java.sourceSets.integrationTest.java.srcDirs)
+        testSources.from(java.sourceSets.smokeTest.java.srcDirs)
+        testSources.from(java.sourceSets.contractTest.java.srcDirs)
+        testResources.from(java.sourceSets.functionalTest.resources.srcDirs)
+        testResources.from(java.sourceSets.integrationTest.resources.srcDirs)
+        testResources.from(java.sourceSets.smokeTest.resources.srcDirs)
+        testResources.from(java.sourceSets.contractTest.resources.srcDirs)
+    }
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
@@ -298,6 +312,13 @@ repositories {
     }
 }
 
+tasks.named('integration') {
+    useJUnitPlatform()
+
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
 
 dependencies {
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web', version: versions.springBoot) {
@@ -380,7 +401,7 @@ dependencies {
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.45.1'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.13.4'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.14.7'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
@@ -660,5 +681,9 @@ rootProject.tasks.named("processFunctionalTestResources") {
 }
 
 rootProject.tasks.named("processIntegrationTestResources") {
+    duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processContractTestResources") {
     duplicatesStrategy = 'include'
 }

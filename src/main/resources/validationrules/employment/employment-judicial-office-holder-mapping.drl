@@ -144,7 +144,7 @@ rule "employment_employment_judge_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
-                               appointment == "Employment Judge",
+                               appointment in ("Employment Judge","Employment Judge (Sitting in Retirement)"),
                                appointmentType == "Fee Paid",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "BHA1") ))
