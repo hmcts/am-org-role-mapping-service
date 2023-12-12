@@ -61,8 +61,6 @@ java:
     enabled: true
     auth:
       port: 5432
-##--------------------------------------------------------------------------------------
-##--------------------------------------------------------------------------------------
 
 global:
   idamApiUrl: https://idam-api.aat.platform.hmcts.net
@@ -79,7 +77,7 @@ am-role-assignment-service:
     image: 'hmctspublic.azurecr.io/am/role-assignment-service:latest'
     imagePullPolicy: Always
     ingressHost: "{{ .Values.global.ras-release }}"
-    releaseNameOverride: "${BUILD_NUMBER}-am-role-assignment-service"
+    releaseNameOverride: "${CHANGE_ID}-am-role-assignment-service"
     environment:
       ROLE_ASSIGNMENT_DB_HOST: "{{ .Values.global.ras-release }}-postgresql"
       ROLE_ASSIGNMENT_DB_NAME: "{{ .Values.global.postgresDBname }}"
@@ -104,8 +102,6 @@ am-role-assignment-service:
         key: PASSWORD
         disabled: false
 
-##--------------------------------------------------------------------------------------
-##--------------------------------------------------------------------------------------
 servicebus:
   enabled: true
   releaseNameOverride: ${SERVICE_NAME}-asb
