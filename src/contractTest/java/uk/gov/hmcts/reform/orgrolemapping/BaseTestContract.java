@@ -1,28 +1,16 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.opentable.db.postgres.embedded.EmbeddedPostgres;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
-
-import javax.annotation.PreDestroy;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
 
 @ContextConfiguration(initializers = {BaseTestContract.WireMockServerInitializer.class})
 @ActiveProfiles("ctest")
