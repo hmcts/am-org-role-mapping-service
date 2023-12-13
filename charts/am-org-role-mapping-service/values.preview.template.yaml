@@ -120,7 +120,7 @@ am-judicial-booking-service:
             alias: app-insights-connection-string
           - name: judicial-booking-service-IDAM-CLIENT-SECRET
             alias: JUDICIAL_BOOKING_IDAM_CLIENT_SECRET
-          - name: judicial-booking-se rvice-IDAM-ADMIN-SECRET
+          - name: judicial-booking-service-IDAM-ADMIN-SECRET
             alias: JUDICIAL_BOOKING_IDAM_ADMIN_PASSWORD
           - name: role-assignment-service-LD-SDK-KEY
             alias: LD_SDK_KEY
