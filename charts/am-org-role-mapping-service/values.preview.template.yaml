@@ -64,7 +64,8 @@ java:
         scripts:
           init.sql: |
             CREATE DATABASE role_assignment WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-            CREATE DATABASE org_role_mapping WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+            CREATE DATABASE org_role_mapping WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;  
+            CREATE DATABASE judicial_booking WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
     auth:
       port: 5432
 
@@ -102,6 +103,35 @@ am-role-assignment-service:
       LAUNCH_DARKLY_ENV: pr
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
+
+am-judicial-booking-service:
+  enabled: true
+  java:
+    image: 'hmctspublic.azurecr.io/am/judicial-booking-service:latest'
+    ingressHost: jbs-${SERVICE_FQDN}
+    keyVaults:
+      am:
+        secrets:
+          - name: am-judicial-booking-service-s2s-secret
+            alias: AM_JUDICIAL_BOOKING_SERVICE_SECRET
+          - name: app-insights-connection-string
+            alias: app-insights-connection-string
+          - name: judicial-booking-service-IDAM-CLIENT-SECRET
+            alias: JUDICIAL_BOOKING_IDAM_CLIENT_SECRET
+          - name: judicial-booking-service-IDAM-ADMIN-SECRET
+            alias: JUDICIAL_BOOKING_IDAM_ADMIN_PASSWORD
+          - name: role-assignment-service-LD-SDK-KEY
+            alias: LD_SDK_KEY
+
+    environment:
+      JUDICIAL_BOOKING_SERVICE_POSTGRES_HOST: "{{ .Release.Name }}-postgresql"
+      JUDICIAL_BOOKING_SERVICE_POSTGRES_DATABASE: "{{ .Values.postgresql.auth.database}}"
+      JUDICIAL_BOOKING_SERVICE_POSTGRES_USER: "{{ .Values.postgresql.auth.username}}"
+      JUDICIAL_BOOKING_SERVICE_POSTGRES_PASS: "{{ .Values.postgresql.auth.password}}"
+      JUDICIAL_BOOKING_SERVICE_DB_OPTIONS: "?stringtype=unspecified"
+      IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+      IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
+      LAUNCH_DARKLY_ENV: pr
 
 servicebus:
   enabled: true
