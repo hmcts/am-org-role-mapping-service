@@ -60,5 +60,8 @@ java:
 am-role-assignment-service:
   enabled: false
 
+am-judicial-booking-service:
+  enabled: false
+
 servicebus:
   enabled: false
