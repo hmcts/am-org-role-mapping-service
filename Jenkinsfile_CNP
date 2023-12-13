@@ -98,7 +98,7 @@ withPipeline(type, product, component) {
     enableSlackNotifications('#am-master-builds')
   }
   onPR {
-    env.ROLE_ASSIGNMENT_URL = "https://am-org-role-mapping-service-pr-${CHANGE_ID}-am-role-assignment-service.preview.platform.hmcts.net"
+    env.ROLE_ASSIGNMENT_URL = "https://ras-am-org-role-mapping-service-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     enableSlackNotifications('#am-master-builds')
   }
 
