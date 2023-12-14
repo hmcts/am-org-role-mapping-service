@@ -25,12 +25,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
@@ -47,12 +45,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_roleAssignment_createAssignment")
 @PactFolder("pacts")
-@SpringBootTest
-public class OrgRoleMappingConsumerTestForCreate {
+public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
 
     private static final String RAS_CREATE_ROLE_ASSIGNMENT_URL = "/am/role-assignments";
 
