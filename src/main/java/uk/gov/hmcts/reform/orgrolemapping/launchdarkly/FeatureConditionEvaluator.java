@@ -24,7 +24,6 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     public static final String POST = "POST";
     public static final String DELETE = "DELETE";
 
-    @Autowired
     private LDClientInterface ldClient;
 
     @Value("${launchdarkly.sdk.environment}")
@@ -44,6 +43,13 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
         getRequestMap.put("/am/role-mapping/fetchFlagStatus","get-db-drools-flag");
         postRequestMap.put("/am/role-mapping/createFeatureFlag","get-db-drools-flag");
         postRequestMap.put("/am/role-mapping/judicial/refresh","orm-judicial-refresh-role-api");
+    }
+
+
+    @Autowired
+    public FeatureConditionEvaluator(LDClientInterface ldClient) {
+        this.ldClient = ldClient;
+        this.userName = "";
     }
 
     @Autowired

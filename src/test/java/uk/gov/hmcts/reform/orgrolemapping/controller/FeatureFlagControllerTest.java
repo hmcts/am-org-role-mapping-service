@@ -28,7 +28,7 @@ class FeatureFlagControllerTest {
     private PersistenceUtil persistenceUtil;
 
     @InjectMocks
-    private final FeatureFlagController sut = new FeatureFlagController();
+    private final FeatureFlagController sut = new FeatureFlagController(persistenceService, persistenceUtil);
 
     @BeforeEach
     public void setUp() {

@@ -47,14 +47,11 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 @Service
 @Slf4j
-@AllArgsConstructor
-@NoArgsConstructor
 public class RequestMappingService<T> {
 
     @Value("${launchdarkly.sdk.environment}")
     private String environment;
 
-    @Autowired
     private PersistenceService persistenceService;
 
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
@@ -63,15 +60,28 @@ public class RequestMappingService<T> {
     public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
     public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
 
-    @Autowired
     private RoleAssignmentService roleAssignmentService;
 
-    @Autowired
     private StatelessKieSession kieSession;
 
-    @Autowired
     private SecurityUtils securityUtils;
 
+    @Autowired
+    public RequestMappingService(PersistenceService persistenceService , RoleAssignmentService roleAssignmentService,
+                                 StatelessKieSession kieSession, SecurityUtils securityUtils) {
+        this.persistenceService = persistenceService;
+        this.roleAssignmentService = roleAssignmentService;
+        this.kieSession = kieSession;
+        this.securityUtils = securityUtils;
+    }
+
+    public RequestMappingService(String environment, PersistenceService persistenceService, RoleAssignmentService roleAssignmentService, StatelessKieSession kieSession, SecurityUtils securityUtils) {
+        this.environment = environment;
+        this.persistenceService = persistenceService;
+        this.roleAssignmentService = roleAssignmentService;
+        this.kieSession = kieSession;
+        this.securityUtils = securityUtils;
+    }
 
     /**
      * For each caseworker represented in the map, determine what the role assignments should be,
