@@ -109,7 +109,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("["+ ticketCode +"]", r.getAuthorisations().toString());
+                assertEquals("[" + ticketCode + "]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
                 assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
             }
