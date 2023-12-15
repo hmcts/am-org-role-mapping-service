@@ -8,7 +8,7 @@
   "email_id": "EMP62506@ejudiciary.net",
   "appointments": [
     {
-      "base_location_id": "1032",
+      "base_location_id": "1351",
       "epimms_id": "839746",
       "court_name": "string",
       "location_id": "north-east",
@@ -17,10 +17,25 @@
       "cft_region": "North",
       "is_principal_appointment": "TRUE",
       "start_date": "2020-04-28",
-      "end_date": "2025-04-28",
-      "appointment": "Tribunal Member Financially Qualified",
+      "end_date": "2022-04-28",
+      "appointment": "Employment Judge",
+      "appointment_type": "Salaried",
+      "service_code": "BFA1"
+    },
+    {
+      "base_location_id": "1351",
+      "epimms_id": "839746",
+      "court_name": "string",
+      "location_id": "north-east",
+      "location": "north-east",
+      "cft_region_id": "2",
+      "cft_region": "North",
+      "is_principal_appointment": "TRUE",
+      "start_date": "2020-04-28",
+      "end_date": "2022-04-28",
+      "appointment": "Tribunal Judge",
       "appointment_type": "Fee Paid",
-      "service_code": "BBA3"
+      "service_code": "BFA1"
     }
   ],
   "authorisations": [
@@ -28,7 +43,7 @@
       "jurisdiction": "Languages",
       "ticket_description": "Welsh",
       "start_date": "2022-04-28T16:00:49",
-      "service_codes": ["BBA3"],
+      "service_codes": ["BFA1"],
       "ticket_code": "373",
       "end_date": "2022-04-28T16:00:49"
     },
@@ -36,8 +51,15 @@
       "jurisdiction": "Languages",
       "ticket_description": "Welsh",
       "start_date": "2022-04-28T16:00:49",
-      "service_codes": ["BBA3"],
-      "ticket_code": "372"
+      "service_codes": ["BFA1"],
+      "ticket_code": "373"
+    },
+    {
+      "jurisdiction": "Languages",
+      "ticket_description": "Welsh",
+      "start_date": "2022-04-28T16:00:49",
+      "service_codes": ["BFA2"],
+      "ticket_code": "374"
     }
   ]
 }
