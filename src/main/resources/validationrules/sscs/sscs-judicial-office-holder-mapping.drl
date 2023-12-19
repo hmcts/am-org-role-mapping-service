@@ -268,7 +268,6 @@ when
    $jap: JudicialAccessProfile(appointment == "Tribunal Member Financially Qualified",
                                appointmentType == "Fee Paid",
                                baseLocationId == "1032",
-                               ticketCodes != null && ticketCodes.contains("362"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "BBA3"))
 then
