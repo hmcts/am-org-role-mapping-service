@@ -7,15 +7,18 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 @Service
 public class PersistenceAccessTypeService {
 
-    private AccessTypesRepository accessTypesRepository;
+    private final AccessTypesRepository accessTypesRepository;
 
     public PersistenceAccessTypeService(AccessTypesRepository accessTypesRepository) {
         this.accessTypesRepository = accessTypesRepository;
     }
 
 
-    public String fetchAccessTypeByVersion(Long version) {
-        return accessTypesRepository.findByAccessTypeVersion(version);
+    public AccessTypes getAccessType(String json) {
+        return accessTypesRepository.findByAccessType(json);
     }
 
+    public AccessTypes getVersion(Long version) {
+        return accessTypesRepository.findByVersion(version);
+    }
 }

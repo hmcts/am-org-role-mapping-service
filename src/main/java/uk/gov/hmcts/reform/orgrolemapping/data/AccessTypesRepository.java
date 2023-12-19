@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AccessTypesRepository extends CrudRepository<AccessTypes, Long> {
 
-    String findByAccessTypeVersion(Long version);
+    AccessTypes findByAccessType(String json);
+
+    AccessTypes findByVersion(Long version);
 }
