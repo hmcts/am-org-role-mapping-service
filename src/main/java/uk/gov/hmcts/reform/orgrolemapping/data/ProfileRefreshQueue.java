@@ -1,8 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.data;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Builder(toBuilder = true)
 @Getter
