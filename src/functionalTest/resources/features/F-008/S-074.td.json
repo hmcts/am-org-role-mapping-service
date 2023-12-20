@@ -16,13 +16,13 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
+          "actorId": "${[scenarioContext][childContexts][S-074_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "roleName": ["hmcts-judiciary"],
           "attributes": {
             "contractType": ["Salaried"]}
         },
         {
-          "actorId": ["f603e559-a5cd-4316-999c-e945cb07ccc9"],
+          "actorId": "${[scenarioContext][childContexts][S-074_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["PRIVATELAW"]
           }
@@ -37,7 +37,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -56,7 +56,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-judiciary",
           "classification": "PRIVATE",
@@ -73,7 +73,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "f603e559-a5cd-4316-999c-e945cb07ccc9",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "judge",
           "classification": "PUBLIC",
