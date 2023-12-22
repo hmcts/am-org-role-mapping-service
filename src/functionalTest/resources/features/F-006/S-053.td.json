@@ -21,7 +21,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "e8fa3156-b8ea-4dc3-a172-58cb77746226",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "dwp",
           "classification": "PUBLIC",
@@ -40,7 +40,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "e8fa3156-b8ea-4dc3-a172-58cb77746226",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmrc",
           "classification": "PUBLIC",

@@ -26,7 +26,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "case-allocator",
           "classification": "PUBLIC",
@@ -44,7 +44,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "case-allocator",
           "classification": "PUBLIC",
@@ -61,7 +61,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
@@ -78,7 +78,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
-          "actorId" : "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType" : "ORGANISATION",
           "roleName" : "hearing-manager",
           "classification" : "PUBLIC",
@@ -95,7 +95,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -112,7 +112,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -129,7 +129,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-admin",
           "classification": "PRIVATE",
@@ -144,7 +144,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-legal-operations",
           "classification": "PRIVATE",
@@ -159,7 +159,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "regional-centre-admin",
           "classification": "PUBLIC",
@@ -178,7 +178,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "regional-centre-team-leader",
           "classification": "PUBLIC",
@@ -196,7 +196,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "registrar",
           "classification": "PUBLIC",
@@ -215,7 +215,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "specific-access-approver-admin",
           "classification": "PUBLIC",
@@ -234,7 +234,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "task-supervisor",
           "classification": "PUBLIC",
@@ -251,7 +251,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "68002b8d-eb6d-46c9-95a9-7a8cdb9fc6fd",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "task-supervisor",
           "classification": "PUBLIC",
