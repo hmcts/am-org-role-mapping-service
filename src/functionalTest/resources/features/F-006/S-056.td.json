@@ -108,7 +108,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority,applications"
+            "workTypes": "pre_hearing,post_hearing,decision_making_work,applications,hearing_work,routine_work,priority"
           }
         },
         {

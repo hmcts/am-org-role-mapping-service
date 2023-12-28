@@ -17,9 +17,6 @@
       "queryRequests":[
         {
           "actorId": "${[scenarioContext][childContexts][S-054_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "attributes": {
-            "jurisdiction": ["SSCS"]
-          }
         }
       ]
     }
@@ -28,10 +25,6 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
-        {
-          "__ordering__": "UNORDERED",
-          "__elementId__": "roleName"
-        },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
@@ -167,7 +160,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority,applications"
+            "workTypes": "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
           }
         }
       ]
