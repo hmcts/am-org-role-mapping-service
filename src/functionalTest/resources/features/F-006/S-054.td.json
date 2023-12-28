@@ -16,7 +16,7 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][childContexts][S-054_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": "${[scenarioContext][childContexts][S-054_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
         }
       ]
     }
