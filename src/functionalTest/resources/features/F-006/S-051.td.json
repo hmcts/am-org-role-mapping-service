@@ -21,7 +21,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "registrar",
           "classification": "PUBLIC",
@@ -40,7 +40,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "11b2bb43-ba13-4cf1-9493-8ef2361af513",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "tribunal-caseworker",
           "classification": "PUBLIC",

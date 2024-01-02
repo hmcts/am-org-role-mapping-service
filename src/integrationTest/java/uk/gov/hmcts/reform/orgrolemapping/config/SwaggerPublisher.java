@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest;
+import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+
 import javax.inject.Inject;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -20,14 +22,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Each run of workflow .github/workflows/swagger.yml on master should automatically save and upload (if updated)
  * documentation.
  */
-public class SwaggerPublisher extends BaseTest {
+@TestPropertySource(properties = {
+    // NB: hide testing-support endpoint from Swagger Publish
+    "testing.support.enabled=false"
+})
+public class SwaggerPublisher extends BaseTestIntegration {
 
     private MockMvc mockMvc;
 
     @Inject
     private WebApplicationContext wac;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }

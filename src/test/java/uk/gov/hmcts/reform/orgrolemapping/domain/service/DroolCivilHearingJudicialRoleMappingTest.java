@@ -93,12 +93,24 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("Recorder - Fee Paid"),
                         List.of("fee-paid-judge","hmcts-judiciary",
                                 "hearing-viewer")),
-                Arguments.of("District Judge- Sitting in Retirement",
+                Arguments.of("District Judge (sitting in retirement)",
                         "Fee Paid",
                         true,
                         true,
-                        List.of("District Judge- Sitting in Retirement"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer"))
+                        List.of("District Judge (sitting in retirement)"),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Tribunal Judge",
+                        "Fee Paid",
+                        true,
+                        true,
+                        List.of("Tribunal Judge"),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Tribunal Judge",
+                        "Salaried",
+                        false,
+                        true,
+                        List.of(""),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer"))
         );
     }
 
@@ -143,7 +155,8 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                 buildExecuteKieSession(
                         List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
                                 FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build(),
-                                FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build())
+                                FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build(),
+                                FeatureFlag.builder().flagName("civil_wa_1_3").status(true).build())
                 );
 
         //assertions

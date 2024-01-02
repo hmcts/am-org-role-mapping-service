@@ -6,15 +6,24 @@ java:
   keyVaults:
     am:
       secrets:
-        - app-insights-connection-string
-        - am-org-role-mapping-service-s2s-secret
-        - role-assignment-service-LD-SDK-KEY
-        - orm-IDAM-CLIENT-ID
-        - orm-IDAM-CLIENT-SECRET
-        - orm-IDAM-ADMIN-SECRET
-        - caseworker-topic-primary-send-listen-shared-access-key
-        - org-role-mapping-service-POSTGRES-PASS
-        - judicial-topic-primary-send-listen-shared-access-key
+        - name: app-insights-connection-string
+          alias: app-insights-connection-string
+        - name: am-org-role-mapping-service-s2s-secret
+          alias: AM_ORG_ROLE_MAPPING_SERVICE_SECRET
+        - name: role-assignment-service-LD-SDK-KEY
+          alias: LD_SDK_KEY
+        - name: orm-IDAM-CLIENT-ID
+          alias: ORM_IDAM_CLIENT_ID
+        - name: orm-IDAM-CLIENT-SECRET
+          alias: ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET
+        - name: orm-IDAM-ADMIN-SECRET
+          alias: ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD
+        - name: caseworker-topic-primary-send-listen-shared-access-key
+          alias: AMQP_CRD_SHARED_ACCESS_KEY_VALUE
+        - name: org-role-mapping-service-POSTGRES-PASS
+          alias: ORG_ROLE_MAPPING_DB_PASSWORD
+        - name: judicial-topic-primary-send-listen-shared-access-key
+          alias: AMQP_JRD_SHARED_ACCESS_KEY_VALUE
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
@@ -31,6 +40,7 @@ java:
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
     AMQP_HOST: rd-servicebus-{{ .Values.global.environment }}.servicebus.windows.net
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
+    AMQP_ENABLED: true
     TRUST_ALL_CERTS: "true"
     CRD_TOPIC_NAME: rd-caseworker-topic-{{ .Values.global.environment }}
     CRD_SUBSCRIPTION_NAME: rd-caseworker-subscription-{{ .Values.global.environment }}
@@ -43,6 +53,7 @@ java:
     ORG_ROLE_MAPPING_DB_USERNAME: am@am-org-role-mapping-service-postgres-db-v11-{{ .Values.global.environment }}
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified&sslmode=require"
     REFRESH_JOB:
+    TESTING_SUPPORT_ENABLED: false
     APPLICATION_LOGGING_LEVEL: INFO
     RUN_LD_ON_STARTUP: true
 servicebus:
