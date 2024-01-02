@@ -12,11 +12,14 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 public class ProfileRefreshQueueTest {
 
-    private final ProfileRefreshQueueRepository profileRefreshQueueRepository = mock(ProfileRefreshQueueRepository.class);
+    private final ProfileRefreshQueueRepository profileRefreshQueueRepository
+            = mock(ProfileRefreshQueueRepository.class);
 
     @Test
     void getProfileRefreshQueueById() {
-        ProfileRefreshQueue profileRefreshQueue = ProfileRefreshQueue.builder().organisationProfileId("NEW").accessTypesMinVersion(1).active(false).build();
+        ProfileRefreshQueue profileRefreshQueue = ProfileRefreshQueue.builder()
+                .organisationProfileId("NEW")
+                .accessTypesMinVersion(1).active(false).build();
         Mockito.when(profileRefreshQueueRepository.findByOrganisationProfileId("NEW"))
                 .thenReturn(profileRefreshQueue);
 
@@ -29,9 +32,10 @@ public class ProfileRefreshQueueTest {
 
     @Test
     void getProfileRefreshQueueByIdAndVersion() {
-        ProfileRefreshQueue profileRefreshQueue = ProfileRefreshQueue.builder().organisationProfileId("NEW").accessTypesMinVersion(1).active(false).build();
-        Mockito.when(profileRefreshQueueRepository.findByOrganisationProfileIdAndAccessTypesMinVersion("NEW", 1L))
-                .thenReturn(profileRefreshQueue);
+        ProfileRefreshQueue profileRefreshQueue = ProfileRefreshQueue.builder().organisationProfileId("NEW")
+                .accessTypesMinVersion(1).active(false).build();
+        Mockito.when(profileRefreshQueueRepository.findByOrganisationProfileIdAndAccessTypesMinVersion("NEW",
+                        1L)).thenReturn(profileRefreshQueue);
 
         assertNotNull(profileRefreshQueue.getAccessTypesMinVersion());
         assertEquals("NEW", profileRefreshQueue.getOrganisationProfileId());

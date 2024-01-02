@@ -8,6 +8,7 @@ public interface ProfileRefreshQueueRepository extends CrudRepository<ProfileRef
 
     ProfileRefreshQueue findByOrganisationProfileId(String profileId);
 
-    ProfileRefreshQueue findByOrganisationProfileIdAndAccessTypesMinVersion(String profileId, Long accessTypesMinVersion);
+    ProfileRefreshQueue findByOrganisationProfileIdAndAccessTypesMinVersion(String profileId,
+                                                                            Long accessTypesMinVersion);
 
 }
