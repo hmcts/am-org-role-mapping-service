@@ -20,126 +20,132 @@
     "_extends_": "Common_200_Response",
     "body" : {
       "roleAssignmentResponse" : [
-      {
-        "__elementId__": "roleName"
-      },
-      {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
-        "roleType" : "ORGANISATION",
-        "roleName" : "hearing-manager",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "LEGAL_OPERATIONS",
-        "readOnly" : false,
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "N",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS"
-        }
-      }, {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
-        "roleType" : "ORGANISATION",
-        "roleName" : "hearing-viewer",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "LEGAL_OPERATIONS",
-        "readOnly" : false,
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "N",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS"
-        }
-      }, {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
-        "roleType" : "ORGANISATION",
-        "roleName" : "hmcts-legal-operations",
-        "classification" : "PRIVATE",
-        "grantType" : "BASIC",
-        "roleCategory" : "LEGAL_OPERATIONS",
-        "readOnly" : true,
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "N"
-        }
-      }, {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
-        "roleType" : "ORGANISATION",
-        "roleName" : "task-supervisor",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "LEGAL_OPERATIONS",
-        "readOnly" : false,
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "N",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]"
-        }
-      }, {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
-        "roleType" : "ORGANISATION",
-        "roleName" : "task-supervisor",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "LEGAL_OPERATIONS",
-        "readOnly" : false,
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "N",
-          "primaryLocation" : "698118",
-          "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]"
-        }
-      }, {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
-        "roleType" : "ORGANISATION",
-        "roleName" : "tribunal-caseworker",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "LEGAL_OPERATIONS",
-        "readOnly" : false,
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "Y",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]",
-          "workTypes" : "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
-        }
-      }, {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "e39efe9d-593f-4996-b476-5905649c89b2",
-        "roleType" : "ORGANISATION",
-        "roleName" : "tribunal-caseworker",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "LEGAL_OPERATIONS",
-        "readOnly" : false,
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "Y",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS",
-          "region" :"[[ANYTHING_PRESENT]]",
-          "workTypes" : "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
-        }
-      } ]
+        {
+          "__elementId__": "roleName"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hearing-manager",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "SSCS"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hearing-viewer",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "SSCS"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hmcts-legal-operations",
+          "classification" : "PRIVATE",
+          "grantType" : "BASIC",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : true,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "task-supervisor",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "task-supervisor",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "698118",
+            "jurisdiction" : "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "tribunal-caseworker",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
+            "workTypes" : "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "tribunal-caseworker",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "SSCS",
+            "region" :"[[ANYTHING_PRESENT]]",
+            "workTypes" : "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
+          }
+        } ]
     }
   }
 }

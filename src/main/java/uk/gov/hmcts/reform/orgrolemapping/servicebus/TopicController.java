@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 @Slf4j
 @NoArgsConstructor
 @Hidden
+@ConditionalOnExpression("${testing.support.enabled} && (${amqp.crd.enabled} || ${amqp.jrd.enabled})")
 public class TopicController {
 
     JRDTopicPublisher jrdTopicPublisher;

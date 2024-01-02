@@ -71,26 +71,27 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //=================================FEE-PAID ROLES==================================
     @ParameterizedTest
     @CsvSource({
-        "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary'",
-        "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary'",
-        "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary'",
-        "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary'",
-        "Tribunal Member,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Tribunal Member Lay,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Tribunal Member Service,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary'"
+        "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
+        "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
+        "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary','371'",
+        "Tribunal Member,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary','371'",
+        "Tribunal Member Lay,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary','371'",
+        "Tribunal Member Service,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary','371'",
+        "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','372'",
+        "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles2(String appointment, String appointmentType,
-                                                       String serviceCode, String expectedRoles) {
+                                                       String serviceCode, String expectedRoles, String ticketCode) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.setBaseLocationId("1032");
-            judicialAccessProfile.setTicketCodes(List.of("362"));
+            judicialAccessProfile.setTicketCodes(List.of(ticketCode));
             judicialAccessProfile.getAuthorisations().forEach(a -> {
                 a.setServiceCodes(List.of(serviceCode));
-                a.setTicketCode("362");
+                a.setTicketCode(ticketCode);
             });
         });
 
@@ -108,7 +109,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 assertNull(r.getAuthorisations());
                 assertNull(r.getAttributes().get("primaryLocation"));
             } else {
-                assertEquals("[362]", r.getAuthorisations().toString());
+                assertEquals("[" + ticketCode + "]", r.getAuthorisations().toString());
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
                 assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
             }

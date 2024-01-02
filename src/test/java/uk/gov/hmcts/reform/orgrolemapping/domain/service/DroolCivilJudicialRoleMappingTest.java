@@ -46,6 +46,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         "CIVIL Presiding Judge-Salaried,judge",
         "CIVIL Resident Judge-Salaried,judge",
         "CIVIL Circuit Judge-Salaried,circuit-judge",
+        "CIVIL Tribunal Judge-Salaried,judge",
         "CIVIL Specialist Circuit Judge-Salaried,circuit-judge",
         "CIVIL Senior Circuit Judge-Salaried,circuit-judge",
         "CIVIL High Court Judge-Salaried,circuit-judge"
@@ -80,7 +81,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         "CIVIL Deputy District Judge-Fee-Paid,fee-paid-judge",
         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,fee-paid-judge",
         "CIVIL Recorder-Fee-Paid,fee-paid-judge",
-        "CIVIL District Judge- Sitting in Retirement-Fee-Paid,fee-paid-judge"
+        "CIVIL District Judge (sitting in retirement)-Fee-Paid,fee-paid-judge",
+        "CIVIL Tribunal Judge-Fee-Paid,fee-paid-judge"
     })
     void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) throws IOException {
 

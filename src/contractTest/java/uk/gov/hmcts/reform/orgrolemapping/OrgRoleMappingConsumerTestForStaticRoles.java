@@ -15,13 +15,11 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
@@ -42,12 +40,10 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_roleAssignment_getRoles")
 @PactFolder("pacts")
-@SpringBootTest
-public class OrgRoleMappingConsumerTestForStaticRoles {
+public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
 
     @MockBean
     CRDTopicConsumer topicConsumer;
