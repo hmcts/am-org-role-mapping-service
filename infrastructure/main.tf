@@ -103,7 +103,7 @@ module "org-role-mapping-database-v15" {
   pgsql_version      = "15"
 
   # Setup Access Reader db user
-  force_user_permissions_trigger = "1"
+  force_user_permissions_trigger = "2"
 
   # The original subnet is full, this is required to use the new subnet for new databases
   subnet_suffix = "expanded"
