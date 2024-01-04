@@ -32,7 +32,7 @@ public class AccessTypes implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "version_seq")
     private Long version;
 
-    @Column(name = "access_type", nullable = false)
-    private String accessType;
+    @Column(name = "access_types", nullable = false)
+    private String accessTypes;
 
 }
