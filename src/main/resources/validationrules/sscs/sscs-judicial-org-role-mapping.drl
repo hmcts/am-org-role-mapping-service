@@ -209,7 +209,6 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
