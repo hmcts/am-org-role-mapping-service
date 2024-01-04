@@ -18,7 +18,7 @@ public class AccessTypeService {
         return accessTypesRepository.findByVersion(version);
     }
 
-    public AccessTypes getAccessTypes(){
+    public AccessTypes getAccessTypes() {
         return accessTypesRepository.findFirstByOrderByVersionDesc();
     }
 }
