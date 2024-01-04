@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class AccessTypesServiceTest {
 
@@ -21,7 +22,8 @@ class AccessTypesServiceTest {
         Long version = 1L;
         AccessTypes accessTypes = new AccessTypes();
         accessTypes.setAccessTypes("{[]}");
-         AccessTypes response = sut.getVersion(version);
+        when(accessTypeRepository.findByVersion(version)).thenReturn(accessTypes);
+        AccessTypes response = sut.getVersion(version);
         assertEquals(response.getAccessTypes(), accessTypes.getAccessTypes());
     }
 
@@ -30,8 +32,8 @@ class AccessTypesServiceTest {
 
         AccessTypes accessTypes = new AccessTypes();
         accessTypes.setAccessTypes("{[]}");
+        when(accessTypeRepository.findFirstByOrderByVersionDesc()).thenReturn(accessTypes);
         AccessTypes response = sut.getAccessTypes();
-        assertEquals(response.getAccessTypes(),accessTypes.getAccessTypes());
         assertEquals(response.getAccessTypes(),accessTypes.getAccessTypes());
 
     }
