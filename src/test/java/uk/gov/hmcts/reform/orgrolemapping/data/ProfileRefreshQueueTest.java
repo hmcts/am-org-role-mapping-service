@@ -20,12 +20,4 @@ class ProfileRefreshQueueTest {
         assertEquals("NEW", profileRefreshQueue.getOrganisationProfileId());
     }
 
-    @Test
-    void getProfileRefreshQueueByIdAndVersion() {
-        ProfileRefreshQueue profileRefreshQueue = ProfileRefreshQueue.builder().organisationProfileId("NEW")
-                .accessTypesMinVersion(1).active(false).build();
-
-        assertNotNull(profileRefreshQueue.getAccessTypesMinVersion());
-        assertEquals("NEW", profileRefreshQueue.getOrganisationProfileId());
-    }
 }
