@@ -46,6 +46,7 @@ public class JobConfiguration implements CommandLineRunner {
                 String[] refreshJobAttributes = refreshJobConfig.split("-");
                 log.info("Job {} inserting into refresh table", refreshJobConfig);
                 if (refreshJobAttributes.length < 4) {
+                    log.error("Job config import aborted, not enough arguments: '{}'", refreshJobConfig);
                     return;
                 }
                 RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder().build();
