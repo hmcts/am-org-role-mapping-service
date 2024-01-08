@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "organisation_refresh_queue")
-public class OrganisationRefreshQueue {
+public class OrganisationRefreshQueueEntity {
 
     @Id
     @Column(name = "organisation_id", nullable = false)
