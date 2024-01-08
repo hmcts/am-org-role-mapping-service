@@ -26,7 +26,6 @@ public class JudicialOfficeHolder implements Serializable {
     private ZonedDateTime beginTime; //from appointment data
     private ZonedDateTime endTime; //from appointment data and add +1 day as per mapping rule by Jon
     private String regionId; // locationId from appointment
-    private String region; // location from appointment
     private String baseLocationId; // epims id
     private String primaryLocation; //epims id where isPrimary is true
     private String contractType; //appointment type from JRD

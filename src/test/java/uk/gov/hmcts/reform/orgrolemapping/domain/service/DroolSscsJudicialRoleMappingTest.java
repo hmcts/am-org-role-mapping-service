@@ -50,7 +50,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String region, String office) {
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
@@ -75,18 +75,12 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
             assertFalse(r.isReadOnly());
             assertEquals("2", primaryLocation);
         }
-
         //region assertions
         if (r.getRoleName().equals("hmcts-judiciary")
                 || office.contains("President of Tribunal")) {
             assertNull(r.getAttributes().get("region"));
         } else {
-            if (r.getRoleName().equals("judge")
-                    && office.equals("SSCS Tribunal Judge-Fee Paid")) {
-                assertEquals(region, r.getAttributes().get("region").asText());
-            } else {
-                assertEquals(regionId, r.getAttributes().get("region").asText());
-            }
+            assertEquals(regionId, r.getAttributes().get("region").asText());
         }
 
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
@@ -123,7 +117,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, null,  setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
 
@@ -142,11 +136,9 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false"
     })
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles, boolean withBooking) throws IOException {
-        String region = "Edinburgh";
         judicialOfficeHolders.forEach(joh -> {
             joh.setOffice(setOffice);
             joh.setTicketCodes(List.of("368"));
-            joh.setRegion(region);
         });
 
         if (withBooking) {
@@ -163,12 +155,27 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        String regionId = allProfiles.iterator().next().getRegionId();
+
         roleAssignments.forEach(r -> {
+            String regionId = setExpectedRegionId(setOffice,withBooking,r);
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, region, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
+
+    private String setExpectedRegionId(String setOffice, boolean withBooking, RoleAssignment roleAssignment) {
+        if (setOffice.equals("SSCS Tribunal Judge-Fee Paid") && withBooking
+                && roleAssignment.getRoleName().equals("judge")) {
+            if (!judicialBookings.isEmpty()) {
+                return judicialBookings.iterator().next().getRegionId();
+            } else {
+                return allProfiles.iterator().next().getRegionId();
+            }
+        } else {
+            return allProfiles.iterator().next().getRegionId();
+        }
+    }
+
 
     void createBooking(String setOffice) throws IOException {
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
@@ -177,5 +184,6 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("2");
         judicialBookings = Set.of(judicialBooking);
+        ;
     }
 }

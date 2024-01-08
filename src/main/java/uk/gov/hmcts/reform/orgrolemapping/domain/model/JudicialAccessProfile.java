@@ -28,7 +28,6 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
      */
     @Deprecated(forRemoval = true)
     private String cftRegionIdV1;
-    private String cftRegion;
     private String baseLocationId;
     private String contractTypeId;
     private String appointment;
