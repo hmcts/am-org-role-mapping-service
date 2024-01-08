@@ -184,6 +184,5 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("2");
         judicialBookings = Set.of(judicialBooking);
-        ;
     }
 }
