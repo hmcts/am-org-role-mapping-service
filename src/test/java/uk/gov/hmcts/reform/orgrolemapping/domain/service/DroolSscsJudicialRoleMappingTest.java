@@ -50,7 +50,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String region, String office) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
@@ -78,11 +78,15 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
         //region assertions
         if (r.getRoleName().equals("hmcts-judiciary")
-                || List.of("leadership-judge", "judge", "case-allocator", "task-supervisor").contains(r.getRoleName())
-                && office.contains("President of Tribunal")) {
+                || office.contains("President of Tribunal")) {
             assertNull(r.getAttributes().get("region"));
         } else {
-            assertEquals(regionId, r.getAttributes().get("region").asText());
+            if (r.getRoleName().equals("judge")
+                    && office.equals("SSCS Tribunal Judge-Fee Paid")){
+                assertEquals(region, r.getAttributes().get("region").asText());
+            }else {
+                assertEquals(regionId, r.getAttributes().get("region").asText());
+            }
         }
 
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
@@ -119,7 +123,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, null,  setOffice);
         });
     }
 
@@ -138,10 +142,11 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false"
     })
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles, boolean withBooking) throws IOException {
-
+        String region = "Edinburgh";
         judicialOfficeHolders.forEach(joh -> {
             joh.setOffice(setOffice);
             joh.setTicketCodes(List.of("368"));
+            joh.setRegion(region);
         });
 
         if (withBooking) {
@@ -161,7 +166,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, region, setOffice);
         });
     }
 

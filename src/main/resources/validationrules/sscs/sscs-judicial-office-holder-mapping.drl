@@ -131,6 +131,7 @@ then
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
       .regionId($jap.getCftRegionIdV1())
+      .region($jap.getCftRegion())
       .baseLocationId($jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
