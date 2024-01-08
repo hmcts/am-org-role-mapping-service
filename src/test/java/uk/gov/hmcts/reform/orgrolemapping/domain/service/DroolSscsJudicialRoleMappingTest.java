@@ -82,9 +82,9 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
             assertNull(r.getAttributes().get("region"));
         } else {
             if (r.getRoleName().equals("judge")
-                    && office.equals("SSCS Tribunal Judge-Fee Paid")){
+                    && office.equals("SSCS Tribunal Judge-Fee Paid")) {
                 assertEquals(region, r.getAttributes().get("region").asText());
-            }else {
+            } else {
                 assertEquals(regionId, r.getAttributes().get("region").asText());
             }
         }
