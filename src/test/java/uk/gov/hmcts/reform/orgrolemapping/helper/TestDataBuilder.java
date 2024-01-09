@@ -746,4 +746,17 @@ public class TestDataBuilder {
                     .toArray(String[]::new);
         }
     }
+
+    public static JsonNode buildAccessTypesFromFile() {
+        try (InputStream inputStream =
+                     TestDataBuilder.class.getClassLoader().getResourceAsStream("accessTypes.json")) {
+            assert inputStream != null;
+            JsonNode result = new ObjectMapper().readValue(inputStream, new TypeReference<>() {
+            });
+            inputStream.close();
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

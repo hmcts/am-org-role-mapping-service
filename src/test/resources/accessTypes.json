@@ -1,0 +1,22 @@
+{
+  "organisationProfiles": {
+    "SOLICITOR_ORG": {
+      "CIVIL": [
+        {
+          "accessTypeId": "BEFTA_SOLICITOR_1",
+          "accessMandatory": true,
+          "accessDefault": true,
+          "roles": [
+            {
+              "caseTypeId": "BEFTA_CASETYPE_1_1",
+              "organisationalRoleName": "OrgRoleName",
+              "groupRoleName": "GroupRoleName",
+              "caseGroupIdTemplate": "BEFTA_JUR:BEFTA_CaseType:[GrpRoleName1]:$ORGID$",
+              "groupAccessEnabled": true
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
