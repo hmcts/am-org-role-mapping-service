@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class BatchLastRunTimestampTest {
     @Test
-    void getbatchLastRun() {
+    void batchLastRunCreatedUpdated() {
+        //Testing inserts
         Instant nowTestDate = Instant.now();
         BatchLastRunTimestampEntity batchLastRunTimestampEntity = BatchLastRunTimestampEntity.builder()
                 .lastOrganisationRunDatetime(Timestamp.from(nowTestDate))
@@ -21,7 +22,21 @@ public class BatchLastRunTimestampTest {
 
         assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastUserRunDatetime().toInstant());
         assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastOrganisationRunDatetime().toInstant());
+
+        //Testing update of LastUserRunDatetime
+        nowTestDate = Instant.now();
+        batchLastRunTimestampEntity.setLastUserRunDatetime(Timestamp.from(nowTestDate));
+
+        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastUserRunDatetime().toInstant());
+
+        //Testing update of LastOrganisationRunDatetime
+        nowTestDate = Instant.now();
+        batchLastRunTimestampEntity.setLastOrganisationRunDatetime(Timestamp.from(nowTestDate));
+
+        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastOrganisationRunDatetime().toInstant());
+
     }
+
 
 }
 
