@@ -8,16 +8,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
-class ProfileRefreshQueueTest {
+class ProfileRefreshQueueEntityTest {
 
     @Test
     void getProfileRefreshQueueById() {
-        ProfileRefreshQueue profileRefreshQueue = ProfileRefreshQueue.builder()
+        ProfileRefreshQueueEntity profileRefreshQueueEntity = ProfileRefreshQueueEntity.builder()
                 .organisationProfileId("NEW")
                 .accessTypesMinVersion(1).active(false).build();
 
-        assertNotNull(profileRefreshQueue.getAccessTypesMinVersion());
-        assertEquals("NEW", profileRefreshQueue.getOrganisationProfileId());
+        assertNotNull(profileRefreshQueueEntity.getAccessTypesMinVersion());
+        assertEquals("NEW", profileRefreshQueueEntity.getOrganisationProfileId());
     }
 
 }

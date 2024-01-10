@@ -16,7 +16,7 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "profile_refresh_queue")
-public class ProfileRefreshQueue {
+public class ProfileRefreshQueueEntity {
 
     @Id
     @Column(name = "organisation_profile_id")
