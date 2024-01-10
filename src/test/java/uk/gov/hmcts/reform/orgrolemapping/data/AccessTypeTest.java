@@ -12,12 +12,12 @@ public class AccessTypeTest {
 
     @Test
     void getAccessTypes() {
-        AccessTypes accessTypes = AccessTypes.builder()
+        AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
                 .accessTypes("{[]}")
                 .build();
 
-        assertNotNull(accessTypes.getAccessTypes());
-        assertEquals("{[]}", accessTypes.getAccessTypes());
+        assertNotNull(accessTypesEntity.getAccessTypes());
+        assertEquals("{[]}", accessTypesEntity.getAccessTypes());
     }
 
 }

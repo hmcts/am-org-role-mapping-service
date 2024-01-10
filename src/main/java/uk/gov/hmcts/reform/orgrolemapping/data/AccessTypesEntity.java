@@ -22,7 +22,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @SequenceGenerator(name = "version_seq", sequenceName = "version_seq", allocationSize = 1)
 @Entity(name = "access_types")
-public class AccessTypes implements Serializable {
+public class AccessTypesEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
