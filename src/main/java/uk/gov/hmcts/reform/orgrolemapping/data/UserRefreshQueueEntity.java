@@ -33,7 +33,7 @@ public class UserRefreshQueueEntity {
     @Column(name = "access_types_min_version", nullable = false)
     private Integer accessTypesMinVersion;
 
-    @Column(name = "deleted", nullable = false)
+    @Column(name = "deleted")
     private LocalDateTime deleted;
 
     @Column(name = "access_types", nullable = false, columnDefinition = "jsonb")
