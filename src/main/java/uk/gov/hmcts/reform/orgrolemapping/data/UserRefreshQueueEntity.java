@@ -1,16 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.data;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import uk.gov.hmcts.reform.orgrolemapping.util.JsonBConverter;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -36,9 +33,8 @@ public class UserRefreshQueueEntity {
     @Column(name = "deleted")
     private LocalDateTime deleted;
 
-    @Column(name = "access_types", nullable = false, columnDefinition = "jsonb")
-    @Convert(converter = JsonBConverter.class)
-    private JsonNode accessTypes;
+    @Column(name = "access_types", nullable = false)
+    private String accessTypes;
 
     @Column(name = "organisation_id", nullable = false)
     private String organisationId;
