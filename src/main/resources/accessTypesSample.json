@@ -1,0 +1,54 @@
+{
+  "jurisdictions": [
+    {
+      "jurisdictionId": "BEFTA_JURISDICTION_1",
+      "jurisdictionName": "BEFTA_JURISDICTION_1",
+      "accessTypes": [
+        {
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "default",
+          "accessMandatory": false,
+          "accessDefault": false,
+          "display": false,
+          "description": "Description for the BEFTA Master Jurisdiction Access Type.",
+          "hint": "Hint  for the BEFTA Master Jurisdiction Access Type.",
+          "displayOrder": 10,
+          "roles": [
+            {
+              "caseTypeId": "CASE_TYPE_WITH_NO_CASES",
+              "organisationalRoleName": "Role1",
+              "groupRoleName": null,
+              "caseGroupIdTemplate": "BEFTA_JURISDICTION_1:CIVIL:all:CIVIL:AS1:$ORGID$",
+              "groupAccessEnabled": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "jurisdictionId": "BEFTA_JURISDICTION_1",
+      "jurisdictionName": "BEFTA_JURISDICTION_1",
+      "accessTypes": [
+        {
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "default",
+          "accessMandatory": true,
+          "accessDefault": true,
+          "display": true,
+          "description": "Description for the BEFTA Master Jurisdiction Access Type.",
+          "hint": "Hint  for the BEFTA Master Jurisdiction Access Type.",
+          "displayOrder": 20,
+          "roles": [
+            {
+              "caseTypeId": "BEFTA_CASETYPE_1_1",
+              "organisationalRoleName": "Role1",
+              "groupRoleName": "Role1",
+              "caseGroupIdTemplate": "BEFTA_JURISDICTION_1:CIVIL:all:CIVIL:AS1:$ORGID$",
+              "groupAccessEnabled": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
