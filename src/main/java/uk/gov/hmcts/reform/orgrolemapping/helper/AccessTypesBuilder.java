@@ -17,7 +17,7 @@ public class AccessTypesBuilder {
                     new File("src/main/resources/" + resource),
                     AccessTypesResponse.class);
         } catch (Exception e) {
-            throw new BadRequestException("Invalid sample json is missing.");
+            throw new BadRequestException("Invalid sample json file or missing.");
         }
     }
 }
