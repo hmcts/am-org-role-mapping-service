@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-074",
-  "title": "must successfully create judicial role mapping for District Judge - salaried appointment",
-  "_extends_": "F-008_Test_Data_Base",
+  "_guid_": "S-107",
+  "title": "must successfully create judicial role mapping for Employment Judge - Fee Paid appointment",
+  "_extends_": "F-010_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
   ],
@@ -16,15 +16,9 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][childContexts][S-074_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "roleName": ["hmcts-judiciary"],
+          "actorId": "${[scenarioContext][childContexts][S-107_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
-            "contractType": ["Salaried"]}
-        },
-        {
-          "actorId": "${[scenarioContext][childContexts][S-074_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "attributes": {
-            "jurisdiction": ["PRIVATELAW"]
+            "jurisdiction": ["EMPLOYMENT"]
           }
         }
       ]
@@ -39,56 +33,40 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
+          "roleName": "fee-paid-judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
+            "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PRIVATELAW"
+            "jurisdiction": "EMPLOYMENT",
+            "workTypes": "hearing_work,decision_making_work,routine_work,applications,amendments"
           },
-          "authorisations": "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-judiciary",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "JUDICIAL",
-          "readOnly": true,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "contractType": "Salaried"
-          }
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         },
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "judge",
+          "roleName": "hearing-viewer",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
-            "contractType": "Salaried",
+            "substantive": "N",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PRIVATELAW",
-            "region": "1",
-            "workTypes": "[[ANYTHING_PRESENT]]"
+            "jurisdiction": "EMPLOYMENT"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }

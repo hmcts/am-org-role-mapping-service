@@ -5,7 +5,6 @@
   "method": "DELETE",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments?process={process}&reference={reference}",
   "specs": [
-    "to delete role assignments just created above",
     "to delete existing role assignments corresponding to the test actorId"
   ],
   "users": {
