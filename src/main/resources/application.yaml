@@ -5,6 +5,8 @@ management:
   health:
     defaults:
       enabled: true
+    probes:
+      enabled: true
   endpoint:
     health:
       enabled: true
