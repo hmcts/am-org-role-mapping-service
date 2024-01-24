@@ -20,7 +20,7 @@ public class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegr
         List<String> organisationProfileIds = List.of("SOLICITOR_ORG", "DWP_GOV_ORG", "HMRC_GOV_ORG");
         String orgProfileIds = String.join(",", organisationProfileIds);
 
-        profileRefreshQueueRepository.insertOrganisationProfileIds(orgProfileIds, 1);
+        profileRefreshQueueRepository.upsertOrganisationProfileIds(orgProfileIds, 1);
 
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
         validateData(profileRefreshQueueEntities, 3, 1);
@@ -37,7 +37,7 @@ public class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegr
         List<String> organisationProfileIds = List.of("SOLICITOR_ORG");
         String orgProfileIds = String.join(",", organisationProfileIds);
 
-        profileRefreshQueueRepository.insertOrganisationProfileIds(orgProfileIds, 2);
+        profileRefreshQueueRepository.upsertOrganisationProfileIds(orgProfileIds, 2);
 
         List<ProfileRefreshQueueEntity> newProfileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
         validateData(newProfileRefreshQueueEntities, 1, 2);
