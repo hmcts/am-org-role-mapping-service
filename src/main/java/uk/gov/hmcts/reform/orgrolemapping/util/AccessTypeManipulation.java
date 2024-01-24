@@ -77,13 +77,13 @@ public class AccessTypeManipulation {
         return matched;
     }
 
-    public Boolean isAccessTypeSameAsOrganisationProfileAccessTypeUsingSets(List<OrganisationProfile> localAccessTypes,
+    public Boolean isAccessTypeSameAsOrganisationProfileAccessTypeUsingSets(List<OrganisationProfile> savedAccessTypes,
                                                                    List<OrganisationProfile> organisationProfiles) {
 
         boolean matched = true;
         //converting the List to a Set will have the effect of duplicating and reordering it
         List<OrganisationProfile> differences = new ArrayList<>(Sets.difference(Sets.newHashSet(organisationProfiles),
-                Sets.newHashSet(localAccessTypes)));
+                Sets.newHashSet(savedAccessTypes)));
         if (!differences.isEmpty()) {
             matched = false;
         }

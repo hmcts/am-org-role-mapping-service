@@ -80,6 +80,9 @@ class OrganisationProfileAccessTypesTest extends BaseTestIntegration {
         assertNotNull(organisationProfileIdsAccessTypedefinitionsModified);
         assertEquals(true, !organisationProfileIdsAccessTypedefinitionsModified.isEmpty());
 
+        String organisationProfileId = organisationProfileIdsAccessTypedefinitionsModified.get(0);
+
+        assertEquals("SOLICITOR_PROFILE", organisationProfileId);
     }
 
     @Test
@@ -118,6 +121,9 @@ class OrganisationProfileAccessTypesTest extends BaseTestIntegration {
         assertNotNull(organisationProfileIdsAccessTypedefinitionsModified);
         assertEquals(true, !organisationProfileIdsAccessTypedefinitionsModified.isEmpty());
 
+        String organisationProfileId = organisationProfileIdsAccessTypedefinitionsModified.get(0);
+
+        assertEquals("SOLICITOR_PROFILE", organisationProfileId);
     }
 
     @Test
@@ -149,6 +155,9 @@ class OrganisationProfileAccessTypesTest extends BaseTestIntegration {
 
         assertNotNull(organisationProfileIdsAccessTypedefinitionsModified);
         assertEquals(true, !organisationProfileIdsAccessTypedefinitionsModified.isEmpty());
+        String organisationProfileId = organisationProfileIdsAccessTypedefinitionsModified.get(0);
+
+        assertEquals("SOLICITOR_PROFILE", organisationProfileId);
     }
 
     @Test
