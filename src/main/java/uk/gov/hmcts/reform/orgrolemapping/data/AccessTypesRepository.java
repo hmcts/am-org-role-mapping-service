@@ -9,7 +9,7 @@ public interface AccessTypesRepository extends CrudRepository<AccessTypesEntity,
 
     @Query(value = "SELECT version AS version, "
             + "CAST(access_types AS TEXT) AS access_types "
-            + "FROM access_types FOR UPDATE;",
+            + "FROM access_types FOR UPDATE",
             nativeQuery = true)
     AccessTypesEntity getAccessTypesEntity();
 }
