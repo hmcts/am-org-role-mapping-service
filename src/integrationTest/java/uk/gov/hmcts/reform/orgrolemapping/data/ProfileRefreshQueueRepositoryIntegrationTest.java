@@ -28,7 +28,7 @@ public class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegr
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/insert_organisation_profiles.sql"
+        "classpath:sql/insert_organisation_profiles.sql"
     })
     public void shouldHandleDuplicateOrganisationProfileIds() {
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
