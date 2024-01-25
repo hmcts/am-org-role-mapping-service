@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,14 @@ import java.util.stream.Stream;
 class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
+    final ZonedDateTime judicialBookingBeginTime = ZonedDateTime.of(2024,1,1,1,1,1,0, ZoneId.of("Europe/London"));
+    final ZonedDateTime judicialBookingEndTime = ZonedDateTime.of(2024,1,2,1,1,1,0, ZoneId.of("Europe/London"));
+    final String judicialBookingRegionId = "1";
+    final String judicialBookingLocationId = "Scotland";
+    final ZonedDateTime judicialAccessProfileBeginTime = ZonedDateTime.of(2024,2,1,1,1,1,0, ZoneId.of("Europe/London"));
+    final ZonedDateTime judicialAccessProfileEndTime = ZonedDateTime.of(2024,2,2,1,1,1,0, ZoneId.of("Europe/London"));
+    final String judicialAccessProfileRegionId = "LDN";
+    final String judicialAccessProfilePrimaryLocationId = "London";
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
@@ -300,9 +310,12 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         judicialBookings.clear();
+
         if (addBooking) {
             JudicialBooking booking = JudicialBooking.builder()
-                    .userId(userId).locationId("Scotland").regionId("1")
+                    .userId(userId).locationId(judicialBookingLocationId).regionId(judicialBookingRegionId)
+                    .beginTime(judicialBookingBeginTime)
+                    .endTime(judicialBookingEndTime)
                     .build();
             judicialBookings.add(booking);
         }
@@ -313,9 +326,11 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         .appointmentType(appointmentType)
                         .userId(userId)
                         .roles(assignedRoles)
-                        .regionId("LDN")
-                        .primaryLocationId("London")
+                        .regionId(judicialAccessProfileRegionId)
+                        .primaryLocationId(judicialAccessProfilePrimaryLocationId)
                         .ticketCodes(List.of("ABA3"))
+                        .beginTime(judicialAccessProfileBeginTime)
+                        .endTime(judicialAccessProfileEndTime)
                         .authorisations(List.of(
                                 Authorisation.builder()
                                         .serviceCodes(List.of("ABA3"))
@@ -331,7 +346,8 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 buildExecuteKieSession(
                         List.of(FeatureFlag.builder().flagName("publiclaw_wa_1_0").status(true).build(),
                                 FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build(),
-                                FeatureFlag.builder().flagName("publiclaw_wa_1_1").status(true).build())
+                                FeatureFlag.builder().flagName("publiclaw_wa_1_1").status(true).build(),
+                                FeatureFlag.builder().flagName("publiclaw_wa_1_2").status(true).build())
                 );
 
         //assertions
@@ -359,27 +375,39 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 primaryLocation = r.getAttributes().get("primaryLocation").asText();
             }
 
-            if (!r.getRoleName().equals("hmcts-judiciary")) {
-                assertEquals(Classification.PUBLIC, r.getClassification());
-                assertEquals(GrantType.STANDARD, r.getGrantType());
-                assertEquals("ABA3", r.getAuthorisations().get(0));
-                assertEquals("London", primaryLocation);
-                assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
-                assertFalse(r.isReadOnly());
-
-                if (!r.getRoleName().equals("hearing-viewer")
-                        && !r.getRoleName().equals("hearing-manager")) {
-                    assertEquals("LDN", r.getAttributes().get("region").asText());
-                }
-            } else {
+            if (r.getRoleName().equals("hmcts-judiciary")) {
                 assertEquals(Classification.PRIVATE, r.getClassification());
                 assertEquals(GrantType.BASIC, r.getGrantType());
                 assertTrue(r.isReadOnly());
                 assertNull(r.getAttributes().get("jurisdiction"));
                 assertNull(primaryLocation);
+                assertEquals(judicialAccessProfileBeginTime, r.getBeginTime());
+                assertEquals(judicialAccessProfileEndTime.plusDays(1), r.getEndTime());
+            } else {
+                assertEquals(Classification.PUBLIC, r.getClassification());
+                assertEquals(GrantType.STANDARD, r.getGrantType());
+                assertEquals("ABA3", r.getAuthorisations().get(0));
+                assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
+                assertFalse(r.isReadOnly());
+
+                if (r.getRoleName().equals("judge") && appointmentType.equals("Fee Paid")) {
+                    assertEquals(judicialBookingBeginTime, r.getBeginTime());
+                    assertEquals(judicialBookingEndTime, r.getEndTime());
+                    assertEquals(judicialBookingRegionId, r.getAttributes().get("region").asText());
+                    assertEquals(judicialBookingLocationId, primaryLocation);
+                }
+                else {
+                    assertEquals(judicialAccessProfileBeginTime, r.getBeginTime());
+                    assertEquals(judicialAccessProfileEndTime.plusDays(1), r.getEndTime());
+                    assertEquals(judicialAccessProfilePrimaryLocationId, primaryLocation);
+                    if (!r.getRoleName().equals("hearing-viewer")
+                            && !r.getRoleName().equals("hearing-manager")) {
+                        assertEquals(judicialAccessProfileRegionId, r.getAttributes().get("region").asText());
+                    }
+                }
+
             }
         });
-
     }
 
 
@@ -395,8 +423,8 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         .appointmentType("SPTW")
                         .userId(userId)
                         .roles(List.of("District Judge"))
-                        .regionId("LDN")
-                        .primaryLocationId("London")
+                        .regionId(judicialAccessProfileRegionId)
+                        .primaryLocationId(judicialAccessProfilePrimaryLocationId)
                         .ticketCodes(List.of("ABA3"))
                         .authorisations(List.of(
                                 Authorisation.builder()
