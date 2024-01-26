@@ -36,15 +36,19 @@ import java.util.stream.Stream;
 @RunWith(MockitoJUnitRunner.class)
 class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
-    String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
-    final ZonedDateTime judicialBookingBeginTime = ZonedDateTime.of(2024,1,1,1,1,1,0, ZoneId.of("Europe/London"));
-    final ZonedDateTime judicialBookingEndTime = ZonedDateTime.of(2024,1,2,1,1,1,0, ZoneId.of("Europe/London"));
-    final String judicialBookingRegionId = "1";
-    final String judicialBookingLocationId = "Scotland";
-    final ZonedDateTime judicialAccessProfileBeginTime = ZonedDateTime.of(2024,2,1,1,1,1,0, ZoneId.of("Europe/London"));
-    final ZonedDateTime judicialAccessProfileEndTime = ZonedDateTime.of(2024,2,2,1,1,1,0, ZoneId.of("Europe/London"));
-    final String judicialAccessProfileRegionId = "LDN";
-    final String judicialAccessProfilePrimaryLocationId = "London";
+    private static final String USER_ID = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
+    private static final ZonedDateTime BOOKING_BEGIN_TIME = ZonedDateTime.of(
+            2024,1,1,1,1,1,0, ZoneId.of("Europe/London"));
+    private static final ZonedDateTime BOOKING_END_TIME = ZonedDateTime.of(
+            2024,1,2,1,1,1,0, ZoneId.of("Europe/London"));
+    private static final String BOOKING_REGION_ID = "1";
+    private static final String BOOKING_LOCATION_ID = "Scotland";
+    private static final ZonedDateTime ACCESS_PROFILE_BEGIN_TIME = ZonedDateTime.of(
+            2024,2,1,1,1,1,0, ZoneId.of("Europe/London"));
+    private static final ZonedDateTime ACCESS_PROFILE_END_TIME = ZonedDateTime.of(
+            2024,2,2,1,1,1,0, ZoneId.of("Europe/London"));
+    private static final String ACCESS_PROFILE_REGION_ID = "LDN";
+    private static final String ACCESS_PROFILE_PRIMARY_LOCATION_ID = "London";
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
@@ -313,9 +317,9 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
         if (addBooking) {
             JudicialBooking booking = JudicialBooking.builder()
-                    .userId(userId).locationId(judicialBookingLocationId).regionId(judicialBookingRegionId)
-                    .beginTime(judicialBookingBeginTime)
-                    .endTime(judicialBookingEndTime)
+                    .userId(USER_ID).locationId(BOOKING_LOCATION_ID).regionId(BOOKING_REGION_ID)
+                    .beginTime(BOOKING_BEGIN_TIME)
+                    .endTime(BOOKING_END_TIME)
                     .build();
             judicialBookings.add(booking);
         }
@@ -324,13 +328,13 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 JudicialAccessProfile.builder()
                         .appointment(appointment)
                         .appointmentType(appointmentType)
-                        .userId(userId)
+                        .userId(USER_ID)
                         .roles(assignedRoles)
-                        .regionId(judicialAccessProfileRegionId)
-                        .primaryLocationId(judicialAccessProfilePrimaryLocationId)
+                        .regionId(ACCESS_PROFILE_REGION_ID)
+                        .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
                         .ticketCodes(List.of("ABA3"))
-                        .beginTime(judicialAccessProfileBeginTime)
-                        .endTime(judicialAccessProfileEndTime)
+                        .beginTime(ACCESS_PROFILE_BEGIN_TIME)
+                        .endTime(ACCESS_PROFILE_END_TIME)
                         .authorisations(List.of(
                                 Authorisation.builder()
                                         .serviceCodes(List.of("ABA3"))
@@ -359,7 +363,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals(ActorIdType.IDAM, r.getActorIdType());
-            assertEquals(userId, r.getActorId());
+            assertEquals(USER_ID, r.getActorId());
             assertEquals(RoleType.ORGANISATION, r.getRoleType());
             assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
 
@@ -381,8 +385,8 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertTrue(r.isReadOnly());
                 assertNull(r.getAttributes().get("jurisdiction"));
                 assertNull(primaryLocation);
-                assertEquals(judicialAccessProfileBeginTime, r.getBeginTime());
-                assertEquals(judicialAccessProfileEndTime.plusDays(1), r.getEndTime());
+                assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
+                assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
             } else {
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
@@ -391,17 +395,17 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertFalse(r.isReadOnly());
 
                 if (r.getRoleName().equals("judge") && appointmentType.equals("Fee Paid")) {
-                    assertEquals(judicialBookingBeginTime, r.getBeginTime());
-                    assertEquals(judicialBookingEndTime, r.getEndTime());
-                    assertEquals(judicialBookingRegionId, r.getAttributes().get("region").asText());
-                    assertEquals(judicialBookingLocationId, primaryLocation);
+                    assertEquals(BOOKING_BEGIN_TIME, r.getBeginTime());
+                    assertEquals(BOOKING_END_TIME, r.getEndTime());
+                    assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
+                    assertEquals(BOOKING_LOCATION_ID, primaryLocation);
                 } else {
-                    assertEquals(judicialAccessProfileBeginTime, r.getBeginTime());
-                    assertEquals(judicialAccessProfileEndTime.plusDays(1), r.getEndTime());
-                    assertEquals(judicialAccessProfilePrimaryLocationId, primaryLocation);
+                    assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
+                    assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
+                    assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
                     if (!r.getRoleName().equals("hearing-viewer")
                             && !r.getRoleName().equals("hearing-manager")) {
-                        assertEquals(judicialAccessProfileRegionId, r.getAttributes().get("region").asText());
+                        assertEquals(ACCESS_PROFILE_REGION_ID, r.getAttributes().get("region").asText());
                     }
                 }
 
@@ -420,10 +424,10 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 JudicialAccessProfile.builder()
                         .appointment("District Judge (MC)")
                         .appointmentType("SPTW")
-                        .userId(userId)
+                        .userId(USER_ID)
                         .roles(List.of("District Judge"))
-                        .regionId(judicialAccessProfileRegionId)
-                        .primaryLocationId(judicialAccessProfilePrimaryLocationId)
+                        .regionId(ACCESS_PROFILE_REGION_ID)
+                        .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
                         .ticketCodes(List.of("ABA3"))
                         .authorisations(List.of(
                                 Authorisation.builder()

@@ -54,6 +54,8 @@ end;
 
 /*
  * PUBLICLAW Fee Paid "judge" Org role mapping.
+ * Made obsolete in DTSAM-96 by PUBLICLAW_WA_1_2.
+ * To be removed in DTSAM-99.
  */
 rule "publiclaw_fee_paid_judge_org_role"
 when
