@@ -395,8 +395,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                     assertEquals(judicialBookingEndTime, r.getEndTime());
                     assertEquals(judicialBookingRegionId, r.getAttributes().get("region").asText());
                     assertEquals(judicialBookingLocationId, primaryLocation);
-                }
-                else {
+                } else {
                     assertEquals(judicialAccessProfileBeginTime, r.getBeginTime());
                     assertEquals(judicialAccessProfileEndTime.plusDays(1), r.getEndTime());
                     assertEquals(judicialAccessProfilePrimaryLocationId, primaryLocation);
