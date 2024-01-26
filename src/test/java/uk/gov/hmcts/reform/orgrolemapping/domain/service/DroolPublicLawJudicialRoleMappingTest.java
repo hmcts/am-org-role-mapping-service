@@ -374,43 +374,47 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
             }
             assertEquals(expectedWorkTypes, actualWorkTypes);
 
-            String primaryLocation = null;
-            if (r.getAttributes().get("primaryLocation") != null) {
-                primaryLocation = r.getAttributes().get("primaryLocation").asText();
-            }
+            assertRoleSpecificAtrributes(r, appointmentType);
+        });
+    }
 
-            if (r.getRoleName().equals("hmcts-judiciary")) {
-                assertEquals(Classification.PRIVATE, r.getClassification());
-                assertEquals(GrantType.BASIC, r.getGrantType());
-                assertTrue(r.isReadOnly());
-                assertNull(r.getAttributes().get("jurisdiction"));
-                assertNull(primaryLocation);
+    private void assertRoleSpecificAtrributes(RoleAssignment r, String appointmentType) {
+        String primaryLocation = null;
+        if (r.getAttributes().get("primaryLocation") != null) {
+            primaryLocation = r.getAttributes().get("primaryLocation").asText();
+        }
+
+        if (r.getRoleName().equals("hmcts-judiciary")) {
+            assertEquals(Classification.PRIVATE, r.getClassification());
+            assertEquals(GrantType.BASIC, r.getGrantType());
+            assertTrue(r.isReadOnly());
+            assertNull(r.getAttributes().get("jurisdiction"));
+            assertNull(primaryLocation);
+            assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
+            assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
+        } else {
+            assertEquals(Classification.PUBLIC, r.getClassification());
+            assertEquals(GrantType.STANDARD, r.getGrantType());
+            assertEquals("ABA3", r.getAuthorisations().get(0));
+            assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
+            assertFalse(r.isReadOnly());
+
+            if (r.getRoleName().equals("judge") && appointmentType.equals("Fee Paid")) {
+                assertEquals(BOOKING_BEGIN_TIME, r.getBeginTime());
+                assertEquals(BOOKING_END_TIME, r.getEndTime());
+                assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
+                assertEquals(BOOKING_LOCATION_ID, primaryLocation);
+            } else {
                 assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
                 assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
-            } else {
-                assertEquals(Classification.PUBLIC, r.getClassification());
-                assertEquals(GrantType.STANDARD, r.getGrantType());
-                assertEquals("ABA3", r.getAuthorisations().get(0));
-                assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
-                assertFalse(r.isReadOnly());
-
-                if (r.getRoleName().equals("judge") && appointmentType.equals("Fee Paid")) {
-                    assertEquals(BOOKING_BEGIN_TIME, r.getBeginTime());
-                    assertEquals(BOOKING_END_TIME, r.getEndTime());
-                    assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
-                    assertEquals(BOOKING_LOCATION_ID, primaryLocation);
-                } else {
-                    assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
-                    assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
-                    assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
-                    if (!r.getRoleName().equals("hearing-viewer")
-                            && !r.getRoleName().equals("hearing-manager")) {
-                        assertEquals(ACCESS_PROFILE_REGION_ID, r.getAttributes().get("region").asText());
-                    }
+                assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
+                if (!r.getRoleName().equals("hearing-viewer")
+                        && !r.getRoleName().equals("hearing-manager")) {
+                    assertEquals(ACCESS_PROFILE_REGION_ID, r.getAttributes().get("region").asText());
                 }
-
             }
-        });
+
+        }
     }
 
 
