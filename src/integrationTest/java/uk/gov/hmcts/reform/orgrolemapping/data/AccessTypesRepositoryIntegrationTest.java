@@ -15,7 +15,7 @@ public class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
     public void shouldGetAccessTypesEntity() {
-        AccessTypesEntity accessTypes = accessTypesRepository.findAll().stream().findFirst().orElse(null);
+        AccessTypesEntity accessTypes = accessTypesRepository.getAccessTypesEntity();
 
         assertNotNull(accessTypes);
         assertNotNull(accessTypes.getVersion());

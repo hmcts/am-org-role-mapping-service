@@ -20,7 +20,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SequenceGenerator(name = "version_seq", sequenceName = "access_types_version_seq", allocationSize = 1)
+@SequenceGenerator(name = "version_seq", sequenceName = "version_seq", allocationSize = 1)
 @Entity(name = "access_types")
 public class AccessTypesEntity implements Serializable {
 
@@ -29,7 +29,7 @@ public class AccessTypesEntity implements Serializable {
 
     @Id
     @Column(name = "version")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "access_types_version_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "version_seq")
     private Long version;
 
     @Column(name = "access_types", nullable = false)

@@ -11,8 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganisationProfile {
+public class OrganisationProfileJurisdiction {
 
-    private String organisationProfileId;
-    private List<OrganisationProfileJurisdiction> jurisdictions;
+    private String jurisdictionName;
+    private List<OrganisationProfileAccessType> accessTypes;
 }
