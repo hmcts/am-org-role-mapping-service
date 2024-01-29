@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AccessTypesBuilderTest {
 
-    static Stream<RestructuredAccessTypes> accessTypeCombinations() {
+    static Stream<RestructuredAccessTypes> modifiedAccessTypeCombinations() {
         return Stream.of(
                 // creating 7 different combination (each time only 1 field is modified)
                 buildRestructuredAccessTypes(false, true, "caseTypeId1", "roleName1",
@@ -79,7 +79,7 @@ class AccessTypesBuilderTest {
     }
 
     @ParameterizedTest
-    @MethodSource("accessTypeCombinations")
+    @MethodSource("modifiedAccessTypeCombinations")
     void identifyUpdatedOrgProfileIdsWhenOneFieldIsModified(RestructuredAccessTypes modifiedAccessTypes) {
         RestructuredAccessTypes restructuredAccessTypes =
                 buildRestructuredAccessTypes(true, true, "caseTypeId1", "roleName1",
@@ -93,8 +93,7 @@ class AccessTypesBuilderTest {
 
     @Test
     void buildAccessTypeResponseTest() {
-        AccessTypesResponse accessTypesResponse =
-                AccessTypesBuilder.buildAccessTypeResponse("accessTypesSample.json");
+        AccessTypesResponse accessTypesResponse = AccessTypesBuilder.buildAccessTypeResponse("accessTypesSample.json");
 
         assertNotNull(accessTypesResponse);
         accessTypesResponse.getJurisdictions().forEach(jurisdiction -> {
@@ -106,7 +105,7 @@ class AccessTypesBuilderTest {
     }
 
     @Test
-    void buildAccessTypeResponseExceptionTest() {
+    void buildAccessTypeResponseThrowsExceptionTest() {
         assertThrows(BadRequestException.class, () -> AccessTypesBuilder.buildAccessTypeResponse("invalid.json"));
     }
 

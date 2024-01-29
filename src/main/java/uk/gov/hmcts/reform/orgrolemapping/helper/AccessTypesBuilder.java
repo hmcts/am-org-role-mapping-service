@@ -93,10 +93,9 @@ public class AccessTypesBuilder {
         return modifiedOrgProfileIds;
     }
 
-    private static List<OrganisationProfileAccessType> getAccessTypes(
-            RestructuredAccessTypes restructuredCcdAccessTypes,
-            String orgProfile) {
-        return restructuredCcdAccessTypes.getOrganisationProfiles().stream()
+    private static List<OrganisationProfileAccessType> getAccessTypes(RestructuredAccessTypes restructuredAccessTypes,
+                                                                      String orgProfile) {
+        return restructuredAccessTypes.getOrganisationProfiles().stream()
                 .filter(organisationProfile -> organisationProfile.getOrganisationProfileId().equals(orgProfile))
                 .flatMap(organisationProfile -> organisationProfile.getJurisdictions().stream())
                 .flatMap(organisationProfileJurisdiction -> organisationProfileJurisdiction.getAccessTypes().stream())
