@@ -133,6 +133,8 @@ feign:
         v2FilterAuthorisationsByAppointmentId:  ${JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID:false}
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
+      prdClient:
+        url: ${PROFESSIONAL_REF_APP_URL:http://localhost:8090}
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
