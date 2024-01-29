@@ -5,12 +5,17 @@ management:
   health:
     defaults:
       enabled: true
+    probes:
+      enabled: true
   endpoint:
     health:
       enabled: true
       cache:
         time-to-live: 5s
       show-details: "always"
+      group:
+        readiness:
+          include: "db"
   security:
     enabled: true
   endpoints:
