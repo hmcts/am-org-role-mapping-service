@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -37,16 +38,13 @@ import java.util.stream.Stream;
 class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     private static final String USER_ID = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
-    private static final ZonedDateTime BOOKING_BEGIN_TIME = ZonedDateTime.of(
-            2024,1,1,1,1,1,0, ZoneId.of("Europe/London"));
-    private static final ZonedDateTime BOOKING_END_TIME = ZonedDateTime.of(
-            2024,1,2,1,1,1,0, ZoneId.of("Europe/London"));
+    private static final ZonedDateTime BOOKING_BEGIN_TIME = ZonedDateTime.now(ZoneOffset.UTC);
+    private static final ZonedDateTime BOOKING_END_TIME = ZonedDateTime.now(ZoneOffset.UTC).plusDays(1);
     private static final String BOOKING_REGION_ID = "1";
     private static final String BOOKING_LOCATION_ID = "Scotland";
-    private static final ZonedDateTime ACCESS_PROFILE_BEGIN_TIME = ZonedDateTime.of(
-            2024,2,1,1,1,1,0, ZoneId.of("Europe/London"));
-    private static final ZonedDateTime ACCESS_PROFILE_END_TIME = ZonedDateTime.of(
-            2024,2,2,1,1,1,0, ZoneId.of("Europe/London"));
+    private static final ZonedDateTime ACCESS_PROFILE_BEGIN_TIME = ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1);
+    private static final ZonedDateTime ACCESS_PROFILE_END_TIME = ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1)
+        .plusDays(1);
     private static final String ACCESS_PROFILE_REGION_ID = "LDN";
     private static final String ACCESS_PROFILE_PRIMARY_LOCATION_ID = "London";
 
