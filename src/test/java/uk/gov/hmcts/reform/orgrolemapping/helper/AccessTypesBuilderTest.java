@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
@@ -18,26 +19,118 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class AccessTypesBuilderTest {
 
-    static Stream<RestructuredAccessTypes> modifiedAccessTypeCombinations() {
+    private static final String CHANGED = "CHANGED";
+    private static final Boolean CHANGED_BOOL = Boolean.FALSE;
+
+    private static final OrganisationProfile SOLICITOR_ORG_PROFILE =
+            buildOrganisationProfile("SOLICITOR_ORG", "CIVIL", "accessTypeId1", true, true,
+                    "caseTypeId1", "roleName1", "groupRole1", "caseGroupIdTemplate1", true);
+
+    private static final OrganisationProfile DWP_ORG_PROFILE =
+            buildOrganisationProfile("DWP_GOV_ORG", "SSCS", "accessTypeId1", true, true,
+                    "caseTypeId1", "roleName1", "groupRole1", "caseGroupIdTemplate1", true);
+
+    private static final OrganisationProfile HMRC_ORG_PROFILE =
+            buildOrganisationProfile("HMRC_GOV_ORG", "IA", "accessTypeId1", true, true,
+                    "caseTypeId1", "roleName1", "groupRole1", "caseGroupIdTemplate1", true);
+
+    private static final OrganisationProfile MODIFIED_SOLICITOR_ORG_PROFILE =
+            buildOrganisationProfile("SOLICITOR_ORG", "CIVIL", CHANGED, true, true,
+                    "caseTypeId1", "roleName1", "groupRole1", "caseGroupIdTemplate1", true);
+
+    private static final OrganisationProfile MODIFIED_DWP_ORG_PROFILE =
+            buildOrganisationProfile("DWP_GOV_ORG", "SSCS", CHANGED, true, true,
+                    "caseTypeId1", "roleName1", "groupRole1", "caseGroupIdTemplate1", true);
+
+    static Stream<Arguments> modifiedAccessTypeCombinations() {
         return Stream.of(
-                // creating 7 different combination (each time only 1 field is modified)
-                buildRestructuredAccessTypes(false, true, "caseTypeId1", "roleName1",
-                        "groupRole1", "caseGroupIdTemplate1", true),
-                buildRestructuredAccessTypes(true, false, "caseTypeId1", "roleName1",
-                        "groupRole1", "caseGroupIdTemplate1", true),
-                buildRestructuredAccessTypes(true, true, "caseTypeId2", "roleName1",
-                        "groupRole1", "caseGroupIdTemplate1", true),
-                buildRestructuredAccessTypes(true, true, "caseTypeId1", "roleName2",
-                        "groupRole1", "caseGroupIdTemplate1", true),
-                buildRestructuredAccessTypes(true, true, "caseTypeId1", "roleName1",
-                        "groupRole2", "caseGroupIdTemplate1", true),
-                buildRestructuredAccessTypes(true, true, "caseTypeId1", "roleName1",
-                        "groupRole1", "caseGroupIdTemplate2", true),
-                buildRestructuredAccessTypes(true, true, "caseTypeId1", "roleName1",
-                        "groupRole1", "caseGroupIdTemplate1", false)
+                // no changed so no org profiles should be identified
+                Arguments.of(buildRestructuredAccessTypes(
+                                List.of(SOLICITOR_ORG_PROFILE, DWP_ORG_PROFILE, HMRC_ORG_PROFILE)
+                        ), false, false, false
+                ),
+                // only updating access types for SOLICITOR_ORG, should return only SOLICITOR_ORG
+                // each variation has value CHANGE or CHANGE_BOOL to make it easier to spot the diff
+                Arguments.of(buildRestructuredAccessTypes(
+                                List.of(
+                                        buildOrganisationProfile("SOLICITOR_ORG", "CIVIL", CHANGED, true, true,
+                                                "caseTypeId1", "roleName1", "groupRole1", "caseGroupIdTemplate1",
+                                                true),
+                                        DWP_ORG_PROFILE, HMRC_ORG_PROFILE
+                                )
+                        ), true, false, false
+                ),
+                Arguments.of(buildRestructuredAccessTypes(
+                                List.of(
+                                        buildOrganisationProfile("SOLICITOR_ORG", "CIVIL", "accessTypeId1",
+                                                CHANGED_BOOL, true, "caseTypeId1", "roleName1", "groupRole1",
+                                                "caseGroupIdTemplate1", true),
+                                        DWP_ORG_PROFILE, HMRC_ORG_PROFILE
+                                )
+                        ), true, false, false
+                ),
+                Arguments.of(buildRestructuredAccessTypes(
+                                List.of(
+                                        buildOrganisationProfile("SOLICITOR_ORG", "CIVIL", "accessTypeId1", true,
+                                                CHANGED_BOOL, "caseTypeId1", "roleName1", "groupRole1",
+                                                "caseGroupIdTemplate1", true),
+                                        DWP_ORG_PROFILE, HMRC_ORG_PROFILE
+                                )
+                        ), true, false, false
+                ),
+                // modified both SOLICITOR_ORG & DWP_GOV_ORG
+                Arguments.of(buildRestructuredAccessTypes(
+                                List.of(
+                                        MODIFIED_SOLICITOR_ORG_PROFILE,
+                                        buildOrganisationProfile("DWP_GOV_ORG", "SSCS", "accessTypeId1", true, true,
+                                                CHANGED, "roleName1", "groupRole1", "caseGroupIdTemplate1", true),
+                                        HMRC_ORG_PROFILE
+                                )
+                        ), true, true, false
+                ),
+                Arguments.of(buildRestructuredAccessTypes(
+                                List.of(
+                                        MODIFIED_SOLICITOR_ORG_PROFILE,
+                                        buildOrganisationProfile("DWP_GOV_ORG", "SSCS", "accessTypeId1", true, true,
+                                                "caseTypeId1", CHANGED, "groupRole1", "caseGroupIdTemplate1", true),
+                                        HMRC_ORG_PROFILE
+                                )
+                        ), true, true, false
+                ),
+                Arguments.of(buildRestructuredAccessTypes(
+                                List.of(
+                                        MODIFIED_SOLICITOR_ORG_PROFILE,
+                                        buildOrganisationProfile("DWP_GOV_ORG", "SSCS", "accessTypeId1", true, true,
+                                                "caseTypeId1", "roleName1", CHANGED, "caseGroupIdTemplate1", true),
+                                        HMRC_ORG_PROFILE
+                                )
+                        ), true, true, false
+                ),
+                // modified SOLICITOR_ORG, DWP_GOV_ORG & HMRC_ORG
+                Arguments.of(buildRestructuredAccessTypes(
+                                List.of(
+                                        MODIFIED_SOLICITOR_ORG_PROFILE,
+                                        MODIFIED_DWP_ORG_PROFILE,
+                                        buildOrganisationProfile("HMRC_GOV_ORG", "IA", "accessTypeId1", true, true,
+                                                "caseTypeId1", "roleName1", "groupRole1", CHANGED, true)
+                                )
+                        ), true, true, true
+                ),
+                Arguments.of(buildRestructuredAccessTypes(
+                                List.of(
+                                        MODIFIED_SOLICITOR_ORG_PROFILE,
+                                        MODIFIED_DWP_ORG_PROFILE,
+                                        MODIFIED_DWP_ORG_PROFILE,
+                                        buildOrganisationProfile("HMRC_GOV_ORG", "IA", "accessTypeId1", true, true,
+                                                "caseTypeId1", "roleName1", "groupRole1", "caseGroupIdTemplate1",
+                                                CHANGED_BOOL)
+                                )
+                        ), true, true, true
+                )
         );
     }
 
@@ -59,7 +152,7 @@ class AccessTypesBuilderTest {
     }
 
     @Test
-    void identifyUpdatedOrgProfileIdsWhenEmptyInPrm() {
+    void identifyUpdatedOrgProfileIdsWhenEmptyInPrmTest() {
         AccessTypesResponse accessTypesResponse = AccessTypesBuilder.buildAccessTypeResponse("accessTypesSample.json");
         RestructuredAccessTypes restructuredAccessTypes =
                 AccessTypesBuilder.restructureCcdAccessTypes(accessTypesResponse);
@@ -76,19 +169,6 @@ class AccessTypesBuilderTest {
         for (String newOrgProfile : newOrgProfiles) {
             assertTrue(expectedOrgProfiles.contains(newOrgProfile));
         }
-    }
-
-    @ParameterizedTest
-    @MethodSource("modifiedAccessTypeCombinations")
-    void identifyUpdatedOrgProfileIdsWhenOneFieldIsModified(RestructuredAccessTypes modifiedAccessTypes) {
-        RestructuredAccessTypes restructuredAccessTypes =
-                buildRestructuredAccessTypes(true, true, "caseTypeId1", "roleName1",
-                        "groupRole1", "caseGroupIdTemplate1", true);
-
-        List<String> modifiedOrgProfiles =
-                AccessTypesBuilder.identifyUpdatedOrgProfileIds(restructuredAccessTypes, modifiedAccessTypes);
-
-        assertTrue(modifiedOrgProfiles.contains("SOLICITOR_ORG"));
     }
 
     @Test
@@ -109,36 +189,110 @@ class AccessTypesBuilderTest {
         assertThrows(BadRequestException.class, () -> AccessTypesBuilder.buildAccessTypeResponse("invalid.json"));
     }
 
-    private static RestructuredAccessTypes buildRestructuredAccessTypes(boolean accessMandatory,
-                                                                        boolean accessDefault,
-                                                                        String caseTypeId,
-                                                                        String orgRoleName,
-                                                                        String groupRoleName,
-                                                                        String caseGroupTemplate,
-                                                                        boolean groupAccessEnabled) {
-        return RestructuredAccessTypes.builder()
-                .organisationProfiles(List.of(
-                        OrganisationProfile.builder()
-                                .organisationProfileId("SOLICITOR_ORG")
-                                .jurisdictions(List.of(
-                                        OrganisationProfileJurisdiction.builder()
-                                                .jurisdictionName("CIVIL")
-                                                .accessTypes(List.of(
-                                                        OrganisationProfileAccessType.builder()
-                                                                .accessTypeId("accessTypeId1")
-                                                                .accessMandatory(accessMandatory)
-                                                                .accessDefault(accessDefault)
-                                                                .roles(List.of(
-                                                                        AccessTypeRole.builder()
-                                                                                .caseTypeId(caseTypeId)
-                                                                                .organisationalRoleName(orgRoleName)
-                                                                                .groupRoleName(groupRoleName)
-                                                                                .caseGroupIdTemplate(caseGroupTemplate)
-                                                                                .groupAccessEnabled(groupAccessEnabled)
-                                                                                .build()
-                                                                )).build()
+    @ParameterizedTest
+    @MethodSource("modifiedAccessTypeCombinations")
+    void identifyUpdatedOrgProfileIdsWhenOneFieldIsModifiedTest(RestructuredAccessTypes modifiedAccessTypes,
+                                                                boolean updatedSolicitorOrg,
+                                                                boolean updatedDwpOrg,
+                                                                boolean updatedHmrcOrg) {
+        RestructuredAccessTypes restructuredAccessTypes = buildRestructuredAccessTypes(List.of(
+                SOLICITOR_ORG_PROFILE, DWP_ORG_PROFILE, HMRC_ORG_PROFILE
+        ));
+
+        List<String> modifiedOrgProfiles =
+                AccessTypesBuilder.identifyUpdatedOrgProfileIds(restructuredAccessTypes, modifiedAccessTypes);
+
+        if (updatedSolicitorOrg) {
+            assertTrue(modifiedOrgProfiles.contains("SOLICITOR_ORG"));
+        } else {
+            assertFalse(modifiedOrgProfiles.contains("SOLICITOR_ORG"));
+        }
+
+        if (updatedDwpOrg) {
+            assertTrue(modifiedOrgProfiles.contains("DWP_GOV_ORG"));
+        } else {
+            assertFalse(modifiedOrgProfiles.contains("DWP_GOV_ORG"));
+        }
+
+        if (updatedHmrcOrg) {
+            assertTrue(modifiedOrgProfiles.contains("HMRC_GOV_ORG"));
+        } else {
+            assertFalse(modifiedOrgProfiles.contains("HMRC_GOV_ORG"));
+        }
+    }
+
+    private static OrganisationProfile buildOrganisationProfile(String organisationProfileId,
+                                                                String jurisdictionName,
+                                                                String accessTypeId,
+                                                                boolean accessMandatory,
+                                                                boolean accessDefault,
+                                                                String caseTypeId,
+                                                                String orgRoleName,
+                                                                String groupRoleName,
+                                                                String caseGroupTemplate,
+                                                                boolean groupAccessEnabled) {
+        return OrganisationProfile.builder()
+                .organisationProfileId(organisationProfileId)
+                .jurisdictions(List.of(
+                        OrganisationProfileJurisdiction.builder()
+                                .jurisdictionName(jurisdictionName)
+                                .accessTypes(List.of(
+                                        OrganisationProfileAccessType.builder()
+                                                .accessTypeId(accessTypeId)
+                                                .accessMandatory(accessMandatory)
+                                                .accessDefault(accessDefault)
+                                                .roles(List.of(
+                                                        AccessTypeRole.builder()
+                                                                .caseTypeId(caseTypeId)
+                                                                .organisationalRoleName(orgRoleName)
+                                                                .groupRoleName(groupRoleName)
+                                                                .caseGroupIdTemplate(caseGroupTemplate)
+                                                                .groupAccessEnabled(groupAccessEnabled)
+                                                                .build()
                                                 )).build()
                                 )).build()
+                )).build();
+    }
+
+    private static OrganisationProfile buildOrganisationProfile(String organisationProfileId,
+                                                                String jurisdictionName,
+                                                                List<OrganisationProfileAccessType> accessTypes) {
+        return OrganisationProfile.builder()
+                .organisationProfileId(organisationProfileId)
+                .jurisdictions(List.of(
+                        OrganisationProfileJurisdiction.builder()
+                                .jurisdictionName(jurisdictionName)
+                                .accessTypes(accessTypes)
+                                .build()
+                )).build();
+    }
+
+    private static RestructuredAccessTypes buildRestructuredAccessTypes(List<OrganisationProfile> orgProfiles) {
+        return RestructuredAccessTypes.builder()
+                .organisationProfiles(orgProfiles)
+                .build();
+    }
+
+    private static OrganisationProfileAccessType buildOrganisationProfileAccessType(String accessTypeId,
+                                                                                    boolean accessMandatory,
+                                                                                    boolean accessDefault,
+                                                                                    String caseTypeId,
+                                                                                    String orgRoleName,
+                                                                                    String groupRoleName,
+                                                                                    String caseGroupTemplate,
+                                                                                    boolean groupAccessEnabled) {
+        return OrganisationProfileAccessType.builder()
+                .accessTypeId(accessTypeId)
+                .accessMandatory(accessMandatory)
+                .accessDefault(accessDefault)
+                .roles(List.of(
+                        AccessTypeRole.builder()
+                                .caseTypeId(caseTypeId)
+                                .organisationalRoleName(orgRoleName)
+                                .groupRoleName(groupRoleName)
+                                .caseGroupIdTemplate(caseGroupTemplate)
+                                .groupAccessEnabled(groupAccessEnabled)
+                                .build()
                 )).build();
     }
 }
