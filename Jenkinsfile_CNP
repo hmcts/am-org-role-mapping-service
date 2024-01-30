@@ -9,7 +9,7 @@ properties(
   ]
 )
 
-@Library("Infrastructure")
+@Library("Infrastructure@DTSPO-16606-2")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 
