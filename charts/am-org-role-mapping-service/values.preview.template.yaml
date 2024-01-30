@@ -47,7 +47,7 @@ java:
     JRD_TOPIC_NAME: "{{ .Release.Name}}-asb-jrd-topic"
     AMQP_CRD_SHARED_ACCESS_KEY_VALUE: "$(SB_ACCESS_KEY)"
     AMQP_JRD_SHARED_ACCESS_KEY_VALUE: "$(SB_ACCESS_KEY)"
-    ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql"
+    ORG_ROLE_MAPPING_DB_HOST: "{{ .Release.Name }}-postgresql.postgres.database.azure.com"
     ORG_ROLE_MAPPING_DB_NAME: org_role_mapping
     ORG_ROLE_MAPPING_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
     ORG_ROLE_MAPPING_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
@@ -88,7 +88,7 @@ am-role-assignment-service:
           - name: role-assignment-service-LD-SDK-KEY
             alias: LD_SDK_KEY
     environment:
-      ROLE_ASSIGNMENT_DB_HOST: "{{ .Release.Name }}-postgresql"
+      ROLE_ASSIGNMENT_DB_HOST: "{{ .Release.Name }}-postgresql.postgres.database.azure.com"
       ROLE_ASSIGNMENT_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
       ROLE_ASSIGNMENT_DB_OPTIONS: "?stringtype=unspecified"
       ROLE_ASSIGNMENT_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
@@ -124,7 +124,7 @@ am-judicial-booking-service:
             alias: LD_SDK_KEY
 
     environment:
-      JUDICIAL_BOOKING_SERVICE_POSTGRES_HOST: "{{ .Release.Name }}-postgresql"
+      JUDICIAL_BOOKING_SERVICE_POSTGRES_HOST: "{{ .Release.Name }}-postgresql.postgres.database.azure.com"
       JUDICIAL_BOOKING_SERVICE_POSTGRES_USER: "{{ .Values.postgresql.auth.username}}"
       JUDICIAL_BOOKING_SERVICE_POSTGRES_PASS: "{{ .Values.postgresql.auth.password}}"
       JUDICIAL_BOOKING_SERVICE_DB_OPTIONS: "?stringtype=unspecified"
