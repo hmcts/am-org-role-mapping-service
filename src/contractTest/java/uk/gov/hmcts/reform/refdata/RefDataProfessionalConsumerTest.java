@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.refdata;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.annotations.PactFolder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -35,6 +35,9 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 @TestPropertySource(properties = {"feign.client.config.prdClient.url=http://localhost:8090"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataProfessionalConsumerTest {
+
+    private static final String PRD_GET_REFRESH_USERS_URL = "/refdata/internal/v1/organisations/users";
+    private static final String USER_IDENTIFIER = "b86aff5a-f12c-324d-849b-15aa4d86d6a7";
 
     @Autowired
     PRDFeignClient prdFeignClient;
@@ -50,12 +53,12 @@ public class RefDataProfessionalConsumerTest {
     }
 
     @Pact(provider = "referenceData_professionalInternalUsers", consumer = "accessMgmt_orgRoleMapping")
-    public RequestResponsePact getRefreshUserPact(PactDslWithProvider builder) {
+    public RequestResponsePact getRefreshUserByUserIdentifier(PactDslWithProvider builder) {
         return builder
                 .given("A user identifier for a PRD internal user request")
                 .uponReceiving("A request for a professional user")
-                .path("/refdata/internal/v1/organisations/users")
-                .query("userId=b86aff5a-f12c-324d-849b-15aa4d86d6a7")
+                .path(PRD_GET_REFRESH_USERS_URL)
+                .query("userId=" + USER_IDENTIFIER)
                 .method("GET")
                 .willRespondWith()
                 .status(200)
@@ -64,12 +67,12 @@ public class RefDataProfessionalConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getRefreshUserPact")
+    @PactTestFor(pactMethod = "getRefreshUserByUserIdentifier")
     public void verifyGetRefreshUser() {
         ResponseEntity<Object> response = prdFeignClient
-                .getRefreshUsers(null, "b86aff5a-f12c-324d-849b-15aa4d86d6a7", null, null);
+                .getRefreshUsers(null, USER_IDENTIFIER, null, null);
 
-        Assertions.assertNotNull(response);
+        assertNotNull(response);
     }
 
     private DslPart buildRefreshUserResponsePactDsl() {
