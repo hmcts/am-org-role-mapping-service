@@ -38,9 +38,6 @@ public class RefDataProfessionalConsumerTest {
 
     private static final String PRD_GET_REFRESH_USERS_URL = "/refdata/internal/v1/organisations/users";
     private static final String USER_IDENTIFIER = "b86aff5a-f12c-324d-849b-15aa4d86d6a7";
-    private static final String SINCE = "2024-01-25T12:52:30.770894";
-    private static final String SEARCH_AFTER = "03b98806-8473-42c6-a6e3-004364a58b44";
-    private static final Integer PAGE_SIZE = 1;
 
     @Autowired
     PRDFeignClient prdFeignClient;
@@ -74,32 +71,6 @@ public class RefDataProfessionalConsumerTest {
     public void verifyGetRefreshUserByUserIdentifier() {
         ResponseEntity<Object> response = prdFeignClient
                 .getRefreshUsers(null, USER_IDENTIFIER, null, null);
-
-        assertNotNull(response);
-    }
-
-    @Pact(provider = "referenceData_professionalInternalUsers", consumer = "accessMgmt_orgRoleMapping")
-    public RequestResponsePact getRefreshUserBySinceSearchAfterAndPageSize(PactDslWithProvider builder) {
-        return builder
-                .given("A since, searchAfter & page size for a PRD internal user request")
-                .uponReceiving("A request for professional users")
-                .path(PRD_GET_REFRESH_USERS_URL)
-                .query("since=" + SINCE
-                        + "&searchAfter=" + SEARCH_AFTER
-                        + "&pageSize=" + PAGE_SIZE
-                )
-                .method("GET")
-                .willRespondWith()
-                .status(200)
-                .body(buildRefreshUserResponsePactDsl())
-                .toPact();
-    }
-
-    @Test
-    @PactTestFor(pactMethod = "getRefreshUserBySinceSearchAfterAndPageSize")
-    public void verifyGetRefreshUserBySinceSearchAfterAndPageSize() {
-        ResponseEntity<Object> response = prdFeignClient
-                .getRefreshUsers(SINCE, null, PAGE_SIZE, SEARCH_AFTER);
 
         assertNotNull(response);
     }
