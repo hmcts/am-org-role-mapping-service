@@ -47,9 +47,9 @@ public class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegr
                                 int expectedSize,
                                 int expectedAccessTypesMinVersion) {
         assertEquals(expectedSize, profileRefreshQueueEntities.size());
-        profileRefreshQueueEntities.forEach(el -> {
-            assertNotNull(el.getOrganisationProfileId());
-            assertEquals(expectedAccessTypesMinVersion, el.getAccessTypesMinVersion());
+        profileRefreshQueueEntities.forEach(profileRefreshQueueEntity -> {
+            assertNotNull(profileRefreshQueueEntity.getOrganisationProfileId());
+            assertEquals(expectedAccessTypesMinVersion, profileRefreshQueueEntity.getAccessTypesMinVersion());
         });
     }
 }
