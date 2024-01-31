@@ -75,11 +75,9 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
             assertFalse(r.isReadOnly());
             assertEquals("2", primaryLocation);
         }
-
         //region assertions
         if (r.getRoleName().equals("hmcts-judiciary")
-                || List.of("leadership-judge", "judge", "case-allocator", "task-supervisor").contains(r.getRoleName())
-                && office.contains("President of Tribunal")) {
+                || office.contains("President of Tribunal")) {
             assertNull(r.getAttributes().get("region"));
         } else {
             assertEquals(regionId, r.getAttributes().get("region").asText());
@@ -125,20 +123,21 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true",
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true, true",
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true, false",
         // ^ judge RA will be created if a booking created
-        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false",
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false, false",
         // ^ judge RA will not be created as there is no booking
-        "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false",
-        "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false",
-        "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false",
-        "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
-        "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
-        "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false",
-        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false"
+        "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false, false",
+        "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false, false",
+        "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false, false",
+        "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false, false",
+        "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false, false",
+        "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false, false",
+        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false, false"
     })
-    void shouldReturnFeePaidRoles(String setOffice, String expectedRoles, boolean withBooking) throws IOException {
-
+    void shouldReturnFeePaidRoles(String setOffice, String expectedRoles, boolean withBooking,
+                                  boolean johFallback) throws IOException {
         judicialOfficeHolders.forEach(joh -> {
             joh.setOffice(setOffice);
             joh.setTicketCodes(List.of("368"));
@@ -146,6 +145,12 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
         if (withBooking) {
             createBooking(setOffice);
+            if (johFallback) {
+                judicialBookings.forEach(jb -> {
+                    jb.setRegionId(null);
+                    jb.setLocationId(null);
+                });
+            }
         }
 
         //Execute Kie session
@@ -158,12 +163,29 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        String regionId = allProfiles.iterator().next().getRegionId();
+
         roleAssignments.forEach(r -> {
+            String regionId = setExpectedRegionId(setOffice,withBooking,johFallback,r);
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
         });
     }
+
+    private String setExpectedRegionId(String setOffice, boolean withBooking,
+                                       boolean johFallback, RoleAssignment roleAssignment) {
+        if (setOffice.equals("SSCS Tribunal Judge-Fee Paid") && withBooking
+                && roleAssignment.getRoleName().equals("judge")) {
+            if (!judicialBookings.isEmpty()) {
+                return (johFallback ? judicialOfficeHolders.iterator().next().getRegionId() :
+                        judicialBookings.iterator().next().getRegionId());
+            } else {
+                return allProfiles.iterator().next().getRegionId();
+            }
+        } else {
+            return allProfiles.iterator().next().getRegionId();
+        }
+    }
+
 
     void createBooking(String setOffice) throws IOException {
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
