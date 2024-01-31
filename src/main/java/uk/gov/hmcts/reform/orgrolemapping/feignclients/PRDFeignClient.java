@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClientInterceptor;
 
-import java.util.UUID;
-
 @FeignClient(value = "prdClient", url = "${feign.client.config.prdClient.url}",
         configuration = {FeignClientConfiguration.class, RdFeignClientInterceptor.class})
 public interface PRDFeignClient {
@@ -18,6 +16,6 @@ public interface PRDFeignClient {
             @RequestParam(value = "since", required = false) String since,
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "searchAfter", required = false) UUID searchAfter
+            @RequestParam(value = "searchAfter", required = false) String searchAfter
     );
 }
