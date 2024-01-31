@@ -71,7 +71,7 @@ public class AccessTypesBuilder {
     public static List<String> identifyUpdatedOrgProfileIds(RestructuredAccessTypes restructuredCcdAccessTypes,
                                                             RestructuredAccessTypes prmStoredAccessTypes) {
         if (prmStoredAccessTypes.getOrganisationProfiles() == null) {
-            log.info("no organisation profile/s in PRM database, hence returning all from CCD");
+            log.debug("no organisation profile/s in PRM database, hence returning all from CCD");
             return getOrgProfileIds(restructuredCcdAccessTypes);
         }
 
@@ -85,18 +85,18 @@ public class AccessTypesBuilder {
                     getOrgProfile(restructuredCcdAccessTypes, currentOrgProfile)
             )) {
                 modifiedOrgProfileIds.add(currentOrgProfile);
-                log.info("existing organisation profile/s have been modified :: {}", currentOrgProfile);
+                log.debug("existing organisation profile/s have been modified :: {}", currentOrgProfile);
             }
         }
 
         // identify new organisationProfileId
         List<String> newOrgProfileIds = getOrgProfileIds(restructuredCcdAccessTypes).stream()
-                .filter(el -> !getOrgProfileIds(prmStoredAccessTypes).contains(el))
+                .filter(orgProfile -> !getOrgProfileIds(prmStoredAccessTypes).contains(orgProfile))
                 .toList();
 
         if (!newOrgProfileIds.isEmpty()) {
             modifiedOrgProfileIds.addAll(newOrgProfileIds);
-            log.info("new organisation profile/s identified, not existing in PRM database :: {}", newOrgProfileIds);
+            log.debug("new organisation profile/s identified, not existing in PRM database :: {}", newOrgProfileIds);
         }
 
         return modifiedOrgProfileIds;
