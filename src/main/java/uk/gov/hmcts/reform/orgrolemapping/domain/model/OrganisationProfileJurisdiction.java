@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class OrganisationProfileJurisdiction {
 
-    private String jurisdictionName;
-    private List<OrganisationProfileAccessType> accessTypes;
+    private String jurisdictionId;
+    private Set<OrganisationProfileAccessType> accessTypes;
 }
