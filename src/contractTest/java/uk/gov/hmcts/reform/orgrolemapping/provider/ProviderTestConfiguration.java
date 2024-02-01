@@ -74,6 +74,7 @@ public class ProviderTestConfiguration {
                 getRequestMappingService(),
                 getParseRequestService(),
                 crdService,
+                jrdService,
                 persistenceService,
                 securityUtils,
                 "1",
