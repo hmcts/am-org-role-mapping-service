@@ -79,6 +79,31 @@ public class RefDataProfessionalConsumerTest {
     }
 
     @Pact(provider = "referenceData_professionalInternalUsers", consumer = "accessMgmt_orgRoleMapping")
+    public RequestResponsePact getRefreshUserBySinceAndPageSize(PactDslWithProvider builder) {
+        return builder
+                .given("A since & page size for a PRD internal user request")
+                .uponReceiving("A request for professional users")
+                .path(PRD_GET_REFRESH_USERS_URL)
+                .query("since=" + SINCE
+                        + "&pageSize=" + PAGE_SIZE
+                )
+                .method("GET")
+                .willRespondWith()
+                .status(200)
+                .body(buildRefreshUserResponsePactDsl())
+                .toPact();
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "getRefreshUserBySinceAndPageSize")
+    public void verifyGetRefreshUserBySinceAndPageSize() {
+        ResponseEntity<Object> response = prdFeignClient
+                .getRefreshUsers(SINCE, null, PAGE_SIZE, null);
+
+        assertNotNull(response);
+    }
+
+    @Pact(provider = "referenceData_professionalInternalUsers", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact getRefreshUserBySinceSearchAfterAndPageSize(PactDslWithProvider builder) {
         return builder
                 .given("A since, searchAfter & page size for a PRD internal user request")
