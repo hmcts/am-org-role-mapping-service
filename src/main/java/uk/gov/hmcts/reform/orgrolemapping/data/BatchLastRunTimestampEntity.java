@@ -15,8 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.io.Serializable;
-import java.io.Serial;
 import java.util.Date;
 
 @Builder(toBuilder = true)
@@ -27,10 +25,7 @@ import java.util.Date;
 @SequenceGenerator(name = "batch_last_run_timestamp_id_seq", sequenceName = "batch_last_run_timestamp_id_seq",
         allocationSize = 1)
 @Entity(name = "batch_last_run_timestamp")
-public class BatchLastRunTimestampEntity implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class BatchLastRunTimestampEntity  {
 
     @Id
     @Column(name = "id", updatable = false)
