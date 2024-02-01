@@ -20,16 +20,11 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SequenceGenerator(name = "version_seq", sequenceName = "version_seq", allocationSize = 1)
 @Entity(name = "access_types")
-public class AccessTypesEntity implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class AccessTypesEntity  {
 
     @Id
     @Column(name = "version")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "version_seq")
     private Long version;
 
     @Column(name = "access_types", nullable = false)
