@@ -55,8 +55,6 @@ java:
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
     TESTING_SUPPORT_ENABLED: true
     RUN_LD_ON_STARTUP: true
-    JUDICIAL_REF_APP_V2_ACTIVE: true
-    JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID: true
   postgresql:
     enabled: true
     auth:
