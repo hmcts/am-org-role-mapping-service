@@ -140,7 +140,7 @@ public class RefreshController {
         produces = V1.MediaType.REFRESH_PROFESSIONAL_ASSIGNMENTS,
         consumes = {"application/json"}
     )
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "refreshes professional role assignments",
         security =
             {
