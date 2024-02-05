@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
+import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
@@ -20,6 +21,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
@@ -745,5 +747,15 @@ public class TestDataBuilder {
                     .map(String::valueOf)
                     .toArray(String[]::new);
         }
+    }
+
+    public static GetRefreshUsersResponse buildRefreshUsersResponse(String userId) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        GetRefreshUsersResponse getRefreshUsersResponse = objectMapper.readValue(
+            new File("src/main/resources/prdRefreshUserSample.json"),
+            GetRefreshUsersResponse.class);
+        getRefreshUsersResponse.getUsers().get(0).setUserIdentifier(userId);
+        return getRefreshUsersResponse;
     }
 }

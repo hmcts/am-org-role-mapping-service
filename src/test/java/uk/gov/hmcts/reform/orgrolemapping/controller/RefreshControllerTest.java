@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -30,8 +31,12 @@ class RefreshControllerTest {
     @Mock
     private JudicialRefreshOrchestrator judicialRefreshOrchestrator;
 
+    @Mock
+    private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
+
     @InjectMocks
-    private final RefreshController sut = new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator);
+    private final RefreshController sut =
+        new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator);
 
     @BeforeEach
     public void setUp() {
@@ -106,5 +111,16 @@ class RefreshControllerTest {
 
         assertEquals(response, sut.judicialRefresh("",
                 JudicialRefreshRequest.builder().build()));
+    }
+
+    @Test
+    void refreshProfessionalRoleAssignments() {
+        ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.OK).body(Map.of("Message",
+            "Role assignments have been refreshed successfully"));
+        Mockito.when(professionalRefreshOrchestrator.refreshProfessionalUser(any())).thenReturn(response);
+
+        assertEquals(response, sut.professionalRefresh(UUID.randomUUID().toString()));
+        Mockito.verify(professionalRefreshOrchestrator, Mockito.times(1))
+            .refreshProfessionalUser(any());
     }
 }

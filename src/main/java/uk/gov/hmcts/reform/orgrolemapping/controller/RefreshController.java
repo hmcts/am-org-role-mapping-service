@@ -24,6 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
@@ -37,14 +38,18 @@ public class RefreshController {
 
     @Autowired
     public RefreshController(RefreshOrchestrator refreshOrchestrator,
-                             JudicialRefreshOrchestrator judicialRefreshOrchestrator) {
+                             JudicialRefreshOrchestrator judicialRefreshOrchestrator,
+                             ProfessionalRefreshOrchestrator professionalRefreshOrchestrator) {
         this.refreshOrchestrator = refreshOrchestrator;
         this.judicialRefreshOrchestrator = judicialRefreshOrchestrator;
+        this.professionalRefreshOrchestrator = professionalRefreshOrchestrator;
     }
 
     RefreshOrchestrator refreshOrchestrator;
 
     JudicialRefreshOrchestrator judicialRefreshOrchestrator;
+
+    ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 
     @PostMapping(
             path = "/am/role-mapping/refresh",
@@ -128,5 +133,36 @@ public class RefreshController {
             ValidationUtil.validateId(Constants.UUID_PATTERN, correlationId);
         }
         return judicialRefreshOrchestrator.judicialRefresh(judicialRefreshRequest.getRefreshRequest());
+    }
+
+    @PostMapping(
+        path = "/am/role-mapping/professional/refresh",
+        produces = V1.MediaType.REFRESH_PROFESSIONAL_ASSIGNMENTS,
+        consumes = {"application/json"}
+    )
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @Operation(summary = "refreshes professional role assignments",
+        security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+        responseCode = "200",
+        description = "Successful",
+        content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    @ApiResponse(
+        responseCode = "400",
+        description = V1.Error.INVALID_REQUEST,
+        content = @Content()
+    )
+    @ApiResponse(
+        responseCode = "404",
+        description = V1.Error.INVALID_REQUEST,
+        content = @Content()
+    )
+    public ResponseEntity<Object> professionalRefresh(@RequestParam String userId) {
+        return professionalRefreshOrchestrator.refreshProfessionalUser(userId);
     }
 }
