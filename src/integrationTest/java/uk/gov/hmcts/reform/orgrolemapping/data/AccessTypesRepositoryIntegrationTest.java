@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
@@ -18,7 +19,7 @@ public class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
         AccessTypesEntity accessTypes = accessTypesRepository.getAccessTypesEntity();
 
         assertNotNull(accessTypes);
-        assertNotNull(accessTypes.getVersion());
+        assertEquals(1, accessTypes.getVersion());
         assertNotNull(accessTypes.getAccessTypes());
     }
 }

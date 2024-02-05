@@ -12,4 +12,5 @@ public interface AccessTypesRepository extends CrudRepository<AccessTypesEntity,
             + "FROM access_types FOR UPDATE",
             nativeQuery = true)
     AccessTypesEntity getAccessTypesEntity();
+
 }
