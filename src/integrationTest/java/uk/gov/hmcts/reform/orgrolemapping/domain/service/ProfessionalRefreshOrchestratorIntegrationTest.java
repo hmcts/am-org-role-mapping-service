@@ -58,7 +58,8 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
         }
 
         @Test
-        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_user_refresh_queue.sql"})
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_user_refresh_queue.sql"})
         void shouldRefreshProfessionalUser() {
             professionalRefreshOrchestrator.refreshProfessionalUser(USER_ID);
 
@@ -67,12 +68,13 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
             assertEquals("2023-11-20T15:51:33.046", refreshedUser.getLastUpdated().toString());
             assertEquals(2, refreshedUser.getAccessTypesMinVersion());
             assertNull(refreshedUser.getDeleted());
-            assertEquals("""
-                [{"enabled": true, "accessTypeId": "1234", "jurisdictionId": "12345", "organisationProfileId": "SOLICITOR_PROFILE"}]""",
+            assertEquals("[{\"enabled\": true, \"accessTypeId\": \"1234\", \"jurisdictionId\": \"12345\", " 
+                    + "\"organisationProfileId\": \"SOLICITOR_PROFILE\"}]",
                 refreshedUser.getAccessTypes());
             assertEquals("ORG1", refreshedUser.getOrganisationId());
             assertEquals("ACTIVE", refreshedUser.getOrganisationStatus());
-            assertArrayEquals(new String[]{"SOLICITOR_PROFILE", "OTHER_PROFILE"}, refreshedUser.getOrganisationProfileIds());
+            assertArrayEquals(new String[]{"SOLICITOR_PROFILE", "OTHER_PROFILE"},
+                refreshedUser.getOrganisationProfileIds());
             assertFalse(refreshedUser.getActive());
         }
 
@@ -89,7 +91,8 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
     class RefreshProfessionalUsers {
 
         @Test
-        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_user_refresh_queue.sql"})
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_user_refresh_queue.sql"})
         void refreshProfessionalUserBatch() {
             assertTrue(userRefreshQueueRepository.findByUserId("1").getActive());
             assertTrue(userRefreshQueueRepository.findByUserId("3").getActive());

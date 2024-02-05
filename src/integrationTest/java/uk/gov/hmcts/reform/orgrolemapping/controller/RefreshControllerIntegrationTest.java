@@ -614,7 +614,8 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_user_refresh_queue.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        scripts = {"classpath:sql/insert_user_refresh_queue.sql"})
     public void shouldProcessProfessionalRefreshRequest() throws Exception {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("1234")))
             .when(prdFeignClient).getRefreshUsers(any());
@@ -664,7 +665,8 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
             .andReturn();
 
         assertTrue(result.getResolvedException() instanceof ResourceNotFoundException);
-        assertEquals(String.format(Constants.RESOURCE_NOT_FOUND + " " + PRD_USER_NOT_FOUND, "1234"), result.getResolvedException().getMessage());
+        assertEquals(String.format(Constants.RESOURCE_NOT_FOUND + " " + PRD_USER_NOT_FOUND, "1234"),
+            result.getResolvedException().getMessage());
     }
 
     @Test
