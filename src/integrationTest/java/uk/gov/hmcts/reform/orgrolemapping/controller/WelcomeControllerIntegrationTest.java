@@ -3,12 +3,11 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.codehaus.plexus.util.StringUtils;
-import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mock;
 import org.slf4j.Logger;
@@ -30,6 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -56,8 +56,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -75,11 +73,15 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
     "dbFeature.flags.enable=iac_jrd_1_0",
     "testing.support.enabled=true" // NB: needed for OrgMappingController (needs removing in AM-2877)
 })
-public class WelcomeControllerIntegrationTest extends BaseTest {
+public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeControllerIntegrationTest.class);
+
     private static final String CASEWORKER = "CASEWORKER";
     private static final String JUDICIAL = "JUDICIAL";
+
+    private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
+
     private transient MockMvc mockMvc;
     @Mock
     private Authentication authentication;
@@ -151,7 +153,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
     UserRequest userRequest;
     List<JudicialProfile> judicialProfiles;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         //this.mockMvc = standaloneSetup(this.welcomeController).build()
@@ -174,6 +176,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
 
         judicialProfiles = new ArrayList<>(buildJudicialProfile(JRDUserRequest.builder()
                         .sidamIds(Set.copyOf(userRequest.getUserIds())).build(),"judicialProfileSample.json"));
+        wiremockFixtures.resetRequests();
     }
 
     @Test
@@ -690,14 +693,7 @@ public class WelcomeControllerIntegrationTest extends BaseTest {
             returnHttpStatus = 201;
         }
 
-        roleAssignmentService.stubFor(WireMock.post(urlEqualTo("/am/role-assignments"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(body)
-                        .withStatus(returnHttpStatus)
-                ));
-
-
+        wiremockFixtures.stubRoleAssignments(body, returnHttpStatus);
     }
 
     private String readJsonFromFile(String fileName) throws IOException {
