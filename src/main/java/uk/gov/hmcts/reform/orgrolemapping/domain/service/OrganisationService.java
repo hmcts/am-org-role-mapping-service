@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class OrganisationService {
 
@@ -37,7 +35,6 @@ public class OrganisationService {
 
     @Transactional
     public void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueue() {
-        log.info("hi");
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities
                 = profileRefreshQueueRepository.getActiveProfileEntities();
         List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
