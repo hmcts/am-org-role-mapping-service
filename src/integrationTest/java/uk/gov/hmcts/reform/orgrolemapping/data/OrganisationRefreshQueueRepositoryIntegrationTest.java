@@ -19,15 +19,15 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
 
     @Test
     public void shouldInsertIntoOrganisationRefreshQueue() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime time = LocalDateTime.of(2024, 2, 7, 12, 0, 0);
 
-        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueue("123", now, 1);
+        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueue("123", time, 1);
 
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
 
         assertEquals(organisationEntity.getOrganisationId(), "123");
-        assertEquals(organisationEntity.getLastUpdated(), now);
+        assertEquals(organisationEntity.getLastUpdated(), time);
         assertEquals(organisationEntity.getAccessTypesMinVersion(), 1);
     }
 
@@ -36,15 +36,15 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
             "classpath:sql/insert_organisation_profiles.sql"
     })
     public void shouldHandleInsertConflictIntoOrganisationRefreshQueue() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime time = LocalDateTime.of(2024, 2, 7, 12, 0, 0);
 
-        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueue("123", now, 2);
+        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueue("123", time, 2);
 
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
 
         assertEquals(organisationEntity.getOrganisationId(), "123");
-        assertEquals(organisationEntity.getLastUpdated(), now);
+        assertEquals(organisationEntity.getLastUpdated(), time);
         assertEquals(organisationEntity.getAccessTypesMinVersion(), 2);
     }
 }

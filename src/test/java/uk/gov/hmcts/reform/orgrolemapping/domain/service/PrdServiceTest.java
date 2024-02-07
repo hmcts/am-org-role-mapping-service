@@ -24,7 +24,7 @@ public class PrdServiceTest {
     PrdService sut = new PrdService(prdFeignClient);
 
     @Test
-    void fetchOrganisationStaleProfiles() throws IOException {
+    void fetchOrganisationsByProfileIds() throws IOException {
         OrganisationByProfileIdsResponse response = TestDataBuilder.buildOrganisationByProfileIdsResponse();
         OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(List.of("SOLICITOR_PROFILE"));
 
