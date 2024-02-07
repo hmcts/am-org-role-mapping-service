@@ -33,7 +33,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/insert_organisation_profiles.sql"
+        "classpath:sql/insert_organisation_profiles.sql"
     })
     public void shouldHandleInsertConflictIntoOrganisationRefreshQueue() {
         LocalDateTime time = LocalDateTime.of(2024, 2, 7, 12, 0, 0);

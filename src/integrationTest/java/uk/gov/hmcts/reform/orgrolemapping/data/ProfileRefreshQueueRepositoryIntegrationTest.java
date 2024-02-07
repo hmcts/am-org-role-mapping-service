@@ -18,7 +18,7 @@ class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/insert_profile_refresh_queue.sql"
+        "classpath:sql/insert_profile_refresh_queue.sql"
     })
     public void shouldGetActiveProfilesOnly() {
         List<ProfileRefreshQueueEntity> activeProfiles = profileRefreshQueueRepository.getActiveProfileEntities();
@@ -29,7 +29,7 @@ class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/insert_profile_refresh_queue.sql"
+        "classpath:sql/insert_profile_refresh_queue.sql"
     })
     public void shouldSetActiveProfilesToFalse() {
         profileRefreshQueueRepository.setActiveFalse("SOLICITOR_ORG", 1);
