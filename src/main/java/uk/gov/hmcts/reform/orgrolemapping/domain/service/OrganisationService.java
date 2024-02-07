@@ -34,7 +34,7 @@ public class OrganisationService {
     }
 
     @Transactional
-    public void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueue() {
+    public void findAndInsertStaleOrganisationsIntoRefreshQueue() {
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities
                 = profileRefreshQueueRepository.getActiveProfileEntities();
         List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()

@@ -15,6 +15,6 @@ public class Scheduler {
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.cron}")
     void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess() {
-        organisationService.findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueue();
+        organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
     }
 }
