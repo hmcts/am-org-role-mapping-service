@@ -73,6 +73,8 @@ public class OrganisationService {
                     lastRecordInPage = response.getLastRecordInPage();
 
                     insertIntoOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
+                } else {
+                    moreAvailable = false;
                 }
             }
 
