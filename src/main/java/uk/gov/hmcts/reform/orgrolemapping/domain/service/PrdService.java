@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationStaleProfilesRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationStaleProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
 @Service
@@ -16,8 +16,8 @@ public class PrdService {
     private final PRDFeignClient prdFeignClient;
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
-    public ResponseEntity<OrganisationStaleProfilesResponse> fetchOrganisationsWithStaleProfiles(
-            Integer pageSize, String searchAfter, OrganisationStaleProfilesRequest organisationStaleProfilesRequest) {
-        return prdFeignClient.getOrganisationStaleProfiles(pageSize, searchAfter, organisationStaleProfilesRequest);
+    public ResponseEntity<OrganisationByProfileIdsResponse> fetchOrganisationsByProfileIds(
+            Integer pageSize, String searchAfter, OrganisationByProfileIdsRequest organisationByProfileIdsRequest) {
+        return prdFeignClient.getOrganisationsByProfileIds(pageSize, searchAfter, organisationByProfileIdsRequest);
     }
 }
