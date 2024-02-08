@@ -74,7 +74,7 @@ public class OrganisationService {
 
                     insertIntoOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
                 } else {
-                    moreAvailable = false;
+                    break;
                 }
             }
 

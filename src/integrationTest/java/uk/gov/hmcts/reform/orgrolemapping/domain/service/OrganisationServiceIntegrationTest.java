@@ -126,4 +126,13 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
         assertEquals(organisationRefreshQueueRepository.findAll().size(), 2);
         assertEquals(profileRefreshQueueRepository.getActiveProfileEntities().size(), 0);
     }
+
+    @Test
+    void shouldInsertNoOrganisationIntoOrganisationRefreshQueue_AsThereIsNoActiveProfiles() {
+        assertEquals(profileRefreshQueueRepository.getActiveProfileEntities().size(), 0);
+
+        organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
+
+        assertEquals(organisationRefreshQueueRepository.findAll().size(), 0);
+    }
 }
