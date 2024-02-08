@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,7 +13,6 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,6 +29,22 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 @RunWith(MockitoJUnitRunner.class)
 class DroolCivilStaffOrgRolesTest extends DroolBase {
 
+
+    static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
+
+    {
+        expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
+        expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "hearing_work,access_requests");
+        expectedRoleNameWorkTypesMap.put("hmcts-ctsc", null);
+        expectedRoleNameWorkTypesMap.put("ctsc", "routine_work");
+        expectedRoleNameWorkTypesMap.put("ctsc-team-leader", "routine_work,access_requests");
+        expectedRoleNameWorkTypesMap.put("hearing-centre-admin", "hearing_work");
+        expectedRoleNameWorkTypesMap.put("senior-tribunal-caseworker", "decision_making_work,access_requests");
+        expectedRoleNameWorkTypesMap.put("tribunal-caseworker", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("hmcts-legal-operations", null);
+        expectedRoleNameWorkTypesMap.put("nbc-team-leader", "routine_work,access_requests");
+        expectedRoleNameWorkTypesMap.put("national-business-centre", "routine_work");
+    }
     @Test
     void shouldReturnCivilCaseworkerMappings() {
 
@@ -117,20 +132,20 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
     static Stream<Arguments> generateData() {
         return Stream.of(
-                Arguments.of("3", Arrays.asList("hmcts-admin", "hearing-centre-team-leader"),
-                        2, Collections.singletonList("hearing_work,access_requests")),
+                Arguments.of("3", Arrays.asList("hmcts-admin", "hearing-centre-team-leader", "hearing-centre-admin"),
+                        3, Collections.singletonList("hearing_work,access_requests")),
                 Arguments.of("10", Arrays.asList("hmcts-ctsc", "ctsc"),
                         2, Arrays.asList("routine_work")),
-                Arguments.of("9", Arrays.asList("hmcts-ctsc", "ctsc-team-leader"),
-                        2, Arrays.asList("routine_work,access_requests")),
+                Arguments.of("9", Arrays.asList("hmcts-ctsc", "ctsc-team-leader", "ctsc"),
+                        3, Arrays.asList("routine_work,access_requests")),
                 Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin"),
                         2, Collections.singletonList("hearing_work")),
-                Arguments.of("1", Arrays.asList("senior-tribunal-caseworker","hmcts-legal-operations"),
-                        2, List.of("decision_making_work,access_requests")),
-                Arguments.of("2", Arrays.asList("tribunal-caseworker","hmcts-legal-operations"),
+                Arguments.of("1", Arrays.asList("senior-tribunal-caseworker", "hmcts-legal-operations", "tribunal-caseworker"),
+                        3, List.of("decision_making_work,access_requests")),
+                Arguments.of("2", Arrays.asList("tribunal-caseworker", "hmcts-legal-operations"),
                         2, List.of("decision_making_work")),
-                Arguments.of("6", Arrays.asList("hmcts-admin", "nbc-team-leader"),
-                        2, Arrays.asList("routine_work,access_requests")),
+                Arguments.of("6", Arrays.asList("hmcts-admin", "nbc-team-leader", "national-business-centre"),
+                        3, Arrays.asList("routine_work,access_requests")),
                 Arguments.of("11", Arrays.asList("hmcts-admin","national-business-centre"),
                         2, Arrays.asList("routine_work"))
         );
@@ -138,14 +153,14 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
     static Stream<Arguments> generateDatav11() {
         return Stream.of(
-                Arguments.of("1", Arrays.asList("tribunal-caseworker"),
-                        1, Arrays.asList("decision_making_work"), RoleCategory.LEGAL_OPERATIONS),
-                Arguments.of("3", Arrays.asList("hearing-centre-admin"),
-                        1, Collections.singletonList("hearing_work"), RoleCategory.ADMIN),
-                Arguments.of("6", Arrays.asList("national-business-centre"),
-                        1, Arrays.asList("routine_work"), RoleCategory.ADMIN),
-                Arguments.of("9", Arrays.asList("ctsc"),
-                        1, Arrays.asList("routine_work"), RoleCategory.CTSC)
+                Arguments.of("1", Arrays.asList("tribunal-caseworker", "senior-tribunal-caseworker", "hmcts-legal-operations"),
+                        3, Arrays.asList("decision_making_work"), RoleCategory.LEGAL_OPERATIONS),
+                Arguments.of("3", Arrays.asList("hearing-centre-admin", "hmcts-admin", "hearing-centre-team-leader"),
+                        3, Collections.singletonList("hearing_work"), RoleCategory.ADMIN),
+                Arguments.of("6", Arrays.asList("national-business-centre", "hmcts-admin", "nbc-team-leader"),
+                        3, Arrays.asList("routine_work"), RoleCategory.ADMIN),
+                Arguments.of("9", Arrays.asList("ctsc", "hmcts-ctsc", "ctsc-team-leader"),
+                        3, Arrays.asList("routine_work"), RoleCategory.CTSC)
         );
     }
 
@@ -169,6 +184,9 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_1").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_3").status(true).build(),
                         FeatureFlag.builder().flagName("civil_wa_1_4").status(false).build()));
 
         //assertion
@@ -194,18 +212,24 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
                 });
 
-        List<Map<String, JsonNode>> list = roleAssignments.stream()
-                .map(RoleAssignment::getAttributes).toList();
-        List<String> workTypesCombined = new ArrayList<>();
+//        List<Map<String, JsonNode>> list = roleAssignments.stream()
+//                .map(RoleAssignment::getAttributes).toList();
+//        List<String> workTypesCombined = new ArrayList<>();
+//
+//        for (Map<String, JsonNode> e : list) {
+//            if (e.containsKey("workTypes")) {
+//                workTypesCombined.add(e.entrySet().stream()
+//                    .filter(a -> a.getKey().equals("workTypes"))
+//                    .map(Map.Entry::getValue).findFirst().get().textValue());
+//            }
+//        }
+//        assertThat(workTypesCombined,containsInAnyOrder(workTypes.toArray()));
 
-        for (Map<String, JsonNode> e : list) {
-            if (e.containsKey("workTypes")) {
-                workTypesCombined.add(e.entrySet().stream()
-                    .filter(a -> a.getKey().equals("workTypes"))
-                    .map(Map.Entry::getValue).findFirst().get().textValue());
-            }
+        for (RoleAssignment r : roleAssignments) {
+            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+            String actualWorkTypes = r.getAttributes().containsKey("workTypes") ? r.getAttributes().get("workTypes").textValue() : null;
+            assertEquals(expectedWorkTypes, actualWorkTypes);
         }
-        assertThat(workTypesCombined,containsInAnyOrder(workTypes.toArray()));
     }
 
     @ParameterizedTest
@@ -231,7 +255,10 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_wa_1_1").status(true).build(),
+                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_1").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_3").status(true).build(),
                         FeatureFlag.builder().flagName("civil_wa_1_4").status(false).build()));
 
         //assertion
@@ -260,18 +287,24 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
                 });
 
-        List<Map<String, JsonNode>> list = roleAssignments.stream()
-                .map(RoleAssignment::getAttributes).toList();
-        List<String> workTypesCombined = new ArrayList<>();
+//        List<Map<String, JsonNode>> list = roleAssignments.stream()
+//                .map(RoleAssignment::getAttributes).toList();
+//        List<String> workTypesCombined = new ArrayList<>();
+//
+//        for (Map<String, JsonNode> e : list) {
+//            if (e.containsKey("workTypes")) {
+//                workTypesCombined.add(e.entrySet().stream()
+//                        .filter(a -> a.getKey().equals("workTypes"))
+//                        .map(Map.Entry::getValue).findFirst().get().textValue());
+//            }
+//        }
+//        assertThat(workTypesCombined, containsInAnyOrder(workTypes.toArray()));
 
-        for (Map<String, JsonNode> e : list) {
-            if (e.containsKey("workTypes")) {
-                workTypesCombined.add(e.entrySet().stream()
-                        .filter(a -> a.getKey().equals("workTypes"))
-                        .map(Map.Entry::getValue).findFirst().get().textValue());
-            }
+        for (RoleAssignment r : roleAssignments) {
+            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+            String actualWorkTypes = r.getAttributes().containsKey("workTypes") ? r.getAttributes().get("workTypes").textValue() : null;
+            assertEquals(expectedWorkTypes, actualWorkTypes);
         }
-        assertThat(workTypesCombined, containsInAnyOrder(workTypes.toArray()));
     }
 
 }
