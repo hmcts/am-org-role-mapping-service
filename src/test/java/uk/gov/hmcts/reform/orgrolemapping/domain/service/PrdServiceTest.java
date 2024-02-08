@@ -1,6 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
+import feign.Request;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
@@ -14,7 +18,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -49,5 +56,29 @@ public class PrdServiceTest {
                 sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void fetchOrganisationProfilesResponseWith404OrganisationNotFound() {
+        Request request = Mockito.mock(Request.class);
+        FeignException feignException = new FeignException.NotFound(null, request, null, null);
+        Mockito.when(prdFeignClient.retrieveOrganisations(isNull(), anyString(), isNull(), anyInt(), anyInt()))
+                .thenThrow(feignException);
+
+        ResponseEntity<OrganisationProfilesResponse> responseEntity =
+                sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void fetchOrganisationProfilesResponseWithNot404() {
+        Request request = Mockito.mock(Request.class);
+        FeignException feignException = new FeignException.Forbidden(null, request, null, null);
+        Mockito.when(prdFeignClient.retrieveOrganisations(isNull(), anyString(), isNull(), anyInt(), anyInt()))
+                .thenThrow(feignException);
+
+        Assert.assertThrows(FeignException.class, () ->
+                sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100));
     }
 }
