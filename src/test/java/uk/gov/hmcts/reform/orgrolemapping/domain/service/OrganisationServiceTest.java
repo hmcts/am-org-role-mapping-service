@@ -14,9 +14,9 @@ import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -167,7 +166,7 @@ class OrganisationServiceTest {
         ResponseEntity<OrganisationProfilesResponse> organisationProfiles2 = ResponseEntity
                 .ok(OrganisationProfilesResponse.builder().organisations(allOrgs2).moreAvailable(false).build());
 
-        when(prdService.retrieveOrganisations(isNull(), anyString(), isNull(), anyInt(), anyInt()))
+        when(prdService.retrieveOrganisations(anyString(), anyInt(), anyInt()))
                 .thenReturn(organisationProfiles1, organisationProfiles2);
 
         organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();

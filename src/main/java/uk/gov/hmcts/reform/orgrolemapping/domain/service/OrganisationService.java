@@ -78,14 +78,14 @@ public class OrganisationService {
 
         Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
         OrganisationProfilesResponse organisationProfiles = prdService
-                .retrieveOrganisations(null, formattedSince, null, 1, Integer.valueOf(pageSize)).getBody();
+                .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
         writeAllToOrganisationProfileRefreshQueue(organisationProfiles, accessTypeMinVersion);
 
         int page = 2;
         while (organisationProfiles.getMoreAvailable()) {
 
             organisationProfiles = prdService
-                    .retrieveOrganisations(null, formattedSince, null, page, Integer.valueOf(pageSize)).getBody();
+                    .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
             writeAllToOrganisationProfileRefreshQueue(organisationProfiles, accessTypeMinVersion);
             page++;
         }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -33,6 +34,19 @@ public class PrdServiceTest {
 
         ResponseEntity<OrganisationByProfileIdsResponse> responseEntity =
                 sut.fetchOrganisationsByProfileIds(1, null, request);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void fetchOrganisationProfilesResponse() throws IOException {
+        OrganisationProfilesResponse response = TestDataBuilder.buildOrganisationsResponse();
+
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
+                .when(prdFeignClient).retrieveOrganisations(null, "2023-11-20T15:51:33.046Z", null, 1, 100);
+
+        ResponseEntity<OrganisationProfilesResponse> responseEntity =
+                sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
