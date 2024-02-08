@@ -197,3 +197,6 @@ professional:
       scheduling:
         enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
         cron: ${PROFESSIONAL_ROLE_MAPPING_CRON:"*/30 * * * * *"}
+
+groupAccess:
+  lastRunTimeTolerance: ${TOLERANCE:180}
