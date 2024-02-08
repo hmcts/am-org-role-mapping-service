@@ -21,6 +21,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
@@ -44,7 +45,8 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_4").status(false).build()));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -166,7 +168,8 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_4").status(false).build()));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -228,7 +231,8 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("civil_wa_1_1", true));
+                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_wa_1_1").status(true).build(),
+                        FeatureFlag.builder().flagName("civil_wa_1_4").status(false).build()));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
