@@ -3,8 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationStaleProfilesRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationStaleProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -24,15 +24,15 @@ public class PrdServiceTest {
     PrdService sut = new PrdService(prdFeignClient);
 
     @Test
-    void fetchOrganisationStaleProfiles() throws IOException {
-        OrganisationStaleProfilesResponse response = TestDataBuilder.buildOrganisationStaleProfilesResponse();
-        OrganisationStaleProfilesRequest request = new OrganisationStaleProfilesRequest(List.of("SOLICITOR_PROFILE"));
+    void fetchOrganisationsByProfileIds() throws IOException {
+        OrganisationByProfileIdsResponse response = TestDataBuilder.buildOrganisationByProfileIdsResponse();
+        OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(List.of("SOLICITOR_PROFILE"));
 
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
-                .when(prdFeignClient).getOrganisationStaleProfiles(any(), eq(null), any());
+                .when(prdFeignClient).getOrganisationsByProfileIds(any(), eq(null), any());
 
-        ResponseEntity<OrganisationStaleProfilesResponse> responseEntity =
-                sut.fetchOrganisationsWithStaleProfiles(1, null, request);
+        ResponseEntity<OrganisationByProfileIdsResponse> responseEntity =
+                sut.fetchOrganisationsByProfileIds(1, null, request);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }

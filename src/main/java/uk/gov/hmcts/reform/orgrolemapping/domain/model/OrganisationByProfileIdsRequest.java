@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganisationStaleProfilesRequest {
+public class OrganisationByProfileIdsRequest {
 
     private List<String> organisationProfileIds;
 }

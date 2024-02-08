@@ -11,10 +11,10 @@ import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationStaleProfilesRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationStaleProfilesResponse;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -94,7 +94,7 @@ public class OrganisationService {
     }
 
     @Transactional
-    public void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueue() {
+    public void findAndInsertStaleOrganisationsIntoRefreshQueue() {
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities
                 = profileRefreshQueueRepository.getActiveProfileEntities();
         List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
@@ -110,10 +110,10 @@ public class OrganisationService {
             return;
         }
 
-        OrganisationStaleProfilesResponse response;
-        OrganisationStaleProfilesRequest request = new OrganisationStaleProfilesRequest(activeOrganisationProfileIds);
+        OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
-        response = prdService.fetchOrganisationsWithStaleProfiles(Integer.valueOf(pageSize), null, request).getBody();
+        OrganisationByProfileIdsResponse response;
+        response = prdService.fetchOrganisationsByProfileIds(Integer.valueOf(pageSize), null, request).getBody();
 
         boolean moreAvailable;
         String lastRecordInPage;
@@ -125,7 +125,7 @@ public class OrganisationService {
             insertIntoOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
 
             while (moreAvailable) {
-                response = prdService.fetchOrganisationsWithStaleProfiles(
+                response = prdService.fetchOrganisationsByProfileIds(
                         Integer.valueOf(pageSize), lastRecordInPage, request).getBody();
 
                 if (responseNotNull(response)) {
@@ -133,6 +133,8 @@ public class OrganisationService {
                     lastRecordInPage = response.getLastRecordInPage();
 
                     insertIntoOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
+                } else {
+                    break;
                 }
             }
 
@@ -157,7 +159,7 @@ public class OrganisationService {
         ));
     }
 
-    private boolean responseNotNull(OrganisationStaleProfilesResponse response) {
+    private boolean responseNotNull(OrganisationByProfileIdsResponse response) {
         return response != null && response.getOrganisationInfo() != null && !response.getLastRecordInPage().isEmpty()
                 && response.getMoreAvailable() != null;
     }

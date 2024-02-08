@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganisationStaleProfilesResponse {
+public class OrganisationByProfileIdsResponse {
 
     private List<OrganisationInfo> organisationInfo;
     private String lastRecordInPage;

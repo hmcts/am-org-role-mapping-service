@@ -16,7 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationStaleProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,29 +48,29 @@ class OrganisationServiceTest {
             accessTypesRepository, batchLastRunTimestampRepository, "1", "100");
 
     @Test
-    void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueTest() {
-        ProfileRefreshQueueEntity profileRefreshQueueEntity = new ProfileRefreshQueueEntity();
-        profileRefreshQueueEntity.setOrganisationProfileId("SOLICITOR_PROFILE");
-        profileRefreshQueueEntity.setAccessTypesMinVersion(1);
-        profileRefreshQueueEntity.setActive(true);
+    void findAndInsertStaleOrganisationsIntoRefreshQueue_Test() {
+        ProfileRefreshQueueEntity profileRefreshQueueEntity = ProfileRefreshQueueEntity.builder()
+                .organisationProfileId("SOLICITOR_PROFILE")
+                .accessTypesMinVersion(1)
+                .active(true).build();
 
         when(profileRefreshQueueRepository.getActiveProfileEntities()).thenReturn(List.of(profileRefreshQueueEntity));
 
-        OrganisationStaleProfilesResponse response = new OrganisationStaleProfilesResponse();
         OrganisationInfo organisationInfo = OrganisationInfo.builder()
                 .organisationIdentifier("123")
                 .status("ACTIVE")
                 .lastUpdated(LocalDateTime.now())
-                .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
-                .build();
-        response.setOrganisationInfo(List.of(organisationInfo));
-        response.setLastRecordInPage("123");
-        response.setMoreAvailable(false);
+                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
 
-        when(prdService.fetchOrganisationsWithStaleProfiles(any(), eq(null), any()))
+        OrganisationByProfileIdsResponse response = OrganisationByProfileIdsResponse.builder()
+                .organisationInfo(List.of(organisationInfo))
+                .lastRecordInPage("123")
+                .moreAvailable(false).build();
+
+        when(prdService.fetchOrganisationsByProfileIds(any(), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
 
-        organisationService.findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueue();
+        organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
 
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
@@ -81,43 +81,43 @@ class OrganisationServiceTest {
     }
 
     @Test
-    void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueMoreAvailableTest() {
-        ProfileRefreshQueueEntity profileRefreshQueueEntity = new ProfileRefreshQueueEntity();
-        profileRefreshQueueEntity.setOrganisationProfileId("SOLICITOR_PROFILE");
-        profileRefreshQueueEntity.setAccessTypesMinVersion(1);
-        profileRefreshQueueEntity.setActive(true);
+    void findAndInsertStaleOrganisationsIntoRefreshQueue_WithPaginationTest() {
+        ProfileRefreshQueueEntity profileRefreshQueueEntity = ProfileRefreshQueueEntity.builder()
+                .organisationProfileId("SOLICITOR_PROFILE")
+                .accessTypesMinVersion(1)
+                .active(true).build();
 
         when(profileRefreshQueueRepository.getActiveProfileEntities()).thenReturn(List.of(profileRefreshQueueEntity));
 
-        OrganisationStaleProfilesResponse response = new OrganisationStaleProfilesResponse();
         OrganisationInfo organisationInfo = OrganisationInfo.builder()
                 .organisationIdentifier("123")
                 .status("ACTIVE")
                 .lastUpdated(LocalDateTime.now())
-                .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
-                .build();
-        response.setOrganisationInfo(List.of(organisationInfo));
-        response.setLastRecordInPage("123");
-        response.setMoreAvailable(true);
+                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
 
-        when(prdService.fetchOrganisationsWithStaleProfiles(any(), eq(null), any()))
-                .thenReturn(ResponseEntity.ok(response));
+        OrganisationByProfileIdsResponse page1 = OrganisationByProfileIdsResponse.builder()
+                .organisationInfo(List.of(organisationInfo))
+                .lastRecordInPage("123")
+                .moreAvailable(true).build();
 
-        OrganisationStaleProfilesResponse response2 = new OrganisationStaleProfilesResponse();
+        when(prdService.fetchOrganisationsByProfileIds(any(), eq(null), any()))
+                .thenReturn(ResponseEntity.ok(page1));
+
         OrganisationInfo organisationInfo2 = OrganisationInfo.builder()
                 .organisationIdentifier("456")
                 .status("ACTIVE")
                 .lastUpdated(LocalDateTime.now())
-                .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
-                .build();
-        response2.setOrganisationInfo(List.of(organisationInfo2));
-        response2.setLastRecordInPage("456");
-        response2.setMoreAvailable(false);
+                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
 
-        when(prdService.fetchOrganisationsWithStaleProfiles(any(), any(String.class), any()))
-                .thenReturn(ResponseEntity.ok(response2));
+        OrganisationByProfileIdsResponse page2 = OrganisationByProfileIdsResponse.builder()
+                .organisationInfo(List.of(organisationInfo2))
+                .lastRecordInPage("456")
+                .moreAvailable(false).build();
 
-        organisationService.findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueue();
+        when(prdService.fetchOrganisationsByProfileIds(any(), any(String.class), any()))
+                .thenReturn(ResponseEntity.ok(page2));
+
+        organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
 
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
@@ -128,10 +128,10 @@ class OrganisationServiceTest {
     }
 
     @Test
-    void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueNoActiveOrganisationTest() {
+    void findAndInsertStaleOrganisationsIntoRefreshQueue_NoActiveOrganisationsTest() {
         when(profileRefreshQueueRepository.getActiveProfileEntities()).thenReturn(Collections.emptyList());
 
-        organisationService.findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueue();
+        organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
 
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();

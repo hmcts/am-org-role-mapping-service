@@ -5,11 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationStaleProfilesRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationStaleProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.PRDFeignClientFallback;
@@ -20,11 +20,11 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.PRDFeignCli
 )
 public interface PRDFeignClient {
 
-    @PostMapping(value = "/refdata/internal/v1/getOrganisationsByProfile")
-    ResponseEntity<OrganisationStaleProfilesResponse> getOrganisationStaleProfiles(
-            @RequestHeader(name = "pageSize") Integer pageSize,
-            @RequestHeader(name = "searchAfter") String searchAfter,
-            @RequestBody OrganisationStaleProfilesRequest organisationStaleProfilesRequest
+    @PostMapping(value = "/refdata/internal/v1/organisations/getOrganisationsByProfile")
+    ResponseEntity<OrganisationByProfileIdsResponse> getOrganisationsByProfileIds(
+            @RequestParam(name = "pageSize") Integer pageSize,
+            @RequestParam(name = "searchAfter") String searchAfter,
+            @RequestBody OrganisationByProfileIdsRequest organisationByProfileIdsRequest
     );
 
     @GetMapping(value = "/refdata/internal/v1/organisations")
