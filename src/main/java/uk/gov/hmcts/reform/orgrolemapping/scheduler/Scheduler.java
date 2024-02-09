@@ -13,7 +13,7 @@ public class Scheduler {
         this.organisationService = organisationService;
     }
 
-    @Scheduled(cron = "${professional.role.mapping.scheduling.cron}")
+    @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.cron}")
     void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess() {
         organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
     }

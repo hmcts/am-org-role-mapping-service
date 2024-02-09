@@ -58,7 +58,7 @@ public class OrganisationService {
         boolean moreAvailable;
         String lastRecordInPage;
 
-        if (responseNotNull(response) && maxVersion.isPresent()) {
+        if (responseNotNull(response)) {
             moreAvailable = response.getMoreAvailable();
             lastRecordInPage = response.getLastRecordInPage();
 
@@ -100,7 +100,6 @@ public class OrganisationService {
     }
 
     private boolean responseNotNull(OrganisationByProfileIdsResponse response) {
-        return response != null && response.getOrganisationInfo() != null && !response.getLastRecordInPage().isEmpty()
-                && response.getMoreAvailable() != null;
+        return response != null && !response.getOrganisationInfo().isEmpty();
     }
 }
