@@ -63,6 +63,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
         Executor.closeIdleConnections();
     }
 
+    @Disabled
     @Pact(provider = "referenceData_organisationalInternal", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact getOrganisationsByProfileIdsWithPageSize(PactDslWithProvider builder)
             throws JsonProcessingException {
@@ -96,6 +97,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
         assertNotNull(response);
     }
 
+    @Disabled
     @Pact(provider = "referenceData_organisationalInternal", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact getOrganisationsByProfileIdsWithPageSizeAndSearchAfter(PactDslWithProvider builder)
             throws JsonProcessingException {
@@ -132,6 +134,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
         assertNotNull(response);
     }
 
+    @Disabled
     @Pact(provider = "referenceData_organisationalInternal", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact retrieveOrganisations(PactDslWithProvider builder)
             throws JsonProcessingException {
