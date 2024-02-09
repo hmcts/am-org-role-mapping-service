@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganisationProfilesResponse {
+public class OrganisationsResponse {
 
     private List<OrganisationInfo> organisations;
     private Boolean moreAvailable;

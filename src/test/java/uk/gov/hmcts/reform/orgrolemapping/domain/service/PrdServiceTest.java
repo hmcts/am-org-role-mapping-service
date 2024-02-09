@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -46,33 +46,33 @@ public class PrdServiceTest {
     }
 
     @Test
-    void fetchOrganisationProfilesResponse() throws IOException {
-        OrganisationProfilesResponse response = TestDataBuilder.buildOrganisationsResponse();
+    void fetchOrganisationsResponse() throws IOException {
+        OrganisationsResponse response = TestDataBuilder.buildOrganisationsResponse();
 
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
                 .when(prdFeignClient).retrieveOrganisations(null, "2023-11-20T15:51:33.046Z", null, 1, 100);
 
-        ResponseEntity<OrganisationProfilesResponse> responseEntity =
+        ResponseEntity<OrganisationsResponse> responseEntity =
                 sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @Test
-    void fetchOrganisationProfilesResponseWith404OrganisationNotFound() {
+    void fetchOrganisationsResponseWith404OrganisationNotFound() {
         Request request = Mockito.mock(Request.class);
         FeignException feignException = new FeignException.NotFound(null, request, null, null);
         Mockito.when(prdFeignClient.retrieveOrganisations(isNull(), anyString(), isNull(), anyInt(), anyInt()))
                 .thenThrow(feignException);
 
-        ResponseEntity<OrganisationProfilesResponse> responseEntity =
+        ResponseEntity<OrganisationsResponse> responseEntity =
                 sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @Test
-    void fetchOrganisationProfilesResponseWithNot404() {
+    void fetchOrganisationsResponseWithNot404() {
         Request request = Mockito.mock(Request.class);
         FeignException feignException = new FeignException.Forbidden(null, request, null, null);
         Mockito.when(prdFeignClient.retrieveOrganisations(isNull(), anyString(), isNull(), anyInt(), anyInt()))

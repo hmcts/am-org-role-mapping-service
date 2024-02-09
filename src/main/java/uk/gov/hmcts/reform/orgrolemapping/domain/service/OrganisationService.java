@@ -14,7 +14,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -77,7 +77,7 @@ public class OrganisationService {
         String formattedSince = ISO_DATE_TIME_FORMATTER.format(sinceTime);
 
         Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
-        OrganisationProfilesResponse organisationProfiles = prdService
+        OrganisationsResponse organisationProfiles = prdService
                 .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
         writeAllToOrganisationRefreshQueue(organisationProfiles, accessTypeMinVersion);
 
@@ -164,7 +164,7 @@ public class OrganisationService {
                 && response.getMoreAvailable() != null;
     }
 
-    private void writeAllToOrganisationRefreshQueue(OrganisationProfilesResponse organisationProfiles,
+    private void writeAllToOrganisationRefreshQueue(OrganisationsResponse organisationProfiles,
                                                     Integer accessTypeMinVersion) {
         organisationProfiles.getOrganisations().stream().forEach(orgInfo ->
                 insertIntoOrganisationRefreshQueueForLastUpdated(orgInfo, accessTypeMinVersion));

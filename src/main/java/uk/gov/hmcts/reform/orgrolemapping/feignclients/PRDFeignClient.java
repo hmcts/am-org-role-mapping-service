@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestParam;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
@@ -28,7 +27,7 @@ public interface PRDFeignClient {
     );
 
     @GetMapping(value = "/refdata/internal/v1/organisations")
-    ResponseEntity<OrganisationProfilesResponse> retrieveOrganisations(
+    ResponseEntity<OrganisationsResponse> retrieveOrganisations(
             @RequestParam(name = "id") String id,
             @RequestParam(name = "since") String lastUpdatedSince,
             @RequestParam(name = "status") String status,

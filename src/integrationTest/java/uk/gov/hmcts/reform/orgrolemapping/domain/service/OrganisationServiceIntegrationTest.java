@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepositor
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -148,7 +148,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
                 .lastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
 
-        OrganisationProfilesResponse response = OrganisationProfilesResponse.builder()
+        OrganisationsResponse response = OrganisationsResponse.builder()
                 .organisations(List.of(organisationInfo))
                 .moreAvailable(false).build();
 

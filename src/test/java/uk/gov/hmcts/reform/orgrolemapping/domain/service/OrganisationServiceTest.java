@@ -16,7 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -161,13 +161,13 @@ class OrganisationServiceTest {
         OrganisationInfo organisationInfo3 = buildOrganisationInfo(3);
         allOrgs2.add(organisationInfo3);
 
-        ResponseEntity<OrganisationProfilesResponse> organisationProfiles1 = ResponseEntity
-                .ok(OrganisationProfilesResponse.builder().organisations(allOrgs1).moreAvailable(true).build());
-        ResponseEntity<OrganisationProfilesResponse> organisationProfiles2 = ResponseEntity
-                .ok(OrganisationProfilesResponse.builder().organisations(allOrgs2).moreAvailable(false).build());
+        ResponseEntity<OrganisationsResponse> organisationsResponse1 = ResponseEntity
+                .ok(OrganisationsResponse.builder().organisations(allOrgs1).moreAvailable(true).build());
+        ResponseEntity<OrganisationsResponse> organisationsResponse2 = ResponseEntity
+                .ok(OrganisationsResponse.builder().organisations(allOrgs2).moreAvailable(false).build());
 
         when(prdService.retrieveOrganisations(anyString(), anyInt(), anyInt()))
-                .thenReturn(organisationProfiles1, organisationProfiles2);
+                .thenReturn(organisationsResponse1, organisationsResponse2);
 
         organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
 

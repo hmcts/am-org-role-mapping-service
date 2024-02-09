@@ -7,7 +7,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
@@ -28,7 +28,7 @@ public class PrdService {
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
-    public ResponseEntity<OrganisationProfilesResponse> retrieveOrganisations(
+    public ResponseEntity<OrganisationsResponse> retrieveOrganisations(
             String lastUpdatedSince, int page, int size) {
 
         try {
@@ -37,7 +37,7 @@ public class PrdService {
             if (feignException.status() != 404) {
                 throw feignException;
             } else {
-                OrganisationProfilesResponse emptyOrg = new OrganisationProfilesResponse(
+                OrganisationsResponse emptyOrg = new OrganisationsResponse(
                         new ArrayList<OrganisationInfo>(), false);
                 return ResponseEntity.of(Optional.of(emptyOrg));
             }
