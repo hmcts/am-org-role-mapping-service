@@ -11,6 +11,8 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
@@ -18,6 +20,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsR
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,17 +38,18 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrganisationServiceTest {
 
-    private final PrdService prdService = Mockito.mock(PrdService.class);
+    private final PrdService prdService = mock(PrdService.class);
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository =
-            Mockito.mock(ProfileRefreshQueueRepository.class);
+            mock(ProfileRefreshQueueRepository.class);
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository =
-            Mockito.mock(OrganisationRefreshQueueRepository.class);
-    private final AccessTypesRepository accessTypesRepository = Mockito.mock(AccessTypesRepository.class);
+            mock(OrganisationRefreshQueueRepository.class);
+    private final AccessTypesRepository accessTypesRepository = mock(AccessTypesRepository.class);
+    private final DatabaseDateTimeRepository databaseDateTimeRepository = mock(DatabaseDateTimeRepository.class);
     private final BatchLastRunTimestampRepository batchLastRunTimestampRepository =
-            Mockito.mock(BatchLastRunTimestampRepository.class);
+            mock(BatchLastRunTimestampRepository.class);
     OrganisationService organisationService = new
             OrganisationService(prdService, organisationRefreshQueueRepository, profileRefreshQueueRepository,
-            accessTypesRepository, batchLastRunTimestampRepository, "1", "100");
+            accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository, "1", "100");
 
     @Test
     void findAndInsertStaleOrganisationsIntoRefreshQueue_Test() {
@@ -143,6 +148,9 @@ class OrganisationServiceTest {
     @SuppressWarnings("unchecked")
     @Test
     void findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
+        DatabaseDateTime databaseDateTime = mock(DatabaseDateTime.class);
+        when(databaseDateTime.getDate()).thenReturn(mock(Instant.class));
+        when(databaseDateTimeRepository.getCurrentTimeStamp()).thenReturn(databaseDateTime);
         List<AccessTypesEntity> allAccessTypes = new ArrayList<>();
         allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
         when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,8 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
@@ -17,12 +20,14 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class OrganisationService {
 
@@ -31,6 +36,7 @@ public class OrganisationService {
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
     private final AccessTypesRepository accessTypesRepository;
     private final BatchLastRunTimestampRepository batchLastRunTimestampRepository;
+    private final DatabaseDateTimeRepository databaseDateTimeRepository;
     private final String pageSize;
     private static final String SINCE_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final DateTimeFormatter ISO_DATE_TIME_FORMATTER = DateTimeFormatter
@@ -44,6 +50,7 @@ public class OrganisationService {
                                ProfileRefreshQueueRepository profileRefreshQueueRepository,
                                AccessTypesRepository accessTypesRepository,
                                BatchLastRunTimestampRepository batchLastRunTimestampRepository,
+                               DatabaseDateTimeRepository databaseDateTimeRepository,
                                @Value("${professional.refdata.pageSize}") String pageSize,
                                @Value("${groupAccess.lastRunTimeTolerance}") String tolerance
                                ) {
@@ -52,18 +59,20 @@ public class OrganisationService {
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.accessTypesRepository = accessTypesRepository;
         this.batchLastRunTimestampRepository = batchLastRunTimestampRepository;
+        this.databaseDateTimeRepository = databaseDateTimeRepository;
         this.pageSize = pageSize;
         this.tolerance = tolerance;
     }
 
     @Transactional
     public void findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
+        log.info("findOrganisationChangesAndInsertIntoOrganisationRefreshQueue started...");
+        final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
         List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
         if (allAccessTypes.size() != 1) {
             throw new ServiceException("Single AccessTypesEntity not found");
         }
         AccessTypesEntity accessTypesEntity = allAccessTypes.get(0);
-        final LocalDateTime batchRunStartTime = LocalDateTime.now();
         List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
                 .findAll();
         if (allBatchLastRunTimestampEntities.size() != 1) {
@@ -89,8 +98,10 @@ public class OrganisationService {
             writeAllToOrganisationRefreshQueue(organisationProfiles, accessTypeMinVersion);
             page++;
         }
-        batchLastRunTimestampEntity.setLastOrganisationRunDatetime(batchRunStartTime);
+        batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime.ofInstant(batchRunStartTime.getDate(),
+                ZoneOffset.systemDefault()));
         batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
+        log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
     }
 
     @Transactional
