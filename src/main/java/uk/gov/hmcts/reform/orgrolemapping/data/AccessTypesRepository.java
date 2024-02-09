@@ -13,4 +13,9 @@ public interface AccessTypesRepository extends CrudRepository<AccessTypesEntity,
             nativeQuery = true)
     AccessTypesEntity getAccessTypesEntity();
 
+    @Query(value = "update access_types "
+           + "set version = version + 1, access_types = CAST(:access_types AS jsonb) " // think about first time when database is empty
+           + "returning version, CAST(access_types AS TEXT) AS access_types",
+            nativeQuery = true)
+    AccessTypesEntity updateAccessTypesEntity(String accessTypes);
 }

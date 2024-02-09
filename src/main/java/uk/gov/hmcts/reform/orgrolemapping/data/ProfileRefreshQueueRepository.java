@@ -23,6 +23,6 @@ public interface ProfileRefreshQueueRepository extends JpaRepository<ProfileRefr
             nativeQuery = true)
     void upsertOrganisationProfileIds(
             @Param("organisationProfileIds") String organisationProfileIds,
-            @Param("accessTypesMinVersion") Integer accessTypesMinVersion
+            @Param("accessTypesMinVersion") Long accessTypesMinVersion
     );
 }
