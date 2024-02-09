@@ -79,14 +79,14 @@ public class OrganisationService {
         Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
         OrganisationProfilesResponse organisationProfiles = prdService
                 .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
-        writeAllToOrganisationProfileRefreshQueue(organisationProfiles, accessTypeMinVersion);
+        writeAllToOrganisationRefreshQueue(organisationProfiles, accessTypeMinVersion);
 
         int page = 2;
         while (organisationProfiles.getMoreAvailable()) {
 
             organisationProfiles = prdService
                     .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
-            writeAllToOrganisationProfileRefreshQueue(organisationProfiles, accessTypeMinVersion);
+            writeAllToOrganisationRefreshQueue(organisationProfiles, accessTypeMinVersion);
             page++;
         }
         batchLastRunTimestampEntity.setLastOrganisationRunDatetime(batchRunStartTime);
@@ -164,8 +164,8 @@ public class OrganisationService {
                 && response.getMoreAvailable() != null;
     }
 
-    private void writeAllToOrganisationProfileRefreshQueue(OrganisationProfilesResponse organisationProfiles,
-                                                           Integer accessTypeMinVersion) {
+    private void writeAllToOrganisationRefreshQueue(OrganisationProfilesResponse organisationProfiles,
+                                                    Integer accessTypeMinVersion) {
         organisationProfiles.getOrganisations().stream().forEach(orgInfo ->
                 insertIntoOrganisationRefreshQueueForLastUpdated(orgInfo, accessTypeMinVersion));
     }

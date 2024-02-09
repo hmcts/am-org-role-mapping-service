@@ -9,14 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfilesResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -135,4 +137,27 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
 
         assertEquals(organisationRefreshQueueRepository.findAll().size(), 0);
     }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql",
+        "classpath:sql/insert_batch_last_run.sql"})
+    void shouldFindOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
+        OrganisationInfo organisationInfo = OrganisationInfo.builder()
+                .organisationIdentifier("123")
+                .status("ACTIVE")
+                .lastUpdated(LocalDateTime.now())
+                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
+
+        OrganisationProfilesResponse response = OrganisationProfilesResponse.builder()
+                .organisations(List.of(organisationInfo))
+                .moreAvailable(false).build();
+
+        when(prdService.retrieveOrganisations(any(), anyInt(), anyInt()))
+                .thenReturn(ResponseEntity.ok(response));
+
+        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
+
+        assertEquals(organisationRefreshQueueRepository.findAll().size(), 1);
+    }
+
 }
