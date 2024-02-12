@@ -20,7 +20,7 @@
     },
     "pathVariables": {
       "process": "judicial-organisational-role-mapping",
-      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
+      "reference": "4e7d6cfa-5035-4d97-8072-2ed330b8a88f"
     },
     "body": {
       "_extends_": "S-161_JRDPresidentOfTribunalSalariedUser"
