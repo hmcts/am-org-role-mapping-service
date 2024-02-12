@@ -53,6 +53,7 @@
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
             "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -88,6 +89,7 @@
           "roleCategory": "JUDICIAL",
           "readOnly": true,
           "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",

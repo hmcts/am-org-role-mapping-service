@@ -46,6 +46,7 @@
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
             "workTypes": "hearing_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
