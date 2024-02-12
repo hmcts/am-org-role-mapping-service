@@ -624,12 +624,13 @@ then
 end;
 
 /*
- * 23: "PUBLICLAW District Judge (MC) (sitting in retirement) - Fee Paid" business role mapping to JOH.
+ * 23: "PUBLICLAW District Judge (MC) - Sitting in Retirement - Fee Paid" business role mapping to JOH.
  */
 rule "publiclaw_district_judge_mc_in_retirement_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_1.getValue())
-   $jap: JudicialAccessProfile(appointment == "District Judge (MC) (sitting in retirement)",
+   $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.PUBLICLAW_WA_1_3.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge (MC)- Sitting in Retirement",
                                appointmentType in ("Fee Paid"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "ABA3"))
@@ -648,6 +649,34 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : publiclaw_district_judge_mc_in_retirement_fee_paid_joh");
+end;
+
+
+/*
+ * 23: "PUBLICLAW District Judge (MC) - Sitting in Retirement - Fee Paid" business role mapping to JOH.
+ */
+rule "publiclaw_district_judge_mc_in_retirement_fee_paid_joh_v1_3"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_3.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge (MC) (sitting in retirement)",
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW District Judge (MC) - Sitting in Retirement - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : publiclaw_district_judge_mc_in_retirement_fee_paid_joh_v1_3");
 end;
 
 /*
