@@ -53,7 +53,7 @@ class OrganisationServiceTest {
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(1))
-                .insertIntoOrganisationRefreshQueue(any(), any(), any());
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(profileRefreshQueueRepository, times(1))
                 .setActiveFalse(any(), any());
     }
@@ -84,7 +84,7 @@ class OrganisationServiceTest {
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(2))
-                .insertIntoOrganisationRefreshQueue(any(), any(), any());
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(profileRefreshQueueRepository, times(1))
                 .setActiveFalse(any(), any());
     }
@@ -98,7 +98,7 @@ class OrganisationServiceTest {
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(0))
-                .insertIntoOrganisationRefreshQueue(any(), any(), any());
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(profileRefreshQueueRepository, times(0))
                 .setActiveFalse(any(), any());
     }
@@ -123,7 +123,7 @@ class OrganisationServiceTest {
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(0))
-                .insertIntoOrganisationRefreshQueue(any(), any(), any());
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(profileRefreshQueueRepository, times(0))
                 .setActiveFalse(any(), any());
     }
@@ -142,7 +142,7 @@ class OrganisationServiceTest {
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(0))
-                .insertIntoOrganisationRefreshQueue(any(), any(), any());
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(profileRefreshQueueRepository, times(0))
                 .setActiveFalse(any(), any());
     }

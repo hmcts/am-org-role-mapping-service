@@ -197,4 +197,4 @@ professional:
       scheduling:
         enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
         findOrganisationsWithStaleProfiles:
-          cron: ${CRON_P2_ORGS_STALE_PROFILES:"*/30 * * * * *"}
+          cron: ${CRON_P2_ORGS_STALE_PROFILES:*/30 * * * * *}

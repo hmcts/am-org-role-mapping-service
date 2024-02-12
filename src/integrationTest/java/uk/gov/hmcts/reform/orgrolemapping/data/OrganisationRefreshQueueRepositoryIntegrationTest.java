@@ -21,7 +21,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
     public void shouldInsertIntoOrganisationRefreshQueue() {
         LocalDateTime time = LocalDateTime.of(2024, 2, 7, 12, 0, 0);
 
-        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueue("123", time, 1);
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue("123", time, 1);
 
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
@@ -38,7 +38,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
     public void shouldHandleInsertConflictIntoOrganisationRefreshQueue() {
         LocalDateTime time = LocalDateTime.of(2024, 2, 7, 12, 0, 0);
 
-        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueue("123", time, 2);
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue("123", time, 2);
 
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
