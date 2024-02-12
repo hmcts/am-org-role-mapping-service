@@ -624,12 +624,12 @@ then
 end;
 
 /*
- * 23: "PUBLICLAW District Judge (MC) - Sitting in Retirement - Fee Paid" business role mapping to JOH.
+ * 23: "PUBLICLAW District Judge (MC) (sitting in retirement) - Fee Paid" business role mapping to JOH.
  */
 rule "publiclaw_district_judge_mc_in_retirement_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_1.getValue())
-   $jap: JudicialAccessProfile(appointment == "District Judge (MC)- Sitting in Retirement",
+   $jap: JudicialAccessProfile(appointment == "District Judge (MC) (sitting in retirement)",
                                appointmentType in ("Fee Paid"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "ABA3"))
