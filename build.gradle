@@ -11,7 +11,7 @@ buildscript {
 
 plugins {
     id 'application'
-    id 'uk.gov.hmcts.java' version '0.12.54'
+    id 'uk.gov.hmcts.java' version '0.12.56'
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.4'
@@ -42,7 +42,7 @@ def versions = [
         serenity       : '2.2.12',
         springBoot     : '2.7.18',
         spring         : '5.3.31',
-        springSecurity : '5.7.10',
+        springSecurity : '5.7.11',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
         tomcat         : '9.0.83',
@@ -497,7 +497,7 @@ dependencies {
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: '1.15.0'
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
-    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.8')
+    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.10')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test', version: versions.springBoot
     testImplementation group: 'org.springframework.security',name:'spring-security-test', version: versions.springSecurity
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.10.RELEASE'
