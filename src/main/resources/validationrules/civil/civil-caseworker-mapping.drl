@@ -79,6 +79,8 @@ end;
 
 /*
  * CIVIL staff "tribunal-caseworker" Org role mapping.
+ * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
+ * To be removed in DTSAM-139.
  */
 
 rule "civil_tribunal_caseworker_org_role"
@@ -110,6 +112,8 @@ end;
 
 /*
  * CIVIL staff "tribunal-caseworker" v11 Org role mapping.
+ * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
+ * To be removed in DTSAM-139.
  */
 
 rule "v11_civil_tribunal_caseworker_org_role"
@@ -195,6 +199,8 @@ end;
 
 /*
  * CIVIL staff "task-supervisor" Org role mapping.
+  * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
+  * To be removed in DTSAM-139.
  */
 rule "civil_task_supervisor_staff_org_role"
 when
@@ -255,6 +261,8 @@ end;
 
 /*
  * CIVIL staff "case-allocator" Org role mapping.
+ * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
+ * To be removed in DTSAM-139.
  */
 
 rule "civil_case_allocator_staff_org_role"
