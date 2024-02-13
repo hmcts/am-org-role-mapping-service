@@ -13,5 +13,5 @@ import java.util.List;
 @NoArgsConstructor
 public class UsersByOrganisationRequest {
 
-    private List<String> organisationIdentifier;
+    private List<String> organisationIdentifiers;
 }
