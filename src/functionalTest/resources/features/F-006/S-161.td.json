@@ -149,7 +149,6 @@
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
             "workTypes": "access_requests"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
