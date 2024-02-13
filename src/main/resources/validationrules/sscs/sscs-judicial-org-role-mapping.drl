@@ -107,7 +107,8 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing,hearing_work,post_hearing,"
                                                                      + "decision_making_work,routine_work,priority"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId() != null ?
+                                                                           $bk.getRegionId():$joh.getRegionId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -209,7 +210,10 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
+       attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+      }
+
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
