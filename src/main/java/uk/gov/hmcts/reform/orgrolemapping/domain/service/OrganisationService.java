@@ -85,9 +85,10 @@ public class OrganisationService {
                     break;
                 }
             }
-
-            updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
         }
+
+        // fine to set active false even if no organisations were identified for some/all profile ids
+        updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
     }
 
     private void writeAllToOrganisationRefreshQueue(List<OrganisationInfo> organisationInfo,
