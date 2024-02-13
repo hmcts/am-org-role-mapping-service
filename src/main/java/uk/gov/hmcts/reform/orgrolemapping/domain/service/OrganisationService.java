@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
@@ -12,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,15 +24,18 @@ public class OrganisationService {
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository;
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
     private final String pageSize;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public OrganisationService(PrdService prdService,
                                OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
                                ProfileRefreshQueueRepository profileRefreshQueueRepository,
-                               @Value("${professional.refdata.pageSize}") String pageSize) {
+                               @Value("${professional.refdata.pageSize}") String pageSize,
+                               NamedParameterJdbcTemplate jdbcTemplate) {
         this.prdService = prdService;
         this.profileRefreshQueueRepository = profileRefreshQueueRepository;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.pageSize = pageSize;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Transactional
@@ -54,22 +59,24 @@ public class OrganisationService {
         OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
         OrganisationByProfileIdsResponse response;
-        response = prdService.fetchOrganisationsByProfileIds(Integer.valueOf(pageSize), null, request).getBody();
+        response = Objects.requireNonNull(
+                prdService.fetchOrganisationsByProfileIds(Integer.valueOf(pageSize), null, request).getBody()
+        );
 
         boolean moreAvailable;
         String lastRecordInPage;
 
-        if (responseNotNull(response)) {
+        if (!response.getOrganisationInfo().isEmpty()) {
             moreAvailable = response.getMoreAvailable();
             lastRecordInPage = response.getLastRecordInPage();
 
             writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
 
             while (moreAvailable) {
-                response = prdService.fetchOrganisationsByProfileIds(
-                        Integer.valueOf(pageSize), lastRecordInPage, request).getBody();
+                response = Objects.requireNonNull(prdService.fetchOrganisationsByProfileIds(
+                        Integer.valueOf(pageSize), lastRecordInPage, request).getBody());
 
-                if (responseNotNull(response)) {
+                if (!response.getOrganisationInfo().isEmpty()) {
                     moreAvailable = response.getMoreAvailable();
                     lastRecordInPage = response.getLastRecordInPage();
 
@@ -85,11 +92,9 @@ public class OrganisationService {
 
     private void writeAllToOrganisationRefreshQueue(List<OrganisationInfo> organisationInfo,
                                                     Integer accessTypeMinVersion) {
-        organisationInfo.forEach(orgInfo -> organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(
-                orgInfo.getOrganisationIdentifier(),
-                orgInfo.getLastUpdated(),
-                accessTypeMinVersion
-        ));
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(
+                jdbcTemplate, organisationInfo, accessTypeMinVersion
+        );
     }
 
     private void updateProfileRefreshQueueActiveStatus(List<String> organisationProfileIds,
@@ -98,9 +103,5 @@ public class OrganisationService {
                 organisationProfileId,
                 accessTypeMaxVersion
         ));
-    }
-
-    private boolean responseNotNull(OrganisationByProfileIdsResponse response) {
-        return response != null && !response.getOrganisationInfo().isEmpty();
     }
 }

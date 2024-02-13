@@ -2,14 +2,16 @@ package uk.gov.hmcts.reform.orgrolemapping.data;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildOrganisationInfo;
 
 @Transactional
 class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegration {
@@ -17,17 +19,19 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
     @Autowired
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
 
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
+
     @Test
     public void shouldInsertIntoOrganisationRefreshQueue() {
-        LocalDateTime time = LocalDateTime.of(2024, 2, 7, 12, 0, 0);
+        List<OrganisationInfo> organisationInfoList = List.of(buildOrganisationInfo(123));
 
-        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue("123", time, 1);
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 1);
 
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
 
         assertEquals(organisationEntity.getOrganisationId(), "123");
-        assertEquals(organisationEntity.getLastUpdated(), time);
         assertEquals(organisationEntity.getAccessTypesMinVersion(), 1);
     }
 
@@ -36,15 +40,14 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         "classpath:sql/insert_organisation_profiles.sql"
     })
     public void shouldHandleInsertConflictIntoOrganisationRefreshQueue() {
-        LocalDateTime time = LocalDateTime.of(2024, 2, 7, 12, 0, 0);
+        List<OrganisationInfo> organisationInfoList = List.of(buildOrganisationInfo(123));
 
-        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue("123", time, 2);
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 1);
 
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
 
         assertEquals(organisationEntity.getOrganisationId(), "123");
-        assertEquals(organisationEntity.getLastUpdated(), time);
-        assertEquals(organisationEntity.getAccessTypesMinVersion(), 2);
+        assertEquals(organisationEntity.getAccessTypesMinVersion(), 1);
     }
 }

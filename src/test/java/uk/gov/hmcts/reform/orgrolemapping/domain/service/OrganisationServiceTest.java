@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
@@ -29,15 +30,20 @@ class OrganisationServiceTest {
             Mockito.mock(ProfileRefreshQueueRepository.class);
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository =
             Mockito.mock(OrganisationRefreshQueueRepository.class);
-    OrganisationService organisationService = new
-            OrganisationService(prdService, organisationRefreshQueueRepository, profileRefreshQueueRepository, "1");
+    private final NamedParameterJdbcTemplate jdbcTemplate =
+            Mockito.mock(NamedParameterJdbcTemplate.class);
+    OrganisationService organisationService = new OrganisationService(
+            prdService,
+            organisationRefreshQueueRepository,
+            profileRefreshQueueRepository,
+            "1",
+            jdbcTemplate
+    );
 
     @Test
     void findAndInsertStaleOrganisationsIntoRefreshQueue_Test() {
-        ProfileRefreshQueueEntity profileRefreshQueueEntity = ProfileRefreshQueueEntity.builder()
-                .organisationProfileId("SOLICITOR_PROFILE")
-                .accessTypesMinVersion(1)
-                .active(true).build();
+        ProfileRefreshQueueEntity profileRefreshQueueEntity =
+                buildProfileRefreshQueueEntity("SOLICITOR_PROFILE", 1, true);
 
         when(profileRefreshQueueRepository.getActiveProfileEntities()).thenReturn(List.of(profileRefreshQueueEntity));
 
@@ -104,7 +110,7 @@ class OrganisationServiceTest {
     }
 
     @Test
-    void findAndInsertStaleOrganisationsIntoRefreshQueue_NullResponseTest() {
+    void findAndInsertStaleOrganisationsIntoRefreshQueue_EmptyOrgInfoTest() {
         ProfileRefreshQueueEntity profileRefreshQueueEntity =
                 buildProfileRefreshQueueEntity("SOLICITOR_PROFILE", 1, true);
 
@@ -117,25 +123,6 @@ class OrganisationServiceTest {
 
         when(prdService.fetchOrganisationsByProfileIds(any(), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(responseWithEmptyOrgInfo));
-
-        organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
-
-        verify(profileRefreshQueueRepository, times(1))
-                .getActiveProfileEntities();
-        verify(organisationRefreshQueueRepository, times(0))
-                .upsertToOrganisationRefreshQueue(any(), any(), any());
-        verify(profileRefreshQueueRepository, times(0))
-                .setActiveFalse(any(), any());
-    }
-
-    @Test
-    void findAndInsertStaleOrganisationsIntoRefreshQueue_EmptyOrgInfoTest() {
-        ProfileRefreshQueueEntity profileRefreshQueueEntity =
-                buildProfileRefreshQueueEntity("SOLICITOR_PROFILE", 1, true);
-
-        when(profileRefreshQueueRepository.getActiveProfileEntities()).thenReturn(List.of(profileRefreshQueueEntity));
-        when(prdService.fetchOrganisationsByProfileIds(any(), eq(null), any()))
-                .thenReturn(ResponseEntity.ok(null));
 
         organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
 
