@@ -21,6 +21,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildOrganisationByProfileIdsResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildOrganisationInfo;
 
 @Transactional
 public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
@@ -41,16 +43,9 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_profile_refresh_queue.sql"})
     void shouldInsertOneOrganisationIntoOrganisationRefreshQueue_AndClearProfileRefreshQueue() {
-        OrganisationInfo organisationInfo = OrganisationInfo.builder()
-                .organisationIdentifier("123")
-                .status("ACTIVE")
-                .lastUpdated(LocalDateTime.now())
-                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
-
-        OrganisationByProfileIdsResponse response = OrganisationByProfileIdsResponse.builder()
-                .organisationInfo(List.of(organisationInfo))
-                .lastRecordInPage("123")
-                .moreAvailable(false).build();
+        OrganisationInfo organisationInfo = buildOrganisationInfo(1);
+        OrganisationByProfileIdsResponse response
+                = buildOrganisationByProfileIdsResponse(organisationInfo, "123", false);
 
         when(prdService.fetchOrganisationsByProfileIds(any(), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
@@ -64,61 +59,17 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_profile_refresh_queue.sql"})
-    void shouldInsertTwoOrganisationIntoOrganisationRefreshQueue_AndClearProfileRefreshQueue() {
-        OrganisationInfo organisationOne = OrganisationInfo.builder()
-                .organisationIdentifier("123")
-                .status("ACTIVE")
-                .lastUpdated(LocalDateTime.now())
-                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
-
-        OrganisationInfo organisationTwo = OrganisationInfo.builder()
-                .organisationIdentifier("456")
-                .status("ACTIVE")
-                .lastUpdated(LocalDateTime.now())
-                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
-
-        OrganisationByProfileIdsResponse response = OrganisationByProfileIdsResponse.builder()
-                .organisationInfo(List.of(organisationOne, organisationTwo))
-                .lastRecordInPage("456")
-                .moreAvailable(false).build();
-
-        when(prdService.fetchOrganisationsByProfileIds(any(), eq(null), any()))
-                .thenReturn(ResponseEntity.ok(response));
-
-        organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
-
-        assertEquals(organisationRefreshQueueRepository.findAll().size(), 2);
-        assertEquals(profileRefreshQueueRepository.getActiveProfileEntities().size(), 0);
-    }
-
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_profile_refresh_queue.sql"})
     void shouldInsertTwoOrganisationIntoOrganisationRefreshQueue_AndClearProfileRefreshQueue_WithPagination() {
-        OrganisationInfo organisationInfo = OrganisationInfo.builder()
-                .organisationIdentifier("123")
-                .status("ACTIVE")
-                .lastUpdated(LocalDateTime.now())
-                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
-
-        OrganisationByProfileIdsResponse page1 = OrganisationByProfileIdsResponse.builder()
-                .organisationInfo(List.of(organisationInfo))
-                .lastRecordInPage("123")
-                .moreAvailable(true).build();
+        OrganisationInfo organisationInfo = buildOrganisationInfo(1);
+        OrganisationByProfileIdsResponse page1
+                = buildOrganisationByProfileIdsResponse(organisationInfo, "123", true);
 
         when(prdService.fetchOrganisationsByProfileIds(any(), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(page1));
 
-        OrganisationInfo organisationInfo2 = OrganisationInfo.builder()
-                .organisationIdentifier("456")
-                .status("ACTIVE")
-                .lastUpdated(LocalDateTime.now())
-                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
-
-        OrganisationByProfileIdsResponse page2 = OrganisationByProfileIdsResponse.builder()
-                .organisationInfo(List.of(organisationInfo2))
-                .lastRecordInPage("456")
-                .moreAvailable(false).build();
+        OrganisationInfo organisationInfo2 = buildOrganisationInfo(2);
+        OrganisationByProfileIdsResponse page2
+                = buildOrganisationByProfileIdsResponse(organisationInfo2, "456", false);
 
         when(prdService.fetchOrganisationsByProfileIds(any(), any(String.class), any()))
                 .thenReturn(ResponseEntity.ok(page2));

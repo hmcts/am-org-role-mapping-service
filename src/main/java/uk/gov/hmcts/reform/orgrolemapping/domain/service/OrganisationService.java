@@ -111,8 +111,9 @@ public class OrganisationService {
         List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
                 .map(ProfileRefreshQueueEntity::getOrganisationProfileId)
                 .collect(Collectors.toList());
-        // HLD: Note that it is easier to take the maximum version number from step 2 and apply it to all organisations
-        // This is consistent with the semantics of "this version number or higher", and will cause no problems
+        // HLD: Note that it is easier to take the maximum version number from profile refresh queue and apply it to
+        // all organisations.
+        // This is consistent with the semantics of "this version number or higher", and will cause no problems.
         Optional<Integer> maxVersion = profileRefreshQueueEntities.stream()
                 .map(ProfileRefreshQueueEntity::getAccessTypesMinVersion)
                 .max(Comparator.naturalOrder());
@@ -129,11 +130,11 @@ public class OrganisationService {
         boolean moreAvailable;
         String lastRecordInPage;
 
-        if (responseNotNull(response) && maxVersion.isPresent()) {
+        if (responseNotNull(response)) {
             moreAvailable = response.getMoreAvailable();
             lastRecordInPage = response.getLastRecordInPage();
 
-            insertIntoOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
+            writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
 
             while (moreAvailable) {
                 response = prdService.fetchOrganisationsByProfileIds(
@@ -143,27 +144,18 @@ public class OrganisationService {
                     moreAvailable = response.getMoreAvailable();
                     lastRecordInPage = response.getLastRecordInPage();
 
-                    insertIntoOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
+                    writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
                 } else {
                     break;
                 }
             }
 
-            updateOrganisationRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
+            updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
         }
     }
 
-    private void insertIntoOrganisationRefreshQueue(List<OrganisationInfo> organisationInfo,
-                                                    Integer accessTypeMinVersion) {
-        organisationInfo.forEach(orgInfo -> organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueue(
-                orgInfo.getOrganisationIdentifier(),
-                orgInfo.getLastUpdated(),
-                accessTypeMinVersion
-        ));
-    }
-
-    private void updateOrganisationRefreshQueueActiveStatus(List<String> organisationProfileIds,
-                                                            Integer accessTypeMaxVersion) {
+    private void updateProfileRefreshQueueActiveStatus(List<String> organisationProfileIds,
+                                                       Integer accessTypeMaxVersion) {
         organisationProfileIds.forEach(organisationProfileId -> profileRefreshQueueRepository.setActiveFalse(
                 organisationProfileId,
                 accessTypeMaxVersion
@@ -171,8 +163,16 @@ public class OrganisationService {
     }
 
     private boolean responseNotNull(OrganisationByProfileIdsResponse response) {
-        return response != null && response.getOrganisationInfo() != null && !response.getLastRecordInPage().isEmpty()
-                && response.getMoreAvailable() != null;
+        return response != null && !response.getOrganisationInfo().isEmpty();
+    }
+
+    private void writeAllToOrganisationRefreshQueue(List<OrganisationInfo> organisationInfo,
+                                                    Integer accessTypeMinVersion) {
+        organisationInfo.forEach(orgInfo -> organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(
+                orgInfo.getOrganisationIdentifier(),
+                orgInfo.getLastUpdated(),
+                accessTypeMinVersion
+        ));
     }
 
     private void writeAllToOrganisationRefreshQueue(OrganisationsResponse organisationProfiles,

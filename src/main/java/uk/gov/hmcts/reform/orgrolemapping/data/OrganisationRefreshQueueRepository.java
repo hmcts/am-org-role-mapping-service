@@ -22,7 +22,7 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
             + "active = true "
             + "where excluded.access_types_min_version > organisation_refresh_queue.access_types_min_version",
             nativeQuery = true)
-    void insertIntoOrganisationRefreshQueue(
+    void upsertToOrganisationRefreshQueue(
             @Param("organisationId") String organisationId,
             @Param("lastUpdated") LocalDateTime lastUpdated,
             @Param("accessTypesMinVersion") Integer accessTypesMinVersion
