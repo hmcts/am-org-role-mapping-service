@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
@@ -24,6 +25,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,7 @@ public class OrganisationService {
     private final BatchLastRunTimestampRepository batchLastRunTimestampRepository;
     private final DatabaseDateTimeRepository databaseDateTimeRepository;
     private final String pageSize;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
     private static final String SINCE_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final DateTimeFormatter ISO_DATE_TIME_FORMATTER = DateTimeFormatter
             .ofPattern(SINCE_TIMESTAMP_FORMAT);
@@ -48,10 +51,11 @@ public class OrganisationService {
     public OrganisationService(PrdService prdService,
                                OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
                                ProfileRefreshQueueRepository profileRefreshQueueRepository,
+                               @Value("${professional.refdata.pageSize}") String pageSize,
+                               NamedParameterJdbcTemplate jdbcTemplate,
                                AccessTypesRepository accessTypesRepository,
                                BatchLastRunTimestampRepository batchLastRunTimestampRepository,
                                DatabaseDateTimeRepository databaseDateTimeRepository,
-                               @Value("${professional.refdata.pageSize}") String pageSize,
                                @Value("${groupAccess.lastRunTimeTolerance}") String tolerance
                                ) {
         this.prdService = prdService;
@@ -61,6 +65,7 @@ public class OrganisationService {
         this.batchLastRunTimestampRepository = batchLastRunTimestampRepository;
         this.databaseDateTimeRepository = databaseDateTimeRepository;
         this.pageSize = pageSize;
+        this.jdbcTemplate = jdbcTemplate;
         this.tolerance = tolerance;
     }
 
@@ -125,22 +130,24 @@ public class OrganisationService {
         OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
         OrganisationByProfileIdsResponse response;
-        response = prdService.fetchOrganisationsByProfileIds(Integer.valueOf(pageSize), null, request).getBody();
+        response = Objects.requireNonNull(
+                prdService.fetchOrganisationsByProfileIds(Integer.valueOf(pageSize), null, request).getBody()
+        );
 
         boolean moreAvailable;
         String lastRecordInPage;
 
-        if (responseNotNull(response)) {
+        if (!response.getOrganisationInfo().isEmpty()) {
             moreAvailable = response.getMoreAvailable();
             lastRecordInPage = response.getLastRecordInPage();
 
             writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
 
             while (moreAvailable) {
-                response = prdService.fetchOrganisationsByProfileIds(
-                        Integer.valueOf(pageSize), lastRecordInPage, request).getBody();
+                response = Objects.requireNonNull(prdService.fetchOrganisationsByProfileIds(
+                        Integer.valueOf(pageSize), lastRecordInPage, request).getBody());
 
-                if (responseNotNull(response)) {
+                if (!response.getOrganisationInfo().isEmpty()) {
                     moreAvailable = response.getMoreAvailable();
                     lastRecordInPage = response.getLastRecordInPage();
 
@@ -154,31 +161,25 @@ public class OrganisationService {
         }
     }
 
-    private void updateProfileRefreshQueueActiveStatus(List<String> organisationProfileIds,
-                                                       Integer accessTypeMaxVersion) {
-        organisationProfileIds.forEach(organisationProfileId -> profileRefreshQueueRepository.setActiveFalse(
-                organisationProfileId,
-                accessTypeMaxVersion
-        ));
-    }
-
-    private boolean responseNotNull(OrganisationByProfileIdsResponse response) {
-        return response != null && !response.getOrganisationInfo().isEmpty();
-    }
-
     private void writeAllToOrganisationRefreshQueue(List<OrganisationInfo> organisationInfo,
                                                     Integer accessTypeMinVersion) {
-        organisationInfo.forEach(orgInfo -> organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(
-                orgInfo.getOrganisationIdentifier(),
-                orgInfo.getLastUpdated(),
-                accessTypeMinVersion
-        ));
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(
+                jdbcTemplate, organisationInfo, accessTypeMinVersion
+        );
     }
 
     private void writeAllToOrganisationRefreshQueue(OrganisationsResponse organisationProfiles,
                                                     Integer accessTypeMinVersion) {
         organisationProfiles.getOrganisations().stream().forEach(orgInfo ->
                 insertIntoOrganisationRefreshQueueForLastUpdated(orgInfo, accessTypeMinVersion));
+    }
+
+    private void updateProfileRefreshQueueActiveStatus(List<String> organisationProfileIds,
+                                                       Integer accessTypeMaxVersion) {
+        organisationProfileIds.forEach(organisationProfileId -> profileRefreshQueueRepository.setActiveFalse(
+                organisationProfileId,
+                accessTypeMaxVersion
+        ));
     }
 
     private void insertIntoOrganisationRefreshQueueForLastUpdated(OrganisationInfo orgInfo,
