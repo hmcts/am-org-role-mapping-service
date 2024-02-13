@@ -17,6 +17,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 
 /*
  * CIVIL staff "senior tribunal-caseworker" Org role mapping.
+ * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
+ * To be removed in DTSAM-139.
  */
 
 rule "civil_senior_tribunal_caseworker_org_role"
