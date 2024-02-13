@@ -625,6 +625,8 @@ end;
 
 /*
  * 23: "PUBLICLAW District Judge (MC) - Sitting in Retirement - Fee Paid" business role mapping to JOH.
+ * Made obsolete in DTSAM-135 by PUBLICLAW_WA_1_3.
+ * To be removed in DTSAM-138.
  */
 rule "publiclaw_district_judge_mc_in_retirement_fee_paid_joh"
 when
