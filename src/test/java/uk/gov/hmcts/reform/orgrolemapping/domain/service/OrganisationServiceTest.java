@@ -162,8 +162,8 @@ class OrganisationServiceTest {
 
         organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
 
-        verify(organisationRefreshQueueRepository, times(3))
-                .insertIntoOrganisationRefreshQueueForLastUpdated(anyString(), any(LocalDateTime.class), anyInt());
+        verify(organisationRefreshQueueRepository, times(2))
+                .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
     }
 

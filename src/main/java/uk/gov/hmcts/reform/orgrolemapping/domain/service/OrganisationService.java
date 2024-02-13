@@ -170,8 +170,9 @@ public class OrganisationService {
 
     private void writeAllToOrganisationRefreshQueue(OrganisationsResponse organisationProfiles,
                                                     Integer accessTypeMinVersion) {
-        organisationProfiles.getOrganisations().stream().forEach(orgInfo ->
-                insertIntoOrganisationRefreshQueueForLastUpdated(orgInfo, accessTypeMinVersion));
+
+        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueueForLastUpdated(jdbcTemplate,
+                organisationProfiles.getOrganisations(), accessTypeMinVersion);
     }
 
     private void updateProfileRefreshQueueActiveStatus(List<String> organisationProfileIds,
@@ -181,12 +182,4 @@ public class OrganisationService {
                 accessTypeMaxVersion
         ));
     }
-
-    private void insertIntoOrganisationRefreshQueueForLastUpdated(OrganisationInfo orgInfo,
-                                                                  Integer accessTypeMinVersion) {
-        organisationRefreshQueueRepository
-                .insertIntoOrganisationRefreshQueueForLastUpdated(orgInfo.getOrganisationIdentifier(),
-                        orgInfo.getLastUpdated(), accessTypeMinVersion);
-    }
-
 }
