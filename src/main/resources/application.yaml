@@ -199,7 +199,7 @@ professional:
         findOrganisationsWithStaleProfiles:
           cron: ${CRON_P2_ORGS_STALE_PROFILES:*/30 * * * * *}
         findOrganisationChanges:
-          cron: ${CRON_P3_ORG_CHANGES:"1 * * * * *"}
+          cron: ${CRON_P3_ORG_CHANGES:*/30 * * * * *}
 
 groupAccess:
   lastRunTimeTolerance: ${TOLERANCE:180}

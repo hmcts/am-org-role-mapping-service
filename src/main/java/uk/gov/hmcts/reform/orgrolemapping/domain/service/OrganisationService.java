@@ -45,7 +45,6 @@ public class OrganisationService {
     private static final DateTimeFormatter ISO_DATE_TIME_FORMATTER = DateTimeFormatter
             .ofPattern(SINCE_TIMESTAMP_FORMAT);
 
-    @Value("${groupAccess.lastRunTimeTolerance}")
     private String tolerance;
 
     public OrganisationService(PrdService prdService,
@@ -91,16 +90,16 @@ public class OrganisationService {
         String formattedSince = ISO_DATE_TIME_FORMATTER.format(sinceTime);
 
         Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
-        OrganisationsResponse organisationProfiles = prdService
+        OrganisationsResponse organisationsResponse = prdService
                 .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
-        writeAllToOrganisationRefreshQueue(organisationProfiles, accessTypeMinVersion);
+        writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
 
         int page = 2;
-        while (organisationProfiles.getMoreAvailable()) {
+        while (organisationsResponse.getMoreAvailable()) {
 
-            organisationProfiles = prdService
+            organisationsResponse = prdService
                     .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
-            writeAllToOrganisationRefreshQueue(organisationProfiles, accessTypeMinVersion);
+            writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
             page++;
         }
         batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime.ofInstant(batchRunStartTime.getDate(),
@@ -168,11 +167,11 @@ public class OrganisationService {
         );
     }
 
-    private void writeAllToOrganisationRefreshQueue(OrganisationsResponse organisationProfiles,
+    private void writeAllToOrganisationRefreshQueue(OrganisationsResponse organisationsResponse,
                                                     Integer accessTypeMinVersion) {
 
         organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueueForLastUpdated(jdbcTemplate,
-                organisationProfiles.getOrganisations(), accessTypeMinVersion);
+                organisationsResponse.getOrganisations(), accessTypeMinVersion);
     }
 
     private void updateProfileRefreshQueueActiveStatus(List<String> organisationProfileIds,
