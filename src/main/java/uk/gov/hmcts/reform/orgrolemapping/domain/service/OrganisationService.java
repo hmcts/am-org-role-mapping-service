@@ -22,12 +22,13 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ISO_DATE_TIME_FORMATTER;
 
 @Slf4j
 @Service
@@ -41,9 +42,6 @@ public class OrganisationService {
     private final DatabaseDateTimeRepository databaseDateTimeRepository;
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private static final String SINCE_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    private static final DateTimeFormatter ISO_DATE_TIME_FORMATTER = DateTimeFormatter
-            .ofPattern(SINCE_TIMESTAMP_FORMAT);
 
     private String tolerance;
 
