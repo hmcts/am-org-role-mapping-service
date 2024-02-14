@@ -42,6 +42,11 @@ public class OrganisationService {
     public void findAndInsertStaleOrganisationsIntoRefreshQueue() {
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities
                 = profileRefreshQueueRepository.getActiveProfileEntities();
+
+        if (profileRefreshQueueEntities.isEmpty()) {
+            return;
+        }
+
         List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
                 .map(ProfileRefreshQueueEntity::getOrganisationProfileId)
                 .collect(Collectors.toList());
@@ -51,10 +56,6 @@ public class OrganisationService {
         Optional<Integer> maxVersion = profileRefreshQueueEntities.stream()
                 .map(ProfileRefreshQueueEntity::getAccessTypesMinVersion)
                 .max(Comparator.naturalOrder());
-
-        if (activeOrganisationProfileIds.isEmpty()) {
-            return;
-        }
 
         OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
@@ -87,7 +88,7 @@ public class OrganisationService {
             }
         }
 
-        // fine to set active false even if no organisations were identified for some/all profile ids
+        // fine to set all profiles `active` status to false, even if no organisations identified for given profile ids
         updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
     }
 
