@@ -267,6 +267,7 @@ end;
 rule "iac_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.IAC_JRD_1_1.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Tribunal Judge (Fee-Paid)"))
   $bk: JudicialBooking(userId == $joh.userId)
 then

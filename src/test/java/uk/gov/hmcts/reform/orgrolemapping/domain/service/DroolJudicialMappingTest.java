@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -210,7 +211,10 @@ class DroolJudicialMappingTest extends DroolBase {
         judicialBookings = Set.of(judicialBooking);
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(
+                        List.of(FeatureFlag.builder().flagName("iac_jrd_1_0").status(true).build(),
+                                FeatureFlag.builder().flagName("iac_jrd_1_1").status(false).build())
+                );
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -250,7 +254,10 @@ class DroolJudicialMappingTest extends DroolBase {
         judicialBookings = Set.of(judicialBooking, judicialBooking2);
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(
+                        List.of(FeatureFlag.builder().flagName("iac_jrd_1_0").status(true).build(),
+                                FeatureFlag.builder().flagName("iac_jrd_1_1").status(false).build())
+                );
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
