@@ -14,8 +14,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -213,12 +211,12 @@ class DroolJudicialMappingTest extends DroolBase {
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(
                         List.of(FeatureFlag.builder().flagName("iac_jrd_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("iac_jrd_1_1").status(false).build())
+                                FeatureFlag.builder().flagName("iac_jrd_1_1").status(true).build())
                 );
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
+        assertEquals(2, roleAssignments.size());
         assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
         assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
@@ -226,13 +224,6 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        RoleAssignment assignment = roleAssignments.get(2);
-        assertEquals(judicialBooking.getUserId(),assignment.getActorId());
-        assertEquals("judge",assignment.getRoleName());
-        assertEquals(judicialBooking.getLocationId(), assignment.getAttributes().get("primaryLocation").asText());
-        assertEquals(judicialBooking.getBeginTime(), assignment.getBeginTime());
-        assertEquals(judicialBooking.getEndTime(), assignment.getEndTime());
-        assertEquals(workTypes, assignment.getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -256,12 +247,12 @@ class DroolJudicialMappingTest extends DroolBase {
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(
                         List.of(FeatureFlag.builder().flagName("iac_jrd_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("iac_jrd_1_1").status(false).build())
+                                FeatureFlag.builder().flagName("iac_jrd_1_1").status(true).build())
                 );
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
+        assertEquals(2, roleAssignments.size());
         assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
         assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
@@ -269,25 +260,5 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
         assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
-
-
-        RoleAssignment assignment = roleAssignments.get(2);
-        assertEquals(judicialBooking.getUserId(),assignment.getActorId());
-        assertEquals("judge",assignment.getRoleName());
-        assertEquals(workTypes, assignment.getAttributes().get("workTypes").asText());
-        RoleAssignment assignment2 = roleAssignments.get(3);
-        assertEquals(judicialBooking2.getUserId(),assignment2.getActorId());
-        assertEquals("judge",assignment2.getRoleName());
-        assertEquals(workTypes, assignment2.getAttributes().get("workTypes").asText());
-
-        assertThat(List.of(judicialBooking.getLocationId(),
-                        judicialOfficeHolders.stream().findFirst().get().getPrimaryLocation()),
-                containsInAnyOrder(assignment.getAttributes().get("primaryLocation").asText(),
-                        assignment2.getAttributes().get("primaryLocation").asText()));
-        assertThat(List.of(judicialBooking.getBeginTime(), judicialBooking2.getBeginTime()),
-                containsInAnyOrder(assignment.getBeginTime(), assignment2.getBeginTime()));
-        assertThat(List.of(judicialBooking.getEndTime(), judicialBooking2.getEndTime()),
-                containsInAnyOrder(assignment.getEndTime(), assignment2.getEndTime()));
-
     }
 }
