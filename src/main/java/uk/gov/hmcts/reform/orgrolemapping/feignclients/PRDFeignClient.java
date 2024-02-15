@@ -22,7 +22,6 @@ public interface PRDFeignClient {
             @RequestParam(name = "pageSize") Integer pageSize,
             @RequestParam(name = "searchAfterOrg") String searchAfterOrg,
             @RequestParam(name = "searchAfterUser") String searchAfterUser,
-            @RequestParam(name = "showDeleted") boolean showDeleted,
             @RequestBody UsersByOrganisationRequest usersByOrganisationRequest
     );
 }

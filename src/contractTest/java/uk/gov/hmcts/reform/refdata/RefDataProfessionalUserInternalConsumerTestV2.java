@@ -47,7 +47,6 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     private static final String SEARCH_AFTER_ORG = "64a7a462-33b6-49a6-9efd-39220d0ea0a8";
     private static final String SEARCH_AFTER_USER = "87cdc47e-97bd-4d68-ae14-10b152fc2e6a";
     private static final Integer PAGE_SIZE = 1;
-    private static final boolean SHOW_DELETED = true;
 
     @Autowired
     PRDFeignClient prdFeignClient;
@@ -67,7 +66,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     @PactTestFor(pactMethod = "getUsersByOrganisationIdentifiersWithPageSizeAndSearchAfter")
     public void verifyGetUsersByOrganisationIdentifiersWithPageSizeAndSearchAfter() {
         ResponseEntity<UsersByOrganisationResponse> response = prdFeignClient
-                .getUsersByOrganisation(PAGE_SIZE, SEARCH_AFTER_ORG, SEARCH_AFTER_USER, SHOW_DELETED,
+                .getUsersByOrganisation(PAGE_SIZE, SEARCH_AFTER_ORG, SEARCH_AFTER_USER,
                         createRequestBody());
 
         assertNotNull(response);
@@ -83,8 +82,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
                 .path(PRD_GET_USERS_IN_ORGS_URL)
                 .query("&pageSize=" + PAGE_SIZE
                         + "&searchAfterOrg=" + SEARCH_AFTER_ORG
-                        + "&searchAfterUser=" + SEARCH_AFTER_USER
-                        + "&showDeleted=" + SHOW_DELETED)
+                        + "&searchAfterUser=" + SEARCH_AFTER_USER)
                 .body(new ObjectMapper().writeValueAsString(
                         createRequestBody()
                 ))
@@ -100,7 +98,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     @PactTestFor(pactMethod = "getUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter")
     public void verifyGetUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter() {
         ResponseEntity<UsersByOrganisationResponse> response = prdFeignClient
-                .getUsersByOrganisation(PAGE_SIZE, null, null, SHOW_DELETED,
+                .getUsersByOrganisation(PAGE_SIZE, null, null,
                         createRequestBody());
 
         assertNotNull(response);
@@ -114,7 +112,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
                         "user request")
                 .uponReceiving("A request for organisations")
                 .path(PRD_GET_USERS_IN_ORGS_URL)
-                .query("&pageSize=" + PAGE_SIZE+ "&showDeleted=" + SHOW_DELETED)
+                .query("&pageSize=" + PAGE_SIZE)
                 .body(new ObjectMapper().writeValueAsString(
                         createRequestBody()
                 ))

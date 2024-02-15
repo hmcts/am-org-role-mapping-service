@@ -22,6 +22,6 @@ public class PrdService {
             String searchAfterUser,
             UsersByOrganisationRequest usersByOrganisationRequest) {
         return prdFeignClient.getUsersByOrganisation(pageSize, searchAfterOrg, searchAfterUser,
-                true, usersByOrganisationRequest);
+                usersByOrganisationRequest);
     }
 }

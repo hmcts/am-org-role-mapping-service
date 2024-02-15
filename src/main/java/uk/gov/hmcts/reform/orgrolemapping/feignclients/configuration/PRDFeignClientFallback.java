@@ -15,7 +15,7 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     @Override
     public ResponseEntity<UsersByOrganisationResponse> getUsersByOrganisation(Integer pageSize,
                                   String searchAfterOrg, String searchAfterUser,
-                                  boolean showDeleted, UsersByOrganisationRequest usersByOrganisationRequest) {
+                                  UsersByOrganisationRequest usersByOrganisationRequest) {
         return ResponseEntity.ok(buildUsersByOrganisationResponse("usersByOrganisationSample.json"));
     }
 }
