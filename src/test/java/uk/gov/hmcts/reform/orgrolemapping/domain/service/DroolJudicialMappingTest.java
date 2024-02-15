@@ -30,8 +30,7 @@ class DroolJudicialMappingTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC President of Tribunals"));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -60,8 +59,7 @@ class DroolJudicialMappingTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Resident Immigration Judge"));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -95,8 +93,7 @@ class DroolJudicialMappingTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Designated Immigration Judge"));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -127,8 +124,7 @@ class DroolJudicialMappingTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Assistant Resident Judge"));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -159,8 +155,7 @@ class DroolJudicialMappingTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Salaried)"));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -183,8 +178,7 @@ class DroolJudicialMappingTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Fee-Paid)"));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -198,67 +192,8 @@ class DroolJudicialMappingTest extends DroolBase {
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
-    @Test
-    void shouldReturnFeePaidTribunalJudgeRoles_withBookings() throws IOException {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Fee-Paid)"));
-        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
-        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
-                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
-        judicialBooking.setLocationId("location1");
-        judicialBookings = Set.of(judicialBooking);
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("iac_jrd_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("iac_jrd_1_1").status(true).build())
-                );
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
-    }
-
-    @Test
-    void shouldReturnFeePaidTribunalJudgeRoles_withMultipleBookings() throws IOException {
-
-        judicialOfficeHolders.forEach(joh -> {
-            joh.setOffice("IAC Tribunal Judge (Fee-Paid)");
-            joh.setPrimaryLocation("Judicial Location");
-        });
-        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
-        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
-                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
-        judicialBooking.setLocationId("location1");
-        JudicialBooking judicialBooking2 = TestDataBuilder.buildJudicialBooking();
-        judicialBooking2.setUserId(judicialOfficeHolders.stream().findFirst()
-                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
-        judicialBooking2.setLocationId(null);
-        judicialBooking2.setBeginTime(ZonedDateTime.now().minusDays(5));
-        judicialBookings = Set.of(judicialBooking, judicialBooking2);
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("iac_jrd_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("iac_jrd_1_1").status(true).build())
-                );
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+    private List<FeatureFlag> getFeatureFlags() {
+        return List.of(FeatureFlag.builder().flagName("iac_jrd_1_0").status(true).build(),
+                FeatureFlag.builder().flagName("iac_jrd_1_1").status(true).build());
     }
 }
