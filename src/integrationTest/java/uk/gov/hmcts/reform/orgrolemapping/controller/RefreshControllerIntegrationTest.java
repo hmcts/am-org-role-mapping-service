@@ -154,7 +154,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         wiremockFixtures.resetRequests();
     }
 
-    @Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete() throws Exception {
@@ -183,7 +182,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertNotNull(refreshJob.getLog());
     }
 
-    @Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted() throws Exception {
@@ -291,7 +289,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    @Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithFailedUsersToComplete() throws Exception {
@@ -376,7 +373,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .andReturn();
     }
 
-    @Disabled("Intermittent AM-2919")
     @Test
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidServiceToken() throws Exception {
         logger.info("Refresh request rejected with invalid service token");
@@ -394,7 +390,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertThat(result.getResolvedException().getMessage(), equalTo(UNAUTHORIZED_SERVICE));
     }
 
-    @Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
@@ -419,7 +414,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertEquals("NEW", refreshJob.getStatus());// failed process should change the status to IN-PROGRESS
     }
 
-    @Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
