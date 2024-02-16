@@ -263,6 +263,8 @@ end;
 /*
  * IAC "judge" org role can be created by any existing judicial office holder having
  * "IAC Tribunal Judge (Fee-Paid)" business role.
+  * Made obsolete in DTSAM-96 by IAC_JRD_1_1.
+  * To be removed in DTSAM-141.
  */
 rule "iac_judge_org_role_for_fee_paid_judge"
 when

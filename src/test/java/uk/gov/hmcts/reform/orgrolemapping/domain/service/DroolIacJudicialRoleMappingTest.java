@@ -4,21 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.io.IOException;
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @RunWith(MockitoJUnitRunner.class)
-class DroolJudicialMappingTest extends DroolBase {
+class DroolIacJudicialRoleMappingTest extends DroolBase {
 
     String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications";
     String workTypesFP = "hearing_work,decision_making_work,applications";
