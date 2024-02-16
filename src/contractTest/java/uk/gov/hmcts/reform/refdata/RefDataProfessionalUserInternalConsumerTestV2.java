@@ -76,8 +76,8 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     public RequestResponsePact getUsersByOrganisationIdentifiersWithPageSizeAndSearchAfter(PactDslWithProvider builder)
             throws JsonProcessingException {
         return builder
-                .given("A page size, list of organisation identifiers and search after for a PRD internal " +
-                        "user request")
+                .given("A page size, list of organisation identifiers and search after for a PRD internal "
+                        + "user request")
                 .uponReceiving("A request for organisations")
                 .path(PRD_GET_USERS_IN_ORGS_URL)
                 .query("&pageSize=" + PAGE_SIZE
@@ -105,11 +105,11 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     }
 
     @Pact(provider = "referenceData_professionalInternalUsersV2", consumer = "accessMgmt_orgRoleMapping")
-    public RequestResponsePact getUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter(PactDslWithProvider builder)
-            throws JsonProcessingException {
+    public RequestResponsePact getUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter(
+            PactDslWithProvider builder) throws JsonProcessingException {
         return builder
-                .given("A page size, list of organisation identifiers and no search after for a PRD internal " +
-                        "user request")
+                .given("A page size, list of organisation identifiers and no search after for a PRD internal "
+                        + "user request")
                 .uponReceiving("A request for organisations")
                 .path(PRD_GET_USERS_IN_ORGS_URL)
                 .query("&pageSize=" + PAGE_SIZE)
