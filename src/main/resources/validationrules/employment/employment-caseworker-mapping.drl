@@ -53,7 +53,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("EMPLOYMENT"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,applications,amendments"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,applications,amendments,decision_making_work"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
