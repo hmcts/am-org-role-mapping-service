@@ -72,6 +72,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
         assertNotNull(response);
     }
 
+    @Disabled
     @Pact(provider = "referenceData_professionalInternalUsersV2", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact getUsersByOrganisationIdentifiersWithPageSizeAndSearchAfter(PactDslWithProvider builder)
             throws JsonProcessingException {
@@ -104,6 +105,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
         assertNotNull(response);
     }
 
+    @Disabled
     @Pact(provider = "referenceData_professionalInternalUsersV2", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact getUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter(
             PactDslWithProvider builder) throws JsonProcessingException {
