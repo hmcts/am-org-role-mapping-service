@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UsersByOrganisationResponse {
 
-    private List<OrganisationInfo> organisationInfo;
+    private List<UsersOrganisationInfo> organisationInfo;
     private String lastOrgInPage;
     private String lastUserInPage;
     private Boolean moreAvailable;

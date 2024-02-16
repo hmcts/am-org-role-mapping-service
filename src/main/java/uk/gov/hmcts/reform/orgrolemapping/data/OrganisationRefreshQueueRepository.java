@@ -17,6 +17,9 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
             + "for update skip locked", nativeQuery = true)
     OrganisationRefreshQueueEntity findAndLockSingleActiveOrganisationRecord();
 
+    @Query(value = "select count(*) from organisation_refresh_queue where active = true", nativeQuery = true)
+    Long getActiveOrganisationRefreshQueueCount();
+
     @Modifying
     @Query(value = "update organisation_refresh_queue "
             + "set active = false "

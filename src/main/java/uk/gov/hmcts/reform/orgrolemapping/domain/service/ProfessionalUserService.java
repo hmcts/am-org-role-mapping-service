@@ -1,22 +1,23 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+
+import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
 
 @Service
 public class ProfessionalUserService {
@@ -25,18 +26,18 @@ public class ProfessionalUserService {
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final String pageSize;
-    private final ObjectMapper objectMapper;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public ProfessionalUserService(PrdService prdService,
                                    OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
                                    UserRefreshQueueRepository userRefreshQueueRepository,
                                    @Value("${professional.refdata.pageSize}") String pageSize,
-                                   ObjectMapper objectMapper) {
+                                   NamedParameterJdbcTemplate jdbcTemplate) {
         this.prdService = prdService;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.pageSize = pageSize;
-        this.objectMapper = objectMapper;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -44,7 +45,6 @@ public class ProfessionalUserService {
         OrganisationRefreshQueueEntity organisationRefreshQueueEntity
                 = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
 
-        // base case to terminate recursive calls
         if (organisationRefreshQueueEntity == null) {
             return;
         }
@@ -56,80 +56,71 @@ public class ProfessionalUserService {
                 List.of(organisationIdentifier)
         );
 
+        retrieveUsersByOrganisationToUpsert(request, accessTypesMinVersion);
+
+        organisationRefreshQueueRepository.setActiveFalse(
+                organisationIdentifier,
+                accessTypesMinVersion,
+                organisationRefreshQueueEntity.getLastUpdated()
+        );
+    }
+
+    private void retrieveUsersByOrganisationToUpsert(UsersByOrganisationRequest request,
+                                                     Integer accessTypesMinVersion) {
         UsersByOrganisationResponse response;
-        response = prdService.fetchUsersByOrganisation(Integer.valueOf(pageSize), null, null, request).getBody();
+        response = Objects.requireNonNull(
+                prdService.fetchUsersByOrganisation(Integer.valueOf(pageSize), null, null, request).getBody()
+        );
 
         boolean moreAvailable;
         String searchAfterOrg;
         String searchAfterUser;
-        List<ProfessionalUser> users;
 
-        if (responseNotNull(response)) {
+        if (!response.getOrganisationInfo().isEmpty()) {
             moreAvailable = response.getMoreAvailable();
             searchAfterOrg = response.getLastOrgInPage();
             searchAfterUser = response.getLastUserInPage();
-            users = getProfessionalUsers(response);
 
-            writeAllToUserRefreshQueue(users, response.getOrganisationInfo().get(0), accessTypesMinVersion);
+            writeAllToUserRefreshQueue(response, accessTypesMinVersion);
 
             while (moreAvailable) {
-                response = prdService.fetchUsersByOrganisation(
-                        Integer.valueOf(pageSize), searchAfterOrg, searchAfterUser, request).getBody();
+                response = Objects.requireNonNull(prdService.fetchUsersByOrganisation(
+                        Integer.valueOf(pageSize), searchAfterOrg, searchAfterUser, request).getBody());
 
-                if (responseNotNull(response)) {
+                if (!response.getOrganisationInfo().isEmpty()) {
                     moreAvailable = response.getMoreAvailable();
                     searchAfterOrg = response.getLastOrgInPage();
                     searchAfterUser = response.getLastUserInPage();
-                    users = getProfessionalUsers(response);
 
-                    writeAllToUserRefreshQueue(users, response.getOrganisationInfo().get(0), accessTypesMinVersion);
+                    writeAllToUserRefreshQueue(response, accessTypesMinVersion);
                 } else {
                     break;
                 }
             }
+        }
+    }
 
-            organisationRefreshQueueRepository.setActiveFalse(
-                    organisationIdentifier,
-                    accessTypesMinVersion,
-                    organisationRefreshQueueEntity.getLastUpdated()
-            );
+    private void writeAllToUserRefreshQueue(UsersByOrganisationResponse response,
+                                            Integer accessTypesMinVersion) {
+        List<ProfessionalUserData> professionalUserData = getProfessionalUserData(response);
+
+        if (!professionalUserData.isEmpty()) {
+            userRefreshQueueRepository
+                    .upsertToUserRefreshQueue(jdbcTemplate, professionalUserData, accessTypesMinVersion);
+        }
+    }
+
+    private List<ProfessionalUserData> getProfessionalUserData(UsersByOrganisationResponse response) {
+        List<ProfessionalUserData> professionalUserData = new ArrayList<>();
+
+        for (UsersOrganisationInfo organisationInfo : response.getOrganisationInfo()) {
+            List<ProfessionalUserData> professionalUsers = organisationInfo.getUsers().stream()
+                    .map(user -> fromProfessionalUserAndOrganisationInfo(user, organisationInfo))
+                    .toList();
+
+            professionalUserData.addAll(professionalUsers);
         }
 
-        // HLD: Each iteration of steps 2 - 5 requires a single database transaction.
-        findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
-    }
-
-    private void writeAllToUserRefreshQueue(List<ProfessionalUser> users,
-                                            OrganisationInfo organisationInfo,
-                                            Integer accessTypesMinVersion) {
-        users.forEach(user -> {
-            String userAccessTypes;
-            try {
-                userAccessTypes = objectMapper.writeValueAsString(user.getUserAccessTypes());
-            } catch (JsonProcessingException e) {
-                throw new ServiceException("JsonProcessingException when serializing users access types");
-            }
-
-            userRefreshQueueRepository.upsertToUserRefreshQueue(
-                    user.getUserIdentifier(),
-                    user.getLastUpdated(),
-                    accessTypesMinVersion,
-                    user.getDeleted(),
-                    userAccessTypes,
-                    organisationInfo.getOrganisationIdentifier(),
-                    organisationInfo.getStatus(),
-                    String.join(",", organisationInfo.getOrganisationProfileIds())
-            );
-        });
-    }
-
-    private List<ProfessionalUser> getProfessionalUsers(UsersByOrganisationResponse response) {
-        return response.getOrganisationInfo().stream()
-                .flatMap(organisationInfo -> organisationInfo.getUsers().stream())
-                .collect(Collectors.toList());
-    }
-
-    private boolean responseNotNull(UsersByOrganisationResponse response) {
-        return response != null && !response.getOrganisationInfo().isEmpty();
+        return professionalUserData;
     }
 }
