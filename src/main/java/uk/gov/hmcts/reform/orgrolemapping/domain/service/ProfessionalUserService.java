@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
@@ -64,35 +65,29 @@ public class ProfessionalUserService {
                 List.of(organisationIdentifier)
         );
 
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                try {
-                    // exception is thrown in `retrieveUsersByOrganisationAndUpsert`
-                    // setting org record to false early - to test if rollback is working & it is
-                    organisationRefreshQueueRepository.setActiveFalse(
-                            organisationIdentifier,
-                            accessTypesMinVersion,
-                            organisationRefreshQueueEntity.getLastUpdated()
-                    );
+        boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+            try {
+                organisationRefreshQueueRepository.setActiveFalse(
+                    organisationIdentifier,
+                    accessTypesMinVersion,
+                    organisationRefreshQueueEntity.getLastUpdated()
+                );
 
-                    retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
-                } catch (Exception ex) {
-                    status.setRollbackOnly();
-
-                    log.info("started update retry in catch");
-
-                    // propagation = Propagation.REQUIRES_NEW set in abstract interface
-                    // end up in deadlock
-                    organisationRefreshQueueRepository.setRetry(
-                            organisationIdentifier,
-                            1
-                    );
-
-                    log.info("ended update retry in catch");
-                }
+                retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
+                return true;
+            } catch (Exception ex) {
+                status.setRollbackOnly();
+                return false;
             }
-        });
+        }));
+
+        if (!isSuccess) {
+            // Either use transactionTemplate.execute() again or different method annotated with @Transactional
+            organisationRefreshQueueRepository.setRetry(
+                organisationIdentifier,
+                1
+            );
+        }
 
         // doesn't seem right to update retry here - as lock is released here
 //        log.info("started update retry outside");
