@@ -32,7 +32,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-062_DeleteDataForRoleAssignments].
 
   @S-063
-  @FeatureToggle(DB:civil_wa_1_0=on)
+  @FeatureToggle(DB:civil_wa_1_4=on)
   Scenario: must successfully create org role mapping for Tribunal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-063_DeleteDataForRoleAssignments],
