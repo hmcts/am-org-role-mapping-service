@@ -88,16 +88,6 @@ public class ProfessionalUserService {
                 1
             );
         }
-
-        // doesn't seem right to update retry here - as lock is released here
-//        log.info("started update retry outside");
-//
-//        organisationRefreshQueueRepository.setRetry(
-//                organisationIdentifier,
-//                1
-//        );
-//
-//        log.info("ended update retry outside");
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
