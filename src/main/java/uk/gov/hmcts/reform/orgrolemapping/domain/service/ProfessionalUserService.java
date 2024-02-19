@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
@@ -19,6 +23,7 @@ import java.util.Objects;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
 
+@Slf4j
 @Service
 public class ProfessionalUserService {
 
@@ -27,20 +32,23 @@ public class ProfessionalUserService {
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final TransactionTemplate transactionTemplate;
 
     public ProfessionalUserService(PrdService prdService,
                                    OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
                                    UserRefreshQueueRepository userRefreshQueueRepository,
                                    @Value("${professional.refdata.pageSize}") String pageSize,
-                                   NamedParameterJdbcTemplate jdbcTemplate) {
+                                   NamedParameterJdbcTemplate jdbcTemplate,
+                                   PlatformTransactionManager transactionManager) {
         this.prdService = prdService;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.pageSize = pageSize;
         this.jdbcTemplate = jdbcTemplate;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
         OrganisationRefreshQueueEntity organisationRefreshQueueEntity
                 = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
@@ -56,13 +64,45 @@ public class ProfessionalUserService {
                 List.of(organisationIdentifier)
         );
 
-        retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                try {
+                    // exception is thrown in `retrieveUsersByOrganisationAndUpsert`
+                    // setting org record to false early - to test if rollback is working & it is
+                    organisationRefreshQueueRepository.setActiveFalse(
+                            organisationIdentifier,
+                            accessTypesMinVersion,
+                            organisationRefreshQueueEntity.getLastUpdated()
+                    );
 
-        organisationRefreshQueueRepository.setActiveFalse(
-                organisationIdentifier,
-                accessTypesMinVersion,
-                organisationRefreshQueueEntity.getLastUpdated()
-        );
+                    retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
+                } catch (Exception ex) {
+                    status.setRollbackOnly();
+
+                    log.info("started update retry in catch");
+
+                    // propagation = Propagation.REQUIRES_NEW set in abstract interface
+                    // end up in deadlock
+                    organisationRefreshQueueRepository.setRetry(
+                            organisationIdentifier,
+                            1
+                    );
+
+                    log.info("ended update retry in catch");
+                }
+            }
+        });
+
+        // doesn't seem right to update retry here - as lock is released here
+//        log.info("started update retry outside");
+//
+//        organisationRefreshQueueRepository.setRetry(
+//                organisationIdentifier,
+//                1
+//        );
+//
+//        log.info("ended update retry outside");
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
