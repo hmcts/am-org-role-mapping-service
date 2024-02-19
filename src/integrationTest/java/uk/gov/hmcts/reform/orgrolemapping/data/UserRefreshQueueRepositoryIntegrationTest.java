@@ -13,6 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildProfessionalUserData;
 
 @Transactional
@@ -39,6 +40,6 @@ public class UserRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrati
         assertEquals(userRefreshEntity.getAccessTypes(), "{}");
         assertEquals(userRefreshEntity.getOrganisationId(), "org 1");
         assertEquals(userRefreshEntity.getOrganisationStatus(), "ACTIVE");
-        assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains("SOLICITOR_PROFILE"));
+        assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
     }
 }

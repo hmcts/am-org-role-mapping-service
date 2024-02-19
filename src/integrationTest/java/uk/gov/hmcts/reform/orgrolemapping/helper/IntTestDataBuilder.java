@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
+
 public class IntTestDataBuilder {
 
     private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
@@ -198,7 +200,7 @@ public class IntTestDataBuilder {
         return UsersOrganisationInfo.builder()
                 .organisationIdentifier("" + i)
                 .status("ACTIVE")
-                .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
+                .organisationProfileIds(List.of(SOLICITOR_PROFILE))
                 .users(List.of(user))
                 .build();
     }
@@ -235,7 +237,7 @@ public class IntTestDataBuilder {
                 .accessTypes("{}")
                 .organisationId("org " + i)
                 .organisationStatus("ACTIVE")
-                .organisationProfileIds("SOLICITOR_PROFILE")
+                .organisationProfileIds(SOLICITOR_PROFILE)
                 .build();
     }
 }

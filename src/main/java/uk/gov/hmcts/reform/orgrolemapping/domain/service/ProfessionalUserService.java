@@ -56,7 +56,7 @@ public class ProfessionalUserService {
                 List.of(organisationIdentifier)
         );
 
-        retrieveUsersByOrganisationToUpsert(request, accessTypesMinVersion);
+        retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
 
         organisationRefreshQueueRepository.setActiveFalse(
                 organisationIdentifier,
@@ -65,7 +65,7 @@ public class ProfessionalUserService {
         );
     }
 
-    private void retrieveUsersByOrganisationToUpsert(UsersByOrganisationRequest request,
+    private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
                                                      Integer accessTypesMinVersion) {
         UsersByOrganisationResponse response;
         response = Objects.requireNonNull(

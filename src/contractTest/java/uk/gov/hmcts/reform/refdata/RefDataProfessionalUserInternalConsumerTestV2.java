@@ -31,6 +31,7 @@ import java.util.List;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -136,7 +137,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
             o.minArrayLike("organisationInfo", 1, orgInfo -> orgInfo
                     .stringType("organisationIdentifier", "0Z64OR3")
                     .stringType("status", "PENDING")
-                    .array("organisationProfileIds", arr -> arr.stringType("SOLICITOR_PROFILE"))
+                    .array("organisationProfileIds", arr -> arr.stringType(SOLICITOR_PROFILE))
                     .minArrayLike("users", 1, user -> user
                             .stringType("userIdentifier", "0Z64OR3")
                             .stringType("firstName", "John")

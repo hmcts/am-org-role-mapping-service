@@ -11,6 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserServiceTest.buildProfessionalUser;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserServiceTest.buildUsersOrganisationInfo;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
@@ -29,6 +30,6 @@ class ProfessionalUserBuilderTest {
         assertNotNull(professionalUserData.getAccessTypes());
         assertEquals(professionalUserData.getOrganisationId(), "123");
         assertEquals(professionalUserData.getOrganisationStatus(), "ACTIVE");
-        assertEquals(professionalUserData.getOrganisationProfileIds(), "SOLICITOR_PROFILE");
+        assertEquals(professionalUserData.getOrganisationProfileIds(), SOLICITOR_PROFILE);
     }
 }

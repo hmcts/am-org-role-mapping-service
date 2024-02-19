@@ -10,4 +10,5 @@ public class PrmConstants {
     public static final String ACCESS_TYPES = "accessTypes";
     public static final String USER_ID = "userId";
     public static final String DELETED = "deleted";
+    public static final String SOLICITOR_PROFILE = "SOLICITOR_PROFILE";
 }

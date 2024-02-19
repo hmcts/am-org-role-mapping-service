@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildProfessionalUser;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUsersByOrganisationResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUsersOrganisationInfo;
@@ -73,6 +74,6 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         assertEquals(userRefreshEntity.getAccessTypes(), "[]");
         assertEquals(userRefreshEntity.getOrganisationId(), "123");
         assertEquals(userRefreshEntity.getOrganisationStatus(), "ACTIVE");
-        assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains("SOLICITOR_PROFILE"));
+        assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
     }
 }
