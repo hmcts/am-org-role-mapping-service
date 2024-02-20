@@ -106,7 +106,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,"
                 + "specific-access-approver-ctsc',Y,Y,CTSC",
         "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc',N,Y,CTSC",
-        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N, CTSC"
+        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N,CTSC"
     })
     void shouldReturnPrivateLawCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                             String taskSupervisorFlag, String caseAllocatorFlag,
@@ -127,11 +127,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         allProfiles.add(cap);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build(),
-                        FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(true).build())
-                );
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
 
         //assertion
@@ -175,11 +171,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         allProfiles.add(cap);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(true).build())
-                );
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -225,11 +217,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         allProfiles.add(cap);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(true).build())
-                );
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -265,5 +253,11 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
+    }
+
+
+    List<FeatureFlag> getFeatureFlags() {
+        return List.of(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build(),
+                FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(true).build());
     }
 }
