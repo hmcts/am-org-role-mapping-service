@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,15 @@ public class CaseDefinitionService {
     private final AccessTypesRepository accessTypesRepository;
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository;
 
-    public CaseDefinitionService(CCDService ccdService, AccessTypesRepository accessTypesRepository, ProfileRefreshQueueRepository profileRefreshQueueRepository) {
+    private final ObjectMapper objectMapper;
+
+    public CaseDefinitionService(CCDService ccdService, AccessTypesRepository accessTypesRepository, ProfileRefreshQueueRepository profileRefreshQueueRepository, ObjectMapper objectMapper) {
 
         this.ccdService = ccdService;
         this.accessTypesRepository = accessTypesRepository;
         this.profileRefreshQueueRepository = profileRefreshQueueRepository;
 
+        this.objectMapper = objectMapper;
     }
 
     @Transactional
@@ -48,7 +52,7 @@ public class CaseDefinitionService {
     }
 
     public AccessTypesEntity retrieveLocalAccessTypeDefinitions(){
-        // save first time - set version to 1 - in flyway set to 0
+
         return accessTypesRepository.getAccessTypesEntity();
     }
 
@@ -66,10 +70,10 @@ public class CaseDefinitionService {
         return AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdAccessTypes.getBody()));
     }
 
-    public void compareAccessTypeDefinitions(RestructuredAccessTypes restructuredLocalAccessTypes, RestructuredAccessTypes ccdAccessTypes){
+    public void compareAccessTypeDefinitions(RestructuredAccessTypes restructuredLocalAccessTypes, RestructuredAccessTypes ccdAccessTypes) throws JsonProcessingException {
 
         if(!restructuredLocalAccessTypes.equals(ccdAccessTypes)){
-            AccessTypesEntity savedAccessTypes = accessTypesRepository.updateAccessTypesEntity(ccdAccessTypes.toString());
+            AccessTypesEntity savedAccessTypes = accessTypesRepository.updateAccessTypesEntity(objectMapper.writeValueAsString(ccdAccessTypes));
            List<String> organisationProfileIds = AccessTypesBuilder.identifyUpdatedOrgProfileIds(ccdAccessTypes, restructuredLocalAccessTypes);
             updateLocalDefinitions(organisationProfileIds, savedAccessTypes.getVersion());
         }

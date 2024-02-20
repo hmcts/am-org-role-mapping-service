@@ -197,5 +197,5 @@ professional:
   role:
     mapping:
       scheduling:
-        enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
-        cron: ${PROFESSIONAL_ROLE_MAPPING_CRON:"*/30 * * * * *"}
+        enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:true}
+        cron: ${PROFESSIONAL_ROLE_MAPPING_CRON:*/5 * * * * *}

@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class AccessTypesBuilderTest {
+public class AccessTypesBuilderTest {
 
     private static final String CHANGED = "CHANGED";
     private static final Boolean CHANGED_BOOL = Boolean.FALSE;
@@ -261,7 +261,7 @@ class AccessTypesBuilderTest {
         assertThrows(BadRequestException.class, () -> AccessTypesBuilder.buildAccessTypeResponse("invalid.json"));
     }
 
-    private static OrganisationProfile buildOrganisationProfile(String organisationProfileId,
+    public static OrganisationProfile buildOrganisationProfile(String organisationProfileId,
                                                                 String jurisdictionId,
                                                                 String accessTypeId,
                                                                 boolean accessMandatory,
@@ -294,9 +294,9 @@ class AccessTypesBuilderTest {
                 )).build();
     }
 
-    private static OrganisationProfile buildOrganisationProfile(String organisationProfileId,
-                                                                String jurisdictionId,
-                                                                Set<OrganisationProfileAccessType> accessTypes) {
+    public static OrganisationProfile buildOrganisationProfile(String organisationProfileId,
+                                                               String jurisdictionId,
+                                                               Set<OrganisationProfileAccessType> accessTypes) {
         return OrganisationProfile.builder()
                 .organisationProfileId(organisationProfileId)
                 .jurisdictions(Set.of(
@@ -307,20 +307,20 @@ class AccessTypesBuilderTest {
                 )).build();
     }
 
-    private static RestructuredAccessTypes buildRestructuredAccessTypes(Set<OrganisationProfile> orgProfiles) {
+    public static RestructuredAccessTypes buildRestructuredAccessTypes(Set<OrganisationProfile> orgProfiles) {
         return RestructuredAccessTypes.builder()
                 .organisationProfiles(orgProfiles)
                 .build();
     }
 
-    private static OrganisationProfileAccessType buildOrganisationProfileAccessType(String accessTypeId,
-                                                                                    boolean accessMandatory,
-                                                                                    boolean accessDefault,
-                                                                                    String caseTypeId,
-                                                                                    String orgRoleName,
-                                                                                    String groupRoleName,
-                                                                                    String caseGroupTemplate,
-                                                                                    boolean groupAccessEnabled) {
+    public static OrganisationProfileAccessType buildOrganisationProfileAccessType(String accessTypeId,
+                                                                                   boolean accessMandatory,
+                                                                                   boolean accessDefault,
+                                                                                   String caseTypeId,
+                                                                                   String orgRoleName,
+                                                                                   String groupRoleName,
+                                                                                   String caseGroupTemplate,
+                                                                                   boolean groupAccessEnabled) {
         return OrganisationProfileAccessType.builder()
                 .accessTypeId(accessTypeId)
                 .accessMandatory(accessMandatory)
