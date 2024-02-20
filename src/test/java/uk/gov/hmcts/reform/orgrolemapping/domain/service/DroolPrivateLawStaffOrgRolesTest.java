@@ -106,9 +106,27 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,"
                 + "specific-access-approver-ctsc',Y,Y,CTSC",
         "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc',N,Y,CTSC",
-        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N,CTSC"
+        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N,CTSC",
+        "4,ABA5,'hearing-centre-admin,hmcts-admin',N,N,ADMIN",
+        "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,"
+                + "specific-access-approver-admin',N,N,ADMIN",
+        "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
+                + "specific-access-approver-admin',Y,N,ADMIN",
+        "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,case-allocator,"
+                + "specific-access-approver-admin',N,Y,ADMIN",
+        "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator,"
+                + "specific-access-approver-admin',Y,Y,ADMIN",
+        "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,LEGAL_OPERATIONS",
+        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N,"
+                + "LEGAL_OPERATIONS",
+        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                + "specific-access-approver-legal-ops',Y,N,LEGAL_OPERATIONS",
+        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
+                + "specific-access-approver-legal-ops',N,Y,LEGAL_OPERATIONS",
+        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,"
+                + "specific-access-approver-legal-ops',Y,Y,LEGAL_OPERATIONS",
     })
-    void shouldReturnPrivateLawCtscMappings(String roleId, String serviceCode, String expectedRoles,
+    void shouldReturnPrivateLawMappings(String roleId, String serviceCode, String expectedRoles,
                                             String taskSupervisorFlag, String caseAllocatorFlag,
                                             String expectedRoleCategory) {
 
@@ -129,95 +147,6 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(expectedRoles.split(",")));
-
-        for (RoleAssignment r : roleAssignments) {
-            assertCommonRoleAssignmentAttributes(r, roleId, RoleCategory.valueOf(expectedRoleCategory));
-        }
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "4,ABA5,'hearing-centre-admin,hmcts-admin',N,N,ADMIN",
-        "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,"
-                + "specific-access-approver-admin',N,N,ADMIN",
-        "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
-                + "specific-access-approver-admin',Y,N,ADMIN",
-        "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,case-allocator,"
-                + "specific-access-approver-admin',N,Y,ADMIN",
-        "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator,"
-                 + "specific-access-approver-admin',Y,Y,ADMIN",
-    })
-    void shouldReturnPrivateLawAdminMappings(String roleId, String serviceCode, String expectedRoles,
-                                             String taskSupervisorFlag, String caseAllocatorFlag,
-                                             String expectedRoleCategory) {
-
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-        CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
-        cap.setServiceCode(serviceCode);
-        cap.setSuspended(false);
-        cap.setRoleId(roleId);
-        cap.setTaskSupervisorFlag(taskSupervisorFlag);
-        cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setRegionId(REGION_ID);
-        cap.setSkillCodes(SKILL_CODES);
-
-        allProfiles.add(cap);
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(expectedRoles.split(",")));
-
-        for (RoleAssignment r : roleAssignments) {
-            assertCommonRoleAssignmentAttributes(r, roleId, RoleCategory.valueOf(expectedRoleCategory));
-        }
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,LEGAL_OPERATIONS",
-        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N,"
-                + "LEGAL_OPERATIONS",
-        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
-                + "specific-access-approver-legal-ops',Y,N,LEGAL_OPERATIONS",
-        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
-                + "specific-access-approver-legal-ops',N,Y,LEGAL_OPERATIONS",
-        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,"
-                + "specific-access-approver-legal-ops',Y,Y,LEGAL_OPERATIONS",
-    })
-    void shouldReturnPrivateLawCaseWorkerMappings(String roleId,
-                                                  String serviceCode,
-                                                  String expectedRoles,
-                                                  String taskSupervisorFlag,
-                                                  String caseAllocatorFlag,
-                                                  String expectedRoleCategory) {
-
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-        CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
-        cap.setServiceCode(serviceCode);
-        cap.setSuspended(false);
-        cap.setRoleId(roleId);
-        cap.setTaskSupervisorFlag(taskSupervisorFlag);
-        cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setRegionId(REGION_ID);
-        cap.setSkillCodes(SKILL_CODES);
-
-        allProfiles.add(cap);
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
