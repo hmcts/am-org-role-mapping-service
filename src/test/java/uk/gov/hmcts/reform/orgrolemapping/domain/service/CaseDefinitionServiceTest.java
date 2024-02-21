@@ -27,23 +27,26 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilderTest.*;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilderTest.buildOrganisationProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilderTest.buildOrganisationProfileAccessType;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilderTest.buildRestructuredAccessTypes;
 
 @ExtendWith(MockitoExtension.class)
 public class CaseDefinitionServiceTest {
 
     private final CCDService ccdService = Mockito.mock(CCDService.class);
     private final AccessTypesRepository accessTypesRepository = Mockito.mock(AccessTypesRepository.class);
-    private final ProfileRefreshQueueRepository profileRefreshQueueRepository = Mockito.mock(ProfileRefreshQueueRepository.class) ;
+    private final ProfileRefreshQueueRepository profileRefreshQueueRepository
+            = Mockito.mock(ProfileRefreshQueueRepository.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-     CaseDefinitionService caseDefinitionService = new CaseDefinitionService(
+    CaseDefinitionService caseDefinitionService = new CaseDefinitionService(
             ccdService,
             accessTypesRepository,
             profileRefreshQueueRepository,
             objectMapper
-    );
+     );
 
     @Test
     public void findAndUpdateCaseDefinitionChanges_shouldUpdate() throws IOException {
@@ -57,17 +60,21 @@ public class CaseDefinitionServiceTest {
                 )
         );
 
-        AccessTypesEntity localDefinitions = buildAccessTypesEntity(1, objectMapper.writeValueAsString(prmRestructuredAccessTypes));
+        AccessTypesEntity localDefinitions =
+                buildAccessTypesEntity(1, objectMapper.writeValueAsString(prmRestructuredAccessTypes));
 
         when(accessTypesRepository.getAccessTypesEntity()).thenReturn(localDefinitions);
 
         AccessTypeRole ccdRoles = buildAccessTypeRole("BEFTA_CASETYPE_1_1", "Role1", "Role1",
                 "BEFTA_JURISDICTION_1:BEFTA_CaseType:[GrpRoleName1]:$ORGID$", false);
 
-        AccessType ccdAccessType = buildAccessType("SOLICITOR_PROFILE", "BEFTA_SOLICITOR_1", true, true, true,
-                "BEFTA bulk Solicitor Respondant for Org description", "BEFTA bulk Solicitor Respondant for Org hint", 3, List.of(ccdRoles));
+        AccessType ccdAccessType = buildAccessType("SOLICITOR_PROFILE",
+                "BEFTA_SOLICITOR_1", true, true, true,
+                "BEFTA bulk Solicitor Respondant for Org description",
+                "BEFTA bulk Solicitor Respondant for Org hint", 3, List.of(ccdRoles));
 
-        AccessTypeJurisdiction jurisdictions = buildJurisdictions("BEFTA_JURISDICTION_1", "BEFTA_JURISDICTION_1_OGD", List.of(ccdAccessType));
+        AccessTypeJurisdiction jurisdictions
+                = buildJurisdictions("BEFTA_JURISDICTION_1", "BEFTA_JURISDICTION_1_OGD", List.of(ccdAccessType));
 
         AccessTypesResponse response = buildAccessTypesResponse(List.of(jurisdictions));
 
@@ -75,13 +82,15 @@ public class CaseDefinitionServiceTest {
 
         when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
 
-        RestructuredAccessTypes restructuredCCDDefinitions = AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
+        RestructuredAccessTypes restructuredCCDDefinitions
+                = AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
 
-        AccessTypesEntity savedAccessTypes =buildAccessTypesEntity(1, objectMapper.writeValueAsString(restructuredCCDDefinitions)) ;
+        AccessTypesEntity savedAccessTypes =
+                buildAccessTypesEntity(1, objectMapper.writeValueAsString(restructuredCCDDefinitions));
 
         when(accessTypesRepository.updateAccessTypesEntity(any())).thenReturn(savedAccessTypes);
 
-       caseDefinitionService.findAndUpdateCaseDefinitionChanges();
+        caseDefinitionService.findAndUpdateCaseDefinitionChanges();
 
         verify(accessTypesRepository, times(1))
                 .getAccessTypesEntity();
@@ -105,7 +114,8 @@ public class CaseDefinitionServiceTest {
                 )
         );
 
-        AccessTypesEntity localDefinitions = buildAccessTypesEntity(1, objectMapper.writeValueAsString(prmRestructuredAccessTypes));
+        AccessTypesEntity localDefinitions =
+                buildAccessTypesEntity(1, objectMapper.writeValueAsString(prmRestructuredAccessTypes));
 
         when(accessTypesRepository.getAccessTypesEntity()).thenReturn(localDefinitions);
 
@@ -116,7 +126,8 @@ public class CaseDefinitionServiceTest {
                 true, true, true, "BEFTA bulk Solicitor Respondant for Org description",
                 "BEFTA bulk Solicitor Respondant for Org hint", 3, List.of(ccdRoles));
 
-        AccessTypeJurisdiction jurisdictions = buildJurisdictions("BEFTA_JURISDICTION_1", "BEFTA_JURISDICTION_1_OGD", List.of(ccdAccessType));
+        AccessTypeJurisdiction jurisdictions =
+                buildJurisdictions("BEFTA_JURISDICTION_1", "BEFTA_JURISDICTION_1_OGD", List.of(ccdAccessType));
 
         AccessTypesResponse response = buildAccessTypesResponse(List.of(jurisdictions));
 
@@ -124,9 +135,11 @@ public class CaseDefinitionServiceTest {
 
         when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
 
-        RestructuredAccessTypes restructuredCCDDefinitions = AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
+        RestructuredAccessTypes restructuredCCDDefinitions =
+                AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
 
-        AccessTypesEntity savedAccessTypes =buildAccessTypesEntity(1, objectMapper.writeValueAsString(restructuredCCDDefinitions)) ;
+        AccessTypesEntity savedAccessTypes =
+                buildAccessTypesEntity(1, objectMapper.writeValueAsString(restructuredCCDDefinitions));
 
         when(accessTypesRepository.updateAccessTypesEntity(any())).thenReturn(savedAccessTypes);
 
@@ -143,7 +156,7 @@ public class CaseDefinitionServiceTest {
 
 
 
-    private AccessTypesEntity buildAccessTypesEntity(long version, String accessTypes){
+    private AccessTypesEntity buildAccessTypesEntity(long version, String accessTypes) {
 
         return AccessTypesEntity.builder()
                 .version(version)
@@ -152,24 +165,29 @@ public class CaseDefinitionServiceTest {
 
     }
 
-    private AccessTypesResponse buildAccessTypesResponse(List<AccessTypeJurisdiction> jurisdictions){
+    private AccessTypesResponse buildAccessTypesResponse(List<AccessTypeJurisdiction> jurisdictions) {
 
         return AccessTypesResponse.builder()
                 .jurisdictions(jurisdictions)
                 .build();
+
     }
 
-    private AccessTypeJurisdiction buildJurisdictions(String jurisdictionId, String jurisdictionName, List<AccessType> accessTypes){
+    private AccessTypeJurisdiction buildJurisdictions(
+            String jurisdictionId, String jurisdictionName, List<AccessType> accessTypes) {
 
         return AccessTypeJurisdiction.builder()
                 .jurisdictionId(jurisdictionId)
                 .jurisdictionName(jurisdictionName)
                 .accessTypes(accessTypes)
                 .build();
+
     }
 
-    private AccessType buildAccessType(String organisationProfileId, String accessTypeId, boolean accessMandatory, boolean accessDefault, boolean display,
-                                       String description, String hint, Integer displayOrder, List<AccessTypeRole> roles){
+    private AccessType buildAccessType(String organisationProfileId, String accessTypeId,
+                                       boolean accessMandatory, boolean accessDefault,
+                                       boolean display, String description, String hint,
+                                       Integer displayOrder, List<AccessTypeRole> roles) {
 
         return AccessType.builder()
                 .organisationProfileId(organisationProfileId)
@@ -186,7 +204,7 @@ public class CaseDefinitionServiceTest {
     }
 
     private AccessTypeRole buildAccessTypeRole(String caseTypeId, String organisationalRoleName, String groupRoleName,
-                                               String caseGroupIdTemplate, boolean groupAccessEnabled){
+                                               String caseGroupIdTemplate, boolean groupAccessEnabled) {
 
         return AccessTypeRole.builder()
                 .caseTypeId(caseTypeId)

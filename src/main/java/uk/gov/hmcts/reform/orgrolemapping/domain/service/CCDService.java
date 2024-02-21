@@ -7,7 +7,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CCDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CCDFeignClientFallback;
 
 @Service
 @AllArgsConstructor
