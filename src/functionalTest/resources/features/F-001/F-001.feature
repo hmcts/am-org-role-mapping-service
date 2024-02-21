@@ -1,11 +1,11 @@
-@F-001
+@F-001 @azureservicebus
 Feature: F-001 :Create Role Assignments for Caseworker Users
 
   Background:
     Given an appropriate test context as detailed in the test data source
 
   @S-002
-  @FeatureToggle(DB:iac_1_1=on) @azureservicebus
+  @FeatureToggle(DB:iac_1_1=on)
   Scenario: must successfully create org role mapping for a multiple user having single role
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments01],
