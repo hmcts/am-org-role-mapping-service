@@ -74,7 +74,7 @@ public class CaseDefinitionService {
 
         if(!restructuredLocalAccessTypes.equals(ccdAccessTypes)){
             AccessTypesEntity savedAccessTypes = accessTypesRepository.updateAccessTypesEntity(objectMapper.writeValueAsString(ccdAccessTypes));
-           List<String> organisationProfileIds = AccessTypesBuilder.identifyUpdatedOrgProfileIds(ccdAccessTypes, restructuredLocalAccessTypes);
+            List<String> organisationProfileIds = AccessTypesBuilder.identifyUpdatedOrgProfileIds(ccdAccessTypes, restructuredLocalAccessTypes);
             updateLocalDefinitions(organisationProfileIds, savedAccessTypes.getVersion());
         }
 

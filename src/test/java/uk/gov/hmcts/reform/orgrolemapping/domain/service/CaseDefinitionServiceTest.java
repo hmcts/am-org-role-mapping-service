@@ -16,13 +16,16 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilder;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilderTest.*;
 
@@ -43,7 +46,7 @@ public class CaseDefinitionServiceTest {
     );
 
     @Test
-    public void findAndUpdateCaseDefinitionChanges_noCCDChanges() throws IOException {
+    public void findAndUpdateCaseDefinitionChanges_shouldUpdate() throws IOException {
 
         OrganisationProfileAccessType accessType1 = buildOrganisationProfileAccessType("accessTypeId1", true, true,
                 "caseTypeId1", "orgRoleName1", "groupRoleName1", "caseGroupTemplate1", true);
@@ -66,29 +69,79 @@ public class CaseDefinitionServiceTest {
 
         AccessTypeJurisdiction jurisdictions = buildJurisdictions("BEFTA_JURISDICTION_1", "BEFTA_JURISDICTION_1_OGD", List.of(ccdAccessType));
 
-        AccessTypesResponse ccdDefinitions = buildAccessTypesResponse(List.of(jurisdictions));
+        AccessTypesResponse response = buildAccessTypesResponse(List.of(jurisdictions));
+
+        ResponseEntity<AccessTypesResponse> ccdDefinitions = new ResponseEntity<>(response, HttpStatus.OK);
 
         when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
+
+        RestructuredAccessTypes restructuredCCDDefinitions = AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
+
+        AccessTypesEntity savedAccessTypes =buildAccessTypesEntity(1, objectMapper.writeValueAsString(restructuredCCDDefinitions)) ;
+
+        when(accessTypesRepository.updateAccessTypesEntity(any())).thenReturn(savedAccessTypes);
 
        caseDefinitionService.findAndUpdateCaseDefinitionChanges();
 
         verify(accessTypesRepository, times(1))
                 .getAccessTypesEntity();
-//        verify(organisationRefreshQueueRepository, times(0))
-//                .updateAccessTypesEntity(any(), any(), any());
-//        verify(profileRefreshQueueRepository, times(1))
-//                .setActiveFalse(any(), any());
+        verify(ccdService, times(1))
+                .fetchAccessTypes();
+        verify(accessTypesRepository, times(1))
+                .updateAccessTypesEntity(any());
 
     }
 
     @Test
-    void findAndUpdateCaseDefinitionChanges_shouldUpdate() throws IOException {
+    void findAndUpdateCaseDefinitionChanges_shouldNotUpdate() throws IOException {
 
-        AccessTypesEntity localDefinitions = buildAccessTypesEntity(1, "{}");
+        OrganisationProfileAccessType accessType1 = buildOrganisationProfileAccessType("BEFTA_SOLICITOR_1", true, true,
+                "BEFTA_CASETYPE_1_1", "Role1", "Role1",
+                "BEFTA_JURISDICTION_1:BEFTA_CaseType:[GrpRoleName1]:$ORGID$", false);
+
+        RestructuredAccessTypes prmRestructuredAccessTypes = buildRestructuredAccessTypes(
+                Set.of(
+                        buildOrganisationProfile("SOLICITOR_PROFILE", "BEFTA_JURISDICTION_1", Set.of(accessType1))
+                )
+        );
+
+        AccessTypesEntity localDefinitions = buildAccessTypesEntity(1, objectMapper.writeValueAsString(prmRestructuredAccessTypes));
 
         when(accessTypesRepository.getAccessTypesEntity()).thenReturn(localDefinitions);
 
+        AccessTypeRole ccdRoles = buildAccessTypeRole("BEFTA_CASETYPE_1_1", "Role1", "Role1",
+                "BEFTA_JURISDICTION_1:BEFTA_CaseType:[GrpRoleName1]:$ORGID$", false);
+
+        AccessType ccdAccessType = buildAccessType("SOLICITOR_PROFILE", "BEFTA_SOLICITOR_1",
+                true, true, true, "BEFTA bulk Solicitor Respondant for Org description",
+                "BEFTA bulk Solicitor Respondant for Org hint", 3, List.of(ccdRoles));
+
+        AccessTypeJurisdiction jurisdictions = buildJurisdictions("BEFTA_JURISDICTION_1", "BEFTA_JURISDICTION_1_OGD", List.of(ccdAccessType));
+
+        AccessTypesResponse response = buildAccessTypesResponse(List.of(jurisdictions));
+
+        ResponseEntity<AccessTypesResponse> ccdDefinitions = new ResponseEntity<>(response, HttpStatus.OK);
+
+        when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
+
+        RestructuredAccessTypes restructuredCCDDefinitions = AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
+
+        AccessTypesEntity savedAccessTypes =buildAccessTypesEntity(1, objectMapper.writeValueAsString(restructuredCCDDefinitions)) ;
+
+        when(accessTypesRepository.updateAccessTypesEntity(any())).thenReturn(savedAccessTypes);
+
+        caseDefinitionService.findAndUpdateCaseDefinitionChanges();
+
+        verify(accessTypesRepository, times(1))
+                .getAccessTypesEntity();
+        verify(ccdService, times(1))
+                .fetchAccessTypes();
+        verify(accessTypesRepository, times(0))
+                .updateAccessTypesEntity(any());
+
     }
+
+
 
     private AccessTypesEntity buildAccessTypesEntity(long version, String accessTypes){
 
