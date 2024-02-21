@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.PRDFeignClientFallback;
@@ -33,5 +34,13 @@ public interface PRDFeignClient {
             @RequestParam(name = "status") String status,
             @RequestParam(name = "page") Integer page,
             @RequestParam(name = "size") Integer size
+    );
+
+    @GetMapping(value = "refdata/internal/v1/users")
+    ResponseEntity<GetRefreshUserResponse> retrieveUsers(
+            @RequestParam(name = "since") String lastUpdatedSince,
+            @RequestParam(name = "pageSize") Integer pageSize,
+            @RequestParam(name = "searchAfter") String searchAfter
+
     );
 }

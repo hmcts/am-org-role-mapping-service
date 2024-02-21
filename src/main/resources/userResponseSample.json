@@ -1,0 +1,47 @@
+{
+  "users":
+  [
+    {
+      "userIdentifier": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "lastUpdated": "2023-11-20T15:51:33.046Z",
+      "organisationInfo":
+      {
+        "organisationIdentifier": "1234",
+        "status": "ACTIVE",
+        "lastUpdated": "2023-11-20T15:51:33.046Z",
+        "organisationProfileIds": ["SOLICITOR_PROFILE"]
+      },
+      "userAccessTypes":
+      [
+        {
+          "jurisdictionId": "12345",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "1234",
+          "enabled": "true"
+        }
+      ]
+    },
+    {
+      "userIdentifier": "8fa85g43-5717-4562-b3fc-2c963f66afa6",
+      "lastUpdated": "2023-11-20T15:51:45.046Z",
+      "organisationInfo":
+      {
+        "organisationIdentifier": "1233",
+        "status": "ACTIVE",
+        "lastUpdated": "2023-11-20T15:51:33.046Z",
+        "organisationProfileIds": ["SOLICITOR_PROFILE"]
+      },
+      "userAccessTypes":
+      [
+        {
+          "jurisdictionId": "12345",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "1234",
+          "enabled": "true"
+        }
+      ]
+    }
+  ],
+  "lastRecordInPage": "9fa85g43-5717-4562-b3fc-2c963f66afg4"
+  "moreAvailable": false
+}
