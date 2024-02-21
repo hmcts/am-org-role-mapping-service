@@ -59,6 +59,13 @@ public class OrganisationService {
 
         OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
+        retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get());
+
+        updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
+    }
+
+    private void retrieveOrganisationsByProfileIdsAndUpsert(OrganisationByProfileIdsRequest request,
+                                                            Integer accessTypesMinVersion) {
         OrganisationByProfileIdsResponse response;
         response = Objects.requireNonNull(
                 prdService.fetchOrganisationsByProfileIds(Integer.valueOf(pageSize), null, request).getBody()
@@ -71,7 +78,7 @@ public class OrganisationService {
             moreAvailable = response.getMoreAvailable();
             lastRecordInPage = response.getLastRecordInPage();
 
-            writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
+            writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), accessTypesMinVersion);
 
             while (moreAvailable) {
                 response = Objects.requireNonNull(prdService.fetchOrganisationsByProfileIds(
@@ -81,15 +88,12 @@ public class OrganisationService {
                     moreAvailable = response.getMoreAvailable();
                     lastRecordInPage = response.getLastRecordInPage();
 
-                    writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
+                    writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), accessTypesMinVersion);
                 } else {
                     break;
                 }
             }
         }
-
-        // fine to set all profiles `active` status to false, even if no organisations identified for given profile ids
-        updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
     }
 
     private void writeAllToOrganisationRefreshQueue(List<OrganisationInfo> organisationInfo,
