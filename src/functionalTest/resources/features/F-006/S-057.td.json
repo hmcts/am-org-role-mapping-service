@@ -79,7 +79,7 @@
           }
         },
         {
-          "id": "5ed96a8c-15d3-4b53-93ec-e27f632bc857",
+          "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
@@ -96,7 +96,7 @@
           }
         },
         {
-          "id": "8bbf7696-be65-42d0-add1-e224866dcb12",
+          "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
