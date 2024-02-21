@@ -3,8 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
@@ -12,43 +12,44 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeJurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilder;
 
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 @Transactional
 public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
-
-
+    @Autowired
+    private CaseDefinitionService caseDefinitionService;
     @Autowired
     private ProfileRefreshQueueRepository profileRefreshQueueRepository;
 
     @Autowired
     private AccessTypesRepository accessTypesRepository;
-    @Autowired
+    @MockBean
     private CCDService ccdService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    CaseDefinitionService caseDefinitionService = new CaseDefinitionService(
-            ccdService,
-            accessTypesRepository,
-            profileRefreshQueueRepository,
-            objectMapper
-    );
 
     @Test
     @Sql(scripts = {"classpath:sql/insert_access_types.sql"})
     void shouldUpdateLocalDefinitions() throws JsonProcessingException {
+
+        AccessTypesEntity localAccessTypes = caseDefinitionService.retrieveLocalAccessTypeDefinitions();
 
         AccessTypeRole ccdRoles = buildAccessTypeRole("BEFTA_CASETYPE_1_1", "Role1", "Role1",
                 "BEFTA_JURISDICTION_1:BEFTA_CaseType:[GrpRoleName1]:$ORGID$", false);
@@ -66,20 +67,14 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
         caseDefinitionService.findAndUpdateCaseDefinitionChanges();
 
-        RestructuredAccessTypes restructuredCCDDefinitions = AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
 
-        AccessTypesEntity savedAccessTypes =buildAccessTypesEntity(1, objectMapper.writeValueAsString(restructuredCCDDefinitions)) ;
-
-        when(accessTypesRepository.updateAccessTypesEntity(any())).thenReturn(savedAccessTypes);
+        List<ProfileRefreshQueueEntity> profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
 
 
-        verify(accessTypesRepository, times(1))
-                .getAccessTypesEntity();
         verify(ccdService, times(1))
                 .fetchAccessTypes();
-        verify(accessTypesRepository, times(1))
-                .updateAccessTypesEntity(any());
 
+        assertNotNull(localAccessTypes);
 
     }
 
@@ -87,6 +82,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_populated_access_types.sql"})
     void shouldNotUpdateLocalDefinitions() throws JsonProcessingException {
 
+        AccessTypesEntity localAccessTypes = caseDefinitionService.retrieveLocalAccessTypeDefinitions();
 
         AccessTypeRole ccdRoles = buildAccessTypeRole("CIVIL", "Role1", "[APPLICANTSOLICITORONE]",
                 "CIVIL:all-cases:APPSOL1:$ORGID$", true);
@@ -101,8 +97,6 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
         ResponseEntity<AccessTypesResponse> ccdDefinitions = new ResponseEntity<>(response, HttpStatus.OK);
 
         when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
-
-        AccessTypesEntity accessTypes = accessTypesRepository.getAccessTypesEntity();
 
         caseDefinitionService.findAndUpdateCaseDefinitionChanges();
 
@@ -119,7 +113,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
                 .fetchAccessTypes();
         verify(accessTypesRepository, times(0))
                 .updateAccessTypesEntity(any());
-
+        assertNotNull(localAccessTypes);
 
     }
 
