@@ -275,13 +275,14 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         true,
                         List.of("Deputy Upper Tribunal Judge - Fee Paid"),
                         List.of("fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
-                Arguments.of("District Judge (MC)- Sitting in Retirement", "Fee Paid",
+                Arguments.of("District Judge (MC) (sitting in retirement)", "Fee Paid",
                         true,
                         true,
                         List.of("District Judge (MC) - Sitting in Retirement - Fee Paid"),
                         List.of("judge","fee-paid-judge","hmcts-judiciary","hearing-viewer","hearing-manager")),
                 //no Judicial Booking, no judge role
-                Arguments.of("District Judge (MC)- Sitting in Retirement", "Fee Paid",
+
+                Arguments.of("District Judge (MC) (sitting in retirement)", "Fee Paid",
                         false,
                         true,
                         List.of("District Judge (MC) - Sitting in Retirement - Fee Paid"),
@@ -347,7 +348,8 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         List.of(FeatureFlag.builder().flagName("publiclaw_wa_1_0").status(true).build(),
                                 FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build(),
                                 FeatureFlag.builder().flagName("publiclaw_wa_1_1").status(true).build(),
-                                FeatureFlag.builder().flagName("publiclaw_wa_1_2").status(true).build())
+                                FeatureFlag.builder().flagName("publiclaw_wa_1_2").status(true).build(),
+                                FeatureFlag.builder().flagName("publiclaw_wa_1_3").status(true).build())
                 );
 
         //assertions
