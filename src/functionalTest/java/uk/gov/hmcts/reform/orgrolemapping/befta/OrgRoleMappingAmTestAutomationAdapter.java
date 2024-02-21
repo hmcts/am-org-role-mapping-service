@@ -9,6 +9,7 @@ import uk.gov.hmcts.befta.util.EnvironmentVariableUtils;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
 
 public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomationAdapter {
@@ -68,6 +69,13 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 return LocalDate.now().plusDays(1);
             default:
                 return super.calculateCustomValue(scenarioContext, key);
+        }
+    }
+
+    @io.cucumber.java.Before("@azureservicebus")
+    public void skipAzureServiceBusTestsIfNotEnabled() {
+        if (!ofNullable(System.getenv("AZURE_SERVICE_BUS_FTA_ENABLED")).map(Boolean::valueOf).orElse(false)) {
+            throw new org.junit.AssumptionViolatedException("Azure Service Bus not Enabled");
         }
     }
 }
