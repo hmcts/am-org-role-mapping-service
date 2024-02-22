@@ -45,38 +45,6 @@ then
 end;
 
 /*
- * privatelaw staff "tribunal-caseworker" Org role mapping.
- */
-rule "privatelaw_tribunal_caseworker_org_role"
-when
-  $f: FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
-  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.PRIVATELAW_WA_1_1.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "2", serviceCode == "ABA5", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work,applications"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("tribunal-caseworker")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .authorisations($cap.getSkillCodes())
-      .attributes(attribute)
-      .build());
-      logMsg("Rule : privatelaw_tribunal_caseworker_org_role");
-end;
-
-
-/*
  * privatelaw staff "hmcts-legal-operations" Org role mapping.
  */
 
