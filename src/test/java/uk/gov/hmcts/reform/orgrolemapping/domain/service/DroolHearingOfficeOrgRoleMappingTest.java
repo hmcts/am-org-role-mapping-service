@@ -134,7 +134,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         "'9,10',ABA3,PUBLICLAW",
         "'9,10',AAA6,CIVIL",
         "'9,10',BHA1,EMPLOYMENT",
-        "'9,10',BFA1,IA"
+        "'9,10',BFA1,IA",
+        "'9,10',BBA3,SSCS"
     })
     void shouldReturnHearingManagerAndViewerCaseWorker_Ctsc(String roleId, String serviceCode,
                                                              String jurisdiction) {
@@ -157,7 +158,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
                     .anyMatch(s::contains));
                 assertEquals(2, roleAssignments.size());
             } else {
-                r.getRoleName().contains("hearing-viewer");
+                assertTrue(r.getRoleName().contains("hearing-viewer"));
                 assertEquals(1, roleAssignments.size());
             }
         });

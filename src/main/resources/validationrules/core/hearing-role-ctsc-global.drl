@@ -29,7 +29,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getJuri
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
    $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3","ABA5"))
                                     || (roleId in ("9","10") && serviceCode in ("BHA1"))
-                                    || (roleId in ("9","10") && serviceCode in ("BFA1")),
+                                    || (roleId in ("9","10") && serviceCode in ("BFA1"))
+                                    || (roleId in ("9","10") && serviceCode in ("BBA3")),
                                                                 !suspended)
 
  then
@@ -61,7 +62,8 @@ import function uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getJuri
    $up: CaseWorkerAccessProfile((roleId in ("9","10") && serviceCode in ("ABA3","ABA5"))
                                  || (roleId in ("9","10") && serviceCode in ("AAA6","AAA7"))
                                  || (roleId in ("9","10") && serviceCode in ("BHA1"))
-                                 || (roleId in ("9","10") && serviceCode in ("BFA1")),
+                                 || (roleId in ("9","10") && serviceCode in ("BFA1"))
+                                 || (roleId in ("9","10") && serviceCode in ("BBA3")),
                                                                            !suspended)
  then
     Map<String,JsonNode> attribute = new HashMap<>();
