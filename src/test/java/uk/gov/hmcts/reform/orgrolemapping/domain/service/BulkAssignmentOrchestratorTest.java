@@ -50,7 +50,8 @@ class BulkAssignmentOrchestratorTest {
     private final BulkAssignmentOrchestrator sut = new BulkAssignmentOrchestrator(parseRequestService,
             retrieveDataService,
             requestMappingService,
-            judicialBookingService);
+            judicialBookingService,
+            true);
   
     @BeforeEach
     public void setUp() {
@@ -58,9 +59,9 @@ class BulkAssignmentOrchestratorTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void createBulkAssignmentsRequestForCaseworker() {
 
+        // GIVEN
         doReturn(TestDataBuilder.buildUserAccessProfileMap(false, false)).when(retrieveDataService)
                 .retrieveProfiles(any(), any());
         List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
@@ -69,72 +70,77 @@ class BulkAssignmentOrchestratorTest {
         Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
-        ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
-                UserType.CASEWORKER);
+        UserRequest request = TestDataBuilder.buildUserRequest();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        // WHEN
+        ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(request, UserType.CASEWORKER);
 
-        List<AssignmentRequest> entity = (List<AssignmentRequest>) response.getBody();
-
-        assert entity != null;
-        AssignmentRequest assignmentRequest = entity.get(0);
-        assert assignmentRequest != null;
-        RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
+        // THEN
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        AssignmentRequest assignmentRequest = getFirstAssignmentRequestFromResponse(response);
+        RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
+
         assertEquals(ROLE_NAME_TCW, roleAssignment.getRoleName());
         assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType());
         assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
 
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserRequest(any(UserRequest.class));
+                .validateUserRequest(request);
         Mockito.verify(retrieveDataService, Mockito.times(1))
-                .retrieveProfiles(any(UserRequest.class), any());
+                .retrieveProfiles(request, UserType.CASEWORKER);
         Mockito.verify(requestMappingService, Mockito.times(1))
                 .createCaseworkerAssignments(any());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    void createJudicialBulkAssignmentsRequestTest() {
+    void createBulkAssignmentsRequestForJudicial_includeJudicialBookingsDisabled() {
 
-        doReturn(TestDataBuilder.buildUserAccessProfileMap(false, false)).when(retrieveDataService)
+        // GIVEN
+        doReturn(TestDataBuilder.buildJudicialAccessProfileMap()).when(retrieveDataService)
                 .retrieveProfiles(any(), any());
         List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
-                .buildAssignmentRequest(false)));
+                .buildJudicialAssignmentRequest(false)));
 
         Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
-        ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
-                UserType.JUDICIAL);
+        UserRequest request = TestDataBuilder.buildUserRequest();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        // WHEN
+        BulkAssignmentOrchestrator sutBookingsDisabled = new BulkAssignmentOrchestrator(parseRequestService,
+                retrieveDataService,
+                requestMappingService,
+                judicialBookingService,
+                false); // NB: override SUT with disabled bookings flag
+        ResponseEntity<Object> response = sutBookingsDisabled.createBulkAssignmentsRequest(request, UserType.JUDICIAL);
 
-        List<AssignmentRequest> entity = (List<AssignmentRequest>) response.getBody();
-
-        assert entity != null;
-        AssignmentRequest assignmentRequest = entity.get(0);
-        assert assignmentRequest != null;
-        RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
+        // THEN
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(ROLE_NAME_TCW, roleAssignment.getRoleName());
+
+        AssignmentRequest assignmentRequest = getFirstAssignmentRequestFromResponse(response);
+        RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
+
+        assertEquals(ROLE_NAME_SJ, roleAssignment.getRoleName());
         assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType());
-        assertEquals(RoleCategory.LEGAL_OPERATIONS, roleAssignment.getRoleCategory());
+        assertEquals(RoleCategory.JUDICIAL, roleAssignment.getRoleCategory());
 
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserRequest(any(UserRequest.class));
+                .validateUserRequest(request);
         Mockito.verify(retrieveDataService, Mockito.times(1))
-                .retrieveProfiles(any(UserRequest.class), any());
+                .retrieveProfiles(request, UserType.JUDICIAL);
         Mockito.verify(requestMappingService, Mockito.times(1))
                 .createJudicialAssignments(any(), any());
+        Mockito.verify(judicialBookingService, Mockito.never()) // NB: never called as bookings disabled
+                .fetchJudicialBookings(any());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    void createBulkAssignmentsRequestForJudicial() {
+    void createBulkAssignmentsRequestForJudicial_includeJudicialBookingsEnabled() {
 
+        // GIVEN
         doReturn(TestDataBuilder.buildJudicialAccessProfileMap()).when(retrieveDataService)
                 .retrieveProfiles(any(), any());
         List<ResponseEntity<Object>> responseEntities = List.of(ResponseEntity.ok(AssignmentRequestBuilder
@@ -146,39 +152,55 @@ class BulkAssignmentOrchestratorTest {
         Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseEntities));
 
-        ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(TestDataBuilder.buildUserRequest(),
-                UserType.JUDICIAL);
+        UserRequest request = TestDataBuilder.buildUserRequest();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        // WHEN
+        ResponseEntity<Object> response = sut.createBulkAssignmentsRequest(request, UserType.JUDICIAL);
 
-
-        List<AssignmentRequest> assignmentRequests = (List<AssignmentRequest>) response.getBody();
-        assert assignmentRequests != null;
-
+        // THEN
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequests.get(0).getRequestedRoles()).get(0);
+
+        AssignmentRequest assignmentRequest = getFirstAssignmentRequestFromResponse(response);
+        RoleAssignment roleAssignment = ((List<RoleAssignment>) assignmentRequest.getRequestedRoles()).get(0);
+
         assertEquals(ROLE_NAME_SJ, roleAssignment.getRoleName());
         assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, roleAssignment.getRoleCategory());
 
         Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserRequest(any(UserRequest.class));
+                .validateUserRequest(request);
         Mockito.verify(retrieveDataService, Mockito.times(1))
-                .retrieveProfiles(any(UserRequest.class), any());
+                .retrieveProfiles(request, UserType.JUDICIAL);
         Mockito.verify(requestMappingService, Mockito.times(1))
                 .createJudicialAssignments(any(), any());
         Mockito.verify(judicialBookingService, Mockito.times(1))
-                .fetchJudicialBookings(any());
+                .fetchJudicialBookings(request);
     }
 
     @Test
     void createBulkAssignmentsRequestForJudicial_clientNotAvailable() {
-        UserRequest request = TestDataBuilder.buildUserRequest();
+
+        // GIVEN
         doThrow(FeignException.NotFound.class).when(retrieveDataService)
                 .retrieveProfiles(any(), any());
+
+        UserRequest request = TestDataBuilder.buildUserRequest();
+
+        // WHEN / THEN
         Assert.assertThrows(ResourceNotFoundException.class, () ->
                 sut.createBulkAssignmentsRequest(request, UserType.JUDICIAL));
+    }
+
+    @SuppressWarnings("unchecked")
+    private AssignmentRequest getFirstAssignmentRequestFromResponse(ResponseEntity<Object> response) {
+        List<AssignmentRequest> entity = (List<AssignmentRequest>) response.getBody();
+
+        assertNotNull(entity);
+        AssignmentRequest assignmentRequest = entity.get(0);
+
+        assertNotNull(assignmentRequest);
+        return assignmentRequest;
     }
 
 }

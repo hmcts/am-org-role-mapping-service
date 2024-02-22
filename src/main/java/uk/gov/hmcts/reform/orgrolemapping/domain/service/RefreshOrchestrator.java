@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,20 +14,20 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
+import uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +54,10 @@ public class RefreshOrchestrator {
     private final PersistenceService persistenceService;
     private final SecurityUtils securityUtils;
     private final JudicialBookingService judicialBookingService;
-    private String sortDirection;
-    private String sortColumn;
-    private List<String> authorisedServices;
+    private final String sortDirection;
+    private final String sortColumn;
+    private final List<String> authorisedServices;
+    private final boolean includeJudicialBookings;
     String pageSize;
 
     @Autowired
@@ -68,7 +70,8 @@ public class RefreshOrchestrator {
                                @Value("${refresh.Job.pageSize}") String pageSize,
                                @Value("${refresh.Job.sortDirection}") String sortDirection,
                                @Value("${refresh.Job.sortColumn}") String sortColumn,
-                               @Value("${refresh.Job.authorisedServices}") List<String> authorisedServices) {
+                               @Value("${refresh.Job.authorisedServices}") List<String> authorisedServices,
+                               @Value("${refresh.Job.includeJudicialBookings}") Boolean  includeJudicialBookings) {
         this.retrieveDataService = retrieveDataService;
         this.requestMappingService = requestMappingService;
         this.parseRequestService = parseRequestService;
@@ -80,6 +83,7 @@ public class RefreshOrchestrator {
         this.sortDirection = sortDirection;
         this.sortColumn = sortColumn;
         this.authorisedServices = authorisedServices;
+        this.includeJudicialBookings = BooleanUtils.isTrue(includeJudicialBookings);
     }
 
     public void validate(Long jobId, UserRequest userRequest) {
@@ -217,21 +221,18 @@ public class RefreshOrchestrator {
     protected ResponseEntity<Object> prepareResponseCodes(Map<String, HttpStatus> responseCodeWithUserId, Map<String,
             Set<UserAccessProfile>> userAccessProfiles, UserType userType) {
         ResponseEntity<Object> responseEntity;
-        if (userType.equals(UserType.JUDICIAL)) {
-            //extract unique userids from userAccessProfiles
-            List<String> userIds = new ArrayList<>();
 
-            for (Set<UserAccessProfile> userAccessProfileSet:userAccessProfiles.values()) {
-                List<UserAccessProfile> userAccessProfileList = userAccessProfileSet.stream().toList();
-                for (UserAccessProfile userAccessProfile:userAccessProfileList) {
-                    userIds.add(((JudicialAccessProfile)userAccessProfile).getUserId());
-                }
+        if (userType.equals(UserType.JUDICIAL)) {
+            List<JudicialBooking> judicialBookings = Collections.emptyList();
+
+            if (includeJudicialBookings) {
+                List<String> userIds = UtilityFunctions.getUserIdsFromJudicialAccessProfileMap(userAccessProfiles);
+
+                judicialBookings = judicialBookingService.fetchJudicialBookingsInBatches(userIds, pageSize);
+
+                log.info("Judicial Refresh for {} users(s) got {} booking(s)", userIds.size(), judicialBookings.size());
             }
-            List<String> uniqueUserIds = userIds.stream().distinct().toList();
-            List<JudicialBooking> judicialBookings =
-                    judicialBookingService.fetchJudicialBookingsInBatches(uniqueUserIds,pageSize);
-            log.info("Judicial Refresh for {} profile(s) got {} booking(s)", userAccessProfiles.size(),
-                    judicialBookings.size());
+
             responseEntity = requestMappingService.createJudicialAssignments(userAccessProfiles, judicialBookings);
         } else {
             responseEntity = requestMappingService.createCaseworkerAssignments(userAccessProfiles);
