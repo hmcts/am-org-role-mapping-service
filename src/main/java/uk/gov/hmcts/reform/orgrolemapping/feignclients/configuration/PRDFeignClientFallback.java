@@ -19,6 +19,6 @@ public class PRDFeignClientFallback implements PRDFeignClient {
 
     @Override
     public ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(String userId) {
-        return buildGetRefreshUsersResponse("prdRefreshUserSample.json", userId);
+        return buildGetRefreshUsersResponse("prdRefreshUserSample138.json", userId);
     }
 }

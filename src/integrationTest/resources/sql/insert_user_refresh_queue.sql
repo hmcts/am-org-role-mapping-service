@@ -10,3 +10,7 @@ INSERT INTO public.user_refresh_queue (user_id, last_updated, access_types_min_v
 VALUES(2, now(), 1, null, '[]'::jsonb, 'OrgId', 'OrgStatus', '{"profileId"}', false);
 INSERT INTO public.user_refresh_queue (user_id, last_updated, access_types_min_version, deleted, access_types, organisation_id, organisation_status, organisation_profile_ids, active)
 VALUES(3, now(), 1, null, '[]'::jsonb, 'OrgId', 'OrgStatus', '{"profileId"}', true);
+
+
+
+

@@ -1,20 +1,29 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.io.IOException;
@@ -48,6 +57,27 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
     @MockBean
     private PRDFeignClient prdFeignClient;
 
+    @MockBean
+    private RASFeignClient rasFeignClient;
+
+    private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
+
+    @BeforeEach
+    void setUp() throws JsonProcessingException {
+        doReturn(authentication).when(securityContext).getAuthentication();
+        SecurityContextHolder.setContext(securityContext);
+        MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
+        wiremockFixtures.resetRequests();
+        wiremockFixtures.stubIdamCall();
+    }
+
+
+
     @Nested
     class RefreshProfessionalUser {
 
@@ -55,11 +85,14 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
         void setUp() throws IOException {
             doReturn(ResponseEntity.ok(TestDataBuilder.buildRefreshUsersResponse(USER_ID)))
                 .when(prdFeignClient).getRefreshUsers(any());
+
+            doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
+                    .when(rasFeignClient).createRoleAssignment(any(), any());
         }
 
         @Test
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_user_refresh_queue.sql"})
+            scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
         void shouldRefreshProfessionalUser() {
             professionalRefreshOrchestrator.refreshProfessionalUser(USER_ID);
 
@@ -92,17 +125,15 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
 
         @Test
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_user_refresh_queue.sql"})
+            scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
         void refreshProfessionalUserBatch() {
             assertTrue(userRefreshQueueRepository.findByUserId("1").getActive());
-            assertTrue(userRefreshQueueRepository.findByUserId("3").getActive());
 
             professionalRefreshOrchestrator.refreshProfessionalUsers();
 
             verify(accessTypesRepository, times(1)).findFirstByOrderByVersionDesc();
-            verify(userRefreshQueueRepository, times(3)).findFirstByActiveTrue();
+            verify(userRefreshQueueRepository, times(1)).findFirstByActiveTrue();
             assertFalse(userRefreshQueueRepository.findByUserId("1").getActive());
-            assertFalse(userRefreshQueueRepository.findByUserId("3").getActive());
         }
 
         @Test
@@ -112,5 +143,19 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
 
             assertEquals(NO_ACCESS_TYPES_FOUND, exception.getMessage());
         }
+
+        @Test
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+                scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+        void refreshProfessionalUser_GA138() {
+            assertTrue(userRefreshQueueRepository.findByUserId("1").getActive());
+
+            professionalRefreshOrchestrator.refreshProfessionalUsers();
+
+            verify(accessTypesRepository, times(1)).findFirstByOrderByVersionDesc();
+            verify(userRefreshQueueRepository, times(1)).findFirstByActiveTrue();
+            assertFalse(userRefreshQueueRepository.findByUserId("1").getActive());
+        }
+
     }
 }

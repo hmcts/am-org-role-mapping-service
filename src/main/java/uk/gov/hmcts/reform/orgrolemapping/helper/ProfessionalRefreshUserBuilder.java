@@ -20,7 +20,8 @@ public class ProfessionalRefreshUserBuilder {
                      .getResourceAsStream(resource)) {
             assert inputStream != null;
             ObjectMapper objectMapper = getObjectMapper();
-            GetRefreshUsersResponse getRefreshUsersResponse = objectMapper.readValue(inputStream, GetRefreshUsersResponse.class);
+            GetRefreshUsersResponse getRefreshUsersResponse = objectMapper.readValue(inputStream,
+                    GetRefreshUsersResponse.class);
             getRefreshUsersResponse.getUsers().get(0).setUserIdentifier(userId);
             return ResponseEntity.ok(getRefreshUsersResponse);
         } catch (Exception e) {

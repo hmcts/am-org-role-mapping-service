@@ -13,6 +13,9 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 public class PRDService {
 
     private final PRDFeignClient prdFeignClient;
+    //Uncomment this to run with your stubs
+    // for testing purpose private final PRDFeignClientFallback prdFeignClient;
+
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<GetRefreshUsersResponse> getRefreshUser(String userId) {

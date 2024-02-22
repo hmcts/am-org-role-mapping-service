@@ -30,10 +30,12 @@ public interface UserRefreshQueueRepository extends CrudRepository<UserRefreshQu
         insert into user_refresh_queue (user_id, last_updated, access_types_min_version, deleted,
                                         access_types, organisation_id, organisation_status,
                                         organisation_profile_ids, active)
-        values(:userId, :lastUpdated, :accessTypesMinVersion, :deleted, cast(:accessTypes as json), :organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true)
+        values(:userId, :lastUpdated, :accessTypesMinVersion, :deleted, cast(:accessTypes as json),
+         :organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true)
         on conflict (user_id) do update
         set
-            access_types_min_version = greatest(excluded.access_types_min_version, user_refresh_queue.access_types_min_version),
+            access_types_min_version = greatest(excluded.access_types_min_version,
+             user_refresh_queue.access_types_min_version),
             last_updated = excluded.last_updated,
             deleted = excluded.deleted,
             access_types = excluded.access_types,

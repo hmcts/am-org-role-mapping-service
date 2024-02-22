@@ -144,8 +144,8 @@ public class RefreshController {
     @Operation(summary = "refreshes professional role assignments",
         security =
             {
-                @SecurityRequirement(name = AUTHORIZATION),
-                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
             })
     @ApiResponse(
         responseCode = "200",

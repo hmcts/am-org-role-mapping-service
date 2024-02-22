@@ -617,7 +617,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-        scripts = {"classpath:sql/insert_user_refresh_queue.sql"})
+        scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
     public void shouldProcessProfessionalRefreshRequest() throws Exception {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("1234")))
             .when(prdFeignClient).getRefreshUsers(any());
