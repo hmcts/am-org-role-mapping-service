@@ -12,7 +12,7 @@ import uk.gov.hmcts.befta.TestAutomationConfig;
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = "json:target/cucumber.json",
                  glue = "uk.gov.hmcts.befta.player",
-                 features = {"classpath:features"}, tags = { "(not @Ignore) or (not @azureservicebus)" })
+                 features = {"classpath:features"})
 public class OrgRoleMappingEntityApiBeftaRunner {
 
     private OrgRoleMappingEntityApiBeftaRunner() {
