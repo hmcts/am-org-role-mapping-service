@@ -47,6 +47,8 @@ public class OrmDefaultMultiSourceFeatureToggleService extends DefaultMultiSourc
     protected FeatureToggleService getToggleService(String toggleDomain) {
         if (Stream.of("IAC", "RAS", "DB").anyMatch(toggleDomain::equalsIgnoreCase)) {
             return new uk.gov.hmcts.reform.orgrolemapping.befta.OrmFeatureToggleService();
+        } else if (Stream.of("EV").anyMatch(toggleDomain::equalsIgnoreCase)) {
+            return new uk.gov.hmcts.reform.orgrolemapping.befta.OrmEnvironmentVariableToggleService();
         } else {
             return super.getToggleService(toggleDomain);
         }
