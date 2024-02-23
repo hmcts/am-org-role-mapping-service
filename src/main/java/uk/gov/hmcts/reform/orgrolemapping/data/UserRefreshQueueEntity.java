@@ -48,4 +48,10 @@ public class UserRefreshQueueEntity {
 
     @Column(name = "active", nullable = false)
     private Boolean active;
+
+    @Column(name = "retry")
+    private Integer retry;
+
+    @Column(name = "retry_after")
+    private LocalDateTime retryAfter;
 }
