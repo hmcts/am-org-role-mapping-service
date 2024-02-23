@@ -42,15 +42,15 @@ def versions = [
         serenity       : '2.2.12',
         springBoot     : '2.7.18',
         spring         : '5.3.31',
-        springSecurity : '5.7.10',
+        springSecurity : '5.7.11',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
-        tomcat         : '9.0.83',
+        tomcat         : '9.0.85',
         pact_version   : '4.1.41',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
-        jacksondata    : '2.16.0',
+        jacksondata    : '2.16.1',
         drools         : '7.73.0.Final',
         log4JVersion   : '2.20.0',
         logbackVersion : '1.2.13',
@@ -399,7 +399,7 @@ dependencies {
         exclude group: 'com.microsoft.azure', module: 'adal4j'
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
-    implementation group: 'com.azure', name: 'azure-core', version: '1.45.1'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.46.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.14.7'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
