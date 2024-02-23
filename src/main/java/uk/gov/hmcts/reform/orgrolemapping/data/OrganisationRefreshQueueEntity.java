@@ -36,5 +36,5 @@ public class OrganisationRefreshQueueEntity {
     private Integer retry;
 
     @Column(name = "retry_after")
-    private Integer retryAfter;
+    private LocalDateTime retryAfter;
 }
