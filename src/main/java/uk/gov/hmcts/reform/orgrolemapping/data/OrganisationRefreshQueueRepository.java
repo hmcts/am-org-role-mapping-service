@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Repository
 public interface OrganisationRefreshQueueRepository extends JpaRepository<OrganisationRefreshQueueEntity, String> {
 
-    @Query(value = "select organisation_id, last_updated, access_types_min_version, active "
+    @Query(value = "select organisation_id, last_updated, access_types_min_version, active, retry, retry_after "
             + "from organisation_refresh_queue "
             + "where active = true "
             + "limit 1 "
