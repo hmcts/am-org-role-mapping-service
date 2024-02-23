@@ -81,8 +81,7 @@ public class ProviderTestConfiguration {
     @MockBean
     JudicialBookingService judicialBookingService;
 
-    @MockBean
-    ObjectMapper objectMapper;
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Bean
     @Primary
