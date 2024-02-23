@@ -83,6 +83,7 @@ public class ProviderTestConfiguration {
 
     @MockBean
     ObjectMapper objectMapper;
+
     @Bean
     @Primary
     public RefreshOrchestrator refreshOrchestrator() {
