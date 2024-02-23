@@ -31,4 +31,10 @@ public class OrganisationRefreshQueueEntity {
 
     @Column(name = "active", nullable = false)
     private Boolean active;
+
+    @Column(name = "retry")
+    private Integer retry;
+
+    @Column(name = "retry_after")
+    private Integer retryAfter;
 }
