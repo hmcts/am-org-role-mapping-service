@@ -21,9 +21,10 @@ public class ProfessionalUserService {
     private String activeUserRefreshDays;
 
     public ProfessionalUserService(UserRefreshQueueRepository userRefreshQueueRepository,
-                                   AccessTypesRepository accessTypesRepository,
-                                   ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper,
-                                   @Value("${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}") String activeUserRefreshDays) {
+            AccessTypesRepository accessTypesRepository,
+            ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper,
+            @Value("${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}")
+                                   String activeUserRefreshDays) {
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.accessTypesRepository = accessTypesRepository;
         this.professionalRefreshOrchestrationHelper = professionalRefreshOrchestrationHelper;
