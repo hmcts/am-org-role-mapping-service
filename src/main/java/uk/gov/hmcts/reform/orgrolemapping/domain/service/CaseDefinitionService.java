@@ -41,9 +41,9 @@ public class CaseDefinitionService {
     }
 
     @Transactional
-    public void findAndUpdateCaseDefinitionChanges() throws JsonProcessingException {
+    public void findAndUpdateCaseDefinitionChanges() {
 
-        AccessTypesEntity localAccessTypes = retrieveLocalAccessTypeDefinitions();
+        AccessTypesEntity localAccessTypes = accessTypesRepository.getAccessTypesEntity();
 
         RestructuredAccessTypes ccdAccessTypes = retrieveCCDAccessTypeDefinitions();
 
@@ -52,11 +52,6 @@ public class CaseDefinitionService {
 
         compareAccessTypeDefinitions(restructuredLocalAccessTypes, ccdAccessTypes);
 
-    }
-
-    private AccessTypesEntity retrieveLocalAccessTypeDefinitions() {
-
-        return accessTypesRepository.getAccessTypesEntity();
     }
 
     private static RestructuredAccessTypes restructureLocalAccessTypes(String localAccessTypes) {
@@ -80,11 +75,19 @@ public class CaseDefinitionService {
 
     private void compareAccessTypeDefinitions(
             RestructuredAccessTypes restructuredLocalAccessTypes,
-            RestructuredAccessTypes ccdAccessTypes) throws JsonProcessingException {
+            RestructuredAccessTypes ccdAccessTypes) {
 
         if (!restructuredLocalAccessTypes.equals(ccdAccessTypes)) {
+
+            String ccdAccessTypesString;
+            try {
+                ccdAccessTypesString = objectMapper.writeValueAsString(ccdAccessTypes);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
             AccessTypesEntity savedAccessTypes = accessTypesRepository
-                    .updateAccessTypesEntity(objectMapper.writeValueAsString(ccdAccessTypes));
+                    .updateAccessTypesEntity(ccdAccessTypesString);
 
             List<String> organisationProfileIds = AccessTypesBuilder
                     .identifyUpdatedOrgProfileIds(ccdAccessTypes, restructuredLocalAccessTypes);

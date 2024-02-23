@@ -197,5 +197,6 @@ professional:
   role:
     mapping:
       scheduling:
-        enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:true}
-        cron: ${PROFESSIONAL_ROLE_MAPPING_CRON:*/5 * * * * *}
+        enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
+        findAndUpdateCaseDefinitionChanges:
+          cron: ${CRON_P1_FIND_CASE_DEFINITION_CHANGES:*/30 * * * * *}
