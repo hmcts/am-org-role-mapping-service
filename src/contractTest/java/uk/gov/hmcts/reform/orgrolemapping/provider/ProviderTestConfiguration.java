@@ -47,6 +47,25 @@ public class ProviderTestConfiguration {
     @MockBean
     UserRefreshQueueRepository userRefreshQueueRepository;
 
+    @MockBean
+    SecurityUtils securityUtils;
+
+    @MockBean
+    private CacheManager cacheManager;
+
+    @MockBean
+    JudicialBookingService judicialBookingService;
+
+    @MockBean
+    RoleAssignmentService roleAssignmentService;
+
+    @MockBean
+    PersistenceService persistenceService;
+
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    private KieServices kieServices = KieServices.Factory.get();
+
     @Bean
     @Primary
     public RetrieveDataService getRetrieveDataService() {
@@ -60,28 +79,11 @@ public class ProviderTestConfiguration {
                 "pr", persistenceService, roleAssignmentService, getStatelessKieSession(), securityUtils);
     }
 
-    @MockBean
-    RoleAssignmentService roleAssignmentService;
-
-    @MockBean
-    PersistenceService persistenceService;
-
     @Bean
     @Primary
     public ParseRequestService getParseRequestService() {
         return new ParseRequestService();
     }
-
-    @MockBean
-    SecurityUtils securityUtils;
-
-    @MockBean
-    private CacheManager cacheManager;
-
-    @MockBean
-    JudicialBookingService judicialBookingService;
-
-    ObjectMapper objectMapper = new ObjectMapper();
 
     @Bean
     @Primary
@@ -117,13 +119,10 @@ public class ProviderTestConfiguration {
                 );
     }
 
-    private KieServices kieServices = KieServices.Factory.get();
-
     @Bean
     public KieContainer kieContainer() {
         return kieServices.getKieClasspathContainer();
     }
-
 
     @Bean
     public StatelessKieSession getStatelessKieSession() {
