@@ -53,5 +53,5 @@ public class UserRefreshQueueEntity {
     private Integer retry;
 
     @Column(name = "retry_after")
-    private Integer retryAfter;
+    private LocalDateTime retryAfter;
 }
