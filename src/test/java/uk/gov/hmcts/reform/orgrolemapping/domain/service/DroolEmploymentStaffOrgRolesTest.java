@@ -215,7 +215,7 @@ class DroolEmploymentStaffOrgRolesTest extends DroolBase {
                     if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
                         assertNull(r.getAttributes().get("workTypes"));
                     } else if (("tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("hearing_work,routine_work,applications,amendments",
+                        assertEquals("hearing_work,routine_work,applications,amendments,decision_making_work",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (Objects.equals("specific-access-approver-legal-ops", r.getRoleName())) {
                         assertEquals("access_requests",
