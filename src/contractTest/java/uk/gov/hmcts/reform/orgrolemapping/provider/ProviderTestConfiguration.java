@@ -8,18 +8,24 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.ParseRequestService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.PRDService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ParseRequestService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
+
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -31,6 +37,15 @@ public class ProviderTestConfiguration {
 
     @MockBean
     JRDService jrdService;
+
+    @MockBean
+    PRDService prdService;
+
+    @MockBean
+    AccessTypesRepository accessTypesRepository;
+
+    @MockBean
+    UserRefreshQueueRepository userRefreshQueueRepository;
 
     @Bean
     @Primary
@@ -66,6 +81,8 @@ public class ProviderTestConfiguration {
     @MockBean
     JudicialBookingService judicialBookingService;
 
+    @MockBean
+    ObjectMapper objectMapper;
     @Bean
     @Primary
     public RefreshOrchestrator refreshOrchestrator() {
@@ -88,6 +105,16 @@ public class ProviderTestConfiguration {
     public JudicialRefreshOrchestrator judicialRefreshOrchestrator() {
         return new JudicialRefreshOrchestrator(getRetrieveDataService(), getParseRequestService(),
                 judicialBookingService, getRequestMappingService());
+    }
+
+    @Bean
+    @Primary
+    public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator() {
+        return new ProfessionalRefreshOrchestrator(accessTypesRepository, userRefreshQueueRepository, prdService,
+                objectMapper,
+                roleAssignmentService,
+                securityUtils
+                );
     }
 
     private KieServices kieServices = KieServices.Factory.get();
