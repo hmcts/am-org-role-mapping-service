@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.jetbrains.annotations.NotNull;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.slf4j.Logger;
@@ -60,7 +60,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -174,7 +176,9 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        Thread.sleep(1000);
+        await().timeout(5, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+                isRefreshJobInStatus(jobId, COMPLETED)));
+
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
@@ -200,7 +204,9 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        Thread.sleep(1000);
+        await().timeout(5, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+                isRefreshJobInStatus(jobId, ABORTED)));
+
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(ABORTED, refreshJob.getStatus());
@@ -208,7 +214,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    @Disabled("Intermittent AM-2919")
+    //@Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
@@ -227,7 +233,9 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        Thread.sleep(5000);
+        await().timeout(5, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+                isRefreshJobInStatus(jobId, ABORTED)));
+
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         logger.info(" -- Refresh Role Assignment record updated -- " + refreshJob.getStatus());
         assertEquals("ABORTED", refreshJob.getStatus());
@@ -235,7 +243,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    @Disabled("Intermittent AM-2919")
+    //@Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete() throws Exception {
@@ -254,7 +262,9 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        Thread.sleep(1000);
+        await().timeout(5, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+                isRefreshJobInStatus(jobId, ABORTED)));
+
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(ABORTED, refreshJob.getStatus());
@@ -262,7 +272,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    @Disabled("Intermittent AM-2919")
+    //@Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
@@ -281,7 +291,9 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        Thread.sleep(2000);
+        await().timeout(5, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+                isRefreshJobInStatus(jobId, ABORTED)));
+
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(ABORTED, refreshJob.getStatus());
@@ -289,7 +301,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    @Disabled("Intermittent DTSAM-111")
+    //@Disabled("Intermittent DTSAM-111")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithFailedUsersToComplete() throws Exception {
@@ -322,7 +334,9 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        Thread.sleep(1000);
+        await().timeout(5, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+                isRefreshJobInStatus(jobId, COMPLETED)));
+
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
@@ -415,7 +429,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertEquals("NEW", refreshJob.getStatus());// failed process should change the status to IN-PROGRESS
     }
 
-    @Disabled("Intermittent DTSAM-111")
+    //@Disabled("Intermittent DTSAM-111")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
@@ -438,7 +452,9 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        Thread.sleep(9000);
+        await().timeout(9, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+                isRefreshJobInStatus(jobId, COMPLETED)));
+
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
@@ -679,5 +695,14 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
             return entity;
         };
         return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, rm, jobId);
+    }
+
+    public boolean isRefreshJobInStatus(Long jobId, String status) {
+        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
+        if (refreshJob.getStatus().equals(status)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
