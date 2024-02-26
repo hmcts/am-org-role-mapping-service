@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
@@ -32,12 +33,15 @@ public class ProfessionalUserServiceTest {
             Mockito.mock(UserRefreshQueueRepository.class);
     private final NamedParameterJdbcTemplate jdbcTemplate =
             Mockito.mock(NamedParameterJdbcTemplate.class);
+    private final PlatformTransactionManager transactionManager =
+            Mockito.mock(PlatformTransactionManager.class);
     ProfessionalUserService professionalUserService = new ProfessionalUserService(
             prdService,
             organisationRefreshQueueRepository,
             userRefreshQueueRepository,
             "1",
-            jdbcTemplate
+            jdbcTemplate,
+            transactionManager
     );
 
     @Test

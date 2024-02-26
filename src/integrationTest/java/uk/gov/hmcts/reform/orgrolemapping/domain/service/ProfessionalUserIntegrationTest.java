@@ -1,12 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
@@ -15,6 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +32,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.build
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUsersByOrganisationResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUsersOrganisationInfo;
 
-@Transactional
 public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
 
     @Autowired
@@ -44,6 +45,11 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
 
     @MockBean
     private PrdService prdService;
+
+    @BeforeEach
+    void setUp() {
+        userRefreshQueueRepository.deleteAll();
+    }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
@@ -77,5 +83,23 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
         assertEquals(0, userRefreshEntity.getRetry());
         assertNotNull(userRefreshEntity.getRetryAfter());
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_organisation_profiles.sql"})
+    void shouldRollback_AndUpdateRetryOnException() {
+        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+                .thenThrow(ServiceException.class);
+
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
+        assertEquals(userRefreshQueueRepository.findAll().size(), 0);
+
+        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
+                = organisationRefreshQueueRepository.findAll();
+        assertTrue(organisationRefreshQueueEntities.get(0).getActive());
+        assertEquals(1, organisationRefreshQueueEntities.get(0).getRetry());
+        assertTrue(organisationRefreshQueueEntities.get(0).getRetryAfter().isAfter(LocalDateTime.now()));
     }
 }
