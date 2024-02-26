@@ -24,7 +24,7 @@ class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegration {
         List<ProfileRefreshQueueEntity> activeProfiles = profileRefreshQueueRepository.getActiveProfileEntities();
 
         assertEquals(1, activeProfiles.size());
-        activeProfiles.forEach(profile -> assertEquals(profile.getActive(), true));
+        activeProfiles.forEach(profile -> assertEquals(true, profile.getActive()));
     }
 
     @Test
