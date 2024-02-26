@@ -28,6 +28,8 @@ public class CaseDefinitionService {
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository;
     private final ObjectMapper objectMapper;
 
+    private final AccessTypesBuilder accessTypesBuilder = new AccessTypesBuilder();
+
     public CaseDefinitionService(CCDService ccdService, AccessTypesRepository accessTypesRepository,
                                  ProfileRefreshQueueRepository profileRefreshQueueRepository,
                                  ObjectMapper objectMapper) {
@@ -67,8 +69,8 @@ public class CaseDefinitionService {
     private RestructuredAccessTypes retrieveCCDAccessTypeDefinitions() {
 
         ResponseEntity<AccessTypesResponse> ccdAccessTypes = ccdService.fetchAccessTypes();
-        
-        return AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdAccessTypes.getBody()));
+
+        return accessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdAccessTypes.getBody()));
     }
 
     private void compareAccessTypeDefinitions(
@@ -87,7 +89,7 @@ public class CaseDefinitionService {
             AccessTypesEntity savedAccessTypes = accessTypesRepository
                     .updateAccessTypesEntity(ccdAccessTypesString);
 
-            List<String> organisationProfileIds = AccessTypesBuilder
+            List<String> organisationProfileIds = accessTypesBuilder
                     .identifyUpdatedOrgProfileIds(ccdAccessTypes, restructuredLocalAccessTypes);
 
             updateLocalDefinitions(organisationProfileIds, savedAccessTypes.getVersion());

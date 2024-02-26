@@ -30,6 +30,8 @@ public class AccessTypesBuilderTest {
     private static final String CHANGED = "CHANGED";
     private static final Boolean CHANGED_BOOL = Boolean.FALSE;
 
+    private final AccessTypesBuilder accessTypesBuilder = new AccessTypesBuilder();
+
     private static final OrganisationProfile SOLICITOR_ORG_PROFILE =
             buildOrganisationProfile("SOLICITOR_ORG", "CIVIL", "accessTypeId1", true, true,
                     "caseTypeId1", "roleName1", "groupRole1", "caseGroupIdTemplate1", true);
@@ -141,7 +143,7 @@ public class AccessTypesBuilderTest {
     void restructureCcdAccessTypesTest() {
         AccessTypesResponse accessTypesResponse = AccessTypesBuilder.buildAccessTypeResponse("accessTypesSample.json");
         RestructuredAccessTypes restructuredAccessTypes =
-                AccessTypesBuilder.restructureCcdAccessTypes(accessTypesResponse);
+                accessTypesBuilder.restructureCcdAccessTypes(accessTypesResponse);
 
         assertNotNull(restructuredAccessTypes);
         assertEquals(3, restructuredAccessTypes.getOrganisationProfiles().size());
@@ -158,14 +160,14 @@ public class AccessTypesBuilderTest {
     void identifyUpdatedOrgProfileIdsWhenEmptyInPrmTest() {
         AccessTypesResponse accessTypesResponse = AccessTypesBuilder.buildAccessTypeResponse("accessTypesSample.json");
         RestructuredAccessTypes restructuredAccessTypes =
-                AccessTypesBuilder.restructureCcdAccessTypes(accessTypesResponse);
+                accessTypesBuilder.restructureCcdAccessTypes(accessTypesResponse);
 
         RestructuredAccessTypes prmAccessTypes = RestructuredAccessTypes.builder()
                 .organisationProfiles(null)
                 .build();
 
         List<String> newOrgProfiles =
-                AccessTypesBuilder.identifyUpdatedOrgProfileIds(restructuredAccessTypes, prmAccessTypes);
+                accessTypesBuilder.identifyUpdatedOrgProfileIds(restructuredAccessTypes, prmAccessTypes);
         List<String> expectedOrgProfiles = List.of("SOLICITOR_ORG", "DWP_GOV_ORG", "HMRC_GOV_ORG");
 
         assertEquals(3, newOrgProfiles.size());
@@ -185,7 +187,7 @@ public class AccessTypesBuilderTest {
         ));
 
         List<String> modifiedOrgProfiles =
-                AccessTypesBuilder.identifyUpdatedOrgProfileIds(restructuredAccessTypes, modifiedAccessTypes);
+                accessTypesBuilder.identifyUpdatedOrgProfileIds(restructuredAccessTypes, modifiedAccessTypes);
 
         if (updatedSolicitorOrg) {
             assertTrue(modifiedOrgProfiles.contains("SOLICITOR_ORG"));
@@ -238,7 +240,7 @@ public class AccessTypesBuilderTest {
             );
 
             List<String> orgProfiles =
-                    AccessTypesBuilder.identifyUpdatedOrgProfileIds(accessTypes, shuffledAccessTypes);
+                    accessTypesBuilder.identifyUpdatedOrgProfileIds(accessTypes, shuffledAccessTypes);
             assertEquals(0, orgProfiles.size());
         }
     }

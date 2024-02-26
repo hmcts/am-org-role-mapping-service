@@ -41,6 +41,8 @@ public class CaseDefinitionServiceTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private final AccessTypesBuilder accessTypesBuilder = new AccessTypesBuilder();
+
     CaseDefinitionService caseDefinitionService = new CaseDefinitionService(
             ccdService,
             accessTypesRepository,
@@ -83,7 +85,7 @@ public class CaseDefinitionServiceTest {
         when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
 
         RestructuredAccessTypes restructuredCCDDefinitions
-                = AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
+                = accessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
 
         AccessTypesEntity savedAccessTypes =
                 buildAccessTypesEntity(1, objectMapper.writeValueAsString(restructuredCCDDefinitions));
@@ -136,7 +138,7 @@ public class CaseDefinitionServiceTest {
         when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
 
         RestructuredAccessTypes restructuredCCDDefinitions =
-                AccessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
+                accessTypesBuilder.restructureCcdAccessTypes(Objects.requireNonNull(ccdDefinitions.getBody()));
 
         AccessTypesEntity savedAccessTypes =
                 buildAccessTypesEntity(1, objectMapper.writeValueAsString(restructuredCCDDefinitions));

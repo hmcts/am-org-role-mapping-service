@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AccessTypesBuilder {
 
-    public static RestructuredAccessTypes restructureCcdAccessTypes(AccessTypesResponse accessTypesResponse) {
+    public RestructuredAccessTypes restructureCcdAccessTypes(AccessTypesResponse accessTypesResponse) {
         Map<String, Set<OrganisationProfileJurisdiction>> organisationProfilesMap = new HashMap<>();
 
         for (AccessTypeJurisdiction jurisdiction : accessTypesResponse.getJurisdictions()) {
@@ -68,7 +68,7 @@ public class AccessTypesBuilder {
         return new RestructuredAccessTypes(organisationProfileList);
     }
 
-    public static List<String> identifyUpdatedOrgProfileIds(RestructuredAccessTypes restructuredCcdAccessTypes,
+    public  List<String> identifyUpdatedOrgProfileIds(RestructuredAccessTypes restructuredCcdAccessTypes,
                                                             RestructuredAccessTypes prmStoredAccessTypes) {
         if (prmStoredAccessTypes.getOrganisationProfiles() == null) {
             log.debug("no organisation profile/s in PRM database, hence returning all from CCD");
