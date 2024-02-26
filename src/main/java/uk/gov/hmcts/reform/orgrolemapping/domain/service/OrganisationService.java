@@ -110,6 +110,11 @@ public class OrganisationService {
     public void findAndInsertStaleOrganisationsIntoRefreshQueue() {
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities
                 = profileRefreshQueueRepository.getActiveProfileEntities();
+
+        if (profileRefreshQueueEntities.isEmpty()) {
+            return;
+        }
+
         List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
                 .map(ProfileRefreshQueueEntity::getOrganisationProfileId)
                 .collect(Collectors.toList());
@@ -120,12 +125,15 @@ public class OrganisationService {
                 .map(ProfileRefreshQueueEntity::getAccessTypesMinVersion)
                 .max(Comparator.naturalOrder());
 
-        if (activeOrganisationProfileIds.isEmpty()) {
-            return;
-        }
-
         OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
+        retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get());
+
+        updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
+    }
+
+    private void retrieveOrganisationsByProfileIdsAndUpsert(OrganisationByProfileIdsRequest request,
+                                                            Integer accessTypesMinVersion) {
         OrganisationByProfileIdsResponse response;
         response = Objects.requireNonNull(
                 prdService.fetchOrganisationsByProfileIds(Integer.valueOf(pageSize), null, request).getBody()
@@ -138,7 +146,7 @@ public class OrganisationService {
             moreAvailable = response.getMoreAvailable();
             lastRecordInPage = response.getLastRecordInPage();
 
-            writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
+            writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), accessTypesMinVersion);
 
             while (moreAvailable) {
                 response = Objects.requireNonNull(prdService.fetchOrganisationsByProfileIds(
@@ -148,13 +156,11 @@ public class OrganisationService {
                     moreAvailable = response.getMoreAvailable();
                     lastRecordInPage = response.getLastRecordInPage();
 
-                    writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), maxVersion.get());
+                    writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), accessTypesMinVersion);
                 } else {
                     break;
                 }
             }
-
-            updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
         }
     }
 
