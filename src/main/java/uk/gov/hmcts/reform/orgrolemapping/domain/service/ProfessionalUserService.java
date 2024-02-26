@@ -3,8 +3,9 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
@@ -27,20 +28,23 @@ public class ProfessionalUserService {
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final TransactionTemplate transactionTemplate;
 
     public ProfessionalUserService(PrdService prdService,
                                    OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
                                    UserRefreshQueueRepository userRefreshQueueRepository,
                                    @Value("${professional.refdata.pageSize}") String pageSize,
-                                   NamedParameterJdbcTemplate jdbcTemplate) {
+                                   NamedParameterJdbcTemplate jdbcTemplate,
+                                   PlatformTransactionManager transactionManager) {
         this.prdService = prdService;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.pageSize = pageSize;
         this.jdbcTemplate = jdbcTemplate;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
         OrganisationRefreshQueueEntity organisationRefreshQueueEntity
                 = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
@@ -56,13 +60,26 @@ public class ProfessionalUserService {
                 List.of(organisationIdentifier)
         );
 
-        retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
+        boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+            try {
+                retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
 
-        organisationRefreshQueueRepository.setActiveFalse(
-                organisationIdentifier,
-                accessTypesMinVersion,
-                organisationRefreshQueueEntity.getLastUpdated()
-        );
+                organisationRefreshQueueRepository.setActiveFalse(
+                        organisationIdentifier,
+                        accessTypesMinVersion,
+                        organisationRefreshQueueEntity.getLastUpdated()
+                );
+
+                return true;
+            } catch (Exception ex) {
+                status.setRollbackOnly();
+                return false;
+            }
+        }));
+
+        if (!isSuccess) {
+            organisationRefreshQueueRepository.updateRetry(organisationIdentifier);
+        }
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
