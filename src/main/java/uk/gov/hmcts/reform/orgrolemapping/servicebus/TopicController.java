@@ -56,7 +56,10 @@ public class TopicController {
         content = @Content()
     )
     public ResponseEntity<Void> send2CRD(
-        @RequestBody(content = @Content(schema = @Schema(implementation = UserRequest.class))) String body
+        @RequestBody(
+            required = true,
+            content = @Content(schema = @Schema(implementation = UserRequest.class))
+        ) String body
     ) {
         log.info("Sending message 2 CRD topic");
         crdTopicPublisher.sendMessage(body);
@@ -82,7 +85,10 @@ public class TopicController {
         content = @Content()
     )
     public ResponseEntity<Void> send2JRD(
-        @RequestBody(content = @Content(schema = @Schema(implementation = UserRequest.class))) String body
+        @RequestBody(
+            required = true,
+            content = @Content(schema = @Schema(implementation = UserRequest.class))
+        ) String body
     ) {
         log.info("Sending message 2 JRD topic");
         jrdTopicPublisher.sendMessage(body);
