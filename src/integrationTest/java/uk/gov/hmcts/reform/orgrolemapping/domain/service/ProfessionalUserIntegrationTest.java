@@ -68,12 +68,14 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
         UserRefreshQueueEntity userRefreshEntity = userRefreshQueueEntities.get(0);
 
-        assertEquals(userRefreshEntity.getUserId(), "1");
+        assertEquals("1", userRefreshEntity.getUserId());
         assertNotNull(userRefreshEntity.getLastUpdated());
         assertNotNull(userRefreshEntity.getDeleted());
-        assertEquals(userRefreshEntity.getAccessTypes(), "[]");
-        assertEquals(userRefreshEntity.getOrganisationId(), "123");
-        assertEquals(userRefreshEntity.getOrganisationStatus(), "ACTIVE");
+        assertEquals("[]", userRefreshEntity.getAccessTypes());
+        assertEquals("123", userRefreshEntity.getOrganisationId());
+        assertEquals("ACTIVE", userRefreshEntity.getOrganisationStatus());
         assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
+        assertEquals(0, userRefreshEntity.getRetry());
+        assertNotNull(userRefreshEntity.getRetryAfter());
     }
 }

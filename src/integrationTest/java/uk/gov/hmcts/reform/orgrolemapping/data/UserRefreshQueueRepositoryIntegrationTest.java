@@ -34,12 +34,14 @@ public class UserRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrati
         List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
         UserRefreshQueueEntity userRefreshEntity = userRefreshQueueEntities.get(0);
 
-        assertEquals(userRefreshEntity.getUserId(), "1");
+        assertEquals("1", userRefreshEntity.getUserId());
         assertNotNull(userRefreshEntity.getLastUpdated());
         assertNotNull(userRefreshEntity.getDeleted());
-        assertEquals(userRefreshEntity.getAccessTypes(), "{}");
-        assertEquals(userRefreshEntity.getOrganisationId(), "org 1");
-        assertEquals(userRefreshEntity.getOrganisationStatus(), "ACTIVE");
+        assertEquals("{}", userRefreshEntity.getAccessTypes());
+        assertEquals("org 1", userRefreshEntity.getOrganisationId());
+        assertEquals("ACTIVE", userRefreshEntity.getOrganisationStatus());
         assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
+        assertEquals(0, userRefreshEntity.getRetry());
+        assertNotNull(userRefreshEntity.getRetryAfter());
     }
 }
