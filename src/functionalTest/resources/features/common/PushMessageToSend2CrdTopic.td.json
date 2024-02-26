@@ -1,0 +1,35 @@
+{
+  "_guid_": "PushMessageToSend2CrdTopic",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Push User Ids to CRD endpoint to process",
+  "method": "POST",
+  "uri": "/am/testing-support/send2CrdTopic",
+  "specs": [
+    "to publish existing CRD user ids to endpoint"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json",
+      "userType": "CASEWORKER"
+    },
+    "body": {
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "arrayInMap": "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
