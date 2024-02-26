@@ -14,7 +14,7 @@ public class Scheduler {
         this.caseDefinitionService = caseDefinitionService;
     }
 
-    @Scheduled(cron = "${professional.role.mapping.scheduling.cron}")
+    @Scheduled(cron = "${professional.role.mapping.scheduling.findAndUpdateCaseDefinitionChanges.cron}")
     void findAndUpdateCaseDefinitionChanges() {
         caseDefinitionService.findAndUpdateCaseDefinitionChanges();
     }

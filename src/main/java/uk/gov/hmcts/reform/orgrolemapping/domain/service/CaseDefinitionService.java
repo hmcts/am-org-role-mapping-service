@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,14 +53,13 @@ public class CaseDefinitionService {
 
     }
 
-    private static RestructuredAccessTypes restructureLocalAccessTypes(String localAccessTypes) {
+    private RestructuredAccessTypes restructureLocalAccessTypes(String localAccessTypes) {
 
         try {
-            MAPPER.registerModule(new JavaTimeModule());
             return MAPPER.readValue(localAccessTypes, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
-            throw new ServiceException(String.format("Unable to restructure access types %s", localAccessTypes), e);
+            throw new ServiceException(String.format("Unable to serialize access types %s", localAccessTypes), e);
         }
 
     }
@@ -83,7 +81,7 @@ public class CaseDefinitionService {
             try {
                 ccdAccessTypesString = objectMapper.writeValueAsString(ccdAccessTypes);
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                throw new ServiceException(String.format("Unable to serialize access types %s", ccdAccessTypes), e);
             }
 
             AccessTypesEntity savedAccessTypes = accessTypesRepository

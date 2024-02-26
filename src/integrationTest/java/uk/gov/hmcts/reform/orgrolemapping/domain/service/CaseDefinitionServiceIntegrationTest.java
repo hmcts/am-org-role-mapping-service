@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -10,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
-import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
-import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessType;
@@ -34,18 +30,13 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
     private CaseDefinitionService caseDefinitionService;
     @Autowired
     private ProfileRefreshQueueRepository profileRefreshQueueRepository;
-
-    @Autowired
-    private AccessTypesRepository accessTypesRepository;
     @MockBean
     private CCDService ccdService;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
-    void shouldUpdateLocalDefinitions() throws JsonProcessingException {
+    void shouldUpdateLocalDefinitions() {
 
 
         AccessTypeRole ccdRoles = buildAccessTypeRole("BEFTA_CASETYPE_1_1", "Role1", "Role1",
@@ -88,7 +79,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_populated_access_types.sql"})
-    void shouldNotUpdateLocalDefinitions() throws JsonProcessingException {
+    void shouldNotUpdateLocalDefinitions() {
 
 
         AccessTypeRole ccdRoles = buildAccessTypeRole("CIVIL", "Role1", "[APPLICANTSOLICITORONE]",
@@ -117,15 +108,6 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
         verify(ccdService, times(1))
                 .fetchAccessTypes();
-    }
-
-    private AccessTypesEntity buildAccessTypesEntity(long version, String accessTypes) {
-
-        return AccessTypesEntity.builder()
-                .version(version)
-                .accessTypes(accessTypes)
-                .build();
-
     }
 
     private AccessTypesResponse buildAccessTypesResponse(List<AccessTypeJurisdiction> jurisdictions) {
