@@ -186,3 +186,18 @@ springdoc:
     enabled: true
     operationsSorter: method
   writer-with-order-by-keys: true
+
+
+professional:
+  refdata:
+    pageSize: ${PROFESSIONAL_REFDATA_PAGE_SIZE:100}
+  role:
+    mapping:
+      scheduling:
+        enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
+        organisationRefreshCleanup:
+          cron: ${ORG_REFRESH_CLEANUP_CRON:*/5 * * * * *}
+          activeOrgansationRefreshDays: ${ORG_REFRESH_CLEANUP_DAYS:90}
+        userRefreshCleanup:
+          cron: ${USER_REFRESH_CLEANUP_CRON:*/5 * * * * *}
+          activeUserRefreshDays: ${USER_REFRESH_CLEANUP_DAYS:90}
