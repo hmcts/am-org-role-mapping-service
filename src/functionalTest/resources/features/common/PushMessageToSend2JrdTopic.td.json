@@ -16,20 +16,16 @@
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
-      "Content-Type": "application/json",
-      "userType": "CASEWORKER"
+      "Content-Type": "application/json"
     },
     "body": {
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
+    "_extends_": "Common_204_Response",
     "headers": {
       "Content-Length": "[[ANYTHING_PRESENT]]",
-      "Content-Type": "[[ANYTHING_PRESENT]]"
-    },
-    "body": {
-      "__plainTextValue__" : "{}"
+      "Content-Type": "application/json"
     }
   }
 }
