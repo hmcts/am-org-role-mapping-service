@@ -1,9 +1,0 @@
-{
-  "_guid_": "S-212_PushMessageToCRDService",
-  "_extends_": "PushMessageToSend2CrdTopic",
-  "request": {
-    "body": {
-      "_extends_": "S-212_SingleUserMultipleCaseworkerRolesIds"
-    }
-  }
-}

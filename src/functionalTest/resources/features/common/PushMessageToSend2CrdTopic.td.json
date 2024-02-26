@@ -28,6 +28,7 @@
       "Content-Type": "[[ANYTHING_PRESENT]]"
     },
     "body": {
+      "__plainTextValue__" : "{}"
     }
   }
 }

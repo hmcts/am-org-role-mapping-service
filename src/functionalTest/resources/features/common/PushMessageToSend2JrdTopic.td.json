@@ -1,12 +1,11 @@
 {
-  "_guid_": "PushMessageToCRDAzureServiceBus",
-  "productName": "Azure Service Bus",
-  "operationName": "Push User Ids to Azure Service Bus",
+  "_guid_": "PushMessageToSend2JrdTopic",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Push User Ids to JRD endpoint to process",
   "method": "POST",
-  "uri": "/send2CRD",
+  "uri": "/am/testing-support/send2JrdTopic",
   "specs": [
-    "to publish the user ids to topic",
-    "to publish an existing CRD user ids to topic"
+    "to publish existing JRD user ids to endpoint"
   ],
   "users": {
     "invokingUser": {
@@ -17,7 +16,8 @@
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "userType": "CASEWORKER"
     },
     "body": {
     }
@@ -26,10 +26,10 @@
     "_extends_": "Common_200_Response",
     "headers": {
       "Content-Length": "[[ANYTHING_PRESENT]]",
-      "Content-Type": "application/json"
+      "Content-Type": "[[ANYTHING_PRESENT]]"
     },
     "body": {
-      "__plainTextValue__": "{}"
+      "__plainTextValue__" : "{}"
     }
   }
 }
