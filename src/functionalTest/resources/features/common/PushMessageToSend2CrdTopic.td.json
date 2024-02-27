@@ -22,13 +22,10 @@
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
+    "_extends_": "Common_204_Response",
     "headers": {
       "Content-Length": "[[ANYTHING_PRESENT]]",
-      "Content-Type": "[[ANYTHING_PRESENT]]"
-    },
-    "body": {
-      "__plainTextValue__" : "{}"
+      "Content-Type": "application/json"
     }
   }
 }
