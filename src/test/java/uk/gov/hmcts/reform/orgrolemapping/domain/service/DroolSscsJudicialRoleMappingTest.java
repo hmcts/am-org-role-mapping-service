@@ -37,6 +37,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("leadership-judge", null);
         expectedRoleNameWorkTypesMap.put("judge", "pre_hearing,hearing_work,post_hearing,"
                 + "decision_making_work,routine_work,priority");
+        expectedRoleNameWorkTypesMap.put("post-hearing-judge", null);
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", null);
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
@@ -93,11 +94,11 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "SSCS President of Tribunal-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,"
+        "SSCS President of Tribunal-Salaried,'leadership-judge,judge,post-hearing-judge,case-allocator,task-supervisor,"
                 + "specific-access-approver-judiciary,hmcts-judiciary'",
-        "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,case-allocator,task-supervisor,"
+        "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,post-hearing-judge,case-allocator,task-supervisor,"
                 + "specific-access-approver-judiciary,hmcts-judiciary'",
-        "SSCS Tribunal Judge-Salaried,'judge,hmcts-judiciary'",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-judge,hmcts-judiciary'",
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'",
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles) {
