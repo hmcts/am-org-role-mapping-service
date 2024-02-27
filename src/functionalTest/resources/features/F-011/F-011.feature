@@ -5,8 +5,8 @@ Feature: F-011 : Verify CRD and JRD service bus messages
     Given an appropriate test context as detailed in the test data source
 
   @S-211
-  @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on)
-  Scenario: must successfully verify CRD service bus messages for Legal Caseworker
+  @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
+  Scenario: must successfully create org role mapping for Legal Caseworker and Senior Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-211_DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-211_PushMessageToCRDService],
@@ -20,7 +20,7 @@ Feature: F-011 : Verify CRD and JRD service bus messages
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-211_DeleteDataForRoleAssignments].
 
   @S-213
-  @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on)
+  @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
   Scenario: must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-213_DeleteDataForRoleAssignments],
