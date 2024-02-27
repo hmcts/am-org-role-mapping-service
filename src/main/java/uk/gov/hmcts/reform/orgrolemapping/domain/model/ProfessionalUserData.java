@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class ProfessionalUserData {
 
     private String userId;
-    private LocalDateTime lastUpdated;
+    private LocalDateTime userLastUpdated;
     private LocalDateTime deleted;
     private String accessTypes;
     private String organisationId;

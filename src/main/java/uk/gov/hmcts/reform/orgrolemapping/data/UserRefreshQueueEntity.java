@@ -6,11 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder(toBuilder = true)
@@ -28,7 +25,6 @@ public class UserRefreshQueueEntity {
     @Column(name = "user_last_updated", nullable = false)
     private LocalDateTime userLastUpdated;
 
-    @UpdateTimestamp
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
 

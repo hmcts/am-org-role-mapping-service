@@ -17,7 +17,7 @@ public class ProfessionalUserBuilder {
                                                                                UsersOrganisationInfo organisationInfo) {
         ProfessionalUserData userData = new ProfessionalUserData();
         userData.setUserId(user.getUserIdentifier());
-        userData.setLastUpdated(user.getLastUpdated());
+        userData.setUserLastUpdated(user.getLastUpdated());
         userData.setDeleted(user.getDeleted());
         userData.setAccessTypes(JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
         userData.setOrganisationId(organisationInfo.getOrganisationIdentifier());
