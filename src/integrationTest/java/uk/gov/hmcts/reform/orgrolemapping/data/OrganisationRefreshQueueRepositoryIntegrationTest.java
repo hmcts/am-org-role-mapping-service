@@ -35,6 +35,8 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         assertEquals("123", organisationEntity.getOrganisationId());
         assertEquals(1, organisationEntity.getAccessTypesMinVersion());
         assertEquals(0, organisationEntity.getRetry());
+        assertNotNull(organisationEntity.getOrganisationLastUpdated());
+        assertNotNull(organisationEntity.getLastUpdated());
         assertNotNull(organisationEntity.getRetryAfter());
     }
 
@@ -53,6 +55,8 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         assertEquals("123", organisationEntity.getOrganisationId());
         assertEquals(1, organisationEntity.getAccessTypesMinVersion());
         assertEquals(0, organisationEntity.getRetry());
+        assertNotNull(organisationEntity.getLastUpdated());
+        assertNotNull(organisationEntity.getOrganisationLastUpdated());
         assertNotNull(organisationEntity.getRetryAfter());
     }
 }
