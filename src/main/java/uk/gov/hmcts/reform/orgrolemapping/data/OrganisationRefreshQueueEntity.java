@@ -23,6 +23,9 @@ public class OrganisationRefreshQueueEntity {
     @Column(name = "organisation_id", nullable = false)
     private String organisationId;
 
+    @Column(name = "organisation_last_updated", nullable = false)
+    private LocalDateTime organisationLastUpdated;
+
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
 
