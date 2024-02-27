@@ -41,6 +41,8 @@ class ProfessionalRefreshOrchestratorTest {
     private RoleAssignmentService roleAssignmentService;
     @Mock
     private SecurityUtils securityUtils;
+    @Mock
+    private ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
     @InjectMocks
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 

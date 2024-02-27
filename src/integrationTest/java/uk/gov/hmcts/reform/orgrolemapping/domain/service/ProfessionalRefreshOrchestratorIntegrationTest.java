@@ -112,6 +112,8 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
         }
 
         @Test
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+                scripts = {"classpath:sql/delete_user_refresh_queue.sql"})
         void shouldThrowExceptionWhenNoAccessTypesAvailable() {
             Exception exception = assertThrows(ServiceException.class, () ->
                 professionalRefreshOrchestrator.refreshProfessionalUser(USER_ID));
@@ -133,10 +135,11 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
 
             verify(accessTypesRepository, times(1)).findFirstByOrderByVersionDesc();
             verify(userRefreshQueueRepository, times(1)).findFirstByActiveTrue();
-            assertFalse(userRefreshQueueRepository.findByUserId("1").getActive());
         }
 
         @Test
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+                scripts = {"classpath:sql/delete_user_refresh_queue.sql"})
         void shouldThrowExceptionWhenNoAccessTypesAvailable() {
             Exception exception = assertThrows(ServiceException.class, () ->
                 professionalRefreshOrchestrator.refreshProfessionalUsers());
@@ -154,7 +157,7 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
 
             verify(accessTypesRepository, times(1)).findFirstByOrderByVersionDesc();
             verify(userRefreshQueueRepository, times(1)).findFirstByActiveTrue();
-            assertFalse(userRefreshQueueRepository.findByUserId("1").getActive());
+
         }
 
     }

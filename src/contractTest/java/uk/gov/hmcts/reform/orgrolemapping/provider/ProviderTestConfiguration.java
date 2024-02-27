@@ -23,9 +23,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrationHelper;
 
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -49,6 +49,8 @@ public class ProviderTestConfiguration {
 
     @MockBean
     SecurityUtils securityUtils;
+    @MockBean
+    ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
 
     @MockBean
     private CacheManager cacheManager;
@@ -61,8 +63,6 @@ public class ProviderTestConfiguration {
 
     @MockBean
     PersistenceService persistenceService;
-
-    ObjectMapper objectMapper = new ObjectMapper();
 
     private KieServices kieServices = KieServices.Factory.get();
 
@@ -112,10 +112,8 @@ public class ProviderTestConfiguration {
     @Bean
     @Primary
     public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator() {
-        return new ProfessionalRefreshOrchestrator(accessTypesRepository, userRefreshQueueRepository, prdService,
-                objectMapper,
-                roleAssignmentService,
-                securityUtils
+        return new ProfessionalRefreshOrchestrator(accessTypesRepository, userRefreshQueueRepository,
+                prdService, professionalRefreshOrchestrationHelper
                 );
     }
 
