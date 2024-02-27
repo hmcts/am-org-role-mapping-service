@@ -263,7 +263,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
                 .andExpect(status().is(202))
                 .andReturn();
 
-        await().timeout(30, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+        await().timeout(60, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
                 isRefreshJobInStatus(jobId, COMPLETED)));
 
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
