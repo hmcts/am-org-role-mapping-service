@@ -99,11 +99,15 @@ when
                                         "SSCS Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
+   Classification classification;
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+    classification = Classification.PUBLIC;
+   } else {
+    classification = Classification.PRIVATE;
    }
   insert(
       RoleAssignment.builder()
@@ -113,7 +117,7 @@ then
       .roleType(RoleType.ORGANISATION)
       .roleName("post-hearing-judge")
       .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
+      .classification(classification)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
