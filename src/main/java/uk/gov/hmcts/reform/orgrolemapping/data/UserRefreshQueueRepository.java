@@ -24,11 +24,11 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                                           List<ProfessionalUserData> rows,
                                           Integer accessTypeMinVersion) {
         String sql =
-            "insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, " +
-            "deleted, access_types, "
+            "insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, "
+            + "deleted, access_types, "
             + "organisation_id, organisation_status, organisation_profile_ids, active) "
-            + "values(:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, CAST(:accessTypes AS" +
-            " jsonb), "
+            + "values(:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, CAST(:accessTypes AS"
+            + " jsonb), "
             + ":organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true) "
             + "on conflict (user_id) do update "
             + "set "
@@ -44,14 +44,14 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                 + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.access_types "
                 + "else user_refresh_queue.access_types end, "
             + "organisation_id = case "
-                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.organisation_id "
-                + "else user_refresh_queue.organisation_id end, "
+                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.organisation_id"
+                + " else user_refresh_queue.organisation_id end, "
             + "organisation_status = case "
-                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.organisation_status "
-                + "else user_refresh_queue.organisation_status end, "
+                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then "
+                + "excluded.organisation_status else user_refresh_queue.organisation_status end, "
             + "organisation_profile_ids = case "
-                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.organisation_profile_ids "
-                + "else user_refresh_queue.organisation_profile_ids end";
+                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then "
+                + "excluded.organisation_profile_ids else user_refresh_queue.organisation_profile_ids end";
 
         MapSqlParameterSource[] params = rows.stream().map(r -> {
             MapSqlParameterSource paramValues = new MapSqlParameterSource();
