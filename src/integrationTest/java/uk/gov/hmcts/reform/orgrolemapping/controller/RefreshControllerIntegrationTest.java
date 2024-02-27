@@ -244,36 +244,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    @Disabled("Intermittent AM-2919")
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
-    public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete() throws Exception {
-        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
-
-        logger.info(" RefreshJob record With Only JobId to process Partial Success");
-        Long jobId = 1L;
-
-        mockCRDService();
-        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
-
-        mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
-
-        await().timeout(60, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
-                isRefreshJobInStatus(jobId, ABORTED)));
-
-        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals(ABORTED, refreshJob.getStatus());
-        assertNotNull(refreshJob.getUserIds());
-        assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
-    }
-
-    //@Disabled("Intermittent AM-2919")
+//    @Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
@@ -286,9 +257,9 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
 
         mockMvc.perform(post(URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders())
-                .param("jobId", jobId.toString()))
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders())
+                        .param("jobId", jobId.toString()))
                 .andExpect(status().is(202))
                 .andReturn();
 
