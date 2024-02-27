@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,16 +13,12 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfo {
+public class RefreshUser {
 
-    private String userId;
+    private String userIdentifier;
     private LocalDateTime lastUpdated;
-    private List<String> userProfileIds;
-    private String deleted;
-    private String organisationId;
-    private String organisationStatus;
-    private String organisationProfileIds;
-    private String accessTypes;
-    private boolean active;
-
+    private OrganisationInfo organisationInfo;
+    private List<UserAccessTypes> userAccessTypes;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private LocalDateTime dateTimeDeleted;
 }

@@ -7,10 +7,14 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.*;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
+import uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ISO_DATE_TIME_FORMATTER;
@@ -75,12 +79,9 @@ public class ProfessionalUserService {
                 .retrieveUsers(formattedSince, Integer.valueOf(pageSize), null).getBody();
         writeAllToUserRefreshQueue(refreshUserResponse, accessTypeMinVersion);
 
-        int page = 2;
-
         boolean moreAvailable;
         String lastRecordInPage;
 
-        //TODO: Don't think getUsers() is the correct call, need getUserInfo() -> figure out where to add
         if (!refreshUserResponse.getUsers().isEmpty()){
             moreAvailable = refreshUserResponse.isMoreAvailable();
             lastRecordInPage = refreshUserResponse.getLastRecordInPage();
@@ -88,7 +89,6 @@ public class ProfessionalUserService {
             while (moreAvailable) {
                 refreshUserResponse = prdService
                         .retrieveUsers(formattedSince, Integer.valueOf(pageSize), lastRecordInPage).getBody();
-                writeAllToUserRefreshQueue(refreshUserResponse, accessTypeMinVersion);
 
                 if (!refreshUserResponse.getUsers().isEmpty()) {
                     moreAvailable = refreshUserResponse.isMoreAvailable();
@@ -109,8 +109,14 @@ public class ProfessionalUserService {
     }
 
     private void writeAllToUserRefreshQueue(GetRefreshUserResponse usersResponse, Integer accessTypeMinVersion) {
+        List<RefreshUserAndOrganisation> serializedUsers = new ArrayList<>();
+
+        for (RefreshUser user : usersResponse.getUsers()) {
+            serializedUsers.add(ProfessionalUserBuilder.getSerializedRefreshUser(user));
+        }
+
         userRefreshQueueRepository.insertIntoUserRefreshQueueForLastUpdated(
-                jdbcTemplate, usersResponse.getUsers(), accessTypeMinVersion);
+                jdbcTemplate, serializedUsers, accessTypeMinVersion);
     }
 }
 

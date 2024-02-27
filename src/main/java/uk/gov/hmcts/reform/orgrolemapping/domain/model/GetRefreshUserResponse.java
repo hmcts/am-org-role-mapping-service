@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -14,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class GetRefreshUserResponse {
 
-    private List<UserInfo> users;
+    private List<RefreshUser> users;
     private String lastRecordInPage;
     private boolean moreAvailable;
 }

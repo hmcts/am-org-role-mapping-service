@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
@@ -80,5 +81,18 @@ public class PrdServiceTest {
 
         Assert.assertThrows(FeignException.class, () ->
                 sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100));
+    }
+
+    @Test
+    void fetchRefreshUserResponse() throws IOException {
+        GetRefreshUserResponse response = TestDataBuilder.buildRefreshUserResponse();
+
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
+                .when(prdFeignClient).retrieveUsers("2023-11-20T15:51:33.046Z", 1, null);
+
+        ResponseEntity<GetRefreshUserResponse> responseEntity =
+                sut.retrieveUsers("2023-11-20T15:51:33.046Z", 1, null);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 }
