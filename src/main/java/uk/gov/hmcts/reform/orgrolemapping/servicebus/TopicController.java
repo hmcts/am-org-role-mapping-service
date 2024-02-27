@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.NoArgsConstructor;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -56,10 +56,12 @@ public class TopicController {
         content = @Content()
     )
     public ResponseEntity<Void> send2CRD(
-        @RequestBody(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "message to send to the Azure Service Bus",
             required = true,
             content = @Content(schema = @Schema(implementation = UserRequest.class))
-        ) String body
+        )
+        @RequestBody String body
     ) {
         log.info("Sending message 2 CRD topic");
         crdTopicPublisher.sendMessage(body);
@@ -85,10 +87,12 @@ public class TopicController {
         content = @Content()
     )
     public ResponseEntity<Void> send2JRD(
-        @RequestBody(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "message to send to the Azure Service Bus",
             required = true,
             content = @Content(schema = @Schema(implementation = UserRequest.class))
-        ) String body
+        )
+        @RequestBody String body
     ) {
         log.info("Sending message 2 JRD topic");
         jrdTopicPublisher.sendMessage(body);
