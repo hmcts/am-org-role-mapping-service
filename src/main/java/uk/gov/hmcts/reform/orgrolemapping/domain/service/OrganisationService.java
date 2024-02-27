@@ -93,11 +93,13 @@ public class OrganisationService {
         writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
 
         int page = 2;
-        while (organisationsResponse.getMoreAvailable()) {
+        boolean moreAvailable = organisationsResponse.getMoreAvailable();
+        while (moreAvailable) {
 
             organisationsResponse = prdService
                     .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
             writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
+            moreAvailable = organisationsResponse.getMoreAvailable();
             page++;
         }
         batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime.ofInstant(batchRunStartTime.getDate(),
