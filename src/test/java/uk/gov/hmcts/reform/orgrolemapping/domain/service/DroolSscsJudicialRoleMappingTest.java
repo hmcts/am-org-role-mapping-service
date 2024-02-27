@@ -96,8 +96,8 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
     @CsvSource({
         "SSCS President of Tribunal-Salaried,'leadership-judge,judge,post-hearing-judge,case-allocator,task-supervisor,"
                 + "specific-access-approver-judiciary,hmcts-judiciary'",
-        "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,post-hearing-judge,case-allocator,task-supervisor,"
-                + "specific-access-approver-judiciary,hmcts-judiciary'",
+        "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,post-hearing-judge,case-allocator,"
+                + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-judge,hmcts-judiciary'",
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'",
     })

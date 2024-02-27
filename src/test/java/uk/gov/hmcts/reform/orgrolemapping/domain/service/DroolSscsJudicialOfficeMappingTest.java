@@ -31,8 +31,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @CsvSource({
         "President of Tribunal,Salaried,BBA3,'leadership-judge,judge,post-hearing-judge,case-allocator,task-supervisor,"
                 + "specific-access-approver-judiciary,hmcts-judiciary'",
-        "Regional Tribunal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-judge,case-allocator,task-supervisor,"
-                + "specific-access-approver-judiciary,hmcts-judiciary'",
+        "Regional Tribunal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-judge,case-allocator,"
+                + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-judge'"
     })
     void shouldReturSalariedRoles(String appointment, String appointmentType,
