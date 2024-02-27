@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.slf4j.Logger;
@@ -244,7 +243,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-//    @Disabled("Intermittent AM-2919")
+    //@Disabled("Intermittent AM-2919")
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
