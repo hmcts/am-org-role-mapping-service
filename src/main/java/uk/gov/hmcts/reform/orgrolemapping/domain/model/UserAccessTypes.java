@@ -16,12 +16,4 @@ public class UserAccessTypes {
     private String accessTypeId;
     private String enabled;
 
-    //        [
-//        {
-//        "jurisdictionId": "12345",
-//        "organisationProfileId": "SOLICITOR_PROFILE",
-//        "accessTypeId": "1234",
-//        "enabled": "true"
-//        }
-//        ]
 }

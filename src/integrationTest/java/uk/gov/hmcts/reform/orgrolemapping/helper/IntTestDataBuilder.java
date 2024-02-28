@@ -1,12 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
@@ -209,4 +204,42 @@ public class IntTestDataBuilder {
                 .moreAvailable(moreAvailable)
                 .build();
     }
+
+    public static RefreshUser refreshUser(int i) {
+        return RefreshUser.builder()
+                .userIdentifier("" + i)
+                .lastUpdated(LocalDateTime.now())
+                .userAccessTypes(List.of(userAccessTypes(1)))
+                .organisationInfo(buildOrganisationInfo(1))
+                .build();
+    }
+
+    public static UserAccessTypes userAccessTypes (int i) {
+        return UserAccessTypes.builder()
+                .jurisdictionId("" + i)
+                .organisationProfileId("" + i)
+                .accessTypeId("" + i)
+                .enabled("true")
+                .build();
+    }
+
+    public static RefreshUserAndOrganisation refreshUserAndOrganisationsList (int i) {
+        return RefreshUserAndOrganisation.builder()
+                .userIdentifier("" + i)
+                .lastUpdated(LocalDateTime.now())
+                .userAccessTypes("" + i)
+                .organisationIdentifier("" + i)
+                .organisationStatus("ACTIVE")
+                .organisationProfileIds("SOLICITOR_PROFILE")
+                .build();
+    }
+
+    public static GetRefreshUserResponse buildRefreshUserResponse(RefreshUser user, String lastRecord, boolean moreAvailable) {
+        return GetRefreshUserResponse.builder()
+                .users(List.of(user))
+                .lastRecordInPage(lastRecord)
+                .moreAvailable(moreAvailable)
+                .build();
+    }
 }
+

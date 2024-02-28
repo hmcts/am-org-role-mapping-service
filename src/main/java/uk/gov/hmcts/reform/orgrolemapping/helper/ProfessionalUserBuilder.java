@@ -15,8 +15,8 @@ public class ProfessionalUserBuilder {
         RefreshUserAndOrganisation userData = new RefreshUserAndOrganisation();
         userData.setUserIdentifier(user.getUserIdentifier());
         userData.setLastUpdated(user.getLastUpdated());
-        userData.setUserIdentifier(user.getUserIdentifier());
         userData.setUserAccessTypes(JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
+        userData.setOrganisationIdentifier(user.getOrganisationInfo().getOrganisationIdentifier());
         userData.setOrganisationStatus(user.getOrganisationInfo().getStatus());
         userData.setOrganisationProfileIds(String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));
 
