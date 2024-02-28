@@ -98,7 +98,7 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
 
             UserRefreshQueueEntity refreshedUser = userRefreshQueueRepository.findByUserId(USER_ID);
             assertEquals(USER_ID, refreshedUser.getUserId());
-            assertEquals("2023-11-20T15:51:33.046", refreshedUser.getLastUpdated().toString());
+            assertEquals("2023-11-20T15:51:33.046", refreshedUser.getUserLastUpdated().toString());
             assertEquals(2, refreshedUser.getAccessTypesMinVersion());
             assertNull(refreshedUser.getDeleted());
             assertEquals("[{\"enabled\": true, \"accessTypeId\": \"1234\", \"jurisdictionId\": \"12345\", " 

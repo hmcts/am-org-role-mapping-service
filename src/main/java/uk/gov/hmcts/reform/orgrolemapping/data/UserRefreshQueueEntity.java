@@ -27,6 +27,9 @@ public class UserRefreshQueueEntity {
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
 
+    @Column(name = "user_last_updated", nullable = false)
+    private LocalDateTime userLastUpdated;
+
     @Column(name = "access_types_min_version", nullable = false)
     private Long accessTypesMinVersion;
 
