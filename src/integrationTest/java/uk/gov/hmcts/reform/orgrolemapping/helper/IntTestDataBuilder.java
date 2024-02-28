@@ -232,7 +232,7 @@ public class IntTestDataBuilder {
     public static ProfessionalUserData buildProfessionalUserData(int i) {
         return ProfessionalUserData.builder()
                 .userId("" + i)
-                .lastUpdated(LocalDateTime.now())
+                .userLastUpdated(LocalDateTime.now())
                 .deleted(LocalDateTime.now())
                 .accessTypes("{}")
                 .organisationId("org " + i)

@@ -24,6 +24,9 @@ public class UserRefreshQueueEntity {
     @Column(name = "user_id")
     private String userId;
 
+    @Column(name = "user_last_updated", nullable = false)
+    private LocalDateTime userLastUpdated;
+
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
 

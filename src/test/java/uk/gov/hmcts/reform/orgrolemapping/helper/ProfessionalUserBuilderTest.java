@@ -25,11 +25,11 @@ class ProfessionalUserBuilderTest {
         UsersOrganisationInfo organisationInfo = buildUsersOrganisationInfo(123, List.of(user));
 
         ProfessionalUserData professionalUserData = fromProfessionalUserAndOrganisationInfo(user, organisationInfo);
-        assertNotNull(professionalUserData.getLastUpdated());
+        assertNotNull(professionalUserData.getUserLastUpdated());
         assertNotNull(professionalUserData.getDeleted());
         assertNotNull(professionalUserData.getAccessTypes());
-        assertEquals(professionalUserData.getOrganisationId(), "123");
-        assertEquals(professionalUserData.getOrganisationStatus(), "ACTIVE");
-        assertEquals(professionalUserData.getOrganisationProfileIds(), SOLICITOR_PROFILE);
+        assertEquals("123", professionalUserData.getOrganisationId());
+        assertEquals("ACTIVE", professionalUserData.getOrganisationStatus());
+        assertEquals(SOLICITOR_PROFILE, professionalUserData.getOrganisationProfileIds());
     }
 }

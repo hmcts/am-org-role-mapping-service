@@ -36,6 +36,7 @@ public class UserRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrati
 
         assertEquals("1", userRefreshEntity.getUserId());
         assertNotNull(userRefreshEntity.getLastUpdated());
+        assertNotNull(userRefreshEntity.getUserLastUpdated());
         assertNotNull(userRefreshEntity.getDeleted());
         assertEquals("{}", userRefreshEntity.getAccessTypes());
         assertEquals("org 1", userRefreshEntity.getOrganisationId());
