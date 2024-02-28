@@ -97,7 +97,8 @@ end;
 rule "sscs_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office == "SSCS Tribunal Judge-Fee Paid")
+  $joh: JudicialOfficeHolder(office == "SSCS Tribunal Judge-Fee Paid",
+                                       (ticketCodes != null && getTicketCodes().contains("368")))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
