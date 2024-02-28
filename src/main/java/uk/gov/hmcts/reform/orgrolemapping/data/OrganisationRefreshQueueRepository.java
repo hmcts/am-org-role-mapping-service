@@ -42,11 +42,12 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                     + "else 4 "
                 + "end, "
                 + "retry_after = case "
-                    + "when retry = 0 then now() + interval '2 Minute' "
-                    + "when retry = 1 then now() + interval '15 Minute' "
-                    + "when retry = 2 then now() + interval '60 Minute' "
+                    + "when retry = 0 then now() + (interval '1' Minute) * :retryOneInterval "
+                    + "when retry = 1 then now() + (interval '1' Minute) * :retryTwoInterval "
+                    + "when retry = 2 then now() + (interval '1' Minute) * :retryThreeInterval "
                     + "else NULL "
                 + "end "
             + "where organisation_id = :organisationId", nativeQuery = true)
-    void updateRetry(String organisationId);
+    void updateRetry(String organisationId, String retryOneInterval,
+                     String retryTwoInterval, String retryThreeInterval);
 }

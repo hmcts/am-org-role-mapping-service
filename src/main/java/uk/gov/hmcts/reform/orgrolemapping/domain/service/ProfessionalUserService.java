@@ -29,13 +29,19 @@ public class ProfessionalUserService {
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final TransactionTemplate transactionTemplate;
+    private final String retryOneInterval;
+    private final String retryTwoInterval;
+    private final String retryThreeInterval;
 
     public ProfessionalUserService(PrdService prdService,
                                    OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
                                    UserRefreshQueueRepository userRefreshQueueRepository,
-                                   @Value("${professional.refdata.pageSize}") String pageSize,
                                    NamedParameterJdbcTemplate jdbcTemplate,
-                                   PlatformTransactionManager transactionManager) {
+                                   PlatformTransactionManager transactionManager,
+                                   @Value("${professional.role.mapping.retryOneInterval}") String retryOneInterval,
+                                   @Value("${professional.role.mapping.retryTwoInterval}") String retryTwoInterval,
+                                   @Value("${professional.role.mapping.retryThreeInterval}") String retryThreeInterval,
+                                   @Value("${professional.refdata.pageSize}") String pageSize) {
         this.prdService = prdService;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
@@ -43,6 +49,9 @@ public class ProfessionalUserService {
         this.jdbcTemplate = jdbcTemplate;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        this.retryOneInterval = retryOneInterval;
+        this.retryTwoInterval = retryTwoInterval;
+        this.retryThreeInterval = retryThreeInterval;
     }
 
     public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
@@ -78,7 +87,8 @@ public class ProfessionalUserService {
         }));
 
         if (!isSuccess) {
-            organisationRefreshQueueRepository.updateRetry(organisationIdentifier);
+            organisationRefreshQueueRepository
+                    .updateRetry(organisationIdentifier, retryOneInterval, retryTwoInterval, retryThreeInterval);
         }
     }
 

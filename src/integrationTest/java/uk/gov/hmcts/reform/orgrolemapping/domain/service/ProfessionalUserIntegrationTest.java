@@ -23,6 +23,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -88,8 +89,17 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_organisation_profiles.sql"})
-    void shouldRollback_AndUpdateRetryOnException() {
+    void shouldRollback_AndUpdateRetryToOneOnException() {
+        ProfessionalUser professionalUser = buildProfessionalUser(1);
+        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
+        UsersByOrganisationResponse page1 =
+                buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", true);
+
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+                .thenReturn(ResponseEntity.ok(page1));
+
+        // throwing exception on 2nd page retrieval to test rollback (user inserts from page 1 SHOULD be rolled back)
+        when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
         professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
@@ -101,5 +111,32 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         assertTrue(organisationRefreshQueueEntities.get(0).getActive());
         assertEquals(1, organisationRefreshQueueEntities.get(0).getRetry());
         assertTrue(organisationRefreshQueueEntities.get(0).getRetryAfter().isAfter(LocalDateTime.now()));
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_organisation_profiles_retry_3.sql"})
+    void shouldRollback_AndUpdateRetryToFourAndRetryAfterToNullOnException() {
+        ProfessionalUser professionalUser = buildProfessionalUser(1);
+        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
+        UsersByOrganisationResponse page1 =
+                buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", true);
+
+        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+                .thenReturn(ResponseEntity.ok(page1));
+
+        // throwing exception on 2nd page retrieval to test rollback (user inserts from page 1 SHOULD be rolled back)
+        when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
+                .thenThrow(ServiceException.class);
+
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
+        assertEquals(userRefreshQueueRepository.findAll().size(), 0);
+
+        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
+                = organisationRefreshQueueRepository.findAll();
+        assertTrue(organisationRefreshQueueEntities.get(0).getActive());
+        assertEquals(4, organisationRefreshQueueEntities.get(0).getRetry());
+        assertNull(organisationRefreshQueueEntities.get(0).getRetryAfter());
     }
 }

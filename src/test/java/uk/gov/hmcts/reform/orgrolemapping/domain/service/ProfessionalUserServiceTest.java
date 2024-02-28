@@ -39,9 +39,12 @@ public class ProfessionalUserServiceTest {
             prdService,
             organisationRefreshQueueRepository,
             userRefreshQueueRepository,
-            "1",
             jdbcTemplate,
-            transactionManager
+            transactionManager,
+            "2",
+            "15",
+            "60",
+            "1"
     );
 
     @Test
