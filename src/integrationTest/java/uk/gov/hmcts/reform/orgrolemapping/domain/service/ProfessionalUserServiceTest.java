@@ -42,7 +42,7 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
 
         professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
-        assertEquals(2, userRefreshQueueRepository.findAll().size()); //TODO: One from insert_user_sql, one from this run
+        assertEquals(2, userRefreshQueueRepository.findAll().size());
     }
 
     @Test
@@ -63,38 +63,6 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
 
         professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
-        assertEquals(3, userRefreshQueueRepository.findAll().size()); //TODO: One from insert_user_sql, two from this run
+        assertEquals(3, userRefreshQueueRepository.findAll().size());
     }
-
 }
-
-
-
-
-//TODO: delete more of this, it's been moved into IntTestDataBuilder
-
-//        OrganisationInfo organisationInfo = OrganisationInfo.builder()
-//                .organisationIdentifier("321")
-//                .status("ACTIVE")
-//                .lastUpdated(LocalDateTime.now())
-//                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
-//
-//        UserAccessTypes userAccessTypes = UserAccessTypes.builder()
-//                .accessTypeId("123")
-//                .jurisdictionId("123")
-//                .organisationProfileId("123")
-//                .enabled("true")
-//                .build();
-//
-//        RefreshUser refreshUser = RefreshUser.builder()
-//                .userIdentifier("123")
-//                .lastUpdated(LocalDateTime.now())
-//                .organisationInfo(organisationInfo)
-//                .userAccessTypes(List.of(userAccessTypes))
-//                .build();
-
-//        GetRefreshUserResponse response = GetRefreshUserResponse.builder()
-//                .users(List.of(refreshUser))
-//                .lastRecordInPage("123")
-//                .moreAvailable(false)
-//                .build();
