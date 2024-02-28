@@ -1,5 +1,6 @@
 CREATE TABLE user_refresh_queue (
     user_id text PRIMARY KEY,
+    user_last_updated timestamp without time zone NOT NULL,
     last_updated timestamp without time zone NOT NULL,
     access_types_min_version int NOT NULL,
     deleted timestamp without time zone,
