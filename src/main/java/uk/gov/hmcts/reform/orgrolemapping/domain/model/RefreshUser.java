@@ -16,7 +16,7 @@ import java.util.List;
 public class RefreshUser {
 
     private String userIdentifier;
-    private LocalDateTime lastUpdated;
+    private LocalDateTime userLastUpdated;
     private OrganisationInfo organisationInfo;
     private List<UserAccessTypes> userAccessTypes;
     @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -1,10 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.api.task.UserInfo;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
@@ -12,19 +10,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.*;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
-import uk.gov.hmcts.reform.orgrolemapping.helper.UserBuilder;
 
 
-import java.sql.Ref;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -134,7 +127,7 @@ public class ProfessionalUserServiceTest {
     private RefreshUser buildRefreshUser (int i) {
         return RefreshUser.builder()
                 .userIdentifier("" + i)
-                .lastUpdated(LocalDateTime.now())
+                .userLastUpdated(LocalDateTime.now())
                 .organisationInfo(buildOrganisationInfo(i))
                 .build();
     }

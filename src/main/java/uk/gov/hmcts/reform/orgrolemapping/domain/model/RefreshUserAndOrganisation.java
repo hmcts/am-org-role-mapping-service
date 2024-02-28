@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class RefreshUserAndOrganisation {
 
     private String userIdentifier;
-    private LocalDateTime lastUpdated;
+    private LocalDateTime userLastUpdated;
     private String organisationIdentifier;
     private String organisationStatus;
     private String organisationProfileIds;

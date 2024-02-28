@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
@@ -14,7 +13,7 @@ public class ProfessionalUserBuilder {
     public static RefreshUserAndOrganisation getSerializedRefreshUser (RefreshUser user) {
         RefreshUserAndOrganisation userData = new RefreshUserAndOrganisation();
         userData.setUserIdentifier(user.getUserIdentifier());
-        userData.setLastUpdated(user.getLastUpdated());
+        userData.setUserLastUpdated(user.getUserLastUpdated());
         userData.setUserAccessTypes(JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
         userData.setOrganisationIdentifier(user.getOrganisationInfo().getOrganisationIdentifier());
         userData.setOrganisationStatus(user.getOrganisationInfo().getStatus());

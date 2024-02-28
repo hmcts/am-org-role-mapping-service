@@ -208,7 +208,7 @@ public class IntTestDataBuilder {
     public static RefreshUser refreshUser(int i) {
         return RefreshUser.builder()
                 .userIdentifier("" + i)
-                .lastUpdated(LocalDateTime.now())
+                .userLastUpdated(LocalDateTime.now())
                 .userAccessTypes(List.of(userAccessTypes(1)))
                 .organisationInfo(buildOrganisationInfo(1))
                 .build();
@@ -226,7 +226,7 @@ public class IntTestDataBuilder {
     public static RefreshUserAndOrganisation refreshUserAndOrganisationsList (int i) {
         return RefreshUserAndOrganisation.builder()
                 .userIdentifier("" + i)
-                .lastUpdated(LocalDateTime.now())
+                .userLastUpdated(LocalDateTime.now())
                 .userAccessTypes("" + i)
                 .organisationIdentifier("" + i)
                 .organisationStatus("ACTIVE")
