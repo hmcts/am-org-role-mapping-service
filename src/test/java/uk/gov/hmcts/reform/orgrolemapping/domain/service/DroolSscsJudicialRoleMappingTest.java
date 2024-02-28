@@ -70,11 +70,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
             assertTrue(r.isReadOnly());
             assertNull(primaryLocation);
         } else {
-            if (r.getRoleName().equals("post-hearing-judge") && office.contains("President of Tribunal")) {
-                assertEquals(Classification.PRIVATE, r.getClassification());
-            } else {
-                assertEquals(Classification.PUBLIC, r.getClassification());
-            }
+            assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
             assertFalse(r.isReadOnly());

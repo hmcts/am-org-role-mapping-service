@@ -105,9 +105,6 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-    classification = Classification.PUBLIC;
-   } else {
-    classification = Classification.PRIVATE;
    }
   insert(
       RoleAssignment.builder()
@@ -117,7 +114,7 @@ then
       .roleType(RoleType.ORGANISATION)
       .roleName("post-hearing-judge")
       .grantType(GrantType.STANDARD)
-      .classification(classification)
+      .classification(Classification.PUBLIC)
       .readOnly(false)
       .beginTime($joh.getBeginTime())
       .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
