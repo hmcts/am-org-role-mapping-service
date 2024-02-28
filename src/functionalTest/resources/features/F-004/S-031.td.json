@@ -39,29 +39,7 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "Y",
-            "contractType" : "[[ANYTHING_PRESENT]]",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA",
-            "workTypes" : "hearing_work,upper_tribunal,decision_making_work,applications"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
-          "roleType" : "ORGANISATION",
-          "roleName" : "judge",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "JUDICIAL",
-          "readOnly" : false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "endTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "contractType" : "[[ANYTHING_PRESENT]]",
+            "contractType" : "Fee-Paid",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "SSCS",
             "region" : "[[ANYTHING_PRESENT]]",
