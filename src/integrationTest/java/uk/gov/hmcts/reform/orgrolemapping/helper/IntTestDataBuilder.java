@@ -195,7 +195,7 @@ public class IntTestDataBuilder {
         return OrganisationInfo.builder()
                 .organisationIdentifier("" + i)
                 .status("ACTIVE")
-                .organisationLastUpdated(LocalDateTime.now())
+                .lastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
                 .build();
     }

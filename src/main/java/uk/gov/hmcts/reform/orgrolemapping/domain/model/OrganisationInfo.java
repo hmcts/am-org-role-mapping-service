@@ -16,6 +16,6 @@ public class OrganisationInfo {
 
     private String organisationIdentifier;
     private String status;
-    private LocalDateTime organisationLastUpdated;
+    private LocalDateTime lastUpdated;
     private List<String> organisationProfileIds;
 }
