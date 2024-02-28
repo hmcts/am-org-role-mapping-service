@@ -208,7 +208,7 @@ public class IntTestDataBuilder {
     public static RefreshUser refreshUser(int i) {
         return RefreshUser.builder()
                 .userIdentifier("" + i)
-                .userLastUpdated(LocalDateTime.now())
+                .lastUpdated(LocalDateTime.now())
                 .userAccessTypes(List.of(userAccessTypes(1)))
                 .organisationInfo(buildOrganisationInfo(1))
                 .build();

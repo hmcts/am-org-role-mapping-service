@@ -14,7 +14,7 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                                                            List<RefreshUserAndOrganisation> rows,
                                                            Integer accessTypeMinVersion) {
         String sql =
-                "insert into user_refresh_queue (user_id, last_updated, access_types_min_version, deleted, "
+                "insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted, "
                     + "access_types, organisation_id, organisation_status, organisation_profile_ids, active) "
                     + "values (:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, "
                         +":accessTypes, :organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true) "
@@ -30,7 +30,7 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
         MapSqlParameterSource[] params = rows.stream().map(r -> {
             MapSqlParameterSource paramValues = new MapSqlParameterSource();
             paramValues.addValue(USER_ID, r.getUserIdentifier());
-            paramValues.addValue(LAST_UPDATED, r.getUserLastUpdated());
+            paramValues.addValue(USER_LAST_UPDATED, r.getUserLastUpdated());
             paramValues.addValue(DELETED, r.getDateTimeDeleted());
             paramValues.addValue(ORGANISATION_ID, r.getOrganisationIdentifier());
             paramValues.addValue(ORGANISATION_STATUS, r.getOrganisationStatus());

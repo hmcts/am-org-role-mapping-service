@@ -127,7 +127,7 @@ public class ProfessionalUserServiceTest {
     private RefreshUser buildRefreshUser (int i) {
         return RefreshUser.builder()
                 .userIdentifier("" + i)
-                .userLastUpdated(LocalDateTime.now())
+                .lastUpdated(LocalDateTime.now())
                 .organisationInfo(buildOrganisationInfo(i))
                 .build();
     }

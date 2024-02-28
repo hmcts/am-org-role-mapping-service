@@ -17,8 +17,9 @@ public class PrmConstants {
 
     public static final String ORGANISATION_STATUS = "organisationStatus";
 
-    //TODO: Should be String[]? See UserRefreshQueueEntity
     public static final String ORGANISATION_PROFILE_IDS = "organisationProfileIds";
 
     public static final String ACCESS_TYPES = "accessTypes";
+
+    public static final String USER_LAST_UPDATED = "userLastUpdated";
 }
