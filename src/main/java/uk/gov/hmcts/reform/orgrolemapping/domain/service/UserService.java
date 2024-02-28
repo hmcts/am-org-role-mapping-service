@@ -14,8 +14,8 @@ public class UserService {
     private String activeUserRefreshDays;
 
     public UserService(UserRefreshQueueRepository userRefreshQueueRepository,
-            @Value("${professional.role.mapping.scheduling.organisationRefreshCleanup.activeOrgansationRefreshDays}")
-            String activeOrgansationRefreshDays) {
+            @Value("${professional.role.mapping.scheduling.organisationRefreshCleanup.activeUserRefreshDays}")
+            String activeUserRefreshDays) {
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.activeUserRefreshDays = activeUserRefreshDays;
     }
