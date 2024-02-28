@@ -89,10 +89,10 @@ then
 end;
 
 /*
- * SSCS "post-hearing-judge" Org role mapping.
+ * SSCS "post-hearing-salaried-judge" Org role mapping.
  */
 
-rule "sscs_post_hearing_judge_org_role"
+rule "sscs_post_hearing_salaried_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried",
@@ -112,7 +112,7 @@ then
       .actorId($joh.getUserId())
       .roleCategory(RoleCategory.JUDICIAL)
       .roleType(RoleType.ORGANISATION)
-      .roleName("post-hearing-judge")
+      .roleName("post-hearing-salaried-judge")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -121,7 +121,7 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : sscs_post_hearing_judge_org_role");
+      logMsg("Rule : sscs_post_hearing_salaried_judge_org_role");
 end;
 
 /*
