@@ -105,7 +105,7 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
 
         professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
-        assertEquals(userRefreshQueueRepository.findAll().size(), 0);
+        assertEquals(0, userRefreshQueueRepository.findAll().size());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
                 = organisationRefreshQueueRepository.findAll();
@@ -132,7 +132,7 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
 
         professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
-        assertEquals(userRefreshQueueRepository.findAll().size(), 0);
+        assertEquals(0, userRefreshQueueRepository.findAll().size());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
                 = organisationRefreshQueueRepository.findAll();
