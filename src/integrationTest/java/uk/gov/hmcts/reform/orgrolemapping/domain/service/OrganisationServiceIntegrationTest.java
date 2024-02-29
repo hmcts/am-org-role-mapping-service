@@ -52,8 +52,8 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
 
         organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
 
-        assertEquals(organisationRefreshQueueRepository.findAll().size(), 1);
-        assertEquals(profileRefreshQueueRepository.getActiveProfileEntities().size(), 0);
+        assertEquals(1, organisationRefreshQueueRepository.findAll().size());
+        assertEquals(0, profileRefreshQueueRepository.getActiveProfileEntities().size());
     }
 
     @Test
@@ -76,17 +76,17 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
 
         organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
 
-        assertEquals(organisationRefreshQueueRepository.findAll().size(), 2);
-        assertEquals(profileRefreshQueueRepository.getActiveProfileEntities().size(), 0);
+        assertEquals(2, organisationRefreshQueueRepository.findAll().size());
+        assertEquals(0, profileRefreshQueueRepository.getActiveProfileEntities().size());
     }
 
     @Test
     void shouldInsertNoOrganisationIntoOrganisationRefreshQueue_AsThereIsNoActiveProfiles() {
-        assertEquals(profileRefreshQueueRepository.getActiveProfileEntities().size(), 0);
+        assertEquals(0, profileRefreshQueueRepository.getActiveProfileEntities().size());
 
         organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
 
-        assertEquals(organisationRefreshQueueRepository.findAll().size(), 0);
+        assertEquals(0, organisationRefreshQueueRepository.findAll().size());
     }
 
     @Test
@@ -108,7 +108,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
 
         organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
 
-        assertEquals(organisationRefreshQueueRepository.findAll().size(), 1);
+        assertEquals(1, organisationRefreshQueueRepository.findAll().size());
     }
 
 }

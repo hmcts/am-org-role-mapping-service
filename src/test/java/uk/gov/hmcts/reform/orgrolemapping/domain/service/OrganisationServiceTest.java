@@ -216,7 +216,7 @@ class OrganisationServiceTest {
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(0))
                 .upsertToOrganisationRefreshQueue(any(), any(), any());
-        verify(profileRefreshQueueRepository, times(0))
+        verify(profileRefreshQueueRepository, times(1))
                 .setActiveFalse(any(), any());
     }
 

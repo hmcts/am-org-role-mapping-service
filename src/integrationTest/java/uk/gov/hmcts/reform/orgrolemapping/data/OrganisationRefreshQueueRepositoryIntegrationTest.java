@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildOrganisationInfo;
 
 @Transactional
@@ -31,8 +32,12 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
 
-        assertEquals(organisationEntity.getOrganisationId(), "123");
-        assertEquals(organisationEntity.getAccessTypesMinVersion(), 1);
+        assertEquals("123", organisationEntity.getOrganisationId());
+        assertEquals(1, organisationEntity.getAccessTypesMinVersion());
+        assertEquals(0, organisationEntity.getRetry());
+        assertNotNull(organisationEntity.getOrganisationLastUpdated());
+        assertNotNull(organisationEntity.getLastUpdated());
+        assertNotNull(organisationEntity.getRetryAfter());
     }
 
     @Test
@@ -47,7 +52,11 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
 
-        assertEquals(organisationEntity.getOrganisationId(), "123");
-        assertEquals(organisationEntity.getAccessTypesMinVersion(), 1);
+        assertEquals("123", organisationEntity.getOrganisationId());
+        assertEquals(1, organisationEntity.getAccessTypesMinVersion());
+        assertEquals(0, organisationEntity.getRetry());
+        assertNotNull(organisationEntity.getOrganisationLastUpdated());
+        assertNotNull(organisationEntity.getLastUpdated());
+        assertNotNull(organisationEntity.getRetryAfter());
     }
 }
