@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface OrganisationRefreshQueueRepository extends JpaRepository<OrganisationRefreshQueueEntity, String> {
 
     @Query(value = "DELETE FROM organisation_refresh_queue o WHERE "
-            + "o.last_updated > (now() - interval ':numDaysPassed day') "
+            + "o.last_updated < (now() - interval ':numDaysPassed day') "
             + "AND o.active", nativeQuery = true)
     void deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
             @Param("numDaysPassed") String numDaysPassed);

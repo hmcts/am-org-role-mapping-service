@@ -20,7 +20,6 @@ public class UserService {
         this.activeUserRefreshDays = activeUserRefreshDays;
     }
 
-
     @Transactional
     public void deleteActiveUserRefreshRecords() {
         userRefreshQueueRepository
