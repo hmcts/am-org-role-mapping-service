@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,10 @@ public class UserRefreshQueueEntity {
     @Column(name = "user_id")
     private String userId;
 
+    @Column(name = "user_last_updated", nullable = false)
+    private LocalDateTime userLastUpdated;
+
+    @UpdateTimestamp
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
 
@@ -48,4 +53,10 @@ public class UserRefreshQueueEntity {
 
     @Column(name = "active", nullable = false)
     private Boolean active;
+
+    @Column(name = "retry")
+    private Integer retry;
+
+    @Column(name = "retry_after")
+    private LocalDateTime retryAfter;
 }
