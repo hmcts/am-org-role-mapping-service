@@ -1,13 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.jetbrains.annotations.NotNull;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +50,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -71,7 +64,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
     "feign.client.config.jrdClient.v2Active=false"})
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
@@ -114,8 +106,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     @Mock
     private SecurityContext securityContext;
 
-    Lock sequential = new ReentrantLock();
-
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
@@ -124,7 +114,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     @BeforeEach
     public void setUp() throws Exception {
-        sequential.lock();
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
@@ -133,13 +122,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         wiremockFixtures.resetRequests();
     }
 
-    @AfterEach
-    public void tearDown() throws Exception {
-        sequential.unlock();
-    }
-
     @Test
-    @Order(13)
     public void shouldProcessRefreshRoleAssignmentsWithJudicialProfiles() throws Exception {
         logger.info(" Refresh role assignments successfully with valid user profiles");
         var uuid = UUID.randomUUID().toString();
@@ -160,7 +143,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Order(14)
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignments()
             throws Exception {
         logger.info(" Refresh role assignments failed with valid user profiles");
@@ -182,7 +164,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Order(15)
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialBookings()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
@@ -204,7 +185,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Order(16)
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withNotFoundJudicialProfiles()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
@@ -227,7 +207,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Order(17)
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialProfiles()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
@@ -248,7 +227,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Order(18)
     public void shouldRejectJudicialRefreshRequest_withEmptyBody() throws Exception {
         logger.info(" Refresh request rejected with empty request");
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
@@ -262,7 +240,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Order(19)
     public void shouldRejectJudicialRefreshRequest_withEmptyUserList() throws Exception {
         logger.info(" Refresh request rejected with empty user request");
         JudicialRefreshRequest request = JudicialRefreshRequest.builder()
@@ -279,7 +256,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Order(20)
     public void shouldRejectJudicialRefreshRequest_withInvalidUserIdFormat() throws Exception {
         logger.info(" Refresh role assignments failed with invalid valid user profiles format");
 
