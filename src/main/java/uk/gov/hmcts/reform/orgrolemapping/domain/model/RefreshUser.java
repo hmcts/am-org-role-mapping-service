@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uk.gov.hmcts.reform.orgrolemapping.domain.UserAccessType;
 
 import java.time.LocalDateTime;
 import java.util.List;

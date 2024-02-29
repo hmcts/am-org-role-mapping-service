@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.gov.hmcts.reform.orgrolemapping.domain.UserAccessType;
 
 import java.util.List;
 
@@ -13,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserAccessTypes {
-    private List<UserAccessType> userAccessTypes;
+    private List<UserAccessType> userAccessTypesList;
 
 }

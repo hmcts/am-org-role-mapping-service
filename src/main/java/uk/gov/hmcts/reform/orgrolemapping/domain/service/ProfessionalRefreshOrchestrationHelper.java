@@ -15,7 +15,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.UserAccessType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
@@ -25,12 +25,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileJurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.*;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -67,7 +62,6 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private final SecurityUtils securityUtils;
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
-    protected static final String[] ORGANISATION_ACTIVE_STATUSES =  { "abc", "def", "ghi", "xyz","OrgStatus" };
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void upsertUserRefreshQueue(RefreshUser prdUser) {
@@ -166,17 +160,16 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private List<RoleAssignment> prepareRoleAssignments(UserRefreshQueueEntity userRefreshQueue,
                                                         AccessTypesEntity accessTypes) throws JsonProcessingException {
-        Set<RoleAssignment> usersRoleAssignments = new HashSet<>();
         // Step 2 If user_refresh_queue.deleted != null then halt and return an empty set of role assignments.
         if (null != userRefreshQueue.getDeleted()) {
-            return usersRoleAssignments.stream().toList();
+            return Collections.emptyList();
         }
 
         // Step 3 If user_refresh_queue.organisation_status is not an active status, then halt and return an empty set
         // of role assignments. Note The set of active statuses will have to be provided by PRD team / product owner.
 
         if (!isOrganisationStatusActive(userRefreshQueue.getOrganisationStatus())) {
-            return usersRoleAssignments.stream().toList();
+            return Collections.emptyList();
         }
 
         RestructuredAccessTypes prmRestructuredAccessTypes =
@@ -198,9 +191,7 @@ public class ProfessionalRefreshOrchestrationHelper {
         filteredOrganisationProfiles =
                 extractOrganisationProfiles(filteredOrganisationProfiles,filteredUserAccessTypes);
 
-        usersRoleAssignments = createRoleAssignments(userRefreshQueue, filteredOrganisationProfiles);
-
-        return usersRoleAssignments.stream().toList();
+        return createRoleAssignments(userRefreshQueue, filteredOrganisationProfiles).stream().toList();
     }
 
     private Set<RoleAssignment> createRoleAssignments(UserRefreshQueueEntity userRefreshQueue,
@@ -331,7 +322,6 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private boolean isOrganisationStatusActive(String organisationStatus) {
-        //TODO logic to find the status
-        return Arrays.stream(ORGANISATION_ACTIVE_STATUSES).anyMatch(organisationStatus::equals);
+        return OrganisationStatus.valueOf(organisationStatus).isActive();
     }
 }
