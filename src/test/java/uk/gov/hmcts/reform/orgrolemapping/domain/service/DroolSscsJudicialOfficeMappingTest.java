@@ -29,11 +29,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     //=================================SALARIED ROLES==================================
     @ParameterizedTest
     @CsvSource({
-        "President of Tribunal,Salaried,BBA3,'leadership-judge,judge,case-allocator,task-supervisor,"
-                + "specific-access-approver-judiciary,hmcts-judiciary'",
-        "Regional Tribunal Judge,Salaried,BBA3,'leadership-judge,judge,case-allocator,task-supervisor,"
-                + "specific-access-approver-judiciary,hmcts-judiciary'",
-        "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge'"
+        "President of Tribunal,Salaried,BBA3,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
+                + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
+        "Regional Tribunal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
+                + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
+        "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
     })
     void shouldReturSalariedRoles(String appointment, String appointmentType,
                                   String serviceCode, String expectedRoles) {
@@ -458,7 +458,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder("leadership-judge", "task-supervisor", "case-allocator",
-                        "specific-access-approver-judiciary", "hmcts-judiciary", "judge"));
+                        "specific-access-approver-judiciary", "hmcts-judiciary", "judge",
+                        "post-hearing-salaried-judge"));
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
