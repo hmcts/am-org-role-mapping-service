@@ -29,19 +29,24 @@ public class ProfessionalUserService {
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final TransactionTemplate transactionTemplate;
-    private final String retryOneInterval;
-    private final String retryTwoInterval;
-    private final String retryThreeInterval;
+    private final String retryOneIntervalMin;
+    private final String retryTwoIntervalMin;
+    private final String retryThreeIntervalMin;
 
-    public ProfessionalUserService(PrdService prdService,
-                                   OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
-                                   UserRefreshQueueRepository userRefreshQueueRepository,
-                                   NamedParameterJdbcTemplate jdbcTemplate,
-                                   PlatformTransactionManager transactionManager,
-                                   @Value("${professional.role.mapping.retryOneInterval}") String retryOneInterval,
-                                   @Value("${professional.role.mapping.retryTwoInterval}") String retryTwoInterval,
-                                   @Value("${professional.role.mapping.retryThreeInterval}") String retryThreeInterval,
-                                   @Value("${professional.refdata.pageSize}") String pageSize) {
+    public ProfessionalUserService(
+            PrdService prdService,
+            OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
+            UserRefreshQueueRepository userRefreshQueueRepository,
+            NamedParameterJdbcTemplate jdbcTemplate,
+            PlatformTransactionManager transactionManager,
+            @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryOneIntervalMin}")
+            String retryOneIntervalMin,
+            @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryTwoIntervalMin}")
+            String retryTwoIntervalMin,
+            @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryThreeIntervalMin}")
+            String retryThreeIntervalMin,
+            @Value("${professional.refdata.pageSize}")
+            String pageSize) {
         this.prdService = prdService;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
@@ -49,9 +54,9 @@ public class ProfessionalUserService {
         this.jdbcTemplate = jdbcTemplate;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        this.retryOneInterval = retryOneInterval;
-        this.retryTwoInterval = retryTwoInterval;
-        this.retryThreeInterval = retryThreeInterval;
+        this.retryOneIntervalMin = retryOneIntervalMin;
+        this.retryTwoIntervalMin = retryTwoIntervalMin;
+        this.retryThreeIntervalMin = retryThreeIntervalMin;
     }
 
     public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
@@ -87,8 +92,9 @@ public class ProfessionalUserService {
         }));
 
         if (!isSuccess) {
-            organisationRefreshQueueRepository
-                    .updateRetry(organisationIdentifier, retryOneInterval, retryTwoInterval, retryThreeInterval);
+            organisationRefreshQueueRepository.updateRetry(
+                    organisationIdentifier, retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin
+            );
         }
     }
 
