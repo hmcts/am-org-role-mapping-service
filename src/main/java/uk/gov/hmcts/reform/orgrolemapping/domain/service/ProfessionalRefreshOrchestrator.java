@@ -42,7 +42,7 @@ public class ProfessionalRefreshOrchestrator {
 
     @Transactional
     public ResponseEntity<Object> refreshProfessionalUser(String userId) {
-        log.info("Single User refreshProfessionalUser for {userid}",userId);
+        log.info("Single User refreshProfessionalUser for {}", userId);
         GetRefreshUsersResponse getRefreshUsersResponse;
         try {
             getRefreshUsersResponse = Objects.requireNonNull(prdService.getRefreshUser(userId).getBody());
