@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -418,7 +417,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertEquals("NEW", refreshJob.getStatus());// failed process should change the status to IN-PROGRESS
     }
 
-    @Disabled("Intermittent DTSAM-111")
+    //@Disabled("Intermittent DTSAM-111")
     @Test
     @Order(12)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
