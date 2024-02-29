@@ -17,14 +17,16 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                 "insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted, "
                     + "access_types, organisation_id, organisation_status, organisation_profile_ids, active) "
                     + "values (:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, "
-                        +":accessTypes, :organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true) "
+                        +":accessTypes, :organisationId, :organisationStatus, "
+                        +"string_to_array(:organisationProfileIds, ','), true) "
                     + "on conflict (user_id) do update "
                     + "set "
                     + "access_types_min_version = greatest(excluded.access_types_min_version, "
                     + "user_refresh_queue.access_types_min_version), user_last_updated = excluded.user_last_updated, "
                     + "deleted = excluded.deleted, access_types = excluded.access_types, "
                     + "organisation_id = excluded.organisation_id, organisation_status = excluded.organisation_status, "
-                    + "organisation_profile_ids  = excluded.organisation_profile_ids, last_updated = now(), active = true "
+                    + "organisation_profile_ids  = excluded.organisation_profile_ids, "
+                    + "last_updated = now(), active = true "
                     + "where excluded.last_updated > user_refresh_queue.last_updated";
 
         MapSqlParameterSource[] params = rows.stream().map(r -> {

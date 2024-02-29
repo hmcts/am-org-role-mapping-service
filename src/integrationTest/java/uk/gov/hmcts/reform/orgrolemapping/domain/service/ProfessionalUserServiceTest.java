@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +33,7 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql",
             "classpath:sql/insert_batch_last_run.sql", "classpath:sql/insert_user_refresh_queue.sql"})
-    void ShouldFindUserChangesAndInsertIntoRefreshQueue_WithoutPagination() {
+    void shouldFindUserChangesAndInsertIntoRefreshQueue_WithoutPagination() {
         RefreshUser refreshUser = refreshUser(1);
         GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser, "123", false);
 
@@ -48,7 +48,7 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql",
             "classpath:sql/insert_batch_last_run.sql", "classpath:sql/insert_user_refresh_queue.sql"})
-    void ShouldFindUserChangesAndInsertIntoRefreshQueue_WithPagination() {
+    void shouldFindUserChangesAndInsertIntoRefreshQueue_WithPagination() {
         RefreshUser refreshUser = refreshUser(1);
         GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser, "123", true);
 

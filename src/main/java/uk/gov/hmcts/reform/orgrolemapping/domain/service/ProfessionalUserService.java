@@ -56,10 +56,6 @@ public class ProfessionalUserService {
         log.info("findUserChangesAndInsertIntoUserRefreshQueue started..");
         final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
         List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
-        //TODO: Need to remove the checks for size != 1, these are for single access mode - does not apply to P5?
-//        if (allAccessTypes.size() != 1) {
-//            throw new ServiceException("Single AccessTypesEntity not found");
-//        }
         AccessTypesEntity accessTypesEntity = allAccessTypes.get(0);
         List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
                 .findAll();
@@ -86,7 +82,7 @@ public class ProfessionalUserService {
             moreAvailable = refreshUserResponse.isMoreAvailable();
             lastRecordInPage = refreshUserResponse.getLastRecordInPage();
 
-            while (moreAvailable) {
+            while(moreAvailable) {
                 refreshUserResponse = prdService
                         .retrieveUsers(formattedSince, Integer.valueOf(pageSize), lastRecordInPage).getBody();
 

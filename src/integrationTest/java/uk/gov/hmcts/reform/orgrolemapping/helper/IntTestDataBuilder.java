@@ -1,7 +1,16 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessTypes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
@@ -214,7 +223,7 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static UserAccessTypes userAccessTypes (int i) {
+    public static UserAccessTypes userAccessTypes(int i) {
         return UserAccessTypes.builder()
                 .jurisdictionId("" + i)
                 .organisationProfileId("" + i)
@@ -223,7 +232,7 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static RefreshUserAndOrganisation refreshUserAndOrganisationsList (int i) {
+    public static RefreshUserAndOrganisation refreshUserAndOrganisationsList(int i) {
         return RefreshUserAndOrganisation.builder()
                 .userIdentifier("" + i)
                 .userLastUpdated(LocalDateTime.now())
@@ -234,7 +243,9 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static GetRefreshUserResponse buildRefreshUserResponse(RefreshUser user, String lastRecord, boolean moreAvailable) {
+    public static GetRefreshUserResponse buildRefreshUserResponse(RefreshUser user,
+                                                                  String lastRecord,
+                                                                  boolean moreAvailable) {
         return GetRefreshUserResponse.builder()
                 .users(List.of(user))
                 .lastRecordInPage(lastRecord)
