@@ -4,7 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +92,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
     "feign.client.config.jrdClient.v2Active=false"})
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
@@ -157,6 +161,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(1)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
@@ -187,6 +192,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(2)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
@@ -216,6 +222,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     //@Disabled("Intermittent AM-2919")
     @Test
+    @Order(3)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
@@ -245,6 +252,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     //@Disabled("Intermittent AM-2919")
     @Test
+    @Order(4)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
@@ -274,6 +282,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     //@Disabled("Intermittent DTSAM-111")
     @Test
+    @Order(5)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithFailedUsersToComplete() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
@@ -316,6 +325,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(6)
     public void shouldFailProcessRefreshRoleAssignmentsWithFailedUsersAndWithOutJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
@@ -327,6 +337,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(7)
     public void shouldFailProcessRefreshRoleAssignmentsWithEmptyJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
@@ -338,6 +349,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(8)
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
@@ -350,6 +362,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(9)
     public void shouldFailProcessRefreshRoleAssignmentsWithOutJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
         mockMvc.perform(post(URL)
@@ -360,6 +373,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(10)
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidServiceToken() throws Exception {
         logger.info("Refresh request rejected with invalid service token");
 
@@ -377,6 +391,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(11)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
@@ -402,6 +417,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     //@Disabled("Intermittent DTSAM-111")
     @Test
+    @Order(12)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
@@ -434,6 +450,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(13)
     public void shouldProcessRefreshRoleAssignmentsWithJudicialProfiles() throws Exception {
         logger.info(" Refresh role assignments successfully with valid user profiles");
         var uuid = UUID.randomUUID().toString();
@@ -454,6 +471,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(14)
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignments()
             throws Exception {
         logger.info(" Refresh role assignments failed with valid user profiles");
@@ -475,6 +493,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(15)
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialBookings()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
@@ -496,6 +515,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(16)
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withNotFoundJudicialProfiles()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
@@ -518,6 +538,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(17)
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialProfiles()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
@@ -538,6 +559,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(18)
     public void shouldRejectJudicialRefreshRequest_withEmptyBody() throws Exception {
         logger.info(" Refresh request rejected with empty request");
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
@@ -551,6 +573,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(19)
     public void shouldRejectJudicialRefreshRequest_withEmptyUserList() throws Exception {
         logger.info(" Refresh request rejected with empty user request");
         JudicialRefreshRequest request = JudicialRefreshRequest.builder()
@@ -567,6 +590,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
+    @Order(20)
     public void shouldRejectJudicialRefreshRequest_withInvalidUserIdFormat() throws Exception {
         logger.info(" Refresh role assignments failed with invalid valid user profiles format");
 
