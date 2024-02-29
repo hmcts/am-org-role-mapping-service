@@ -8,8 +8,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
-import uk.gov.hmcts.reform.orgrolemapping.data.*;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.*;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 
 
 import java.time.Instant;
@@ -124,7 +132,7 @@ public class ProfessionalUserServiceTest {
         );
     }
 
-    private RefreshUser buildRefreshUser (int i) {
+    private RefreshUser buildRefreshUser(int i) {
         return RefreshUser.builder()
                 .userIdentifier("" + i)
                 .lastUpdated(LocalDateTime.now())
@@ -141,9 +149,9 @@ public class ProfessionalUserServiceTest {
                 .build();
     }
 
-    private GetRefreshUserResponse buildRefreshUserResponse (RefreshUser user,
+    private GetRefreshUserResponse buildRefreshUserResponse(RefreshUser user,
                                                             String lastRecord,
-                                                             boolean moreAvailable) {
+                                                            boolean moreAvailable) {
         return GetRefreshUserResponse.builder()
                 .users(List.of(user))
                 .lastRecordInPage(lastRecord)
