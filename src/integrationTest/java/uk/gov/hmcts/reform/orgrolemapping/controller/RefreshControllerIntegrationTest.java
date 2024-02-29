@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.jetbrains.annotations.NotNull;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -64,6 +65,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -143,6 +146,8 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     @Mock
     private SecurityContext securityContext;
 
+    Lock sequential = new ReentrantLock();
+
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
@@ -151,6 +156,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     @BeforeEach
     public void setUp() throws Exception {
+        sequential.lock();
         template = new JdbcTemplate(ds);
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         doReturn(authentication).when(securityContext).getAuthentication();
@@ -158,6 +164,11 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        sequential.unlock();
     }
 
     @Test
