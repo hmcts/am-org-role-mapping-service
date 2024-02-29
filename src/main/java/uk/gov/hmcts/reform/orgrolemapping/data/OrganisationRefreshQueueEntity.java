@@ -23,6 +23,9 @@ public class OrganisationRefreshQueueEntity {
     @Column(name = "organisation_id", nullable = false)
     private String organisationId;
 
+    @Column(name = "organisation_last_updated", nullable = false)
+    private LocalDateTime organisationLastUpdated;
+
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
 
@@ -31,4 +34,10 @@ public class OrganisationRefreshQueueEntity {
 
     @Column(name = "active", nullable = false)
     private Boolean active;
+
+    @Column(name = "retry")
+    private Integer retry;
+
+    @Column(name = "retry_after")
+    private LocalDateTime retryAfter;
 }
