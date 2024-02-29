@@ -8,20 +8,20 @@
         "status": "ACTIVE",
         "lastUpdated": "2023-12-20T12:01:20.578Z",
         "organisationProfileIds": [
-          "SOLICITOR_PROFILE",
-          "OTHER_PROFILE"
+          "SOLICITOR_ORG",
+          "DWP_GOV_ORG"
         ]
       },
       "userAccessTypes": [
         {
-          "jurisdictionId": "BEFTA_JURISDICTION_1",
-          "organisationProfileId": "SOLICITOR_PROFILE",
-          "accessTypeId": "1",
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_ORG",
+          "accessTypeId": "civil-cases-1",
           "enabled": "true"
         },
         {
-          "jurisdictionId": "BEFTA_JURISDICTION_2",
-          "organisationProfileId": "SOLICITOR_PROFILE",
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_ORG",
           "accessTypeId": "2",
           "enabled": "true"
         }
