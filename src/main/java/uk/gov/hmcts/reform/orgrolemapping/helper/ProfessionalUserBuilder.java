@@ -1,4 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;

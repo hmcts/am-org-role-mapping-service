@@ -23,14 +23,16 @@ public class UserRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrati
 
     @Test
     public void shouldInsertIntoUserRefreshQueue() {
-        List<RefreshUserAndOrganisation> refreshUserAndOrganisationsList = List.of(refreshUserAndOrganisationsList(123));
+        List<RefreshUserAndOrganisation> refreshUserAndOrganisationsList =
+                List.of(refreshUserAndOrganisationsList(123));
 
-        userRefreshQueueRepository.insertIntoUserRefreshQueueForLastUpdated(jdbcTemplate, refreshUserAndOrganisationsList, 1);
+        userRefreshQueueRepository.insertIntoUserRefreshQueueForLastUpdated(jdbcTemplate,
+                refreshUserAndOrganisationsList, 1);
 
         List<UserRefreshQueueEntity> usersEntities = userRefreshQueueRepository.findAll();
         UserRefreshQueueEntity userEntity = usersEntities.get(0);
 
-        assertEquals( "123", userEntity.getUserId());
-        assertEquals( 1, userEntity.getAccessTypesMinVersion());
+        assertEquals("123", userEntity.getUserId());
+        assertEquals(1, userEntity.getAccessTypesMinVersion());
     }
 }

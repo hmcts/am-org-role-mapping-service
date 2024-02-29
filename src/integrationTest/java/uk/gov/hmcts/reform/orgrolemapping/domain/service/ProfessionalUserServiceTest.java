@@ -15,8 +15,10 @@ import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.refreshUser;
 
 @Transactional
 public class ProfessionalUserServiceTest extends BaseTestIntegration {
@@ -31,8 +33,10 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
     private PrdService prdService;
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql",
-            "classpath:sql/insert_batch_last_run.sql", "classpath:sql/insert_user_refresh_queue.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_access_types.sql",
+                       "classpath:sql/insert_batch_last_run.sql",
+                       "classpath:sql/insert_user_refresh_queue.sql"})
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithoutPagination() {
         RefreshUser refreshUser = refreshUser(1);
         GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser, "123", false);
@@ -46,8 +50,10 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql",
-            "classpath:sql/insert_batch_last_run.sql", "classpath:sql/insert_user_refresh_queue.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_access_types.sql",
+                       "classpath:sql/insert_batch_last_run.sql",
+                       "classpath:sql/insert_user_refresh_queue.sql"})
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithPagination() {
         RefreshUser refreshUser = refreshUser(1);
         GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser, "123", true);

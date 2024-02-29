@@ -5,7 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
-import uk.gov.hmcts.reform.orgrolemapping.data.*;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
@@ -78,11 +84,11 @@ public class ProfessionalUserService {
         boolean moreAvailable;
         String lastRecordInPage;
 
-        if (!refreshUserResponse.getUsers().isEmpty()){
+        if (!refreshUserResponse.getUsers().isEmpty()) {
             moreAvailable = refreshUserResponse.isMoreAvailable();
             lastRecordInPage = refreshUserResponse.getLastRecordInPage();
 
-            while(moreAvailable) {
+            while (moreAvailable) {
                 refreshUserResponse = prdService
                         .retrieveUsers(formattedSince, Integer.valueOf(pageSize), lastRecordInPage).getBody();
 

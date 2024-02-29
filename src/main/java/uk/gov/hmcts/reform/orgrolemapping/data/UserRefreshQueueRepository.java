@@ -7,7 +7,14 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisatio
 
 import java.util.List;
 
-import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.*;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.USER_ID;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ACCESS_TYPES;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.USER_LAST_UPDATED;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.DELETED;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ORGANISATION_ID;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ORGANISATION_STATUS;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ORGANISATION_PROFILE_IDS;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ACCESS_TYPES_MIN_VERSION;
 
 public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQueueEntity, String> {
     default void insertIntoUserRefreshQueueForLastUpdated(NamedParameterJdbcTemplate jdbcTemplate,
@@ -17,8 +24,8 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                 "insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted, "
                     + "access_types, organisation_id, organisation_status, organisation_profile_ids, active) "
                     + "values (:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, "
-                        +":accessTypes, :organisationId, :organisationStatus, "
-                        +"string_to_array(:organisationProfileIds, ','), true) "
+                        + ":accessTypes, :organisationId, :organisationStatus, "
+                        + "string_to_array(:organisationProfileIds, ','), true) "
                     + "on conflict (user_id) do update "
                     + "set "
                     + "access_types_min_version = greatest(excluded.access_types_min_version, "
