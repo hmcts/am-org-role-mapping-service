@@ -224,7 +224,7 @@ class OrganisationServiceTest {
         return OrganisationInfo.builder()
                 .organisationIdentifier("" + i)
                 .status("ACTIVE")
-                .lastUpdated(LocalDateTime.now())
+                .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
                 .build();
     }
