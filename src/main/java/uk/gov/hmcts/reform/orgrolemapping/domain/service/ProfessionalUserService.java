@@ -85,7 +85,6 @@ public class ProfessionalUserService {
                 return false;
             }
         }));
-
         if (!isSuccess) {
             organisationRefreshQueueRepository
                     .updateRetry(organisationIdentifier, retryOneInterval, retryTwoInterval, retryThreeInterval);
