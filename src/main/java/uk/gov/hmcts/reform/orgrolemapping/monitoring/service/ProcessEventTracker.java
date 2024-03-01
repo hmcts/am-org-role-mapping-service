@@ -39,7 +39,9 @@ public class ProcessEventTracker {
         properties.put("StartTime", processMonitorDto.getStartTime().toString());
         properties.put("EndTime", processMonitorDto.getEndTime() != null
                 ? processMonitorDto.getEndTime().toString() : null);
-        properties.put("EndStatus", processMonitorDto.getEndStatus().toString());
+        properties.put("EndStatus",
+                processMonitorDto.getEndStatus() != null
+                ? processMonitorDto.getEndStatus().toString() : null);
         properties.put("EndDetail", processMonitorDto.getEndDetail());
         properties.put("RecordStatus", processMonitorDto.getRecordStatus().toString());
 
