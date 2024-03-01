@@ -39,11 +39,6 @@ variable "process_names" {
   ]
 }
 
-
-locals {
-  local_env = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env
-}
-
 module "prm-process-not-started-alerts" {
   source = "git@github.com:hmcts/cnp-module-metric-alert"
 
