@@ -50,7 +50,7 @@ module "prm-process-not-started-alerts" {
  
   alert_name = "am-${each.value.key}-not-started-alert"
   alert_desc = "Triggers when ${each.value.description} has not started within the past hour in am-${local.local_env}."
-  app_insights_query = "customEvents | where name == \"${each.value.notStartedQueryFilter}\" | limit 1"
+  app_insights_query = "customEvents | where name == '${each.value.notStartedQueryFilter}' | limit 1"
   custom_email_subject = "Alert: ${each.value.description} has not started in expected time frame in am-${local.local_env}"
   frequency_in_minutes = "15"
   time_window_in_minutes = "1440"
