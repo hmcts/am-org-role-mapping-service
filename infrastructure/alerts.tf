@@ -58,7 +58,7 @@ module "prm-process-not-started-alerts" {
   action_group_name = "am-support" // or whatever the correct support group should be
   trigger_threshold_operator = "LessThan"
   trigger_threshold = "2"
-  resourcegroup_name = azurerm_resource_group.rg.name
+  resourcegroup_name = "am-shared-infrastructure-${var.env}"
   common_tags = var.common_tags
   enabled = true
 }
