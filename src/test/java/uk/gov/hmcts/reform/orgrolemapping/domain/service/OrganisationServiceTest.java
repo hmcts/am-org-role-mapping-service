@@ -9,9 +9,10 @@ import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepositor
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+
 @ExtendWith(MockitoExtension.class)
 public class OrganisationServiceTest {
-    private final String num_days = "90";
+    private final String numDays = "90";
 
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository =
             Mockito.mock(OrganisationRefreshQueueRepository.class);
@@ -20,10 +21,10 @@ public class OrganisationServiceTest {
             organisationRefreshQueueRepository, "90");
 
     @Test
-    void DeleteActiveOrganisationRefreshRecordsTest() {
+    void deleteActiveOrganisationRefreshRecordsTest() {
         organisationService.deleteActiveOrganisationRefreshRecords();
 
         verify(organisationRefreshQueueRepository, times(1))
-                .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(num_days);
+                .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
     }
 }

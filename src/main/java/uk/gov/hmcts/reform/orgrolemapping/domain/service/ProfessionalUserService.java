@@ -7,14 +7,15 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import javax.transaction.Transactional;
 
 @Service
-public class UserService {
+public class ProfessionalUserService {
 
     private final UserRefreshQueueRepository userRefreshQueueRepository;
 
-    private String activeUserRefreshDays;
+    private final String activeUserRefreshDays;
 
-    public UserService(UserRefreshQueueRepository userRefreshQueueRepository,
-            @Value("${professional.role.mapping.scheduling.organisationRefreshCleanup.activeUserRefreshDays}")
+    public ProfessionalUserService(UserRefreshQueueRepository userRefreshQueueRepository,
+                                   @Value(
+                                   "${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}")
             String activeUserRefreshDays) {
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.activeUserRefreshDays = activeUserRefreshDays;

@@ -11,18 +11,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
-    private final String num_days = "90";
+public class ProfessionalUserServiceTest {
+    private final String numDays = "90";
     private final UserRefreshQueueRepository userRefreshQueueRepository =
             Mockito.mock(UserRefreshQueueRepository.class);
 
-    UserService userService = new UserService(userRefreshQueueRepository, "90");
+    ProfessionalUserService userService = new ProfessionalUserService(userRefreshQueueRepository, "90");
 
     @Test
-    void DeleteActiveUserRefreshRecordsTest() {
+    void deleteActiveUserRefreshRecordsTest() {
         userService.deleteActiveUserRefreshRecords();
 
         verify(userRefreshQueueRepository, times(1))
-                .deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(num_days);
+                .deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
     }
 }

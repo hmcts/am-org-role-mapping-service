@@ -197,7 +197,7 @@ professional:
         enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
         organisationRefreshCleanup:
           cron: ${ORG_REFRESH_CLEANUP_CRON:*/5 * * * * *}
-          activeOrgansationRefreshDays: ${ORG_REFRESH_CLEANUP_DAYS:90}
+          activeOrganisationRefreshDays: ${ORG_REFRESH_CLEANUP_DAYS:90}
         userRefreshCleanup:
           cron: ${USER_REFRESH_CLEANUP_CRON:*/5 * * * * *}
           activeUserRefreshDays: ${USER_REFRESH_CLEANUP_DAYS:90}

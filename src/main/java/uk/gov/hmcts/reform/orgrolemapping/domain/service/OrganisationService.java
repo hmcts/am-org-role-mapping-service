@@ -11,20 +11,20 @@ public class OrganisationService {
 
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
 
-    private String activeOrgansationRefreshDays;
+    private final String activeOrganisationRefreshDays;
 
     public OrganisationService(OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
-            @Value("${professional.role.mapping.scheduling.organisationRefreshCleanup.activeOrgansationRefreshDays}")
-            String activeOrgansationRefreshDays) {
+            @Value("${professional.role.mapping.scheduling.organisationRefreshCleanup.activeOrganisationRefreshDays}")
+            String activeOrganisationRefreshDays) {
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
-        this.activeOrgansationRefreshDays = activeOrgansationRefreshDays;
+        this.activeOrganisationRefreshDays = activeOrganisationRefreshDays;
     }
 
 
     @Transactional
     public void deleteActiveOrganisationRefreshRecords() {
         organisationRefreshQueueRepository
-            .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(activeOrgansationRefreshDays);
+            .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(activeOrganisationRefreshDays);
 
     }
 }

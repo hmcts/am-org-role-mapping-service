@@ -3,15 +3,15 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.UserService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 
 @Service
 public class Scheduler {
 
     private final OrganisationService organisationService;
-    private final UserService userService;
+    private final ProfessionalUserService userService;
 
-    public Scheduler(OrganisationService organisationService, UserService userService) {
+    public Scheduler(OrganisationService organisationService, ProfessionalUserService userService) {
         this.organisationService = organisationService;
         this.userService = userService;
     }
