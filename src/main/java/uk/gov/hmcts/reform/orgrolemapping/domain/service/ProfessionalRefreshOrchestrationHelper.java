@@ -86,7 +86,7 @@ public class ProfessionalRefreshOrchestrationHelper {
                 prdUser.getDateTimeDeleted(),
                 userAccessTypes,
                 prdUser.getOrganisationInfo().getOrganisationIdentifier(),
-                prdUser.getOrganisationInfo().getStatus().name(),
+                prdUser.getOrganisationInfo().getStatus(),
                 String.join(",", prdUser.getOrganisationInfo().getOrganisationProfileIds())
         );
     }

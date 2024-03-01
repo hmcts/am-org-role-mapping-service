@@ -5,17 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganisationInfo {
+public class OrganisationByProfileIdsResponse {
 
-    private String organisationIdentifier;
-    private String status;
-    private LocalDateTime lastUpdated;
-    private List<String> organisationProfileIds;
+    private List<OrganisationInfo> organisationInfo;
+    private String lastRecordInPage;
+    private Boolean moreAvailable;
 }
