@@ -13,6 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClient
         fallback = CCDFeignClientFallback.class)
 public interface CCDFeignClient {
 
-    @PostMapping(value = "/api/retrieve-access-types")
+    @PostMapping(value = "/retrieve-access-types")
     ResponseEntity<AccessTypesResponse> getAccessTypes();
 }
