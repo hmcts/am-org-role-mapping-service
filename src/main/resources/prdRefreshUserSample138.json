@@ -24,6 +24,24 @@
           "organisationProfileId": "SOLICITOR_ORG",
           "accessTypeId": "2",
           "enabled": "true"
+        },
+        {
+          "jurisdictionId": "SSCS",
+          "organisationProfileId": "SOLICITOR_ORG",
+          "accessTypeId": "sscs-cases-1",
+          "enabled": "true"
+        },
+        {
+          "jurisdictionId": "SSCS",
+          "organisationProfileId": "DWP_GOV_ORG",
+          "accessTypeId": "sscs-ogd-cases",
+          "enabled": "true"
+        },
+        {
+          "jurisdictionId": "SSCS",
+          "organisationProfileId": "DWP_GOV_ORG",
+          "accessTypeId": "non-exist-id",
+          "enabled": "true"
         }
       ]
     }

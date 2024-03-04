@@ -43,7 +43,6 @@ import java.util.UUID;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -191,11 +190,10 @@ public class ProfessionalRefreshOrchestrationHelper {
         Set<OrganisationProfile> filteredOrganisationProfiles =
                 getFilteredOrganisationProfiles(userRefreshQueue, organisationProfiles);
 
-        List<UserAccessType> filteredUserAccessTypes =
-                getFilteredUserAccessTypes(filteredOrganisationProfiles, userAccessTypes);
-
         filteredOrganisationProfiles =
-                extractOrganisationProfiles(filteredOrganisationProfiles,filteredUserAccessTypes);
+                getFilteredOrgProfilesUserAccessTypes(filteredOrganisationProfiles, userAccessTypes);
+
+        filteredOrganisationProfiles = extractOrganisationProfiles(filteredOrganisationProfiles,userAccessTypes);
 
         return createRoleAssignments(userRefreshQueue, filteredOrganisationProfiles).stream().toList();
     }
@@ -235,7 +233,6 @@ public class ProfessionalRefreshOrchestrationHelper {
         return usersRoleAssignments;
     }
 
-
     private Set<OrganisationProfile> extractOrganisationProfiles(Set<OrganisationProfile> organisationProfiles,
                                                                  List<UserAccessType> userAccessTypes) {
         Set<OrganisationProfile> extractedOrganisationProfiles = new HashSet<>();
@@ -258,28 +255,44 @@ public class ProfessionalRefreshOrchestrationHelper {
         return extractedOrganisationProfiles;
     }
 
-    private static List<UserAccessType> getFilteredUserAccessTypes(Set<OrganisationProfile> organisationProfiles,
-                                                                   List<UserAccessType> userAccessTypes) {
-        List<UserAccessType> filteredUserAccessTypes = new ArrayList<>();
-        for (OrganisationProfile organisationProfile: organisationProfiles) {
-            String organisationProfileId = organisationProfile.getOrganisationProfileId();
-            for (OrganisationProfileJurisdiction organisationProfileJurisdiction :
-                    organisationProfile.getJurisdictions()) {
-                String jurisdictionId = organisationProfileJurisdiction.getJurisdictionId();
-                for (OrganisationProfileAccessType organisationProfileAccessType :
-                        organisationProfileJurisdiction.getAccessTypes()) {
-                    String accessTypeID = organisationProfileAccessType.getAccessTypeId();
-                    for (UserAccessType userAccessType : userAccessTypes) {
-                        if (accessTypeID.equals(userAccessType.getAccessTypeId())
-                                && jurisdictionId.equals(userAccessType.getJurisdictionId())
-                                && organisationProfileId.equals(userAccessType.getOrganisationProfileId())) {
-                            filteredUserAccessTypes.add(userAccessType);
+    private static Set<OrganisationProfile> getFilteredOrgProfilesUserAccessTypes(
+            Set<OrganisationProfile> organisationProfiles,List<UserAccessType> userAccessTypes) {
+
+        Set<OrganisationProfile> filteredOrganisationProfiles = new HashSet<>();
+        for (OrganisationProfile organisationProfile : organisationProfiles) {
+            Set<OrganisationProfileJurisdiction> organisationProfileJurisdictionSet;
+            organisationProfileJurisdictionSet =
+                    getMatchingOrganisationProfileJurisdiction(organisationProfile,userAccessTypes);
+            organisationProfile.getJurisdictions().clear();
+            organisationProfile.setJurisdictions(organisationProfileJurisdictionSet);
+            filteredOrganisationProfiles.add(organisationProfile);
+        }
+        return filteredOrganisationProfiles;
+    }
+
+    private static Set<OrganisationProfileJurisdiction> getMatchingOrganisationProfileJurisdiction(
+            OrganisationProfile organisationProfile, List<UserAccessType> userAccessTypes) {
+        Set<OrganisationProfileJurisdiction> matchingOrganisationProfileJurisdiction = new HashSet<>();
+        String organisationProfileId = organisationProfile.getOrganisationProfileId();
+        if (null != organisationProfileId) {
+            for (UserAccessType userAccessType : userAccessTypes) {
+                if (organisationProfileId.equals(userAccessType.getOrganisationProfileId())) {
+                    for (OrganisationProfileJurisdiction opj : organisationProfile.getJurisdictions()) {
+                        String jurisdictionId =  opj.getJurisdictionId();
+                        if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
+                                for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
+                                    String accessTypeID = opat.getAccessTypeId();
+                                    if (accessTypeID != null && accessTypeID.equals(userAccessType.getAccessTypeId())) {
+                                        matchingOrganisationProfileJurisdiction.add(opj);
+                                    }
+                                }
+
                         }
                     }
                 }
             }
         }
-        return filteredUserAccessTypes;
+        return matchingOrganisationProfileJurisdiction;
     }
 
     @NotNull
