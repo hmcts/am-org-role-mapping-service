@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.RecordStatus;
 
 import java.util.Map;
 
@@ -47,8 +46,7 @@ class ProcessEventTrackerTest {
                 .containsEntry("StartTime", processMonitorDto.getStartTime().toString())
                 .containsEntry("EndTime", null)
                 .containsEntry("EndStatus", null)
-                .containsEntry("EndDetail", null)
-                .containsEntry("RecordStatus", RecordStatus.BEING_ACTIONED.toString());
+                .containsEntry("EndDetail", null);
 
 
     }
@@ -56,7 +54,7 @@ class ProcessEventTrackerTest {
     @Test
     void testTrackEventCompleted_Success() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Process 1");
-        processMonitorDto.applyResult(EndStatus.SUCCESS, "{ 'message': 'Success' }");
+        processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         verify(telemetryClient).trackEvent(anyString(), propertiesCaptor.capture(), any());
         Map<String, String> properties = propertiesCaptor.getValue();
@@ -67,14 +65,13 @@ class ProcessEventTrackerTest {
                 .containsEntry("StartTime", processMonitorDto.getStartTime().toString())
                 .containsEntry("EndTime", processMonitorDto.getEndTime().toString())
                 .containsEntry("EndStatus", EndStatus.SUCCESS.toString())
-                .containsEntry("EndDetail", "{ 'message': 'Success' }")
-                .containsEntry("RecordStatus", RecordStatus.COMPLETED.toString());
+                .containsEntry("EndDetail", null);
     }
 
     @Test
     void testTrackEventCompleted_PartialSuccess() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Process 1");
-        processMonitorDto.applyResult(EndStatus.PARTIAL_SUCCESS, "{ 'message': 'Partial Success' }");
+        processMonitorDto.markAsPartialSuccess("{ 'message': 'Partial Success' }");
         processEventTracker.trackEventCompleted(processMonitorDto);
         verify(telemetryClient).trackEvent(anyString(), propertiesCaptor.capture(), any());
         Map<String, String> properties = propertiesCaptor.getValue();
@@ -85,14 +82,13 @@ class ProcessEventTrackerTest {
                 .containsEntry("StartTime", processMonitorDto.getStartTime().toString())
                 .containsEntry("EndTime", processMonitorDto.getEndTime().toString())
                 .containsEntry("EndStatus", EndStatus.PARTIAL_SUCCESS.toString())
-                .containsEntry("EndDetail", "{ 'message': 'Partial Success' }")
-                .containsEntry("RecordStatus", RecordStatus.COMPLETED.toString());
+                .containsEntry("EndDetail", "{ 'message': 'Partial Success' }");
     }
 
     @Test
     void testTrackEventCompleted_Failed() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Process 1");
-        processMonitorDto.applyResult(EndStatus.FAILED, "{ 'message': 'Failed' }");
+        processMonitorDto.markAsFailed("{ 'message': 'Failed' }");
         processEventTracker.trackEventCompleted(processMonitorDto);
         verify(telemetryClient).trackEvent(anyString(), propertiesCaptor.capture(), any());
         Map<String, String> properties = propertiesCaptor.getValue();
@@ -103,7 +99,6 @@ class ProcessEventTrackerTest {
                 .containsEntry("StartTime", processMonitorDto.getStartTime().toString())
                 .containsEntry("EndTime", processMonitorDto.getEndTime().toString())
                 .containsEntry("EndStatus", EndStatus.FAILED.toString())
-                .containsEntry("EndDetail", "{ 'message': 'Failed' }")
-                .containsEntry("RecordStatus", RecordStatus.COMPLETED.toString());
+                .containsEntry("EndDetail", "{ 'message': 'Failed' }");
     }
 }

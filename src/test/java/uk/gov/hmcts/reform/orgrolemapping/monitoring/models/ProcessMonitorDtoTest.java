@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ProcessMonitorDtoTest {
 
@@ -16,19 +17,33 @@ class ProcessMonitorDtoTest {
     }
 
     @Test
-    void apply_end_result() {
-        processMonitorDto.applyResult(EndStatus.SUCCESS, "TestDetail");
+    void ctor_should_setup_defaults() {
+        assertNotNull(processMonitorDto.getId());
+        assertEquals("TestProcess", processMonitorDto.getProcessType());
+        assertNotNull(processMonitorDto.getStartTime());
+    }
+
+    @Test
+    void apply_end_result_success() {
+        processMonitorDto.markAsSuccess();
         assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
-        assertEquals("TestDetail", processMonitorDto.getEndDetail());
-        assertEquals(RecordStatus.COMPLETED, processMonitorDto.getRecordStatus());
+        assertNull(processMonitorDto.getEndDetail());
         assertNotNull(processMonitorDto.getEndTime());
     }
 
     @Test
-    void ctor_should_setup_defaults() {
-        assertNotNull(processMonitorDto.getId());
-        assertEquals("TestProcess", processMonitorDto.getProcessType());
-        assertEquals(RecordStatus.BEING_ACTIONED, processMonitorDto.getRecordStatus());
-        assertNotNull(processMonitorDto.getStartTime());
+    void apply_end_result_partial_success() {
+        processMonitorDto.markAsPartialSuccess("TestDetail");
+        assertEquals(EndStatus.PARTIAL_SUCCESS, processMonitorDto.getEndStatus());
+        assertEquals("TestDetail", processMonitorDto.getEndDetail());
+        assertNotNull(processMonitorDto.getEndTime());
+    }
+
+    @Test
+    void apply_end_result_failed() {
+        processMonitorDto.markAsFailed("TestDetail");
+        assertEquals(EndStatus.FAILED, processMonitorDto.getEndStatus());
+        assertEquals("TestDetail", processMonitorDto.getEndDetail());
+        assertNotNull(processMonitorDto.getEndTime());
     }
 }
