@@ -34,7 +34,7 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
         MapSqlParameterSource[] params = rows.stream().map(r -> {
             MapSqlParameterSource paramValues = new MapSqlParameterSource();
             paramValues.addValue(ORGANISATION_ID, r.getOrganisationIdentifier());
-            paramValues.addValue(ORGANISATION_LAST_UPDATED, r.getLastUpdated());
+            paramValues.addValue(ORGANISATION_LAST_UPDATED, r.getOrganisationLastUpdated());
             paramValues.addValue(ACCESS_TYPES_MIN_VERSION, accessTypeMinVersion);
             return paramValues;
         }).toArray(MapSqlParameterSource[]::new);
