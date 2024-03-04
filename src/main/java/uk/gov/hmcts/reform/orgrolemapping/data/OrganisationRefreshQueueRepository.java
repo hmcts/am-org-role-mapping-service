@@ -55,7 +55,8 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                     + "organisation_last_updated = excluded.organisation_last_updated, "
                     + "last_updated = now(), "
                     + "active = true "
-                    + "where excluded.organisation_last_updated > organisation_refresh_queue.organisation_last_updated";
+                    + "where excluded.organisation_last_updated "
+                        + "> organisation_refresh_queue.organisation_last_updated";
 
         MapSqlParameterSource[] params = rows.stream().map(r -> {
             MapSqlParameterSource paramValues = new MapSqlParameterSource();
