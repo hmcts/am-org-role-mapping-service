@@ -46,6 +46,12 @@ variable "process_names" {
   ]
 }
 
+variable "action_group_name" {
+  description = "The name of the action group"
+  type = string
+  default = "am-prm-support"
+}
+
 module "prm-process-not-started-alerts" {
   source = "git@github.com:hmcts/cnp-module-metric-alert"
 
@@ -62,7 +68,7 @@ module "prm-process-not-started-alerts" {
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
   severity_level = "2"
-  action_group_name = "am-support"
+  action_group_name = var.action_group_name
   trigger_threshold_operator = "LessThan"
   trigger_threshold = "2"
   resourcegroup_name = "am-shared-infrastructure-${local.local_env}"
@@ -86,7 +92,7 @@ module "prm-process-not-completed-alerts" {
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
   severity_level = "2"
-  action_group_name = "am-support"
+  action_group_name = var.action_group_name
   trigger_threshold_operator = "LessThan"
   trigger_threshold = "2"
   resourcegroup_name = "am-shared-infrastructure-${local.local_env}"
@@ -110,7 +116,7 @@ module "prm-process-failure-alerts" {
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
   severity_level = "2"
-  action_group_name = "am-support"
+  action_group_name = var.action_group_name
   trigger_threshold_operator = "GreaterThan"
   trigger_threshold = "0"
   resourcegroup_name = "am-shared-infrastructure-${local.local_env}"
