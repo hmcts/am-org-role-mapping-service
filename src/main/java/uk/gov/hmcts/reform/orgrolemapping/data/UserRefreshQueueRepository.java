@@ -49,4 +49,25 @@ public interface UserRefreshQueueRepository extends CrudRepository<UserRefreshQu
     void upsert(String userId, LocalDateTime userLastUpdated, Long accessTypesMinVersion, LocalDateTime deleted,
                 String accessTypes, String organisationId, String organisationStatus,
                 String organisationProfileIds);
+
+
+    @Query(value = """
+        select user_id, last_updated, user_last_updated, access_types_min_version, deleted,
+               access_types, organisation_id,
+               organisation_status, organisation_profile_ids, active, retry, retry_after
+        from user_refresh_queue
+        where active
+        limit 1
+        for update skip locked""", nativeQuery = true)
+    UserRefreshQueueEntity retrieveSingleActiveRecord();
+
+    @Modifying
+    @Query(value = """
+        update user_refresh_queue
+                              set active = false
+                              where user_id = :userId
+                              and last_updated <= :lastUpdated
+                              and access_types_min_version <= :accessTypesMinVersion""", nativeQuery = true)
+    void clearUserRefreshRecord(String userId, LocalDateTime lastUpdated,
+                                                  Long accessTypesMinVersion);
 }

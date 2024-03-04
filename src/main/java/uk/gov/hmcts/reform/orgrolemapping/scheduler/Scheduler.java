@@ -3,14 +3,17 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 
 @Service
 public class Scheduler {
 
     private final OrganisationService organisationService;
+    private final ProfessionalUserService professionalUserService;
 
-    public Scheduler(OrganisationService organisationService) {
+    public Scheduler(OrganisationService organisationService, ProfessionalUserService professionalUserService) {
         this.organisationService = organisationService;
+        this.professionalUserService = professionalUserService;
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.cron}")
@@ -22,4 +25,10 @@ public class Scheduler {
     void findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess() {
         organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
     }
+
+    @Scheduled(cron = "${professional.role.mapping.scheduling.userRefresh.cron}")
+    void deleteActiveUserRefreshRecords() {
+        professionalUserService.refreshUsers();
+    }
+
 }
