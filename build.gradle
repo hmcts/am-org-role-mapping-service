@@ -37,11 +37,11 @@ def versions = [
         junit          : '5.9.0',
         lombok         : '1.18.30',
         pitest         : '1.15.3',
-        reformLogging  : '6.0.1',
+        reformLogging  : '6.1.4',
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
         springBoot     : '2.7.18',
-        spring         : '5.3.31',
+        spring         : '5.3.32',
         springSecurity : '5.7.11',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
@@ -55,7 +55,7 @@ def versions = [
         log4JVersion   : '2.20.0',
         logbackVersion : '1.2.13',
         launchDarklySdk: '5.10.9',
-        netty_version  : '4.1.106.Final'
+        netty_version  : '4.1.107.Final'
 
 ]
 
@@ -400,7 +400,7 @@ dependencies {
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.46.0'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.14.7'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.15.1'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
@@ -414,7 +414,7 @@ dependencies {
     implementation 'commons-io:commons-io:20030203.000550'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
-    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
+    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.26.0'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: versions.tomcat
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: versions.tomcat
 
