@@ -66,7 +66,7 @@ module "prm-process-not-started-alerts" {
 module "prm-process-not-completed-alerts" {
   source = "git@github.com:hmcts/cnp-module-metric-alert"
 
-  for_each = { for process in var.process_names : process.key => process }
+  for_each = { for process in var.process_names : process.processName => process }
 
   location = var.location
  
@@ -90,7 +90,7 @@ module "prm-process-not-completed-alerts" {
 module "prm-process-failure-alerts" {
   source = "git@github.com:hmcts/cnp-module-metric-alert"
 
-  for_each = { for process in var.process_names : process.key => process }
+  for_each = { for process in var.process_names : process.processName => process }
 
   location = var.location
  
