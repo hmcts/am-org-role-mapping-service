@@ -280,13 +280,12 @@ public class ProfessionalRefreshOrchestrationHelper {
                     for (OrganisationProfileJurisdiction opj : organisationProfile.getJurisdictions()) {
                         String jurisdictionId =  opj.getJurisdictionId();
                         if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
-                                for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
-                                    String accessTypeID = opat.getAccessTypeId();
-                                    if (accessTypeID != null && accessTypeID.equals(userAccessType.getAccessTypeId())) {
-                                        matchingOrganisationProfileJurisdiction.add(opj);
-                                    }
-                                }
-
+                            for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
+                               String accessTypeID = opat.getAccessTypeId();
+                               if (accessTypeID != null && accessTypeID.equals(userAccessType.getAccessTypeId())) {
+                                   matchingOrganisationProfileJurisdiction.add(opj);
+                               }
+                            }
                         }
                     }
                 }
