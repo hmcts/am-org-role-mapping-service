@@ -31,36 +31,26 @@ import java.util.List;
 
 @TestConfiguration
 public class ProviderTestConfiguration {
-
     @MockBean
     CRDService crdService;
-
     @MockBean
     JRDService jrdService;
-
     @MockBean
     PRDService prdService;
-
     @MockBean
     AccessTypesRepository accessTypesRepository;
-
     @MockBean
     UserRefreshQueueRepository userRefreshQueueRepository;
-
     @MockBean
     SecurityUtils securityUtils;
     @MockBean
     ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
-
     @MockBean
     private CacheManager cacheManager;
-
     @MockBean
     JudicialBookingService judicialBookingService;
-
     @MockBean
     RoleAssignmentService roleAssignmentService;
-
     @MockBean
     PersistenceService persistenceService;
 

@@ -26,7 +26,6 @@ public class ProfessionalRefreshOrchestrator {
     private final AccessTypesRepository accessTypesRepository;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final PRDService prdService;
-
     private final ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
 
     public ProfessionalRefreshOrchestrator(AccessTypesRepository accessTypesRepository,

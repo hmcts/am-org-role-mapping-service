@@ -10,10 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserAccessType {
-
     private String jurisdictionId;
     private String organisationProfileId;
     private String accessTypeId;
     private Boolean enabled;
-
 }

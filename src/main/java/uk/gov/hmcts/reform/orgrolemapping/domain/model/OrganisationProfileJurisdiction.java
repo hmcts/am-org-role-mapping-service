@@ -12,7 +12,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrganisationProfileJurisdiction {
-
     private String jurisdictionId;
     private Set<OrganisationProfileAccessType> accessTypes;
 }

@@ -25,9 +25,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-
 import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -44,26 +42,19 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefr
 class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration {
 
     private static final String USER_ID = "1234";
-
     @Autowired
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
-
     @SpyBean
     private UserRefreshQueueRepository userRefreshQueueRepository;
-
     @SpyBean
     private AccessTypesRepository accessTypesRepository;
-
     @MockBean
     private PRDFeignClient prdFeignClient;
-
     @MockBean
     private RASFeignClient rasFeignClient;
-
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
     @Mock
     private Authentication authentication;
-
     @Mock
     private SecurityContext securityContext;
 
@@ -76,16 +67,12 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
         wiremockFixtures.stubIdamCall();
     }
 
-
-
     @Nested
     class RefreshProfessionalUser {
-
         @BeforeEach
         void setUp() throws IOException {
             doReturn(ResponseEntity.ok(TestDataBuilder.buildRefreshUsersResponse(USER_ID)))
                 .when(prdFeignClient).getRefreshUsers(any());
-
             doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
                     .when(rasFeignClient).createRoleAssignment(any(), any());
         }
@@ -95,7 +82,6 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
             scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
         void shouldRefreshProfessionalUser() {
             professionalRefreshOrchestrator.refreshProfessionalUser(USER_ID);
-
             UserRefreshQueueEntity refreshedUser = userRefreshQueueRepository.findByUserId(USER_ID);
             assertEquals(USER_ID, refreshedUser.getUserId());
             assertEquals("2023-11-20T15:51:33.046", refreshedUser.getUserLastUpdated().toString());
@@ -117,22 +103,18 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
         void shouldThrowExceptionWhenNoAccessTypesAvailable() {
             Exception exception = assertThrows(ServiceException.class, () ->
                 professionalRefreshOrchestrator.refreshProfessionalUser(USER_ID));
-
             assertEquals(NO_ACCESS_TYPES_FOUND, exception.getMessage());
         }
     }
 
     @Nested
     class RefreshProfessionalUsers {
-
         @Test
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
         void refreshProfessionalUserBatch() {
             assertTrue(userRefreshQueueRepository.findByUserId("1").getActive());
-
             professionalRefreshOrchestrator.refreshProfessionalUsers();
-
             verify(accessTypesRepository, times(1)).findFirstByOrderByVersionDesc();
             verify(userRefreshQueueRepository, times(1)).findFirstByActiveTrue();
         }
@@ -143,7 +125,6 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
         void shouldThrowExceptionWhenNoAccessTypesAvailable() {
             Exception exception = assertThrows(ServiceException.class, () ->
                 professionalRefreshOrchestrator.refreshProfessionalUsers());
-
             assertEquals(NO_ACCESS_TYPES_FOUND, exception.getMessage());
         }
 
@@ -152,13 +133,9 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
                 scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
         void refreshProfessionalUser_GA138() {
             assertTrue(userRefreshQueueRepository.findByUserId("1").getActive());
-
             professionalRefreshOrchestrator.refreshProfessionalUsers();
-
             verify(accessTypesRepository, times(1)).findFirstByOrderByVersionDesc();
             verify(userRefreshQueueRepository, times(1)).findFirstByActiveTrue();
-
         }
-
     }
 }
