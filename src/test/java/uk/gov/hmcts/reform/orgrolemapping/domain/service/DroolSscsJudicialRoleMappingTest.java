@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -172,7 +173,8 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").  status(true).build(),
+                FeatureFlag.builder().flagName("sscs_wa_1_1").status(true).build()));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
