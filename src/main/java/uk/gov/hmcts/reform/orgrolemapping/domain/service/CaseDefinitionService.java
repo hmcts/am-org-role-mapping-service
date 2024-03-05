@@ -48,7 +48,8 @@ public class CaseDefinitionService {
     @Transactional
     public void findAndUpdateCaseDefinitionChanges() {
 
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 1");
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
+                "PRM Process 1 - Find Case Definition Changes");
         processEventTracker.trackEventStarted(processMonitorDto);
 
         try {
