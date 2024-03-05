@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,13 +42,16 @@ public class CaseDefinitionServiceTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private final ProcessEventTracker processEventTracker = Mockito.mock(ProcessEventTracker.class);
+
     private final AccessTypesBuilder accessTypesBuilder = new AccessTypesBuilder();
 
     CaseDefinitionService caseDefinitionService = new CaseDefinitionService(
             ccdService,
             accessTypesRepository,
             profileRefreshQueueRepository,
-            objectMapper
+            objectMapper,
+            processEventTracker
      );
 
     @Test
