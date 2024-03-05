@@ -13,6 +13,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,8 @@ public class ProfessionalUserService {
     private final String retryTwoIntervalMin;
     private final String retryThreeIntervalMin;
 
+    private final ProcessEventTracker processEventTracker;
+
     public ProfessionalUserService(
             PrdService prdService,
             OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
@@ -46,7 +50,8 @@ public class ProfessionalUserService {
             @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryThreeIntervalMin}")
             String retryThreeIntervalMin,
             @Value("${professional.refdata.pageSize}")
-            String pageSize) {
+            String pageSize,
+            ProcessEventTracker processEventTracker) {
         this.prdService = prdService;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
@@ -57,45 +62,59 @@ public class ProfessionalUserService {
         this.retryOneIntervalMin = retryOneIntervalMin;
         this.retryTwoIntervalMin = retryTwoIntervalMin;
         this.retryThreeIntervalMin = retryThreeIntervalMin;
+        this.processEventTracker = processEventTracker;
     }
 
     public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
-        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
-                = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
+                "PRM Process 4 - Find Users with Stale Organisations");
+        processEventTracker.trackEventStarted(processMonitorDto);
 
-        if (organisationRefreshQueueEntity == null) {
-            return;
-        }
+        try {
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+                    = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
 
-        Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
-        String organisationIdentifier = organisationRefreshQueueEntity.getOrganisationId();
-
-        UsersByOrganisationRequest request = new UsersByOrganisationRequest(
-                List.of(organisationIdentifier)
-        );
-
-        boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
-            try {
-                retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
-
-                organisationRefreshQueueRepository.setActiveFalse(
-                        organisationIdentifier,
-                        accessTypesMinVersion,
-                        organisationRefreshQueueEntity.getLastUpdated()
-                );
-
-                return true;
-            } catch (Exception ex) {
-                status.setRollbackOnly();
-                return false;
+            if (organisationRefreshQueueEntity == null) {
+                processMonitorDto.markAsSuccess();
+                processEventTracker.trackEventCompleted(processMonitorDto);
+                return;
             }
-        }));
 
-        if (!isSuccess) {
-            organisationRefreshQueueRepository.updateRetry(
-                    organisationIdentifier, retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin
+            Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
+            String organisationIdentifier = organisationRefreshQueueEntity.getOrganisationId();
+
+            UsersByOrganisationRequest request = new UsersByOrganisationRequest(
+                    List.of(organisationIdentifier)
             );
+
+            boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+                try {
+                    retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
+
+                    organisationRefreshQueueRepository.setActiveFalse(
+                            organisationIdentifier,
+                            accessTypesMinVersion,
+                            organisationRefreshQueueEntity.getLastUpdated()
+                    );
+
+                    return true;
+                } catch (Exception ex) {
+                    status.setRollbackOnly();
+                    return false;
+                }
+            }));
+
+            if (!isSuccess) {
+                organisationRefreshQueueRepository.updateRetry(
+                        organisationIdentifier, retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin
+                );
+            }
+        } catch (Exception e) {
+            processMonitorDto.markAsFailed(e.getMessage());
+            processEventTracker.trackEventCompleted(processMonitorDto);
         }
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
