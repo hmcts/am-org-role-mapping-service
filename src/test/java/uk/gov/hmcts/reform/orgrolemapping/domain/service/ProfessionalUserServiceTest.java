@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +14,14 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -32,12 +38,18 @@ public class ProfessionalUserServiceTest {
             Mockito.mock(UserRefreshQueueRepository.class);
     private final NamedParameterJdbcTemplate jdbcTemplate =
             Mockito.mock(NamedParameterJdbcTemplate.class);
+
+    @Captor
+    private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
+
+    private final ProcessEventTracker processEventTracker = Mockito.mock(ProcessEventTracker.class);
     ProfessionalUserService professionalUserService = new ProfessionalUserService(
             prdService,
             organisationRefreshQueueRepository,
             userRefreshQueueRepository,
             "1",
-            jdbcTemplate
+            jdbcTemplate,
+            processEventTracker
     );
 
     @Test
@@ -64,6 +76,10 @@ public class ProfessionalUserServiceTest {
                 .upsertToUserRefreshQueue(any(), any(), any());
         verify(organisationRefreshQueueRepository, times(1))
                 .setActiveFalse(any(), any(), any());
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
@@ -98,6 +114,10 @@ public class ProfessionalUserServiceTest {
                 .upsertToUserRefreshQueue(any(), any(), any());
         verify(organisationRefreshQueueRepository, times(1))
                 .setActiveFalse(any(), any(), any());
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
@@ -113,6 +133,10 @@ public class ProfessionalUserServiceTest {
                 .upsertToUserRefreshQueue(any(), any(), any());
         verify(organisationRefreshQueueRepository, times(0))
                 .setActiveFalse(any(), any(), any());
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
     }
 
     public static OrganisationRefreshQueueEntity buildOrganisationRefreshQueueEntity(String organisationId,

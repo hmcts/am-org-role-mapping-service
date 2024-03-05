@@ -12,6 +12,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,41 +30,58 @@ public class ProfessionalUserService {
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
+    private final ProcessEventTracker processEventTracker;
+
     public ProfessionalUserService(PrdService prdService,
                                    OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
                                    UserRefreshQueueRepository userRefreshQueueRepository,
                                    @Value("${professional.refdata.pageSize}") String pageSize,
-                                   NamedParameterJdbcTemplate jdbcTemplate) {
+                                   NamedParameterJdbcTemplate jdbcTemplate, ProcessEventTracker processEventTracker) {
         this.prdService = prdService;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.pageSize = pageSize;
         this.jdbcTemplate = jdbcTemplate;
+        this.processEventTracker = processEventTracker;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
-        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
-                = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
+                "PRM Process 4 - Find Users with Stale Organisations");
+        processEventTracker.trackEventStarted(processMonitorDto);
 
-        if (organisationRefreshQueueEntity == null) {
-            return;
+        try {
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+                    = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
+
+            if (organisationRefreshQueueEntity == null) {
+                processMonitorDto.markAsSuccess();
+                processEventTracker.trackEventCompleted(processMonitorDto);
+                return;
+            }
+
+            Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
+            String organisationIdentifier = organisationRefreshQueueEntity.getOrganisationId();
+
+            UsersByOrganisationRequest request = new UsersByOrganisationRequest(
+                    List.of(organisationIdentifier)
+            );
+
+            retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
+
+            organisationRefreshQueueRepository.setActiveFalse(
+                    organisationIdentifier,
+                    accessTypesMinVersion,
+                    organisationRefreshQueueEntity.getLastUpdated()
+            );
+        } catch (Exception e){
+            processMonitorDto.markAsFailed(e.getMessage());
+            processEventTracker.trackEventCompleted(processMonitorDto);
+            throw e;
         }
-
-        Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
-        String organisationIdentifier = organisationRefreshQueueEntity.getOrganisationId();
-
-        UsersByOrganisationRequest request = new UsersByOrganisationRequest(
-                List.of(organisationIdentifier)
-        );
-
-        retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
-
-        organisationRefreshQueueRepository.setActiveFalse(
-                organisationIdentifier,
-                accessTypesMinVersion,
-                organisationRefreshQueueEntity.getLastUpdated()
-        );
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
