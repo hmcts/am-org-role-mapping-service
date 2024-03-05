@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -32,12 +33,15 @@ class OrganisationServiceTest {
             Mockito.mock(OrganisationRefreshQueueRepository.class);
     private final NamedParameterJdbcTemplate jdbcTemplate =
             Mockito.mock(NamedParameterJdbcTemplate.class);
+
+    private final ProcessEventTracker processEventTracker = Mockito.mock(ProcessEventTracker.class);
     OrganisationService organisationService = new OrganisationService(
             prdService,
             organisationRefreshQueueRepository,
             profileRefreshQueueRepository,
             "1",
-            jdbcTemplate
+            jdbcTemplate,
+            processEventTracker
     );
 
     @Test
