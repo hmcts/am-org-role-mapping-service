@@ -99,6 +99,8 @@ public class ProfessionalUserService {
 
                     return true;
                 } catch (Exception ex) {
+                    processMonitorDto.markAsFailed(ex.getMessage());
+                    processEventTracker.trackEventCompleted(processMonitorDto);
                     status.setRollbackOnly();
                     return false;
                 }
