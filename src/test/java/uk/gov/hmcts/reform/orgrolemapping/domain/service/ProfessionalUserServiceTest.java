@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,8 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 
 import java.time.Instant;
@@ -25,8 +28,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,13 +49,18 @@ public class ProfessionalUserServiceTest {
     private final DatabaseDateTimeRepository databaseDateTimeRepository = mock(DatabaseDateTimeRepository.class);
     private final BatchLastRunTimestampRepository batchLastRunTimestampRepository =
             mock(BatchLastRunTimestampRepository.class);
+    private final ProcessEventTracker processEventTracker = Mockito.mock(ProcessEventTracker.class);
+
+    @Captor
+    private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
+
     ProfessionalUserService professionalUserService  = new ProfessionalUserService(
             prdService,
             userRefreshQueueRepository,
             "1",
             jdbcTemplate,
-            accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository, "10"
-    );
+            accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository,
+            processEventTracker, "10");
 
     @Test
     void findUsersChangesAndInsertIntoRefreshQueueTest() {
@@ -116,20 +126,128 @@ public class ProfessionalUserServiceTest {
     }
 
     @Test
-    void findUserChangesAndInsertIntoUserRefreshQueue_WithBatchServiceExceptionTest() {
+    void findUsersChangesAndInsertIntoRefreshQueueTestWithRetreiveUsersFail() {
         List<AccessTypesEntity> allAccessTypes = new ArrayList<>();
         allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
         when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
+
+        List<BatchLastRunTimestampEntity> allBatches = new ArrayList<>();
+        allBatches.add(new BatchLastRunTimestampEntity(1L, LocalDateTime.of(2023, 12, 30, 0, 0, 0, 0),
+                LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
+        when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
+
+        RefreshUser refreshUser = buildRefreshUser(1);
+        GetRefreshUserResponse response =
+                buildRefreshUserResponse(refreshUser, "123", false);
+
+        doThrow(new ServiceException("Retrieve users exception")).when(prdService)
+                .retrieveUsers(any(), any(), eq(null));
+
+        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Retrieve users exception");
+    }
+
+    @Test
+    void findUsersChangesAndInsertIntoRefreshQueueTestWithBatchSaveFail() {
+        DatabaseDateTime databaseDateTime = mock(DatabaseDateTime.class);
+        when(databaseDateTime.getDate()).thenReturn(mock(Instant.class));
+        when(databaseDateTimeRepository.getCurrentTimeStamp()).thenReturn(databaseDateTime);
+        List<AccessTypesEntity> allAccessTypes = new ArrayList<>();
+        allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
+        when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
+
+        List<BatchLastRunTimestampEntity> allBatches = new ArrayList<>();
+        allBatches.add(new BatchLastRunTimestampEntity(1L, LocalDateTime.of(2023, 12, 30, 0, 0, 0, 0),
+                LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
+        when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
+
+        RefreshUser refreshUser = buildRefreshUser(1);
+        GetRefreshUserResponse response =
+                buildRefreshUserResponse(refreshUser, "123", false);
+
+        when(prdService.retrieveUsers(any(), any(), eq(null)))
+                .thenReturn(ResponseEntity.ok(response));
+
+        doThrow(new ServiceException("Batch save exception")).when(batchLastRunTimestampRepository)
+                .save(any());
+
+        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Batch save exception");
+    }
+
+    @Test
+    void findUsersChangesAndInsertIntoRefreshQueueTestInsertUserFail() {
+        List<AccessTypesEntity> allAccessTypes = new ArrayList<>();
+        allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
+        when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
+
+        List<BatchLastRunTimestampEntity> allBatches = new ArrayList<>();
+        allBatches.add(new BatchLastRunTimestampEntity(1L, LocalDateTime.of(2023, 12, 30, 0, 0, 0, 0),
+                LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
+        when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
+
+        RefreshUser refreshUser = buildRefreshUser(1);
+        GetRefreshUserResponse response =
+                buildRefreshUserResponse(refreshUser, "123", false);
+
+        when(prdService.retrieveUsers(any(), any(), eq(null)))
+                .thenReturn(ResponseEntity.ok(response));
+
+        doThrow(new ServiceException("Insert exception")).when(userRefreshQueueRepository)
+                .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
+
+        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Insert exception");
+    }
+
+    @Test
+    void findUsersChangesAndInsertIntoRefreshQueueTestWithBatchServiceException() {
+        List<AccessTypesEntity> allAccessTypes = new ArrayList<>();
+        allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
+        when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
+
         List<BatchLastRunTimestampEntity> allBatches = new ArrayList<>();
         allBatches.add(new BatchLastRunTimestampEntity(1L, LocalDateTime.of(2023, 12, 30, 0, 0, 0, 0),
                 LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
         allBatches.add(new BatchLastRunTimestampEntity(2L, LocalDateTime.of(2023, 12, 30, 0, 0, 0, 0),
-                LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
+                LocalDateTime.of(2023, 12, 31, 13, 34, 56, 789)));
         when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
-        Assertions.assertThrows(ServiceException.class, () ->
-                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
-        );
+        RefreshUser refreshUser = buildRefreshUser(1);
+        GetRefreshUserResponse response =
+                buildRefreshUserResponse(refreshUser, "123", false);
+
+        when(prdService.retrieveUsers(any(), any(), eq(null)))
+                .thenReturn(ResponseEntity.ok(response));
+
+        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Single BatchLastRunTimestampEntity not found");
+    }
+
+    @Test
+    void findUsersChangesAndInsertIntoRefreshQueueTestWithAccessTypesServiceException() {
+        List<AccessTypesEntity> allAccessTypes = new ArrayList<>();
+        allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
+        allAccessTypes.add(new AccessTypesEntity(2L, "some json"));
+        when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
+
+        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Single AccessTypesEntity not found");
     }
 
     private RefreshUser buildRefreshUser(int i) {

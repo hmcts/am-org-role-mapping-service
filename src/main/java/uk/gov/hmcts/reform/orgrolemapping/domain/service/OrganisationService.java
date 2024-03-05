@@ -19,6 +19,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsR
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -42,6 +44,7 @@ public class OrganisationService {
     private final DatabaseDateTimeRepository databaseDateTimeRepository;
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final ProcessEventTracker processEventTracker;
 
     private String tolerance;
 
@@ -53,6 +56,7 @@ public class OrganisationService {
                                AccessTypesRepository accessTypesRepository,
                                BatchLastRunTimestampRepository batchLastRunTimestampRepository,
                                DatabaseDateTimeRepository databaseDateTimeRepository,
+                               ProcessEventTracker processEventTracker,
                                @Value("${groupAccess.lastRunTimeTolerance}") String tolerance
                                ) {
         this.prdService = prdService;
@@ -63,48 +67,58 @@ public class OrganisationService {
         this.databaseDateTimeRepository = databaseDateTimeRepository;
         this.pageSize = pageSize;
         this.jdbcTemplate = jdbcTemplate;
+        this.processEventTracker = processEventTracker;
         this.tolerance = tolerance;
     }
 
     @Transactional
     public void findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
         log.info("findOrganisationChangesAndInsertIntoOrganisationRefreshQueue started...");
-        final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
-        List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
-        if (allAccessTypes.size() != 1) {
-            throw new ServiceException("Single AccessTypesEntity not found");
-        }
-        AccessTypesEntity accessTypesEntity = allAccessTypes.get(0);
-        List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
-                .findAll();
-        if (allBatchLastRunTimestampEntities.size() != 1) {
-            throw new ServiceException("Single BatchLastRunTimestampEntity not found");
-        }
-        BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
-        LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 3 - Find organisation changes");
+        processEventTracker.trackEventStarted(processMonitorDto);
 
-        int toleranceSeconds = Integer.parseInt(tolerance);
-        LocalDateTime sinceTime = orgLastBatchRunTime.minusSeconds(toleranceSeconds);
-        String formattedSince = ISO_DATE_TIME_FORMATTER.format(sinceTime);
+        try {
+            final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
+            List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
+            if (allAccessTypes.size() != 1) {
+                throw new ServiceException("Single AccessTypesEntity not found");
+            }
+            AccessTypesEntity accessTypesEntity = allAccessTypes.get(0);
+            List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
+                    .findAll();
+            if (allBatchLastRunTimestampEntities.size() != 1) {
+                throw new ServiceException("Single BatchLastRunTimestampEntity not found");
+            }
+            BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
+            LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
 
-        Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
-        OrganisationsResponse organisationsResponse = prdService
-                .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
-        writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
+            int toleranceSeconds = Integer.parseInt(tolerance);
+            LocalDateTime sinceTime = orgLastBatchRunTime.minusSeconds(toleranceSeconds);
+            String formattedSince = ISO_DATE_TIME_FORMATTER.format(sinceTime);
 
-        int page = 2;
-        boolean moreAvailable = organisationsResponse.getMoreAvailable();
-        while (moreAvailable) {
-
-            organisationsResponse = prdService
-                    .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
+            Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
+            OrganisationsResponse organisationsResponse = prdService
+                    .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
             writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
-            moreAvailable = organisationsResponse.getMoreAvailable();
-            page++;
+
+            int page = 2;
+            boolean moreAvailable = organisationsResponse.getMoreAvailable();
+            while (moreAvailable) {
+                organisationsResponse = prdService
+                        .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
+                writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
+                moreAvailable = organisationsResponse.getMoreAvailable();
+                page++;
+            }
+            batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime
+                    .ofInstant(batchRunStartTime.getDate(), ZoneOffset.systemDefault()));
+            batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
+
+        } catch (ServiceException serviceException) {
+            processMonitorDto.markAsFailed(serviceException.getMessage());
+        } finally {
+            processEventTracker.trackEventCompleted(processMonitorDto);
         }
-        batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime.ofInstant(batchRunStartTime.getDate(),
-                ZoneOffset.systemDefault()));
-        batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
         log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
     }
 
