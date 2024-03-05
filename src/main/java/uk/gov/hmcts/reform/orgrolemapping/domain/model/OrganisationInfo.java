@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +16,6 @@ public class OrganisationInfo {
 
     private String organisationIdentifier;
     private String status;
-    @JsonProperty("lastUpdated")
-    private LocalDateTime organisationLastUpdated;
+    private LocalDateTime lastUpdated;
     private List<String> organisationProfileIds;
 }
