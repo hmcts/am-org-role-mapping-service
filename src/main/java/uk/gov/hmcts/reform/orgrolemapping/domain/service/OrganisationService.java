@@ -119,6 +119,7 @@ public class OrganisationService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
+        processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
     }

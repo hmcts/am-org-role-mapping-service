@@ -177,6 +177,9 @@ class OrganisationServiceTest {
         verify(organisationRefreshQueueRepository, times(2))
                 .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
     }
 
     @SuppressWarnings("unchecked")
