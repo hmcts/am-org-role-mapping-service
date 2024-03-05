@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessType;
@@ -43,21 +42,16 @@ public class AccessTypesBuilder {
 
                 String orgProfileTempKey = accessType.getOrganisationProfileId();
 
-                if (!organisationProfilesAccessTypesMap.containsKey(orgProfileTempKey)) {
-                    organisationProfilesAccessTypesMap.put(orgProfileTempKey, new HashSet<>());
-                }
-                organisationProfilesAccessTypesMap.get(orgProfileTempKey).add(orgProfileAccessType);
+                organisationProfilesAccessTypesMap
+                        .computeIfAbsent(orgProfileTempKey, k -> new HashSet<>()).add(orgProfileAccessType);
             }
 
-            organisationProfilesAccessTypesMap.forEach((k, v) -> {
+            organisationProfilesAccessTypesMap.forEach((key, val) -> {
                 OrganisationProfileJurisdiction orgProfileJurisdiction = new OrganisationProfileJurisdiction();
                 orgProfileJurisdiction.setJurisdictionId(jurisdictionTempKey);
-                orgProfileJurisdiction.setAccessTypes(v);
+                orgProfileJurisdiction.setAccessTypes(val);
 
-                if (!organisationProfilesMap.containsKey(k)) {
-                    organisationProfilesMap.put(k, new HashSet<>());
-                }
-                organisationProfilesMap.get(k).add(orgProfileJurisdiction);
+                organisationProfilesMap.computeIfAbsent(key, k -> new HashSet<>()).add(orgProfileJurisdiction);
             });
         }
 
@@ -68,8 +62,8 @@ public class AccessTypesBuilder {
         return new RestructuredAccessTypes(organisationProfileList);
     }
 
-    public  List<String> identifyUpdatedOrgProfileIds(RestructuredAccessTypes restructuredCcdAccessTypes,
-                                                            RestructuredAccessTypes prmStoredAccessTypes) {
+    public List<String> identifyUpdatedOrgProfileIds(RestructuredAccessTypes restructuredCcdAccessTypes,
+                                                     RestructuredAccessTypes prmStoredAccessTypes) {
         if (prmStoredAccessTypes.getOrganisationProfiles() == null) {
             log.debug("no organisation profile/s in PRM database, hence returning all from CCD");
             return getOrgProfileIds(restructuredCcdAccessTypes);
@@ -81,9 +75,7 @@ public class AccessTypesBuilder {
         for (OrganisationProfile organisationProfile : prmStoredAccessTypes.getOrganisationProfiles()) {
             String currentOrgProfile = organisationProfile.getOrganisationProfileId();
 
-            if (!getOrgProfile(prmStoredAccessTypes, currentOrgProfile).equals(
-                    getOrgProfile(restructuredCcdAccessTypes, currentOrgProfile)
-            )) {
+            if (!Set.of(organisationProfile).equals(getOrgProfile(restructuredCcdAccessTypes, currentOrgProfile))) {
                 modifiedOrgProfileIds.add(currentOrgProfile);
                 log.debug("existing organisation profile/s have been modified :: {}", currentOrgProfile);
             }
@@ -102,23 +94,22 @@ public class AccessTypesBuilder {
         return modifiedOrgProfileIds;
     }
 
-    private static Set<OrganisationProfile> getOrgProfile(RestructuredAccessTypes restructuredAccessTypes,
-                                                          String orgProfile) {
+    private Set<OrganisationProfile> getOrgProfile(RestructuredAccessTypes restructuredAccessTypes,
+                                                   String orgProfile) {
         return restructuredAccessTypes.getOrganisationProfiles().stream()
                 .filter(organisationProfile -> organisationProfile.getOrganisationProfileId().equals(orgProfile))
                 .collect(Collectors.toSet());
     }
 
-    private static List<String> getOrgProfileIds(RestructuredAccessTypes restructuredAccessTypes) {
+    private List<String> getOrgProfileIds(RestructuredAccessTypes restructuredAccessTypes) {
         return restructuredAccessTypes.getOrganisationProfiles().stream()
                 .map(OrganisationProfile::getOrganisationProfileId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public static AccessTypesResponse buildAccessTypeResponse(String resource) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
             return objectMapper.readValue(
                     new File("src/main/resources/" + resource),
                     AccessTypesResponse.class);

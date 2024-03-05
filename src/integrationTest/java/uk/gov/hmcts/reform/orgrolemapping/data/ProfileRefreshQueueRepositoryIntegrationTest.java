@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.data;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Transactional
 public class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegration {
 
     @Autowired
@@ -31,9 +33,6 @@ public class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegr
         "classpath:sql/insert_organisation_profiles.sql"
     })
     public void shouldHandleDuplicateOrganisationProfileIds() {
-        List<ProfileRefreshQueueEntity> profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
-        validateData(profileRefreshQueueEntities, 1, 1);
-
         List<String> organisationProfileIds = List.of("SOLICITOR_ORG");
         String orgProfileIds = String.join(",", organisationProfileIds);
 

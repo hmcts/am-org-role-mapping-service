@@ -5,14 +5,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface ProfileRefreshQueueRepository extends JpaRepository<ProfileRefreshQueueEntity, String> {
 
-    // pass organisation profile ids as comma seperated string e.g. using String.join(",", organisationProfileIds);
     @Modifying
-    @Transactional
     @Query(value = "insert into profile_refresh_queue (organisation_profile_id, access_types_min_version, active) "
             + "select unnest(array[string_to_array(:organisationProfileIds, ',')]), :accessTypesMinVersion, true "
             + "on conflict (organisation_profile_id) do update "
