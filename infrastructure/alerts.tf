@@ -11,37 +11,37 @@ variable "process_names" {
       key = "prm-process-1"
       frequencyInMinutes    = 15
       timeWindowInMinutes   = 10080
-      processName           = "PRM Process 1"
+      processName           = "PRM Process 1 - Find Case Definition Changes"
     },
     {
       key = "prm-process-2"
       frequencyInMinutes    = 15
       timeWindowInMinutes   = 10080
-      processName           = "PRM Process 2"
+      processName           = "PRM Process 2 - Find Organisations with Stale Profiles"
     },
     {
       key = "prm-process-3"
       frequencyInMinutes    = 15
       timeWindowInMinutes   = 10080
-      processName           = "PRM Process 3"
+      processName           = "PRM Process 3 - Find organisation changes"
     },
     {
       key = "prm-process-4"
       frequencyInMinutes    = 15
       timeWindowInMinutes   = 10080
-      processName           = "PRM Process 4"
+      processName           = "PRM Process 4 - Find Users with Stale Organisations"
     },
     {
       key = "prm-process-5"
       frequencyInMinutes    = 15
       timeWindowInMinutes   = 10080
-      processName           = "PRM Process 5"
+      processName           = "PRM Process 5 - Find User Changes"
     },
     {
       key = "prm-process-6"
       frequencyInMinutes    = 15
       timeWindowInMinutes   = 10080
-      processName           = "PRM Process 6"
+      processName           = "PRM Process 6 - Refresh - Single User Mode and new PRM endpoint"
     }
   ]
 }
