@@ -13,6 +13,8 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,31 +30,44 @@ public class CaseDefinitionService {
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository;
     private final ObjectMapper objectMapper;
 
+    private final ProcessEventTracker processEventTracker;
+
     private final AccessTypesBuilder accessTypesBuilder = new AccessTypesBuilder();
 
     public CaseDefinitionService(CCDService ccdService, AccessTypesRepository accessTypesRepository,
                                  ProfileRefreshQueueRepository profileRefreshQueueRepository,
-                                 ObjectMapper objectMapper) {
+                                 ObjectMapper objectMapper, ProcessEventTracker processEventTracker) {
 
         this.ccdService = ccdService;
         this.accessTypesRepository = accessTypesRepository;
         this.profileRefreshQueueRepository = profileRefreshQueueRepository;
         this.objectMapper = objectMapper;
-
+        this.processEventTracker = processEventTracker;
     }
 
     @Transactional
     public void findAndUpdateCaseDefinitionChanges() {
 
-        AccessTypesEntity localAccessTypes = accessTypesRepository.getAccessTypesEntity();
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
+                "PRM Process 1 - Find Case Definition Changes");
+        processEventTracker.trackEventStarted(processMonitorDto);
 
-        RestructuredAccessTypes ccdAccessTypes = retrieveCCDAccessTypeDefinitions();
+        try {
+            AccessTypesEntity localAccessTypes = accessTypesRepository.getAccessTypesEntity();
 
-        RestructuredAccessTypes restructuredLocalAccessTypes =
-                restructureLocalAccessTypes(localAccessTypes.getAccessTypes());
+            RestructuredAccessTypes ccdAccessTypes = retrieveCCDAccessTypeDefinitions();
 
-        compareAccessTypeDefinitions(restructuredLocalAccessTypes, ccdAccessTypes);
+            RestructuredAccessTypes restructuredLocalAccessTypes =
+                    restructureLocalAccessTypes(localAccessTypes.getAccessTypes());
 
+            compareAccessTypeDefinitions(restructuredLocalAccessTypes, ccdAccessTypes);
+
+            processMonitorDto.markAsSuccess();
+        } catch (ServiceException e) {
+            processMonitorDto.markAsFailed(e.getMessage()); // convert e to json string
+        } finally {
+            processEventTracker.trackEventCompleted(processMonitorDto);
+        }
     }
 
     private RestructuredAccessTypes restructureLocalAccessTypes(String localAccessTypes) {
