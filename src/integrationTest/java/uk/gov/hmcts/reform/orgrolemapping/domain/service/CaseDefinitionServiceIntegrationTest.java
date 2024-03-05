@@ -63,13 +63,13 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
         ProfileRefreshQueueEntity profileRefreshQueueEntity = profileRefreshQueueEntities.get(0);
 
-        assertEquals(profileRefreshQueueEntities.size(), 1);
+        assertEquals(1, profileRefreshQueueEntities.size());
 
         assertNotNull(profileRefreshQueueEntities.get(0));
 
-        assertEquals(profileRefreshQueueEntity.getOrganisationProfileId(), "SOLICITOR_PROFILE");
+        assertEquals("SOLICITOR_PROFILE", profileRefreshQueueEntity.getOrganisationProfileId());
 
-        assertEquals(profileRefreshQueueEntity.getAccessTypesMinVersion(), 2);
+        assertEquals(2, profileRefreshQueueEntity.getAccessTypesMinVersion());
 
         verify(ccdService, times(1))
                 .fetchAccessTypes();
@@ -104,7 +104,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
 
-        assertEquals(profileRefreshQueueEntities.size(), 0);
+        assertEquals(0, profileRefreshQueueEntities.size());
 
         verify(ccdService, times(1))
                 .fetchAccessTypes();
