@@ -114,11 +114,12 @@ public class OrganisationService {
             batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime
                     .ofInstant(batchRunStartTime.getDate(), ZoneOffset.systemDefault()));
             batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
-        } catch (ServiceException serviceException) {
-            processMonitorDto.markAsFailed(serviceException.getMessage());
-        } finally {
+        } catch (Exception exception) {
+            processMonitorDto.markAsFailed(exception.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
+            throw exception;
         }
+        processEventTracker.trackEventCompleted(processMonitorDto);
         log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
     }
 

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -21,6 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
@@ -209,9 +211,13 @@ class OrganisationServiceTest {
         doThrow(new ServiceException("Insert exception")).when(organisationRefreshQueueRepository)
                 .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
 
-        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
+        Assertions.assertThrows(ServiceException.class, () ->
+                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+        );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Insert exception");
     }
@@ -248,9 +254,13 @@ class OrganisationServiceTest {
         doThrow(new ServiceException("Retrieve exception")).when(prdService)
                 .retrieveOrganisations(anyString(), anyInt(), anyInt());
 
-        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
+        Assertions.assertThrows(ServiceException.class, () ->
+                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+        );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Retrieve exception");
     }
@@ -267,9 +277,12 @@ class OrganisationServiceTest {
                 LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
         when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
-        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
-
+        Assertions.assertThrows(ServiceException.class, () ->
+                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+        );
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single BatchLastRunTimestampEntity not found");
     }
@@ -280,9 +293,14 @@ class OrganisationServiceTest {
         allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
         allAccessTypes.add(new AccessTypesEntity(2L, "some json"));
         when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
-        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
+
+        Assertions.assertThrows(ServiceException.class, () ->
+                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+        );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single AccessTypesEntity not found");
     }
