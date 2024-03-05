@@ -280,11 +280,12 @@ public class ProfessionalRefreshOrchestrationHelper {
                     for (OrganisationProfileJurisdiction opj : organisationProfile.getJurisdictions()) {
                         String jurisdictionId =  opj.getJurisdictionId();
                         if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
-                            for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
-                                String accessTypeID = opat.getAccessTypeId();
-                                if (accessTypeID != null && accessTypeID.equals(userAccessType.getAccessTypeId())) {
-                                    matchingOrganisationProfileJurisdiction.add(opj);
-                                }
+                            Set<OrganisationProfileAccessType> opatSet =
+                                    getMatchingOPAT(opj,userAccessType.getAccessTypeId());
+                            if (opatSet.size() > 0) {
+                                opj.getAccessTypes().clear();
+                                opj.setAccessTypes(opatSet);
+                                matchingOrganisationProfileJurisdiction.add(opj);
                             }
                         }
                     }
@@ -292,6 +293,18 @@ public class ProfessionalRefreshOrchestrationHelper {
             }
         }
         return matchingOrganisationProfileJurisdiction;
+    }
+
+    private static Set<OrganisationProfileAccessType> getMatchingOPAT(
+            OrganisationProfileJurisdiction opj, String userAccessTypeId) {
+        Set<OrganisationProfileAccessType> matchingOrganisationProfileAccessType = new HashSet<>();
+        for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
+            String accessTypeID = opat.getAccessTypeId();
+            if (accessTypeID != null && accessTypeID.equals(userAccessTypeId)) {
+                matchingOrganisationProfileAccessType.add(opat);
+            }
+        }
+        return matchingOrganisationProfileAccessType;
     }
 
     @NotNull
