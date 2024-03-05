@@ -104,6 +104,7 @@ public class OrganisationService {
             int page = 2;
             boolean moreAvailable = organisationsResponse.getMoreAvailable();
             while (moreAvailable) {
+
                 organisationsResponse = prdService
                         .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
                 writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
@@ -113,12 +114,13 @@ public class OrganisationService {
             batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime
                     .ofInstant(batchRunStartTime.getDate(), ZoneOffset.systemDefault()));
             batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
-
-        } catch (ServiceException serviceException) {
-            processMonitorDto.markAsFailed(serviceException.getMessage());
-        } finally {
+        } catch (Exception exception) {
+            processMonitorDto.markAsFailed(exception.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
+            throw exception;
         }
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
         log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
     }
 

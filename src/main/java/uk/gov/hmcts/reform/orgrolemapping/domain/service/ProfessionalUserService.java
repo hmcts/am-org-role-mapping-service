@@ -117,13 +117,15 @@ public class ProfessionalUserService {
                 batchLastRunTimestampEntity.setLastUserRunDatetime(LocalDateTime.ofInstant(batchRunStartTime.getDate(),
                         ZoneOffset.systemDefault()));
                 batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
-                log.info("..findUserChangesAndInsertIntoUserRefreshQueue finished");
             }
-        } catch (ServiceException serviceException) {
-            processMonitorDto.markAsFailed(serviceException.getMessage());
-        } finally {
+        } catch (Exception exception) {
+            processMonitorDto.markAsFailed(exception.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
+            throw exception;
         }
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        log.info("..findUserChangesAndInsertIntoUserRefreshQueue finished");
     }
 
     private void writeAllToUserRefreshQueue(GetRefreshUserResponse usersResponse, Integer accessTypeMinVersion) {

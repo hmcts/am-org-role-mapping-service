@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -19,6 +20,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
@@ -88,6 +90,9 @@ public class ProfessionalUserServiceTest {
         verify(userRefreshQueueRepository, times(1))
                 .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
@@ -143,9 +148,13 @@ public class ProfessionalUserServiceTest {
         doThrow(new ServiceException("Retrieve users exception")).when(prdService)
                 .retrieveUsers(any(), any(), eq(null));
 
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+        Assertions.assertThrows(ServiceException.class, () ->
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
+        );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Retrieve users exception");
     }
@@ -174,9 +183,13 @@ public class ProfessionalUserServiceTest {
         doThrow(new ServiceException("Batch save exception")).when(batchLastRunTimestampRepository)
                 .save(any());
 
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+        Assertions.assertThrows(ServiceException.class, () ->
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
+        );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Batch save exception");
     }
@@ -202,9 +215,13 @@ public class ProfessionalUserServiceTest {
         doThrow(new ServiceException("Insert exception")).when(userRefreshQueueRepository)
                 .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
 
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+        Assertions.assertThrows(ServiceException.class, () ->
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
+        );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Insert exception");
     }
@@ -229,9 +246,13 @@ public class ProfessionalUserServiceTest {
         when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
 
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+        Assertions.assertThrows(ServiceException.class, () ->
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
+        );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single BatchLastRunTimestampEntity not found");
     }
@@ -243,9 +264,13 @@ public class ProfessionalUserServiceTest {
         allAccessTypes.add(new AccessTypesEntity(2L, "some json"));
         when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
 
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+        Assertions.assertThrows(ServiceException.class, () ->
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
+        );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single AccessTypesEntity not found");
     }
