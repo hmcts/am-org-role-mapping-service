@@ -297,14 +297,15 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private static Set<OrganisationProfileAccessType> getMatchingOPAT(
             OrganisationProfileJurisdiction opj, String userAccessTypeId) {
-        Set<OrganisationProfileAccessType> matchingOrganisationProfileAccessType = new HashSet<>();
-        for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
-            String accessTypeID = opat.getAccessTypeId();
-            if (accessTypeID != null && accessTypeID.equals(userAccessTypeId)) {
-                matchingOrganisationProfileAccessType.add(opat);
-            }
-        }
-        return matchingOrganisationProfileAccessType;
+
+        return opj.getAccessTypes()
+                .stream()
+                .filter( organisationProfileAccessType -> matchOPAT(organisationProfileAccessType,userAccessTypeId))
+                .collect(Collectors.toSet());
+    }
+
+    private static boolean matchOPAT(OrganisationProfileAccessType oPAT, String userAccessTypeId) {
+        return oPAT.getAccessTypeId() != null && oPAT.getAccessTypeId().equals(userAccessTypeId);
     }
 
     @NotNull
