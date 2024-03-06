@@ -240,7 +240,8 @@ public class ProfessionalUserServiceTest {
         when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
         GetRefreshUserResponse response = buildRefreshUserResponse(buildRefreshUser(1), "123", true);
-        GetRefreshUserResponse response2 = buildRefreshUsersResponse(buildRefreshUser(2), buildRefreshUser(3), "456", false);
+        GetRefreshUserResponse response2 = buildRefreshUsersResponse(buildRefreshUser(2),
+                buildRefreshUser(3), "456", false);
         when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
         when(prdService.retrieveUsers(any(), any(), eq("123")))
@@ -345,6 +346,7 @@ public class ProfessionalUserServiceTest {
                 .moreAvailable(moreAvailable)
                 .build();
     }
+
     private GetRefreshUserResponse buildRefreshUsersResponse(RefreshUser user1, RefreshUser user2,
                                                             String lastRecord,
                                                             boolean moreAvailable) {
