@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,9 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -27,17 +32,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OrganisationServiceTest {
+class  OrganisationServiceTest {
 
     private final PrdService prdService = mock(PrdService.class);
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository =
@@ -50,14 +57,19 @@ class OrganisationServiceTest {
     private final DatabaseDateTimeRepository databaseDateTimeRepository = mock(DatabaseDateTimeRepository.class);
     private final BatchLastRunTimestampRepository batchLastRunTimestampRepository =
             mock(BatchLastRunTimestampRepository.class);
+    private final ProcessEventTracker processEventTracker = Mockito.mock(ProcessEventTracker.class);
+
+    @Captor
+    private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
+
     OrganisationService organisationService = new OrganisationService(
             prdService,
             organisationRefreshQueueRepository,
             profileRefreshQueueRepository,
             "1",
             jdbcTemplate,
-            accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository, "10"
-    );
+            accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository,
+            processEventTracker, "10");
 
     @Test
     void findAndInsertStaleOrganisationsIntoRefreshQueue_Test() {
@@ -165,6 +177,107 @@ class OrganisationServiceTest {
         verify(organisationRefreshQueueRepository, times(2))
                 .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(2);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
+                .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
+                        + "2 organisations=orgIdentifier1,orgIdentifier2, : COMPLETED");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(1))
+                .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
+                        + "1 organisations=orgIdentifier3, : COMPLETED");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void findOrganisationChangesAndInsertIntoOrganisationRefreshQueueFailedInsert() {
+        List<AccessTypesEntity> allAccessTypes = new ArrayList<>();
+        allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
+        when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
+
+        List<BatchLastRunTimestampEntity> allBatches = new ArrayList<>();
+        allBatches.add(new BatchLastRunTimestampEntity(1L, LocalDateTime.of(2023, 12, 30, 0, 0, 0, 0),
+                LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
+        when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
+        List<OrganisationInfo> allOrgs1 = new ArrayList<>();
+        OrganisationInfo organisationInfo1 = buildOrganisationInfo(1);
+        OrganisationInfo organisationInfo2 = buildOrganisationInfo(2);
+        allOrgs1.add(organisationInfo1);
+        allOrgs1.add(organisationInfo2);
+
+        List<OrganisationInfo> allOrgs2 = new ArrayList<>();
+        OrganisationInfo organisationInfo3 = buildOrganisationInfo(3);
+        allOrgs2.add(organisationInfo3);
+
+        ResponseEntity<OrganisationsResponse> organisationsResponse1 = ResponseEntity
+                .ok(OrganisationsResponse.builder().organisations(allOrgs1).moreAvailable(true).build());
+        ResponseEntity<OrganisationsResponse> organisationsResponse2 = ResponseEntity
+                .ok(OrganisationsResponse.builder().organisations(allOrgs2).moreAvailable(false).build());
+
+        when(prdService.retrieveOrganisations(anyString(), anyInt(), anyInt()))
+                .thenReturn(organisationsResponse1, organisationsResponse2);
+
+        doThrow(new ServiceException("Insert exception")).when(organisationRefreshQueueRepository)
+                .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
+
+        Assertions.assertThrows(ServiceException.class, () ->
+                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+        );
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Insert exception, failed at page 1");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(1);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
+                .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated "
+                        + "for 2 organisations=orgIdentifier1,orgIdentifier2,");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void findOrganisationChangesAndInsertIntoOrganisationRefreshQueueFailedRetrieveOrgs() {
+        List<AccessTypesEntity> allAccessTypes = new ArrayList<>();
+        allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
+        when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
+
+        List<BatchLastRunTimestampEntity> allBatches = new ArrayList<>();
+        allBatches.add(new BatchLastRunTimestampEntity(1L, LocalDateTime.of(2023, 12, 30, 0, 0, 0, 0),
+                LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
+        when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
+        List<OrganisationInfo> allOrgs1 = new ArrayList<>();
+        OrganisationInfo organisationInfo1 = buildOrganisationInfo(1);
+        OrganisationInfo organisationInfo2 = buildOrganisationInfo(2);
+        allOrgs1.add(organisationInfo1);
+        allOrgs1.add(organisationInfo2);
+
+        List<OrganisationInfo> allOrgs2 = new ArrayList<>();
+        OrganisationInfo organisationInfo3 = buildOrganisationInfo(3);
+        allOrgs2.add(organisationInfo3);
+
+        ResponseEntity<OrganisationsResponse> organisationsResponse1 = ResponseEntity
+                .ok(OrganisationsResponse.builder().organisations(allOrgs1).moreAvailable(true).build());
+        ResponseEntity<OrganisationsResponse> organisationsResponse2 = ResponseEntity
+                .ok(OrganisationsResponse.builder().organisations(allOrgs2).moreAvailable(false).build());
+
+        when(prdService.retrieveOrganisations(anyString(), anyInt(), anyInt()))
+                .thenReturn(organisationsResponse1, organisationsResponse2);
+
+        doThrow(new ServiceException("Retrieve exception")).when(prdService)
+                .retrieveOrganisations(anyString(), anyInt(), anyInt());
+
+        Assertions.assertThrows(ServiceException.class, () ->
+                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+        );
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Retrieve exception, failed at page 1");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @Test
@@ -182,6 +295,12 @@ class OrganisationServiceTest {
         Assertions.assertThrows(ServiceException.class, () ->
                 organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
         );
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Single BatchLastRunTimestampEntity not found");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @Test
@@ -190,9 +309,17 @@ class OrganisationServiceTest {
         allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
         allAccessTypes.add(new AccessTypesEntity(2L, "some json"));
         when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
+
         Assertions.assertThrows(ServiceException.class, () ->
                 organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
         );
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Single AccessTypesEntity not found");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @Test
@@ -222,7 +349,7 @@ class OrganisationServiceTest {
 
     private OrganisationInfo buildOrganisationInfo(int i) {
         return OrganisationInfo.builder()
-                .organisationIdentifier("" + i)
+                .organisationIdentifier("orgIdentifier" + i)
                 .status("ACTIVE")
                 .lastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
