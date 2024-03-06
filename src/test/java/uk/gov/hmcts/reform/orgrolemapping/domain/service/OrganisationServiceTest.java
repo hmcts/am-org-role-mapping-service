@@ -178,6 +178,11 @@ class OrganisationServiceTest {
                 .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(2);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
+                .isEqualTo("insertIntoOrganisationRefreshQueueForLastUpdated completed for 2 organisations");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(1))
+                .isEqualTo("insertIntoOrganisationRefreshQueueForLastUpdated completed for 1 organisations");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
     }
@@ -223,6 +228,7 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Insert exception");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @SuppressWarnings("unchecked")
@@ -266,6 +272,7 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Retrieve exception");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @Test
@@ -288,6 +295,7 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single BatchLastRunTimestampEntity not found");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @Test
@@ -306,6 +314,7 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single AccessTypesEntity not found");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @Test

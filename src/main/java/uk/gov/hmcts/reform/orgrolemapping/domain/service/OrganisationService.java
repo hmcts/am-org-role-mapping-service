@@ -99,7 +99,7 @@ public class OrganisationService {
             Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
             OrganisationsResponse organisationsResponse = prdService
                     .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
-            writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
+            writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion, processMonitorDto);
 
             int page = 2;
             boolean moreAvailable = organisationsResponse.getMoreAvailable();
@@ -107,7 +107,7 @@ public class OrganisationService {
 
                 organisationsResponse = prdService
                         .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
-                writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion);
+                writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion, processMonitorDto);
                 moreAvailable = organisationsResponse.getMoreAvailable();
                 page++;
             }
@@ -190,10 +190,12 @@ public class OrganisationService {
     }
 
     private void writeAllToOrganisationRefreshQueue(OrganisationsResponse organisationsResponse,
-                                                    Integer accessTypeMinVersion) {
+                                                    Integer accessTypeMinVersion, ProcessMonitorDto processMonitorDto) {
 
         organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueueForLastUpdated(jdbcTemplate,
                 organisationsResponse.getOrganisations(), accessTypeMinVersion);
+        processMonitorDto.addProcessStep("insertIntoOrganisationRefreshQueueForLastUpdated completed for "
+                + organisationsResponse.getOrganisations().size() + " organisations");
     }
 
     private void updateProfileRefreshQueueActiveStatus(List<String> organisationProfileIds,
