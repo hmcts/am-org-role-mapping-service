@@ -44,7 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class   OrganisationServiceTest {
+class  OrganisationServiceTest {
 
     private final PrdService prdService = mock(PrdService.class);
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository =
@@ -180,11 +180,11 @@ class   OrganisationServiceTest {
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(2);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
-                .isEqualTo("insertIntoOrganisationRefreshQueueForLastUpdated completed for "
-                        + "2 organisations=orgIdentifier1,orgIdentifier2,");
+                .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
+                        + "2 organisations=orgIdentifier1,orgIdentifier2, : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(1))
-                .isEqualTo("insertIntoOrganisationRefreshQueueForLastUpdated completed for "
-                        + "1 organisations=orgIdentifier3,");
+                .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
+                        + "1 organisations=orgIdentifier3, : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
     }
@@ -230,7 +230,10 @@ class   OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Insert exception, failed at page 1");
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(1);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
+                .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated "
+                        + "for 2 organisations=orgIdentifier1,orgIdentifier2,");
     }
 
     @SuppressWarnings("unchecked")

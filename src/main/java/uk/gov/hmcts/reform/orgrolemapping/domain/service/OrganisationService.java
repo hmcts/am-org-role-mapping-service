@@ -195,13 +195,15 @@ public class OrganisationService {
     private void writeAllToOrganisationRefreshQueue(OrganisationsResponse organisationsResponse,
                                                     Integer accessTypeMinVersion, ProcessMonitorDto processMonitorDto) {
 
-        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueueForLastUpdated(jdbcTemplate,
-                organisationsResponse.getOrganisations(), accessTypeMinVersion);
-        String processStep = "insertIntoOrganisationRefreshQueueForLastUpdated completed for "
+        String processStep = "attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
                 + organisationsResponse.getOrganisations().size() + " organisations";
         processStep = processStep + "=" + organisationsResponse.getOrganisations()
                 .stream().map(o -> o.getOrganisationIdentifier() + ",").collect(Collectors.joining());
         processMonitorDto.addProcessStep(processStep);
+        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueueForLastUpdated(jdbcTemplate,
+                organisationsResponse.getOrganisations(), accessTypeMinVersion);
+        processMonitorDto.getProcessSteps().remove(processMonitorDto.getProcessSteps().size() - 1);
+        processMonitorDto.addProcessStep(processStep + " : COMPLETED");
     }
 
     private void updateProfileRefreshQueueActiveStatus(List<String> organisationProfileIds,
