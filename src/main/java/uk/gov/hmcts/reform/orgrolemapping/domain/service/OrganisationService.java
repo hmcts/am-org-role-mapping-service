@@ -77,6 +77,7 @@ public class OrganisationService {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 3 - Find organisation changes");
         processEventTracker.trackEventStarted(processMonitorDto);
 
+        int page = 0;
         try {
             final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
             List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
@@ -96,12 +97,13 @@ public class OrganisationService {
             LocalDateTime sinceTime = orgLastBatchRunTime.minusSeconds(toleranceSeconds);
             String formattedSince = ISO_DATE_TIME_FORMATTER.format(sinceTime);
 
+            page = 1;
             Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
             OrganisationsResponse organisationsResponse = prdService
                     .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
             writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion, processMonitorDto);
 
-            int page = 2;
+            page = 2;
             boolean moreAvailable = organisationsResponse.getMoreAvailable();
             while (moreAvailable) {
 
@@ -115,7 +117,8 @@ public class OrganisationService {
                     .ofInstant(batchRunStartTime.getDate(), ZoneOffset.systemDefault()));
             batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
         } catch (Exception exception) {
-            processMonitorDto.markAsFailed(exception.getMessage());
+            String pageFailMessage = (page == 0 ? "" : ", failed at page " + page);
+            processMonitorDto.markAsFailed(exception.getMessage() + pageFailMessage);
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
@@ -194,8 +197,11 @@ public class OrganisationService {
 
         organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueueForLastUpdated(jdbcTemplate,
                 organisationsResponse.getOrganisations(), accessTypeMinVersion);
-        processMonitorDto.addProcessStep("insertIntoOrganisationRefreshQueueForLastUpdated completed for "
-                + organisationsResponse.getOrganisations().size() + " organisations");
+        String processStep = "insertIntoOrganisationRefreshQueueForLastUpdated completed for "
+                + organisationsResponse.getOrganisations().size() + " organisations";
+        processStep = processStep + "=" + organisationsResponse.getOrganisations()
+                .stream().map(o -> o.getOrganisationIdentifier() + ",").collect(Collectors.joining());
+        processMonitorDto.addProcessStep(processStep);
     }
 
     private void updateProfileRefreshQueueActiveStatus(List<String> organisationProfileIds,

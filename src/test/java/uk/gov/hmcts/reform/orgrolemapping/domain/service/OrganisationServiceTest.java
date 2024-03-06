@@ -44,7 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OrganisationServiceTest {
+class   OrganisationServiceTest {
 
     private final PrdService prdService = mock(PrdService.class);
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository =
@@ -180,9 +180,11 @@ class OrganisationServiceTest {
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(2);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
-                .isEqualTo("insertIntoOrganisationRefreshQueueForLastUpdated completed for 2 organisations");
+                .isEqualTo("insertIntoOrganisationRefreshQueueForLastUpdated completed for "
+                        + "2 organisations=orgIdentifier1,orgIdentifier2,");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(1))
-                .isEqualTo("insertIntoOrganisationRefreshQueueForLastUpdated completed for 1 organisations");
+                .isEqualTo("insertIntoOrganisationRefreshQueueForLastUpdated completed for "
+                        + "1 organisations=orgIdentifier3,");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
     }
@@ -227,7 +229,7 @@ class OrganisationServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
-                .isEqualTo("Insert exception");
+                .isEqualTo("Insert exception, failed at page 1");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
@@ -271,7 +273,7 @@ class OrganisationServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
-                .isEqualTo("Retrieve exception");
+                .isEqualTo("Retrieve exception, failed at page 1");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
@@ -344,7 +346,7 @@ class OrganisationServiceTest {
 
     private OrganisationInfo buildOrganisationInfo(int i) {
         return OrganisationInfo.builder()
-                .organisationIdentifier("" + i)
+                .organisationIdentifier("orgIdentifier" + i)
                 .status("ACTIVE")
                 .lastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
