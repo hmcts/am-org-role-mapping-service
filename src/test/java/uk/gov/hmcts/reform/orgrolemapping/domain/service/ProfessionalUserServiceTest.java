@@ -33,6 +33,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -180,7 +181,8 @@ public class ProfessionalUserServiceTest {
         when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
 
-        doThrow(new ServiceException("Batch save exception")).when(batchLastRunTimestampRepository)
+        doThrow(new ServiceException("Batch save exception"))
+                .when(batchLastRunTimestampRepository)
                 .save(any());
 
         Assertions.assertThrows(ServiceException.class, () ->
@@ -191,7 +193,7 @@ public class ProfessionalUserServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
-                .isEqualTo("Batch save exception");
+                .isEqualTo("Batch save exception, failed at lastRecordInPage=123");
     }
 
     @Test
@@ -224,6 +226,48 @@ public class ProfessionalUserServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Insert exception");
+    }
+
+    @Test
+    void findUsersChangesAndInsertIntoRefreshQueueTestInsertUserFailOnSecond() {
+        List<AccessTypesEntity> allAccessTypes = new ArrayList<>();
+        allAccessTypes.add(new AccessTypesEntity(1L, "some json"));
+        when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
+
+        List<BatchLastRunTimestampEntity> allBatches = new ArrayList<>();
+        allBatches.add(new BatchLastRunTimestampEntity(1L, LocalDateTime.of(2023, 12, 30, 0, 0, 0, 0),
+                LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
+        when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
+
+        GetRefreshUserResponse response = buildRefreshUserResponse(buildRefreshUser(1), "123", true);
+        GetRefreshUserResponse response2 = buildRefreshUsersResponse(buildRefreshUser(2), buildRefreshUser(3), "456", false);
+        when(prdService.retrieveUsers(any(), any(), eq(null)))
+                .thenReturn(ResponseEntity.ok(response));
+        when(prdService.retrieveUsers(any(), any(), eq("123")))
+                .thenReturn(ResponseEntity.ok(response2));
+
+        doNothing().doThrow(new ServiceException("Insert exception")).when(userRefreshQueueRepository)
+                .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
+
+        Assertions.assertThrows(ServiceException.class, () ->
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
+        );
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size())
+                .isEqualTo(4);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
+                .isEqualTo("attempting first retrieveUsers");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(1))
+                .isEqualTo("attempting writeAllToUserRefreshQueue for user=1, : COMPLETED");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(2))
+                .isEqualTo("attempting retrieveUsers from lastRecordInPage=123");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(3))
+                .isEqualTo("attempting writeAllToUserRefreshQueue for user=2,user=3,");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
+                .isEqualTo("Insert exception, failed at lastRecordInPage=456");
     }
 
     @Test
@@ -297,6 +341,15 @@ public class ProfessionalUserServiceTest {
                                                             boolean moreAvailable) {
         return GetRefreshUserResponse.builder()
                 .users(List.of(user))
+                .lastRecordInPage(lastRecord)
+                .moreAvailable(moreAvailable)
+                .build();
+    }
+    private GetRefreshUserResponse buildRefreshUsersResponse(RefreshUser user1, RefreshUser user2,
+                                                            String lastRecord,
+                                                            boolean moreAvailable) {
+        return GetRefreshUserResponse.builder()
+                .users(List.of(user1, user2))
                 .lastRecordInPage(lastRecord)
                 .moreAvailable(moreAvailable)
                 .build();

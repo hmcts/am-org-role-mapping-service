@@ -44,7 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OrganisationServiceTest {
+class  OrganisationServiceTest {
 
     private final PrdService prdService = mock(PrdService.class);
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository =
@@ -178,6 +178,13 @@ class OrganisationServiceTest {
                 .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(2);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
+                .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
+                        + "2 organisations=orgIdentifier1,orgIdentifier2, : COMPLETED");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(1))
+                .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
+                        + "1 organisations=orgIdentifier3, : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
     }
@@ -222,7 +229,11 @@ class OrganisationServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
-                .isEqualTo("Insert exception");
+                .isEqualTo("Insert exception, failed at page 1");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(1);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
+                .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated "
+                        + "for 2 organisations=orgIdentifier1,orgIdentifier2,");
     }
 
     @SuppressWarnings("unchecked")
@@ -265,7 +276,8 @@ class OrganisationServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
-                .isEqualTo("Retrieve exception");
+                .isEqualTo("Retrieve exception, failed at page 1");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @Test
@@ -288,6 +300,7 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single BatchLastRunTimestampEntity not found");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @Test
@@ -306,6 +319,7 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single AccessTypesEntity not found");
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
     }
 
     @Test
@@ -335,7 +349,7 @@ class OrganisationServiceTest {
 
     private OrganisationInfo buildOrganisationInfo(int i) {
         return OrganisationInfo.builder()
-                .organisationIdentifier("" + i)
+                .organisationIdentifier("orgIdentifier" + i)
                 .status("ACTIVE")
                 .lastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
