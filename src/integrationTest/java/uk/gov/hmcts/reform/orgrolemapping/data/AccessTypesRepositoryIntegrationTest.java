@@ -19,7 +19,7 @@ public class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
         AccessTypesEntity accessTypes = accessTypesRepository.getAccessTypesEntity();
 
         assertNotNull(accessTypes);
-        assertEquals(1, accessTypes.getVersion());
+        assertEquals(0, accessTypes.getVersion());
         assertNotNull(accessTypes.getAccessTypes());
     }
 }
