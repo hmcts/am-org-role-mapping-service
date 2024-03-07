@@ -35,16 +35,17 @@ public class ProfessionalUserService {
     private String activeUserRefreshDays;
 
     public ProfessionalUserService(PrdService prdService,
-                                   UserRefreshQueueRepository userRefreshQueueRepository,
-                                   @Value("${professional.refdata.pageSize}") String pageSize,
-                                   NamedParameterJdbcTemplate jdbcTemplate,
-                                   AccessTypesRepository accessTypesRepository,
-                                   BatchLastRunTimestampRepository batchLastRunTimestampRepository,
-                                   DatabaseDateTimeRepository databaseDateTimeRepository,
-                                   ProcessEventTracker processEventTracker,
-                                   ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper,
-                                   @Value("${groupAccess.lastRunTimeTolerance}") String tolerance,
-                                   @Value("${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}") String activeUserRefreshDays) {
+            UserRefreshQueueRepository userRefreshQueueRepository,
+            @Value("${professional.refdata.pageSize}") String pageSize,
+            NamedParameterJdbcTemplate jdbcTemplate,
+            AccessTypesRepository accessTypesRepository,
+            BatchLastRunTimestampRepository batchLastRunTimestampRepository,
+            DatabaseDateTimeRepository databaseDateTimeRepository,
+            ProcessEventTracker processEventTracker,
+            ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper,
+            @Value("${groupAccess.lastRunTimeTolerance}") String tolerance,
+            @Value("${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}")
+                                   String activeUserRefreshDays) {
         this.prdService = prdService;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.accessTypesRepository = accessTypesRepository;
@@ -105,7 +106,7 @@ public class ProfessionalUserService {
 
         processMonitorDto.addProcessStep("attempting next retrieveSingleActiveRecord");
         UserRefreshQueueEntity userRefreshQueue =  userRefreshQueueRepository.retrieveSingleActiveRecord();
-        String completionPrefix = (userRefreshQueue==null ? " - none": " - one") + " found";
+        String completionPrefix = (userRefreshQueue == null ? " - none" : " - one") + " found";
         processMonitorDto.appendToLastProcessStep(completionPrefix + " : COMPLETED");
         return userRefreshQueue;
     }
