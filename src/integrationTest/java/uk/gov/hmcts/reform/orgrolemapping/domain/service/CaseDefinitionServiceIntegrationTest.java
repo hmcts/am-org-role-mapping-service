@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +13,8 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeJurisdiction;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeRole;
+import uk.gov.hmcts.reform.orgrolemapping.data.TestData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
-
 import uk.gov.hmcts.reform.orgrolemapping.dto.AccessTypeString;
 import uk.gov.hmcts.reform.orgrolemapping.dto.Jurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.dto.OrganisationProfile;
@@ -29,11 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.data.TestData.CIVIL_JURISDICTION;
+import static uk.gov.hmcts.reform.orgrolemapping.data.TestData.SSCS_JURISDICTION;
 
 @Transactional
 public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
@@ -48,29 +47,11 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
     @MockBean
     private CCDService ccdService;
 
-
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
-    void shouldUpdateLocalDefinitions() {
+    void shouldUpdateLocalDefinitionsForSSCS() {
 
-
-        AccessTypeRole ccdRoles = buildAccessTypeRole("BEFTA_CASETYPE_1_1", "Role1",
-                "Role1",
-                "BEFTA_JURISDICTION_1:BEFTA_CaseType:[GrpRoleName1]:$ORGID$",
-                false);
-
-        AccessType ccdAccessType = buildAccessType("SOLICITOR_PROFILE",
-                "BEFTA_SOLICITOR_1", true, true, true,
-                "BEFTA bulk Solicitor Respondant for Org description",
-                "BEFTA bulk Solicitor Respondant for Org hint", 3, List.of(ccdRoles));
-
-        AccessTypeJurisdiction jurisdictions =
-                buildJurisdictions("BEFTA_JURISDICTION_1", "BEFTA_JURISDICTION_1_OGD",
-                        List.of(ccdAccessType));
-
-        AccessTypesResponse response = buildAccessTypesResponse(List.of(jurisdictions));
-
-        ResponseEntity<AccessTypesResponse> ccdDefinitions = new ResponseEntity<>(response, HttpStatus.OK);
+        ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(SSCS_JURISDICTION);
 
         when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
 
@@ -79,7 +60,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
         assertNotNull(profileRefreshQueueEntities);
         verifyProfileRefreshQueue(profileRefreshQueueEntities, 1, 1,
-                "SOLICITOR_PROFILE");
+                "SSCS_SOLICITOR_PROFILE");
 
         List<AccessTypesEntity> accessTypesEntityList = iterableToList(accessTypesRepository.findAll());
         assertNotNull(accessTypesEntityList);
@@ -90,8 +71,39 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
         List<OrganisationProfile> organisationProfileList = organisationProfiles.getOrganisationProfiles();
         assertNotNull(organisationProfileList);
         assertEquals(1, organisationProfileList.size());
-        verifyOrganisationProfiles(organisationProfiles, "SOLICITOR_PROFILE",
-                "BEFTA_JURISDICTION_1");
+        verifyOrganisationProfiles(organisationProfiles, "SSCS_SOLICITOR_PROFILE",
+                SSCS_JURISDICTION);
+
+        verify(ccdService, times(1))
+                .fetchAccessTypes();
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
+    void shouldUpdateLocalDefinitionsForCivil() {
+
+        ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(CIVIL_JURISDICTION);
+
+        when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
+
+        caseDefinitionService.findAndUpdateCaseDefinitionChanges();
+
+        List<ProfileRefreshQueueEntity> profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
+        assertNotNull(profileRefreshQueueEntities);
+        verifyProfileRefreshQueue(profileRefreshQueueEntities, 1, 1,
+                "CIVIL_SOLICITOR_PROFILE");
+
+        List<AccessTypesEntity> accessTypesEntityList = iterableToList(accessTypesRepository.findAll());
+        assertNotNull(accessTypesEntityList);
+
+        OrganisationProfiles organisationProfiles = convertIntoPojo(accessTypesEntityList);
+        assertNotNull(organisationProfiles);
+
+        List<OrganisationProfile> organisationProfileList = organisationProfiles.getOrganisationProfiles();
+        assertNotNull(organisationProfileList);
+        assertEquals(1, organisationProfileList.size());
+        verifyOrganisationProfiles(organisationProfiles, "CIVIL_SOLICITOR_PROFILE",
+                CIVIL_JURISDICTION);
 
         verify(ccdService, times(1))
                 .fetchAccessTypes();
@@ -99,36 +111,20 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_populated_access_types.sql",
-                       "classpath:sql/insert_organisation_profiles.sql"})
-    void shouldNotUpdateLocalDefinitions() {
+            scripts = {"classpath:sql/insert_civil_existing_access_types.sql",
+                       "classpath:sql/insert_existing_profiles_refresh_queue.sql"})
+    void shouldNotUpdateLocalDefinitionsForCivil() {
 
-
-        AccessTypeRole ccdRoles = buildAccessTypeRole("CIVIL", "Role1",
-                "[APPLICANTSOLICITORONE]", "CIVIL:all-cases:APPSOL1:$ORGID$",
-                true);
-
-        AccessType ccdAccessType = buildAccessType("SOLICITOR_ORG", "civil-cases-1",
-                false, false, true,
-                "BEFTA bulk Solicitor Respondant for Org description",
-                "BEFTA bulk Solicitor Respondant for Org hint", 3, List.of(ccdRoles));
-
-        AccessTypeJurisdiction jurisdictions =
-                buildJurisdictions("CIVIL", "BEFTA_JURISDICTION_1_OGD",
-                        List.of(ccdAccessType));
-
-        AccessTypesResponse response = buildAccessTypesResponse(List.of(jurisdictions));
-
-        ResponseEntity<AccessTypesResponse> ccdDefinitions = new ResponseEntity<>(response, HttpStatus.OK);
+        ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(CIVIL_JURISDICTION);
 
         when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions);
 
         caseDefinitionService.findAndUpdateCaseDefinitionChanges();
 
         List<ProfileRefreshQueueEntity> profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
-
+        assertNotNull(profileRefreshQueueEntities);
         verifyProfileRefreshQueue(profileRefreshQueueEntities, 1, 1,
-                "SOLICITOR_ORG");
+                "CIVIL_SOLICITOR_PROFILE");
 
         List<AccessTypesEntity> accessTypesEntityList = iterableToList(accessTypesRepository.findAll());
         assertNotNull(accessTypesEntityList);
@@ -139,62 +135,11 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
         List<OrganisationProfile> organisationProfileList = organisationProfiles.getOrganisationProfiles();
         assertNotNull(organisationProfileList);
         assertEquals(1, organisationProfileList.size());
-        verifyOrganisationProfiles(organisationProfiles, "SOLICITOR_ORG",
-                "CIVIL");
+        verifyOrganisationProfiles(organisationProfiles, "CIVIL_SOLICITOR_PROFILE",
+                CIVIL_JURISDICTION);
 
         verify(ccdService, times(1))
                 .fetchAccessTypes();
-    }
-
-    private AccessTypesResponse buildAccessTypesResponse(List<AccessTypeJurisdiction> jurisdictions) {
-
-        return AccessTypesResponse.builder()
-                .jurisdictions(jurisdictions)
-                .build();
-
-    }
-
-    private AccessTypeJurisdiction buildJurisdictions(String jurisdictionId,
-                                                      String jurisdictionName,
-                                                      List<AccessType> accessTypes) {
-
-        return AccessTypeJurisdiction.builder()
-                .jurisdictionId(jurisdictionId)
-                .jurisdictionName(jurisdictionName)
-                .accessTypes(accessTypes)
-                .build();
-
-    }
-
-    private AccessType buildAccessType(String organisationProfileId, String accessTypeId, boolean accessMandatory,
-                                       boolean accessDefault, boolean display, String description,
-                                       String hint, Integer displayOrder, List<AccessTypeRole> roles) {
-
-        return AccessType.builder()
-                .organisationProfileId(organisationProfileId)
-                .accessTypeId(accessTypeId)
-                .accessMandatory(accessMandatory)
-                .accessDefault(accessDefault)
-                .display(display)
-                .description(description)
-                .hint(hint)
-                .displayOrder(displayOrder)
-                .roles(roles)
-                .build();
-
-    }
-
-    private AccessTypeRole buildAccessTypeRole(String caseTypeId, String organisationalRoleName, String groupRoleName,
-                                               String caseGroupIdTemplate, boolean groupAccessEnabled) {
-
-        return AccessTypeRole.builder()
-                .caseTypeId(caseTypeId)
-                .organisationalRoleName(organisationalRoleName)
-                .groupRoleName(groupRoleName)
-                .caseGroupIdTemplate(caseGroupIdTemplate)
-                .groupAccessEnabled(groupAccessEnabled)
-                .build();
-
     }
 
     private static <T> List<T> iterableToList(Iterable<T> iterable) {
@@ -241,6 +186,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
             List<Jurisdiction> jurisdictions = organisationProfile.getJurisdictions();
             assertNotNull(jurisdictions);
 
+
             assertNotNull(organisationProfile.getOrganisationProfileId());
             assertEquals(expectedOrgProfileId, organisationProfile.getOrganisationProfileId());
 
@@ -256,30 +202,44 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
             List<AccessTypeString> accessTypeStringList = jurisdiction.getAccessTypes();
             assertNotNull(accessTypeStringList);
-            verifyAccessTypes(accessTypeStringList);
+            verifyAccessTypes(accessTypeStringList, expectedJurisdictionId);
         }
 
     }
 
-    private void verifyAccessTypes(List<AccessTypeString> accessTypeStringList) {
+    private void verifyAccessTypes(List<AccessTypeString> accessTypeStringList, String jurisdictionId) {
         for (AccessTypeString accessTypeString : accessTypeStringList) {
             assertNotNull(accessTypeString.getAccessTypeId());
+            assertEquals(jurisdictionId + "_ACCESS_TYPE_ID", accessTypeString.getAccessTypeId());
+
             assertNotNull(accessTypeString.isAccessDefault());
-            assertNotNull(accessTypeString.isAccessMandatory());
+            assertTrue(accessTypeString.isAccessDefault());
+
+            assertTrue(accessTypeString.isAccessMandatory());
+            assertTrue(accessTypeString.isAccessMandatory());
 
             List<Role> roles = accessTypeString.getRoles();
             assertNotNull(roles);
-            verifyRoles(roles);
+            verifyRoles(roles, jurisdictionId);
         }
     }
 
-    private void verifyRoles(List<Role> roles) {
+    private void verifyRoles(List<Role> roles, String jurisdictionId) {
         for (Role role : roles) {
             assertNotNull(role.getCaseTypeId());
+            assertEquals(jurisdictionId + "_Case_TYPE", role.getCaseTypeId());
+
             assertNotNull(role.getGroupRoleName());
-            assertNotNull(role.isGroupAccessEnabled());
+            assertEquals(jurisdictionId + "_Group_Role1", role.getGroupRoleName());
+
+            assertFalse(role.isGroupAccessEnabled());
+
             assertNotNull(role.getCaseGroupIdTemplate());
+            assertEquals(jurisdictionId + "_CaseType:[GrpRoleName1]:$ORGID$", role.getCaseGroupIdTemplate());
+
             assertNotNull(role.getOrganisationalRoleName());
+            assertEquals(jurisdictionId + "_Org_Role1", role.getOrganisationalRoleName());
+
         }
     }
 }
