@@ -112,7 +112,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_civil_mismatch_existing_access_types.sql",
-                    "classpath:sql/insert_existing_profiles_refresh_queue.sql"})
+                       "classpath:sql/insert_existing_profiles_refresh_queue.sql"})
     void shouldUpdateLocalDefinitionsForCivilMismatch() {
 
         ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(CIVIL_JURISDICTION);
