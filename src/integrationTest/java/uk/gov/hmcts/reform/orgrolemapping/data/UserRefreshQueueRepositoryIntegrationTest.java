@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.refreshUserAndOrganisationsList;
 
 @Transactional
@@ -34,5 +35,7 @@ public class UserRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrati
 
         assertEquals("123", userEntity.getUserId());
         assertEquals(1, userEntity.getAccessTypesMinVersion());
+        assertEquals(0, userEntity.getRetry());
+        assertNotNull(userEntity.getRetryAfter());
     }
 }
