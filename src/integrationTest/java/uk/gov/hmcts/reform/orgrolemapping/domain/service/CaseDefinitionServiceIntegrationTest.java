@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,9 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.TestData;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeJurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.dto.AccessTypeString;
 import uk.gov.hmcts.reform.orgrolemapping.dto.Jurisdiction;
@@ -108,6 +112,35 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
         verify(ccdService, times(1))
                 .fetchAccessTypes();
     }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
+    void shouldUpdateLocalDefinitionsTwice() {
+
+        ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(CIVIL_JURISDICTION);
+
+        ResponseEntity<AccessTypesResponse> ccdDefinitions2 = TestData.setupTestData(SSCS_JURISDICTION);
+
+        when(ccdService.fetchAccessTypes()).thenReturn(ccdDefinitions).thenReturn(ccdDefinitions2);
+
+        caseDefinitionService.findAndUpdateCaseDefinitionChanges();
+
+        List<ProfileRefreshQueueEntity> profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
+
+        ProfileRefreshQueueEntity profileRefreshQueueEntity = profileRefreshQueueEntities.get(0);
+
+        assertEquals(1, profileRefreshQueueEntity.getAccessTypesMinVersion());
+
+        caseDefinitionService.findAndUpdateCaseDefinitionChanges();
+
+        profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
+
+        profileRefreshQueueEntity = profileRefreshQueueEntities.get(1);
+
+        assertEquals(2, profileRefreshQueueEntity.getAccessTypesMinVersion());
+
+    }
+
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
