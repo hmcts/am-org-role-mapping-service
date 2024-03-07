@@ -113,7 +113,7 @@ end;
 /*
  * "SSCS Principal Judge-Salaried" business role mapping to JOH.
  */
-rule "sscs_principal_judge-Salaried_judge_joh"
+rule "sscs_principal_judge_salaried_judge_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Principal Judge",
@@ -136,7 +136,7 @@ then
       .build());
   $jap.setStatus("JOH_Mapped");
   update($jap);
-  logMsg("Rule : sscs_principle_judge_salaried_judge_joh");
+  logMsg("Rule : sscs_principal_judge_salaried_judge_joh");
 end;
 
 /*
@@ -171,7 +171,7 @@ end;
 /*
  * "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid" business role mapping to JOH.
  */
-rule "sscs_judge_of_the_first-tier_tribunal_(sitting_in_retirement)_fee_paid_joh"
+rule "sscs_judge_of_the_first_tier_tribunal_sitting_in_retirement_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Judge of the First-tier Tribunal (sitting in retirement)",
@@ -194,7 +194,7 @@ then
       .build());
   $jap.setStatus("JOH_Mapped");
   update($jap);
-  logMsg("Rule : sscs_judge_of_the_first-tier_tribunal_(sitting_in_retirement)_fee_paid_joh");
+  logMsg("Rule : sscs_judge_of_the_first_tier_tribunal_sitting_in_retirement_fee_paid_joh");
 end;
 
 /*
@@ -289,7 +289,7 @@ end;
 /*
  * "SSCS Chief Medical Member First-tier Tribunal-Salaried" business role mapping to JOH.
  */
-rule "sscs_chief_medical_member_first-tier_tribunal_salaried_joh"
+rule "sscs_chief_medical_member_first_tier_tribunal_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Chief Medical Member First-tier Tribunal",
@@ -313,7 +313,7 @@ then
       .build());
   $jap.setStatus("JOH_Mapped");
   update($jap);
-  logMsg("Rule : sscs_chief_medical_member_first-tier_tribunal_salaried_joh");
+  logMsg("Rule : sscs_chief_medical_member_first_tier_tribunal_salaried_joh");
 end;
 
 /*
@@ -380,7 +380,7 @@ end;
 /*
  * "SSCS Member of the First-tier Tribunal Lay-Fee Paid" business role mapping to JOH.
  */
-rule "sscs_member_of_the_first_tier_tribunal_lay-fee_paid_joh"
+rule "sscs_member_of_the_first_tier_tribunal_lay_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Member of the First-tier Tribunal Lay",
@@ -404,7 +404,7 @@ then
       .build());
   $jap.setStatus("JOH_Mapped");
   update($jap);
-  logMsg("Rule : sscs_member_of_the_first_tier_tribunal_lay-fee_paid_joh");
+  logMsg("Rule : sscs_member_of_the_first_tier_tribunal_lay_fee_paid_joh");
 end;
 
 /*
@@ -440,7 +440,7 @@ end;
 /*
  * "SSCS Member of the First-tier Tribunal" business role mapping to JOH.
  */
-rule "sscs_member_of_the_first-tier_tribunal-fee_paid_joh"
+rule "sscs_member_of_the_first_tier_tribunal_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment == "Member of the First-tier Tribunal",
@@ -464,7 +464,7 @@ then
       .build());
   $jap.setStatus("JOH_Mapped");
   update($jap);
-  logMsg("Rule : sscs_member_of_the_first-tier_tribunal-fee_paid_joh");
+  logMsg("Rule : sscs_member_of_the_first_tier_tribunal_fee_paid_joh");
 end;
 
 
