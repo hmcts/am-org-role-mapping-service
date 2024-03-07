@@ -61,13 +61,13 @@ public class CaseDefinitionService {
                     restructureLocalAccessTypes(localAccessTypes.getAccessTypes());
 
             compareAccessTypeDefinitions(restructuredLocalAccessTypes, ccdAccessTypes);
-
-            processMonitorDto.markAsSuccess();
-        } catch (ServiceException e) {
-            processMonitorDto.markAsFailed(e.getMessage()); // convert e to json string
-        } finally {
+        } catch (Exception e) {
+            processMonitorDto.markAsFailed(e.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
+            throw e;
         }
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
     }
 
     private RestructuredAccessTypes restructureLocalAccessTypes(String localAccessTypes) {

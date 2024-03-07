@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.io.IOException;
@@ -24,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,7 +38,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilderTest.b
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AccessTypesBuilderTest.buildRestructuredAccessTypes;
 
 @ExtendWith(MockitoExtension.class)
-public class CaseDefinitionServiceTest {
+class CaseDefinitionServiceTest {
 
     private final CCDService ccdService = Mockito.mock(CCDService.class);
     private final AccessTypesRepository accessTypesRepository = Mockito.mock(AccessTypesRepository.class);
@@ -43,6 +48,9 @@ public class CaseDefinitionServiceTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final ProcessEventTracker processEventTracker = Mockito.mock(ProcessEventTracker.class);
+
+    @Captor
+    private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
 
     private final AccessTypesBuilder accessTypesBuilder = new AccessTypesBuilder();
 
@@ -55,7 +63,7 @@ public class CaseDefinitionServiceTest {
      );
 
     @Test
-    public void findAndUpdateCaseDefinitionChanges_shouldUpdate() throws IOException {
+    void findAndUpdateCaseDefinitionChanges_shouldUpdate() throws IOException {
 
         OrganisationProfileAccessType accessType1 = buildOrganisationProfileAccessType("accessTypeId1", true, true,
                 "caseTypeId1", "orgRoleName1", "groupRoleName1", "caseGroupTemplate1", true);
@@ -104,6 +112,10 @@ public class CaseDefinitionServiceTest {
                 .fetchAccessTypes();
         verify(accessTypesRepository, times(1))
                 .updateAccessTypesEntity(any());
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
 
     }
 
@@ -157,6 +169,10 @@ public class CaseDefinitionServiceTest {
                 .fetchAccessTypes();
         verify(accessTypesRepository, times(0))
                 .updateAccessTypesEntity(any());
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
 
     }
 
