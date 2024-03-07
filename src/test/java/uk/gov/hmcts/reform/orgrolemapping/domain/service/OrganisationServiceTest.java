@@ -17,8 +17,8 @@ public class OrganisationServiceTest {
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository =
             Mockito.mock(OrganisationRefreshQueueRepository.class);
 
-    OrganisationService organisationService = new OrganisationService(
-            organisationRefreshQueueRepository, "90");
+    private final OrganisationService organisationService = new OrganisationService(
+            organisationRefreshQueueRepository, numDays);
 
     @Test
     void deleteActiveOrganisationRefreshRecordsTest() {
