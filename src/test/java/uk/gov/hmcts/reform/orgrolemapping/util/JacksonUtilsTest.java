@@ -94,6 +94,10 @@ class JacksonUtilsTest {
                 Files.readAllBytes(Paths.get("src/main/resources/userAccessType.json")));
         List<UserAccessType> userAccessTypes = JacksonUtils.convertUserAccessTypes(exampleRequest);
         assertNotNull(userAccessTypes);
+        assertEquals("CIVIL", userAccessTypes.get(0).getJurisdictionId());
+        assertEquals("SOLICITOR_PROFILE", userAccessTypes.get(0).getOrganisationProfileId());
+        assertEquals("CIVIL_ACCESS_TYPE_ID", userAccessTypes.get(0).getAccessTypeId());
+        assertEquals(true, userAccessTypes.get(0).getEnabled());
     }
 
 }
