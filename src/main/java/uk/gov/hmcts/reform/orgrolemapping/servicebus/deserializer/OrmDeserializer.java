@@ -26,4 +26,13 @@ public class OrmDeserializer implements Deserializer<UserRequest> {
             throw new IllegalArgumentException("Could not deserialize the received message", e);
         }
     }
+
+    public UserRequest deserializeBytes(byte[] messageBody) {
+        try {
+            var message = mapper.writeValueAsString(mapper.readValue(messageBody, Object.class));
+            return mapper.readValue(message, UserRequest.class);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not deserialize the received message", e);
+        }
+    }
 }
