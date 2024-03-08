@@ -151,7 +151,7 @@ amqp:
     topic: ${CRD_TOPIC_NAME:test}
     subscription: ${CRD_SUBSCRIPTION_NAME:test}
   jrd:
-    enabled: ${AMQP_ENABLED:false}
+    enabled: ${AMQP_ENABLED:true}
     sharedAccessKeyValue: ${AMQP_JRD_SHARED_ACCESS_KEY_VALUE:test}
     topic: ${JRD_TOPIC_NAME:test}
     subscription: ${JRD_SUBSCRIPTION_NAME:test}

@@ -24,7 +24,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUT
 @RestController
 @Slf4j
 @NoArgsConstructor
-@ConditionalOnExpression("${testing.support.enabled} && (${amqp.crd.enabled} && ${amqp.jrd.enabled})")
+@ConditionalOnExpression("${testing.support.enabled} && (${amqp.crd.enabled} || ${amqp.jrd.enabled})")
 public class TopicController {
 
     JRDTopicPublisher jrdTopicPublisher;
