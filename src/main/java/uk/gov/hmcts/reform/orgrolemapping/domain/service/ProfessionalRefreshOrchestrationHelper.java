@@ -116,10 +116,6 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private void generateRoleAssignments(UserRefreshQueueEntity userRefreshQueue, AccessTypesEntity accessTypes) {
-        //Step 1 If user_refresh_queue.access_types_min_version > PRM access_types.version,
-        //        THEN abort processing for this user and do not clear the user_refresh_queue record.
-        //NoteThis will be swept up in a later run.  An alternative would be to re-retrieve the access types data from
-        // the PRM database, since it must exist there at a usable version.
         if (userRefreshQueue.getAccessTypesMinVersion() > accessTypes.getVersion()) {
             return;
         }
@@ -162,13 +158,9 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private List<RoleAssignment> prepareRoleAssignments(UserRefreshQueueEntity userRefreshQueue,
                                                         AccessTypesEntity accessTypes) throws JsonProcessingException {
-        // Step 2 If user_refresh_queue.deleted != null then halt and return an empty set of role assignments.
         if (null != userRefreshQueue.getDeleted()) {
             return Collections.emptyList();
         }
-
-        // Step 3 If user_refresh_queue.organisation_status is not an active status, then halt and return an empty set
-        // of role assignments. Note The set of active statuses will have to be provided by PRD team / product owner.
 
         if (!isOrganisationStatusActive(userRefreshQueue.getOrganisationStatus())) {
             return Collections.emptyList();
@@ -180,9 +172,6 @@ public class ProfessionalRefreshOrchestrationHelper {
         Set<OrganisationProfile> organisationProfiles = prmRestructuredAccessTypes.getOrganisationProfiles();
 
         List<UserAccessType> userAccessTypes = JacksonUtils.convertUserAccessTypes(userRefreshQueue.getAccessTypes());
-
-        //Step 4 Filter PRM access_types to contain only data for the organisation profiles in
-        // user_refresh_queue.organisation_profile_ids.
 
         Set<OrganisationProfile> filteredOrganisationProfiles =
                 getFilteredOrganisationProfiles(userRefreshQueue, organisationProfiles);
@@ -259,7 +248,7 @@ public class ProfessionalRefreshOrchestrationHelper {
         for (OrganisationProfile organisationProfile : organisationProfiles) {
             Set<OrganisationProfileJurisdiction> organisationProfileJurisdictionSet;
             organisationProfileJurisdictionSet =
-                    getMatchingOrganisationProfileJurisdiction(organisationProfile,userAccessTypes);
+                    getMatchingOrganisationProfileJurisdiction(organisationProfile, userAccessTypes);
             organisationProfile.getJurisdictions().clear();
             organisationProfile.setJurisdictions(organisationProfileJurisdictionSet);
             filteredOrganisationProfiles.add(organisationProfile);
@@ -269,26 +258,44 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private static Set<OrganisationProfileJurisdiction> getMatchingOrganisationProfileJurisdiction(
             OrganisationProfile organisationProfile, List<UserAccessType> userAccessTypes) {
-        Set<OrganisationProfileJurisdiction> matchingOrganisationProfileJurisdiction = new HashSet<>();
+        Set<OrganisationProfileJurisdiction> matchingResults = new HashSet<>();
         String organisationProfileId = organisationProfile.getOrganisationProfileId();
         if (null != organisationProfileId) {
             for (UserAccessType userAccessType : userAccessTypes) {
-                if (organisationProfileId.equals(userAccessType.getOrganisationProfileId())) {
-                    for (OrganisationProfileJurisdiction opj : organisationProfile.getJurisdictions()) {
-                        String jurisdictionId =  opj.getJurisdictionId();
-                        if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
-                            for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
-                                String accessTypeID = opat.getAccessTypeId();
-                                if (accessTypeID != null && accessTypeID.equals(userAccessType.getAccessTypeId())) {
-                                    matchingOrganisationProfileJurisdiction.add(opj);
-                                }
-                            }
-                        }
-                    }
-                }
+                matchByOrganisationProfileId(matchingResults, organisationProfile, userAccessType);
             }
         }
-        return matchingOrganisationProfileJurisdiction;
+        return matchingResults;
+    }
+
+    private static void matchByOrganisationProfileId(
+            Set<OrganisationProfileJurisdiction> matchingResults,
+            OrganisationProfile organisationProfile, UserAccessType userAccessType) {
+        if (organisationProfile.getOrganisationProfileId().equals(userAccessType.getOrganisationProfileId())) {
+            for (OrganisationProfileJurisdiction opj : organisationProfile.getJurisdictions()) {
+                matchByOrganisationJurisdiction(matchingResults, opj, userAccessType);
+            }
+        }
+    }
+
+    private static void matchByOrganisationJurisdiction(
+            Set<OrganisationProfileJurisdiction> matchingResults,
+            OrganisationProfileJurisdiction opj, UserAccessType userAccessType) {
+            String jurisdictionId =  opj.getJurisdictionId();
+            if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
+                for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
+                    matchByAccessType(matchingResults, opat, userAccessType, opj);
+                }
+        }
+    }
+
+    private static void matchByAccessType(
+            Set<OrganisationProfileJurisdiction> matchingResults,
+            OrganisationProfileAccessType opat, UserAccessType userAccessType, OrganisationProfileJurisdiction opj) {
+        String accessTypeID = opat.getAccessTypeId();
+        if (accessTypeID != null && accessTypeID.equals(userAccessType.getAccessTypeId())) {
+            matchingResults.add(opj);
+        }
     }
 
     @NotNull
@@ -325,9 +332,6 @@ public class ProfessionalRefreshOrchestrationHelper {
                 .authorisations(Collections.emptyList())
                 .readOnly(false)
                 .status(CREATE_REQUESTED)
-                //.beginTime("")//EMPTY
-                //.endTime()//EMPTY
-                //.notes("")//empty
                 .attributes(convertValue(attributes))
                 .build();
     }
