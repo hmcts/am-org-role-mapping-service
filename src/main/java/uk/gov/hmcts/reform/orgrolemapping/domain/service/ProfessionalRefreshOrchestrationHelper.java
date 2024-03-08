@@ -120,7 +120,7 @@ public class ProfessionalRefreshOrchestrationHelper {
             return;
         }
         AssignmentRequest assignmentRequest =
-                createAssignmentRequest(userRefreshQueue,accessTypes);
+                createAssignmentRequest(userRefreshQueue, accessTypes);
         ResponseEntity<Object> responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
         log.info("generateRoleAssignments responseEntity" + responseEntity);
     }
@@ -129,10 +129,10 @@ public class ProfessionalRefreshOrchestrationHelper {
     private AssignmentRequest createAssignmentRequest(UserRefreshQueueEntity userRefreshQueue,
                                                       AccessTypesEntity accessTypes) {
 
-        String reference  = userRefreshQueue.getUserId();
+        String reference = userRefreshQueue.getUserId();
         List<RoleAssignment> usersRoleAssignments;
         try {
-            usersRoleAssignments = prepareRoleAssignments(userRefreshQueue,accessTypes);
+            usersRoleAssignments = prepareRoleAssignments(userRefreshQueue, accessTypes);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -179,7 +179,7 @@ public class ProfessionalRefreshOrchestrationHelper {
         filteredOrganisationProfiles =
                 getFilteredOrgProfilesUserAccessTypes(filteredOrganisationProfiles, userAccessTypes);
 
-        filteredOrganisationProfiles = extractOrganisationProfiles(filteredOrganisationProfiles,userAccessTypes);
+        filteredOrganisationProfiles = extractOrganisationProfiles(filteredOrganisationProfiles, userAccessTypes);
 
         return createRoleAssignments(userRefreshQueue, filteredOrganisationProfiles).stream().toList();
     }
@@ -187,18 +187,18 @@ public class ProfessionalRefreshOrchestrationHelper {
     private Set<RoleAssignment> createRoleAssignments(UserRefreshQueueEntity userRefreshQueue,
                                                       Set<OrganisationProfile> organisationProfiles) {
         Set<RoleAssignment> usersRoleAssignments = new HashSet<>();
-        for (OrganisationProfile organisationProfile:organisationProfiles) {
+        for (OrganisationProfile organisationProfile : organisationProfiles) {
             Set<OrganisationProfileJurisdiction> organisationProfileJurisdictions =
                     organisationProfile.getJurisdictions();
             for (OrganisationProfileJurisdiction orgProfileJurisdictions : organisationProfileJurisdictions) {
                 String jurisdictionId = orgProfileJurisdictions.getJurisdictionId();
-                for (OrganisationProfileAccessType organisationProfileAccessType:
+                for (OrganisationProfileAccessType organisationProfileAccessType :
                         orgProfileJurisdictions.getAccessTypes()) {
-                    for (AccessTypeRole accessTypeRole: organisationProfileAccessType.getRoles()) {
+                    for (AccessTypeRole accessTypeRole : organisationProfileAccessType.getRoles()) {
                         String organisationalRoleName = accessTypeRole.getOrganisationalRoleName();
                         RoleAssignment roleAssignment =
-                                createRoleAssignment(organisationalRoleName,userRefreshQueue.getUserId(),jurisdictionId,
-                                        accessTypeRole.getCaseTypeId(),null);
+                                createRoleAssignment(organisationalRoleName, userRefreshQueue.getUserId(),
+                                        jurisdictionId, accessTypeRole.getCaseTypeId(), null);
                         usersRoleAssignments.add(roleAssignment);
                         if (accessTypeRole.isGroupAccessEnabled()
                                 && StringUtils.isNotBlank(accessTypeRole.getGroupRoleName())
@@ -208,8 +208,8 @@ public class ProfessionalRefreshOrchestrationHelper {
                                     generateCaseAccessGroupId(accessTypeRole.getCaseGroupIdTemplate(),
                                             userRefreshQueue.getOrganisationId());
                             RoleAssignment groupRoleAssignment =
-                                    createRoleAssignment(roleName,userRefreshQueue.getUserId(),jurisdictionId,
-                                            accessTypeRole.getCaseTypeId(),caseAccessGroupId);
+                                    createRoleAssignment(roleName, userRefreshQueue.getUserId(), jurisdictionId,
+                                            accessTypeRole.getCaseTypeId(), caseAccessGroupId);
                             usersRoleAssignments.add(groupRoleAssignment);
                         }
                     }
@@ -222,13 +222,13 @@ public class ProfessionalRefreshOrchestrationHelper {
     private Set<OrganisationProfile> extractOrganisationProfiles(Set<OrganisationProfile> organisationProfiles,
                                                                  List<UserAccessType> userAccessTypes) {
         Set<OrganisationProfile> extractedOrganisationProfiles = new HashSet<>();
-        for (OrganisationProfile organisationProfile:organisationProfiles) {
+        for (OrganisationProfile organisationProfile : organisationProfiles) {
             Set<OrganisationProfileJurisdiction> organisationProfileJurisdictions =
                     organisationProfile.getJurisdictions();
             for (OrganisationProfileJurisdiction orgProfileJurisdictions : organisationProfileJurisdictions) {
-                for (OrganisationProfileAccessType organisationProfileAccessType:
+                for (OrganisationProfileAccessType organisationProfileAccessType :
                         orgProfileJurisdictions.getAccessTypes()) {
-                    for (UserAccessType userAccessType:userAccessTypes) {
+                    for (UserAccessType userAccessType : userAccessTypes) {
                         if (organisationProfileAccessType.isAccessMandatory()
                                 || (organisationProfileAccessType.isAccessDefault() && (userAccessType == null))
                                 || userAccessType.getEnabled()) {
@@ -242,7 +242,7 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private static Set<OrganisationProfile> getFilteredOrgProfilesUserAccessTypes(
-            Set<OrganisationProfile> organisationProfiles,List<UserAccessType> userAccessTypes) {
+            Set<OrganisationProfile> organisationProfiles, List<UserAccessType> userAccessTypes) {
 
         Set<OrganisationProfile> filteredOrganisationProfiles = new HashSet<>();
         for (OrganisationProfile organisationProfile : organisationProfiles) {
@@ -281,9 +281,9 @@ public class ProfessionalRefreshOrchestrationHelper {
     private static void matchByOrganisationJurisdiction(
             Set<OrganisationProfileJurisdiction> matchingResults,
             OrganisationProfileJurisdiction opj, UserAccessType userAccessType) {
-        String jurisdictionId =  opj.getJurisdictionId();
+        String jurisdictionId = opj.getJurisdictionId();
         if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
-            for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
+            for (OrganisationProfileAccessType opat : opj.getAccessTypes()) {
                 matchByAccessType(matchingResults, opat, userAccessType, opj);
             }
         }
@@ -311,14 +311,14 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private RoleAssignment createRoleAssignment(String roleName, String userId, String jurisdictionId,
-                                                String caseTypeId,String caseAccessGroupId) {
+                                                String caseTypeId, String caseAccessGroupId) {
 
         Map<String, String> attributes = new HashMap<>();
 
-        attributes.put("jurisdiction",jurisdictionId);
-        attributes.put("caseType",caseTypeId);
+        attributes.put("jurisdiction", jurisdictionId);
+        attributes.put("caseType", caseTypeId);
         if (null != caseAccessGroupId) {
-            attributes.put("caseAccessGroupId",caseAccessGroupId);
+            attributes.put("caseAccessGroupId", caseAccessGroupId);
         }
 
         return RoleAssignment.builder()
@@ -337,7 +337,7 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private String generateCaseAccessGroupId(String caseGroupIdTemplate, String organisationId) {
-        return caseGroupIdTemplate.replace("$ORGID$",organisationId);
+        return caseGroupIdTemplate.replace("$ORGID$", organisationId);
     }
 
     private boolean isOrganisationStatusActive(String organisationStatus) {
