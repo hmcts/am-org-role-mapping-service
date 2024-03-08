@@ -281,11 +281,11 @@ public class ProfessionalRefreshOrchestrationHelper {
     private static void matchByOrganisationJurisdiction(
             Set<OrganisationProfileJurisdiction> matchingResults,
             OrganisationProfileJurisdiction opj, UserAccessType userAccessType) {
-            String jurisdictionId =  opj.getJurisdictionId();
-            if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
-                for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
-                    matchByAccessType(matchingResults, opat, userAccessType, opj);
-                }
+        String jurisdictionId =  opj.getJurisdictionId();
+        if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
+            for (OrganisationProfileAccessType opat: opj.getAccessTypes()) {
+                matchByAccessType(matchingResults, opat, userAccessType, opj);
+            }
         }
     }
 
