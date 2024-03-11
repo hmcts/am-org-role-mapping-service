@@ -25,13 +25,12 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
@@ -59,10 +58,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
 
-
 @TestPropertySource(properties = {
-    "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
-    "feign.client.config.jrdClient.v2Active=false"})
+    "feign.client.config.jrdClient.v2Active=false"
+})
 public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
@@ -79,9 +77,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     private WebApplicationContext wac;
 
     @MockBean
-    private CRDFeignClient crdFeignClient;
-
-    @MockBean
     private JRDFeignClient jrdFeignClient;
 
     @MockBean
@@ -91,7 +86,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     private RASFeignClient rasFeignClient;
 
     @MockBean
-    private RequestMappingService requestMappingService;
+    private RequestMappingService<UserAccessProfile> requestMappingService;
 
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
@@ -132,8 +127,8 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders())
-                .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                        .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
+                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is(200))
                 .andReturn();
         var contentAsString = result.getResponse().getContentAsString();
@@ -187,7 +182,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withNotFoundJudicialProfiles()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
-        ResponseEntity response = ResponseEntity.status(404).body(Map.of(
+        ResponseEntity<Map<String, String>> response = ResponseEntity.status(404).body(Map.of(
                 "errorDescription", "The User Profile data could not be found",
                 "status", "Not Found"));
         doReturn(response).when(jrdFeignClient).getJudicialDetailsById(any(), any());
@@ -209,7 +204,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialProfiles()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
-        ResponseEntity response = ResponseEntity.status(501).body(Map.of(
+        ResponseEntity<Map<String, String>> response = ResponseEntity.status(501).body(Map.of(
                 "errorDescription", "The User Profile data could not be found",
                 "status", "Not Found"));
         doReturn(response).when(jrdFeignClient).getJudicialDetailsById(any(), any());
@@ -283,18 +278,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         return new ResponseEntity<>(bookings, headers, HttpStatus.OK);
     }
 
-    @NotNull
-    private ResponseEntity<List<CaseWorkerProfilesResponse>> buildUserProfileResponse() {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "2");
-        return new ResponseEntity<>(IntTestDataBuilder
-                .buildListOfUserProfilesResponse("IAC", false, "1", "2", ROLE_NAME_STCW,
-                        ROLE_NAME_TCW, true, true, false,
-                        true, "BFA1", "BFA2", false),
-                headers, HttpStatus.OK);
-    }
-
-    @SuppressWarnings("unchecked")
     private void mockRequestMappingServiceBookingParamWithStatus(HttpStatus status) {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
                 new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(

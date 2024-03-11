@@ -42,6 +42,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
@@ -87,7 +88,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
 
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
-    "feign.client.config.jrdClient.v2Active=false"})
+    "feign.client.config.jrdClient.v2Active=true"
+})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegration {
 
@@ -124,7 +126,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private RASFeignClient rasFeignClient;
 
     @MockBean
-    private RequestMappingService requestMappingService;
+    private RequestMappingService<UserAccessProfile> requestMappingService;
 
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
@@ -494,7 +496,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                 anyString(), anyInt(), anyInt(), anyString(), anyString());
     }
 
-    @SuppressWarnings("unchecked")
     private void mockRequestMappingServiceWithStatus(HttpStatus status) {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
                 new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(

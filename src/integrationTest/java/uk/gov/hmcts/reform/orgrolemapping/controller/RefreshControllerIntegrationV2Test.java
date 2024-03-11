@@ -25,15 +25,12 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
@@ -44,11 +41,11 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -59,10 +56,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
 
 @TestPropertySource(properties = {
-    "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
-    "feign.client.config.jrdClient.v2Active=true"})
+    "feign.client.config.jrdClient.v2Active=true"
+})
 public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationV2Test.class);
@@ -79,9 +77,6 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
     private WebApplicationContext wac;
 
     @MockBean
-    private CRDFeignClient crdFeignClient;
-
-    @MockBean
     private JRDFeignClient jrdFeignClient;
 
     @MockBean
@@ -91,7 +86,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
     private RASFeignClient rasFeignClient;
 
     @MockBean
-    private RequestMappingService requestMappingService;
+    private RequestMappingService<UserAccessProfile> requestMappingService;
 
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
@@ -124,7 +119,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
     @Test
     public void shouldProcessRefreshRoleAssignmentsWithJudicialProfilesV2() throws Exception {
         logger.info(" Refresh role assignments successfully with valid user profiles");
-        var uuid = java.util.UUID.randomUUID().toString();
+        var uuid = UUID.randomUUID().toString();
         doReturn(buildJudicialProfilesResponseV2(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
         doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
         mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
@@ -145,7 +140,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignmentsV2()
             throws Exception {
         logger.info(" Refresh role assignments failed with valid user profiles");
-        var uuid = java.util.UUID.randomUUID().toString();
+        var uuid = UUID.randomUUID().toString();
         doReturn(buildJudicialProfilesResponseV2(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
         doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
         mockRequestMappingServiceBookingParamWithStatus(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -166,7 +161,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialBookingsV2()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
-        var uuid = java.util.UUID.randomUUID().toString();
+        var uuid = UUID.randomUUID().toString();
         doReturn(buildJudicialProfilesResponseV2(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
         doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
         mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
@@ -187,7 +182,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withNotFoundJudicialProfiles()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
-        ResponseEntity response = ResponseEntity.status(404).body(Map.of(
+        ResponseEntity<Map<String, String>> response = ResponseEntity.status(404).body(Map.of(
                 "errorDescription", "The User Profile data could not be found",
                 "status", "Not Found"));
         doReturn(response).when(jrdFeignClient).getJudicialDetailsById(any(), any());
@@ -209,7 +204,7 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
     public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialProfiles()
             throws Exception {
         logger.info(" Refresh role assignments with empty bookings");
-        ResponseEntity response = ResponseEntity.status(501).body(Map.of(
+        ResponseEntity<Map<String, String>> response = ResponseEntity.status(501).body(Map.of(
                 "errorDescription", "The User Profile data could not be found",
                 "status", "Not Found"));
         doReturn(response).when(jrdFeignClient).getJudicialDetailsById(any(), any());
@@ -271,18 +266,6 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
                 .andReturn();
     }
 
-    private ResponseEntity<JudicialBookingResponse> buildJudicialBookingsResponse(String... userIds) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "" + userIds.length);
-        List<JudicialBooking> bookings = new ArrayList<>();
-        for (var userId:userIds) {
-            bookings.add(JudicialBooking.builder().beginTime(ZonedDateTime.now())
-                    .endTime(ZonedDateTime.now().plusDays(5)).userId(userId)
-                    .locationId("location").regionId("region").build());
-        }
-        return new ResponseEntity<>(new JudicialBookingResponse(bookings), headers, HttpStatus.OK);
-    }
-
     private ResponseEntity<List<JudicialProfileV2>> buildJudicialProfilesResponseV2(String... userIds) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("total_records", "" + userIds.length);
@@ -295,18 +278,6 @@ public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
         return new ResponseEntity<>(bookings, headers, HttpStatus.OK);
     }
 
-    @NotNull
-    private ResponseEntity<List<CaseWorkerProfilesResponse>> buildUserProfileResponse() {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "2");
-        return new ResponseEntity<>(IntTestDataBuilder
-                .buildListOfUserProfilesResponse("IAC", false, "1", "2", ROLE_NAME_STCW,
-                        ROLE_NAME_TCW, true, true, false,
-                        true, "BFA1", "BFA2", false),
-                headers, HttpStatus.OK);
-    }
-
-    @SuppressWarnings("unchecked")
     private void mockRequestMappingServiceBookingParamWithStatus(HttpStatus status) {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
                 new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
