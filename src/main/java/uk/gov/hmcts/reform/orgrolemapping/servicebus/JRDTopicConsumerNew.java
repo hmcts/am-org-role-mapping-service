@@ -35,18 +35,25 @@ public class JRDTopicConsumerNew extends JRDMessagingConfiguration {
         this.deserializer = deserializer;
     }
 
+    Consumer<ServiceBusReceivedMessageContext> processMessage = messageContext -> {
+        System.out.println(messageContext.getMessage().getMessageId());
+        byte[] body = messageContext.getMessage().getBody().toBytes();
+        processMessage(body);
+        // other message processing code
+    };
+
+    Consumer<ServiceBusErrorContext> processError = errorContext -> {
+        Exception e = (Exception) errorContext.getException();
+        log.error("Error processing JRD message from service bus : {}", e.getMessage());
+        throw new InvalidRequest("Error processing message from service bus", e);
+    };
+
     @Bean
     @Qualifier("jrdConsumer")
     //@ConditionalOnProperty(name = "amqp.jrd.enabled", havingValue = "true")
     @ConditionalOnExpression("${amqp.jrd.enabled} && ${amqp.jrd.newAsb}")
     CompletableFuture<Void> registerJRDMessageHandlerOnClient()
             throws ServiceBusException, InterruptedException {
-
-        log.error("Inside registerJRDMessageHandlerOnClient");
-        Consumer<ServiceBusReceivedMessageContext> processMessage = getProcessMessage();
-
-        log.error("Inside registerJRDMessageHandlerOnClient Before processError");
-        Consumer<ServiceBusErrorContext> processError = getProcessError();
 
         log.error("Inside registerJRDMessageHandlerOnClient Before processorClient");
         ServiceBusProcessorClient processorClient = getServiceBusProcessorClient(processMessage, processError);
@@ -68,25 +75,6 @@ public class JRDTopicConsumerNew extends JRDMessagingConfiguration {
                 UserType.JUDICIAL);
 
         log.debug("Role Assignment Service Response JRD: {}", response.getStatusCode());
-    }
-
-    Consumer<ServiceBusReceivedMessageContext> getProcessMessage() {
-        Consumer<ServiceBusReceivedMessageContext> processMessage = messageContext -> {
-            System.out.println(messageContext.getMessage().getMessageId());
-            byte[] body = messageContext.getMessage().getBody().toBytes();
-            processMessage(body);
-            // other message processing code
-        };
-        return processMessage;
-    }
-
-    Consumer<ServiceBusErrorContext> getProcessError() {
-        Consumer<ServiceBusErrorContext> processError = errorContext -> {
-            Exception e = (Exception) errorContext.getException();
-            log.error("Error processing JRD message from service bus : {}", e.getMessage());
-            throw new InvalidRequest("Error processing message from service bus", e);
-        };
-        return processError;
     }
 
 }
