@@ -12,12 +12,15 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
-public class JRDTopicConsumerNew extends JRDMessagingConfiguration {
+public class JRDTopicConsumerNew {
 
     private TopicConsumer topicConsumer;
 
-    public JRDTopicConsumerNew(TopicConsumer topicConsumer) {
+    private JRDMessagingConfiguration configuration;
+
+    public JRDTopicConsumerNew(TopicConsumer topicConsumer, JRDMessagingConfiguration configuration) {
         this.topicConsumer = topicConsumer;
+        this.configuration = configuration;
     }
 
     @Bean
@@ -28,7 +31,7 @@ public class JRDTopicConsumerNew extends JRDMessagingConfiguration {
             throws ServiceBusException, InterruptedException {
 
         log.error("Inside registerJRDMessageHandlerOnClient Before processorClient");
-        ServiceBusProcessorClient processorClient = getServiceBusProcessorClient(
+        ServiceBusProcessorClient processorClient = configuration.getServiceBusProcessorClient(
                 messageContext -> topicConsumer.processMessage(messageContext, UserType.JUDICIAL),
                 TopicConsumer::processError);
 
