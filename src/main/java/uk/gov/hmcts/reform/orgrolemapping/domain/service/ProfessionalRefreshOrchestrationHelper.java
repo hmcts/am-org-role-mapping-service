@@ -196,10 +196,12 @@ public class ProfessionalRefreshOrchestrationHelper {
                         orgProfileJurisdictions.getAccessTypes()) {
                     for (AccessTypeRole accessTypeRole : organisationProfileAccessType.getRoles()) {
                         String organisationalRoleName = accessTypeRole.getOrganisationalRoleName();
-                        RoleAssignment roleAssignment =
-                                createRoleAssignment(organisationalRoleName, userRefreshQueue.getUserId(),
-                                        jurisdictionId, accessTypeRole.getCaseTypeId(), null);
-                        usersRoleAssignments.add(roleAssignment);
+                        if (StringUtils.isNotBlank(organisationalRoleName)) {
+                            RoleAssignment roleAssignment =
+                                    createRoleAssignment(organisationalRoleName, userRefreshQueue.getUserId(),
+                                            jurisdictionId, accessTypeRole.getCaseTypeId(), null);
+                            usersRoleAssignments.add(roleAssignment);
+                        }
                         if (accessTypeRole.isGroupAccessEnabled()
                                 && StringUtils.isNotBlank(accessTypeRole.getGroupRoleName())
                                 && StringUtils.isNotBlank(accessTypeRole.getCaseGroupIdTemplate())) {

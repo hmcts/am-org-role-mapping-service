@@ -23,7 +23,7 @@ public interface PRDFeignClient {
     @GetMapping(value = "/")
     String getServiceStatus();
 
-    @PostMapping(value = "/refdata/internal/v1/organisations/users")
+    @GetMapping(value = "/refdata/internal/v1/organisations/users")
     ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(@RequestParam(value = "userId") String userId);
 
     @PostMapping(value = "/refdata/internal/v1/organisations/getOrganisationsByProfile")
