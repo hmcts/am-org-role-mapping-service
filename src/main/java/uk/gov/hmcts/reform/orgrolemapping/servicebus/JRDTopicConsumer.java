@@ -19,6 +19,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.orgrolemapping.config.JRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -42,13 +43,17 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
 
+    private JRDMessagingConfiguration configuration;
+
     @Autowired
     private FeatureConditionEvaluator featureConditionEvaluator;
 
     public JRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                            OrmDeserializer deserializer) {
+                            OrmDeserializer deserializer,
+                            JRDMessagingConfiguration configuration) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
+        this.configuration = configuration;
     }
 
     @Bean
@@ -58,16 +63,18 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
     public SubscriptionClient getSubscriptionClient1() throws URISyntaxException, ServiceBusException,
             InterruptedException {
         logServiceBusVariables();
-        URI endpoint = new URI("sb://" + host);
-        log.debug("JRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        URI endpoint = new URI("sb://" + configuration.getHost());
+        log.debug("JRD Destination is " + configuration.getTopic().concat("/subscriptions/").concat(
+                configuration.getSubscription()));
 
-        var destination = topic.concat("/subscriptions/").concat(subscription);
+        var destination = configuration.getTopic().concat("/subscriptions/").concat(
+                configuration.getSubscription());
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
                 destination,
-                sharedAccessKeyName,
-                sharedAccessKeyValue);
+                configuration.getSharedAccessKeyName(),
+                configuration.getSharedAccessKeyValue());
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }

@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.orgrolemapping.servicebus;
+package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import com.azure.core.amqp.AmqpRetryOptions;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
@@ -6,6 +6,7 @@ import com.azure.messaging.servicebus.ServiceBusErrorContext;
 import com.azure.messaging.servicebus.ServiceBusProcessorClient;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,7 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 
 import java.util.function.Consumer;
 
-
+@Getter
 @Configuration
 @Slf4j
 @Primary
