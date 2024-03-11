@@ -8,7 +8,7 @@ module "am-prm-action-group" {
   location = "global"
   env      = var.env
 
-  resourcegroup_name     = "am-shared-infrastructure-${local.local_env}"
+  resourcegroup_name     = local.sharedResourceGroup
   action_group_name      = "am-prm-support"
   short_name             = "am-prm-support"
   email_receiver_name    = "AM PRM Process Support Mailing List"

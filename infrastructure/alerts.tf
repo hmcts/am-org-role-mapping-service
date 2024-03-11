@@ -111,7 +111,7 @@ module "prm-process-failure-alerts" {
  
   alert_name = "am-${each.value.key}-failure-alert"
   alert_desc = "Triggers when ${each.value.processName} fails am-${local.local_env}."
-  app_insights_query = "customEvents | where name == '${each.value.processName} - Failed' | where timestamp >= ago(15m) | sort by timestamp desc"
+  app_insights_query = "customEvents | where name == '${each.value.processName} - Failed'"
   custom_email_subject = "Alert: ${each.value.processName} failed in am-${var.env}"
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
