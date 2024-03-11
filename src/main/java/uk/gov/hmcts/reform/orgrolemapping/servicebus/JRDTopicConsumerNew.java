@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
-import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusErrorContext;
 import com.azure.messaging.servicebus.ServiceBusProcessorClient;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
@@ -42,37 +41,15 @@ public class JRDTopicConsumerNew extends JRDMessagingConfiguration {
     @ConditionalOnExpression("${amqp.jrd.enabled} && ${amqp.jrd.newAsb}")
     CompletableFuture<Void> registerJRDMessageHandlerOnClient()
             throws ServiceBusException, InterruptedException {
-        log.error("Inside registerJRDMessageHandlerOnClient");
 
-        // Sample code that processes a single message
-        Consumer<ServiceBusReceivedMessageContext> processMessage = messageContext -> {
-            System.out.println(messageContext.getMessage().getMessageId());
-            byte[] body = messageContext.getMessage().getBody().toBytes();
-            processMessage(body);
-            // other message processing code
-        };
+        log.error("Inside registerJRDMessageHandlerOnClient");
+        Consumer<ServiceBusReceivedMessageContext> processMessage = getProcessMessage();
 
         log.error("Inside registerJRDMessageHandlerOnClient Before processError");
-        // Sample code that gets called if there's an error
-        Consumer<ServiceBusErrorContext> processError = errorContext -> {
-            Exception e = (Exception) errorContext.getException();
-            log.error("Error processing JRD message from service bus : {}", e.getMessage());
-            throw new InvalidRequest("Error processing message from service bus", e);
-        };
-
-        var connectionString = "Endpoint=sb://"
-                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
+        Consumer<ServiceBusErrorContext> processError = getProcessError();
 
         log.error("Inside registerJRDMessageHandlerOnClient Before processorClient");
-        // create the processor client via the builder and its sub-builder
-        ServiceBusProcessorClient processorClient = new ServiceBusClientBuilder()
-                .connectionString(connectionString)
-                .processor()
-                .topicName(topic)
-                .subscriptionName(subscription)
-                .processMessage(processMessage)
-                .processError(processError)
-                .buildProcessorClient();
+        ServiceBusProcessorClient processorClient = getServiceBusProcessorClient(processMessage, processError);
 
         log.error("Inside registerJRDMessageHandlerOnClient after processorClient");
         // Starts the processor in the background and returns immediately
@@ -93,5 +70,23 @@ public class JRDTopicConsumerNew extends JRDMessagingConfiguration {
         log.debug("Role Assignment Service Response JRD: {}", response.getStatusCode());
     }
 
+    Consumer<ServiceBusReceivedMessageContext> getProcessMessage() {
+        Consumer<ServiceBusReceivedMessageContext> processMessage = messageContext -> {
+            System.out.println(messageContext.getMessage().getMessageId());
+            byte[] body = messageContext.getMessage().getBody().toBytes();
+            processMessage(body);
+            // other message processing code
+        };
+        return processMessage;
+    }
+
+    Consumer<ServiceBusErrorContext> getProcessError() {
+        Consumer<ServiceBusErrorContext> processError = errorContext -> {
+            Exception e = (Exception) errorContext.getException();
+            log.error("Error processing JRD message from service bus : {}", e.getMessage());
+            throw new InvalidRequest("Error processing message from service bus", e);
+        };
+        return processError;
+    }
 
 }

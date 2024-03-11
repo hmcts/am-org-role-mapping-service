@@ -2,6 +2,9 @@ package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 
 import com.azure.core.amqp.AmqpRetryOptions;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
+import com.azure.messaging.servicebus.ServiceBusErrorContext;
+import com.azure.messaging.servicebus.ServiceBusProcessorClient;
+import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -11,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+
+import java.util.function.Consumer;
 
 
 @Configuration
@@ -47,6 +52,24 @@ public class JRDMessagingConfiguration {
                 .sender()
                 .topicName(topic)
                 .buildClient();
+    }
+
+    public ServiceBusProcessorClient getServiceBusProcessorClient(
+            Consumer<ServiceBusReceivedMessageContext> processMessage,
+            Consumer<ServiceBusErrorContext> processError) {
+
+        var connectionString = "Endpoint=sb://"
+                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
+
+        ServiceBusProcessorClient processorClient = new ServiceBusClientBuilder()
+                .connectionString(connectionString)
+                .processor()
+                .topicName(topic)
+                .subscriptionName(subscription)
+                .processMessage(processMessage)
+                .processError(processError)
+                .buildProcessorClient();
+        return processorClient;
     }
 
 
