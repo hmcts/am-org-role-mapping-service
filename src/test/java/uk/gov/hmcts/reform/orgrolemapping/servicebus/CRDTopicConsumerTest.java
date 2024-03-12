@@ -15,14 +15,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -43,16 +41,6 @@ class CRDTopicConsumerTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
-    }
-
-    //@Test
-    void getSubscriptionClientThrowsServiceBusException() {
-        sut.host = "http://test.com";
-        sut.subscription = "test";
-        sut.environment = "pr";
-        sut.topic = "test1";
-
-        assertThrows(IllegalArgumentException.class, () -> sut.getSubscriptionClient());
     }
 
     @Test

@@ -13,6 +13,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.config.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class CRDTopicPublisher extends CRDMessagingConfiguration {
     private void publishMessageToTopic(String userIds,
                                        ServiceBusSenderClient serviceBusSenderClient,
                                        ServiceBusTransactionContext transactionContext) {
-        log.info("Started publishing to topic:: in CRD {}", topic);
+        log.info("Started publishing to topic:: in CRD {}", getTopic());
         ServiceBusMessageBatch messageBatch = serviceBusSenderClient.createMessageBatch();
         List<ServiceBusMessage> serviceBusMessages = new ArrayList<>();
         log.debug("UserIds is " + userIds);
@@ -78,7 +79,7 @@ public class CRDTopicPublisher extends CRDMessagingConfiguration {
 
         if (messageBatch.getCount() > 0) {
             serviceBusSenderClient.sendMessages(messageBatch, transactionContext);
-            log.info("Sent a batch of messages to the topic ::{}", topic);
+            log.info("Sent a batch of messages to the topic ::{}", getTopic());
         }
     }
 }

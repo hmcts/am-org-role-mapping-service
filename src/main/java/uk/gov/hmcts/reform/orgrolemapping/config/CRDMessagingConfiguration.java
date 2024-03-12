@@ -1,8 +1,12 @@
-package uk.gov.hmcts.reform.orgrolemapping.servicebus;
+package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import com.azure.core.amqp.AmqpRetryOptions;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
+import com.azure.messaging.servicebus.ServiceBusErrorContext;
+import com.azure.messaging.servicebus.ServiceBusProcessorClient;
+import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +16,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 
+import java.time.Duration;
+import java.util.function.Consumer;
 
+@Getter
 @Configuration
 @Slf4j
 @Primary
@@ -47,6 +54,29 @@ public class CRDMessagingConfiguration {
                 .sender()
                 .topicName(topic)
                 .buildClient();
+    }
+
+    public ServiceBusProcessorClient getServiceBusProcessorClient(
+            Consumer<ServiceBusReceivedMessageContext> processMessage,
+            Consumer<ServiceBusErrorContext> processError) {
+
+        var connectionString = "Endpoint=sb://"
+                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
+
+        AmqpRetryOptions amqpRetryOptions = new AmqpRetryOptions();
+        amqpRetryOptions.setDelay(Duration.ofMinutes(1));
+        amqpRetryOptions.setMaxRetries(10);
+
+        ServiceBusProcessorClient processorClient = new ServiceBusClientBuilder()
+                .connectionString(connectionString)
+                .retryOptions(amqpRetryOptions)
+                .processor()
+                .topicName(topic)
+                .subscriptionName(subscription)
+                .processMessage(processMessage)
+                .processError(processError)
+                .buildProcessorClient();
+        return processorClient;
     }
 
 

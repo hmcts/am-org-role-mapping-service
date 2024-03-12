@@ -18,6 +18,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.orgrolemapping.config.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -52,16 +53,16 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
         logServiceBusVariables();
-        URI endpoint = new URI("sb://" + host);
-        log.debug("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        URI endpoint = new URI("sb://" + getHost());
+        log.debug("CRD Destination is " + getTopic().concat("/subscriptions/").concat(getSubscription()));
 
-        var destination = topic.concat("/subscriptions/").concat(subscription);
+        var destination = getTopic().concat("/subscriptions/").concat(getSubscription());
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
                 destination,
-                sharedAccessKeyName,
-                sharedAccessKeyValue);
+                getSharedAccessKeyName(),
+                getSharedAccessKeyValue());
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
