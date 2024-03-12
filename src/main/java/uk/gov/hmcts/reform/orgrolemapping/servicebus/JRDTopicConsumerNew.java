@@ -29,7 +29,7 @@ public class JRDTopicConsumerNew {
     //@ConditionalOnProperty(name = "amqp.jrd.enabled", havingValue = "true")
     @ConditionalOnExpression("${amqp.jrd.enabled} && ${amqp.jrd.newAsb}")
     CompletableFuture<Void> registerJRDMessageHandlerOnClient()
-            throws ServiceBusException, InterruptedException {
+            throws InterruptedException {
 
         log.error("Inside registerJRDMessageHandlerOnClient Before processorClient");
         ServiceBusProcessorClient processorClient = configuration.getServiceBusProcessorClient(
