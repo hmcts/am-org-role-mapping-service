@@ -63,6 +63,7 @@ public class TopicConsumer {
         System.out.println(messageContext.getMessage().getMessageId());
         byte[] body = messageContext.getMessage().getBody().toBytes();
         UserRequest request = deserializer.deserializeBytes(body);
+        log.error("messageContext.getEntityPath : " + messageContext.getEntityPath());
         log.debug("Parsing the message from JRD with size :: {}", request.getUserIds().size());
 
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request, userType);

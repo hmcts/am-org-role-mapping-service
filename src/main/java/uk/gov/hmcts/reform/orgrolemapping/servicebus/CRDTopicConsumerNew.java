@@ -26,21 +26,16 @@ public class CRDTopicConsumerNew {
 
     @Bean
     @Qualifier("crdConsumer")
-    //@ConditionalOnProperty(name = "amqp.crd.enabled", havingValue = "true")
     @ConditionalOnExpression("${amqp.crd.enabled} && ${amqp.crd.newAsb}")
-    CompletableFuture<Void> registerCRDMessageHandlerOnClient()
+    CompletableFuture<Void> startCRDProcessorClient()
             throws InterruptedException {
 
-        log.error("Inside registerCRDMessageHandlerOnClient Before processorClient");
         ServiceBusProcessorClient processorClient = configuration.getServiceBusProcessorClient(
                 messageContext -> topicConsumer.processMessage(messageContext, UserType.CASEWORKER),
                 TopicConsumer::processError);
 
-        log.error("Inside registerCRDMessageHandlerOnClient after processorClient");
         // Starts the processor in the background and returns immediately
         processorClient.start();
-        log.error("Inside registerCRDMessageHandlerOnClient after start");
-
         return null;
     }
 
