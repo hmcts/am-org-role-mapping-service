@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
-
+import java.time.Duration;
 import java.util.function.Consumer;
 
 @Getter
@@ -62,8 +62,13 @@ public class JRDMessagingConfiguration {
         var connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
 
+        AmqpRetryOptions amqpRetryOptions = new AmqpRetryOptions();
+        amqpRetryOptions.setDelay(Duration.ofMinutes(1));
+        amqpRetryOptions.setMaxRetries(10);
+
         ServiceBusProcessorClient processorClient = new ServiceBusClientBuilder()
                 .connectionString(connectionString)
+                .retryOptions(amqpRetryOptions)
                 .processor()
                 .topicName(topic)
                 .subscriptionName(subscription)
