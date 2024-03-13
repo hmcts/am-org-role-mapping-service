@@ -1,13 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,11 +49,12 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_XUI;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
 
 @TestPropertySource(properties = {
@@ -66,9 +65,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
 
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
-    private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
-    private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
-    private static final String ROLE_NAME_TCW = "tribunal-caseworker";
+
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
 
     private MockMvc mockMvc;
@@ -126,11 +123,12 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is(200))
                 .andReturn();
+
         var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
@@ -147,11 +145,12 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is(422))
                 .andReturn();
+
         var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(Constants.FAILED_ROLE_REFRESH));
         logger.info(" -- Refresh Role Assignment record fail to update -- ");
@@ -168,11 +167,12 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().isOk())
                 .andReturn();
+
         var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
         logger.info(" -- Refresh Role Assignment record updated without bookings -- ");
@@ -191,11 +191,12 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
+
         String contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
     }
@@ -211,7 +212,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is4xxClientError())
@@ -225,7 +226,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         logger.info(" Refresh request rejected with empty request");
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder().build())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorDescription")
@@ -240,7 +241,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .refreshRequest(UserRequest.builder().userIds(Collections.emptyList()).build()).build();
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorDescription")
@@ -257,7 +258,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .refreshRequest(UserRequest.builder().userIds(List.of("abc-123$")).build()).build();
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorDescription")
@@ -285,13 +286,4 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .when(requestMappingService).createJudicialAssignments(any(), any());
     }
 
-    @NotNull
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, "Bearer user1");
-        var s2SToken = MockUtils.generateDummyS2SToken(AUTHORISED_SERVICE);
-        headers.add("ServiceAuthorization", "Bearer " + s2SToken);
-        headers.add(Constants.CORRELATION_ID_HEADER_NAME, "38a90097-434e-47ee-8ea1-9ea2a267f51d");
-        return headers;
-    }
 }
