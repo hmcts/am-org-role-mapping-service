@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
@@ -13,6 +15,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +25,7 @@ import java.util.Objects;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
 
 @Service
+@Slf4j
 public class ProfessionalUserService {
 
     private final PrdService prdService;
@@ -32,6 +37,8 @@ public class ProfessionalUserService {
     private final String retryOneIntervalMin;
     private final String retryTwoIntervalMin;
     private final String retryThreeIntervalMin;
+
+    private final ProcessEventTracker processEventTracker;
 
     public ProfessionalUserService(
             PrdService prdService,
@@ -46,7 +53,8 @@ public class ProfessionalUserService {
             @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryThreeIntervalMin}")
             String retryThreeIntervalMin,
             @Value("${professional.refdata.pageSize}")
-            String pageSize) {
+            String pageSize,
+            ProcessEventTracker processEventTracker) {
         this.prdService = prdService;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
@@ -57,45 +65,75 @@ public class ProfessionalUserService {
         this.retryOneIntervalMin = retryOneIntervalMin;
         this.retryTwoIntervalMin = retryTwoIntervalMin;
         this.retryThreeIntervalMin = retryThreeIntervalMin;
+        this.processEventTracker = processEventTracker;
     }
 
     public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
-        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
-                = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
+        String processName = "PRM Process 4 - Find Users with Stale Organisations";
+        log.info("Starting {}", processName);
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
+        processEventTracker.trackEventStarted(processMonitorDto);
 
-        if (organisationRefreshQueueEntity == null) {
-            return;
-        }
+        try {
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+                    = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
 
-        Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
-        String organisationIdentifier = organisationRefreshQueueEntity.getOrganisationId();
+            if (organisationRefreshQueueEntity == null) {
+                processMonitorDto.addProcessStep("No entities to process");
+                processMonitorDto.markAsSuccess();
+                processEventTracker.trackEventCompleted(processMonitorDto);
+                log.info("Completed {}. No entities to process", processName);
+                return;
+            }
 
-        UsersByOrganisationRequest request = new UsersByOrganisationRequest(
-                List.of(organisationIdentifier)
-        );
+            Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
+            String organisationIdentifier = organisationRefreshQueueEntity.getOrganisationId();
 
-        boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
-            try {
-                retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
+            UsersByOrganisationRequest request = new UsersByOrganisationRequest(
+                    List.of(organisationIdentifier)
+            );
 
-                organisationRefreshQueueRepository.setActiveFalse(
-                        organisationIdentifier,
-                        accessTypesMinVersion,
-                        organisationRefreshQueueEntity.getLastUpdated()
+            boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+                try {
+                    retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
+
+                    organisationRefreshQueueRepository.setActiveFalse(
+                            organisationIdentifier,
+                            accessTypesMinVersion,
+                            organisationRefreshQueueEntity.getLastUpdated()
+                    );
+
+                    return true;
+                } catch (Exception ex) {
+                    String message = String.format("Error occurred while processing organisation: %s. Retry attempt "
+                                    + "%d. Rolling back.",
+                            organisationIdentifier, organisationRefreshQueueEntity.getRetry());
+                    processMonitorDto.addProcessStep(message);
+                    log.error(message, ex);
+                    status.setRollbackOnly();
+                    return false;
+                }
+            }));
+
+            if (!isSuccess) {
+                organisationRefreshQueueRepository.updateRetry(
+                        organisationIdentifier, retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin
                 );
 
-                return true;
-            } catch (Exception ex) {
-                status.setRollbackOnly();
-                return false;
+                // to avoid another round trip to the database, use the current retry attempt.
+                if (organisationRefreshQueueEntity.getRetry() == 3) {
+                    throw new ServiceException("Retry limit reached");
+                }
             }
-        }));
-
-        if (!isSuccess) {
-            organisationRefreshQueueRepository.updateRetry(
-                    organisationIdentifier, retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin
-            );
+        } catch (Exception e) {
+            processMonitorDto.markAsFailed(e.getMessage());
+            processEventTracker.trackEventCompleted(processMonitorDto);
+            throw e;
         }
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
+
+        log.info("Completed {}", processName);
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
