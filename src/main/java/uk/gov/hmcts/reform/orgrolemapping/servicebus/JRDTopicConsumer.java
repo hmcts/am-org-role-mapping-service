@@ -15,11 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-//import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.orgrolemapping.config.JRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -42,7 +41,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
-
     private JRDMessagingConfiguration configuration;
 
     @Autowired
@@ -58,7 +56,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     @Bean
     @Qualifier("jrdConsumer")
-    //@ConditionalOnProperty(name = "amqp.jrd.enabled", havingValue = "true")
     @ConditionalOnExpression("${amqp.jrd.enabled} && !${amqp.jrd.newAsb}")
     public SubscriptionClient getSubscriptionClient1() throws URISyntaxException, ServiceBusException,
             InterruptedException {
@@ -81,7 +78,6 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
 
     @Bean
     @Qualifier("jrdConsumer")
-    //@ConditionalOnProperty(name = "amqp.jrd.enabled", havingValue = "true")
     @ConditionalOnExpression("${amqp.jrd.enabled} && !${amqp.jrd.newAsb}")
     CompletableFuture<Void> registerJRDMessageHandlerOnClient(@Autowired @Qualifier("jrdConsumer")
                                                                    SubscriptionClient receiveClient)

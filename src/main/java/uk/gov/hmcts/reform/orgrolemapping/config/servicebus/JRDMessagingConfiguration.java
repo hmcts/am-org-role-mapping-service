@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.orgrolemapping.config;
+package uk.gov.hmcts.reform.orgrolemapping.config.servicebus;
 
 import com.azure.core.amqp.AmqpRetryOptions;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
-
 import java.time.Duration;
 import java.util.function.Consumer;
 
@@ -23,30 +22,30 @@ import java.util.function.Consumer;
 @Configuration
 @Slf4j
 @Primary
-public class CRDMessagingConfiguration {
+public class JRDMessagingConfiguration {
 
     @Value("${amqp.host}")
     String host;
     @Value("${amqp.sharedAccessKeyName}")
     String sharedAccessKeyName;
-    @Value("${amqp.crd.topic}")
+    @Value("${amqp.jrd.topic}")
     String topic;
-    @Value("${amqp.crd.sharedAccessKeyValue}")
+    @Value("${amqp.jrd.sharedAccessKeyValue}")
     String sharedAccessKeyValue;
-    @Value("${amqp.crd.subscription}")
+    @Value("${amqp.jrd.subscription}")
     String subscription;
     @Value("${launchdarkly.sdk.environment}")
     String environment;
 
-    @Bean("crdPublisher")
-    @ConditionalOnExpression("${testing.support.enabled} && ${amqp.crd.enabled}")
+    @Bean("jrdPublisher")
+    @ConditionalOnExpression("${testing.support.enabled} && ${amqp.jrd.enabled}")
     public ServiceBusSenderClient getServiceBusSenderClient() {
-        log.debug("Getting the ServiceBusSenderClient in CRD");
+        log.debug("Getting the ServiceBusSenderClient in JRD");
         logServiceBusVariables();
         var connectionString = "Endpoint=sb://"
                 + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
 
-        log.info("CRD Topic Name is " + topic);
+        log.info("JRD Topic Name is " + topic);
 
         return new ServiceBusClientBuilder()
                 .connectionString(connectionString)
@@ -79,17 +78,18 @@ public class CRDMessagingConfiguration {
         return processorClient;
     }
 
-
     public void logServiceBusVariables() {
         log.debug("Env is: " + environment);
         if (environment.equalsIgnoreCase("pr")) {
-            sharedAccessKeyValue = System.getenv("AMQP_CRD_SHARED_ACCESS_KEY_VALUE");
-            subscription = System.getenv("CRD_SUBSCRIPTION_NAME");
+
+            sharedAccessKeyValue = System.getenv("AMQP_JRD_SHARED_ACCESS_KEY_VALUE");
+            subscription = System.getenv("JRD_SUBSCRIPTION_NAME");
+
             log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
             log.debug("subscription Name is :" + subscription);
+
             log.debug("Topic Name is :" + topic);
             log.debug("subscription Name is :" + subscription);
-
             host = System.getenv("AMQP_HOST");
             if (!host.contains(Constants.SERVICEBUS_DOMAIN)) {
                 host = host.concat(Constants.SERVICEBUS_DOMAIN);

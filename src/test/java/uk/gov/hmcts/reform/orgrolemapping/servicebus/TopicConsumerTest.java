@@ -24,6 +24,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class TopicConsumerTest {
@@ -127,5 +128,8 @@ class TopicConsumerTest {
         when(bulkAssignmentOrchestrator.createBulkAssignmentsRequest(any(), any())).thenReturn(responseEntity);
 
         sut.processMessage(messageContext, userType);
+
+        verify(ormDeserializer).deserializeBytes("some bytes".getBytes());
+        verify(bulkAssignmentOrchestrator).createBulkAssignmentsRequest(userRequest, userType);
     }
 }
