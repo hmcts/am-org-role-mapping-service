@@ -6,6 +6,7 @@ import com.azure.messaging.servicebus.ServiceBusErrorContext;
 import com.azure.messaging.servicebus.ServiceBusProcessorClient;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import com.azure.messaging.servicebus.models.ServiceBusReceiveMode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -75,6 +76,7 @@ public class CRDMessagingConfiguration {
                 .subscriptionName(subscription)
                 .processMessage(processMessage)
                 .processError(processError)
+                .receiveMode(ServiceBusReceiveMode.PEEK_LOCK)
                 .buildProcessorClient();
         return processorClient;
     }
