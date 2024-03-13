@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +126,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "EMPLOYMENT Employment Judge-Salaried,judge,hmcts-judiciary"
+        "EMPLOYMENT Employment Judge-Salaried,judge,hmcts-judiciary,case-allocator"
     })
     void shouldReturnEmploymentJudgeSalariedRoles(String setOffice,
                                                   @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -141,7 +142,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(roleNameOutput));
-        assertEquals(2, roleAssignments.size());
+        assertEquals(Arrays.stream(roleNameOutput).count(), roleAssignments.size());
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());

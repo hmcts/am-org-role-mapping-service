@@ -28,5 +28,3 @@ java:
     ORG_ROLE_MAPPING_DB_HOST: am-org-role-mapping-service-postgres-db-v15-{{ .Values.global.environment }}.postgres.database.azure.com
     ORG_ROLE_MAPPING_DB_USERNAME: pgadmin
     TESTING_SUPPORT_ENABLED: true
-    JUDICIAL_REF_APP_V2_ACTIVE: true
-    JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID: true
