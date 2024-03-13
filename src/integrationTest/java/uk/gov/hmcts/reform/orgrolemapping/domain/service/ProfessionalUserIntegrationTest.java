@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -130,7 +131,11 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        ServiceException exception = assertThrows(ServiceException.class, () ->
+                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
+        );
+
+        assertEquals("Retry limit reached", exception.getMessage());
 
         assertEquals(0, userRefreshQueueRepository.findAll().size());
 

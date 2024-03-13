@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
@@ -23,6 +25,7 @@ import java.util.Objects;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
 
 @Service
+@Slf4j
 public class ProfessionalUserService {
 
     private final PrdService prdService;
@@ -66,8 +69,9 @@ public class ProfessionalUserService {
     }
 
     public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
-                "PRM Process 4 - Find Users with Stale Organisations");
+        String processName = "PRM Process 4 - Find Users with Stale Organisations";
+        log.info("Starting {}", processName);
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
         processEventTracker.trackEventStarted(processMonitorDto);
 
         try {
@@ -75,8 +79,10 @@ public class ProfessionalUserService {
                     = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
 
             if (organisationRefreshQueueEntity == null) {
+                processMonitorDto.addProcessStep("No entities to process");
                 processMonitorDto.markAsSuccess();
                 processEventTracker.trackEventCompleted(processMonitorDto);
+                log.info("Completed {}. No entities to process", processName);
                 return;
             }
 
@@ -99,8 +105,11 @@ public class ProfessionalUserService {
 
                     return true;
                 } catch (Exception ex) {
-                    processMonitorDto.markAsFailed(ex.getMessage());
-                    processEventTracker.trackEventCompleted(processMonitorDto);
+                    String message = String.format("Error occurred while processing organisation: %s. Retry attempt "
+                                    + "%d. Rolling back.",
+                            organisationIdentifier, organisationRefreshQueueEntity.getRetry());
+                    processMonitorDto.addProcessStep(message);
+                    log.error(message, ex);
                     status.setRollbackOnly();
                     return false;
                 }
@@ -110,13 +119,21 @@ public class ProfessionalUserService {
                 organisationRefreshQueueRepository.updateRetry(
                         organisationIdentifier, retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin
                 );
+
+                // to avoid another round trip to the database, use the current retry attempt.
+                if (organisationRefreshQueueEntity.getRetry() == 3) {
+                    throw new ServiceException("Retry limit reached");
+                }
             }
         } catch (Exception e) {
             processMonitorDto.markAsFailed(e.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
+            throw e;
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
+
+        log.info("Completed {}", processName);
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
