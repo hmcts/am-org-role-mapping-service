@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -70,7 +69,8 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
 
     @Bean
     @Qualifier("crdConsumer")
-    @ConditionalOnProperty(name = "amqp.crd.enabled", havingValue = "true")
+    //@ConditionalOnProperty(name = "amqp.crd.enabled", havingValue = "true")
+    @ConditionalOnExpression("${amqp.crd.enabled} && !${amqp.crd.newAsb}")
     CompletableFuture<Void> registerCRDMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
