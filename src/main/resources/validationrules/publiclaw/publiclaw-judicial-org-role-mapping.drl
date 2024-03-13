@@ -53,49 +53,6 @@ then
 end;
 
 /*
- * PUBLICLAW Fee Paid "judge" Org role mapping.
- * Made obsolete in DTSAM-96 by PUBLICLAW_WA_1_2.
- * To be removed in DTSAM-99.
- */
-rule "publiclaw_fee_paid_judge_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.PUBLICLAW_WA_1_2.getValue())
-  $joh: JudicialOfficeHolder(office in (
-  "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
-  "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
-  "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
-  "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid","PUBLICLAW Deputy Circuit Judge - Fee Paid",
-  "PUBLICLAW Recorder - Fee Paid", "PUBLICLAW Circuit Judge - Sitting in Retirement - Fee Paid",
-  "PUBLICLAW Recorder - Sitting in Retirement - Fee Paid", "PUBLICLAW Deputy Upper Tribunal Judge - Fee Paid",
-  "PUBLICLAW District Judge (MC) - Sitting in Retirement - Fee Paid", "PUBLICLAW District Judge - Sitting in Retirement - Fee Paid"))
-  $bk: JudicialBooking(userId == $joh.userId)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,decision_making_work,applications"));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($joh.getUserId())
-      .roleCategory(RoleCategory.JUDICIAL)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("judge")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
-      .attributes(attribute)
-      .authorisations($joh.getTicketCodes())
-      .build());
-      logMsg("Rule : publiclaw_fee_paid_judge_org_role");
-end;
-
-/*
  * PUBLICLAW Fee Paid "judge" Org role mapping v1.2 .
  */
 rule "publiclaw_fee_paid_judge_org_role_v1_2"
