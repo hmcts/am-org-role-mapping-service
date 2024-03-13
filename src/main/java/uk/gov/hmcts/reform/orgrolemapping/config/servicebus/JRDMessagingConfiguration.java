@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.config.servicebus;
 
+import com.azure.core.amqp.AmqpRetryMode;
 import com.azure.core.amqp.AmqpRetryOptions;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusErrorContext;
@@ -66,6 +67,7 @@ public class JRDMessagingConfiguration {
         AmqpRetryOptions amqpRetryOptions = new AmqpRetryOptions();
         amqpRetryOptions.setDelay(Duration.ofMinutes(1));
         amqpRetryOptions.setMaxRetries(10);
+        amqpRetryOptions.setMode(AmqpRetryMode.FIXED);
 
         ServiceBusProcessorClient processorClient = new ServiceBusClientBuilder()
                 .connectionString(connectionString)
