@@ -40,7 +40,7 @@ java:
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
     LAUNCH_DARKLY_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
-    AMQP_HOST: "am-sb-preview.servicebus.windows.net"
+    AMQP_HOST: "am-sb-preview.servicebus.windows.net_BREAK_ASB"
     AMQP_JRD_NEW_ASB_ENABLED: true
     AMQP_CRD_NEW_ASB_ENABLED: true
     CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-crd-topic"
