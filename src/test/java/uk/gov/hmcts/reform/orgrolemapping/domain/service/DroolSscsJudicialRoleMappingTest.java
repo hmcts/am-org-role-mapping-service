@@ -118,8 +118,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -172,9 +171,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").  status(true).build(),
-                FeatureFlag.builder().flagName("sscs_wa_1_1").status(true).build()));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -191,6 +188,12 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
                     judicialOfficeHolders.stream().iterator().next().getTicketCodes().iterator().next();
             assertRoleAssignmentAttributeBookable(r, ticket);
         });
+    }
+
+
+    private static List<FeatureFlag> setFeatureFlags() {
+        return List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").status(true).build(),
+                FeatureFlag.builder().flagName("sscs_wa_1_1").status(true).build());
     }
 
     private String setExpectedRegionId(String setOffice, boolean withBooking,

@@ -179,7 +179,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_1.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS Tribunal Judge-Fee Paid",
                                         "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid"),
-                                       (ticketCodes != null && getTicketCodes().contains("368")))
+                             ticketCodes != null && getTicketCodes().contains("368"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -206,7 +206,7 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : sscs_judge_org_role_for_fee_paid_judge");
+      logMsg("Rule : v1_1_sscs_judge_org_role_for_fee_paid_judge");
 end;
 
 /*
