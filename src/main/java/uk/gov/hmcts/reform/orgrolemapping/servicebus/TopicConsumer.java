@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class TopicConsumer {
 
+    public static final int SLEEP_BACK_OFF_GENERAL_ERROR_SECONDS = 60;
+    public static final int SLEEP_BACK_OFF_SERVICE_BUSY_SECONDS = 1;
+
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
 
@@ -47,15 +50,11 @@ public class TopicConsumer {
         } else if (reason == ServiceBusFailureReason.MESSAGE_LOCK_LOST) {
             log.error("Message lock lost for message: {}", context.getException());
         } else if (reason == ServiceBusFailureReason.SERVICE_BUSY) {
-            try {
-                // Choosing an arbitrary amount of time to wait until trying again.
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                log.error("Unable to sleep for period of time");
-            }
+            sleepBackOff(SLEEP_BACK_OFF_SERVICE_BUSY_SECONDS);
         } else {
             log.error("Error source {}, reason {}, message: {}", context.getErrorSource(),
                     reason, context.getException());
+            sleepBackOff(SLEEP_BACK_OFF_GENERAL_ERROR_SECONDS);
         }
     }
 
@@ -69,5 +68,13 @@ public class TopicConsumer {
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request, userType);
 
         log.debug("Role Assignment Service Response JRD: {}", response.getStatusCode());
+    }
+
+    public static void sleepBackOff(int sleepBackOffSeconds) {
+        try {
+            TimeUnit.SECONDS.sleep(sleepBackOffSeconds);
+        } catch (InterruptedException e) {
+            log.error("Unable to sleep for period of time");
+        }
     }
 }
