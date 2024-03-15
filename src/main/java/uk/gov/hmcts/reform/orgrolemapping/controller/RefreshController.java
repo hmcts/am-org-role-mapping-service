@@ -137,8 +137,7 @@ public class RefreshController {
 
     @PostMapping(
         path = "/am/role-mapping/professional/refresh",
-        produces = V1.MediaType.REFRESH_PROFESSIONAL_ASSIGNMENTS,
-        consumes = {"application/json"}
+        produces = V1.MediaType.REFRESH_PROFESSIONAL_ASSIGNMENTS
     )
     @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "refreshes professional role assignments",

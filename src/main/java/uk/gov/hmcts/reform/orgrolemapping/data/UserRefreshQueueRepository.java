@@ -44,7 +44,7 @@ public interface UserRefreshQueueRepository extends CrudRepository<UserRefreshQu
             organisation_status = excluded.organisation_status,
             organisation_profile_ids = excluded.organisation_profile_ids,
             active = true
-        where excluded.user_last_updated > user_refresh_queue.user_last_updated
+        where excluded.last_updated > user_refresh_queue.last_updated
         """, nativeQuery = true)
     void upsert(String userId, LocalDateTime userLastUpdated, Long accessTypesMinVersion, LocalDateTime deleted,
                 String accessTypes, String organisationId, String organisationStatus,
