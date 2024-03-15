@@ -9,17 +9,17 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,17 +31,17 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
@@ -53,11 +53,8 @@ import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
-import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
-import java.sql.ResultSet;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -77,17 +74,27 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.RefreshControllerRefreshJobIntegrationTest.TEST_PAGE_SIZE;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_CCD_GW;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_ORM;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_RARB;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialProfilesResponseV2;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUserIdList;
 import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVICE;
 
 @TestPropertySource(properties = {
-    "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
-    "feign.client.config.jrdClient.v2Active=false"})
+    "refresh.Job.authorisedServices=" + S2S_ORM + "," + S2S_RARB,
+    "refresh.Job.includeJudicialBookings=true",
+    "refresh.Job.pageSize=" + TEST_PAGE_SIZE,
+    "feign.client.config.jrdClient.v2Active=true"
+})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegration {
 
@@ -95,21 +102,23 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
-    private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
-            + " comments, log FROM refresh_jobs where job_id=?";
-    private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
+    private static final String AUTHORISED_JOB_SERVICE = S2S_RARB;
+    private static final String UNAUTHORISED_JOB_SERVICE = S2S_CCD_GW;
+
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
-    private static final String URL = "/am/role-mapping/refresh";
+
+    private static final String REFRESH_JOB_URL = "/am/role-mapping/refresh";
+
+    public static final int TEST_PAGE_SIZE = 5;
 
     private MockMvc mockMvc;
-    private JdbcTemplate template;
 
     @Inject
     private WebApplicationContext wac;
 
     @Autowired
-    private DataSource ds;
+    private PersistenceService persistenceService;
 
     @MockBean
     private CRDFeignClient crdFeignClient;
@@ -124,7 +133,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private RASFeignClient rasFeignClient;
 
     @MockBean
-    private RequestMappingService requestMappingService;
+    private RequestMappingService<UserAccessProfile> requestMappingService;
 
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
@@ -149,7 +158,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @BeforeEach
     public void setUp() throws Exception {
         sequential.lock();
-        template = new JdbcTemplate(ds);
+
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
@@ -167,7 +176,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(1)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete() throws Exception {
-        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process successful");
         Long jobId = 1L;
@@ -175,11 +184,11 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertEquals("NEW", refreshJob.getStatus());
 
         mockCRDService();
-        mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
+        mockRequestMappingServiceWithCaseworkerStatus(HttpStatus.CREATED);
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
                 .andExpect(status().is(202))
                 .andReturn();
@@ -198,17 +207,17 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(2)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted() throws Exception {
-        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process Aborted");
         Long jobId = 1L;
 
         mockCRDService();
-        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
+        mockRequestMappingServiceWithCaseworkerStatus(UNPROCESSABLE_ENTITY);
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
                 .andExpect(status().is(202))
                 .andReturn();
@@ -228,17 +237,17 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(3)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
-        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process Non recoverable retain same state");
         Long jobId = 1L;
 
         mockCRDService();
-        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
+        mockRequestMappingServiceWithCaseworkerStatus(UNPROCESSABLE_ENTITY);
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
                 .andExpect(status().is(202))
                 .andReturn();
@@ -258,17 +267,17 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(4)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
-        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process Partial Success");
         Long jobId = 1L;
 
         mockCRDService();
-        mockRequestMappingServiceWithStatus(UNPROCESSABLE_ENTITY);
+        mockRequestMappingServiceWithCaseworkerStatus(UNPROCESSABLE_ENTITY);
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
                 .andExpect(status().is(202))
                 .andReturn();
@@ -288,7 +297,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(5)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithFailedUsersToComplete() throws Exception {
-        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With JobId and failed UserIds to process successful");
         Long jobId = 3L;
@@ -307,11 +316,11 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         true, true, false,
                         true, "BFA1", "BFA2",
                         false), HttpStatus.OK)).when(crdFeignClient).getCaseworkerDetailsById(any());
-        mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
+        mockRequestMappingServiceWithCaseworkerStatus(HttpStatus.CREATED);
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest()))
                         .param("jobId", jobId.toString()))
                 .andExpect(status().is(202))
@@ -331,9 +340,9 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(6)
     public void shouldFailProcessRefreshRoleAssignmentsWithFailedUsersAndWithOutJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
                 .andExpect(status().is(400))
                 .andReturn();
@@ -343,9 +352,9 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(7)
     public void shouldFailProcessRefreshRoleAssignmentsWithEmptyJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", ""))
                 .andExpect(status().is(400))
                 .andReturn();
@@ -355,9 +364,9 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(8)
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", "abc")
                         .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest())))
                 .andExpect(status().is(400))
@@ -368,9 +377,9 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(9)
     public void shouldFailProcessRefreshRoleAssignmentsWithOutJobID() throws Exception {
         logger.info(" Refresh Job with optional Users and without mandatory jobId as a param");
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders()))
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE)))
                 .andExpect(status().is(400))
                 .andReturn();
     }
@@ -380,11 +389,11 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidServiceToken() throws Exception {
         logger.info("Refresh request rejected with invalid service token");
 
-        when(securityUtils.getServiceName()).thenReturn("ccd_gw");
+        when(securityUtils.getServiceName()).thenReturn(UNAUTHORISED_JOB_SERVICE);
 
-        MvcResult result = mockMvc.perform(post(URL)
+        MvcResult result = mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(UNAUTHORISED_JOB_SERVICE))
                         .param("jobId", String.valueOf(1L)))
                 .andExpect(status().is(403))
                 .andReturn();
@@ -397,7 +406,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(11)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
-        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process fail");
         Long jobId = 1L;
@@ -407,9 +416,9 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         doThrow(RuntimeException.class).when(crdFeignClient).getCaseworkerDetailsByServiceName(
                 anyString(), anyInt(), anyInt(), anyString(), anyString());
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
                 .andExpect(status().is(202))
                 .andReturn();
@@ -423,7 +432,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Order(12)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
-        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_SERVICE);
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With JobId retry success third time to process successful");
         Long jobId = 1L;
@@ -433,11 +442,11 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         doThrow(RuntimeException.class).doThrow(RuntimeException.class).doReturn(buildUserProfileResponse())
                 .when(crdFeignClient).getCaseworkerDetailsByServiceName(
                         anyString(), anyInt(), anyInt(), anyString(), anyString());
-        mockRequestMappingServiceWithStatus(HttpStatus.CREATED);
+        mockRequestMappingServiceWithCaseworkerStatus(HttpStatus.CREATED);
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
                 .andExpect(status().is(202))
                 .andReturn();
@@ -452,28 +461,77 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertNotNull(refreshJob.getLog());
     }
 
-    private ResponseEntity<JudicialBookingResponse> buildJudicialBookingsResponse(String... userIds) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "" + userIds.length);
-        List<JudicialBooking> bookings = new ArrayList<>();
-        for (var userId:userIds) {
-            bookings.add(JudicialBooking.builder().beginTime(ZonedDateTime.now())
-                    .endTime(ZonedDateTime.now().plusDays(5)).userId(userId)
-                    .locationId("location").regionId("region").build());
-        }
-        return new ResponseEntity<>(new JudicialBookingResponse(bookings), headers, HttpStatus.OK);
+    /*
+        IT for JRD refresh job scenarios start from here
+     */
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2})
+    @Order(13)
+    public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_Judicial(int numberOfBatches) throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
+
+        logger.info(" RefreshJob record With Only JobId to process successful");
+        RefreshJobEntity refreshJob = createRefreshJobJudicialTargetedUserList(TEST_PAGE_SIZE * numberOfBatches);
+
+        mockJRDService(refreshJob.getUserIds());
+        mockJBSService(refreshJob.getUserIds());
+        mockRequestMappingServiceWithJudicialStatus(HttpStatus.CREATED);
+
+        UserRequest userRequest = buildUserRequestFromRefreshJob(refreshJob);
+
+        Long jobId = refreshJob.getJobId();
+        mockMvc.perform(post(REFRESH_JOB_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
+                        .param("jobId", jobId.toString())
+                        .content(mapper.writeValueAsBytes(userRequest)))
+                .andExpect(status().is(202))
+                .andReturn();
+
+        await().timeout(60, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+                isRefreshJobInStatus(jobId, COMPLETED)));
+
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        refreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals(COMPLETED, refreshJob.getStatus());
+        assertNotNull(refreshJob.getLog());
+
+        Mockito.verify(jrdFeignClient, Mockito.times(1)).getJudicialDetailsById(any(), any());
+        Mockito.verify(jbsFeignClient, Mockito.times(numberOfBatches)).getJudicialBookingByUserIds(any());
     }
 
-    private ResponseEntity<List<JudicialProfile>> buildJudicialProfilesResponse(String... userIds) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "" + userIds.length);
-        List<JudicialProfile> bookings = new ArrayList<>();
-        for (var userId:userIds) {
-            bookings.add(JudicialProfile.builder().sidamId(userId)
-                    .appointments(List.of(Appointment.builder().appointment("Tribunal Judge")
-                            .appointmentType("Fee Paid").build())).build());
-        }
-        return new ResponseEntity<>(bookings, headers, HttpStatus.OK);
+    @Test
+    @Order(14)
+    public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_Judicial() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
+
+        logger.info(" RefreshJob record With Only JobId to process Aborted");
+        RefreshJobEntity refreshJob = createRefreshJobJudicialTargetedUserList(1);
+
+        mockJRDService(refreshJob.getUserIds());
+        mockJBSService(refreshJob.getUserIds());
+        mockRequestMappingServiceWithJudicialStatus(UNPROCESSABLE_ENTITY);
+
+        UserRequest userRequest = buildUserRequestFromRefreshJob(refreshJob);
+
+        Long jobId = refreshJob.getJobId();
+        mockMvc.perform(post(REFRESH_JOB_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
+                        .param("jobId", jobId.toString())
+                        .content(mapper.writeValueAsBytes(userRequest)))
+                .andExpect(status().is(202))
+                .andReturn();
+
+        await().timeout(60, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
+                isRefreshJobInStatus(jobId, ABORTED)));
+
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        refreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals(ABORTED, refreshJob.getStatus());
+        assertNotNull(refreshJob.getUserIds());
+        assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
 
     @NotNull
@@ -487,54 +545,69 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                 headers, HttpStatus.OK);
     }
 
-
     private void mockCRDService() {
         ResponseEntity<List<CaseWorkerProfilesResponse>> userProfilesResponse = buildUserProfileResponse();
         doReturn(userProfilesResponse).when(crdFeignClient).getCaseworkerDetailsByServiceName(
                 anyString(), anyInt(), anyInt(), anyString(), anyString());
     }
 
-    @SuppressWarnings("unchecked")
-    private void mockRequestMappingServiceWithStatus(HttpStatus status) {
+    private void mockJRDService(String[] userIds) {
+        ResponseEntity<List<JudicialProfileV2>> userProfilesResponse = buildJudicialProfilesResponseV2(userIds);
+        doReturn(userProfilesResponse).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+    }
+
+    private void mockJBSService(String[] userIds) {
+        doReturn(buildJudicialBookingsResponse(userIds)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
+    }
+
+    private void mockRequestMappingServiceWithCaseworkerStatus(HttpStatus status) {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
                 new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
                         false))))))
                 .when(requestMappingService).createCaseworkerAssignments(any());
     }
 
-    @NotNull
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, "Bearer user1");
-        var s2SToken = MockUtils.generateDummyS2SToken(AUTHORISED_SERVICE);
-        headers.add("ServiceAuthorization", "Bearer " + s2SToken);
-        headers.add(Constants.CORRELATION_ID_HEADER_NAME, "38a90097-434e-47ee-8ea1-9ea2a267f51d");
-        return headers;
+    private void mockRequestMappingServiceWithJudicialStatus(HttpStatus status) {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
+                new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
+                        false))))))
+                .when(requestMappingService).createJudicialAssignments(any(), any());
     }
 
-    public RefreshJobEntity getRecordsFromRefreshJobTable(Long jobId) {
-
-        var rm = (RowMapper<RefreshJobEntity>) (ResultSet result, int rowNum) -> {
-            var entity = new RefreshJobEntity();
-            entity.setJobId(result.getLong("job_id"));
-            entity.setStatus(result.getString("status"));
-            entity.setLog(result.getString("log"));
-            entity.setComments(result.getString("comments"));
-            entity.setLinkedJobId(result.getLong("linked_job_id"));
-            if (result.getArray("user_ids") != null) {
-                entity.setUserIds((String[]) result.getArray("user_ids").getArray());
-            }
-            return entity;
-        };
-        return template.queryForObject(REFRESH_JOB_RECORDS_QUERY, rm, jobId);
+    private RefreshJobEntity createRefreshJobJudicialTargetedUserList(int numberOfUsers) {
+        RefreshJobEntity refreshJob = createRefreshJobJudicial();
+        refreshJob.setUserIds(buildUserIdList(numberOfUsers));
+        // update LinkedJobId and re-save to allow test of a targeted refresh of judicial users
+        refreshJob.setLinkedJobId(refreshJob.getJobId());
+        return saveRecordInRefreshJobTable(refreshJob);
     }
 
-    public boolean isRefreshJobInStatus(Long jobId, String status) {
+    private RefreshJobEntity createRefreshJobJudicial() {
+        return saveRecordInRefreshJobTable(RefreshJobEntity.builder()
+                .roleCategory(RoleCategory.JUDICIAL.name())
+                .jurisdiction("IA")
+                .status("NEW")
+                .build()
+        );
+    }
+
+    private RefreshJobEntity getRecordsFromRefreshJobTable(Long jobId) {
+        return persistenceService.fetchRefreshJobById(jobId).orElse(null);
+    }
+
+    private RefreshJobEntity saveRecordInRefreshJobTable(RefreshJobEntity refreshJobEntity) {
+        return persistenceService.persistRefreshJob(refreshJobEntity);
+    }
+
+    private UserRequest buildUserRequestFromRefreshJob(RefreshJobEntity refreshJob) {
+        return UserRequest.builder()
+                .userIds(Arrays.stream(refreshJob.getUserIds()).toList())
+                .build();
+    }
+
+    private boolean isRefreshJobInStatus(Long jobId, String status) {
         RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        if (refreshJob.getStatus().equals(status)) {
-            return true;
-        } else {
-            return false;
-        }
+        return refreshJob.getStatus().equals(status);
     }
+
 }

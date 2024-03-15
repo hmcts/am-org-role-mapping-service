@@ -5,11 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
@@ -41,6 +43,14 @@ public class IntTestDataBuilder {
         List<String> list = new ArrayList<>();
         return UserInfo.builder().sub("sub").uid(uuid)
                 .name("James").givenName("007").familyName("Bond").roles(list).build();
+    }
+
+    public static String[] buildUserIdList(int size) {
+        String[] ids = new String[size];
+        for (int i = 0; i < size; i++) {
+            ids[i] = generateUniqueId();
+        }
+        return ids;
     }
 
     public static UserRequest buildUserRequest() {
@@ -190,6 +200,18 @@ public class IntTestDataBuilder {
                 enableLocationList, primaryLocation1, primaryLocation2,
                 enableWorkAreaList, workArea1, workArea2, suspended);
         return List.of(CaseWorkerProfilesResponse.builder().serviceName(service).userProfile(profile).build());
+    }
+
+    public static ResponseEntity<List<JudicialProfileV2>> buildJudicialProfilesResponseV2(String... userIds) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("total_records", "" + userIds.length);
+        List<JudicialProfileV2> bookings = new ArrayList<>();
+        for (var userId:userIds) {
+            bookings.add(JudicialProfileV2.builder().sidamId(userId)
+                    .appointments(List.of(AppointmentV2.builder().appointment("Tribunal Judge")
+                            .appointmentType("Fee Paid").build())).build());
+        }
+        return new ResponseEntity<>(bookings, headers, HttpStatus.OK);
     }
 
     public static ResponseEntity<JudicialBookingResponse> buildJudicialBookingsResponse(String... userIds) {

@@ -60,7 +60,7 @@ import java.util.UUID;
 @Setter
 public class TestDataBuilder {
 
-    private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
+    public static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     public static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
     private static String id_3 = "invalid_id";
 
