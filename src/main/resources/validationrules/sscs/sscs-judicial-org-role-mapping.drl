@@ -179,7 +179,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_1.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS Tribunal Judge-Fee Paid",
                                         "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid"),
-                             ticketCodes != null && getTicketCodes().contains("368"))
+                             ticketCodes != null && ticketCodes.contains("368"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
