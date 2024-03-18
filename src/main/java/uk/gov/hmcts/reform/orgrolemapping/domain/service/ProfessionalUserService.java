@@ -1,7 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
@@ -13,11 +18,11 @@ import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ProfessionalUserService {
 
 
@@ -31,6 +36,10 @@ public class ProfessionalUserService {
     private final ProcessEventTracker processEventTracker;
     private final ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
 
+    private final TransactionTemplate transactionTemplate;
+    private final String userRetryOneIntervalMin;
+    private final String userRetryTwoIntervalMin;
+    private final String userRetryThreeIntervalMin;
     private String tolerance;
     private String activeUserRefreshDays;
 
@@ -45,7 +54,14 @@ public class ProfessionalUserService {
             ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper,
             @Value("${groupAccess.lastRunTimeTolerance}") String tolerance,
             @Value("${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}")
-                                   String activeUserRefreshDays) {
+                                   String activeUserRefreshDays,
+            PlatformTransactionManager transactionManager,
+            @Value("${professional.role.mapping.scheduling.userRefresh.retryOneIntervalMin}")
+                                   String userRetryOneIntervalMin,
+            @Value("${professional.role.mapping.scheduling.userRefresh.retryTwoIntervalMin}")
+                                   String userRetryTwoIntervalMin,
+            @Value("${professional.role.mapping.scheduling.userRefresh.retryThreeIntervalMin}")
+                                   String userRetryThreeIntervalMin) {
         this.prdService = prdService;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.accessTypesRepository = accessTypesRepository;
@@ -57,6 +73,11 @@ public class ProfessionalUserService {
         this.professionalRefreshOrchestrationHelper = professionalRefreshOrchestrationHelper;
         this.tolerance = tolerance;
         this.activeUserRefreshDays = activeUserRefreshDays;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        this.userRetryOneIntervalMin = userRetryOneIntervalMin;
+        this.userRetryTwoIntervalMin = userRetryTwoIntervalMin;
+        this.userRetryThreeIntervalMin = userRetryThreeIntervalMin;
     }
 
     public void refreshUsers() {
@@ -93,21 +114,49 @@ public class ProfessionalUserService {
     public UserRefreshQueueEntity refreshAndClearUserRecord(UserRefreshQueueEntity userRefreshQueueEntity,
                                                             AccessTypesEntity accessTypesEntity,
                                                             ProcessMonitorDto processMonitorDto) {
+        String userId = userRefreshQueueEntity.getUserId();
         processMonitorDto.addProcessStep("attempting refreshAndClearUserRecord for userId="
-                + userRefreshQueueEntity.getUserId());
-        professionalRefreshOrchestrationHelper.refreshSingleUser(userRefreshQueueEntity, accessTypesEntity);
-        processMonitorDto.appendToLastProcessStep(" : COMPLETED");
+                + userId);
+        try {
+            professionalRefreshOrchestrationHelper.refreshSingleUser(userRefreshQueueEntity, accessTypesEntity);
+            processMonitorDto.appendToLastProcessStep(" : COMPLETED");
 
-        processMonitorDto.addProcessStep("attempting clearUserRefreshRecord for userId="
-                + userRefreshQueueEntity.getUserId());
-        userRefreshQueueRepository.clearUserRefreshRecord(userRefreshQueueEntity.getUserId(),
-                LocalDateTime.now(), accessTypesEntity.getVersion());
-        processMonitorDto.appendToLastProcessStep(" : COMPLETED");
+            boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+                try {
+                    processMonitorDto.addProcessStep("attempting clearUserRefreshRecord for userId="
+                            + userId);
+                    userRefreshQueueRepository.clearUserRefreshRecord(userId,
+                            LocalDateTime.now(), accessTypesEntity.getVersion());
+                    processMonitorDto.appendToLastProcessStep(" : COMPLETED");
 
-        processMonitorDto.addProcessStep("attempting next retrieveSingleActiveRecord");
-        UserRefreshQueueEntity userRefreshQueue =  userRefreshQueueRepository.retrieveSingleActiveRecord();
-        String completionPrefix = (userRefreshQueue == null ? " - none" : " - one") + " found";
-        processMonitorDto.appendToLastProcessStep(completionPrefix + " : COMPLETED");
-        return userRefreshQueue;
+
+                    return true;
+                } catch (Exception ex) {
+                    String message = String.format("Error occurred while processing user: %s. Retry attempt "
+                                    + "%d. Rolling back.",
+                            userId, userRefreshQueueEntity.getRetry());
+                    processMonitorDto.addProcessStep(message);
+                    log.error(message, ex);
+                    status.setRollbackOnly();
+                    return false;
+                }
+            }));
+
+            if (!isSuccess) {
+                userRefreshQueueRepository.updateRetry(
+                        userId, userRetryOneIntervalMin, userRetryTwoIntervalMin, userRetryThreeIntervalMin
+                );
+            }
+
+            processMonitorDto.addProcessStep("attempting next retrieveSingleActiveRecord");
+            UserRefreshQueueEntity userRefreshQueue =  userRefreshQueueRepository.retrieveSingleActiveRecord();
+            String completionPrefix = (userRefreshQueue == null ? " - none" : " - one") + " found";
+            processMonitorDto.appendToLastProcessStep(completionPrefix + " : COMPLETED");
+            return userRefreshQueue;
+        } catch (Exception ex) {
+            userRefreshQueueRepository.updateRetry(userId, userRetryOneIntervalMin,
+                    userRetryTwoIntervalMin, userRetryThreeIntervalMin);
+            throw ex;
+        }
     }
 }

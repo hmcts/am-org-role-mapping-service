@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
 import javax.persistence.QueryHint;
@@ -56,7 +58,7 @@ public interface UserRefreshQueueRepository extends CrudRepository<UserRefreshQu
                access_types, organisation_id,
                organisation_status, organisation_profile_ids, active, retry, retry_after
         from user_refresh_queue
-        where active
+        where active and retry < 4
         limit 1
         for update skip locked""", nativeQuery = true)
     UserRefreshQueueEntity retrieveSingleActiveRecord();
@@ -70,4 +72,24 @@ public interface UserRefreshQueueRepository extends CrudRepository<UserRefreshQu
                               and access_types_min_version <= :accessTypesMinVersion""", nativeQuery = true)
     void clearUserRefreshRecord(String userId, LocalDateTime lastUpdated,
                                                   Long accessTypesMinVersion);
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Modifying
+    @Query(value = "update user_refresh_queue "
+            + "set "
+            + "retry = case "
+            + "when retry = 0 then 1 "
+            + "when retry = 1 then 2 "
+            + "when retry = 2 then 3 "
+            + "else 4 "
+            + "end, "
+            + "retry_after = case "
+            + "when retry = 0 then now() + (interval '1' Minute) * :retryOneIntervalMin "
+            + "when retry = 1 then now() + (interval '1' Minute) * :retryTwoIntervalMin "
+            + "when retry = 2 then now() + (interval '1' Minute) * :retryThreeIntervalMin "
+            + "else NULL "
+            + "end "
+            + "where user_id = :userId", nativeQuery = true)
+    void updateRetry(String userId, String retryOneIntervalMin,
+                     String retryTwoIntervalMin, String retryThreeIntervalMin);
 }

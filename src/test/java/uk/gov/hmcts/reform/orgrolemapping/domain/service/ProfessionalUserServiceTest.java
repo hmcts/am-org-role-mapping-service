@@ -8,6 +8,7 @@ import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
@@ -45,7 +46,8 @@ class ProfessionalUserServiceTest {
     private final ProcessEventTracker processEventTracker = Mockito.mock(ProcessEventTracker.class);
     private final ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper =
             Mockito.mock(ProfessionalRefreshOrchestrationHelper.class);
-
+    private final PlatformTransactionManager transactionManager =
+            Mockito.mock(PlatformTransactionManager.class);
     @Captor
     private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
 
@@ -55,7 +57,10 @@ class ProfessionalUserServiceTest {
             "1",
             jdbcTemplate,
             accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository,
-            processEventTracker, professionalRefreshOrchestrationHelper, "10", "90");
+            processEventTracker, professionalRefreshOrchestrationHelper, "10", "90",transactionManager,
+            "2",
+            "15",
+            "60");
 
     @Test
     void refreshUsersTest() {

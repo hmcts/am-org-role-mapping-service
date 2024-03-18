@@ -202,6 +202,9 @@ professional:
           cron: ${CRON_P3_ORG_CHANGES:0 * * * * *}
         userRefresh:
           cron: ${USER_REFRESH_CRON:*/5 * * * * *}
+          retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
+          retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
+          retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
         userRefreshCleanup:
           cron: ${USER_REFRESH_CLEANUP_CRON:0 * * * * *}
           activeUserRefreshDays: ${USER_REFRESH_CLEANUP_DAYS:90}
