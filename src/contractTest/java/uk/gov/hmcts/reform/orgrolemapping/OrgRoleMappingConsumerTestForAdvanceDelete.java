@@ -22,11 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 @ExtendWith(PactConsumerTestExt.class)
@@ -42,21 +38,21 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContrac
     public static final String DELETE_ASSIGNMENTS = SERVICE
             + ".post-assignments-delete-request+json;charset=UTF-8;version=1.0";
 
-    @MockBean
-    JRDTopicConsumer crdConsumer;
-    @MockBean
-    CRDTopicConsumer jrdConsumer;
+    //@MockBean
+    //JRDTopicConsumer crdConsumer;
+    //@MockBean
+    //CRDTopicConsumer jrdConsumer;
 
     @MockBean
     JRDTopicPublisher jrdPublisher;
     @MockBean
     CRDTopicPublisher crdPublisher;
 
-    @MockBean
-    JRDMessagingConfiguration jrdMessagingConfiguration;
+    //@MockBean
+    //JRDMessagingConfiguration jrdMessagingConfiguration;
 
-    @MockBean
-    CRDMessagingConfiguration crdMessagingConfiguration;
+    //@MockBean
+    //CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
     @Qualifier("crdPublisher")

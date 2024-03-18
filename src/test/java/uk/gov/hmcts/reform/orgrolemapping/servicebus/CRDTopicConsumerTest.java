@@ -10,11 +10,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -35,12 +37,15 @@ class CRDTopicConsumerTest {
     @Mock
     public SubscriptionClient subscriptionClient;
 
+    @Mock
+    CRDMessagingConfiguration configuration;
+
     CRDTopicConsumer sut;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
+        sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer, configuration);
     }
 
     @Test
