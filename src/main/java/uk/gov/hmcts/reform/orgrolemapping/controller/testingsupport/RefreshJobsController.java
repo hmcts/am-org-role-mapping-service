@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +51,7 @@ public class RefreshJobsController {
     @ApiResponse(
             responseCode = "202",
             description = "Accepted",
-            content = @Content(schema = @Schema(implementation = RefreshJobEntity.class))
+            content = @Content()
     )
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<RefreshJobEntity> insertJob(
@@ -85,8 +84,8 @@ public class RefreshJobsController {
     @ApiResponse(
             responseCode = "200",
             description = "Successful",
-            content = @Content(schema = @Schema(implementation = RefreshJobEntity.class)
-            ))
+            content = @Content()
+    )
     public ResponseEntity<RefreshJobEntity>  fetchJob(@Parameter(required = true) @PathVariable("jobId") Long jobId) {
         Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
         if (refreshJobEntity.isPresent()) {
