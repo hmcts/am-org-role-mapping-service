@@ -16,11 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
@@ -40,23 +36,10 @@ public class SmokeTest {
     UserTokenProviderConfig config;
 
     @MockBean
-    private CRDTopicConsumer crdTopicConsumer;
-
-    @MockBean
-    private JRDTopicConsumer jrdTopicConsumer;
-
-    @MockBean
     private CRDTopicPublisher crdTopicPublisher;
 
     @MockBean
     private JRDTopicPublisher jrdTopicPublisher;
-
-
-    @MockBean
-    private CRDMessagingConfiguration crdMessagingConfiguration;
-
-    @MockBean
-    private JRDMessagingConfiguration jrdMessagingConfiguration;
 
     @Rule
     public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator(this);

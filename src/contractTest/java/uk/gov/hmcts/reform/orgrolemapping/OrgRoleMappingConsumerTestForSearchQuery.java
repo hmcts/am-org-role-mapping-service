@@ -53,20 +53,6 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     public static final String POST_ASSIGNMENTS = SERVICE
             + ".post-assignment-query-request+json;charset=UTF-8;version=2.0";
 
-    //@MockBean
-    //CRDTopicConsumer topicConsumer;
-
-    //@MockBean
-    //JRDTopicConsumer jrdTopicConsumer;
-
-
-
-    //@MockBean
-    //CRDMessagingConfiguration crdMessagingConfiguration;
-
-    //@MockBean
-    //JRDMessagingConfiguration jrdMessagingConfiguration;
-
     @MockBean
     JRDTopicPublisher jrdPublisher;
     @MockBean

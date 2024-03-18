@@ -38,21 +38,10 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContrac
     public static final String DELETE_ASSIGNMENTS = SERVICE
             + ".post-assignments-delete-request+json;charset=UTF-8;version=1.0";
 
-    //@MockBean
-    //JRDTopicConsumer crdConsumer;
-    //@MockBean
-    //CRDTopicConsumer jrdConsumer;
-
     @MockBean
     JRDTopicPublisher jrdPublisher;
     @MockBean
     CRDTopicPublisher crdPublisher;
-
-    //@MockBean
-    //JRDMessagingConfiguration jrdMessagingConfiguration;
-
-    //@MockBean
-    //CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
     @Qualifier("crdPublisher")

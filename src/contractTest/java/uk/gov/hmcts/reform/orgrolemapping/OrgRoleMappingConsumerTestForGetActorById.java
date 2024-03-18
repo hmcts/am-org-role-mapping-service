@@ -43,20 +43,6 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
     private static final String ACTOR_ID = "23486";
     private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
 
-    //@MockBean
-    //CRDTopicConsumer topicConsumer;
-
-    //@MockBean
-    //JRDTopicConsumer jrdTopicConsumer;
-
-
-
-    //@MockBean
-    //CRDMessagingConfiguration crdMessagingConfiguration;
-
-    //@MockBean
-    //JRDMessagingConfiguration jrdMessagingConfiguration;
-
     @MockBean
     JRDTopicPublisher jrdPublisher;
     @MockBean

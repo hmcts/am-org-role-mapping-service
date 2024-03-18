@@ -36,11 +36,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class CRDTopicConsumer /*extends CRDMessagingConfiguration*/ {
+public class CRDTopicConsumer {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
-
     private CRDMessagingConfiguration configuration;
 
     public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,

@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class JRDTopicConsumer /*extends JRDMessagingConfiguration*/ {
+public class JRDTopicConsumer {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;

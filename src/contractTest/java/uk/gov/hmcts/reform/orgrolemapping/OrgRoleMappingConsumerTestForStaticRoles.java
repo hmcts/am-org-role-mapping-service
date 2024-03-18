@@ -41,21 +41,8 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 @PactFolder("pacts")
 public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
 
-    //@MockBean
-    //CRDTopicConsumer topicConsumer;
-
-    //@MockBean
-    //JRDTopicConsumer jrdTopicConsumer;
-
     @Autowired
     DataSource dataSource;
-
-
-    //@MockBean
-    //CRDMessagingConfiguration crdMessagingConfiguration;
-
-    //@MockBean
-    //JRDMessagingConfiguration jrdMessagingConfiguration;
 
     @MockBean
     JRDTopicPublisher jrdPublisher;

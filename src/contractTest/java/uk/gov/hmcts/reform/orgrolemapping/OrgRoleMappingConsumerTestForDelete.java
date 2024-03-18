@@ -39,19 +39,6 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     private static final String RAS_DELETE_ACTOR_BY_ID = AM_RAS_URL + "/" + ACTOR_ID;
     private static final String RAS_DELETE_ACTOR_BY_PR = AM_RAS_URL + "?" + QUERY_PARAMS;
 
-    //@MockBean
-    //CRDTopicConsumer topicConsumer;
-
-    //@MockBean
-    //JRDTopicConsumer jrdTopicConsumer;
-
-
-    //@MockBean
-    //JRDMessagingConfiguration jrdMessagingConfiguration;
-
-    //@MockBean
-    //CRDMessagingConfiguration crdMessagingConfiguration;
-
     @MockBean
     JRDTopicPublisher jrdPublisher;
     @MockBean

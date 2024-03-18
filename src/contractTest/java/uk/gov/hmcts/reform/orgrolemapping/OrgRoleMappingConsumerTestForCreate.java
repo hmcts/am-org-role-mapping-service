@@ -51,22 +51,10 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     @Autowired
     RASFeignClient rasFeignClient;
 
-    //@MockBean
-    //CRDTopicConsumer topicConsumer;
-
-    //@MockBean
-    //JRDTopicConsumer jrdTopicConsumer;
-
     @MockBean
     JRDTopicPublisher jrdPublisher;
     @MockBean
     CRDTopicPublisher crdPublisher;
-
-    //@MockBean
-    //JRDMessagingConfiguration jrdMessagingConfiguration;
-
-    //@MockBean
-    //CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
     @Qualifier("crdPublisher")
