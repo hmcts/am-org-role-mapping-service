@@ -41,7 +41,6 @@ class RefreshJobsControllerTest {
                 true,
                 1L,
                 "NEW",
-                0L,
                 "comments",
                 userRequest);
         Mockito.verify(persistenceService, Mockito.times(2))
@@ -58,7 +57,6 @@ class RefreshJobsControllerTest {
                 false,
                 1L,
                 "NEW",
-                0L,
                 "comments",
                 userRequest);
         Mockito.verify(persistenceService, Mockito.times(1))
