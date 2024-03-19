@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class  OrganisationServiceTest {
 
-    private final PrdService prdService = mock(PrdService.class);
+    private final PRDService prdService = mock(PRDService.class);
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository =
             mock(ProfileRefreshQueueRepository.class);
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository =

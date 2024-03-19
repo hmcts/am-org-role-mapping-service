@@ -26,7 +26,7 @@ import java.util.List;
 public class ProfessionalUserService {
 
 
-    private final PrdService prdService;
+    private final PRDService prdService;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final AccessTypesRepository accessTypesRepository;
     private final BatchLastRunTimestampRepository batchLastRunTimestampRepository;
@@ -43,7 +43,7 @@ public class ProfessionalUserService {
     private String tolerance;
     private String activeUserRefreshDays;
 
-    public ProfessionalUserService(PrdService prdService,
+    public ProfessionalUserService(PRDService prdService,
             UserRefreshQueueRepository userRefreshQueueRepository,
             @Value("${professional.refdata.pageSize}") String pageSize,
             NamedParameterJdbcTemplate jdbcTemplate,

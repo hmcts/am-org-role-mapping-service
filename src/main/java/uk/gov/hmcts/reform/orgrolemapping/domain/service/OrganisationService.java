@@ -36,7 +36,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConst
 @Service
 public class OrganisationService {
 
-    private final PrdService prdService;
+    private final PRDService prdService;
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository;
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
     private final AccessTypesRepository accessTypesRepository;
@@ -48,7 +48,7 @@ public class OrganisationService {
 
     private String tolerance;
 
-    public OrganisationService(PrdService prdService,
+    public OrganisationService(PRDService prdService,
                                OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
                                ProfileRefreshQueueRepository profileRefreshQueueRepository,
                                @Value("${professional.refdata.pageSize}") String pageSize,

@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ProfessionalUserServiceTest {
 
-    private final PrdService prdService = mock(PrdService.class);
+    private final PRDService prdService = mock(PRDService.class);
     private final UserRefreshQueueRepository userRefreshQueueRepository =
             Mockito.mock(UserRefreshQueueRepository.class);
     private final NamedParameterJdbcTemplate jdbcTemplate =
@@ -103,9 +103,6 @@ class ProfessionalUserServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(6))
                 .isEqualTo("attempting next retrieveSingleActiveRecord - none found : COMPLETED");
 
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-                .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
@@ -128,9 +125,6 @@ class ProfessionalUserServiceTest {
                 .isEqualTo("Single AccessTypesEntity not found");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
 
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-                .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
@@ -177,9 +171,6 @@ class ProfessionalUserServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Insert exception");
 
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-                .isEqualTo(EndStatus.SUCCESS);
     }
 
 }

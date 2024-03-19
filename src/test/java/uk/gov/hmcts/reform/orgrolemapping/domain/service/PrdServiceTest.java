@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -25,11 +26,21 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public class PrdServiceTest {
+class PRDServiceTest {
 
     PRDFeignClient prdFeignClient = mock(PRDFeignClient.class);
 
-    PrdService sut = new PrdService(prdFeignClient);
+    PRDService sut = new PRDService(prdFeignClient);
+
+    @Test
+    void getRefreshUser() throws IOException {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+            .when(prdFeignClient).getRefreshUsers(any());
+
+        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser("ID");
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
 
     @Test
     void fetchOrganisationsByProfileIds() throws IOException {
