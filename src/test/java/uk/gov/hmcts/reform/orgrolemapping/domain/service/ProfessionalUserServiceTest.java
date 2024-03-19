@@ -102,6 +102,10 @@ class ProfessionalUserServiceTest {
                 .isEqualTo("attempting clearUserRefreshRecord for userId=2 : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(6))
                 .isEqualTo("attempting next retrieveSingleActiveRecord - none found : COMPLETED");
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
@@ -123,6 +127,10 @@ class ProfessionalUserServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single AccessTypesEntity not found");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
@@ -168,6 +176,10 @@ class ProfessionalUserServiceTest {
 
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Insert exception");
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
     }
 
 }
