@@ -94,7 +94,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
 public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
+
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
+
     private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
             + " comments, log FROM refresh_jobs where job_id=?";
     private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
@@ -105,28 +107,38 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     private static final String PROFESSIONAL_REFRESH_URL = "/am/role-mapping/professional/refresh";
     private MockMvc mockMvc;
     private JdbcTemplate template;
+
     @Inject
     private WebApplicationContext wac;
+
     @Autowired
     private DataSource ds;
+
     @MockBean
     private CRDFeignClient crdFeignClient;
+
     @MockBean
     private JRDFeignClient jrdFeignClient;
+
     @MockBean
     private JBSFeignClient jbsFeignClient;
+
     @MockBean
     private RASFeignClient rasFeignClient;
     @MockBean
     private PRDFeignClient prdFeignClient;
     @MockBean
     private RequestMappingService requestMappingService;
+
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
+
     @MockBean
     private SecurityUtils securityUtils;
+
     @Mock
     private Authentication authentication;
+
     @Mock
     private SecurityContext securityContext;
 

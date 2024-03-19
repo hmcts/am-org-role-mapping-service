@@ -80,7 +80,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         false,
                         true,
                         List.of("Employment Judge"),
-                        List.of("judge", "hmcts-judiciary", "hearing-viewer"),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer", "case-allocator"),
                         null),
                 Arguments.of("Employment Judge",
                         "Fee Paid",
