@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class JRDTopicConsumer extends JRDMessagingConfiguration {
+public class JRDTopicConsumer {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
@@ -59,7 +59,7 @@ public class JRDTopicConsumer extends JRDMessagingConfiguration {
     @ConditionalOnExpression("${amqp.jrd.enabled} && !${amqp.jrd.newAsb}")
     public SubscriptionClient getSubscriptionClient1() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        logServiceBusVariables();
+        configuration.logServiceBusVariables();
         URI endpoint = new URI("sb://" + configuration.getHost());
         log.debug("JRD Destination is " + configuration.getTopic().concat("/subscriptions/").concat(
                 configuration.getSubscription()));
