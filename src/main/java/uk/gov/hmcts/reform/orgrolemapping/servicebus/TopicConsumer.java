@@ -59,15 +59,13 @@ public class TopicConsumer {
     }
 
     public void processMessage(ServiceBusReceivedMessageContext messageContext, UserType userType) {
-        System.out.println(messageContext.getMessage().getMessageId());
         byte[] body = messageContext.getMessage().getBody().toBytes();
         UserRequest request = deserializer.deserializeBytes(body);
-        log.error("messageContext.getEntityPath : " + messageContext.getEntityPath());
-        log.debug("Parsing the message from JRD with size :: {}", request.getUserIds().size());
+        log.debug("Parsing message from {} with size :: {}", userType.name(), request.getUserIds().size());
 
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request, userType);
 
-        log.debug("Role Assignment Service Response JRD: {}", response.getStatusCode());
+        log.debug("Role Assignment Service Response {}: {}", userType.name(), response.getStatusCode());
     }
 
     public static void sleepBackOff(int sleepBackOffSeconds) {

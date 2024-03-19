@@ -36,15 +36,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class CRDTopicConsumer extends CRDMessagingConfiguration {
+public class CRDTopicConsumer {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
+    private CRDMessagingConfiguration configuration;
 
     public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                            OrmDeserializer deserializer) {
+                            OrmDeserializer deserializer,
+                            CRDMessagingConfiguration configuration) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
+        this.configuration = configuration;
     }
 
     @Bean
@@ -52,17 +55,19 @@ public class CRDTopicConsumer extends CRDMessagingConfiguration {
     @ConditionalOnExpression("${amqp.crd.enabled} && !${amqp.crd.newAsb}")
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        logServiceBusVariables();
-        URI endpoint = new URI("sb://" + getHost());
-        log.debug("CRD Destination is " + getTopic().concat("/subscriptions/").concat(getSubscription()));
+        configuration.logServiceBusVariables();
+        URI endpoint = new URI("sb://" + configuration.getHost());
+        log.debug("CRD Destination is " + configuration.getTopic().concat("/subscriptions/")
+                .concat(configuration.getSubscription()));
 
-        var destination = getTopic().concat("/subscriptions/").concat(getSubscription());
+        var destination = configuration.getTopic().concat("/subscriptions/")
+                .concat(configuration.getSubscription());
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
                 destination,
-                getSharedAccessKeyName(),
-                getSharedAccessKeyValue());
+                configuration.getSharedAccessKeyName(),
+                configuration.getSharedAccessKeyValue());
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }

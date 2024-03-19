@@ -20,11 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import javax.annotation.PreDestroy;
@@ -45,21 +41,8 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 @PactFolder("pacts")
 public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
 
-    @MockBean
-    CRDTopicConsumer topicConsumer;
-
-    @MockBean
-    JRDTopicConsumer jrdTopicConsumer;
-
     @Autowired
     DataSource dataSource;
-
-
-    @MockBean
-    CRDMessagingConfiguration crdMessagingConfiguration;
-
-    @MockBean
-    JRDMessagingConfiguration jrdMessagingConfiguration;
 
     @MockBean
     JRDTopicPublisher jrdPublisher;
