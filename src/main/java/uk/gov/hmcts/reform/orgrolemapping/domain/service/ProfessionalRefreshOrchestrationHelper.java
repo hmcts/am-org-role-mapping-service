@@ -35,16 +35,17 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.UUID;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Collection;
+import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status.CREATE_REQUESTED;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.PROFESSIONAL_ORGANISATIONAL_ROLE_MAPPING;
@@ -261,10 +262,12 @@ public class ProfessionalRefreshOrchestrationHelper {
         Set<OrganisationProfile> filteredOrganisationProfiles = new HashSet<>();
         for (OrganisationProfile organisationProfile : organisationProfiles) {
             Set<OrganisationProfileJurisdiction> organisationProfileJurisdictionSet;
+
             organisationProfileJurisdictionSet =
                     getMatchingOrganisationProfileJurisdiction(organisationProfile,userAccessTypes);
             organisationProfile.getJurisdictions().clear();
             organisationProfile.setJurisdictions(organisationProfileJurisdictionSet);
+
             filteredOrganisationProfiles.add(organisationProfile);
         }
         return filteredOrganisationProfiles;
@@ -275,17 +278,29 @@ public class ProfessionalRefreshOrchestrationHelper {
         Set<OrganisationProfileJurisdiction> matchingOrganisationProfileJurisdiction = new HashSet<>();
         String organisationProfileId = organisationProfile.getOrganisationProfileId();
         if (null != organisationProfileId) {
-            for (UserAccessType userAccessType : userAccessTypes) {
-                if (organisationProfileId.equals(userAccessType.getOrganisationProfileId())) {
-                    for (OrganisationProfileJurisdiction opj : organisationProfile.getJurisdictions()) {
-                        String jurisdictionId =  opj.getJurisdictionId();
-                        if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
-                            Set<OrganisationProfileAccessType> opatSet =
-                                    getMatchingOPAT(opj,userAccessType.getAccessTypeId());
-                            if (!opatSet.isEmpty()) {
-                                opj.getAccessTypes().clear();
-                                opj.setAccessTypes(opatSet);
-                                matchingOrganisationProfileJurisdiction.add(opj);
+            if (isNullOrEmpty(userAccessTypes)) {
+                for (OrganisationProfileJurisdiction opj : organisationProfile.getJurisdictions()) {
+                    Set<OrganisationProfileAccessType> opatSet =
+                            getMatchingOpatForNullUserAccessType(opj);
+                    if (!opatSet.isEmpty()) {
+                        opj.getAccessTypes().clear();
+                        opj.setAccessTypes(opatSet);
+                        matchingOrganisationProfileJurisdiction.add(opj);
+                    }
+                }
+            } else {
+                for (UserAccessType userAccessType : userAccessTypes) {
+                    if (organisationProfileId.equals(userAccessType.getOrganisationProfileId())) {
+                        for (OrganisationProfileJurisdiction opj : organisationProfile.getJurisdictions()) {
+                            String jurisdictionId =  opj.getJurisdictionId();
+                            if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
+                                Set<OrganisationProfileAccessType> opatSet =
+                                        getMatchingOPAT(opj,userAccessType.getAccessTypeId());
+                                if (!opatSet.isEmpty()) {
+                                    opj.getAccessTypes().clear();
+                                    opj.setAccessTypes(opatSet);
+                                    matchingOrganisationProfileJurisdiction.add(opj);
+                                }
                             }
                         }
                     }
@@ -295,6 +310,27 @@ public class ProfessionalRefreshOrchestrationHelper {
         return matchingOrganisationProfileJurisdiction;
     }
 
+    public static boolean isNullOrEmpty(final Collection<?> c) {
+        return c == null || c.isEmpty();
+    }
+
+    private static Set<OrganisationProfileAccessType> getMatchingOpatForNullUserAccessType(
+            OrganisationProfileJurisdiction opj) {
+
+        return opj.getAccessTypes()
+                .stream()
+                .filter(ProfessionalRefreshOrchestrationHelper::matchOpatForNullUserAccessType)
+                .collect(Collectors.toSet());
+    }
+
+    private static boolean matchOpatForNullUserAccessType(OrganisationProfileAccessType opat) {
+        return opat.isAccessDefault();
+    }
+
+    private static boolean matchOPAT(OrganisationProfileAccessType opat, String userAccessTypeId) {
+        return opat.getAccessTypeId() != null && opat.getAccessTypeId().equals(userAccessTypeId);
+    }
+
     private static Set<OrganisationProfileAccessType> getMatchingOPAT(
             OrganisationProfileJurisdiction opj, String userAccessTypeId) {
 
@@ -302,10 +338,6 @@ public class ProfessionalRefreshOrchestrationHelper {
                 .stream()
                 .filter(organisationProfileAccessType -> matchOPAT(organisationProfileAccessType,userAccessTypeId))
                 .collect(Collectors.toSet());
-    }
-
-    private static boolean matchOPAT(OrganisationProfileAccessType opat, String userAccessTypeId) {
-        return opat.getAccessTypeId() != null && opat.getAccessTypeId().equals(userAccessTypeId);
     }
 
     @NotNull

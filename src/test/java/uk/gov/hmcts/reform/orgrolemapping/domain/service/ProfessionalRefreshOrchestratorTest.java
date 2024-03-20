@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -41,6 +42,8 @@ class ProfessionalRefreshOrchestratorTest {
     private RoleAssignmentService roleAssignmentService;
     @Mock
     private SecurityUtils securityUtils;
+    @Mock
+    ProcessEventTracker processEventTracker;
     @Mock
     private ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
     @InjectMocks

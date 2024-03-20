@@ -252,12 +252,12 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         GetRefreshUsersResponse getRefreshUsersResponse = TestDataBuilder.buildRefreshUsersResponse("1234");
         getRefreshUsersResponse.getUsers().add(new RefreshUser());
         doReturn(ResponseEntity.status(HttpStatus.OK).body(getRefreshUsersResponse))
-            .when(prdFeignClient).getRefreshUsers(any());
+                .when(prdFeignClient).getRefreshUsers(any());
         MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders()))
-            .andExpect(status().isInternalServerError())
-            .andReturn();
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders()))
+                .andExpect(status().isInternalServerError())
+                .andReturn();
         assertTrue(result.getResolvedException() instanceof ServiceException);
         assertEquals(String.format(EXPECTED_SINGLE_PRD_USER, "1234", "2"), result.getResolvedException().getMessage());
     }

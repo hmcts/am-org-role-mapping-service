@@ -11,6 +11,8 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,20 +29,26 @@ public class ProfessionalRefreshOrchestrator {
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final PRDService prdService;
     private final ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
+    private final ProcessEventTracker processEventTracker;
 
     public ProfessionalRefreshOrchestrator(AccessTypesRepository accessTypesRepository,
                                            UserRefreshQueueRepository userRefreshQueueRepository,
                                            PRDService prdService,
                                            ProfessionalRefreshOrchestrationHelper
-                                                   professionalRefreshOrchestrationHelper) {
+                                                   professionalRefreshOrchestrationHelper,
+                                           ProcessEventTracker processEventTracker) {
         this.accessTypesRepository = accessTypesRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.prdService = prdService;
         this.professionalRefreshOrchestrationHelper = professionalRefreshOrchestrationHelper;
+        this.processEventTracker = processEventTracker;
     }
 
     @Transactional
     public ResponseEntity<Object> refreshProfessionalUser(String userId) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
+                "PRM Process 6 - Refresh User - Single User Mode");
+        processEventTracker.trackEventStarted(processMonitorDto);
         log.info("Single User refreshProfessionalUser for {}", userId);
         GetRefreshUsersResponse getRefreshUsersResponse;
         try {
@@ -59,6 +67,8 @@ public class ProfessionalRefreshOrchestrator {
         professionalRefreshOrchestrationHelper.refreshSingleUser(userRefreshQueueRepository.findByUserId(userId),
                 getLatestAccessTypes());
 
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
         return ResponseEntity.ok().body(Map.of("Message", SUCCESS_ROLE_REFRESH));
     }
 

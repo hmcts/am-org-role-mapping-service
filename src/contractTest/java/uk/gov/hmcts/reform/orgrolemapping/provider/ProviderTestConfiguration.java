@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestr
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrationHelper;
 
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.List;
@@ -53,6 +54,8 @@ public class ProviderTestConfiguration {
     RoleAssignmentService roleAssignmentService;
     @MockBean
     PersistenceService persistenceService;
+    @MockBean
+    ProcessEventTracker processEventTracker;
 
     private KieServices kieServices = KieServices.Factory.get();
 
@@ -103,8 +106,7 @@ public class ProviderTestConfiguration {
     @Primary
     public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator() {
         return new ProfessionalRefreshOrchestrator(accessTypesRepository, userRefreshQueueRepository,
-                prdService, professionalRefreshOrchestrationHelper
-                );
+                prdService, professionalRefreshOrchestrationHelper, processEventTracker);
     }
 
     @Bean
