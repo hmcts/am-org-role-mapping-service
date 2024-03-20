@@ -35,7 +35,8 @@ java:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     ROLE_ASSIGNMENT_APP_URL: http://am-role-assignment-service-aat.service.core-compute-aat.internal
-    JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-aat.service.core-compute-aat.internal
+    # temp override of JBS URL to force JBS integration to fail.
+    JUDICIAL_BOOKING_APP_URL: http://am-role-assignment-service-aat.service.core-compute-aat.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
     LAUNCH_DARKLY_ENV: pr
@@ -53,8 +54,10 @@ java:
     ORG_ROLE_MAPPING_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
     ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.auth.port}}"
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
-    REFRESH_JOB_INCLUDE_BOOKINGS: false
-    REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
+    # temp override of default REFRESH_JOB_PAGE_SIZE to allow easier testing of JBS batch loading
+    REFRESH_JOB_PAGE_SIZE: 2
+    REFRESH_JOB_INCLUDE_BOOKINGS: true
+    REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: true
     TESTING_SUPPORT_ENABLED: true
     RUN_LD_ON_STARTUP: true
   postgresql:
