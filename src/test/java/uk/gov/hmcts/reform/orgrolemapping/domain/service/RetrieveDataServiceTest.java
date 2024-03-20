@@ -56,8 +56,8 @@ class RetrieveDataServiceTest {
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
 
 
-    RetrieveDataService sutJrdV1 = new RetrieveDataService(parseRequestService, crdService, jrdService, false, false);
-    RetrieveDataService sutJrdV2 = new RetrieveDataService(parseRequestService, crdService, jrdService, true, true);
+    RetrieveDataService sutJrdV1 = new RetrieveDataService(parseRequestService, crdService, jrdService/*, false, false*/);
+    RetrieveDataService sutJrdV2 = new RetrieveDataService(parseRequestService, crdService, jrdService/*, true, true*/);
 
 
     @Test
@@ -252,16 +252,16 @@ class RetrieveDataServiceTest {
 
     @ParameterizedTest()
     @ValueSource(booleans = {true, false})
-    void shouldReturnJudicialProfileV2_withAppointmentsFlag(boolean v2FilterAuthorisationsByAppointmentId) {
+    void shouldReturnJudicialProfileV2_withAppointmentsFlag(/*boolean v2FilterAuthorisationsByAppointmentId*/) {
 
         // GIVEN
         // NB: use local SUT instance, so we can override filter flag.
         var sut = new RetrieveDataService(
             parseRequestService,
             crdService,
-            jrdService,
+            jrdService/*,
             true,
-            v2FilterAuthorisationsByAppointmentId
+            v2FilterAuthorisationsByAppointmentId*/
         );
 
         doReturn(ResponseEntity
@@ -278,13 +278,13 @@ class RetrieveDataServiceTest {
             assertNotNull(k);
             assertNotNull(v);
             v.forEach(userAccessProfile -> {
-                if (v2FilterAuthorisationsByAppointmentId) {
+                //if (v2FilterAuthorisationsByAppointmentId) {
                     // FILTERED: only 2 authorisations from "judicialProfileSampleV2.json" attached to each appointment
                     assertEquals(2, ((JudicialAccessProfile) userAccessProfile).getAuthorisations().size());
-                } else {
+                //} else {
                     // UNFILTERED: all 3 authorisations from "judicialProfileSampleV2.json" attached to each appointment
-                    assertEquals(3, ((JudicialAccessProfile) userAccessProfile).getAuthorisations().size());
-                }
+                    //assertEquals(3, ((JudicialAccessProfile) userAccessProfile).getAuthorisations().size());
+                //}
             });
         });
     }

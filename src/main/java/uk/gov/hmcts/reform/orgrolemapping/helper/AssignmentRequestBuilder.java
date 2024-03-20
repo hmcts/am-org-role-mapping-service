@@ -206,8 +206,8 @@ public class AssignmentRequestBuilder {
 
     @SuppressWarnings("deprecation")
     public static Set<UserAccessProfile> convertProfileToJudicialAccessProfileV2(
-            JudicialProfileV2 judicialProfile,
-            boolean filterAuthorisationsByAppointmentId
+            JudicialProfileV2 judicialProfile/*,
+            boolean filterAuthorisationsByAppointmentId*/
     ) {
         Set<UserAccessProfile> judicialAccessProfiles = new HashSet<>();
 
@@ -219,9 +219,9 @@ public class AssignmentRequestBuilder {
         // flatten for each appointment
         judicialProfile.getAppointments().forEach(appointment -> {
             var associatedAuthorisations = getV1Authorisations(
-                filterAuthorisationsByAppointmentId
-                ? getAuthorisationsByAppointmentId(judicialProfile.getAuthorisations(), appointment.getAppointmentId())
-                : judicialProfile.getAuthorisations()
+                /*filterAuthorisationsByAppointmentId
+                ?*/getAuthorisationsByAppointmentId(judicialProfile.getAuthorisations(), appointment.getAppointmentId())
+                //: judicialProfile.getAuthorisations()
             );
 
             var ticketCodes = getActiveTicketCodes(associatedAuthorisations);

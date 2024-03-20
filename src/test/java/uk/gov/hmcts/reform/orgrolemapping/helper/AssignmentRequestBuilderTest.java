@@ -352,7 +352,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, true);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, true*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -367,52 +367,52 @@ class AssignmentRequestBuilderTest {
             assertEquals(1, judicialAccessProfiles.size());
         }
 
-        @Test
-        void convertUserProfileToJudicialAccessProfileV2_multipleAppointments_doNotFilterAuthorisations() {
-
-            // GIVEN
-            var authorisationsForApp1 = buildAuthorisationsList(
-                APP_1_NO_END_DATE,
-                List.of(AUTH_1_NO_END_DATE),
-                List.of(TICKET_CODE_1)
-            );
-            var authorisationsForApp2 = buildAuthorisationsList(
-                APP_2_FUTURE_END_DATE,
-                List.of(AUTH_2_FUTURE_END_DATE),
-                List.of(TICKET_CODE_2)
-            );
-            List<AuthorisationV2> allAuthorisations = new ArrayList<>();
-            allAuthorisations.addAll(authorisationsForApp1);
-            allAuthorisations.addAll(authorisationsForApp2);
-            // add extra authorisation not associated with any appointment
-            allAuthorisations.add(buildAuthorisation(null, AUTH_4_EXTRA, TICKET_CODE_3));
-
-            JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileWithParamsV2(
-                    buildAppointmentsList(List.of(APP_1_NO_END_DATE, APP_2_FUTURE_END_DATE)),
-                    allAuthorisations
-            );
-
-            // WHEN
-            Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, false);
-
-            // THEN
-            judicialAccessProfiles.stream()
-                    .filter(obj -> obj instanceof JudicialAccessProfile)
-                    .map(JudicialAccessProfile.class::cast)
-                    .forEach(accessProfile -> {
-                        assertCommonJudicialAccessProfileFields(accessProfile);
-                        // NB: All three authorisations are included when no filter applied
-                        assertEquals(3, accessProfile.getTicketCodes().size());
-                        assertThat(
-                                accessProfile.getTicketCodes(),
-                                containsInAnyOrder(TICKET_CODE_1, TICKET_CODE_2, TICKET_CODE_3)
-                        );
-                        assertEquals(3, accessProfile.getAuthorisations().size());
-                    });
-            // NB: multiple appointments flattened into two judicialAccessProfiles
-            assertEquals(2, judicialAccessProfiles.size());
-        }
+//        @Test
+//        void convertUserProfileToJudicialAccessProfileV2_multipleAppointments_doNotFilterAuthorisations() {
+//
+//            // GIVEN
+//            var authorisationsForApp1 = buildAuthorisationsList(
+//                APP_1_NO_END_DATE,
+//                List.of(AUTH_1_NO_END_DATE),
+//                List.of(TICKET_CODE_1)
+//            );
+//            var authorisationsForApp2 = buildAuthorisationsList(
+//                APP_2_FUTURE_END_DATE,
+//                List.of(AUTH_2_FUTURE_END_DATE),
+//                List.of(TICKET_CODE_2)
+//            );
+//            List<AuthorisationV2> allAuthorisations = new ArrayList<>();
+//            allAuthorisations.addAll(authorisationsForApp1);
+//            allAuthorisations.addAll(authorisationsForApp2);
+//            // add extra authorisation not associated with any appointment
+//            allAuthorisations.add(buildAuthorisation(null, AUTH_4_EXTRA, TICKET_CODE_3));
+//
+//            JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileWithParamsV2(
+//                    buildAppointmentsList(List.of(APP_1_NO_END_DATE, APP_2_FUTURE_END_DATE)),
+//                    allAuthorisations
+//            );
+//
+//            // WHEN
+//            Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
+//                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, false*/);
+//
+//            // THEN
+//            judicialAccessProfiles.stream()
+//                    .filter(obj -> obj instanceof JudicialAccessProfile)
+//                    .map(JudicialAccessProfile.class::cast)
+//                    .forEach(accessProfile -> {
+//                        assertCommonJudicialAccessProfileFields(accessProfile);
+//                        // NB: All three authorisations are included when no filter applied
+//                        assertEquals(3, accessProfile.getTicketCodes().size());
+//                        assertThat(
+//                                accessProfile.getTicketCodes(),
+//                                containsInAnyOrder(TICKET_CODE_1, TICKET_CODE_2, TICKET_CODE_3)
+//                        );
+//                        assertEquals(3, accessProfile.getAuthorisations().size());
+//                    });
+//            // NB: multiple appointments flattened into two judicialAccessProfiles
+//            assertEquals(2, judicialAccessProfiles.size());
+//        }
 
         @Test
         void convertUserProfileToJudicialAccessProfileV2_multipleAppointments_filterAuthorisations() {
@@ -441,7 +441,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, true);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, true*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -480,7 +480,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, filterAuthorisationsByAppId);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, filterAuthorisationsByAppId*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -509,7 +509,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, filterAuthorisationsByAppId);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, filterAuthorisationsByAppId*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -542,7 +542,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, filterAuthorisationsByAppId);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, filterAuthorisationsByAppId*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -577,7 +577,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, true);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, true*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -608,7 +608,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, true);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, true*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -635,7 +635,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, true);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, true*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -664,7 +664,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, true);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, true*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -696,7 +696,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, true);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, true*/);
 
             // THEN
             judicialAccessProfiles.stream()
@@ -795,7 +795,7 @@ class AssignmentRequestBuilderTest {
 
             // WHEN
             Set<UserAccessProfile> judicialAccessProfiles = AssignmentRequestBuilder
-                    .convertProfileToJudicialAccessProfileV2(judicialProfile, true);
+                    .convertProfileToJudicialAccessProfileV2(judicialProfile/*, true*/);
 
             // THEN
             // NB: when flattening judicialProfile by each Appointment it should also flatten by each ServiceCode.
