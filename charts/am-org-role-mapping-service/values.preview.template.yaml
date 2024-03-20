@@ -53,6 +53,8 @@ java:
     ORG_ROLE_MAPPING_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
     ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.auth.port}}"
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
+    # temp override of default REFRESH_JOB_PAGE_SIZE to allow easier testing of JBS batch loading
+    REFRESH_JOB_PAGE_SIZE: 2
     REFRESH_JOB_INCLUDE_BOOKINGS: true
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: true
     TESTING_SUPPORT_ENABLED: true
