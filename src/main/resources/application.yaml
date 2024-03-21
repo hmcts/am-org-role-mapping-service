@@ -198,3 +198,6 @@ professional:
         enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
         findUsersWithStaleOrganisations:
           cron: ${CRON_P4_USERS_STALE_ORGS:*/30 * * * * *}
+          retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
+          retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
+          retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
