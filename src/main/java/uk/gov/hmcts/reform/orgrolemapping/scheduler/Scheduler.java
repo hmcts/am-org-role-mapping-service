@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 
@@ -10,10 +11,13 @@ public class Scheduler {
 
     private final OrganisationService organisationService;
     private final ProfessionalUserService professionalUserService;
+    private final UserRefreshQueueRepository userRefreshQueueRepository;
 
-    public Scheduler(OrganisationService organisationService, ProfessionalUserService professionalUserService) {
+    public Scheduler(OrganisationService organisationService, ProfessionalUserService professionalUserService,
+                     UserRefreshQueueRepository userRefreshQueueRepository) {
         this.organisationService = organisationService;
         this.professionalUserService = professionalUserService;
+        this.userRefreshQueueRepository = userRefreshQueueRepository;
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.cron}")
@@ -27,8 +31,10 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.userRefresh.cron}")
-    void deleteActiveUserRefreshRecords() {
-        professionalUserService.refreshUsers();
+    void processUserRefreshQueue() {
+        while (userRefreshQueueRepository.getActiveUserRefreshQueueCount() >= 1) {
+            professionalUserService.refreshUsers2();
+        }
     }
 
 }

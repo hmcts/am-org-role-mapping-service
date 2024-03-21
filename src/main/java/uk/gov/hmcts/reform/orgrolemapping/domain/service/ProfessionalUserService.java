@@ -80,6 +80,82 @@ public class ProfessionalUserService {
         this.userRetryThreeIntervalMin = userRetryThreeIntervalMin;
     }
 
+    public void refreshUsers2() {
+        String processName = "PRM Process 6 - Refresh users - Batch mode";
+        log.info("Starting {}", processName);
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
+        processEventTracker.trackEventStarted(processMonitorDto);
+
+        try {
+            UserRefreshQueueEntity userRefreshQueueEntity
+                    = userRefreshQueueRepository.retrieveSingleActiveRecord();
+
+            if (userRefreshQueueEntity == null) {
+                processMonitorDto.addProcessStep("No entities to process");
+                processMonitorDto.markAsSuccess();
+                processEventTracker.trackEventCompleted(processMonitorDto);
+                log.info("Completed {}. No entities to process", processName);
+                return;
+            };
+
+            List<AccessTypesEntity> accessTypesEntities = accessTypesRepository.findAll();
+            if (accessTypesEntities.size() != 1) {
+                throw new ServiceException("Single AccessTypesEntity not found");
+            }
+            AccessTypesEntity accessTypesEntity = accessTypesEntities.get(0);
+
+            String userId = userRefreshQueueEntity.getUserId();
+
+            boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+                try {
+                    processMonitorDto.addProcessStep("attempting clearUserRefreshRecord for userId="
+                            + userId);
+                    userRefreshQueueRepository.clearUserRefreshRecord(userId,
+                            LocalDateTime.now(), accessTypesEntity.getVersion());
+                    processMonitorDto.appendToLastProcessStep(" : COMPLETED");
+
+
+                    return true;
+                } catch (Exception ex) {
+                    String message = String.format("Error occurred while processing user: %s. Retry attempt "
+                                    + "%d. Rolling back.",
+                            userId, userRefreshQueueEntity.getRetry());
+                    processMonitorDto.addProcessStep(message);
+                    log.error(message, ex);
+                    status.setRollbackOnly();
+
+                    return false;
+                }
+            }));
+
+            if (!isSuccess) {
+                userRefreshQueueRepository.updateRetry(
+                        userId, userRetryOneIntervalMin, userRetryTwoIntervalMin, userRetryThreeIntervalMin
+                );
+
+                // to avoid another round trip to the database, use the current retry attempt.
+                if (userRefreshQueueEntity.getRetry() == 3) {
+                    throw new ServiceException("Retry limit reached");
+                }
+            }
+
+            processMonitorDto.addProcessStep("attempting next retrieveSingleActiveRecord");
+            UserRefreshQueueEntity userRefreshQueue =  userRefreshQueueRepository.retrieveSingleActiveRecord();
+            String completionPrefix = (userRefreshQueue == null ? " - none" : " - one") + " found";
+            processMonitorDto.appendToLastProcessStep(completionPrefix + " : COMPLETED");
+
+        } catch (Exception e) {
+            processMonitorDto.markAsFailed(e.getMessage());
+            processEventTracker.trackEventCompleted(processMonitorDto);
+            throw e;
+        }
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
+
+        log.info("Completed {}", processName);
+    }
+
+
     public void refreshUsers() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 6 - Refresh users - Batch mode");
         processEventTracker.trackEventStarted(processMonitorDto);
@@ -100,6 +176,7 @@ public class ProfessionalUserService {
         }
     }
 
+
     private void refreshUsersForAccessType(AccessTypesEntity accessTypesEntity, ProcessMonitorDto processMonitorDto) {
         processMonitorDto.addProcessStep("attempting retrieveSingleActiveRecord");
         UserRefreshQueueEntity userRefreshQueueEntity = userRefreshQueueRepository.retrieveSingleActiveRecord();
@@ -110,7 +187,6 @@ public class ProfessionalUserService {
         }
     }
 
-    @Transactional
     public UserRefreshQueueEntity refreshAndClearUserRecord(UserRefreshQueueEntity userRefreshQueueEntity,
                                                             AccessTypesEntity accessTypesEntity,
                                                             ProcessMonitorDto processMonitorDto) {
@@ -138,6 +214,7 @@ public class ProfessionalUserService {
                     processMonitorDto.addProcessStep(message);
                     log.error(message, ex);
                     status.setRollbackOnly();
+
                     return false;
                 }
             }));
@@ -146,6 +223,11 @@ public class ProfessionalUserService {
                 userRefreshQueueRepository.updateRetry(
                         userId, userRetryOneIntervalMin, userRetryTwoIntervalMin, userRetryThreeIntervalMin
                 );
+
+                // to avoid another round trip to the database, use the current retry attempt.
+                if (userRefreshQueueEntity.getRetry() == 3) {
+                    throw new ServiceException("Retry limit reached");
+                }
             }
 
             processMonitorDto.addProcessStep("attempting next retrieveSingleActiveRecord");
@@ -153,6 +235,7 @@ public class ProfessionalUserService {
             String completionPrefix = (userRefreshQueue == null ? " - none" : " - one") + " found";
             processMonitorDto.appendToLastProcessStep(completionPrefix + " : COMPLETED");
             return userRefreshQueue;
+
         } catch (Exception ex) {
             userRefreshQueueRepository.updateRetry(userId, userRetryOneIntervalMin,
                     userRetryTwoIntervalMin, userRetryThreeIntervalMin);

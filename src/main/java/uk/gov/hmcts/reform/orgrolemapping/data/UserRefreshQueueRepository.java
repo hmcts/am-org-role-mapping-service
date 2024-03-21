@@ -92,4 +92,8 @@ public interface UserRefreshQueueRepository extends CrudRepository<UserRefreshQu
             + "where user_id = :userId", nativeQuery = true)
     void updateRetry(String userId, String retryOneIntervalMin,
                      String retryTwoIntervalMin, String retryThreeIntervalMin);
+
+    @Query(value = "select count(*) from user_refresh_queue where active = true and retry_after < now()",
+            nativeQuery = true)
+    Long getActiveUserRefreshQueueCount();
 }
