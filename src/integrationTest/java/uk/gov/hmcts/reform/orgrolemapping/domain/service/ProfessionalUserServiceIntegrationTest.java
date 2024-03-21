@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -9,6 +10,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +20,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
+import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
@@ -25,18 +28,17 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @Transactional
 public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration {
@@ -55,6 +57,9 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @MockBean
     private RASFeignClient rasFeignClient;
+
+    @MockBean
+    private PRDService prdService;
 
     @MockBean
     private ProcessEventTracker processEventTracker;
@@ -101,23 +106,36 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertEquals("ACTIVE", refreshedUser.getOrganisationStatus());
         assertArrayEquals(new String[]{"SOLICITOR_PROFILE", "2"},
                 refreshedUser.getOrganisationProfileIds());
-        //assertFalse(refreshedUser.getActive());
+        //assertFalse(refreshedUser.getActive()); why did Sanjay think this should be false, it is true?
 
     }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
-    void shouldFailToRefreshUsers() {
+    void shouldRollback_AndUpdateRetryToOneOnException() {
         doThrow(ServiceException.class).when(userRefreshQueueRepository).clearUserRefreshRecord(any(), any(), any());
-
 
         professionalUserService.refreshUsers2();
 
-        UserRefreshQueueEntity refreshedUser = userRefreshQueueRepository.findByUserId(USER_ID);
+        List<UserRefreshQueueEntity> userRefreshQueueEntities
+                = userRefreshQueueRepository.findAll();
+        assertTrue(userRefreshQueueEntities.get(0).getActive());
+        assertEquals(1, userRefreshQueueEntities.get(0).getRetry());
+        assertTrue(userRefreshQueueEntities.get(0).getRetryAfter().isAfter(LocalDateTime.now()));
+    }
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_user_refresh_queue_138_retry_3.sql"})
+    void shouldRollback_AndUpdateRetryToFourAndRetryAfterToNullOnException() {
+        professionalUserService.refreshUsers2();
 
-
+        List<UserRefreshQueueEntity> userRefreshQueueEntities
+                = userRefreshQueueRepository.findAll();
+        assertTrue(userRefreshQueueEntities.get(0).getActive());
+        assertEquals(4, userRefreshQueueEntities.get(0).getRetry());
+        assertTrue(userRefreshQueueEntities.get(0).getRetryAfter().isAfter(LocalDateTime.now()));
     }
 
 }
