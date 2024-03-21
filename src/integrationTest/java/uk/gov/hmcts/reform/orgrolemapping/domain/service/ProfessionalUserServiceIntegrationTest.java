@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -10,7 +9,6 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +18,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
-import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
@@ -90,7 +87,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
     void shouldRefreshUsers() {
-        professionalUserService.refreshUsers2();
+        professionalUserService.refreshUsers();
 
         UserRefreshQueueEntity refreshedUser = userRefreshQueueRepository.findByUserId(USER_ID);
         assertEquals(USER_ID, refreshedUser.getUserId());
@@ -116,7 +113,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     void shouldRollback_AndUpdateRetryToOneOnException() {
         doThrow(ServiceException.class).when(userRefreshQueueRepository).clearUserRefreshRecord(any(), any(), any());
 
-        professionalUserService.refreshUsers2();
+        professionalUserService.refreshUsers();
 
         List<UserRefreshQueueEntity> userRefreshQueueEntities
                 = userRefreshQueueRepository.findAll();
@@ -129,7 +126,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138_retry_3.sql"})
     void shouldRollback_AndUpdateRetryToFourAndRetryAfterToNullOnException() {
-        professionalUserService.refreshUsers2();
+        professionalUserService.refreshUsers();
 
         List<UserRefreshQueueEntity> userRefreshQueueEntities
                 = userRefreshQueueRepository.findAll();

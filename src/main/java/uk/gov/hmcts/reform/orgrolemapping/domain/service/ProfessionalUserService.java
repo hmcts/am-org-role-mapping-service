@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
@@ -80,7 +79,7 @@ public class ProfessionalUserService {
         this.userRetryThreeIntervalMin = userRetryThreeIntervalMin;
     }
 
-    public void refreshUsers2() {
+    public void refreshUsers() {
         String processName = "PRM Process 6 - Refresh users - Batch mode";
         log.info("Starting {}", processName);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
@@ -153,93 +152,5 @@ public class ProfessionalUserService {
         processEventTracker.trackEventCompleted(processMonitorDto);
 
         log.info("Completed {}", processName);
-    }
-
-
-    public void refreshUsers() {
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 6 - Refresh users - Batch mode");
-        processEventTracker.trackEventStarted(processMonitorDto);
-        try {
-            List<AccessTypesEntity> accessTypesEntities = accessTypesRepository.findAll();
-            if (accessTypesEntities.size() != 1) {
-                throw new ServiceException("Single AccessTypesEntity not found");
-            }
-            AccessTypesEntity accessTypesEntity = accessTypesEntities.get(0);
-            refreshUsersForAccessType(accessTypesEntity, processMonitorDto);
-
-            processMonitorDto.markAsSuccess();
-            processEventTracker.trackEventCompleted(processMonitorDto);
-        } catch (Exception exception) {
-            processMonitorDto.markAsFailed(exception.getMessage());
-            processEventTracker.trackEventCompleted(processMonitorDto);
-            throw exception;
-        }
-    }
-
-
-    private void refreshUsersForAccessType(AccessTypesEntity accessTypesEntity, ProcessMonitorDto processMonitorDto) {
-        processMonitorDto.addProcessStep("attempting retrieveSingleActiveRecord");
-        UserRefreshQueueEntity userRefreshQueueEntity = userRefreshQueueRepository.retrieveSingleActiveRecord();
-        processMonitorDto.appendToLastProcessStep(" : COMPLETED");
-        while (userRefreshQueueEntity != null) {
-            userRefreshQueueEntity = refreshAndClearUserRecord(userRefreshQueueEntity, accessTypesEntity,
-                    processMonitorDto);
-        }
-    }
-
-    public UserRefreshQueueEntity refreshAndClearUserRecord(UserRefreshQueueEntity userRefreshQueueEntity,
-                                                            AccessTypesEntity accessTypesEntity,
-                                                            ProcessMonitorDto processMonitorDto) {
-        String userId = userRefreshQueueEntity.getUserId();
-        processMonitorDto.addProcessStep("attempting refreshAndClearUserRecord for userId="
-                + userId);
-        try {
-            professionalRefreshOrchestrationHelper.refreshSingleUser(userRefreshQueueEntity, accessTypesEntity);
-            processMonitorDto.appendToLastProcessStep(" : COMPLETED");
-
-            boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
-                try {
-                    processMonitorDto.addProcessStep("attempting clearUserRefreshRecord for userId="
-                            + userId);
-                    userRefreshQueueRepository.clearUserRefreshRecord(userId,
-                            LocalDateTime.now(), accessTypesEntity.getVersion());
-                    processMonitorDto.appendToLastProcessStep(" : COMPLETED");
-
-
-                    return true;
-                } catch (Exception ex) {
-                    String message = String.format("Error occurred while processing user: %s. Retry attempt "
-                                    + "%d. Rolling back.",
-                            userId, userRefreshQueueEntity.getRetry());
-                    processMonitorDto.addProcessStep(message);
-                    log.error(message, ex);
-                    status.setRollbackOnly();
-
-                    return false;
-                }
-            }));
-
-            if (!isSuccess) {
-                userRefreshQueueRepository.updateRetry(
-                        userId, userRetryOneIntervalMin, userRetryTwoIntervalMin, userRetryThreeIntervalMin
-                );
-
-                // to avoid another round trip to the database, use the current retry attempt.
-                if (userRefreshQueueEntity.getRetry() == 3) {
-                    throw new ServiceException("Retry limit reached");
-                }
-            }
-
-            processMonitorDto.addProcessStep("attempting next retrieveSingleActiveRecord");
-            UserRefreshQueueEntity userRefreshQueue =  userRefreshQueueRepository.retrieveSingleActiveRecord();
-            String completionPrefix = (userRefreshQueue == null ? " - none" : " - one") + " found";
-            processMonitorDto.appendToLastProcessStep(completionPrefix + " : COMPLETED");
-            return userRefreshQueue;
-
-        } catch (Exception ex) {
-            userRefreshQueueRepository.updateRetry(userId, userRetryOneIntervalMin,
-                    userRetryTwoIntervalMin, userRetryThreeIntervalMin);
-            throw ex;
-        }
     }
 }

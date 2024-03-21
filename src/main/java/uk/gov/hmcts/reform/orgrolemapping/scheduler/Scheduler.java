@@ -33,7 +33,7 @@ public class Scheduler {
     @Scheduled(cron = "${professional.role.mapping.scheduling.userRefresh.cron}")
     void processUserRefreshQueue() {
         while (userRefreshQueueRepository.getActiveUserRefreshQueueCount() >= 1) {
-            professionalUserService.refreshUsers2();
+            professionalUserService.refreshUsers();
         }
     }
 
