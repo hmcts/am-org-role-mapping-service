@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildProfessionalUser;
@@ -42,7 +44,7 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
     @Autowired
     private UserRefreshQueueRepository userRefreshQueueRepository;
 
-    @Autowired
+    @SpyBean
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
 
     @MockBean
@@ -86,6 +88,33 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
         assertEquals(0, userRefreshEntity.getRetry());
         assertNotNull(userRefreshEntity.getRetryAfter());
+
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_organisation_profiles.sql"})
+    void shouldRollback_AndUpdateRetryToOneAndRetryAfterToNullOnException() {
+        doThrow(ServiceException.class).when(organisationRefreshQueueRepository).setActiveFalse(any(), any(), any());
+
+        ProfessionalUser professionalUser = buildProfessionalUser(1);
+        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
+        UsersByOrganisationResponse response =
+                buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
+
+        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+                .thenReturn(ResponseEntity.ok(response));
+
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
+        assertEquals(0, userRefreshQueueRepository.findAll().size());
+
+        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
+                = organisationRefreshQueueRepository.findAll();
+        assertTrue(organisationRefreshQueueEntities.get(0).getActive());
+        assertEquals(1, organisationRefreshQueueEntities.get(0).getRetry());
+        assertNotNull(organisationRefreshQueueEntities.get(0).getRetryAfter());
+
     }
 
     @Test
