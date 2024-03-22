@@ -243,11 +243,15 @@ public class ProfessionalRefreshOrchestrationHelper {
             for (OrganisationProfileJurisdiction orgProfileJurisdictions : organisationProfileJurisdictions) {
                 for (OrganisationProfileAccessType organisationProfileAccessType:
                         orgProfileJurisdictions.getAccessTypes()) {
-                    for (UserAccessType userAccessType:userAccessTypes) {
-                        if (organisationProfileAccessType.isAccessMandatory()
-                                || (organisationProfileAccessType.isAccessDefault() && (userAccessType == null))
-                                || userAccessType.getEnabled()) {
-                            extractedOrganisationProfiles.add(organisationProfile);
+                    if (isNullOrEmpty(userAccessTypes)) {
+                        extractedOrganisationProfiles.add(organisationProfile);
+                    } else {
+                        for (UserAccessType userAccessType : userAccessTypes) {
+                            if (organisationProfileAccessType.isAccessMandatory()
+                                    || (organisationProfileAccessType.isAccessDefault() && (userAccessType == null))
+                                    || Boolean.TRUE.equals(userAccessType.getEnabled())) {
+                                extractedOrganisationProfiles.add(organisationProfile);
+                            }
                         }
                     }
                 }
