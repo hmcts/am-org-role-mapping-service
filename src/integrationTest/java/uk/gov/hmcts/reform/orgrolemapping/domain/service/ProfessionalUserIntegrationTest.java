@@ -15,12 +15,12 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -48,9 +48,13 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
     @MockBean
     private PrdService prdService;
 
+    private ProcessMonitorDto processMonitorDto;
+
     @BeforeEach
     void setUp() {
         userRefreshQueueRepository.deleteAll();
+        processMonitorDto = new ProcessMonitorDto(
+                "PRM Process 4 - Find Users with Stale Organisations [Test]");
     }
 
     @Test
@@ -65,8 +69,10 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        boolean result =
+                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(processMonitorDto);
 
+        assertTrue(result);
         assertEquals(1, userRefreshQueueRepository.findAll().size());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
@@ -104,9 +110,11 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        boolean result =
+                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(processMonitorDto);
 
-        assertEquals(0, userRefreshQueueRepository.findAll().size());
+        assertFalse(result);
+        assertTrue(userRefreshQueueRepository.findAll().isEmpty());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
                 = organisationRefreshQueueRepository.findAll();
@@ -131,11 +139,10 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        ServiceException exception = assertThrows(ServiceException.class, () ->
-                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
-        );
+        boolean result =
+                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(processMonitorDto);
 
-        assertEquals("Retry limit reached", exception.getMessage());
+        assertFalse(result);
 
         assertEquals(0, userRefreshQueueRepository.findAll().size());
 
