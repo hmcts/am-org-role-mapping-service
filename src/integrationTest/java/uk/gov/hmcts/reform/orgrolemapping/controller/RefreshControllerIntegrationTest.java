@@ -105,7 +105,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     private static final String URL = "/am/role-mapping/refresh";
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
     private static final String PROFESSIONAL_REFRESH_URL = "/am/role-mapping/professional/refresh";
-
     private MockMvc mockMvc;
     private JdbcTemplate template;
 
@@ -126,10 +125,8 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     @MockBean
     private RASFeignClient rasFeignClient;
-
     @MockBean
     private PRDFeignClient prdFeignClient;
-
     @MockBean
     private RequestMappingService requestMappingService;
 

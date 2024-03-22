@@ -46,9 +46,7 @@ public class RefreshController {
     }
 
     RefreshOrchestrator refreshOrchestrator;
-
     JudicialRefreshOrchestrator judicialRefreshOrchestrator;
-
     ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 
     @PostMapping(
