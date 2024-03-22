@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -18,7 +20,6 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,6 @@ class ProfessionalUserServiceTest {
     private final DatabaseDateTimeRepository databaseDateTimeRepository = mock(DatabaseDateTimeRepository.class);
     private final BatchLastRunTimestampRepository batchLastRunTimestampRepository =
             mock(BatchLastRunTimestampRepository.class);
-    private final ProcessEventTracker processEventTracker = Mockito.mock(ProcessEventTracker.class);
     private final ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper =
             Mockito.mock(ProfessionalRefreshOrchestrationHelper.class);
     private final PlatformTransactionManager transactionManager =
@@ -51,16 +51,23 @@ class ProfessionalUserServiceTest {
     @Captor
     private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
 
+    private ProcessMonitorDto processMonitorDto;
+
     ProfessionalUserService professionalUserService  = new ProfessionalUserService(
             prdService,
             userRefreshQueueRepository,
             "1",
             jdbcTemplate,
             accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository,
-            processEventTracker, professionalRefreshOrchestrationHelper, "10", "90",transactionManager,
+            professionalRefreshOrchestrationHelper, "10", "90",transactionManager,
             "2",
             "15",
             "60");
+
+    @BeforeEach
+    void setUp() {
+        processMonitorDto = new ProcessMonitorDto("PRM Process 6 - Refresh users - Batch mode [Test]");
+    }
 
     @Test
     void refreshUsersTest() {
@@ -76,17 +83,16 @@ class ProfessionalUserServiceTest {
                 .thenReturn(activeUser2)
                 .thenReturn(null);
 
-        professionalUserService.refreshUsers();
+        professionalUserService.refreshUsers(processMonitorDto);
 
         verify(professionalRefreshOrchestrationHelper).refreshSingleUser(activeUser1, accessTypesEntity1);
         verify(professionalRefreshOrchestrationHelper).refreshSingleUser(activeUser2, accessTypesEntity1);
         verify(userRefreshQueueRepository, times(2)).clearUserRefreshRecord(any(), any(), any());
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
 
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size())
-                .isEqualTo(7);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps())
+                .hasSize(7);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
                 .isEqualTo("attempting retrieveSingleActiveRecord : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(1))
@@ -115,15 +121,14 @@ class ProfessionalUserServiceTest {
         when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
 
         Assertions.assertThrows(ServiceException.class, () ->
-                professionalUserService.refreshUsers()
+                professionalUserService.refreshUsers(processMonitorDto)
         );
 
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single AccessTypesEntity not found");
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps()).isEmpty();
 
     }
 
@@ -145,17 +150,16 @@ class ProfessionalUserServiceTest {
                 .when(professionalRefreshOrchestrationHelper).refreshSingleUser(activeUser2, accessTypesEntity1);
 
         Assertions.assertThrows(ServiceException.class, () ->
-            professionalUserService.refreshUsers()
+            professionalUserService.refreshUsers(processMonitorDto)
         );
 
         verify(professionalRefreshOrchestrationHelper).refreshSingleUser(activeUser1, accessTypesEntity1);
         verify(userRefreshQueueRepository).clearUserRefreshRecord(any(), any(), any());
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
 
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size())
-                .isEqualTo(5);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps())
+                .hasSize(5);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
                 .isEqualTo("attempting retrieveSingleActiveRecord : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(1))

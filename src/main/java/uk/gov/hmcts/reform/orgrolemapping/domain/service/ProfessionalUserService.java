@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +31,6 @@ public class ProfessionalUserService {
     private final DatabaseDateTimeRepository databaseDateTimeRepository;
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final ProcessEventTracker processEventTracker;
     private final ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
 
     private final TransactionTemplate transactionTemplate;
@@ -49,7 +47,6 @@ public class ProfessionalUserService {
             AccessTypesRepository accessTypesRepository,
             BatchLastRunTimestampRepository batchLastRunTimestampRepository,
             DatabaseDateTimeRepository databaseDateTimeRepository,
-            ProcessEventTracker processEventTracker,
             ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper,
             @Value("${groupAccess.lastRunTimeTolerance}") String tolerance,
             @Value("${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}")
@@ -68,7 +65,6 @@ public class ProfessionalUserService {
         this.databaseDateTimeRepository = databaseDateTimeRepository;
         this.pageSize = pageSize;
         this.jdbcTemplate = jdbcTemplate;
-        this.processEventTracker = processEventTracker;
         this.professionalRefreshOrchestrationHelper = professionalRefreshOrchestrationHelper;
         this.tolerance = tolerance;
         this.activeUserRefreshDays = activeUserRefreshDays;
@@ -79,78 +75,55 @@ public class ProfessionalUserService {
         this.userRetryThreeIntervalMin = userRetryThreeIntervalMin;
     }
 
-    public void refreshUsers() {
-        String processName = "PRM Process 6 - Refresh users - Batch mode";
-        log.info("Starting {}", processName);
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
-        processEventTracker.trackEventStarted(processMonitorDto);
+    public boolean refreshUsers(ProcessMonitorDto processMonitorDto) {
 
-        try {
-            UserRefreshQueueEntity userRefreshQueueEntity
-                    = userRefreshQueueRepository.retrieveSingleActiveRecord();
+        UserRefreshQueueEntity userRefreshQueueEntity
+                = userRefreshQueueRepository.retrieveSingleActiveRecord();
 
-            if (userRefreshQueueEntity == null) {
-                processMonitorDto.addProcessStep("No entities to process");
-                processMonitorDto.markAsSuccess();
-                processEventTracker.trackEventCompleted(processMonitorDto);
-                log.info("Completed {}. No entities to process", processName);
-                return;
-            };
-
-            List<AccessTypesEntity> accessTypesEntities = accessTypesRepository.findAll();
-            if (accessTypesEntities.size() != 1) {
-                throw new ServiceException("Single AccessTypesEntity not found");
-            }
-            AccessTypesEntity accessTypesEntity = accessTypesEntities.get(0);
-
-            String userId = userRefreshQueueEntity.getUserId();
-
-            boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
-                try {
-                    processMonitorDto.addProcessStep("attempting clearUserRefreshRecord for userId="
-                            + userId);
-                    userRefreshQueueRepository.clearUserRefreshRecord(userId,
-                            LocalDateTime.now(), accessTypesEntity.getVersion());
-                    processMonitorDto.appendToLastProcessStep(" : COMPLETED");
-
-
-                    return true;
-                } catch (Exception ex) {
-                    String message = String.format("Error occurred while processing user: %s. Retry attempt "
-                                    + "%d. Rolling back.",
-                            userId, userRefreshQueueEntity.getRetry());
-                    processMonitorDto.addProcessStep(message);
-                    log.error(message, ex);
-                    status.setRollbackOnly();
-
-                    return false;
-                }
-            }));
-
-            if (!isSuccess) {
-                userRefreshQueueRepository.updateRetry(
-                        userId, userRetryOneIntervalMin, userRetryTwoIntervalMin, userRetryThreeIntervalMin
-                );
-
-                // to avoid another round trip to the database, use the current retry attempt.
-                if (userRefreshQueueEntity.getRetry() == 3) {
-                    throw new ServiceException("Retry limit reached");
-                }
-            }
-
-            processMonitorDto.addProcessStep("attempting next retrieveSingleActiveRecord");
-            UserRefreshQueueEntity userRefreshQueue =  userRefreshQueueRepository.retrieveSingleActiveRecord();
-            String completionPrefix = (userRefreshQueue == null ? " - none" : " - one") + " found";
-            processMonitorDto.appendToLastProcessStep(completionPrefix + " : COMPLETED");
-
-        } catch (Exception e) {
-            processMonitorDto.markAsFailed(e.getMessage());
-            processEventTracker.trackEventCompleted(processMonitorDto);
-            throw e;
+        if (userRefreshQueueEntity == null) {
+            processMonitorDto.addProcessStep("No entities to process");
+            log.info("{} - No entities to process", processMonitorDto.getProcessType());
+            return true;
         }
-        processMonitorDto.markAsSuccess();
-        processEventTracker.trackEventCompleted(processMonitorDto);
 
-        log.info("Completed {}", processName);
+        List<AccessTypesEntity> accessTypesEntities = accessTypesRepository.findAll();
+        if (accessTypesEntities.size() != 1) {
+            throw new ServiceException("Single AccessTypesEntity not found");
+        }
+        AccessTypesEntity accessTypesEntity = accessTypesEntities.get(0);
+
+        String userId = userRefreshQueueEntity.getUserId();
+
+        boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+            try {
+                // TODO: actually refresh the user
+                processMonitorDto.addProcessStep("attempting clearUserRefreshRecord for userId="
+                        + userId);
+                userRefreshQueueRepository.clearUserRefreshRecord(userId,
+                        LocalDateTime.now(), accessTypesEntity.getVersion());
+                processMonitorDto.appendToLastProcessStep(" : COMPLETED");
+
+
+                return true;
+            } catch (Exception ex) {
+                processMonitorDto.appendToLastProcessStep(" : FAILED");
+                String message = String.format("Error occurred while processing user: %s. Retry attempt "
+                                + "%d. Rolling back.",
+                        userId, userRefreshQueueEntity.getRetry() + 1);
+                processMonitorDto.addProcessStep(message);
+                log.error(message, ex);
+                status.setRollbackOnly();
+
+                return false;
+            }
+        }));
+
+        if (!isSuccess) {
+            userRefreshQueueRepository.updateRetry(
+                    userId, userRetryOneIntervalMin, userRetryTwoIntervalMin, userRetryThreeIntervalMin
+            );
+        }
+
+        return isSuccess;
     }
 }
