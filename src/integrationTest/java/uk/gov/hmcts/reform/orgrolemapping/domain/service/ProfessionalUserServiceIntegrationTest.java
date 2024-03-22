@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
@@ -27,13 +28,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -46,7 +41,10 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @SpyBean
     private UserRefreshQueueRepository userRefreshQueueRepository;
 
-    @Autowired
+    @SpyBean
+    private AccessTypesRepository accessTypesRepository;
+
+    @MockBean
     private ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
 
     @MockBean
@@ -122,7 +120,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
     void shouldRollback_AndUpdateRetryToOneOnException() {
-        doThrow(ServiceException.class).when(userRefreshQueueRepository).clearUserRefreshRecord(any(), any(), any());
+        doThrow(ServiceException.class).when(professionalRefreshOrchestrationHelper).refreshSingleUser(any(), any());
 
         professionalUserService.refreshUsers(processMonitorDto);
 
@@ -161,4 +159,35 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertNull(userRefreshQueueEntities.get(0).getRetryAfter());
     }
 
+    @Test
+    void shouldReturnTrue_whenNoEntitiesToProcess() {
+        // arrange
+        userRefreshQueueRepository.deleteAll();
+
+        // act
+        boolean result = professionalUserService.refreshUsers(processMonitorDto);
+
+        // assert
+        assertTrue(result);
+        List<UserRefreshQueueEntity> userRefreshQueueEntities
+                = userRefreshQueueRepository.findAll();
+        assertTrue(userRefreshQueueEntities.isEmpty());
+        processMonitorDtoArgumentCaptor.getAllValues().forEach(dto -> {
+            assertEquals("No entities to process", dto.getProcessSteps());
+        });
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+    void shouldThrowException_whenNoAccessTypeEntityFound() {
+        // arrange
+        accessTypesRepository.deleteAll();
+
+        // act
+        Exception exception = assertThrows(ServiceException.class, () -> professionalUserService.refreshUsers(processMonitorDto));
+
+        // assert
+        assertEquals("Single AccessTypesEntity not found", exception.getMessage());
+    }
 }

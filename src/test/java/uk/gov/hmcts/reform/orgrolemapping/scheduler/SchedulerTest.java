@@ -7,6 +7,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
@@ -100,5 +101,22 @@ class SchedulerTest {
 
         List<ProcessMonitorDto> capturedArguments = processMonitorDtoArgumentCaptor.getAllValues();
         assertEquals(EndStatus.PARTIAL_SUCCESS, capturedArguments.get(0).getEndStatus());
+    }
+
+    @Test
+    void processUserRefreshQueue_treatAnExceptionAsFailedStep() {
+        // arrange
+        when(userRefreshQueueRepository.getActiveUserRefreshQueueCount()).thenReturn(1L).thenReturn(0L);
+        when(professionalUserService.refreshUsers(any())).thenThrow(new ServiceException("Single AccessTypesEntity not found"));
+
+        // act
+        scheduler.processUserRefreshQueue();
+
+        // assert
+        verify(processEventTracker, times(1)).trackEventStarted(processMonitorDtoArgumentCaptor.capture());
+        verify(processEventTracker, times(1)).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+
+        List<ProcessMonitorDto> capturedArguments = processMonitorDtoArgumentCaptor.getAllValues();
+        assertEquals(EndStatus.FAILED, capturedArguments.get(0).getEndStatus());
     }
 }

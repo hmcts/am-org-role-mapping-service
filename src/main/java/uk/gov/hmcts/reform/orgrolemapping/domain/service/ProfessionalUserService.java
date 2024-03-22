@@ -75,7 +75,7 @@ public class ProfessionalUserService {
         this.userRetryThreeIntervalMin = userRetryThreeIntervalMin;
     }
 
-    public boolean refreshUsers(ProcessMonitorDto processMonitorDto) {
+    public boolean refreshUsers(ProcessMonitorDto processMonitorDto) throws ServiceException {
 
         UserRefreshQueueEntity userRefreshQueueEntity
                 = userRefreshQueueRepository.retrieveSingleActiveRecord();
@@ -96,9 +96,10 @@ public class ProfessionalUserService {
 
         boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
             try {
-                // TODO: actually refresh the user
                 processMonitorDto.addProcessStep("attempting clearUserRefreshRecord for userId="
                         + userId);
+                professionalRefreshOrchestrationHelper.refreshSingleUser(userRefreshQueueEntity,
+                        accessTypesEntity);
                 userRefreshQueueRepository.clearUserRefreshRecord(userId,
                         LocalDateTime.now(), accessTypesEntity.getVersion());
                 processMonitorDto.appendToLastProcessStep(" : COMPLETED");

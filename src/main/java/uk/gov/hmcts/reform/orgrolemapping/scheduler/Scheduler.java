@@ -38,7 +38,7 @@ public class Scheduler {
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.userRefresh.cron}")
     void processUserRefreshQueue() {
-        String errorMessage = null;
+        StringBuilder errorMessageBuilder = new StringBuilder("");
         int successfulJobCount = 0;
         int failedJobCount = 0;
         String processName = "PRM Process 6 - Refresh users - Batch mode";
@@ -47,15 +47,22 @@ public class Scheduler {
         processEventTracker.trackEventStarted(processMonitorDto);
 
         while (userRefreshQueueRepository.getActiveUserRefreshQueueCount() >= 1) {
-            boolean success = professionalUserService.refreshUsers(processMonitorDto);
-            if (success) {
-                successfulJobCount++;
-            } else {
+            try {
+                boolean success = professionalUserService.refreshUsers(processMonitorDto);
+                if (success) {
+                    successfulJobCount++;
+                } else {
+                    failedJobCount++;
+                }
+            } catch (Exception e) {
+                errorMessageBuilder.append(e.getMessage());
                 failedJobCount++;
+                log.error("Error occurred while processing user refresh queue", e);
             }
         }
 
-        markProcessStatus(processMonitorDto, successfulJobCount > 0, failedJobCount > 0, errorMessage);
+        markProcessStatus(processMonitorDto, successfulJobCount > 0, failedJobCount > 0,
+                errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
     }
 
