@@ -66,7 +66,8 @@ public class Scheduler {
         processEventTracker.trackEventCompleted(processMonitorDto);
     }
 
-    private void markProcessStatus(ProcessMonitorDto processMonitorDto, boolean hasSuccessfulStep, boolean hasFailedAStep, String errorMessage) {
+    private void markProcessStatus(ProcessMonitorDto processMonitorDto, boolean hasSuccessfulStep,
+                                   boolean hasFailedAStep, String errorMessage) {
         if (!hasSuccessfulStep && hasFailedAStep) {
             processMonitorDto.markAsFailed(errorMessage);
         }

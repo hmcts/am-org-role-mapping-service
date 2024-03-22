@@ -107,7 +107,8 @@ class SchedulerTest {
     void processUserRefreshQueue_treatAnExceptionAsFailedStep() {
         // arrange
         when(userRefreshQueueRepository.getActiveUserRefreshQueueCount()).thenReturn(1L).thenReturn(0L);
-        when(professionalUserService.refreshUsers(any())).thenThrow(new ServiceException("Single AccessTypesEntity not found"));
+        when(professionalUserService.refreshUsers(any()))
+                .thenThrow(new ServiceException("Single AccessTypesEntity not found"));
 
         // act
         scheduler.processUserRefreshQueue();

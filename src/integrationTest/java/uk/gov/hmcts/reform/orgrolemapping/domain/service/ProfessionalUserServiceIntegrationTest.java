@@ -28,7 +28,13 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -173,7 +179,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
                 = userRefreshQueueRepository.findAll();
         assertTrue(userRefreshQueueEntities.isEmpty());
         processMonitorDtoArgumentCaptor.getAllValues().forEach(dto -> {
-            assertEquals("No entities to process", dto.getProcessSteps());
+            assertEquals("No entities to process", dto.getProcessSteps().toString());
         });
     }
 
@@ -185,7 +191,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         accessTypesRepository.deleteAll();
 
         // act
-        Exception exception = assertThrows(ServiceException.class, () -> professionalUserService.refreshUsers(processMonitorDto));
+        Exception exception = assertThrows(ServiceException.class, () ->
+                professionalUserService.refreshUsers(processMonitorDto));
 
         // assert
         assertEquals("Single AccessTypesEntity not found", exception.getMessage());
