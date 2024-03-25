@@ -59,4 +59,21 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         assertNotNull(organisationEntity.getOrganisationLastUpdated());
         assertNotNull(organisationEntity.getRetryAfter());
     }
+
+    @Test
+    void shouldHandleConflict_whenUpsertingToOrganisationRefreshQueue() {
+        // Arrange
+        List<OrganisationInfo> organisationInfoList = List.of(buildOrganisationInfo(123));
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 1);
+
+        // Act
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 2);
+
+        // Assert
+        List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
+        assertEquals(1, organisationEntities.size());
+        OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
+        assertEquals("123", organisationEntity.getOrganisationId());
+        assertEquals(2, organisationEntity.getAccessTypesMinVersion());
+    }
 }
