@@ -1,0 +1,77 @@
+{
+  "_guid_": "S-060",
+  "title": "must successfully create judicial role mapping for Tribunal Member Disability - Fee Paid appointment",
+  "_extends_": "F-006_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+    },
+    "body": {
+      "queryRequests":[
+        {
+          "actorId": "${[scenarioContext][childContexts][S-060_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "attributes": {
+            "jurisdiction": ["SSCS"]
+          }
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "fee-paid-disability",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Fee-Paid",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
+            "workTypes": "hearing_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        }
+      ]
+    }
+  }
+}

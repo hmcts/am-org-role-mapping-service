@@ -12,6 +12,7 @@ public enum FeatureFlagEnum {
     CIVIL_WA_1_1("civil_wa_1_1"),
     PRIVATELAW_WA_1_1("privatelaw_wa_1_1"),
     EMPLOYMENT_WA_1_0("employment_wa_1_0"),
+    EMPLOYMENT_WA_1_1("employment_wa_1_1"),
     PRIVATELAW_WA_1_2("privatelaw_wa_1_2"),
     ST_CIC_WA_1_0("st_cic_wa_1_0"),
     PUBLICLAW_WA_1_1("publiclaw_wa_1_1"),
