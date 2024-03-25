@@ -138,12 +138,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
             + " comments, log FROM refresh_jobs where job_id=?";
 
-    private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
-
-    private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
-            + " comments, log FROM refresh_jobs where job_id=?";
-    private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
-
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String URL = "/am/role-mapping/refresh";
