@@ -129,28 +129,40 @@ public class OrganisationService {
 
     @Transactional
     public void findAndInsertStaleOrganisationsIntoRefreshQueue() {
-        List<ProfileRefreshQueueEntity> profileRefreshQueueEntities
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
+                "PRM Process 2 - Find Organisations with Stale Profiles");
+        processEventTracker.trackEventStarted(processMonitorDto);
+
+        try {
+            List<ProfileRefreshQueueEntity> profileRefreshQueueEntities
                 = profileRefreshQueueRepository.getActiveProfileEntities();
 
-        if (profileRefreshQueueEntities.isEmpty()) {
-            return;
+            if (profileRefreshQueueEntities.isEmpty()) {
+                return;
+            }
+
+            List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
+                    .map(ProfileRefreshQueueEntity::getOrganisationProfileId)
+                    .collect(Collectors.toList());
+            // HLD: Note that it is easier to take the maximum version number from profile refresh queue and apply it to
+            // all organisations.
+            // This is consistent with the semantics of "this version number or higher", and will cause no problems.
+            Optional<Integer> maxVersion = profileRefreshQueueEntities.stream()
+                    .map(ProfileRefreshQueueEntity::getAccessTypesMinVersion)
+                    .max(Comparator.naturalOrder());
+
+            OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
+
+            retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get());
+
+            updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
+        } catch (Exception e) {
+            processMonitorDto.markAsFailed(e.getMessage());
+            processEventTracker.trackEventCompleted(processMonitorDto);
+            throw e;
         }
-
-        List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
-                .map(ProfileRefreshQueueEntity::getOrganisationProfileId)
-                .collect(Collectors.toList());
-        // HLD: Note that it is easier to take the maximum version number from profile refresh queue and apply it to
-        // all organisations.
-        // This is consistent with the semantics of "this version number or higher", and will cause no problems.
-        Optional<Integer> maxVersion = profileRefreshQueueEntities.stream()
-                .map(ProfileRefreshQueueEntity::getAccessTypesMinVersion)
-                .max(Comparator.naturalOrder());
-
-        OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
-
-        retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get());
-
-        updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
     }
 
     private void retrieveOrganisationsByProfileIdsAndUpsert(OrganisationByProfileIdsRequest request,
@@ -196,7 +208,7 @@ public class OrganisationService {
                                                     Integer accessTypeMinVersion, ProcessMonitorDto processMonitorDto) {
 
         String processStep = "attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
-                + organisationsResponse.getOrganisations().size() + " organisations";
+                             + organisationsResponse.getOrganisations().size() + " organisations";
         processStep = processStep + "=" + organisationsResponse.getOrganisations()
                 .stream().map(o -> o.getOrganisationIdentifier() + ",").collect(Collectors.joining());
         processMonitorDto.addProcessStep(processStep);

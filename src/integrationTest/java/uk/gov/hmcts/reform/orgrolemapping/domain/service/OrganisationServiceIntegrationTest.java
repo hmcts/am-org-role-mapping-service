@@ -96,7 +96,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
         OrganisationInfo organisationInfo = OrganisationInfo.builder()
                 .organisationIdentifier("123")
                 .status("ACTIVE")
-                .lastUpdated(LocalDateTime.now())
+                .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
 
         OrganisationsResponse response = OrganisationsResponse.builder()

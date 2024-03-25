@@ -44,11 +44,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class  OrganisationServiceTest {
+class OrganisationServiceTest {
 
-    private final PrdService prdService = mock(PrdService.class);
+    private final PrdService prdService = Mockito.mock(PrdService.class);
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository =
-            mock(ProfileRefreshQueueRepository.class);
+            Mockito.mock(ProfileRefreshQueueRepository.class);
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository =
             Mockito.mock(OrganisationRefreshQueueRepository.class);
     private final NamedParameterJdbcTemplate jdbcTemplate =
@@ -69,7 +69,8 @@ class  OrganisationServiceTest {
             "1",
             jdbcTemplate,
             accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository,
-            processEventTracker, "10");
+            processEventTracker, "10"
+    );
 
     @Test
     void findAndInsertStaleOrganisationsIntoRefreshQueue_Test() {
@@ -351,7 +352,7 @@ class  OrganisationServiceTest {
         return OrganisationInfo.builder()
                 .organisationIdentifier("orgIdentifier" + i)
                 .status("ACTIVE")
-                .lastUpdated(LocalDateTime.now())
+                .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
                 .build();
     }
