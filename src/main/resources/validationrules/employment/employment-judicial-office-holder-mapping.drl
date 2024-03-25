@@ -54,6 +54,34 @@ then
 end;
 
 /*
+ * "EMPLOYMENT President, Employment Tribunals (Scotland)" business role mapping to JOH.
+ */
+rule "employment_president_employment_tribunals_scotland_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_1.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "President, Employment Tribunals (Scotland)",
+                               appointmentType == "Salaried",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT President Employment Tribunals (Scotland)-Salaried")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getCftRegionIdV1())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_president_employment_tribunals_scotland_salaried_joh");
+end;
+
+/*
  * "EMPLOYMENT Vice President" business role mapping to JOH.
  */
 rule "employment_vice_president_salaried_joh"
