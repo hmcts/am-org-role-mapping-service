@@ -193,10 +193,12 @@ springdoc:
 
 professional:
   refdata:
-    pageSize: ${PROFESSIONAL_REFDATA_PAGE_SIZE:100}
+      pageSize: ${PROFESSIONAL_REFDATA_PAGE_SIZE:100}
   role:
     mapping:
       scheduling:
         enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
         findAndUpdateCaseDefinitionChanges:
           cron: ${CRON_P1_FIND_CASE_DEFINITION_CHANGES:*/30 * * * * *}
+        findOrganisationsWithStaleProfiles:
+          cron: ${CRON_P2_ORGS_STALE_PROFILES:*/30 * * * * *}

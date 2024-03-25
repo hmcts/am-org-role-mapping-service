@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Transactional
-public class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegration {
+class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegration {
 
     @Autowired
     private ProfileRefreshQueueRepository profileRefreshQueueRepository;
 
     @Test
-    public void shouldInsertOrganisationProfileIds() {
+    void shouldInsertOrganisationProfileIds() {
         List<String> organisationProfileIds = List.of("SOLICITOR_ORG", "DWP_GOV_ORG", "HMRC_GOV_ORG");
         String orgProfileIds = String.join(",", organisationProfileIds);
 
@@ -32,7 +32,7 @@ public class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegr
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/insert_organisation_profiles.sql"
     })
-    public void shouldHandleDuplicateOrganisationProfileIds() {
+    void shouldHandleDuplicateOrganisationProfileIds() {
         List<String> organisationProfileIds = List.of("SOLICITOR_ORG");
         String orgProfileIds = String.join(",", organisationProfileIds);
 
@@ -42,9 +42,31 @@ public class ProfileRefreshQueueRepositoryIntegrationTest extends BaseTestIntegr
         validateData(newProfileRefreshQueueEntities, 1, 2);
     }
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/insert_profile_refresh_queue.sql"
+    })
+    public void shouldGetActiveProfilesOnly() {
+        List<ProfileRefreshQueueEntity> activeProfiles = profileRefreshQueueRepository.getActiveProfileEntities();
+
+        assertEquals(1, activeProfiles.size());
+        activeProfiles.forEach(profile -> assertEquals(true, profile.getActive()));
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/insert_profile_refresh_queue.sql"
+    })
+    public void shouldSetActiveProfilesToFalse() {
+        profileRefreshQueueRepository.setActiveFalse("SOLICITOR_ORG", 1);
+
+        List<ProfileRefreshQueueEntity> activeProfiles = profileRefreshQueueRepository.getActiveProfileEntities();
+        assertEquals(0, activeProfiles.size());
+    }
+
     private void validateData(List<ProfileRefreshQueueEntity> profileRefreshQueueEntities,
-                                int expectedSize,
-                                int expectedAccessTypesMinVersion) {
+                              int expectedSize,
+                              int expectedAccessTypesMinVersion) {
         assertEquals(expectedSize, profileRefreshQueueEntities.size());
         profileRefreshQueueEntities.forEach(profileRefreshQueueEntity -> {
             assertNotNull(profileRefreshQueueEntity.getOrganisationProfileId());
