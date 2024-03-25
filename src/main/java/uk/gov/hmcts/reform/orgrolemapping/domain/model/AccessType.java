@@ -5,17 +5,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganisationProfileAccessType {
+public class AccessType {
 
+    private String organisationProfileId;
     private String accessTypeId;
     private boolean accessMandatory;
     private boolean accessDefault;
-    private Set<AccessTypeRole> roles;
+    private boolean display;
+    private String description;
+    private String hint;
+    private Integer displayOrder;
+    private List<AccessTypeRole> roles;
 }
-

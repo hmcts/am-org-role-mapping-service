@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class RestructuredAccessTypes {
-    private Set<OrganisationProfile> organisationProfiles;
-}
+@AllArgsConstructor
+@Builder
+public class AccessTypesResponse {
 
+    private List<AccessTypeJurisdiction> jurisdictions;
+}

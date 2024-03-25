@@ -15,3 +15,4 @@ public class OrganisationProfileJurisdiction {
     private String jurisdictionId;
     private Set<OrganisationProfileAccessType> accessTypes;
 }
+

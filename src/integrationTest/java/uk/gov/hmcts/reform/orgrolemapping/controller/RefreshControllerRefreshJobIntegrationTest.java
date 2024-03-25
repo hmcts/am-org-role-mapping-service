@@ -126,14 +126,31 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
     "feign.client.config.jrdClient.v2Active=false"})
+
 @Transactional
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegration {
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
     private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
     private static final String PROFESSIONAL_REFRESH_URL = "/am/role-mapping/professional/refresh";
+    private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
+
+    private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
+            + " comments, log FROM refresh_jobs where job_id=?";
+
+    private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
+
+    private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
+            + " comments, log FROM refresh_jobs where job_id=?";
+    private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
+
+    private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
+    private static final String ROLE_NAME_TCW = "tribunal-caseworker";
+    private static final String URL = "/am/role-mapping/refresh";
+
     private MockMvc mockMvc;
     private JdbcTemplate template;
+ 
     @Inject
     private WebApplicationContext wac;
     @Autowired
@@ -143,6 +160,12 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @MockBean
     private PRDFeignClient prdFeignClient;
     @MockBean
+    private CRDFeignClient crdFeignClient;
+    @MockBean
+    private JRDFeignClient jrdFeignClient;
+    @MockBean
+    private JBSFeignClient jbsFeignClient;
+    @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
     @MockBean
     private SecurityUtils securityUtils;
@@ -150,28 +173,8 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
-
-    private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
-
-    private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
-            + " comments, log FROM refresh_jobs where job_id=?";
-    private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
-    private static final String ROLE_NAME_TCW = "tribunal-caseworker";
-    private static final String URL = "/am/role-mapping/refresh";
-
-    @MockBean
-    private CRDFeignClient crdFeignClient;
-
-    @MockBean
-    private JRDFeignClient jrdFeignClient;
-
-    @MockBean
-    private JBSFeignClient jbsFeignClient;
-
-
     @MockBean
     private RequestMappingService requestMappingService;
-
 
     Lock sequential = new ReentrantLock();
 

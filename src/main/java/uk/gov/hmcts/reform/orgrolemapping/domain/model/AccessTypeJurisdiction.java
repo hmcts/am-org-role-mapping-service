@@ -5,17 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganisationProfileAccessType {
+public class AccessTypeJurisdiction {
 
-    private String accessTypeId;
-    private boolean accessMandatory;
-    private boolean accessDefault;
-    private Set<AccessTypeRole> roles;
+    private String jurisdictionId;
+    private String jurisdictionName;
+    private List<AccessType> accessTypes;
 }
-

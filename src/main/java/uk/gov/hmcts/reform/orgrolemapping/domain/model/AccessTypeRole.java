@@ -17,3 +17,4 @@ public class AccessTypeRole {
     private String caseGroupIdTemplate;
     private boolean groupAccessEnabled;
 }
+
