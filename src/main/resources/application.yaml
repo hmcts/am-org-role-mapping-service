@@ -138,6 +138,10 @@ feign:
         v2FilterAuthorisationsByAppointmentId: true
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
+      prdClient:
+        url: ${PROFESSIONAL_REF_APP_URL:http://localhost:8090}
+      ccdClient:
+        url: ${CCD_DEF_STORE_APP_URL:http://localhost:4451}
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
@@ -186,3 +190,13 @@ springdoc:
     enabled: true
     operationsSorter: method
   writer-with-order-by-keys: true
+
+professional:
+  refdata:
+    pageSize: ${PROFESSIONAL_REFDATA_PAGE_SIZE:100}
+  role:
+    mapping:
+      scheduling:
+        enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
+        findAndUpdateCaseDefinitionChanges:
+          cron: ${CRON_P1_FIND_CASE_DEFINITION_CHANGES:*/30 * * * * *}
