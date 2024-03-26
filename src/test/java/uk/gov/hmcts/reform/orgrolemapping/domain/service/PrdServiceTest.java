@@ -92,4 +92,14 @@ class PrdServiceTest {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
+
+    @Test
+    void getRefreshUser() throws IOException {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+            .when(prdFeignClient).getRefreshUsers(any());
+
+        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser("ID");
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
 }

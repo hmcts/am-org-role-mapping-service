@@ -45,4 +45,9 @@ public class PrdService {
     public ResponseEntity<GetRefreshUsersResponse> getRefreshUser(String userId) {
         return prdFeignClient.getRefreshUsers(userId);
     }
+
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
+    public ResponseEntity<GetRefreshUsersResponse> getRefreshUser(String userId) {
+        return prdFeignClient.getRefreshUsers(userId);
+    }
 }
