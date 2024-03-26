@@ -27,13 +27,13 @@ public class ProfessionalRefreshOrchestrator {
     public static final String EXPECTED_SINGLE_PRD_USER = "Expected single user for ID %s, found %s";
     private final AccessTypesRepository accessTypesRepository;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
-    private final PRDService prdService;
+    private final PrdService prdService;
     private final ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
     private final ProcessEventTracker processEventTracker;
 
     public ProfessionalRefreshOrchestrator(AccessTypesRepository accessTypesRepository,
                                            UserRefreshQueueRepository userRefreshQueueRepository,
-                                           PRDService prdService,
+                                           PrdService prdService,
                                            ProfessionalRefreshOrchestrationHelper
                                                    professionalRefreshOrchestrationHelper,
                                            ProcessEventTracker processEventTracker) {
