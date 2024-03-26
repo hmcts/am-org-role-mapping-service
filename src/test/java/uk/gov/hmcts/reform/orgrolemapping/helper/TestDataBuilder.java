@@ -12,6 +12,7 @@ import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
@@ -32,6 +33,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
@@ -748,6 +750,14 @@ public class TestDataBuilder {
                     .map(String::valueOf)
                     .toArray(String[]::new);
         }
+    }
+
+    public static AccessTypesResponse buildAccessTypesResponse() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper.readValue(
+                new File("src/main/resources/accessTypesSample.json"),
+                AccessTypesResponse.class);
     }
 
     public static OrganisationByProfileIdsResponse buildOrganisationByProfileIdsResponse() throws IOException {

@@ -196,11 +196,11 @@ public class OrganisationService {
                                                     Integer accessTypeMinVersion, ProcessMonitorDto processMonitorDto) {
 
         String processStep = "attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
-                + organisationsResponse.getOrganisations().size() + " organisations";
+                             + organisationsResponse.getOrganisations().size() + " organisations";
         processStep = processStep + "=" + organisationsResponse.getOrganisations()
                 .stream().map(o -> o.getOrganisationIdentifier() + ",").collect(Collectors.joining());
         processMonitorDto.addProcessStep(processStep);
-        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueueForLastUpdated(jdbcTemplate,
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate,
                 organisationsResponse.getOrganisations(), accessTypeMinVersion);
         processMonitorDto.getProcessSteps().remove(processMonitorDto.getProcessSteps().size() - 1);
         processMonitorDto.addProcessStep(processStep + " : COMPLETED");
