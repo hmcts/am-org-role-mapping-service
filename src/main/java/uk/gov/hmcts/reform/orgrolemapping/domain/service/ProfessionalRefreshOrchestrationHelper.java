@@ -35,26 +35,18 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import java.util.Collections;
-import java.util.Collection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.Optional;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import static com.azure.core.util.CoreUtils.isNullOrEmpty;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status.CREATE_REQUESTED;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.NO_ACCESS_TYPES_FOUND;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.PROFESSIONAL_ORGANISATIONAL_ROLE_MAPPING;
@@ -94,7 +86,7 @@ public class ProfessionalRefreshOrchestrationHelper {
                 prdUser.getDateTimeDeleted(),
                 userAccessTypes,
                 prdUser.getOrganisationInfo().getOrganisationIdentifier(),
-                prdUser.getOrganisationInfo().getStatus(),
+                prdUser.getOrganisationInfo().getStatus().toString(),
                 String.join(",", prdUser.getOrganisationInfo().getOrganisationProfileIds())
         );
     }

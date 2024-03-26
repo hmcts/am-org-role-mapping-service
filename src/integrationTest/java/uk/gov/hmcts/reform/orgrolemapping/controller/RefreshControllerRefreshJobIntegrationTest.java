@@ -4,10 +4,6 @@ import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,57 +32,33 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
-import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
-import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
-import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
-import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.NO_ACCESS_TYPES_FOUND;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.PRD_USER_NOT_FOUND;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.EXPECTED_SINGLE_PRD_USER;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -96,6 +68,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -118,9 +91,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.EXPECTED_SINGLE_PRD_USER;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.NO_ACCESS_TYPES_FOUND;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.PRD_USER_NOT_FOUND;
 import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVICE;
 
 @TestPropertySource(properties = {
@@ -169,30 +146,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private SecurityContext securityContext;
     @MockBean
     private RequestMappingService requestMappingService;
-
-    Lock sequential = new ReentrantLock();
-
-    private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
-
-    private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
-            + " comments, log FROM refresh_jobs where job_id=?";
-    private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
-    private static final String ROLE_NAME_TCW = "tribunal-caseworker";
-    private static final String URL = "/am/role-mapping/refresh";
-
-    @MockBean
-    private CRDFeignClient crdFeignClient;
-
-    @MockBean
-    private JRDFeignClient jrdFeignClient;
-
-    @MockBean
-    private JBSFeignClient jbsFeignClient;
-
-
-    @MockBean
-    private RequestMappingService requestMappingService;
-
 
     Lock sequential = new ReentrantLock();
 

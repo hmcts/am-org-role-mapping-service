@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
 
         LocalDateTime updated = LocalDateTime.now();
         OrganisationInfo org1 = OrganisationInfo.builder()
-                .status("status1")
+                .status(OrganisationStatus.ACTIVE)
                 .organisationProfileIds(List.of("profileId1"))
                 .organisationIdentifier("orgId1")
                 .build();
@@ -111,7 +112,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         professionalRefreshOrchestrationHelper.upsertUserRefreshQueue(user);
 
         verify(userRefreshQueueRepository).upsert("uid1", updated, 1L, deleted, userAccessTypesString,
-                "orgId1", "status1", "profileId1");
+                "orgId1", "ACTIVE", "profileId1");
     }
 
     @Test

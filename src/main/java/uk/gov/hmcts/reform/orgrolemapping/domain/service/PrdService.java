@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
@@ -42,7 +41,6 @@ public class PrdService {
             } else {
                 OrganisationsResponse emptyOrg = new OrganisationsResponse(
                         new ArrayList<>(), false);
-                        new ArrayList<OrganisationInfo>(), false);
                 return ResponseEntity.of(Optional.of(emptyOrg));
             }
         }

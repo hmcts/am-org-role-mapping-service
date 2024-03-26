@@ -16,15 +16,13 @@ public class Scheduler {
 
     private final CaseDefinitionService caseDefinitionService;
     private final OrganisationService organisationService;
-
-    private final OrganisationService organisationService;
     private final ProfessionalUserService professionalUserService;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final ProcessEventTracker processEventTracker;
 
     public Scheduler(CaseDefinitionService caseDefinitionService, OrganisationService organisationService,
-                     ProfessionalUserService professionalUserService, UserRefreshQueueRepository userRefreshQueueRepository,
-                     ProcessEventTracker processEventTracker) {
+                     ProfessionalUserService professionalUserService,
+                     UserRefreshQueueRepository userRefreshQueueRepository, ProcessEventTracker processEventTracker) {
         this.caseDefinitionService = caseDefinitionService;
         this.organisationService = organisationService;
         this.professionalUserService = professionalUserService;
