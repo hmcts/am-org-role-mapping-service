@@ -5,6 +5,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
@@ -187,5 +189,24 @@ public class IntTestDataBuilder {
                 List.of(CaseWorkerProfilesResponse.builder().serviceName(service).userProfile(profile).build());
 
         return userProfiles;
+    }
+
+    public static OrganisationInfo buildOrganisationInfo(int i) {
+        return OrganisationInfo.builder()
+                .organisationIdentifier("" + i)
+                .status("ACTIVE")
+                .organisationLastUpdated(LocalDateTime.now())
+                .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
+                .build();
+    }
+
+    public static OrganisationByProfileIdsResponse buildOrganisationByProfileIdsResponse(OrganisationInfo orgInfo,
+                                                                                         String lastRecord,
+                                                                                         boolean moreAvailable) {
+        return OrganisationByProfileIdsResponse.builder()
+                .organisationInfo(List.of(orgInfo))
+                .lastRecordInPage(lastRecord)
+                .moreAvailable(moreAvailable)
+                .build();
     }
 }
