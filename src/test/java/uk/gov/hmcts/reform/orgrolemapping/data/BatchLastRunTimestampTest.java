@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,26 +13,26 @@ public class BatchLastRunTimestampTest {
     @Test
     void batchLastRunCreatedUpdated() {
         //Testing inserts
-        Instant nowTestDate = Instant.now();
+        LocalDateTime nowTestDate = LocalDateTime.now();
         BatchLastRunTimestampEntity batchLastRunTimestampEntity = BatchLastRunTimestampEntity.builder()
-                .lastOrganisationRunDatetime(Timestamp.from(nowTestDate))
-                .lastUserRunDatetime(Timestamp.from(nowTestDate))
+                .lastOrganisationRunDatetime(nowTestDate)
+                .lastUserRunDatetime(nowTestDate)
                 .build();
 
-        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastUserRunDatetime().toInstant());
-        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastOrganisationRunDatetime().toInstant());
+        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastUserRunDatetime());
+        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastOrganisationRunDatetime());
 
         //Testing update of LastUserRunDatetime
-        nowTestDate = Instant.now();
-        batchLastRunTimestampEntity.setLastUserRunDatetime(Timestamp.from(nowTestDate));
+        nowTestDate = LocalDateTime.now();
+        batchLastRunTimestampEntity.setLastUserRunDatetime(nowTestDate);
 
-        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastUserRunDatetime().toInstant());
+        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastUserRunDatetime());
 
         //Testing update of LastOrganisationRunDatetime
-        nowTestDate = Instant.now();
-        batchLastRunTimestampEntity.setLastOrganisationRunDatetime(Timestamp.from(nowTestDate));
+        nowTestDate = LocalDateTime.now();
+        batchLastRunTimestampEntity.setLastOrganisationRunDatetime(nowTestDate);
 
-        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastOrganisationRunDatetime().toInstant());
+        assertEquals(nowTestDate, batchLastRunTimestampEntity.getLastOrganisationRunDatetime());
 
     }
 

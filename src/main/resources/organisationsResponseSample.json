@@ -1,5 +1,5 @@
 {
-  "organisationInfo": [
+  "organisations": [
     {
       "organisationIdentifier": "1",
       "status": "ACTIVE",
@@ -17,6 +17,5 @@
       ]
     }
   ],
-  "lastRecordInPage": "8fa85g43-5717-4562-b3fc-2c963f66afa6",
   "moreAvailable": false
 }
