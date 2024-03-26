@@ -20,7 +20,6 @@ import java.util.List;
 public class OrganisationInfo {
     private String organisationIdentifier;
     private OrganisationStatus status;
-    private LocalDateTime lastUpdated;
     @JsonProperty("lastUpdated")
     private LocalDateTime organisationLastUpdated;
     private List<String> organisationProfileIds;

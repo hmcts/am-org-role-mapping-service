@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.PRDFeignCli
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 
 
 @FeignClient(value = "prdclient", url = "${feign.client.config.prdclient.url}",

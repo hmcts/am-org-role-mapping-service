@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.PRDService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.PrdService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService;
@@ -37,7 +37,7 @@ public class ProviderTestConfiguration {
     @MockBean
     JRDService jrdService;
     @MockBean
-    PRDService prdService;
+    PrdService prdService;
     @MockBean
     AccessTypesRepository accessTypesRepository;
     @MockBean
