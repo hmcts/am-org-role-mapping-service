@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
@@ -792,6 +793,15 @@ public class TestDataBuilder {
         return getRefreshUsersResponse;
     }
 
+    public static AccessTypesResponse buildAccessTypesResponse() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper.readValue(
+                new File("src/main/resources/accessTypesSample.json"),
+                AccessTypesResponse.class);
+    }
+
+
     public static OrganisationByProfileIdsResponse buildOrganisationByProfileIdsResponse() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -807,5 +817,4 @@ public class TestDataBuilder {
                 new File("src/main/resources/organisationsResponseSample.json"),
                 OrganisationsResponse.class);
     }
-
 }

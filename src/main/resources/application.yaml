@@ -138,8 +138,10 @@ feign:
         v2FilterAuthorisationsByAppointmentId: true
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
-      prdClient:
+      prdclient:
         url: ${PROFESSIONAL_REF_APP_URL:http://localhost:8090}
+      ccdClient:
+        url: ${CCD_DEF_STORE_APP_URL:http://localhost:4451}
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
@@ -196,10 +198,12 @@ professional:
     mapping:
       scheduling:
         enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
+        findAndUpdateCaseDefinitionChanges:
+          cron: ${CRON_P1_FIND_CASE_DEFINITION_CHANGES:*/30 * * * * *}
         findOrganisationsWithStaleProfiles:
-          cron: ${CRON_P2_ORGS_STALE_PROFILES:0 * * * * *}
+          cron: ${CRON_P2_ORGS_STALE_PROFILES:*/30 * * * * *}
         findOrganisationChanges:
-          cron: ${CRON_P3_ORG_CHANGES:0 * * * * *}
+          cron: ${CRON_P3_ORG_CHANGES:*/30 * * * * *}
         userRefresh:
           cron: ${USER_REFRESH_CRON:*/5 * * * * *}
           retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}

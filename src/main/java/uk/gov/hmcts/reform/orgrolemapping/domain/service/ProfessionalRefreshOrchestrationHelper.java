@@ -35,15 +35,24 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import java.util.Collections;
+import java.util.Collection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Optional;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status.CREATE_REQUESTED;
@@ -230,11 +239,15 @@ public class ProfessionalRefreshOrchestrationHelper {
             for (OrganisationProfileJurisdiction orgProfileJurisdictions : organisationProfileJurisdictions) {
                 for (OrganisationProfileAccessType organisationProfileAccessType :
                         orgProfileJurisdictions.getAccessTypes()) {
-                    for (UserAccessType userAccessType : userAccessTypes) {
-                        if (organisationProfileAccessType.isAccessMandatory()
-                                || (organisationProfileAccessType.isAccessDefault() && (userAccessType == null))
-                                || userAccessType.getEnabled()) {
-                            extractedOrganisationProfiles.add(organisationProfile);
+                    if (isNullOrEmpty(userAccessTypes)) {
+                        extractedOrganisationProfiles.add(organisationProfile);
+                    } else {
+                        for (UserAccessType userAccessType : userAccessTypes) {
+                            if (organisationProfileAccessType.isAccessMandatory()
+                                    || (organisationProfileAccessType.isAccessDefault() && (userAccessType == null))
+                                    || Boolean.TRUE.equals(userAccessType.getEnabled())) {
+                                extractedOrganisationProfiles.add(organisationProfile);
+                            }
                         }
                     }
                 }

@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClient
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.PRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClientInterceptor;
 
+
 @FeignClient(value = "prdclient", url = "${feign.client.config.prdclient.url}",
         configuration = {FeignClientConfiguration.class, RdFeignClientInterceptor.class},
         fallback = PRDFeignClientFallback.class)
@@ -41,5 +42,4 @@ public interface PRDFeignClient {
             @RequestParam(name = "page") Integer page,
             @RequestParam(name = "size") Integer size
     );
-
 }

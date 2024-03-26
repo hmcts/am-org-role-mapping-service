@@ -14,3 +14,4 @@ public class OrganisationProfile {
     private String organisationProfileId;
     private Set<OrganisationProfileJurisdiction> jurisdictions;
 }
+

@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -30,17 +30,7 @@ class PrdServiceTest {
 
     PRDFeignClient prdFeignClient = mock(PRDFeignClient.class);
 
-    PRDService sut = new PrdService(prdFeignClient);
-
-    @Test
-    void getRefreshUser() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
-            .when(prdFeignClient).getRefreshUsers(any());
-
-        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser("ID");
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    }
+    PrdService sut = new PrdService(prdFeignClient);
 
     @Test
     void fetchOrganisationsByProfileIds() throws IOException {
@@ -91,5 +81,15 @@ class PrdServiceTest {
 
         Assert.assertThrows(FeignException.class, () ->
                 sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100));
+    }
+
+    @Test
+    void getRefreshUser() throws IOException {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+                .when(prdFeignClient).getRefreshUsers(any());
+
+        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser("ID");
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 }

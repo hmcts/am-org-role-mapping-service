@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
@@ -13,17 +14,27 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker
 @Slf4j
 public class Scheduler {
 
+    private final CaseDefinitionService caseDefinitionService;
+    private final OrganisationService organisationService;
+
     private final OrganisationService organisationService;
     private final ProfessionalUserService professionalUserService;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final ProcessEventTracker processEventTracker;
 
-    public Scheduler(OrganisationService organisationService, ProfessionalUserService professionalUserService,
-                     UserRefreshQueueRepository userRefreshQueueRepository, ProcessEventTracker processEventTracker) {
+    public Scheduler(CaseDefinitionService caseDefinitionService, OrganisationService organisationService,
+                     ProfessionalUserService professionalUserService, UserRefreshQueueRepository userRefreshQueueRepository,
+                     ProcessEventTracker processEventTracker) {
+        this.caseDefinitionService = caseDefinitionService;
         this.organisationService = organisationService;
         this.professionalUserService = professionalUserService;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.processEventTracker = processEventTracker;
+    }
+
+    @Scheduled(cron = "${professional.role.mapping.scheduling.findAndUpdateCaseDefinitionChanges.cron}")
+    void findAndUpdateCaseDefinitionChanges() {
+        caseDefinitionService.findAndUpdateCaseDefinitionChanges();
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.cron}")
@@ -38,7 +49,7 @@ public class Scheduler {
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.userRefresh.cron}")
     void processUserRefreshQueue() {
-        StringBuilder errorMessageBuilder = new StringBuilder("");
+        StringBuilder errorMessageBuilder = new StringBuilder();
         int successfulJobCount = 0;
         int failedJobCount = 0;
         String processName = "PRM Process 6 - Refresh users - Batch mode";
