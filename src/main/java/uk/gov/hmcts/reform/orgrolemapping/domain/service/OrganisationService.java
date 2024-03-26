@@ -142,8 +142,7 @@ public class OrganisationService {
             }
 
             List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
-                    .map(ProfileRefreshQueueEntity::getOrganisationProfileId)
-                    .collect(Collectors.toList());
+                    .map(ProfileRefreshQueueEntity::getOrganisationProfileId).toList();
             // HLD: Note that it is easier to take the maximum version number from profile refresh queue and apply it to
             // all organisations.
             // This is consistent with the semantics of "this version number or higher", and will cause no problems.
@@ -212,7 +211,7 @@ public class OrganisationService {
         processStep = processStep + "=" + organisationsResponse.getOrganisations()
                 .stream().map(o -> o.getOrganisationIdentifier() + ",").collect(Collectors.joining());
         processMonitorDto.addProcessStep(processStep);
-        organisationRefreshQueueRepository.insertIntoOrganisationRefreshQueueForLastUpdated(jdbcTemplate,
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate,
                 organisationsResponse.getOrganisations(), accessTypeMinVersion);
         processMonitorDto.getProcessSteps().remove(processMonitorDto.getProcessSteps().size() - 1);
         processMonitorDto.addProcessStep(processStep + " : COMPLETED");

@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
@@ -17,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -35,6 +39,9 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
 
     @Autowired
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
+
+    @Autowired
+    private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
 
     @MockBean
     private PrdService prdService;
@@ -111,4 +118,56 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
         assertEquals(1, organisationRefreshQueueRepository.findAll().size());
     }
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql",
+            "classpath:sql/insert_batch_last_run.sql"})
+    void shouldFindOrganisationChangesAndInsertIntoOrganisationRefreshQueue_WithPagination() {
+        LocalDateTime preTestLastBatchRunTime = getOrgLastBatchRunTime();
+
+        // Arrange
+        OrganisationInfo organisationInfo1 = OrganisationInfo.builder()
+                .organisationIdentifier("123")
+                .status("ACTIVE")
+                .organisationLastUpdated(LocalDateTime.now())
+                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
+
+        OrganisationsResponse page1 = OrganisationsResponse.builder()
+                .organisations(List.of(organisationInfo1))
+                .moreAvailable(true).build();
+
+        when(prdService.retrieveOrganisations(any(), anyInt(), anyInt()))
+                .thenReturn(ResponseEntity.ok(page1));
+
+        OrganisationInfo organisationInfo2 = OrganisationInfo.builder()
+                .organisationIdentifier("456")
+                .status("ACTIVE")
+                .organisationLastUpdated(LocalDateTime.now())
+                .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
+
+        OrganisationsResponse page2 = OrganisationsResponse.builder()
+                .organisations(List.of(organisationInfo2))
+                .moreAvailable(false).build();
+
+        when(prdService.retrieveOrganisations(any(), eq(2), anyInt()))
+                .thenReturn(ResponseEntity.ok(page2));
+
+        // Act
+        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
+
+        // Assert
+        List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
+        assertEquals(2, organisationEntities.size());
+
+        LocalDateTime postTestLastBatchRunTime = getOrgLastBatchRunTime();
+
+        assertTrue(postTestLastBatchRunTime.isAfter(preTestLastBatchRunTime));
+    }
+
+    private LocalDateTime getOrgLastBatchRunTime() {
+        List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
+                .findAll();
+        BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
+        LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
+        return orgLastBatchRunTime;
+    }
 }

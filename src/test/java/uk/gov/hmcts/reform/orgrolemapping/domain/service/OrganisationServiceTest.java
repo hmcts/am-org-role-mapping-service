@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -176,10 +177,10 @@ class OrganisationServiceTest {
         organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
 
         verify(organisationRefreshQueueRepository, times(2))
-                .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(2);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps()).hasSize(2);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
                 .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
                         + "2 organisations=orgIdentifier1,orgIdentifier2, : COMPLETED");
@@ -220,7 +221,7 @@ class OrganisationServiceTest {
                 .thenReturn(organisationsResponse1, organisationsResponse2);
 
         doThrow(new ServiceException("Insert exception")).when(organisationRefreshQueueRepository)
-                .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
 
         Assertions.assertThrows(ServiceException.class, () ->
                 organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
@@ -231,7 +232,7 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Insert exception, failed at page 1");
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(1);
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps()).hasSize(1);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
                 .isEqualTo("attempting insertIntoOrganisationRefreshQueueForLastUpdated "
                         + "for 2 organisations=orgIdentifier1,orgIdentifier2,");
@@ -278,7 +279,8 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Retrieve exception, failed at page 1");
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
+        assertTrue(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().isEmpty());
+
     }
 
     @Test
@@ -301,7 +303,7 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single BatchLastRunTimestampEntity not found");
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
+        assertTrue(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().isEmpty());
     }
 
     @Test
@@ -320,7 +322,7 @@ class OrganisationServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Single AccessTypesEntity not found");
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().size()).isEqualTo(0);
+        assertTrue(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().isEmpty());
     }
 
     @Test
