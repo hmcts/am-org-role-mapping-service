@@ -35,7 +35,7 @@ class ProfessionalRefreshOrchestratorTest {
     @Mock
     private UserRefreshQueueRepository userRefreshQueueRepository;
     @Mock
-    private PRDService prdService;
+    private PrdService prdService;
     @Mock
     private ObjectMapper objectMapper;
     @Mock

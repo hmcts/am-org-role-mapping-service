@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class PRDService {
+public class PrdService {
 
     private final PRDFeignClient prdFeignClient;
     //Uncomment this to run with your stubs

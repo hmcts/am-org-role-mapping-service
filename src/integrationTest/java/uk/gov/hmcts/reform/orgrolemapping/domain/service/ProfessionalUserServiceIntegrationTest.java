@@ -60,7 +60,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     private RASFeignClient rasFeignClient;
 
     @MockBean
-    private PRDService prdService;
+    private PrdService prdService;
 
     @MockBean
     private ProcessEventTracker processEventTracker;

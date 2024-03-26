@@ -26,11 +26,11 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-class PRDServiceTest {
+class PrdServiceTest {
 
     PRDFeignClient prdFeignClient = mock(PRDFeignClient.class);
 
-    PRDService sut = new PRDService(prdFeignClient);
+    PRDService sut = new PrdService(prdFeignClient);
 
     @Test
     void getRefreshUser() throws IOException {

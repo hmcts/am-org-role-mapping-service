@@ -37,7 +37,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
 
     @MockBean
-    private PRDService prdService;
+    private PrdService prdService;
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
