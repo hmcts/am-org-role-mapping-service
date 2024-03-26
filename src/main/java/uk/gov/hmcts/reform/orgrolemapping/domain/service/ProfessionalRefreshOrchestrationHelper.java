@@ -45,6 +45,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.azure.core.util.CoreUtils.isNullOrEmpty;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status.CREATE_REQUESTED;
@@ -71,7 +72,7 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void upsertUserRefreshQueue(RefreshUser prdUser) {
-        String userAccessTypes = null;
+        String userAccessTypes;
         try {
             userAccessTypes = objectMapper.writeValueAsString(prdUser.getUserAccessTypes());
         } catch (JsonProcessingException e) {
@@ -135,7 +136,7 @@ public class ProfessionalRefreshOrchestrationHelper {
         try {
             usersRoleAssignments = prepareRoleAssignments(userRefreshQueue, accessTypes);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new ServiceException("There was a problem creating an assignment Request", e);
         }
 
         AssignmentRequest assignmentRequest;
