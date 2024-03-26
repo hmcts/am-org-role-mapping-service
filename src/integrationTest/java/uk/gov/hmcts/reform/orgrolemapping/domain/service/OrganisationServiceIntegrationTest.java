@@ -120,9 +120,9 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql",
-            "classpath:sql/insert_batch_last_run.sql"})
+        "classpath:sql/insert_batch_last_run.sql"})
     void shouldFindOrganisationChangesAndInsertIntoOrganisationRefreshQueue_WithPagination() {
-        LocalDateTime preTestLastBatchRunTime = getOrgLastBatchRunTime();
+        final LocalDateTime preTestLastBatchRunTime = getOrgLastBatchRunTime();
 
         // Arrange
         OrganisationInfo organisationInfo1 = OrganisationInfo.builder()
@@ -167,7 +167,6 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
         List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
                 .findAll();
         BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
-        LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
-        return orgLastBatchRunTime;
+        return batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
     }
 }
