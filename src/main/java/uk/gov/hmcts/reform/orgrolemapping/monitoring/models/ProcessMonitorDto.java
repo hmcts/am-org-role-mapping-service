@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.monitoring.models;
 
 import lombok.Getter;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class ProcessMonitorDto {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private EndStatus endStatus;
+    @Size(max = 8192, message = "The value cannot exceed 32768 characters")
     private String endDetail;
     private List<String> processSteps = new ArrayList<>();
 

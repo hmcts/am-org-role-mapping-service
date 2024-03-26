@@ -140,6 +140,8 @@ feign:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
       prdClient:
         url: ${PROFESSIONAL_REF_APP_URL:http://localhost:8090}
+      ccdClient:
+        url: ${CCD_DEF_STORE_APP_URL:http://localhost:4451}
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
@@ -191,13 +193,22 @@ springdoc:
 
 professional:
   refdata:
-    pageSize: ${PROFESSIONAL_REFDATA_PAGE_SIZE:100}
+      pageSize: ${PROFESSIONAL_REFDATA_PAGE_SIZE:100}
   role:
     mapping:
       scheduling:
         enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
+        findAndUpdateCaseDefinitionChanges:
+          cron: ${CRON_P1_FIND_CASE_DEFINITION_CHANGES:*/30 * * * * *}
+        findOrganisationsWithStaleProfiles:
+          cron: ${CRON_P2_ORGS_STALE_PROFILES:*/30 * * * * *}
+        findOrganisationChanges:
+          cron: ${CRON_P3_ORG_CHANGES:*/30 * * * * *}
         findUsersWithStaleOrganisations:
           cron: ${CRON_P4_USERS_STALE_ORGS:*/30 * * * * *}
           retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
           retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
           retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
+
+groupAccess:
+  lastRunTimeTolerance: ${TOLERANCE:180}

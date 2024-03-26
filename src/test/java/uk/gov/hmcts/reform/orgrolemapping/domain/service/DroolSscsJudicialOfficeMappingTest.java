@@ -33,6 +33,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "Regional Tribunal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                 + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
+        "Principal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
+                    + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
     })
     void shouldReturSalariedRoles(String appointment, String appointmentType,
@@ -72,14 +74,19 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Judge of the First-tier Tribunal (sitting in retirement),"
+            + "Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
         "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
         "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
         "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary','371'",
+        "Member of the First-tier Tribunal Lay,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary','371'",
         "Tribunal Member,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary','371'",
         "Tribunal Member Lay,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary','371'",
         "Tribunal Member Service,Fee Paid,BBA3,'fee-paid-tribunal-member,hmcts-judiciary','371'",
         "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','372'",
-        "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'"
+        "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'",
+        "Member of the First-tier Tribunal,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','372'",
+        "Member of the First-tier Tribunal,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles2(String appointment, String appointmentType,
                                                        String serviceCode, String expectedRoles, String ticketCode) {
@@ -118,11 +125,18 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
     //Special Medical Salaried
     //sscs_tribunal_member_medical_salaried_joh
-    @Test
-    void shouldReturnTribunalMemberMedicalRolesNoAccessRequests() {
+    @ParameterizedTest
+    @CsvSource({
+
+        "Tribunal Member Medical,'hmcts-judiciary,medical'",
+        "Chief Medical Member First-tier Tribunal,'hmcts-judiciary,medical'",
+        "Regional Medical Member,'hmcts-judiciary,medical'"
+
+    })
+    void shouldReturnTribunalMemberMedicalRolesNoAccessRequests(String appointment, String expectedRoles) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
-            judicialAccessProfile.setAppointment("Tribunal Member Medical");
+            judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setBaseLocationId("1032");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
@@ -135,9 +149,9 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("medical", roleAssignments.get(1).getRoleName());
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(expectedRoles.split(",")));
 
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
@@ -206,7 +220,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @CsvSource({
         "President of Tribunal",
         "Regional Tribunal Judge",
+        "Principal Judge",
         "Tribunal Member Medical",
+        "Chief Medical Member First-tier Tribunal",
+        "Regional Medical Member",
         "Tribunal Judge"
     })
     void shouldNotReturnSalariedRolesExpiredEndDate(String appointment) {
@@ -232,7 +249,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @CsvSource({
         "President of Tribunal,AAA",
         "Regional Tribunal Judge,AAA",
+        "Principal Judge,AAA",
         "Tribunal Member Medical,AAA",
+        "Chief Medical Member First-tier Tribunal,AAA",
+        "Regional Medical Member,AAA",
         "Tribunal Judge,AAA"
     })
     void shouldNotReturnSalariedRolesExpiredEndDate(String appointment, String serviceCode) {
@@ -256,9 +276,12 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     // Invalid authorisation(expired enddate) and valid appointment(Fee-Paid)
     @ParameterizedTest
     @CsvSource({
+        "Judge of the First-tier Tribunal (sitting in retirement)",
         "Tribunal Member Medical",
         "Tribunal Member Disability",
+        "Member of the First-tier Tribunal Lay",
         "Tribunal Member Financially Qualified",
+        "Member of the First-tier Tribunal",
         "Tribunal Member Lay",
         "Tribunal Member Optometrist",
         "Tribunal Member Service",
@@ -288,12 +311,15 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @CsvSource({
         "Tribunal Member Medical,AAA",
         "Tribunal Member Disability,AAA",
+        "Member of the First-tier Tribunal Lay,AAA",
         "Tribunal Member Financially Qualified,AAA",
+        "Member of the First-tier Tribunal,AAA",
         "Tribunal Member Lay,AAA",
         "Tribunal Member Optometrist,AAA",
         "Tribunal Member Service,AAA",
         "Tribunal Member,AAA",
-        "Tribunal Judge,AAA"
+        "Tribunal Judge,AAA",
+        "Judge of the First-tier Tribunal (sitting in retirement),AAA"
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment,
                                                            String serviceCode) {
@@ -319,7 +345,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @CsvSource({
         "President of Tribunal,AAA",
         "Regional Tribunal Judge,AAA",
+        "Principal Judge,AAA",
         "Tribunal Member Medical,AAA",
+        "Chief Medical Member First-tier Tribunal,AAA",
+        "Regional Medical Member,AAA",
         "Tribunal Judge,AAA"
     })
     void shouldNotReturnSalariedExpiredDateandWServiceode(String appointment, String serviceCode) {
@@ -346,12 +375,15 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @CsvSource({
         "Tribunal Member Medical,AAA",
         "Tribunal Member Disability,AAA",
+        "Member of the First-tier Tribunal Lay,AAA",
         "Tribunal Member Financially Qualified,AAA",
+        "Member of the First-tier Tribunal,AAA",
         "Tribunal Member Lay,AAA",
         "Tribunal Member Optometrist,AAA",
         "Tribunal Member Service,AAA",
         "Tribunal Member,AAA",
-        "Tribunal Judge,AAA"
+        "Tribunal Judge,AAA",
+        "Judge of the First-tier Tribunal (sitting in retirement),AAA"
     })
     void shouldNotReturnFeePaidRolesExpiredDateandWServiceode(String appointment,
                                                               String serviceCode) {
@@ -373,12 +405,19 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     }
 
 
-    @Test
-    void shouldReturnAllValidAppointmentRoles() {
+    @ParameterizedTest
+    @CsvSource({
+
+        "Tribunal Member Medical,'hmcts-judiciary,medical'",
+        "Chief Medical Member First-tier Tribunal,'hmcts-judiciary,medical'",
+        "Regional Medical Member,'hmcts-judiciary,medical'"
+    })
+
+   void shouldReturnAllValidAppointmentRoles(String appointment, String expectedRoles) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("District Tribunal Judge", "Regional Medical Member"));
-            judicialAccessProfile.setAppointment("Tribunal Member Medical");
+            judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setBaseLocationId("1032");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
@@ -390,10 +429,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "medical"));
+                containsInAnyOrder(expectedRoles.split(",")));
+        assertFalse(roleAssignments.isEmpty());
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
@@ -406,12 +446,18 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
     }
 
-    @Test
-    void shouldReturnAllValidInAppointmentRoles() {
+    @ParameterizedTest
+    @CsvSource({
+
+        "Tribunal Member Medical,'hmcts-judiciary,medical'",
+        "Chief Medical Member First-tier Tribunal,'hmcts-judiciary,medical'",
+        "Regional Medical Member,'hmcts-judiciary,medical'"
+    })
+    void shouldReturnAllValidInAppointmentRoles(String appointment, String expectedRoles) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setRoles(List.of("District Judge", "Medical Member"));
-            judicialAccessProfile.setAppointment("Tribunal Member Medical");
+            judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType("Salaried");
             judicialAccessProfile.setBaseLocationId("1032");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
@@ -423,10 +469,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder("hmcts-judiciary", "medical"));
+                containsInAnyOrder(expectedRoles.split(",")));
+        assertFalse(roleAssignments.isEmpty());
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             if ("hmcts-judiciary".equals(r.getRoleName())) {
@@ -495,16 +541,22 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @CsvSource({
         "President of Tribunal,Salaried",
         "Regional Tribunal Judge,Salaried",
+        "Principal Judge,Salaried",
         "Tribunal Judge,Salaried",
         "Tribunal Judge,Fee Paid",
+        "Judge of the First-tier Tribunal (sitting in retirement),Salaried",
         "Tribunal Member Medical,Salaried",
+        "Chief Medical Member First-tier Tribunal,Salaried",
+        "Regional Medical Member,Salaried",
         "Tribunal Member Medical,Fee Paid",
         "Tribunal Member Optometrist,Fee Paid",
         "Tribunal Member Disability,Fee Paid",
+        "Member of the First-tier Tribunal Lay,Fee Paid",
         "Tribunal Member,Fee Paid",
         "Tribunal Member Lay,Fee Paid",
         "Tribunal Member Service,Fee Paid",
-        "Tribunal Member Financially Qualified,Fee Paid"
+        "Tribunal Member Financially Qualified,Fee Paid",
+        "Member of the First-tier Tribunal,Fee Paid"
     })
     void shouldReturnCftRegionIdV1FromJapAsRegion(String appointment, String appointmentType) {
 

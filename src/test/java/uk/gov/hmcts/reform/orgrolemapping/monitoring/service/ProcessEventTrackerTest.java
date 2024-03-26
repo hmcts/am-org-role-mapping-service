@@ -99,6 +99,28 @@ class ProcessEventTrackerTest {
                 .containsEntry("StartTime", processMonitorDto.getStartTime().toString())
                 .containsEntry("EndTime", processMonitorDto.getEndTime().toString())
                 .containsEntry("EndStatus", EndStatus.FAILED.toString())
+                .containsEntry("ProcessSteps", "")
                 .containsEntry("EndDetail", "{ 'message': 'Failed' }");
     }
+
+    @Test
+    void testTrackEventCompleted_SuccessWithProcessSteps() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Process 1");
+        processMonitorDto.markAsSuccess();
+        processMonitorDto.addProcessStep("Step 1");
+        processMonitorDto.addProcessStep("Step 2");
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        verify(telemetryClient).trackEvent(anyString(), propertiesCaptor.capture(), any());
+        Map<String, String> properties = propertiesCaptor.getValue();
+
+        assertThat(properties)
+                .containsEntry("Id", processMonitorDto.getId().toString())
+                .containsEntry("ProcessType", "Process 1")
+                .containsEntry("StartTime", processMonitorDto.getStartTime().toString())
+                .containsEntry("EndTime", processMonitorDto.getEndTime().toString())
+                .containsEntry("ProcessSteps", "Step 1, Step 2")
+                .containsEntry("EndStatus", EndStatus.SUCCESS.toString())
+                .containsEntry("EndDetail", null);
+    }
+
 }
