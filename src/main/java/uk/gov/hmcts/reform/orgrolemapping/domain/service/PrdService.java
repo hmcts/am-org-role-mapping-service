@@ -35,7 +35,7 @@ public class PrdService {
                 throw feignException;
             } else {
                 OrganisationsResponse emptyOrg = new OrganisationsResponse(
-                        new ArrayList<OrganisationInfo>(), false);
+                        new ArrayList<>(), false);
                 return ResponseEntity.of(Optional.of(emptyOrg));
             }
         }
