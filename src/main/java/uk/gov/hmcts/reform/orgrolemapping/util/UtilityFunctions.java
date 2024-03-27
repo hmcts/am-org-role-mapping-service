@@ -1,8 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
+import com.google.common.primitives.Ints;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
 
 import javax.inject.Singleton;
@@ -12,6 +15,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Singleton
 @Slf4j
@@ -41,31 +48,28 @@ public final class UtilityFunctions {
     }
 
     public static String getJurisdictionFromServiceCode(final String serviceCode) {
-        String result = null;
+        String result;
         switch (serviceCode) {
-            case "BBA3":
-                result = "SSCS";
-                break;
-            case "AAA6":
-            case "AAA7":
-                result = "CIVIL";
-                break;
-            case "ABA5":
-                result = "PRIVATELAW";
-                break;
-            case "ABA3":
-                result = "PUBLICLAW";
-                break;
-            case "BHA1":
-                result = "EMPLOYMENT";
-                break;
-            case "BFA1":
-                result = "IA";
-                break;
-            default:
-                break;
+            case "BBA3" -> result = "SSCS";
+            case "AAA6", "AAA7" -> result = "CIVIL";
+            case "ABA5" -> result = "PRIVATELAW";
+            case "ABA3" -> result = "PUBLICLAW";
+            case "BHA1" -> result = "EMPLOYMENT";
+            case "BFA1" -> result = "IA";
+            default -> result = null;
         }
         return result;
+    }
+
+    public static List<String> getUserIdsFromJudicialAccessProfileMap(
+            Map<String, Set<UserAccessProfile>> userAccessProfiles
+    ) {
+        return userAccessProfiles.values().stream()
+            .flatMap(accessProfileSet -> accessProfileSet.stream().map(userAccessProfile ->
+                ((JudicialAccessProfile)userAccessProfile).getUserId()
+            ))
+            .distinct()
+            .toList();
     }
 
     public static LocalDateTime localDateToLocalDateTime(LocalDate date) {
@@ -87,4 +91,27 @@ public final class UtilityFunctions {
         }
         return output;
     }
+
+    public static List<List<String>> splitListIntoBatches(List<String> inputList, String batchSize) {
+        final int defaultBatchSize = getBatchSize(batchSize, inputList.size());
+        AtomicInteger counter = new AtomicInteger();
+
+        return inputList.stream()
+            .collect(Collectors.groupingBy(gr -> counter.getAndIncrement() / defaultBatchSize))
+            .values().stream().toList();
+    }
+
+    private static int getBatchSize(String batchSize, int defaultSize) {
+        if (batchSize == null) {
+            return defaultSize;
+        }
+
+        Integer value = Ints.tryParse(batchSize);
+        if (value == null) {
+            return defaultSize;
+        }
+
+        return value;
+    }
+
 }

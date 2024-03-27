@@ -170,6 +170,9 @@ refresh:
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
     authorisedServices: am_org_role_mapping_service,am_role_assignment_refresh_batch
+    includeJudicialBookings: ${REFRESH_JOB_INCLUDE_BOOKINGS:false}
+  BulkAssignment:
+    includeJudicialBookings: ${REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS:false}
 
 testing:
   support:

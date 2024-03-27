@@ -23,6 +23,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.KeyGenerator.getRsaJwk;
 
 public class WiremockFixtures {
 
+    public static final String RAS_CREATE_ASSIGNMENTS_URL = "/am/role-assignments";
+
     public static final ObjectMapper OBJECT_MAPPER = new Jackson2ObjectMapperBuilder()
             .modules(new Jdk8Module(), new JavaTimeModule())
             .build();
@@ -74,7 +76,7 @@ public class WiremockFixtures {
     }
 
     public void stubRoleAssignments(String body, int returnHttpStatus) {
-        WIRE_MOCK_SERVER.stubFor(WireMock.post(urlEqualTo("/am/role-assignments"))
+        WIRE_MOCK_SERVER.stubFor(WireMock.post(urlEqualTo(RAS_CREATE_ASSIGNMENTS_URL))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(body)

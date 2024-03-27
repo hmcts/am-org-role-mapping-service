@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -20,10 +22,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
+import uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,18 +47,17 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
 @Service
 @Slf4j
 public class RefreshOrchestrator {
-
     private final RetrieveDataService retrieveDataService;
     private final RequestMappingService<UserAccessProfile> requestMappingService;
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final PersistenceService persistenceService;
     private final SecurityUtils securityUtils;
-
-    private String sortDirection;
-    private String sortColumn;
-    private List<String> authorisedServices;
-
+    private final JudicialBookingService judicialBookingService;
+    private final String sortDirection;
+    private final String sortColumn;
+    private final List<String> authorisedServices;
+    private final boolean includeJudicialBookings;
     String pageSize;
 
     @Autowired
@@ -63,20 +66,24 @@ public class RefreshOrchestrator {
                                ParseRequestService parseRequestService,
                                CRDService crdService, PersistenceService persistenceService,
                                SecurityUtils securityUtils,
+                               JudicialBookingService judicialBookingService,
                                @Value("${refresh.Job.pageSize}") String pageSize,
                                @Value("${refresh.Job.sortDirection}") String sortDirection,
                                @Value("${refresh.Job.sortColumn}") String sortColumn,
-                               @Value("${refresh.Job.authorisedServices}") List<String> authorisedServices) {
+                               @Value("${refresh.Job.authorisedServices}") List<String> authorisedServices,
+                               @Value("${refresh.Job.includeJudicialBookings}") Boolean  includeJudicialBookings) {
         this.retrieveDataService = retrieveDataService;
         this.requestMappingService = requestMappingService;
         this.parseRequestService = parseRequestService;
         this.crdService = crdService;
         this.persistenceService = persistenceService;
         this.securityUtils = securityUtils;
+        this.judicialBookingService = judicialBookingService;
         this.pageSize = pageSize;
         this.sortDirection = sortDirection;
         this.sortColumn = sortColumn;
         this.authorisedServices = authorisedServices;
+        this.includeJudicialBookings = BooleanUtils.isTrue(includeJudicialBookings);
     }
 
     public void validate(Long jobId, UserRequest userRequest) {
@@ -165,7 +172,6 @@ public class RefreshOrchestrator {
     protected ResponseEntity<Object> refreshJobByServiceName(Map<String, HttpStatus> responseCodeWithUserId,
                                                              RefreshJobEntity refreshJobEntity, UserType userType) {
 
-
         ResponseEntity<Object> responseEntity = null;
 
         //validate the role Category
@@ -188,7 +194,6 @@ public class RefreshOrchestrator {
                     pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
                 }
 
-
                 //call to CRD
                 for (var page = 0; page < pageNumber; page++) {
                     ResponseEntity<List<Object>> userProfilesResponse = crdService
@@ -202,7 +207,6 @@ public class RefreshOrchestrator {
                 }
             }
         } catch (FeignException.NotFound feignClientException) {
-
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
             responseCodeWithUserId.put("", HttpStatus.resolve(feignClientException.status()));
         }
@@ -212,10 +216,27 @@ public class RefreshOrchestrator {
         return responseEntity;
     }
 
+    //This service is triggered when a Refresh JOB is triggered
     @SuppressWarnings("unchecked")
     protected ResponseEntity<Object> prepareResponseCodes(Map<String, HttpStatus> responseCodeWithUserId, Map<String,
             Set<UserAccessProfile>> userAccessProfiles, UserType userType) {
-        ResponseEntity<Object> responseEntity = requestMappingService.createAssignments(userAccessProfiles, userType);
+        ResponseEntity<Object> responseEntity;
+
+        if (userType.equals(UserType.JUDICIAL)) {
+            List<JudicialBooking> judicialBookings = Collections.emptyList();
+
+            if (includeJudicialBookings) {
+                List<String> userIds = UtilityFunctions.getUserIdsFromJudicialAccessProfileMap(userAccessProfiles);
+
+                judicialBookings = judicialBookingService.fetchJudicialBookingsInBatches(userIds, pageSize);
+
+                log.info("Judicial Refresh for {} users(s) got {} booking(s)", userIds.size(), judicialBookings.size());
+            }
+
+            responseEntity = requestMappingService.createJudicialAssignments(userAccessProfiles, judicialBookings);
+        } else {
+            responseEntity = requestMappingService.createCaseworkerAssignments(userAccessProfiles);
+        }
 
         ((List<ResponseEntity<Object>>)
                 Objects.requireNonNull(responseEntity.getBody())).forEach(entity -> {
@@ -230,7 +251,6 @@ public class RefreshOrchestrator {
         log.info("Status code map from RAS {} ", responseCodeWithUserId);
         return responseEntity;
     }
-
 
     protected void buildSuccessAndFailureBucket(Map<String, HttpStatus> responseCodeWithUserId,
                                                 RefreshJobEntity refreshJobEntity) {

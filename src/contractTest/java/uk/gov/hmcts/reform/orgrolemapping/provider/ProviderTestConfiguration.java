@@ -76,10 +76,12 @@ public class ProviderTestConfiguration {
                 crdService,
                 persistenceService,
                 securityUtils,
+                judicialBookingService,
                 "1",
                 "descending",
                 "1",
-                List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch")
+                List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch"),
+                true
         );
     }
 
