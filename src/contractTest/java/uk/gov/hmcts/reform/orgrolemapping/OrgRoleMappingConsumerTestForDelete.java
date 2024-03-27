@@ -20,13 +20,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
-
 
 import java.io.IOException;
 
@@ -43,19 +38,6 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     private static final String QUERY_PARAMS = "process=p2&reference=r2";
     private static final String RAS_DELETE_ACTOR_BY_ID = AM_RAS_URL + "/" + ACTOR_ID;
     private static final String RAS_DELETE_ACTOR_BY_PR = AM_RAS_URL + "?" + QUERY_PARAMS;
-
-    @MockBean
-    CRDTopicConsumer topicConsumer;
-
-    @MockBean
-    JRDTopicConsumer jrdTopicConsumer;
-
-
-    @MockBean
-    JRDMessagingConfiguration jrdMessagingConfiguration;
-
-    @MockBean
-    CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
     JRDTopicPublisher jrdPublisher;

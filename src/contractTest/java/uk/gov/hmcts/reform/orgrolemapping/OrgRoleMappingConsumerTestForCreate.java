@@ -30,11 +30,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import java.util.Map;
@@ -56,21 +52,9 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     RASFeignClient rasFeignClient;
 
     @MockBean
-    CRDTopicConsumer topicConsumer;
-
-    @MockBean
-    JRDTopicConsumer jrdTopicConsumer;
-
-    @MockBean
     JRDTopicPublisher jrdPublisher;
     @MockBean
     CRDTopicPublisher crdPublisher;
-
-    @MockBean
-    JRDMessagingConfiguration jrdMessagingConfiguration;
-
-    @MockBean
-    CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
     @Qualifier("crdPublisher")

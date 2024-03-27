@@ -9,12 +9,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -35,12 +35,15 @@ class JRDTopicConsumerTest {
     @Mock
     public SubscriptionClient subscriptionClient;
 
+    @Mock
+    JRDMessagingConfiguration configuration;
+
     JRDTopicConsumer sut;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        sut = new JRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
+        sut = new JRDTopicConsumer(bulkAssignmentOrchestrator, deserializer, configuration);
     }
 
     @Test
