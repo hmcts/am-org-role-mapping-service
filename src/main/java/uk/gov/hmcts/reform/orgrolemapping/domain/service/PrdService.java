@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
 import java.util.ArrayList;
@@ -42,5 +43,11 @@ public class PrdService {
                 return ResponseEntity.of(Optional.of(emptyOrg));
             }
         }
+    }
+
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
+    public ResponseEntity<GetRefreshUserResponse> retrieveUsers(
+            String lastUpdatedSince, Integer pageSize, String searchAfter) {
+        return prdFeignClient.retrieveUsers(lastUpdatedSince, pageSize, searchAfter);
     }
 }
