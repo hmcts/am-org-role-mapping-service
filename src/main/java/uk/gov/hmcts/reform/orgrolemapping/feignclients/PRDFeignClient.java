@@ -36,7 +36,7 @@ public interface PRDFeignClient {
             @RequestParam(name = "size") Integer size
     );
 
-    @GetMapping(value = "refdata/internal/v1/organisation/users")
+    @GetMapping(value = "refdata/internal/v1/organisations/users")
     ResponseEntity<GetRefreshUserResponse> retrieveUsers(
             @RequestParam(name = "since") String lastUpdatedSince,
             @RequestParam(name = "pageSize") Integer pageSize,
