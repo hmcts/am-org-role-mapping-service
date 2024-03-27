@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
@@ -25,7 +26,7 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public class PrdServiceTest {
+class PrdServiceTest {
 
     PRDFeignClient prdFeignClient = mock(PRDFeignClient.class);
 
@@ -80,5 +81,15 @@ public class PrdServiceTest {
 
         Assert.assertThrows(FeignException.class, () ->
                 sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100));
+    }
+
+    @Test
+    void getRefreshUser() throws IOException {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+                .when(prdFeignClient).getRefreshUsers(any());
+
+        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser("ID");
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 }

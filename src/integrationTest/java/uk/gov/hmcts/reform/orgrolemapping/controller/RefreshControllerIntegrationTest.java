@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
@@ -36,6 +38,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
@@ -64,6 +67,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
     "feign.client.config.jrdClient.v2Active=false"})
+@Transactional
 public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
@@ -73,7 +77,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
-
+    private static final String PROFESSIONAL_REFRESH_URL = "/am/role-mapping/professional/refresh";
     private MockMvc mockMvc;
 
     @Inject
@@ -90,7 +94,8 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
     @MockBean
     private RASFeignClient rasFeignClient;
-
+    @MockBean
+    private PRDFeignClient prdFeignClient;
     @MockBean
     private RequestMappingService requestMappingService;
 
