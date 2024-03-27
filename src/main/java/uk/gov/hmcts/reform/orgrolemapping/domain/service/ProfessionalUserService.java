@@ -21,7 +21,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class ProfessionalUserService {
                 throw new ServiceException("Single BatchLastRunTimestampEntity not found");
             }
             BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
-            LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
+            LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastUserRunDatetime();
 
             int toleranceSeconds = Integer.parseInt(tolerance);
             LocalDateTime sinceTime = orgLastBatchRunTime.minusSeconds(toleranceSeconds);
@@ -119,7 +119,7 @@ public class ProfessionalUserService {
 
                 }
                 batchLastRunTimestampEntity.setLastUserRunDatetime(LocalDateTime.ofInstant(batchRunStartTime.getDate(),
-                        ZoneOffset.systemDefault()));
+                        ZoneId.systemDefault()));
                 batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
             }
         } catch (Exception exception) {
