@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BatchLastRunTimestampTest {
+class BatchLastRunTimestampTest {
     @Test
     void batchLastRunCreatedUpdated() {
         //Testing inserts

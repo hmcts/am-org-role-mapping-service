@@ -1,8 +1,8 @@
 [
   {
-    "jurisdictionId": "1",
-    "organisationProfileId": "1",
-    "accessTypeId": "1",
+    "jurisdictionId": "CIVIL",
+    "organisationProfileId": "SOLICITOR_PROFILE",
+    "accessTypeId": "CIVIL_ACCESS_TYPE_ID",
     "enabled": true
   }
 ]

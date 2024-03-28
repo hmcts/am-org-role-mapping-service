@@ -102,7 +102,7 @@ public class JacksonUtils {
         });
     }
 
-    public static RestructuredAccessTypes convertInRestructuredAccessTypes(String content)
+    public static RestructuredAccessTypes getRestructuredAccessTypes(String content)
             throws JsonProcessingException {
         MAPPER.registerModule(new JavaTimeModule());
         return MAPPER.readValue(content, new TypeReference<>() {

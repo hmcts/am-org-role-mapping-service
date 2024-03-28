@@ -792,7 +792,7 @@ public class TestDataBuilder {
         getRefreshUsersResponse.getUsers().get(0).setUserIdentifier(userId);
         return getRefreshUsersResponse;
     }
-  
+
     public static AccessTypesResponse buildAccessTypesResponse() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

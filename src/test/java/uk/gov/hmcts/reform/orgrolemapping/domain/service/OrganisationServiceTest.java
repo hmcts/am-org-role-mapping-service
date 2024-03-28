@@ -71,8 +71,7 @@ class OrganisationServiceTest {
             "1",
             jdbcTemplate,
             accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository,
-            processEventTracker, "10"
-    );
+            processEventTracker, "10");
 
     @Test
     void findAndInsertStaleOrganisationsIntoRefreshQueue_Test() {
@@ -178,7 +177,7 @@ class OrganisationServiceTest {
         organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
 
         verify(organisationRefreshQueueRepository, times(2))
-                .upsertToOrganisationRefreshQueue(any(), any(), any());
+                .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps()).hasSize(2);
@@ -222,7 +221,7 @@ class OrganisationServiceTest {
                 .thenReturn(organisationsResponse1, organisationsResponse2);
 
         doThrow(new ServiceException("Insert exception")).when(organisationRefreshQueueRepository)
-                .upsertToOrganisationRefreshQueue(any(), any(), any());
+                .insertIntoOrganisationRefreshQueueForLastUpdated(any(), any(), any());
 
         Assertions.assertThrows(ServiceException.class, () ->
                 organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()

@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AccessTypeTest {
+class AccessTypeTest {
 
     @Test
     void getAccessTypes() {

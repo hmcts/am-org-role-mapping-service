@@ -10,6 +10,10 @@ import java.io.File;
 
 public class OrganisationBuilder {
 
+    private OrganisationBuilder() {
+        // private constructor honour sonar rule java:S1118
+    }
+
     public static OrganisationByProfileIdsResponse buildOrganisationResponse(String resource) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -33,4 +37,5 @@ public class OrganisationBuilder {
             throw new BadRequestException("Invalid sample json file or missing for buildOrganisationProfileResponse.");
         }
     }
+
 }
