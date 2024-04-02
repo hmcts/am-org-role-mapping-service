@@ -116,9 +116,7 @@ public class RoleAssignmentAssertHelper {
             // create map for all CTSC roleNames that need regions
             Map<String, List<String>> roleNameToRegionsMap = new HashMap<>();
 
-            rolesNeedingRegions.forEach(roleName -> {
-                roleNameToRegionsMap.put(roleName, new ArrayList<>());
-            });
+            rolesNeedingRegions.forEach(roleName -> roleNameToRegionsMap.put(roleName, new ArrayList<>()));
 
             return roleNameToRegionsMap;
         }

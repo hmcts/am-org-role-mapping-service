@@ -27,42 +27,63 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 class DroolSscsStaffOrgRolesTest extends DroolBase {
 
+    // NB: multi-regions are: South-West and Wales
+    static  List<String> multiRegionList = List.of("6", "7");
     // NB: multi-regions are: all English and Welsh regions
-    static  List<String> multiRegionList = List.of("1", "2", "3", "4", "5", "6", "7");
+    static  List<String> multiRegionCtscList = List.of("1", "2", "3", "4", "5", "6", "7");
 
     @ParameterizedTest
     @CsvSource({
         "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
-                + "specific-access-approver-admin',N,N",
+                + "specific-access-approver-admin',N,N,1,false",
         "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
-                + "task-supervisor,specific-access-approver-admin',Y,N",
+                + "task-supervisor,specific-access-approver-admin',Y,N,1,false",
         "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
-                + "case-allocator,specific-access-approver-admin',N,Y",
+                + "case-allocator,specific-access-approver-admin',N,Y,1,false",
         "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
-                + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y",
-        "4,BBA3,'hmcts-admin,hearing-centre-admin',N,N",
-        "4,BBA3,'hmcts-admin,task-supervisor,hearing-centre-admin',Y,N",
-        "4,BBA3,'hmcts-admin,case-allocator,hearing-centre-admin',N,Y",
-        "4,BBA3,'hmcts-admin,task-supervisor,case-allocator,hearing-centre-admin',Y,Y",
-        "5,BBA3,'clerk,hmcts-admin',N,N",
-        "5,BBA3,'clerk,task-supervisor,hmcts-admin',Y,N",
-        "5,BBA3,'clerk,case-allocator,hmcts-admin',N,Y",
-        "5,BBA3,'clerk,task-supervisor,case-allocator,hmcts-admin',Y,Y",
+            + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y,1,false",
+        "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
+            + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y,6,true",
+        "3,BBA3,'hmcts-admin,hearing-centre-team-leader,hearing-centre-admin,"
+            + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y,7,true",
+
+        "4,BBA3,'hmcts-admin,hearing-centre-admin',N,N,1,false",
+        "4,BBA3,'hmcts-admin,task-supervisor,hearing-centre-admin',Y,N,1,false",
+        "4,BBA3,'hmcts-admin,case-allocator,hearing-centre-admin',N,Y,1,false",
+        "4,BBA3,'hmcts-admin,task-supervisor,case-allocator,hearing-centre-admin',Y,Y,1,false",
+        "4,BBA3,'hmcts-admin,task-supervisor,case-allocator,hearing-centre-admin',Y,Y,6,true",
+        "4,BBA3,'hmcts-admin,task-supervisor,case-allocator,hearing-centre-admin',Y,Y,7,true",
+
+        "5,BBA3,'clerk,hmcts-admin',N,N,1,false",
+        "5,BBA3,'clerk,task-supervisor,hmcts-admin',Y,N,1,false",
+        "5,BBA3,'clerk,case-allocator,hmcts-admin',N,Y,1,false",
+        "5,BBA3,'clerk,task-supervisor,case-allocator,hmcts-admin',Y,Y,1,false",
+        "5,BBA3,'clerk,task-supervisor,case-allocator,hmcts-admin',Y,Y,6,true",
+        "5,BBA3,'clerk,task-supervisor,case-allocator,hmcts-admin',Y,Y,7,true",
+
         "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
-                + "specific-access-approver-admin',N,N",
+                + "specific-access-approver-admin',N,N,1,false",
         "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
-                + "task-supervisor,specific-access-approver-admin',Y,N",
+                + "task-supervisor,specific-access-approver-admin',Y,N,1,false",
         "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
-                + "case-allocator,specific-access-approver-admin',N,Y",
+                + "case-allocator,specific-access-approver-admin',N,Y,1,false",
         "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
-                + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y",
-        "13,BBA3,'hmcts-admin,regional-centre-admin',N,N",
-        "13,BBA3,'hmcts-admin,task-supervisor,regional-centre-admin',Y,N",
-        "13,BBA3,'hmcts-admin,case-allocator,regional-centre-admin',N,Y",
-        "13,BBA3,'hmcts-admin,task-supervisor,case-allocator,regional-centre-admin',Y,Y",
+                + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y,1,false",
+        "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
+                + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y,6,true",
+        "12,BBA3,'hmcts-admin,regional-centre-team-leader,regional-centre-admin,"
+                + "task-supervisor,case-allocator,specific-access-approver-admin',Y,Y,7,true",
+
+        "13,BBA3,'hmcts-admin,regional-centre-admin',N,N,1,false",
+        "13,BBA3,'hmcts-admin,task-supervisor,regional-centre-admin',Y,N,1,false",
+        "13,BBA3,'hmcts-admin,case-allocator,regional-centre-admin',N,Y,1,false",
+        "13,BBA3,'hmcts-admin,task-supervisor,case-allocator,regional-centre-admin',Y,Y,1,false",
+        "13,BBA3,'hmcts-admin,task-supervisor,case-allocator,regional-centre-admin',Y,Y,6,true",
+        "13,BBA3,'hmcts-admin,task-supervisor,case-allocator,regional-centre-admin',Y,Y,7,true",
     })
     void shouldReturnSscsAdminMappings(String roleId, String serviceCode, String expectedRoles,
-                                             String taskSupervisorFlag, String caseAllocatorFlag) {
+                                       String taskSupervisorFlag, String caseAllocatorFlag,
+                                       String region, boolean expectMultiRegion) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -74,37 +95,47 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         cap.setRoleId(roleId);
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setRegionId("LDN");
+        cap.setRegionId(region);
         cap.setSkillCodes(skillCodes);
         allProfiles.add(cap);
+
+        // create map for all ADMIN roleNames that need regions
+        List<String> rolesThatRequireRegions = List.of(
+                "hearing-centre-team-leader",
+                "hearing-centre-admin",
+                "specific-access-approver-admin",
+                "clerk",
+                "regional-centre-team-leader",
+                "regional-centre-admin"
+        );
+        Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(expectedRoles.split(",")));
+        List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
+        MultiRegion.assertRoleAssignmentCount(
+                roleAssignments,
+                expectedRoleList,
+                expectMultiRegion,
+                rolesThatRequireRegions,
+                multiRegionList
+        );
+
         roleAssignments.forEach(r -> {
             assertEquals("ADMIN", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
+
+            // check region status and add to map
+            MultiRegion.assertRegionStatusAndUpdateRoleToRegionMap(r, roleNameToRegionsMap);
         });
-        List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader",
-                "hearing-centre-admin", "specific-access-approver-admin", "clerk",
-                "specific-access-approver-admin", "regional-centre-team-leader", "regional-centre-admin");
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    //assert region
-                    if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
-                        assertEquals("LDN", r.getAttributes().get("region").asText());
-                    } else {
-                        assertNull(r.getAttributes().get("region"));
-                    }
                     //assert work types
                     if (("hearing-centre-team-leader").equals(r.getRoleName())) {
                         assertNull(r.getAttributes().get("workTypes"));
@@ -135,6 +166,16 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
                         assertNull(r.getAttributes().get("workTypes"));
                     }
                 });
+
+        // verify regions add to map
+        MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
+                roleNameToRegionsMap,
+                expectedRoleList,
+                expectMultiRegion,
+                multiRegionList,
+                region, // fallback if not multi-region scenario
+                null // i.e. no bookings
+        );
     }
 
     @ParameterizedTest
@@ -210,7 +251,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
                 expectedRoleList,
                 expectMultiRegion,
                 rolesThatRequireRegions,
-                multiRegionList
+                multiRegionCtscList
         );
 
         roleAssignments.forEach(r -> {
@@ -252,7 +293,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
                 roleNameToRegionsMap,
                 expectedRoleList,
                 expectMultiRegion,
-                multiRegionList,
+                multiRegionCtscList,
                 region, // fallback if not multi-region scenario
                 null // i.e. no bookings
         );
@@ -261,24 +302,35 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
-                + "specific-access-approver-legal-ops',N,N",
+                + "specific-access-approver-legal-ops',N,N,1,false",
         "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
-                + "specific-access-approver-legal-ops',Y,N",
+                + "specific-access-approver-legal-ops',Y,N,1,false",
         "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,case-allocator,"
-                + "specific-access-approver-legal-ops',N,Y",
+                + "specific-access-approver-legal-ops',N,Y,1,false",
         "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
-                + "case-allocator,specific-access-approver-legal-ops',Y,Y",
-        "2,BBA3,'tribunal-caseworker,hmcts-legal-operations',N,N",
-        "2,BBA3,'tribunal-caseworker,task-supervisor,hmcts-legal-operations',Y,N",
-        "2,BBA3,'tribunal-caseworker,case-allocator,hmcts-legal-operations',N,Y",
-        "2,BBA3,'tribunal-caseworker,task-supervisor,case-allocator,hmcts-legal-operations',Y,Y",
-        "16,BBA3,'registrar,hmcts-legal-operations',N,N",
-        "16,BBA3,'registrar,task-supervisor,hmcts-legal-operations',Y,N",
-        "16,BBA3,'registrar,case-allocator,hmcts-legal-operations',N,Y",
-        "16,BBA3,'registrar,task-supervisor,case-allocator,hmcts-legal-operations',Y,Y",
+                + "case-allocator,specific-access-approver-legal-ops',Y,Y,1,false",
+        "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                + "case-allocator,specific-access-approver-legal-ops',Y,Y,6,true",
+        "1,BBA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
+                + "case-allocator,specific-access-approver-legal-ops',Y,Y,7,true",
+
+        "2,BBA3,'tribunal-caseworker,hmcts-legal-operations',N,N,1,false",
+        "2,BBA3,'tribunal-caseworker,task-supervisor,hmcts-legal-operations',Y,N,1,false",
+        "2,BBA3,'tribunal-caseworker,case-allocator,hmcts-legal-operations',N,Y,1,false",
+        "2,BBA3,'tribunal-caseworker,task-supervisor,case-allocator,hmcts-legal-operations',Y,Y,1,false",
+        "2,BBA3,'tribunal-caseworker,task-supervisor,case-allocator,hmcts-legal-operations',Y,Y,6,true",
+        "2,BBA3,'tribunal-caseworker,task-supervisor,case-allocator,hmcts-legal-operations',Y,Y,7,true",
+
+        "16,BBA3,'registrar,hmcts-legal-operations',N,N,1,false",
+        "16,BBA3,'registrar,task-supervisor,hmcts-legal-operations',Y,N,1,false",
+        "16,BBA3,'registrar,case-allocator,hmcts-legal-operations',N,Y,1,false",
+        "16,BBA3,'registrar,task-supervisor,case-allocator,hmcts-legal-operations',Y,Y,1,false",
+        "16,BBA3,'registrar,task-supervisor,case-allocator,hmcts-legal-operations',Y,Y,6,true",
+        "16,BBA3,'registrar,task-supervisor,case-allocator,hmcts-legal-operations',Y,Y,7,true",
     })
     void shouldReturnSscsCaseWorkerMappings(String roleId, String serviceCode, String expectedRoles,
-                                                  String taskSupervisorFlag, String caseAllocatorFlag) {
+                                            String taskSupervisorFlag, String caseAllocatorFlag,
+                                            String region, boolean expectMultiRegion) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -289,41 +341,50 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         cap.setRoleId(roleId);
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setRegionId("LDN");
+        cap.setRegionId(region);
         cap.setSkillCodes(skillCodes);
 
         allProfiles.add(cap);
+
+        // create map for all CTSC roleNames that need regions
+        List<String> rolesThatRequireRegions = new java.util.ArrayList<>(List.of(
+                "senior-tribunal-caseworker",
+                "tribunal-caseworker",
+                "specific-access-approver-legal-ops",
+                "registrar"
+        ));
+        if (!roleId.equals("1")) {
+            rolesThatRequireRegions.add("task-supervisor");
+            rolesThatRequireRegions.add("case-allocator");
+        }
+        Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
 
         //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(expectedRoles.split(",")));
+        List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
+        MultiRegion.assertRoleAssignmentCount(
+                roleAssignments,
+                expectedRoleList,
+                expectMultiRegion,
+                rolesThatRequireRegions,
+                multiRegionList
+        );
+
         roleAssignments.forEach(r -> {
             assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
             assertEquals("ORGANISATION", r.getRoleType().toString());
-        });
 
-        List<String> roleNamesWithRegionAttribute = List.of("senior-tribunal-caseworker", "tribunal-caseworker",
-                                                        "specific-access-approver-legal-ops", "registrar");
+            // check region status and add to map
+            MultiRegion.assertRegionStatusAndUpdateRoleToRegionMap(r, roleNameToRegionsMap);
+        });
 
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
                 .forEach(r -> {
                     assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
                     assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    //assert region
-                    if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
-                        assertEquals("LDN", r.getAttributes().get("region").asText());
-                    } else if (r.getRoleName().equals("task-supervisor") && !roleId.equals("1")
-                        || r.getRoleName().equals("case-allocator") && !roleId.equals("1")) {
-                        assertEquals("LDN", r.getAttributes().get("region").asText());
-                    } else {
-                        assertNull(r.getAttributes().get("region"));
-                    }
                     //assert work types
                     if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
                         assertNull(r.getAttributes().get("workTypes"));
@@ -347,6 +408,16 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
                         assertNull(r.getAttributes().get("workTypes"));
                     }
                 });
+
+        // verify regions add to map
+        MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
+                roleNameToRegionsMap,
+                expectedRoleList,
+                expectMultiRegion,
+                multiRegionList,
+                region, // fallback if not multi-region scenario
+                null // i.e. no bookings
+        );
     }
 
     @ParameterizedTest
