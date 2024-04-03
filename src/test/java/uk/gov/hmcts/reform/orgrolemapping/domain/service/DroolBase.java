@@ -16,10 +16,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -90,6 +92,18 @@ public abstract class DroolBase {
     @NotNull
     protected List<FeatureFlag> getFeatureFlags(String flagName, Boolean status) {
         return Collections.singletonList(FeatureFlag.builder().flagName(flagName).status(status).build());
+    }
+
+    @NotNull
+    protected List<FeatureFlag> getAllFeatureFlagsToggleByJurisdiction(String jurisdiction, Boolean status) {
+        // build list of all flags...
+        return Arrays.stream(FeatureFlagEnum.values())
+            .map(featureFlagEnum -> FeatureFlag.builder()
+                .flagName(featureFlagEnum.getValue())
+                // ... toggle those that start with jurisdiction (otherwise false)
+                .status(featureFlagEnum.name().startsWith(jurisdiction.toUpperCase() + "_") ? status : false)
+                .build())
+            .toList();
     }
 
 }
