@@ -80,7 +80,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         false,
                         true,
                         List.of("Employment Judge"),
-                        List.of("judge", "hmcts-judiciary", "hearing-viewer"),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer", "case-allocator"),
                         null),
                 Arguments.of("Employment Judge",
                         "Fee Paid",
@@ -184,6 +184,8 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(
                         List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
+                                FeatureFlag.builder().flagName("employment_wa_1_1").status(true).build(),
+                                FeatureFlag.builder().flagName("employment_wa_1_2").status(true).build(),
                                 FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
                 );
 

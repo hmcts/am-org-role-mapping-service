@@ -84,12 +84,17 @@ env.PACT_BROKER_URL = "pact-broker.platform.hmcts.net"
 env.PACT_BROKER_PORT = "443"
 env.PACT_BROKER_SCHEME = "https"
 
+// Var to turn FTA on for azure-messaging-servicebus DTSAM-150
+env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
+
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
     env.LAUNCH_DARKLY_ENV = "pr"
   }
   else if(env.BRANCH_NAME == 'master') {
     env.LAUNCH_DARKLY_ENV = "aat"
+    // Var turned off for staging as ASB is shared with AAT instances
+    env.AZURE_SERVICE_BUS_FTA_ENABLED = "false"
   }
   else {
     env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
