@@ -45,7 +45,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     static final String SERVICE_CODES = "ABA5";
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
-    {
+    static {
         expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,applications");
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("leadership-judge", null);
@@ -226,7 +226,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
         );
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(true));
 
         //assertions
         assertFalse(roleAssignments.isEmpty());
@@ -266,21 +266,14 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
         );
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(List.of(
-                        FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(false).build(),
-                        FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(false).build(),
-                        FeatureFlag.builder().flagName("privatelaw_wa_1_2").status(false).build(),
-                        FeatureFlag.builder().flagName("privatelaw_wa_1_3").status(false).build()));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(false));
 
         //assertions
         assertTrue(roleAssignments.isEmpty());
     }
 
-    List<FeatureFlag> getFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(true).build(),
-                FeatureFlag.builder().flagName("privatelaw_wa_1_2").status(true).build(),
-                FeatureFlag.builder().flagName("privatelaw_wa_1_3").status(true).build());
+    List<FeatureFlag> getFeatureFlags(Boolean status) {
+        return getAllFeatureFlagsToggleByJurisdiction("PRIVATELAW", status);
     }
+
 }

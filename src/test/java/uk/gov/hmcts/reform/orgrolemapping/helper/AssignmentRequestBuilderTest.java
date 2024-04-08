@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,18 +17,31 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -37,6 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
@@ -842,6 +857,100 @@ class AssignmentRequestBuilderTest {
     void validateAuthorisation_emptyList() {
         boolean authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(), "BFA1");
         assertFalse(authorisation);
+    }
+
+    @Test
+    void cloneNewRoleAssignmentAndChangeRegion_emptyObject() {
+
+        // GIVEN
+        RoleAssignment inputRoleAssignment = RoleAssignment.builder().build();
+        String inputRegion = "new-region";
+
+        // WHEN
+        RoleAssignment output = AssignmentRequestBuilder.cloneNewRoleAssignmentAndChangeRegion(
+                inputRoleAssignment,
+                inputRegion);
+
+        // THEN
+        assertNotNull(output.getAttributes());
+        assertNotNull(output.getAttributes().get("region"));
+        assertEquals(inputRegion, output.getAttributes().get("region").asText());
+    }
+
+    @Test
+    void cloneNewRoleAssignmentAndChangeRegion_checkDataMatch() {
+
+        // GIVEN
+        Map<String, JsonNode> attributes = new HashMap<>();
+        attributes.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("jurisdiction"));
+        attributes.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode("my-primaryLocation"));
+        attributes.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("my-workTypes"));
+        attributes.put("region", JacksonUtils.convertObjectIntoJsonNode("my-region"));
+        attributes.put("my-future-attribute", JacksonUtils.convertObjectIntoJsonNode("any-value"));
+
+        ZonedDateTime timeStamp = ZonedDateTime.now(ZoneOffset.UTC);
+        RoleAssignment inputRoleAssignment = RoleAssignment.builder()
+                // fields required for NEW role Assignments
+                .actorIdType(ActorIdType.IDAM)
+                .actorId(UUID.randomUUID().toString())
+                .roleType(RoleType.ORGANISATION)
+                .roleName("my-role-name")
+                .classification(Classification.RESTRICTED)
+                .grantType(GrantType.STANDARD)
+                .roleCategory(RoleCategory.JUDICIAL)
+                .readOnly(false)
+                .beginTime(timeStamp.minusDays(1L))
+                .endTime(timeStamp.plusYears(1L))
+                .attributes(attributes)
+                .notes(JacksonUtils.convertObjectIntoJsonNode("my-notes"))
+                .authorisations(List.of("auth1", "Auth2"))
+                // other fields that are blank for NEW Role Assignments during ORM mapping process
+                .process("my-process")
+                .reference("my-reference")
+                .status(Status.CREATE_REQUESTED)
+                .created(ZonedDateTime.now())
+                .log("my-log")
+                .build();
+        String inputRegion = "new-region";
+
+        // WHEN
+        RoleAssignment output = AssignmentRequestBuilder.cloneNewRoleAssignmentAndChangeRegion(
+                inputRoleAssignment,
+                inputRegion);
+
+        // THEN
+
+        // verify fields for NEW Role Assignments copied OK
+        assertEquals(inputRoleAssignment.getActorIdType(), output.getActorIdType());
+        assertEquals(inputRoleAssignment.getActorId(), output.getActorId());
+        assertEquals(inputRoleAssignment.getRoleType(), output.getRoleType());
+        assertEquals(inputRoleAssignment.getRoleName(), output.getRoleName());
+        assertEquals(inputRoleAssignment.getClassification(), output.getClassification());
+        assertEquals(inputRoleAssignment.getGrantType(), output.getGrantType());
+        assertEquals(inputRoleAssignment.getRoleCategory(), output.getRoleCategory());
+        assertEquals(inputRoleAssignment.isReadOnly(), output.isReadOnly());
+        assertEquals(inputRoleAssignment.getBeginTime(), output.getBeginTime());
+        assertEquals(inputRoleAssignment.getEndTime(), output.getEndTime());
+        assertEquals(inputRoleAssignment.getAttributes().size(), output.getAttributes().size());
+        inputRoleAssignment.getAttributes().forEach((key, value) -> {
+            assertTrue(output.getAttributes().containsKey(key));
+            if (key.equals("region")) {
+                // NB: verify region is UPDATED
+                assertEquals(inputRegion, output.getAttributes().get(key).asText());
+            } else {
+                assertEquals(value.asText(), output.getAttributes().get(key).asText());
+            }
+        });
+        assertEquals(inputRoleAssignment.getNotes(), output.getNotes());
+        assertEquals(inputRoleAssignment.getAuthorisations().size(), output.getAuthorisations().size());
+        assertTrue(output.getAuthorisations().containsAll(inputRoleAssignment.getAuthorisations()));
+
+        // verify other fields are not transferred (as they will be set elsewhere)
+        assertNull(output.getProcess());
+        assertNull(output.getReference());
+        assertNull(output.getStatus());
+        assertNull(output.getCreated());
+        assertNull(output.getLog());
     }
 
 }
