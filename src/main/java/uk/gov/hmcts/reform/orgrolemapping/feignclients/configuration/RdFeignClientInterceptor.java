@@ -21,9 +21,6 @@ public class RdFeignClientInterceptor {
     @Autowired
     OIdcAdminConfiguration oidcAdminConfiguration;
 
-    @Value("${feign.client.config.jrdClient.v2Active:false}")
-    private Boolean v2Active;
-
     @Bean
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
@@ -33,9 +30,9 @@ public class RdFeignClientInterceptor {
                 requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer "
                         + idamRepository.getManageUserToken(oidcAdminConfiguration.getUserId()));
                 requestTemplate.header(HttpHeaders.CONTENT_TYPE, "application/json");
-                if (v2Active != null && v2Active && requestTemplate.url().contains("judicial")) {
-                    requestTemplate.header(HttpHeaders.ACCEPT, "application/vnd.jrd.api+json;Version=2.0");
-                }
+
+                requestTemplate.header(HttpHeaders.ACCEPT, "application/vnd.jrd.api+json;Version=2.0");
+
             }
         };
     }
