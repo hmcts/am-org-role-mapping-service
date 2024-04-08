@@ -16,14 +16,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -39,11 +35,9 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -111,71 +105,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
-    }
-
-    @Test
-    public void shouldProcessRefreshRoleAssignmentsWithJudicialProfiles() throws Exception {
-        logger.info(" Refresh role assignments successfully with valid user profiles");
-        var uuid = UUID.randomUUID().toString();
-        doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
-        doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
-        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
-
-        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders(S2S_XUI))
-                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
-                .andExpect(status().is(200))
-                .andReturn();
-
-        var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
-        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
-    }
-
-    @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withFailedRoleAssignments()
-            throws Exception {
-        logger.info(" Refresh role assignments failed with valid user profiles");
-        var uuid = UUID.randomUUID().toString();
-        doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
-        doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
-        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders(S2S_XUI))
-                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
-                .andExpect(status().is(422))
-                .andReturn();
-
-        var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains(Constants.FAILED_ROLE_REFRESH));
-        logger.info(" -- Refresh Role Assignment record fail to update -- ");
-    }
-
-    @Test
-    public void shouldFailProcessRefreshRoleAssignmentsWithJudicialProfiles_withEmptyJudicialBookings()
-            throws Exception {
-        logger.info(" Refresh role assignments with empty bookings");
-        var uuid = UUID.randomUUID().toString();
-        doReturn(buildJudicialProfilesResponse(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
-        doReturn(buildJudicialBookingsResponse()).when(jbsFeignClient).getJudicialBookingByUserIds(any());
-        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
-
-        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders(S2S_XUI))
-                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
-                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        var contentAsString = result.getResponse().getContentAsString();
-        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
-        logger.info(" -- Refresh Role Assignment record updated without bookings -- ");
     }
 
     @Test
@@ -265,18 +194,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                         .value(containsString("The input parameter: \"abc-123$\", "
                                 + "does not comply with the required pattern")))
                 .andReturn();
-    }
-
-    private ResponseEntity<List<JudicialProfile>> buildJudicialProfilesResponse(String... userIds) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("total_records", "" + userIds.length);
-        List<JudicialProfile> bookings = new ArrayList<>();
-        for (var userId:userIds) {
-            bookings.add(JudicialProfile.builder().sidamId(userId)
-                    .appointments(List.of(Appointment.builder().appointment("Tribunal Judge")
-                            .appointmentType("Fee Paid").build())).build());
-        }
-        return new ResponseEntity<>(bookings, headers, HttpStatus.OK);
     }
 
     private void mockRequestMappingServiceBookingParamWithStatus(HttpStatus status) {

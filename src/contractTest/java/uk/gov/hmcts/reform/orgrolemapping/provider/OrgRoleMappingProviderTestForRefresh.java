@@ -102,7 +102,7 @@ public class OrgRoleMappingProviderTestForRefresh {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 
         Mockito.when(jrdService.fetchJudicialProfiles(Mockito.any()))
-                .thenReturn(new ResponseEntity<>(List.of(TestDataBuilder.buildJudicialProfile()), headers,
+                .thenReturn(new ResponseEntity<>(List.of(TestDataBuilder.buildJudicialProfileV2()), headers,
                         HttpStatus.OK));
 
         Mockito.when(judicialBookingService.fetchJudicialBookings(Mockito.any()))

@@ -12,7 +12,6 @@ import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
@@ -24,7 +23,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -414,15 +412,6 @@ public class TestDataBuilder {
         return JRDUserRequest.builder().sidamIds(Set.of(id_1, id_2)).build();
     }
 
-    public static JudicialProfile buildJudicialProfile() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
-        return objectMapper.readValue(
-                new File("src/main/resources/judicialProfileSample.json"),
-                JudicialProfile.class);
-    }
-
     public static JudicialProfileV2 buildJudicialProfileV2() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -467,21 +456,6 @@ public class TestDataBuilder {
                 .build();
     }
 
-    public static JudicialProfile buildJudicialProfileWithParams(
-            List<Appointment> appointments, List<Authorisation> authorisations) {
-        return JudicialProfile.builder()
-                .sidamId("111")
-                .objectId("fa88df1d-4204-4039-8e2a-fa11d4c643ec")
-                .knownAs("Penney")
-                .surname("Azcarate")
-                .fullName("Penney Azcarate")
-                .postNominals("The Honourable")
-                .emailId("EMP42867@ejudiciary.net")
-                .appointments(appointments)
-                .authorisations(authorisations)
-                .build();
-    }
-
     public static JudicialProfileV2 buildJudicialProfileWithParamsV2(
             List<AppointmentV2> appointments, List<AuthorisationV2> authorisations) {
         return JudicialProfileV2.builder()
@@ -510,27 +484,6 @@ public class TestDataBuilder {
                 .appointments(appointments)
                 .authorisations(authorisations)
                 .roles(roles)
-                .build();
-    }
-
-    public static Appointment buildAppointmentWithParams(String epimms, String isPrinciple, String appointment,
-                                                         String appointmentType, LocalDate startDate, LocalDate endDate,
-                                                         List<String> roles, String serviceCode) {
-        return Appointment.builder()
-                .baseLocationId("827")
-                .epimmsId(epimms)
-                .courtName("Fairfax County Courthouse")
-                .cftRegionID("NULL")
-                .cftRegion("South East")
-                .locationId("1")
-                .location("South East")
-                .isPrincipalAppointment(isPrinciple)
-                .appointment(appointment)
-                .appointmentType(appointmentType)
-                .startDate(startDate)
-                .endDate(endDate)
-                .roles(roles)
-                .serviceCode(serviceCode)
                 .build();
     }
 

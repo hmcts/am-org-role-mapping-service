@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import java.util.ArrayList;
 import java.util.List;
 
-import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfileV2;
 
 
 @Component
@@ -24,7 +24,7 @@ public class JRDFeignClientFallback  implements JRDFeignClient {
     @Override
     @SuppressWarnings("unchecked")
     public <T> ResponseEntity<List<T>> getJudicialDetailsById(JRDUserRequest userRequest, Integer pageSize) {
-        return ResponseEntity.ok((List<T>) new ArrayList<>(buildJudicialProfile(userRequest,
+        return ResponseEntity.ok((List<T>) new ArrayList<>(buildJudicialProfileV2(userRequest,
                 "judicialProfileSample.json")));
     }
 }
