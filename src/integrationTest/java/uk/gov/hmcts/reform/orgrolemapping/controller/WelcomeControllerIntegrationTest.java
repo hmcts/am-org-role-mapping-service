@@ -181,7 +181,7 @@ public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
                 .build();
 
         judicialProfiles = new ArrayList<>(buildJudicialProfileV2(JRDUserRequest.builder()
-                        .sidamIds(Set.copyOf(userRequest.getUserIds())).build(),"judicialProfileSample.json"));
+                        .sidamIds(Set.copyOf(userRequest.getUserIds())).build(),"judicialProfileSampleV2.json"));
         wiremockFixtures.resetRequests();
     }
 
