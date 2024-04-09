@@ -101,6 +101,7 @@ am-role-assignment-service:
       LAUNCH_DARKLY_ENV: pr
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
+      RUN_LD_ON_STARTUP: true
 
 am-judicial-booking-service:
   enabled: true
