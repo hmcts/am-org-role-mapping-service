@@ -17,10 +17,13 @@ import function uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getJuri
 
 /*
  * Private Law "listed-hearing-viewer" Org role mapping.
+ * Made obsolete in DTSAM-182 by PRIVATELAW_WA_1_4.
+ * To be removed in DTSAM-246.
  */
 rule "private_law_cymru_caseworker_hearing_viewer_other_gov_dept"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_2.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.PRIVATELAW_WA_1_4.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("18"), serviceCode in ("ABA5"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
