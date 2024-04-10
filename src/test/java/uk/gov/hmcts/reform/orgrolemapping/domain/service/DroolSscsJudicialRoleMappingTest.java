@@ -106,6 +106,13 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Regional Tribunal Judge-Salaried,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
             + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary',7,true",
 
+        "SSCS Principal Judge-Salaried,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
+                + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary',1,false",
+        "SSCS Principal Judge-Salaried,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
+                + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary',6,true",
+        "SSCS Principal Judge-Salaried,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
+                + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary',7,true",
+
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
@@ -113,6 +120,14 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary',1,false",
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary',6,true",
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary',7,true",
+
+        "SSCS Chief Medical Member First-tier Tribunal-Salaried,'medical,hmcts-judiciary',1,false",
+        "SSCS Chief Medical Member First-tier Tribunal-Salaried,'medical,hmcts-judiciary',6,true",
+        "SSCS Chief Medical Member First-tier Tribunal-Salaried,'medical,hmcts-judiciary',7,true",
+
+        "SSCS Regional Medical Member-Salaried,'medical,hmcts-judiciary',1,false",
+        "SSCS Regional Medical Member-Salaried,'medical,hmcts-judiciary',6,true",
+        "SSCS Regional Medical Member-Salaried,'medical,hmcts-judiciary',7,true",
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles,
                                    String regionId, boolean expectMultiRegion) {
@@ -179,6 +194,20 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false",
         // ^ judge RA will not be created as there is no booking
 
+        "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+            + "'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false",
+        // NB: only testing multi-region when using fallback region
+        "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+            + "'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true",
+        "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+            + "'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true",
+        "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+            + "'fee-paid-judge,judge,hmcts-judiciary',true,false,1,false",
+        // ^ judge RA will be created if a booking created
+        "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+            + "'fee-paid-judge,hmcts-judiciary',false,false,1,false",
+        // ^ judge RA will not be created as there is no booking
+
         "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,1,false",
         "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,6,true",
         "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,7,true",
@@ -190,6 +219,10 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,1,false",
         "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,6,true",
         "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,7,true",
+
+        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,1,false",
+        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,6,true",
+        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,7,true",
 
         "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,1,false",
         "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,6,true",
@@ -205,7 +238,11 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
         "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,1,false",
         "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,6,true",
-        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,7,true"
+        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,7,true",
+
+        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,1,false",
+        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,6,true",
+        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,7,true",
     })
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles,
                                   boolean withBooking, boolean johFallback,

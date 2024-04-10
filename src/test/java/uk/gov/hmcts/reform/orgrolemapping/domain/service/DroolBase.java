@@ -33,6 +33,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingSe
 
 public abstract class DroolBase {
 
+    static final String JUDICIAL_OFFICE_HOLDERS_QUERY_NAME = "getJudicialOfficeHolders";
+    static final String JUDICIAL_OFFICE_HOLDERS_RESULTS_KEY = "judicialOfficeHolders";
+
     StatelessKieSession kieSession;
     Map<String, Set<CaseWorkerAccessProfile>> usersAccessProfiles;
     List<Command<?>> commands;
@@ -62,6 +65,12 @@ public abstract class DroolBase {
     }
 
     List<RoleAssignment> buildExecuteKieSession(List<FeatureFlag> featureFlags) {
+        return buildExecuteKieSession(featureFlags, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    List<RoleAssignment> buildExecuteKieSession(List<FeatureFlag> featureFlags,
+                                                List<JudicialOfficeHolder> outputJudicialOfficeHolders) {
         // Sequence of processing for executing the rules:
         //   1. add all the profiles
         //   2. fire all the rules
@@ -74,19 +83,43 @@ public abstract class DroolBase {
                 CommandFactory.newInsertElements(judicialBookings),
                 CommandFactory.newInsertElements(featureFlags),
                 CommandFactory.newFireAllRules(),
-                CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME)
+                CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME),
+                CommandFactory.newQuery(JUDICIAL_OFFICE_HOLDERS_RESULTS_KEY, JUDICIAL_OFFICE_HOLDERS_QUERY_NAME)
         );
 
         // Run the rules
         results = kieSession.execute(CommandFactory.newBatchExecution(commands));
+
         //Extract all created role assignments using the query defined in the rules.
         List<RoleAssignment> roleAssignments = new ArrayList<>();
-        QueryResults queryResults = (QueryResults) results.getValue(ROLE_ASSIGNMENTS_RESULTS_KEY);
-        for (QueryResultsRow row : queryResults) {
-            roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
+        populateListFromQueryResults(
+            roleAssignments,
+            results,
+            ROLE_ASSIGNMENTS_RESULTS_KEY,
+            "$roleAssignment"
+        );
+
+        if (outputJudicialOfficeHolders != null) {
+            populateListFromQueryResults(
+                outputJudicialOfficeHolders,
+                results,
+                JUDICIAL_OFFICE_HOLDERS_RESULTS_KEY,
+                "$judicialOfficeHolder"
+            );
         }
 
         return ValidationUtil.distinctRoleAssignments(roleAssignments);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void populateListFromQueryResults(List<T> output,
+                                                  ExecutionResults results,
+                                                  String resultsKey,
+                                                  String rowKey) {
+        QueryResults queryResults = (QueryResults) results.getValue(resultsKey);
+        for (QueryResultsRow row : queryResults) {
+            output.add((T) row.get(rowKey));
+        }
     }
 
     @NotNull
