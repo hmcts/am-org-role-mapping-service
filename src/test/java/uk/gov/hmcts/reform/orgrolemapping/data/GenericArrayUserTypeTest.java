@@ -137,6 +137,7 @@ public class GenericArrayUserTypeTest {
 
     @Test
     public void executeDissasenble() throws HibernateException {
+
         String str1 = "test";
         String str2 = "test";
         Serializable result = sut.disassemble(str1);
