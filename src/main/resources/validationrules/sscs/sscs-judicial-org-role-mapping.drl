@@ -30,8 +30,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
-    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried") && $joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
   insert(
       RoleAssignment.builder()
@@ -67,8 +67,8 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing,hearing_work,post_hearing,"
                                                                      + "decision_making_work,routine_work,priority"));
-   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
-    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried") && $joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
   insert(
       RoleAssignment.builder()
@@ -102,8 +102,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
-    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried") && $joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
   insert(
       RoleAssignment.builder()
@@ -143,8 +143,10 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing,hearing_work,post_hearing,"
                                                                      + "decision_making_work,routine_work,priority"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId() != null ?
-                                                                           $bk.getRegionId():$joh.getRegionId()));
+   String region = $bk.getRegionId() != null ? $bk.getRegionId() : $joh.getRegionId();
+   if (region != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode(region));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -177,8 +179,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
-    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried") && $joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
   insert(
       RoleAssignment.builder()
@@ -213,8 +215,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
-    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried") && $joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
   insert(
       RoleAssignment.builder()
@@ -249,9 +251,9 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
-   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried")) {
-       attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-      }
+   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried") && $joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
 
   insert(
       RoleAssignment.builder()
@@ -329,7 +331,9 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing,hearing_work,post_hearing,"
                                                                         + "decision_making_work,routine_work,priority"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if ($joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
    if ($joh.getTicketCodes() != null && $joh.getTicketCodes().contains("368")) {
     attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
    }
@@ -368,7 +372,9 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if ($joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -401,7 +407,9 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if ($joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -436,7 +444,9 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if ($joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -470,7 +480,9 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if ($joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -504,7 +516,9 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   if ($joh.getRegionId() != null) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
