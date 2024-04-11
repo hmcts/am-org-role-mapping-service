@@ -13,12 +13,12 @@ dependencies:
   - name: servicebus
     version: 1.0.4
     repository: https://hmctspublic.azurecr.io/helm/v1/repo/
-    condition: servicebus.enabled
+    condition: orm.servicebus.enabled
   - name: am-role-assignment-service
     version: 0.0.76
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
-    condition: am-role-assignment-service.enabled
+    condition: orm.ras.enabled
   - name: am-judicial-booking-service
     version: 0.0.58
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
-    condition: am-judicial-booking-service.enabled
+    condition: orm.jbs.enabled

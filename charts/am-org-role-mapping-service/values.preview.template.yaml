@@ -67,8 +67,16 @@ java:
     auth:
       port: 5432
 
+#subcharts conditions
+orm:
+  ras:
+    enabled: true
+  jbs:
+    enabled: true
+  servicebus:
+    enabled: true
+
 am-role-assignment-service:
-  enabled: true
   java:
     image: 'hmctspublic.azurecr.io/am/role-assignment-service:latest'
     imagePullPolicy: Always
@@ -104,7 +112,6 @@ am-role-assignment-service:
       RUN_LD_ON_STARTUP: true
 
 am-judicial-booking-service:
-  enabled: true
   java:
     image: 'hmctspublic.azurecr.io/am/judicial-booking-service:latest'
     imagePullPolicy: Always
@@ -135,7 +142,6 @@ am-judicial-booking-service:
       RUN_LD_ON_STARTUP: true
 
 servicebus:
-  enabled: true
   releaseNameOverride: ${SERVICE_NAME}-asb
   resourceGroup: "am-aso-preview-rg"
   sbNamespace: am-servicebus-preview
