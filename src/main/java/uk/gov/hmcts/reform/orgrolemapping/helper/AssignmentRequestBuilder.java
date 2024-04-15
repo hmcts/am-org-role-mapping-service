@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -354,6 +355,31 @@ public class AssignmentRequestBuilder {
                 .roleCategory(RoleCategory.JUDICIAL)
                 .readOnly(false)
                 .attributes(JacksonUtils.convertValue(buildAttributesFromFile("judicialAttributes.json")))
+                .build();
+    }
+
+
+    public static RoleAssignment cloneNewRoleAssignmentAndChangeRegion(RoleAssignment roleAssignment, String region) {
+        Map<String,JsonNode> attribute = CollectionUtils.isEmpty(roleAssignment.getAttributes())
+                ? new HashMap<>() // default if empty
+                : new HashMap<>(roleAssignment.getAttributes()); // clone
+        attribute.put("region", JacksonUtils.convertObjectIntoJsonNode(region));
+
+        return RoleAssignment.builder()
+                // NB: copy only the properties required for a NEW role assignment
+                .actorIdType(roleAssignment.getActorIdType())
+                .actorId(roleAssignment.getActorId())
+                .roleType(roleAssignment.getRoleType())
+                .roleName(roleAssignment.getRoleName())
+                .classification(roleAssignment.getClassification())
+                .grantType(roleAssignment.getGrantType())
+                .roleCategory(roleAssignment.getRoleCategory())
+                .readOnly(roleAssignment.isReadOnly())
+                .beginTime(roleAssignment.getBeginTime())
+                .endTime(roleAssignment.getEndTime())
+                .attributes(attribute)
+                .notes(roleAssignment.getNotes())
+                .authorisations(roleAssignment.getAuthorisations())
                 .build();
     }
 
