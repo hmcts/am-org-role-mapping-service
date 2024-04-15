@@ -69,8 +69,9 @@ java:
 
 #subcharts conditions
 orm:
+  ## AM-2936: temp disable to proved subchart conditions work
   ras:
-    enabled: true
+    enabled: false
   jbs:
     enabled: true
   servicebus:
