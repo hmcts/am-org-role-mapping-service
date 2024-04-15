@@ -7,3 +7,11 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 query getRoleAssignments ()
     $roleAssignment: RoleAssignment()
 end;
+
+
+/*
+ * Query which returns all judicial office holders currently in working memory.
+ */
+query getJudicialOfficeHolders ()
+    $judicialOfficeHolder: JudicialOfficeHolder()
+end;
