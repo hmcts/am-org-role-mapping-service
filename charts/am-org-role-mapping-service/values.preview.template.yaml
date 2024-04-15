@@ -73,8 +73,9 @@ orm:
     enabled: true
   jbs:
     enabled: true
+  ## AM-2936: temp disable to proved subchart conditions work
   servicebus:
-    enabled: true
+    enabled: false
 
 am-role-assignment-service:
   java:
