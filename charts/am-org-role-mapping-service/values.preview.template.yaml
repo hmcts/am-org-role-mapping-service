@@ -39,6 +39,8 @@ java:
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
     LAUNCH_DARKLY_ENV: pr
+    ## AM-2936: temp disable of ASB integration
+    AMQP_ENABLED: false
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
     CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-crd-topic"
