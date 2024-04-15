@@ -55,11 +55,11 @@ java:
     APPLICATION_LOGGING_LEVEL: INFO
     RUN_LD_ON_STARTUP: true
 
-am-role-assignment-service:
-  enabled: false
-
-am-judicial-booking-service:
-  enabled: false
-
-servicebus:
-  enabled: false
+#subcharts conditions
+orm:
+  ras:
+    enabled: false
+  jbs:
+    enabled: false
+  servicebus:
+    enabled: false
