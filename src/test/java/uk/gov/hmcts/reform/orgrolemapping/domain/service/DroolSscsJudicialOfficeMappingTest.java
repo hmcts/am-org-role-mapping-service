@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -7,11 +8,18 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,6 +33,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
+    static final String ALL_APPOINTMENTS_CSV = """
+        President of Tribunal,Salaried
+        Regional Tribunal Judge,Salaried
+        Principal Judge,Salaried
+        Tribunal Judge,Salaried
+        Tribunal Member Medical,Salaried
+        Chief Medical Member First-tier Tribunal,Salaried
+        Regional Medical Member,Salaried
+        Tribunal Judge,Fee Paid
+        Judge of the First-tier Tribunal (sitting in retirement),Fee Paid
+        Tribunal Member Medical,Fee Paid
+        Tribunal Member Optometrist,Fee Paid
+        Tribunal Member Disability,Fee Paid
+        Member of the First-tier Tribunal Lay,Fee Paid
+        Tribunal Member,Fee Paid
+        Tribunal Member Lay,Fee Paid
+        Tribunal Member Service,Fee Paid
+        Tribunal Member Financially Qualified,Fee Paid
+        Member of the First-tier Tribunal,Fee Paid
+        """;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        judicialOfficeHolders = new HashSet<>();
+    }
 
     //=================================SALARIED ROLES==================================
     @ParameterizedTest
@@ -37,8 +71,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                     + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
     })
-    void shouldReturSalariedRoles(String appointment, String appointmentType,
-                                  String serviceCode, String expectedRoles) {
+    void shouldReturnSalariedRoles(String appointment, String appointmentType,
+                                   String serviceCode, String expectedRoles) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
@@ -209,13 +243,13 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
     }
 
-    //    Invalid authorisation(expired enddate) and valid appointment
-    //    Invalid authorisation(wrong servicecode) and valid appointment
-    //    Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
+    //    Invalid authorisation(expired endDate) and valid appointment
+    //    Invalid authorisation(wrong serviceCode) and valid appointment
+    //    Invalid authorisation(expired endDate) and Invalid appointment(wrong serviceCode)
     //    Valid appointmentRoles
     //    Invalid appointmentRoles
 
-    // Invalid authorisation(expired enddate) and valid appointment(Salaried)
+    // Invalid authorisation(expired endDate) and valid appointment(Salaried)
     @ParameterizedTest
     @CsvSource({
         "President of Tribunal",
@@ -244,7 +278,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-    //Invalid authorisation(wrong servicecode) and valid appointment
+    //Invalid authorisation(wrong serviceCode) and valid appointment
     @ParameterizedTest
     @CsvSource({
         "President of Tribunal,AAA",
@@ -273,7 +307,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-    // Invalid authorisation(expired enddate) and valid appointment(Fee-Paid)
+    // Invalid authorisation(expired endDate) and valid appointment(Fee-Paid)
     @ParameterizedTest
     @CsvSource({
         "Judge of the First-tier Tribunal (sitting in retirement)",
@@ -306,7 +340,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-    //Invalid authorisation(wrong servicecode) and valid appointment
+    //Invalid authorisation(wrong serviceCode) and valid appointment
     @ParameterizedTest
     @CsvSource({
         "Tribunal Member Medical,AAA",
@@ -340,7 +374,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-    //Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
+    //Invalid authorisation(expired endDate) and Invalid appointment(wrong serviceCode)
     @ParameterizedTest
     @CsvSource({
         "President of Tribunal,AAA",
@@ -351,7 +385,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Regional Medical Member,AAA",
         "Tribunal Judge,AAA"
     })
-    void shouldNotReturnSalariedExpiredDateandWServiceode(String appointment, String serviceCode) {
+    void shouldNotReturnSalariedExpiredDateAndWServiceCode(String appointment, String serviceCode) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -370,7 +404,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
     }
 
-    //Invalid authorisation(expired enddate) and Invalid appointment(wrong servicecode)
+    //Invalid authorisation(expired endDate) and Invalid appointment(wrong serviceCode)
     @ParameterizedTest
     @CsvSource({
         "Tribunal Member Medical,AAA",
@@ -385,8 +419,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Judge,AAA",
         "Judge of the First-tier Tribunal (sitting in retirement),AAA"
     })
-    void shouldNotReturnFeePaidRolesExpiredDateandWServiceode(String appointment,
-                                                              String serviceCode) {
+    void shouldNotReturnFeePaidRolesExpiredDateAndWServiceCode(String appointment,
+                                                               String serviceCode) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
@@ -407,7 +441,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-
         "Tribunal Member Medical,'hmcts-judiciary,medical'",
         "Chief Medical Member First-tier Tribunal,'hmcts-judiciary,medical'",
         "Regional Medical Member,'hmcts-judiciary,medical'"
@@ -448,7 +481,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-
         "Tribunal Member Medical,'hmcts-judiciary,medical'",
         "Chief Medical Member First-tier Tribunal,'hmcts-judiciary,medical'",
         "Regional Medical Member,'hmcts-judiciary,medical'"
@@ -486,7 +518,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     }
 
     @Test
-    void shouldReturnAllValidAppointmentRoles_unmappedAppoitment() {
+    void shouldReturnAllValidAppointmentRoles_unmappedAppointment() {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment("President of Tribunal");
@@ -536,47 +568,127 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-    @SuppressWarnings("deprecation")
     @ParameterizedTest
-    @CsvSource({
-        "President of Tribunal,Salaried",
-        "Regional Tribunal Judge,Salaried",
-        "Principal Judge,Salaried",
-        "Tribunal Judge,Salaried",
-        "Tribunal Judge,Fee Paid",
-        "Judge of the First-tier Tribunal (sitting in retirement),Salaried",
-        "Tribunal Member Medical,Salaried",
-        "Chief Medical Member First-tier Tribunal,Salaried",
-        "Regional Medical Member,Salaried",
-        "Tribunal Member Medical,Fee Paid",
-        "Tribunal Member Optometrist,Fee Paid",
-        "Tribunal Member Disability,Fee Paid",
-        "Member of the First-tier Tribunal Lay,Fee Paid",
-        "Tribunal Member,Fee Paid",
-        "Tribunal Member Lay,Fee Paid",
-        "Tribunal Member Service,Fee Paid",
-        "Tribunal Member Financially Qualified,Fee Paid",
-        "Member of the First-tier Tribunal,Fee Paid"
-    })
-    void shouldReturnCftRegionIdV1FromJapAsRegion(String appointment, String appointmentType) {
+    @CsvSource(textBlock = ALL_APPOINTMENTS_CSV)
+    void shouldReturnNoRegionFromJapIfRegion12(String appointment, String appointmentType) throws IOException {
+
+        String regionId = "12";
+        String baseLocation = getTestBaseLocationForAppointment(appointment);
+        adjustAccessProfiles(appointment, appointmentType, regionId, baseLocation);
+        adjustBookingsNoRegion(); // NB: JBS needed for some roles: use no region to force fallback to JOH region
+        List<JudicialOfficeHolder> outputJoh = new ArrayList<>();
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true), outputJoh);
+
+        // verify region and baseLocation are blank
+        outputJoh.forEach(joh -> {
+            assertNull(joh.getRegionId());
+            assertNull(joh.getBaseLocationId());
+        });
+
+        // verify no region attribute in output role-assignments
+        roleAssignments.forEach(r -> assertFalse(r.getAttributes().containsKey("region")));
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = ALL_APPOINTMENTS_CSV)
+    void shouldReturnRegionFromJapIfNotRegion12(String appointment, String appointmentType) throws IOException {
+
+        String regionId = "region_id";
+        String baseLocation = getTestBaseLocationForAppointment(appointment);
+        adjustAccessProfiles(appointment, appointmentType, regionId, baseLocation);
+        adjustBookingsNoRegion(); // NB: JBS needed for some roles: use no region to force fallback to JOH region
+        List<JudicialOfficeHolder> outputJoh = new ArrayList<>();
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true), outputJoh);
+
+        // verify region and baseLocation are blank
+        outputJoh.forEach(joh -> {
+            assertEquals(regionId, joh.getRegionId());
+            assertEquals(baseLocation, joh.getBaseLocationId());
+        });
+
+        // verify region attribute in output role-assignments
+        AtomicBoolean foundAnyRegion = new AtomicBoolean(false);
+        AtomicBoolean foundBookedRegion = new AtomicBoolean(false);
+        roleAssignments.forEach(r -> {
+            if (r.getAttributes().containsKey("region")) {
+                foundAnyRegion.set(true);
+                assertEquals(regionId, r.getAttributes().get("region").asText());
+
+                // if looks like a booked role
+                if (r.getRoleName().equals("judge")
+                        && "Fee-Paid".equals(r.getAttributes().get("contractType").asText())) {
+                    foundBookedRegion.set(true);
+                }
+            }
+        });
+
+        if ("President of Tribunal".equals(appointment)) {
+            // no RA region for "President of Tribunal"
+            assertFalse(foundAnyRegion.get());
+        } else {
+            // need to have found at least one region to verify code is running OK
+            assertTrue(foundAnyRegion.get());
+        }
+
+        // if expecting a booking verify we got its region
+        if ("Fee Paid".equals(appointmentType)
+            && List.of("Tribunal Judge", "Judge of the First-tier Tribunal (sitting in retirement)")
+                .contains(appointment)) {
+            assertTrue(foundBookedRegion.get());
+        } else {
+            assertFalse(foundBookedRegion.get());
+        }
+    }
+
+    private void adjustAccessProfiles(String appointment,
+                                      String appointmentType,
+                                      String regionId,
+                                      String baseLocation) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BBA3")));
-            judicialAccessProfile.setCftRegionIdV1("cft_region_id_v1");
-            judicialAccessProfile.setRegionId("location_id");
+            judicialAccessProfile.setRegionId(regionId);
+            judicialAccessProfile.setBaseLocationId(baseLocation);
+            judicialAccessProfile.setTicketCodes(List.of("368")); // NB: needed for some bookings
         });
+    }
 
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+    private void adjustBookingsNoRegion() throws IOException {
+        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
+        judicialBooking.setUserId(judicialAccessProfiles.stream().findFirst()
+                .orElse(JudicialAccessProfile.builder().build()).getUserId());
+        judicialBooking.setRegionId(null);
+        judicialBooking.setLocationId(null);
+        judicialBookings = Set.of(judicialBooking);
+    }
 
-        roleAssignments.forEach(r -> {
-            if (r.getAttributes().get("region") != null) {
-                assertEquals("cft_region_id_v1", r.getAttributes().get("region").asText());
-            }
-        });
+    private String getTestBaseLocationForAppointment(String appointment) {
+        if (List.of(
+            // Tribunal Member Medical Roles: Salaried
+            "Tribunal Member Medical",
+            "Chief Medical Member First-tier Tribunal",
+            "Regional Medical Member",
+            // Fee-Paid appointments with 1032 BA requirement
+            "Tribunal Member Medical",
+            "Tribunal Member Disability",
+            "Member of the First-tier Tribunal Lay",
+            "Tribunal Member Financially Qualified",
+            "Member of the First-tier Tribunal",
+            "Tribunal Member",
+            "Tribunal Member Lay"
+        ).contains(appointment)) {
+            return "1032"; // must be set to this for happy path scenario
+        } else {
+            return "base_location"; // anything will do
+        }
     }
 
 }
