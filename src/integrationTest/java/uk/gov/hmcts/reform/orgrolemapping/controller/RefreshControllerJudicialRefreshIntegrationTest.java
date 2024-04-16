@@ -57,9 +57,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.build
     "feign.client.config.jrdClient.v2Active=true",
     "refresh.BulkAssignment.includeJudicialBookings=true"
 })
-public class RefreshControllerIntegrationV2Test extends BaseTestIntegration {
+public class RefreshControllerJudicialRefreshIntegrationTest extends BaseTestIntegration {
 
-    private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationV2Test.class);
+    private static final Logger logger = LoggerFactory.getLogger(RefreshControllerJudicialRefreshIntegrationTest.class);
 
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 

@@ -459,9 +459,8 @@ class AssignmentRequestBuilderTest {
                     });
         }
 
-        @ParameterizedTest
-        @ValueSource(booleans = { true, false })
-        void convertUserProfileToJudicialAccessProfileV2_withDiffTicketCode(boolean filterAuthorisationsByAppId) {
+        @Test
+        void convertUserProfileToJudicialAccessProfileV2_withDiffTicketCode() {
 
             // GIVEN
             JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileWithParamsV2(
@@ -493,9 +492,8 @@ class AssignmentRequestBuilderTest {
                     });
         }
 
-        @ParameterizedTest
-        @ValueSource(booleans = { true, false })
-        void convertUserProfileToJudicialAccessProfileV2_withInactiveTicketCode(boolean filterAuthorisationsByAppId) {
+        @Test
+        void convertUserProfileToJudicialAccessProfileV2_withInactiveTicketCode() {
 
             // GIVEN
             JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileWithParamsV2(
