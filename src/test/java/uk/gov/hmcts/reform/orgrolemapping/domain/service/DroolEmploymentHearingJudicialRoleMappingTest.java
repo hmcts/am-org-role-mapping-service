@@ -67,6 +67,14 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                                 "specific-access-approver-judiciary", "hearing-viewer"),
                         null),
+                Arguments.of("Vice-President, Employment Tribunal (Scotland)",
+                        "Salaried",
+                        false,
+                        true,
+                        List.of("Vice-President, Employment Tribunal (Scotland)"),
+                        List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
+                                "specific-access-approver-judiciary", "hearing-viewer"),
+                        null),
                 Arguments.of("Regional Employment Judge",
                         "Salaried",
                         false,
@@ -184,6 +192,9 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         List<RoleAssignment> roleAssignments =
                 buildExecuteKieSession(
                         List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
+                                FeatureFlag.builder().flagName("employment_wa_1_1").status(true).build(),
+                                FeatureFlag.builder().flagName("employment_wa_1_2").status(true).build(),
+                                FeatureFlag.builder().flagName("employment_wa_1_3").status(true).build(),
                                 FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
                 );
 
