@@ -100,6 +100,8 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried,leadership-judge,judge,task-supervisor,"
                     + "case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
+        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried,leadership-judge,judge,task-supervisor,"
+                + "case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
@@ -206,6 +208,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         President, Employment Tribunals (Scotland);Salaried;12;11;
         President, Employment Tribunals (Scotland);Salaried;11;11;
         Vice President;Salaried;13;13;
+        Vice-President, Employment Tribunal (Scotland);Salaried;12;11;
         Regional Employment Judge;Salaried;10;10;
         Employment Judge;Salaried;11;11;
         Employment Judge;Fee Paid;12;11;
@@ -238,7 +241,8 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
     private static List<FeatureFlag> setFeatureFlags() {
         return List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
                 FeatureFlag.builder().flagName("employment_wa_1_1").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_2").status(true).build());
+                FeatureFlag.builder().flagName("employment_wa_1_2").status(true).build(),
+                FeatureFlag.builder().flagName("employment_wa_1_3").status(true).build());
     }
 
 }
