@@ -100,6 +100,37 @@ then
 end;
 
 /*
+ * "EMPLOYMENT Vice-President, Employment Tribunal (Scotland)" business role mapping to JOH.
+ */
+rule "employment_vice_president_employment_tribunal_scotland_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_3.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment == "Vice-President, Employment Tribunal (Scotland)",
+                               appointmentType == "Salaried",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  // Solution to work around issue with Scottish judges with region 12 not being
+  // able to see Scottish cases set up with region 11.
+  String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId(regionId)
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_vice_president_employment_tribunal_scotland_salaried_joh");
+end;
+
+/*
  * "EMPLOYMENT Vice President" business role mapping to JOH.
  */
 rule "employment_vice_president_salaried_joh"
