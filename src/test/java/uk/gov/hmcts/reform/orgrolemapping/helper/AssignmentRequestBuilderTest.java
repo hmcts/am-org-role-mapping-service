@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
@@ -435,9 +434,8 @@ class AssignmentRequestBuilderTest {
             assertEquals(2, judicialAccessProfiles.size());
         }
 
-        @ParameterizedTest
-        @ValueSource(booleans = { true, false })
-        void convertUserProfileToJudicialAccessProfileV2_withoutAuthorisations(boolean filterAuthorisationsByAppId) {
+        @Test
+        void convertUserProfileToJudicialAccessProfileV2_withoutAuthorisations() {
 
             // GIVEN
             JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileWithParamsV2(
