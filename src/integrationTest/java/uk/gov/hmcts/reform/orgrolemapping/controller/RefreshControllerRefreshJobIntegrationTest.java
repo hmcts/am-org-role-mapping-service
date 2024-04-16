@@ -93,12 +93,11 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
     "refresh.Job.authorisedServices=" + S2S_ORM + "," + S2S_RARB,
     "refresh.Job.includeJudicialBookings=true",
     "refresh.Job.pageSize=" + TEST_PAGE_SIZE,
-    "feign.client.config.jrdClient.v2Active=true"
 })
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegration {
 
-    private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RefreshControllerRefreshJobIntegrationTest.class);
 
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 

@@ -54,7 +54,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.build
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialProfilesResponseV2;
 
 @TestPropertySource(properties = {
-    "feign.client.config.jrdClient.v2Active=true",
     "refresh.BulkAssignment.includeJudicialBookings=true"
 })
 public class RefreshControllerJudicialRefreshIntegrationTest extends BaseTestIntegration {
