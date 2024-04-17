@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -65,7 +63,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -73,6 +70,8 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -173,14 +172,12 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     @Test
     @Order(1)
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process successful");
-        Long jobId = 1L;
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals("NEW", refreshJob.getStatus());
+        RefreshJobEntity refreshJob = createRefreshJobLegalOperations();
+        Long jobId = refreshJob.getJobId();
 
         mockCRDService();
         mockRequestMappingServiceWithCaseworkerStatus(HttpStatus.CREATED);
@@ -204,12 +201,12 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     @Test
     @Order(2)
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process Aborted");
-        Long jobId = 1L;
+        RefreshJobEntity refreshJob = createRefreshJobLegalOperations();
+        Long jobId = refreshJob.getJobId();
 
         mockCRDService();
         mockRequestMappingServiceWithCaseworkerStatus(UNPROCESSABLE_ENTITY);
@@ -225,21 +222,20 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                 isRefreshJobInStatus(jobId, ABORTED)));
 
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals(ABORTED, refreshJob.getStatus());
-        assertNotNull(refreshJob.getUserIds());
-        assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
+        RefreshJobEntity afterRefreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals(ABORTED, afterRefreshJob.getStatus());
+        assertNotNull(afterRefreshJob.getUserIds());
+        assertThat(afterRefreshJob.getLog(),containsString(String.join(",", afterRefreshJob.getUserIds())));
     }
 
-    @Disabled("Intermittent DTSAM-111")
     @Test
     @Order(3)
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_status422() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process Non recoverable retain same state");
-        Long jobId = 1L;
+        RefreshJobEntity refreshJob = createRefreshJobLegalOperations();
+        Long jobId = refreshJob.getJobId();
 
         mockCRDService();
         mockRequestMappingServiceWithCaseworkerStatus(UNPROCESSABLE_ENTITY);
@@ -254,22 +250,21 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         await().timeout(60, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
                 isRefreshJobInStatus(jobId, ABORTED)));
 
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        logger.info(" -- Refresh Role Assignment record updated -- " + refreshJob.getStatus());
-        assertEquals("ABORTED", refreshJob.getStatus());
-        assertNotNull(refreshJob.getUserIds());
-        assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
+        RefreshJobEntity afterRefreshJob = getRecordsFromRefreshJobTable(jobId);
+        logger.info(" -- Refresh Role Assignment record updated -- " + afterRefreshJob.getStatus());
+        assertEquals("ABORTED", afterRefreshJob.getStatus());
+        assertNotNull(afterRefreshJob.getUserIds());
+        assertThat(afterRefreshJob.getLog(),containsString(String.join(",", afterRefreshJob.getUserIds())));
     }
 
-    @Disabled("Intermittent AM-2919")
     @Test
     @Order(4)
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process Partial Success");
-        Long jobId = 1L;
+        RefreshJobEntity refreshJob = createRefreshJobLegalOperations();
+        Long jobId = refreshJob.getJobId();
 
         mockCRDService();
         mockRequestMappingServiceWithCaseworkerStatus(UNPROCESSABLE_ENTITY);
@@ -285,29 +280,27 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                 isRefreshJobInStatus(jobId, ABORTED)));
 
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals(ABORTED, refreshJob.getStatus());
-        assertNotNull(refreshJob.getUserIds());
-        assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
+        RefreshJobEntity afterRefreshJob = getRecordsFromRefreshJobTable(jobId);
+        assertEquals(ABORTED, afterRefreshJob.getStatus());
+        assertNotNull(afterRefreshJob.getUserIds());
+        assertThat(afterRefreshJob.getLog(), containsString(String.join(",", afterRefreshJob.getUserIds())));
     }
 
-    //@Disabled("Intermittent DTSAM-111")
     @Test
     @Order(5)
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithFailedUsersToComplete() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With JobId and failed UserIds to process successful");
-        Long jobId = 3L;
+        //Long jobId = 3L;
+        RefreshJobEntity refreshJobAborted = createRefreshJobLegalOperations();
+        Long jobIdAborted = refreshJobAborted.getJobId();
+        refreshJobAborted.setStatus(ABORTED);
+        refreshJobAborted.setUserIds(buildUserIdList(1));
 
-        //Verify before job
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals("NEW", refreshJob.getStatus());
-        RefreshJobEntity linkedJob = getRecordsFromRefreshJobTable(refreshJob.getLinkedJobId());
-        assertNotNull(linkedJob.getUserIds());
-        assertEquals(ABORTED, linkedJob.getStatus());
-        assertNotEquals(0, linkedJob.getUserIds().length);
+        RefreshJobEntity refreshJob = createRefreshJobLegalOperations();
+        refreshJob.setLinkedJobId(jobIdAborted);
+        Long jobId = refreshJob.getJobId();
 
         doReturn(new ResponseEntity<>(IntTestDataBuilder
                 .buildListOfUserProfiles(false, false, "1", "2",
@@ -403,14 +396,12 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     @Test
     @Order(11)
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With Only JobId to process fail");
-        Long jobId = 1L;
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals("NEW", refreshJob.getStatus());
+        RefreshJobEntity refreshJob = createRefreshJobLegalOperations();
+        Long jobId = refreshJob.getJobId();
 
         doThrow(RuntimeException.class).when(crdFeignClient).getCaseworkerDetailsByServiceName(
                 anyString(), anyInt(), anyInt(), anyString(), anyString());
@@ -422,21 +413,21 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                 .andExpect(status().is(202))
                 .andReturn();
 
+        await().timeout(120, TimeUnit.SECONDS).untilAsserted(() -> verify(crdFeignClient,
+                times(3)).getCaseworkerDetailsByServiceName(any(), any(), any(), any(), any()));
+
         refreshJob = getRecordsFromRefreshJobTable(jobId);
         assertEquals("NEW", refreshJob.getStatus());// failed process should change the status to IN-PROGRESS
     }
 
-    @Disabled("Intermittent DTSAM-111")
     @Test
     @Order(12)
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With JobId retry success third time to process successful");
-        Long jobId = 1L;
-        RefreshJobEntity refreshJob = getRecordsFromRefreshJobTable(jobId);
-        assertEquals("NEW", refreshJob.getStatus());
+        RefreshJobEntity refreshJob = createRefreshJobLegalOperations();
+        Long jobId = refreshJob.getJobId();
 
         doThrow(RuntimeException.class).doThrow(RuntimeException.class).doReturn(buildUserProfileResponse())
                 .when(crdFeignClient).getCaseworkerDetailsByServiceName(
@@ -496,8 +487,8 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertEquals(COMPLETED, refreshJob.getStatus());
         assertNotNull(refreshJob.getLog());
 
-        Mockito.verify(jrdFeignClient, Mockito.times(1)).getJudicialDetailsById(any(), any());
-        Mockito.verify(jbsFeignClient, Mockito.times(numberOfBatches)).getJudicialBookingByUserIds(any());
+        Mockito.verify(jrdFeignClient, times(1)).getJudicialDetailsById(any(), any());
+        Mockito.verify(jbsFeignClient, times(numberOfBatches)).getJudicialBookingByUserIds(any());
     }
 
     @Test
@@ -584,6 +575,15 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private RefreshJobEntity createRefreshJobJudicial() {
         return saveRecordInRefreshJobTable(RefreshJobEntity.builder()
                 .roleCategory(RoleCategory.JUDICIAL.name())
+                .jurisdiction("IA")
+                .status("NEW")
+                .build()
+        );
+    }
+
+    private RefreshJobEntity createRefreshJobLegalOperations() {
+        return saveRecordInRefreshJobTable(RefreshJobEntity.builder()
+                .roleCategory(RoleCategory.LEGAL_OPERATIONS.name())
                 .jurisdiction("IA")
                 .status("NEW")
                 .build()
