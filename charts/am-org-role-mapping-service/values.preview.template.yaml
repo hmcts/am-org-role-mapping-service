@@ -71,8 +71,9 @@ java:
 orm:
   ras:
     enabled: true
+  ## DTSAM-261: temp disable to proved extra jenkins health check works
   jbs:
-    enabled: true
+    enabled: false
   servicebus:
     enabled: true
 
