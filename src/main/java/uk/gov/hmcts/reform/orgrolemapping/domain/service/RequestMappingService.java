@@ -72,6 +72,9 @@ public class RequestMappingService<T> {
     @Autowired
     private SecurityUtils securityUtils;
 
+    public ResponseEntity<Object> createCaseworkerAssignments(Map<String, Set<T>> usersAccessProfiles) {
+        return createAssignments(usersAccessProfiles, Collections.emptyList(), UserType.CASEWORKER);
+    }
 
     /**
      * For each caseworker represented in the map, determine what the role assignments should be,
