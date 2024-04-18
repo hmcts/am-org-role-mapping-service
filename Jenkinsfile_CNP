@@ -12,6 +12,7 @@ properties(
 @Library("Infrastructure")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
+import uk.gov.hmcts.contino.HealthChecker
 
 def type = "java"
 def product = "am"
@@ -123,6 +124,11 @@ withPipeline(type, product, component) {
 
   before('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+
+    // check the extra RAS and JBS instances are up in PREVIEW for this PR
+    def healthChecker = new HealthChecker(this)
+    healthChecker.check("$ROLE_ASSIGNMENT_URL/health", 10, 40)
+    healthChecker.check("$JUDICIAL_BOOKING_URL/health", 10, 40)
   }
 
   afterAlways('functionalTest:preview') {
