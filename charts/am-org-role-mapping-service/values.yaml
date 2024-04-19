@@ -39,8 +39,6 @@ java:
     JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    JUDICIAL_REF_APP_V2_ACTIVE: false
-    JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID: false
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
     AMQP_HOST: rd-servicebus-{{ .Values.global.environment }}.servicebus.windows.net
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
@@ -58,5 +56,12 @@ java:
     TESTING_SUPPORT_ENABLED: false
     APPLICATION_LOGGING_LEVEL: INFO
     RUN_LD_ON_STARTUP: true
-servicebus:
-  enabled: false
+
+#subcharts conditions
+orm:
+  ras:
+    enabled: false
+  jbs:
+    enabled: false
+  servicebus:
+    enabled: false

@@ -5,12 +5,17 @@ management:
   health:
     defaults:
       enabled: true
+    probes:
+      enabled: true
   endpoint:
     health:
       enabled: true
       cache:
         time-to-live: 5s
       show-details: "always"
+      group:
+        readiness:
+          include: "db"
   security:
     enabled: true
   endpoints:
@@ -120,8 +125,8 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        connectTimeout: 15000
+        readTimeout: 15000
         loggerLevel: BASIC
       crdclient:
         url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
@@ -129,8 +134,8 @@ feign:
         url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
       jrdClient:
         url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
-        v2Active: ${JUDICIAL_REF_APP_V2_ACTIVE:false}
-        v2FilterAuthorisationsByAppointmentId:  ${JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID:false}
+        v2Active: true
+        v2FilterAuthorisationsByAppointmentId: true
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
 

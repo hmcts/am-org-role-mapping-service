@@ -16,14 +16,14 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": ["322d8512-82e7-4f69-aa6c-c6b105a99f45"],
+          "actorId": "${[scenarioContext][childContexts][S-082_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "roleName": ["hmcts-judiciary"],
           "attributes": {
             "contractType": ["Salaried"]
           }
         },
         {
-          "actorId": ["322d8512-82e7-4f69-aa6c-c6b105a99f45"],
+          "actorId": "${[scenarioContext][childContexts][S-082_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["CIVIL"]
           }
@@ -42,7 +42,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "circuit-judge",
           "classification": "PUBLIC",
@@ -64,7 +64,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -83,7 +83,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-judiciary",
           "classification": "PRIVATE",
@@ -100,7 +100,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "322d8512-82e7-4f69-aa6c-c6b105a99f45",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "judge",
           "classification": "PUBLIC",
