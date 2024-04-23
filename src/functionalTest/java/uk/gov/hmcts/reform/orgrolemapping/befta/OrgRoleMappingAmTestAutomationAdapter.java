@@ -78,7 +78,7 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
     private UserTokenProviderConfig buildOrmSpecificConfig() {
         UserTokenProviderConfig config = new UserTokenProviderConfig();
         config.setMicroService("am_org_role_mapping_service");
-        config.setSecret(System.getenv("AM_ORG_S2S_SECRET"));
+        config.setSecret(System.getenv("AM_ORG_ROLE_MAPPING_SERVICE_SECRET"));
         config.setS2sUrl(EnvironmentVariableUtils.getRequiredVariable("IDAM_S2S_URL"));
         return config;
     }
