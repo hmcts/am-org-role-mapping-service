@@ -25,13 +25,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
-
 
 import java.util.Map;
 
@@ -47,20 +42,6 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
 
     private static final String ACTOR_ID = "23486";
     private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
-
-    @MockBean
-    CRDTopicConsumer topicConsumer;
-
-    @MockBean
-    JRDTopicConsumer jrdTopicConsumer;
-
-
-
-    @MockBean
-    CRDMessagingConfiguration crdMessagingConfiguration;
-
-    @MockBean
-    JRDMessagingConfiguration jrdMessagingConfiguration;
 
     @MockBean
     JRDTopicPublisher jrdPublisher;

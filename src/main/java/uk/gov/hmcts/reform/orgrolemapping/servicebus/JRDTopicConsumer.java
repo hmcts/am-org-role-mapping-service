@@ -14,10 +14,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -36,43 +37,48 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class JRDTopicConsumer extends JRDMessagingConfiguration {
+public class JRDTopicConsumer {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
+    private JRDMessagingConfiguration configuration;
 
     @Autowired
     private FeatureConditionEvaluator featureConditionEvaluator;
 
     public JRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                            OrmDeserializer deserializer) {
+                            OrmDeserializer deserializer,
+                            JRDMessagingConfiguration configuration) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
+        this.configuration = configuration;
     }
 
     @Bean
     @Qualifier("jrdConsumer")
-    @ConditionalOnProperty(name = "amqp.jrd.enabled", havingValue = "true")
+    @ConditionalOnExpression("${amqp.jrd.enabled} && !${amqp.jrd.newAsb}")
     public SubscriptionClient getSubscriptionClient1() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        logServiceBusVariables();
-        URI endpoint = new URI("sb://" + host);
-        log.debug("JRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        configuration.logServiceBusVariables();
+        URI endpoint = new URI("sb://" + configuration.getHost());
+        log.debug("JRD Destination is " + configuration.getTopic().concat("/subscriptions/").concat(
+                configuration.getSubscription()));
 
-        var destination = topic.concat("/subscriptions/").concat(subscription);
+        var destination = configuration.getTopic().concat("/subscriptions/").concat(
+                configuration.getSubscription());
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
                 destination,
-                sharedAccessKeyName,
-                sharedAccessKeyValue);
+                configuration.getSharedAccessKeyName(),
+                configuration.getSharedAccessKeyValue());
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
 
     @Bean
     @Qualifier("jrdConsumer")
-    @ConditionalOnProperty(name = "amqp.jrd.enabled", havingValue = "true")
+    @ConditionalOnExpression("${amqp.jrd.enabled} && !${amqp.jrd.newAsb}")
     CompletableFuture<Void> registerJRDMessageHandlerOnClient(@Autowired @Qualifier("jrdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
