@@ -34,7 +34,9 @@
       "jurisdiction" : "SSCS",
       "status" : "COMPLETED",
       "userIds" : "[[ANYTHING_PRESENT]]",
-      "linkedJobId" : "[[ANYTHING_PRESENT]]"
+      "log" : "[[ANYTHING_PRESENT]]",
+      "linkedJobId" : "[[ANYTHING_PRESENT]]",
+      "created" : "[[ANYTHING_PRESENT]]"
     }
   }
 }
