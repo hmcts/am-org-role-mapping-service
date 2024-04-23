@@ -17,6 +17,10 @@ Feature:F-002: Refresh Role Assignments for CRD users
      And a wait time of [10] seconds [to allow for service bus to process the request]
      And a successful call [to fetch job details from ORM DB to validate Refresh process] as in [FetchJobDetailsFromORM],
      And a successful call [to delete job details from ORM DB] as in [DeleteJobFromORMDB]
+     And a successful call [to fetch role assignments from Role Assignment Service] as in [S-011_FetchRoleAssignments]
+     And the response has all other details as expected
+     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-213_DeleteDataForRoleAssignments].
+
 
 
 #  @S-012
