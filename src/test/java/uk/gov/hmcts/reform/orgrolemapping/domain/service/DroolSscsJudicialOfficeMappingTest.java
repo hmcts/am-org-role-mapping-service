@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
@@ -37,6 +38,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         President of Tribunal,Salaried
         Regional Tribunal Judge,Salaried
         Principal Judge,Salaried
+        Judge of the First-tier Tribunal,Salaried
         Tribunal Judge,Salaried
         Tribunal Member Medical,Salaried
         Chief Medical Member First-tier Tribunal,Salaried
@@ -50,6 +52,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         Tribunal Member,Fee Paid
         Tribunal Member Lay,Fee Paid
         Tribunal Member Service,Fee Paid
+        Member of the First-tier Tribunal (sitting in retirement),Fee Paid
         Tribunal Member Financially Qualified,Fee Paid
         Member of the First-tier Tribunal,Fee Paid
         """;
@@ -69,7 +72,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "Principal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                     + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
-        "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
+        "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'",
+        "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
     })
     void shouldReturnSalariedRoles(String appointment, String appointmentType,
                                    String serviceCode, String expectedRoles) {
@@ -81,8 +85,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -120,7 +123,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','372'",
         "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'",
         "Member of the First-tier Tribunal,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','372'",
-        "Member of the First-tier Tribunal,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'"
+        "Member of the First-tier Tribunal,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'",
+        "Member of the First-tier Tribunal (sitting in retirement),Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles2(String appointment, String appointmentType,
                                                        String serviceCode, String expectedRoles, String ticketCode) {
@@ -137,8 +141,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -255,6 +258,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "President of Tribunal",
         "Regional Tribunal Judge",
         "Principal Judge",
+        "Judge of the First-tier Tribunal",
         "Tribunal Member Medical",
         "Chief Medical Member First-tier Tribunal",
         "Regional Medical Member",
@@ -271,8 +275,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                                 .minusMonths(5)).build())));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -284,6 +287,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "President of Tribunal,AAA",
         "Regional Tribunal Judge,AAA",
         "Principal Judge,AAA",
+        "Judge of the First-tier Tribunal,AAA",
         "Tribunal Member Medical,AAA",
         "Chief Medical Member First-tier Tribunal,AAA",
         "Regional Medical Member,AAA",
@@ -300,8 +304,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                         .build())));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -314,6 +317,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Medical",
         "Tribunal Member Disability",
         "Member of the First-tier Tribunal Lay",
+        "Member of the First-tier Tribunal (sitting in retirement)",
         "Tribunal Member Financially Qualified",
         "Member of the First-tier Tribunal",
         "Tribunal Member Lay",
@@ -333,8 +337,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                                 .minusMonths(5)).build())));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -346,6 +349,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Medical,AAA",
         "Tribunal Member Disability,AAA",
         "Member of the First-tier Tribunal Lay,AAA",
+        "Member of the First-tier Tribunal (sitting in retirement),AAA",
         "Tribunal Member Financially Qualified,AAA",
         "Member of the First-tier Tribunal,AAA",
         "Tribunal Member Lay,AAA",
@@ -367,8 +371,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                         .build())));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -380,6 +383,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "President of Tribunal,AAA",
         "Regional Tribunal Judge,AAA",
         "Principal Judge,AAA",
+        "Judge of the First-tier Tribunal,AAA",
         "Tribunal Member Medical,AAA",
         "Chief Medical Member First-tier Tribunal,AAA",
         "Regional Medical Member,AAA",
@@ -396,8 +400,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                                 .minusMonths(5)).build())));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -410,6 +413,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Medical,AAA",
         "Tribunal Member Disability,AAA",
         "Member of the First-tier Tribunal Lay,AAA",
+        "Member of the First-tier Tribunal (sitting in retirement),AAA",
         "Tribunal Member Financially Qualified,AAA",
         "Member of the First-tier Tribunal,AAA",
         "Tribunal Member Lay,AAA",
@@ -431,8 +435,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                                 .minusMonths(5)).build())));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -680,6 +683,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
             "Tribunal Member Medical",
             "Tribunal Member Disability",
             "Member of the First-tier Tribunal Lay",
+            "Member of the First-tier Tribunal (sitting in retirement)",
             "Tribunal Member Financially Qualified",
             "Member of the First-tier Tribunal",
             "Tribunal Member",
@@ -691,4 +695,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         }
     }
 
+    private static List<FeatureFlag> setFeatureFlags() {
+        return List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").status(true).build(),
+                FeatureFlag.builder().flagName("sscs_wa_1_3").status(true).build());
+    }
 }
