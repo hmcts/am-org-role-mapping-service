@@ -11,6 +11,7 @@
       "jobId": "${[scenarioContext][childContexts][InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
     },
     "body": {
+      "userIds" : ["b878398b-c7ae-4f4c-95cc-298ca2d287ac"]
     }
   },
   "expectedResponse": {

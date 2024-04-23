@@ -14,10 +14,9 @@ Feature:F-002: Refresh Role Assignments for CRD users
      And it is submitted to call the [Refresh API] operation of [Organisation Role Mapping],
      Then a positive response is received,
      And the response has all other details as expected,
-     And a successful call [to provide adequate time for RAS to create records] as in [WaitFor20sRASProcessing],
-#     And a wait time of [5] seconds [to allow for service bus to process the request]
+     And a wait time of [10] seconds [to allow for service bus to process the request]
      And a successful call [to fetch job details from ORM DB to validate Refresh process] as in [FetchJobDetailsFromORM],
-     And a successful call [to delete job details from ORM DB] as in [DeleteJobFromORMDB].
+     And a successful call [to delete job details from ORM DB] as in [DeleteJobFromORMDB]
 
 
 #  @S-012

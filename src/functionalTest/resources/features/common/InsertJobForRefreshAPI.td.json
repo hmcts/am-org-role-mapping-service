@@ -19,11 +19,11 @@
       "Content-Type": "application/json"
     },
     "queryParams": {
-      "roleCategory": "ADMIN",
-      "jurisdiction": "IA"
+      "roleCategory": "LEGAL_OPERATIONS",
+      "jurisdiction": "SSCS"
     },
     "body": {
-      "userIds":["bc630c2c-79b1-494a-b91e-74cde4fbd2eg"]
+      "userIds":["b878398b-c7ae-4f4c-95cc-298ca2d287ac"]
     }
   },
   "expectedResponse": {
