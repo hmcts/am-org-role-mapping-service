@@ -124,7 +124,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Financially Qualified,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'",
         "Member of the First-tier Tribunal,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','372'",
         "Member of the First-tier Tribunal,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'",
-        "Member of the First-tier Tribunal (sitting in retirement),Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'"
+        "Member of the First-tier Tribunal (sitting in retirement),Fee Paid,BBA3,"
+                + "'fee-paid-financial,hmcts-judiciary','362'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles2(String appointment, String appointmentType,
                                                        String serviceCode, String expectedRoles, String ticketCode) {
