@@ -34,8 +34,8 @@
     },
     "body": {
       "jobId" : "[[ANYTHING_PRESENT]]",
-      "roleCategory" : "ADMIN",
-      "jurisdiction" : "IA",
+      "roleCategory" : "LEGAL_OPERATIONS",
+      "jurisdiction" : "SSCS",
       "status" : "NEW",
       "userIds" : "[[ANYTHING_PRESENT]]",
       "linkedJobId" :"[[ANYTHING_PRESENT]]",
