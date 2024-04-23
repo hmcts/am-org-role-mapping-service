@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.befta.DefaultTestAutomationAdapter;
 import uk.gov.hmcts.befta.player.BackEndFunctionalTestScenarioContext;
 import uk.gov.hmcts.befta.util.EnvironmentVariableUtils;
+import uk.gov.hmcts.reform.orgrolemapping.befta.utils.TokenUtils;
+import uk.gov.hmcts.reform.orgrolemapping.befta.utils.UserTokenProviderConfig;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -66,8 +68,18 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 return null;
             case ("tomorrow"):
                 return LocalDate.now().plusDays(1);
+            case ("generateS2STokenForOrm"):
+                return new TokenUtils().generateServiceToken(buildOrmSpecificConfig());
             default:
                 return super.calculateCustomValue(scenarioContext, key);
         }
+    }
+
+    private UserTokenProviderConfig buildOrmSpecificConfig() {
+        UserTokenProviderConfig config = new UserTokenProviderConfig();
+        config.setMicroService("am_org_role_mapping_service");
+        config.setSecret(System.getenv("AM_ORG_S2S_SECRET"));
+        config.setS2sUrl(EnvironmentVariableUtils.getRequiredVariable("IDAM_S2S_URL"));
+        return config;
     }
 }

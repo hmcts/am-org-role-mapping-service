@@ -3,7 +3,7 @@
   "productName": "Organisation Role Mapping",
   "operationName": "Fetch Job Details",
   "method": "GET",
-  "uri": "/am/test/jobs/{jobId}",
+  "uri": "/am/testing-support/jobs/{jobId}",
   "specs": [
   "to fetch job details from ORM DB to validate Refresh process"
 ],
@@ -15,7 +15,7 @@
   "request": {
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
-      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForOrm]}",
       "Content-Type": "application/json"
     },
     "pathVariables": {
@@ -30,12 +30,11 @@
     },
     "body": {
       "jobId" : "[[ANYTHING_PRESENT]]",
-      "roleCategory" : "LEGAL_OPERATIONS",
+      "roleCategory" : "ADMIN",
       "jurisdiction" : "IA",
-      "status" : "COMPLETED",
+      "status" : "NEW",
       "userIds" : "[[ANYTHING_PRESENT]]",
-      "log" : "[[ANYTHING_PRESENT]]",
-      "created" : "[[ANYTHING_PRESENT]]"
+      "linkedJobId" : "[[ANYTHING_PRESENT]]"
     }
   }
 }

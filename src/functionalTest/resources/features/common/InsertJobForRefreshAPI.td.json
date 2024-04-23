@@ -3,7 +3,7 @@
   "productName": "Organisation Role Mapping",
   "operationName": "Insert New Job",
   "method": "POST",
-  "uri": "/am/test/job",
+  "uri": "/am/testing-support/job",
   "specs": [
     "to insert new job in ORM DB to initiate Refresh process"
   ],
@@ -15,14 +15,15 @@
   "request": {
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
-      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForOrm]}",
       "Content-Type": "application/json"
     },
     "queryParams": {
-      "roleCategory": "LEGAL_OPERATIONS",
+      "roleCategory": "ADMIN",
       "jurisdiction": "IA"
     },
     "body": {
+      "userIds":["bc630c2c-79b1-494a-b91e-74cde4fbd2eg"]
     }
   },
   "expectedResponse": {
@@ -33,9 +34,11 @@
     },
     "body": {
       "jobId" : "[[ANYTHING_PRESENT]]",
-      "roleCategory" : "LEGAL_OPERATIONS",
+      "roleCategory" : "ADMIN",
       "jurisdiction" : "IA",
       "status" : "NEW",
+      "userIds" : "[[ANYTHING_PRESENT]]",
+      "linkedJobId" :"[[ANYTHING_PRESENT]]",
       "created" : "[[ANYTHING_PRESENT]]"
     }
   }
