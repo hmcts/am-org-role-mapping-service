@@ -17,7 +17,7 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][parentContext][testData][request][body][userIds][0]}",
+          "actorId": "${[scenarioContext][parentContext][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["SSCS"]
           }
@@ -29,48 +29,6 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "endTime" : "[[ANYTHING_PRESENT]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "EMPLOYMENT"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "tribunal-member",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "endTime" : "[[ANYTHING_PRESENT]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "contractType": "Fee-Paid",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "EMPLOYMENT",
-            "workTypes": "hearing_work"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        }
       ]
     }
   }
