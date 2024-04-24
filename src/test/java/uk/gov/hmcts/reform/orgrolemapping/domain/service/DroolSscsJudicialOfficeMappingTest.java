@@ -125,7 +125,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Member of the First-tier Tribunal,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','372'",
         "Member of the First-tier Tribunal,Fee Paid,BBA3,'fee-paid-financial,hmcts-judiciary','362'",
         "Member of the First-tier Tribunal (sitting in retirement),Fee Paid,BBA3,"
-                + "'fee-paid-financial,hmcts-judiciary','362'"
+                + "'fee-paid-disability,hmcts-judiciary','362'"
     })
     void shouldReturnTribunalMemberMedicalFeePaidRoles2(String appointment, String appointmentType,
                                                        String serviceCode, String expectedRoles, String ticketCode) {
@@ -147,6 +147,9 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+                containsInAnyOrder(expectedRoles.split(",")));
+
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
