@@ -1,17 +1,17 @@
 {
   "_guid_": "S-012",
-  "title": "must successfully refresh org roles for a job with failed userIds",
+  "title": "must successfully refresh judicial user org roles for a job",
   "_extends_": "F-002_Test_Data_Base",
 
   "specs": [
-    "contains an existing job details with failed userIds from aborted job"
+    "contains an existing job details"
   ],
   "request": {
     "queryParams": {
-      "jobId": "${[scenarioContext][childContexts][S-012_InsertJobWithNewStatusAndLinkedId][testData][actualResponse][body][jobId]}"
+      "jobId": "${[scenarioContext][childContexts][InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
     },
     "body": {
-      "userIds": "${[scenarioContext][childContexts][S-012_InsertJobWithAbortedStatus][testData][actualResponse][body][userIds]}"
+      "userIds" : ["1667515b-36f4-4577-8a41-3fb49244276a"]
     }
   },
   "expectedResponse": {
