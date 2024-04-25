@@ -31,7 +31,6 @@
       "roleAssignmentResponse": [{
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId" : "b878398b-c7ae-4f4c-95cc-298ca2d287ac",
         "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "case-allocator",

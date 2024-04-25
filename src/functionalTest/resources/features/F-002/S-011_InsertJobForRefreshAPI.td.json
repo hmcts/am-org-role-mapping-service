@@ -1,0 +1,45 @@
+{
+  "_guid_": "S-011_InsertJobForRefreshAPI",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Insert New Job",
+  "method": "POST",
+  "uri": "/am/testing-support/job",
+  "specs": [
+    "to insert new job in ORM DB to initiate Refresh process"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForOrm]}",
+      "Content-Type": "application/json"
+    },
+    "queryParams": {
+      "roleCategory": "LEGAL_OPERATIONS",
+      "jurisdiction": "SSCS"
+    },
+    "body": {
+      "userIds": "${[scenarioContext][parentContext][testData][request][body][userIds]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "jobId" : "[[ANYTHING_PRESENT]]",
+      "roleCategory" : "LEGAL_OPERATIONS",
+      "jurisdiction" : "SSCS",
+      "status" : "NEW",
+      "userIds" : "[[ANYTHING_PRESENT]]",
+      "linkedJobId" :"[[ANYTHING_PRESENT]]",
+      "created" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
