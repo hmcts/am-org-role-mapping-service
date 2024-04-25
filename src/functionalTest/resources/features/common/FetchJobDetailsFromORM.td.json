@@ -3,10 +3,10 @@
   "productName": "Organisation Role Mapping",
   "operationName": "Fetch Job Details",
   "method": "GET",
-  "uri": "/am/testing-support/jobs/{jobId}",
+  "uri": "/am/test/jobs/{jobId}",
   "specs": [
-  "to fetch job details from ORM DB to validate Refresh process"
-],
+    "to fetch job details from ORM DB to validate Refresh process"
+  ],
   "users": {
     "invokingUser": {
       "_extends_": "AmBeftaUser1"
@@ -15,7 +15,7 @@
   "request": {
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
-      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForOrm]}",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
       "Content-Type": "application/json"
     },
     "pathVariables": {
@@ -31,11 +31,10 @@
     "body": {
       "jobId" : "[[ANYTHING_PRESENT]]",
       "roleCategory" : "LEGAL_OPERATIONS",
-      "jurisdiction" : "SSCS",
+      "jurisdiction" : "IA",
       "status" : "COMPLETED",
       "userIds" : "[[ANYTHING_PRESENT]]",
       "log" : "[[ANYTHING_PRESENT]]",
-      "linkedJobId" : "[[ANYTHING_PRESENT]]",
       "created" : "[[ANYTHING_PRESENT]]"
     }
   }

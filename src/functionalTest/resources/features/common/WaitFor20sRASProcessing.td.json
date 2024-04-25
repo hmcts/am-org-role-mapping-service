@@ -15,7 +15,7 @@
   "request": {
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
-      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForOrm]}",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
       "Content-Type": "application/json"
     },
     "body": {

@@ -3,7 +3,7 @@
   "productName": "Organisation Role Mapping",
   "operationName": "Fetch Job Details",
   "method": "DELETE",
-  "uri": "/am/testing-support/jobs/{jobId}",
+  "uri": "/am/test/jobs/{jobId}",
   "specs": [
     "to delete job details from ORM DB"
   ],
@@ -15,7 +15,7 @@
   "request": {
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
-      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForOrm]}",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
       "Content-Type": "application/json"
     },
     "pathVariables": {
