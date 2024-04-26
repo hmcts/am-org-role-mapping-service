@@ -198,7 +198,6 @@ public class AssignmentRequestBuilder {
                     .beginTime(localDateToZonedDateTime(appointment.getStartDate()))
                     .endTime(localDateToZonedDateTime(appointment.getEndDate()))
                     .regionId(appointment.getCftRegionID())
-                    .cftRegionIdV1(appointment.getCftRegionID())
                     .baseLocationId(appointment.getBaseLocationId())
                     .ticketCodes(stringListToDistinctList(ticketCodes))
                     .appointment(appointment.getAppointment())

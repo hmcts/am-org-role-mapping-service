@@ -154,7 +154,6 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getBeginTime());
                         assertNotNull(appointment.getEndTime());
                         assertNotNull(appointment.getRegionId());
-                        assertNotNull(appointment.getCftRegionIdV1());
                         assertNotNull(appointment.getBaseLocationId());
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(2, appointment.getTicketCodes().size());
@@ -182,7 +181,6 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getBeginTime());
                         assertNotNull(appointment.getEndTime());
                         assertNotNull(appointment.getRegionId());
-                        assertNotNull(appointment.getCftRegionIdV1());
                         assertNotNull(appointment.getBaseLocationId());
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(0, appointment.getTicketCodes().size());
@@ -213,7 +211,6 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getUserId());
                         assertNotNull(appointment.getBeginTime());
                         assertNotNull(appointment.getRegionId());
-                        assertNotNull(appointment.getCftRegionIdV1());
                         assertNotNull(appointment.getBaseLocationId());
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(2, appointment.getTicketCodes().size());
@@ -785,7 +782,6 @@ class AssignmentRequestBuilderTest {
                     () -> assertNotNull(accessProfile.getUserId()),
                     () -> assertNotNull(accessProfile.getBeginTime()),
                     () -> assertNotNull(accessProfile.getRegionId()),
-                    () -> assertNotNull(accessProfile.getCftRegionIdV1()),
                     () -> assertNotNull(accessProfile.getBaseLocationId()),
                     () -> assertNotNull(accessProfile.getTicketCodes()),
                     () -> assertNotNull(accessProfile.getAppointment()),

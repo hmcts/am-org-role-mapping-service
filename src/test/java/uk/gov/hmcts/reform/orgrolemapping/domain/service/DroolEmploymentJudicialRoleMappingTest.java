@@ -215,16 +215,13 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         Tribunal Member;Fee Paid;11;11;
         """)
 
-    void shouldReturnCftRegionIdV1FromJapAsRegion(String appointment, String appointmentType,
+    void shouldReturnRegionIdFromJapAsRegion(String appointment, String appointmentType,
                                                   String regionIn, String regionOut) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BHA1")));
-            judicialAccessProfile.setCftRegionIdV1(regionIn);
-            // since migration to e-links CftRegionIdV1 and RegionId will be the same value,
-            // CftRegionIdV1 will be removed at some point in the future.
             judicialAccessProfile.setRegionId(regionIn);
         });
 
