@@ -16,3 +16,9 @@ feign:
     config:
       roleAssignmentApp:
         url: http://localhost:${wiremock.server.port:4096}
+
+amqp:
+  crd:
+    enabled: false
+  jrd:
+    enabled: false
