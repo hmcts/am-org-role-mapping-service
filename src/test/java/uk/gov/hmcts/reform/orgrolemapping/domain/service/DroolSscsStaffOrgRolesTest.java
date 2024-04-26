@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertHelper.MultiRegion;
@@ -444,7 +445,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+                buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -456,17 +457,13 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
             assertEquals("ORGANISATION", r.getRoleType().toString());
         });
 
-        List<String> roleNamesWithRegionAttribute = List.of("dwp", "hmrc");
-
         roleAssignments.forEach(r -> {
             assertEquals("SSCS", r.getAttributes().get("jurisdiction").asText());
             assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             assertEquals("PUBLIC", r.getClassification().toString());
             assertEquals("STANDARD", r.getGrantType().toString());
+            assertNull(r.getAttributes().get("region"));
 
-            if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
-                assertEquals("LDN", r.getAttributes().get("region").asText());
-            }
             //assert work types
             if (("dwp").equals(r.getRoleName())) {
                 assertThat(r.getAttributes().get("workTypes").asText().split(","),
@@ -502,5 +499,10 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
+    }
+
+    private static List<FeatureFlag> setFeatureFlags() {
+        return List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").status(true).build(),
+                FeatureFlag.builder().flagName("sscs_wa_1_2").status(true).build());
     }
 }
