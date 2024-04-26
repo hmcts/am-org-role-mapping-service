@@ -113,6 +113,10 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Principal Judge-Salaried,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                 + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary',7,true",
 
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
+
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
@@ -235,6 +239,13 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,1,false",
         "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,6,true",
         "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,7,true",
+
+        "SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+                + "'fee-paid-disability,hmcts-judiciary',false,false,1,false",
+        "SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+                + "'fee-paid-disability,hmcts-judiciary',false,false,6,true",
+        "SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+                + "'fee-paid-disability,hmcts-judiciary',false,false,7,true",
 
         "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,1,false",
         "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,6,true",
