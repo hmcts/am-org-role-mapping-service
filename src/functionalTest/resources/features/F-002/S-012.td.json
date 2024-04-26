@@ -15,7 +15,7 @@
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_202_Response",
+    "_extends_": "Common_201_Response",
     "body" : null
   }
 }

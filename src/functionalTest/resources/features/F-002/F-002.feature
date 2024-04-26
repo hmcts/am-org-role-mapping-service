@@ -9,6 +9,7 @@ Feature:F-002: Refresh Role Assignments for CRD and JRD users
    Scenario: must successfully refresh staff user org roles for a job
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [S-011_InsertJobForRefreshAPI],
+     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-011_DeleteDataForRoleAssignments]
      And the request [contains an existing job details],
      When a request is prepared with appropriate values,
      And it is submitted to call the [Refresh API] operation of [Organisation Role Mapping],
@@ -26,6 +27,7 @@ Feature:F-002: Refresh Role Assignments for CRD and JRD users
   Scenario: must successfully refresh judicial user org roles for a job
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [S-012_InsertJobForRefreshAPI],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-012_DeleteDataForRoleAssignments]
     And the request [contains an existing job details],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Refresh API] operation of [Organisation Role Mapping],
