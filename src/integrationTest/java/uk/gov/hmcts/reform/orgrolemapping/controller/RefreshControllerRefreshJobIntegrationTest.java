@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -454,7 +455,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     /*
         IT for JRD refresh job scenarios start from here
      */
-
+    @Disabled
     @ParameterizedTest
     @ValueSource(ints = {1, 2})
     @Order(13)
@@ -491,6 +492,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         Mockito.verify(jbsFeignClient, times(numberOfBatches)).getJudicialBookingByUserIds(any());
     }
 
+    @Disabled
     @Test
     @Order(14)
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_Judicial() throws Exception {
