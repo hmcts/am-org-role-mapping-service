@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -22,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -37,22 +37,15 @@ class CRDTopicConsumerTest {
     @Mock
     public SubscriptionClient subscriptionClient;
 
+    @Mock
+    CRDMessagingConfiguration configuration;
+
     CRDTopicConsumer sut;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer);
-    }
-
-    //@Test
-    void getSubscriptionClientThrowsServiceBusException() {
-        sut.host = "http://test.com";
-        sut.subscription = "test";
-        sut.environment = "pr";
-        sut.topic = "test1";
-
-        assertThrows(IllegalArgumentException.class, () -> sut.getSubscriptionClient());
+        sut = new CRDTopicConsumer(bulkAssignmentOrchestrator, deserializer, configuration);
     }
 
     @Test
