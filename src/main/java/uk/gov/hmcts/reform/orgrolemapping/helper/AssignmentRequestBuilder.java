@@ -166,7 +166,6 @@ public class AssignmentRequestBuilder {
         return caseWorkerAccessProfiles;
     }
 
-    @SuppressWarnings("deprecation")
     public static Set<UserAccessProfile> convertProfileToJudicialAccessProfileV2(JudicialProfileV2 judicialProfile) {
         Set<UserAccessProfile> judicialAccessProfiles = new HashSet<>();
 

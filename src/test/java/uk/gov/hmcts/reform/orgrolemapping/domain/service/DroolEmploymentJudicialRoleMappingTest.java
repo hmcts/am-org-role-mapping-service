@@ -201,7 +201,6 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         });
     }
 
-    @SuppressWarnings("deprecation")
     @ParameterizedTest
     @CsvSource(delimiter = ';',  textBlock = """ 
         President of Tribunal;Salaried;12;11;

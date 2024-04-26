@@ -137,7 +137,6 @@ class AssignmentRequestBuilderTest {
     @DisplayName("Convert JUDICIAL UserProfile To JudicialAccessProfile")
     class ConvertUserProfileToJudicialAccessProfile {
 
-        @SuppressWarnings("deprecation")
         @Test
         void convertUserProfileToJudicialAccessProfile() throws IOException {
             JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileV2();
@@ -162,7 +161,6 @@ class AssignmentRequestBuilderTest {
             assertEquals(2, judicialAccessProfiles.size());
         }
 
-        @SuppressWarnings("deprecation")
         @Test
         void convertUserProfileToJudicialAccessProfileWithoutAuthorisation() throws IOException {
 
@@ -189,7 +187,6 @@ class AssignmentRequestBuilderTest {
             assertEquals(2, judicialAccessProfiles.size());
         }
 
-        @SuppressWarnings("deprecation")
         @Test
         void convertUserProfileToJudicialAccessProfileWithDiffTicketCode() throws IOException {
             JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileV2();
@@ -776,7 +773,6 @@ class AssignmentRequestBuilderTest {
             assertThat(outputServiceCodes, containsInAnyOrder(expectedServiceCodes.toArray()));
         }
 
-        @SuppressWarnings("deprecation")
         private void assertCommonJudicialAccessProfileFields(JudicialAccessProfile accessProfile) {
             assertAll(
                     () -> assertNotNull(accessProfile.getUserId()),
