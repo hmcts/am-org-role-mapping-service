@@ -12,13 +12,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -87,35 +84,6 @@ class JudicialRefreshOrchestratorTest {
     }
 
     @Test
-    void refreshJudicialRoleAssignmentRecords() throws IOException {
-        String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
-
-        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
-        JudicialProfile judicialProfile = JudicialProfile.builder()
-                .sidamId(userId)
-                .appointments(List.of(Appointment.builder().build()))
-                .authorisations(List.of(Authorisation.builder().build()))
-                .build();
-        userAccessProfiles.put(userId, Set.of(judicialProfile));
-
-        Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
-                .thenReturn(userAccessProfiles);
-
-        List<JudicialBooking> bookingsList = List.of(TestDataBuilder.buildJudicialBooking());
-        Mockito.when(judicialBookingService.fetchJudicialBookings(any())).thenReturn(bookingsList);
-
-        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                        .body(List.of(ResponseEntity.status(HttpStatus.CREATED)
-                                .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));
-
-        ResponseEntity<Object> response = sut.judicialRefresh(TestDataBuilder.buildUserRequest());
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response);
-    }
-
-    @Test
     void refreshJudicialRoleAssignmentRecordsV2() throws IOException {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
 
@@ -141,37 +109,6 @@ class JudicialRefreshOrchestratorTest {
         ResponseEntity<Object> response = sut.judicialRefresh(TestDataBuilder.buildUserRequest());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response);
-    }
-
-    @Test
-    void refreshJudicialRoleAssignmentRecords_ras422() {
-
-        String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
-
-        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
-        JudicialProfile judicialProfile = JudicialProfile.builder()
-                .sidamId(userId)
-                .appointments(List.of(Appointment.builder().build()))
-                .authorisations(List.of(Authorisation.builder().build()))
-                .build();
-        userAccessProfiles.put(userId, Set.of(judicialProfile));
-
-        Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
-                .thenReturn(userAccessProfiles);
-
-        List<JudicialBooking> bookingsList =
-                List.of(JudicialBooking.builder().userId(userId).endTime(ZonedDateTime.now().plusDays(5)).build());
-        Mockito.when(judicialBookingService.fetchJudicialBookings(any())).thenReturn(bookingsList);
-
-        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                        .body(List.of(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-                                .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));
-
-        ResponseEntity<Object> response = sut.judicialRefresh(TestDataBuilder.buildUserRequest());
-
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
         assertNotNull(response);
     }
 
@@ -211,35 +148,6 @@ class JudicialRefreshOrchestratorTest {
 
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
                 .thenReturn(Collections.emptyMap());
-        Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
-                .thenReturn(Collections.emptyList());
-
-        Mockito.when(requestMappingService.createJudicialAssignments(any(), eq(Collections.emptyList())))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                        .body(List.of(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-                                .body(new RoleAssignmentRequestResource(AssignmentRequest.builder().build()))))));
-
-        ResponseEntity<Object> response = sut.judicialRefresh(TestDataBuilder.buildUserRequest());
-
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
-        assertNotNull(response);
-    }
-
-    @Test
-    void refreshJudicialRoleAssignmentRecords_emptyJudicialBookings() {
-        String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
-
-        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
-        JudicialProfile judicialProfile = JudicialProfile.builder()
-                .sidamId(userId)
-                .appointments(List.of(Appointment.builder().build()))
-                .authorisations(List.of(Authorisation.builder().build()))
-                .build();
-        userAccessProfiles.put(userId, Set.of(judicialProfile));
-
-        Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
-                .thenReturn(userAccessProfiles);
-
         Mockito.when(judicialBookingService.fetchJudicialBookings(any()))
                 .thenReturn(Collections.emptyList());
 
