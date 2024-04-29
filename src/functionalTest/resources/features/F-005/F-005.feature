@@ -5,6 +5,7 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     Given an appropriate test context as detailed in the test data source
 
   @S-041
+  @FeatureToggle(DB:sscs_wa_1_2=on)
   Scenario: must successfully create organisational role mapping for listed-hearing-viewer
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-041_DeleteDataForRoleAssignments]

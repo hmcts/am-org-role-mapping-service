@@ -79,7 +79,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 @TestPropertySource(properties = {
     "dbFeature.flags.enable=iac_jrd_1_0",
     "refresh.BulkAssignment.includeJudicialBookings=true",
-    "feign.client.config.jrdClient.v2Active=true",
     "testing.support.enabled=true" // NB: needed for OrgMappingController (needs removing in AM-2877)
 })
 public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
@@ -181,7 +180,7 @@ public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
                 .build();
 
         judicialProfiles = new ArrayList<>(buildJudicialProfileV2(JRDUserRequest.builder()
-                        .sidamIds(Set.copyOf(userRequest.getUserIds())).build(),"judicialProfileSample.json"));
+                        .sidamIds(Set.copyOf(userRequest.getUserIds())).build(),"judicialProfileSampleV2.json"));
         wiremockFixtures.resetRequests();
     }
 
