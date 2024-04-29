@@ -59,7 +59,8 @@ rule "sscs_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS Tribunal Judge-Salaried", "SSCS Principal Judge-Salaried"))
+                                        "SSCS Tribunal Judge-Salaried", "SSCS Principal Judge-Salaried",
+                                        "SSCS Judge of the First-tier Tribunal-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
@@ -96,7 +97,8 @@ rule "sscs_post_hearing_salaried_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS President of Tribunal-Salaried", "SSCS Regional Tribunal Judge-Salaried",
-                                        "SSCS Tribunal Judge-Salaried", "SSCS Principal Judge-Salaried"))
+                                        "SSCS Tribunal Judge-Salaried", "SSCS Principal Judge-Salaried",
+                                        "SSCS Judge of the First-tier Tribunal-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
@@ -290,7 +292,8 @@ when
                                         "SSCS Member of the First-tier Tribunal Lay-Fee Paid",
                                         "SSCS Tribunal Member-Fee Paid", "SSCS Tribunal Member Lay-Fee Paid",
                                         "SSCS Tribunal Member Service-Fee Paid", "SSCS Tribunal Member Financially Qualified",
-                                        "SSCS Member of the First-tier Tribunal-Fee Paid"))
+                                        "SSCS Member of the First-tier Tribunal-Fee Paid", "SSCS Judge of the First-tier Tribunal-Salaried",
+                                        "SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if ($joh.getOffice().contains("Salaried")) {
@@ -437,7 +440,8 @@ rule "sscs_fee_paid_disability_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("SSCS Tribunal Member Disability-Fee Paid",
-                                        "SSCS Member of the First-tier Tribunal Lay-Fee Paid"))
+                                        "SSCS Member of the First-tier Tribunal Lay-Fee Paid",
+                                        "SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
