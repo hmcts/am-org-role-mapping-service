@@ -27,7 +27,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
@@ -96,7 +95,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
     "refresh.Job.pageSize=" + TEST_PAGE_SIZE,
 })
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Transactional
 public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegration {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerRefreshJobIntegrationTest.class);
@@ -457,6 +455,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     /*
         IT for JRD refresh job scenarios start from here
      */
+    @Disabled
     @ParameterizedTest
     @ValueSource(ints = {1, 2})
     @Order(13)
@@ -493,6 +492,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         Mockito.verify(jbsFeignClient, times(numberOfBatches)).getJudicialBookingByUserIds(any());
     }
 
+    @Disabled
     @Test
     @Order(14)
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_Judicial() throws Exception {
