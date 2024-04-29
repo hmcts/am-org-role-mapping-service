@@ -293,7 +293,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob record With JobId and failed UserIds to process successful");
-        //Long jobId = 3L;
         RefreshJobEntity refreshJobAborted = createRefreshJobLegalOperations();
         Long jobIdAborted = refreshJobAborted.getJobId();
         refreshJobAborted.setStatus(ABORTED);
