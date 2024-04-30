@@ -41,8 +41,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -71,8 +72,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -100,8 +102,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -129,14 +132,45 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
   $jap.setStatus("JOH_Mapped");
   update($jap);
   logMsg("Rule : sscs_principal_judge_salaried_judge_joh");
+end;
+
+/*
+ * "SSCS Judge of the First-tier Tribunal-Salaried" business role mapping to JOH.
+ */
+rule "sscs_judge_of_the_first_tier_tribunal_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_3.getValue())
+   $jap: JudicialAccessProfile(appointment == "Judge of the First-tier Tribunal",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Judge of the First-tier Tribunal-Salaried")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_judge_of_the_first_tier_tribunal_salaried_joh");
 end;
 
 /*
@@ -158,8 +192,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -187,8 +222,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -216,8 +252,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -246,8 +283,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -276,8 +314,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -306,8 +345,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -336,8 +376,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -367,8 +408,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -397,14 +439,46 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
   $jap.setStatus("JOH_Mapped");
   update($jap);
   logMsg("Rule : sscs_member_of_the_first_tier_tribunal_lay_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_member_of_the_first_tier_tribunal_lay_sitting_in_retirement_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_3.getValue())
+   $jap: JudicialAccessProfile(appointment == "Member of the First-tier Tribunal (sitting in retirement)",
+                               appointmentType == "Fee Paid",
+                               baseLocationId == "1032",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_member_of_the_first_tier_tribunal_lay_sitting_in_retirement_fee_paid_joh");
 end;
 
 /*
@@ -427,8 +501,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -457,8 +532,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -488,8 +564,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -518,8 +595,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -547,8 +625,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
@@ -576,8 +655,9 @@ then
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
       .endTime($jap.getEndTime())
-      .regionId($jap.getCftRegionIdV1())
-      .baseLocationId($jap.getBaseLocationId())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
