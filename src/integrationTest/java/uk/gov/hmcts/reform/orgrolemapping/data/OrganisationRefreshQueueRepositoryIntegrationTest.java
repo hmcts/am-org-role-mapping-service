@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,7 +28,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
     public void shouldInsertIntoOrganisationRefreshQueue() {
         List<OrganisationInfo> organisationInfoList = List.of(buildOrganisationInfo(123));
 
-        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 1);
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 1, "P2");
 
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
@@ -47,7 +48,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
     public void shouldHandleInsertConflictIntoOrganisationRefreshQueue() {
         List<OrganisationInfo> organisationInfoList = List.of(buildOrganisationInfo(123));
 
-        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 1);
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 1, "P2");
 
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
         OrganisationRefreshQueueEntity organisationEntity = organisationEntities.get(0);
@@ -64,10 +65,13 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
     void shouldHandleConflict_whenUpsertingToOrganisationRefreshQueue() {
         // Arrange
         List<OrganisationInfo> organisationInfoList = List.of(buildOrganisationInfo(123));
-        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 1);
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 1, "P3");
 
         // Act
-        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 2);
+        organisationInfoList.forEach(
+                organisationInfo -> organisationInfo.setOrganisationLastUpdated(LocalDateTime.now())
+        );
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate, organisationInfoList, 2, "P3");
 
         // Assert
         List<OrganisationRefreshQueueEntity> organisationEntities = organisationRefreshQueueRepository.findAll();
