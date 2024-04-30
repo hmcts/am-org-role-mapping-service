@@ -9,6 +9,11 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.OrganisationBuilder.buildOrganisationProfileResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.OrganisationBuilder.buildOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
+
+import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.buildUsersByOrganisationResponse;
 
 @Component
 public class PRDFeignClientFallback implements PRDFeignClient {
@@ -23,5 +28,12 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     public ResponseEntity<OrganisationsResponse> retrieveOrganisations(
             String id, String lastUpdatedSince, String status, Integer page, Integer size) {
         return ResponseEntity.ok(buildOrganisationProfileResponse("organisationsResponseSample.json"));
+    }
+
+    @Override
+    public ResponseEntity<UsersByOrganisationResponse> getUsersByOrganisation(Integer pageSize,
+                                  String searchAfterOrg, String searchAfterUser,
+                                  UsersByOrganisationRequest usersByOrganisationRequest) {
+        return ResponseEntity.ok(buildUsersByOrganisationResponse("usersByOrganisationSample.json"));
     }
 }

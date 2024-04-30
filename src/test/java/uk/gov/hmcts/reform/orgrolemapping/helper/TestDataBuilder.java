@@ -34,6 +34,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestReso
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -772,5 +773,13 @@ public class TestDataBuilder {
         return objectMapper.readValue(
                 new File("src/main/resources/organisationsResponseSample.json"),
                 OrganisationsResponse.class);
+    }
+
+    public static UsersByOrganisationResponse buildUsersByOrganisationResponse() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper.readValue(
+                new File("src/main/resources/usersByOrganisationSample.json"),
+                UsersByOrganisationResponse.class);
     }
 }
