@@ -18,11 +18,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class TopicConsumer {
 
-    public static final int SLEEP_BACK_OFF_GENERAL_ERROR_SECONDS = 60;
     public static final int SLEEP_BACK_OFF_SERVICE_BUSY_SECONDS = 1;
 
-    private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
-    private OrmDeserializer deserializer;
+    private final BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
+    private final OrmDeserializer deserializer;
 
     public TopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
                                OrmDeserializer deserializer) {
@@ -34,38 +33,41 @@ public class TopicConsumer {
         log.error("Error when receiving messages from namespace: '{}'. Entity: '{}'",
                 context.getFullyQualifiedNamespace(), context.getEntityPath());
 
-        if (!(context.getException() instanceof ServiceBusException)) {
-            log.error("Non-ServiceBusException occurred: {}", context.getException());
+        if (!(context.getException() instanceof ServiceBusException exception)) {
+            var contextException = context.getException();
+            log.error("Non-ServiceBusException occurred: {}", contextException.getMessage(), contextException);
             return;
         }
 
-        ServiceBusException exception = (ServiceBusException) context.getException();
         ServiceBusFailureReason reason = exception.getReason();
 
         if (reason == ServiceBusFailureReason.MESSAGING_ENTITY_DISABLED
                 || reason == ServiceBusFailureReason.MESSAGING_ENTITY_NOT_FOUND
                 || reason == ServiceBusFailureReason.UNAUTHORIZED) {
             log.error("An unrecoverable error occurred. Stopping processing with reason {}: {}",
-                    reason, exception.getMessage());
+                    reason, exception.getMessage(), exception);
         } else if (reason == ServiceBusFailureReason.MESSAGE_LOCK_LOST) {
-            log.error("Message lock lost for message: {}", context.getException());
+            log.error("Message lock lost for message: {}", exception.getMessage(), exception);
         } else if (reason == ServiceBusFailureReason.SERVICE_BUSY) {
+            log.info("Service Busy error");
             sleepBackOff(SLEEP_BACK_OFF_SERVICE_BUSY_SECONDS);
         } else {
             log.error("Error source {}, reason {}, message: {}", context.getErrorSource(),
-                    reason, context.getException());
-            sleepBackOff(SLEEP_BACK_OFF_GENERAL_ERROR_SECONDS);
+                    reason, exception.getMessage(), exception);
         }
     }
 
     public void processMessage(ServiceBusReceivedMessageContext messageContext, UserType userType) {
         byte[] body = messageContext.getMessage().getBody().toBytes();
+        log.info("Delivery Count is : {}", messageContext.getMessage().getDeliveryCount());
         UserRequest request = deserializer.deserializeBytes(body);
         log.debug("Parsing message from {} with size :: {}", userType.name(), request.getUserIds().size());
 
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request, userType);
 
         log.debug("Role Assignment Service Response {}: {}", userType.name(), response.getStatusCode());
+
+        messageContext.complete();
     }
 
     public static void sleepBackOff(int sleepBackOffSeconds) {
@@ -73,6 +75,9 @@ public class TopicConsumer {
             TimeUnit.SECONDS.sleep(sleepBackOffSeconds);
         } catch (InterruptedException e) {
             log.error("Unable to sleep for period of time");
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
         }
     }
+
 }

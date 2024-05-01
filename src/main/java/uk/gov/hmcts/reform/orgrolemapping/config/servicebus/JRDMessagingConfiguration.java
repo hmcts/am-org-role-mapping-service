@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+
 import java.time.Duration;
 import java.util.function.Consumer;
 
@@ -61,31 +62,30 @@ public class JRDMessagingConfiguration {
             Consumer<ServiceBusReceivedMessageContext> processMessage,
             Consumer<ServiceBusErrorContext> processError) {
 
-        var connectionString = "Endpoint=sb://"
-                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
-
         AmqpRetryOptions amqpRetryOptions = new AmqpRetryOptions();
         amqpRetryOptions.setDelay(Duration.ofMinutes(1));
         amqpRetryOptions.setMaxRetries(10);
         amqpRetryOptions.setMode(AmqpRetryMode.FIXED);
 
-        ServiceBusProcessorClient processorClient = new ServiceBusClientBuilder()
+        var connectionString = "Endpoint=sb://"
+                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
+
+        return new ServiceBusClientBuilder()
                 .connectionString(connectionString)
                 .retryOptions(amqpRetryOptions)
                 .processor()
                 .topicName(topic)
                 .subscriptionName(subscription)
+                .receiveMode(ServiceBusReceiveMode.PEEK_LOCK)
+                .disableAutoComplete()
                 .processMessage(processMessage)
                 .processError(processError)
-                .receiveMode(ServiceBusReceiveMode.PEEK_LOCK)
                 .buildProcessorClient();
-        return processorClient;
     }
 
     public void logServiceBusVariables() {
         log.debug("Env is: " + environment);
         if (environment.equalsIgnoreCase("pr")) {
-
             sharedAccessKeyValue = System.getenv("AMQP_JRD_SHARED_ACCESS_KEY_VALUE");
             subscription = System.getenv("JRD_SUBSCRIPTION_NAME");
 
@@ -94,6 +94,7 @@ public class JRDMessagingConfiguration {
 
             log.debug("Topic Name is :" + topic);
             log.debug("subscription Name is :" + subscription);
+
             host = System.getenv("AMQP_HOST");
             if (!host.contains(Constants.SERVICEBUS_DOMAIN)) {
                 host = host.concat(Constants.SERVICEBUS_DOMAIN);
