@@ -87,6 +87,7 @@ env.PACT_BROKER_SCHEME = "https"
 
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
 env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
+env.REFRESH_FTA_ENABLED = "true"
 
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
@@ -96,6 +97,8 @@ withPipeline(type, product, component) {
     env.LAUNCH_DARKLY_ENV = "aat"
     // Var turned off for staging as ASB is shared with AAT instances
     env.AZURE_SERVICE_BUS_FTA_ENABLED = "false"
+    // Don't run refresh FTAs on AAT DTSAM-173
+    env.REFRESH_FTA_ENABLED = "false"
   }
   else {
     env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME

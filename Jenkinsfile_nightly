@@ -81,6 +81,8 @@ env.JUDICIAL_BOOKING_URL = "http://am-judicial-booking-service-aat.service.core-
 
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
 env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
+// Don't run refresh FTAs on AAT DTSAM-173
+env.REFRESH_FTA_ENABLED = "false"
 
   overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
