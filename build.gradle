@@ -236,7 +236,7 @@ pitest {
                        'uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.*',
                        'uk.gov.hmcts.reform.orgrolemapping.domain.model.*',
                        'uk.gov.hmcts.reform.orgrolemapping.servicebus.*',
-                       '*UserAccessProfileBuilder*', '*AssignmentRequestBuilder*', '*TestController*',
+                       '*UserAccessProfileBuilder*', '*AssignmentRequestBuilder*',
                        '*Swagger2SpringBoot*']
     threads = 15
     outputFormats = ['XML', 'HTML']
