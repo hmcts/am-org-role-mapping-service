@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-012_FetchJobDetailsFromORM",
+  "_guid_": "S-011_FetchJobDetailsFromORM",
   "productName": "Organisation Role Mapping",
   "operationName": "Fetch Job Details",
   "method": "GET",
@@ -19,7 +19,7 @@
       "Content-Type": "application/json"
     },
     "pathVariables": {
-      "jobId": "${[scenarioContext][parentContext][childContexts][S-012_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+      "jobId": "${[scenarioContext][parentContext][childContexts][S-011_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
     }
   },
   "expectedResponse": {
@@ -30,8 +30,8 @@
     },
     "body": {
       "jobId" : "[[ANYTHING_PRESENT]]",
-      "roleCategory" : "JUDICIAL",
-      "jurisdiction" : "EMPLOYMENT",
+      "roleCategory" : "LEGAL_OPERATIONS",
+      "jurisdiction" : "SSCS",
       "status" : "COMPLETED",
       "userIds" : "[[ANYTHING_PRESENT]]",
       "log" : "[[ANYTHING_PRESENT]]",
