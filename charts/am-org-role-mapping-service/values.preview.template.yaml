@@ -41,6 +41,7 @@ java:
     LAUNCH_DARKLY_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
+    # DTSAM-286 No change
     AMQP_JRD_NEW_ASB_ENABLED: true
     AMQP_CRD_NEW_ASB_ENABLED: true
     CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-crd-topic"
