@@ -48,6 +48,7 @@ public class RefreshOrchestrator {
     private final RequestMappingService<UserAccessProfile> requestMappingService;
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
+    private final JRDService jrdService;
     private final PersistenceService persistenceService;
     private final SecurityUtils securityUtils;
 
@@ -61,7 +62,8 @@ public class RefreshOrchestrator {
     public RefreshOrchestrator(RetrieveDataService retrieveDataService,
                                RequestMappingService<UserAccessProfile> requestMappingService,
                                ParseRequestService parseRequestService,
-                               CRDService crdService, PersistenceService persistenceService,
+                               CRDService crdService,JRDService jrdService,
+                               PersistenceService persistenceService,
                                SecurityUtils securityUtils,
                                @Value("${refresh.Job.pageSize}") String pageSize,
                                @Value("${refresh.Job.sortDirection}") String sortDirection,
@@ -71,6 +73,7 @@ public class RefreshOrchestrator {
         this.requestMappingService = requestMappingService;
         this.parseRequestService = parseRequestService;
         this.crdService = crdService;
+        this.jrdService = jrdService;
         this.persistenceService = persistenceService;
         this.securityUtils = securityUtils;
         this.pageSize = pageSize;
@@ -165,7 +168,6 @@ public class RefreshOrchestrator {
     protected ResponseEntity<Object> refreshJobByServiceName(Map<String, HttpStatus> responseCodeWithUserId,
                                                              RefreshJobEntity refreshJobEntity, UserType userType) {
 
-
         ResponseEntity<Object> responseEntity = null;
 
         //validate the role Category
@@ -173,13 +175,13 @@ public class RefreshOrchestrator {
         log.info("fetching details from RD for :: {} ", userType);
         try {
             if (userType.equals(UserType.CASEWORKER)) {
+                log.info("Refresh Job For CaseWorker/Staff Service ");
                 //Call to CRD Service to retrieve the total number of records in first call
                 ResponseEntity<List<Object>> response = crdService
                         .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
                                 Integer.parseInt(pageSize), 0,
                                 sortDirection, sortColumn);
 
-                log.info("fetching details from RD for :: {} ", userType);
                 // 2 step to find out the total number of records from header
                 var totalRecords = response.getHeaders().getFirst("total_records");
                 assert totalRecords != null;
@@ -187,7 +189,6 @@ public class RefreshOrchestrator {
                 if (Integer.parseInt(pageSize) > 0) {
                     pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
                 }
-
 
                 //call to CRD
                 for (var page = 0; page < pageNumber; page++) {
@@ -200,6 +201,35 @@ public class RefreshOrchestrator {
 
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles, userType);
                 }
+            } else if (userType.equals(UserType.JUDICIAL)) {
+                log.info("Refresh Job For Judicial Service");
+                //Call to JRD Service to retrieve the total number of records in first call
+                ResponseEntity<List<Object>> response = jrdService
+                        .fetchJudicialDetailsByServiceName(refreshJobEntity.getJurisdiction(),
+                                Integer.parseInt(pageSize), 0,
+                                sortDirection, sortColumn);
+
+                // 2 step to find out the total number of records from header
+                var totalRecords = response.getHeaders().getFirst("total_records");
+                assert totalRecords != null;
+                double pageNumber = 0;
+                if (Integer.parseInt(pageSize) > 0) {
+                    pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
+                }
+
+                //call to JRD
+                for (var page = 0; page < pageNumber; page++) {
+                    ResponseEntity<List<Object>> userProfilesResponse = jrdService
+                            .fetchJudicialDetailsByServiceName(refreshJobEntity.getJurisdiction(),
+                                    Integer.parseInt(pageSize), page,
+                                    sortDirection, sortColumn);
+                    Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
+                            .retrieveProfilesByServiceName(userProfilesResponse, userType);
+
+                    responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles, userType);
+                }
+            } else {
+                log.error("UNKNOWN Service Refresh Job");
             }
         } catch (FeignException.NotFound feignClientException) {
 
