@@ -86,6 +86,16 @@ public class JacksonUtils {
         return caseWorkerProfilesResponses;
     }
 
+    public static List<JudicialProfileV2> convertListInJudicialProfileV2(List<Object> from) {
+        List<JudicialProfileV2> judicialProfileV2s = new ArrayList<>();
+        for (Object obj : from) {
+            judicialProfileV2s.add(convertInJudicialProfileV2(obj));
+        }
+
+        return judicialProfileV2s;
+    }
+
+
     public static JudicialProfile convertInJudicialProfile(Object from) {
         return MAPPER.convertValue(from, new TypeReference<>() {
         });

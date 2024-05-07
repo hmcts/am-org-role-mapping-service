@@ -38,6 +38,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfileV2;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInCaseWorkerProfileResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInJudicialProfileV2;
 
 @Service
 @Slf4j
@@ -140,16 +141,33 @@ public class RetrieveDataService {
 
     public Map<String, Set<UserAccessProfile>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
                                                                      userProfileResponsesEntity, UserType userType) {
-        //check the response if it's not null
-        List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
-                Objects
-                        .requireNonNull(convertListInCaseWorkerProfileResponse(
-                                requireNonNull(userProfileResponsesEntity.getBody())));
-
         //Fetch the user profile from the response
         List<Object> userProfiles = new ArrayList<>();
-        caseWorkerProfilesResponse.forEach(cwpr -> userProfiles.add(cwpr
-                .getUserProfile()));
+        if (userType.equals(UserType.CASEWORKER)) {
+            log.info("Caseworker Service");
+            List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
+                    Objects
+                            .requireNonNull(convertListInCaseWorkerProfileResponse(
+                                    requireNonNull(userProfileResponsesEntity.getBody())));
+
+
+            caseWorkerProfilesResponse.forEach(cwpr -> userProfiles.add(cwpr
+                    .getUserProfile()));
+        } else if (userType.equals(UserType.JUDICIAL)) {
+            log.info("Judicial Service");
+            if (this.v2Active) {
+                log.info("v2 Active");
+                List<JudicialProfileV2> judicialProfilesV2Responses =
+                        Objects
+                                .requireNonNull(convertListInJudicialProfileV2(
+                                        requireNonNull(userProfileResponsesEntity.getBody())));
+
+                userProfiles.addAll(judicialProfilesV2Responses);
+            } else {
+                log.info("v2 is not Active");
+                log.warn("retrieveProfilesByServiceName not implemented for JRD V1");
+            }
+        }
 
         //Collect the userIds to build the UserRequest
         var userRequest = UserRequest.builder().userIds(Collections.emptyList()).build();
