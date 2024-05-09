@@ -73,12 +73,22 @@ public class RequestMappingService<T> {
     private SecurityUtils securityUtils;
 
 
+    public ResponseEntity<Object> createCaseworkerAssignments(Map<String, Set<T>> usersAccessProfiles) {
+        return createAssignments(usersAccessProfiles, Collections.emptyList(), UserType.CASEWORKER);
+    }
+
+    public ResponseEntity<Object> createJudicialAssignments(Map<String, Set<T>> usersAccessProfiles,
+                                                            List<JudicialBooking> judicialBookings) {
+        return createAssignments(usersAccessProfiles, judicialBookings, UserType.JUDICIAL);
+    }
+
     /**
      * For each caseworker represented in the map, determine what the role assignments should be,
      * and update them in the role assignment service.
      */
-    public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles,
-                                                    List<JudicialBooking> judicialBookings, UserType userType) {
+    private ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles,
+                                                     List<JudicialBooking> judicialBookings,
+                                                     UserType userType) {
         var startTime = System.currentTimeMillis();
         // Get the role assignments for each caseworker in the input profiles.
         Map<String, List<RoleAssignment>> usersRoleAssignments = getProfileRoleAssignments(usersAccessProfiles,
@@ -90,10 +100,6 @@ public class RequestMappingService<T> {
 
         return responseEntity;
 
-    }
-
-    public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles, UserType userType) {
-        return createAssignments(usersAccessProfiles, Collections.emptyList(), userType);
     }
 
     /**
