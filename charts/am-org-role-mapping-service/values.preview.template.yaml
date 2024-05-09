@@ -55,6 +55,8 @@ java:
     ORG_ROLE_MAPPING_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
     ORG_ROLE_MAPPING_DB_PORT: "{{ .Values.postgresql.auth.port}}"
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
+    REFRESH_JOB_INCLUDE_BOOKINGS: false
+    REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
     RUN_LD_ON_STARTUP: true
   postgresql:

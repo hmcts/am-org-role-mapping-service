@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -53,14 +53,8 @@ class JacksonUtilsTest {
     }
 
     @Test
-    void convertInJudicialProfile() throws IOException {
-        JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
-        assertNotNull(JacksonUtils.convertInJudicialProfile(judicialProfile));
-    }
-
-    @Test
     void convertInJudicialProfileV2() throws IOException {
-        JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
+        JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileV2();
         assertNotNull(JacksonUtils.convertInJudicialProfileV2(judicialProfile));
     }
 
