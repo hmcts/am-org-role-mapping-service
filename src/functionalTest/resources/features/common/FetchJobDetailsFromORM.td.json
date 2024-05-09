@@ -5,8 +5,8 @@
   "method": "GET",
   "uri": "/am/test/jobs/{jobId}",
   "specs": [
-  "to fetch job details from ORM DB to validate Refresh process"
-],
+    "to fetch job details from ORM DB to validate Refresh process"
+  ],
   "users": {
     "invokingUser": {
       "_extends_": "AmBeftaUser1"

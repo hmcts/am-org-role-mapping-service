@@ -109,11 +109,11 @@ module "org-role-mapping-database-v15" {
   pgsql_version      = "15"
 
   # Setup Access Reader db user
-  force_user_permissions_trigger = "3"
+  force_user_permissions_trigger = "5"
 
   # Sets correct DB owner after migration to fix permissions
   enable_schema_ownership = var.enable_schema_ownership
-  force_schema_ownership_trigger = "3"
+  force_schema_ownership_trigger = "5"
   kv_subscription = var.kv_subscription
   kv_name = data.azurerm_key_vault.am_key_vault.name
   user_secret_name = azurerm_key_vault_secret.POSTGRES-USER.name
@@ -132,6 +132,10 @@ module "org-role-mapping-database-v15" {
     {
       name  = "azure.extensions"
       value = "plpgsql,pg_stat_statements,pg_buffercache"
+    },
+    {
+      name  = "azure.enable_temp_tablespaces_on_local_ssd"
+      value = "off"
     }
   ]
 }
