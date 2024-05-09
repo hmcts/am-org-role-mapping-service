@@ -22,8 +22,12 @@ java:
           alias: ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD
         - name: caseworker-topic-primary-send-listen-shared-access-key
           alias: AMQP_CRD_SHARED_ACCESS_KEY_VALUE
-        - name: org-role-mapping-service-POSTGRES-PASS
+        - name: org-role-mapping-service-POSTGRES-PASS-V15
           alias: ORG_ROLE_MAPPING_DB_PASSWORD
+        - name: org-role-mapping-service-POSTGRES-USER-V15
+          alias: ORG_ROLE_MAPPING_DB_USERNAME
+        - name: org-role-mapping-service-POSTGRES-HOST-V15
+          alias: ORG_ROLE_MAPPING_DB_HOST
         - name: judicial-topic-primary-send-listen-shared-access-key
           alias: AMQP_JRD_SHARED_ACCESS_KEY_VALUE
   environment:
@@ -49,8 +53,6 @@ java:
     ORG_ROLE_MAPPING_IDAM_ADMIN_USERID: orm.admin@hmcts.NET
     ORG_ROLE_MAPPING_DB_PORT: 5432
     ORG_ROLE_MAPPING_DB_NAME: org_role_mapping
-    ORG_ROLE_MAPPING_DB_HOST: am-org-role-mapping-service-postgres-db-v11-{{ .Values.global.environment }}.postgres.database.azure.com
-    ORG_ROLE_MAPPING_DB_USERNAME: am@am-org-role-mapping-service-postgres-db-v11-{{ .Values.global.environment }}
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified&sslmode=require"
     REFRESH_JOB:
     TESTING_SUPPORT_ENABLED: false
