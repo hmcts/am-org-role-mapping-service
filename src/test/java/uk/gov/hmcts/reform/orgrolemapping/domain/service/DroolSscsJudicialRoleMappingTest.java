@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -205,8 +206,9 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         // NB: only testing multi-region when using fallback region
         "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true,true",
         "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true,true",
-        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,false,1,false,false",
-        // ^ judge RA will be created if a booking created
+        // ^ judge RA will be created if a booking created && ticketCode == 368
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
+        // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
         "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
         // ^ judge RA will not be created as there is no booking
 
@@ -217,9 +219,10 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
             + "'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true,true",
         "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
             + "'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true,true",
-        "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
-            + "'fee-paid-judge,judge,hmcts-judiciary',true,false,1,false,false",
         // ^ judge RA will be created if a booking created
+        "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+            + "'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
+        // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
         "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
             + "'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
         // ^ judge RA will not be created as there is no booking
@@ -236,9 +239,12 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,6,true,false",
         "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,7,true,false",
 
-        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,1,false,false",
-        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,6,true,false",
-        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,7,true,false",
+        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,1,false"
+                + ",false",
+        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,6,true"
+                + ",false",
+        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,7,true"
+                + ",false",
 
         "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,1,false,false",
         "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,6,true,false",
@@ -263,7 +269,8 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,6,true,false",
         "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,7,true,false",
 
-        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,1,false,false",
+        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,1,false"
+                + ",false",
         "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,6,true,false",
         "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,7,true,false",
     })
@@ -338,8 +345,11 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
 
     private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("sscs_wa_1_1").status(true).build());
+        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3");
+
+        return flags.stream()
+                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
+                .collect(Collectors.toList());
     }
 
     private String setExpectedBookingRegionId(String regionId, boolean withBooking, boolean johFallback) {
