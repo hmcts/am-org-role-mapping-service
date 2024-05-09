@@ -11,7 +11,7 @@ buildscript {
 
 plugins {
     id 'application'
-    id 'uk.gov.hmcts.java' version '0.12.60'
+    id 'uk.gov.hmcts.java' version '0.12.61'
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.4'
@@ -36,16 +36,16 @@ ext['snakeyaml.version'] = '2.0'
 def versions = [
         junit          : '5.9.0',
         lombok         : '1.18.32',
-        pitest         : '1.15.3',
+        pitest         : '1.16.0',
         reformLogging  : '6.1.4',
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
         springBoot     : '2.7.18',
-        spring         : '5.3.32',
+        spring         : '5.3.34',
         springSecurity : '5.7.11',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
-        tomcat         : '9.0.87',
+        tomcat         : '9.0.88',
         pact_version   : '4.1.41',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
@@ -55,7 +55,7 @@ def versions = [
         log4JVersion   : '2.20.0',
         logbackVersion : '1.2.13',
         launchDarklySdk: '5.10.9',
-        netty_version  : '4.1.107.Final'
+        netty_version  : '4.1.109.Final'
 
 ]
 
@@ -400,7 +400,7 @@ dependencies {
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.48.0'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.15.2'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.16.0'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.5.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.6.0'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
