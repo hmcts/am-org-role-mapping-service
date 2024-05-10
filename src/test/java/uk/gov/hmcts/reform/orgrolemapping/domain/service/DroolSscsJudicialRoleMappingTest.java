@@ -130,6 +130,10 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
         "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
 
+        "SSCS Recorder-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
+        "SSCS Recorder-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
+        "SSCS Recorder-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
+
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
@@ -225,6 +229,42 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
         "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
             + "'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
+        // ^ judge RA will not be created as there is no booking
+
+        "SSCS Chairman-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false,true",
+        "SSCS Chairman-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true,true",
+        "SSCS Chairman-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true,true",
+        // ^ judge RA will be created if a booking created
+        "SSCS Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
+        // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
+        "SSCS Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
+        // ^ judge RA will not be created as there is no booking
+
+        "SSCS Deputy District Judge (MC)- Fee paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false,true",
+        "SSCS Deputy District Judge (MC)- Fee paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true,true",
+        "SSCS Deputy District Judge (MC)- Fee paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true,true",
+        // ^ judge RA will be created if a booking created
+        "SSCS Deputy District Judge (MC)- Fee paid,'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
+        // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
+        "SSCS Deputy District Judge (MC)- Fee paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
+        // ^ judge RA will not be created as there is no booking
+
+        "SSCS Employment Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false,true",
+        "SSCS Employment Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true,true",
+        "SSCS Employment Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true,true",
+        // ^ judge RA will be created if a booking created
+        "SSCS Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
+        // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
+        "SSCS Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
+        // ^ judge RA will not be created as there is no booking
+
+        "SSCS Recorder-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false,true",
+        "SSCS Recorder-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true,true",
+        "SSCS Recorder-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true,true",
+        // ^ judge RA will be created if a booking created
+        "SSCS Recorder-Fee Paid,'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
+        // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
+        "SSCS Recorder-Fee Paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
         // ^ judge RA will not be created as there is no booking
 
         "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,1,false,false",

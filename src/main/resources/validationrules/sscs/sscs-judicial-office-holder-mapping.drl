@@ -174,6 +174,36 @@ then
 end;
 
 /*
+ * "SSCS Recorder-Salaried" business role mapping to JOH.
+ */
+rule "sscs_recorder_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_1.getValue())
+   $jap: JudicialAccessProfile(appointment == "Recorder",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Recorder-Salaried")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_recorder_salaried_joh");
+end;
+
+/*
  * "SSCS Tribunal Judge-Fee Paid" business role mapping to JOH.
  */
 rule "sscs_tribunal_judge_fee_paid_joh"
@@ -231,6 +261,126 @@ then
   $jap.setStatus("JOH_Mapped");
   update($jap);
   logMsg("Rule : sscs_judge_of_the_first_tier_tribunal_sitting_in_retirement_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Chairman-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_chairman_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_1.getValue())
+   $jap: JudicialAccessProfile(appointment == "Chairman",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Chairman-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_chairman_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Deputy District Judge (MC)- Fee paid" business role mapping to JOH.
+ */
+rule "sscs_deputy_district_judge_mc_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_1.getValue())
+   $jap: JudicialAccessProfile(appointment == "Deputy District Judge (MC)- Fee paid",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Deputy District Judge (MC)- Fee paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_deputy_district_judge_mc_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Employment Judge-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_employment_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_1.getValue())
+   $jap: JudicialAccessProfile(appointment == "Employment Judge",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Employment Judge-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_employment_judge_fee_paid_joh");
+end;
+
+/*
+ * "SSCS Recorder-Fee Paid" business role mapping to JOH.
+ */
+rule "sscs_recorder_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_1.getValue())
+   $jap: JudicialAccessProfile(appointment == "Recorder",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Recorder-Fee Paid")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : sscs_recorder_fee_paid_joh");
 end;
 
 /*

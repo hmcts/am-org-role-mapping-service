@@ -39,12 +39,17 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         Regional Tribunal Judge,Salaried
         Principal Judge,Salaried
         Judge of the First-tier Tribunal,Salaried
+        Recorder,Salaried
         Tribunal Judge,Salaried
         Tribunal Member Medical,Salaried
         Chief Medical Member First-tier Tribunal,Salaried
         Regional Medical Member,Salaried
         Tribunal Judge,Fee Paid
         Judge of the First-tier Tribunal (sitting in retirement),Fee Paid
+        Chairman,Fee Paid
+        Deputy District Judge (MC)- Fee paid,Fee Paid
+        Employment Judge,Fee Paid
+        Recorder,Fee Paid
         Tribunal Member Medical,Fee Paid
         Tribunal Member Optometrist,Fee Paid
         Tribunal Member Disability,Fee Paid
@@ -73,7 +78,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Principal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                     + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'",
-        "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
+        "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'",
+        "Recorder,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
     })
     void shouldReturnSalariedRoles(String appointment, String appointmentType,
                                    String serviceCode, String expectedRoles) {
@@ -113,6 +119,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
         "Judge of the First-tier Tribunal (sitting in retirement),"
             + "Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Chairman,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Deputy District Judge (MC)- Fee paid,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Employment Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Recorder,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
         "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
         "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
         "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary','371'",
@@ -263,6 +273,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Regional Tribunal Judge",
         "Principal Judge",
         "Judge of the First-tier Tribunal",
+        "Recorder",
         "Tribunal Member Medical",
         "Chief Medical Member First-tier Tribunal",
         "Regional Medical Member",
@@ -292,6 +303,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Regional Tribunal Judge,AAA",
         "Principal Judge,AAA",
         "Judge of the First-tier Tribunal,AAA",
+        "Recorder,AAA",
         "Tribunal Member Medical,AAA",
         "Chief Medical Member First-tier Tribunal,AAA",
         "Regional Medical Member,AAA",
@@ -318,6 +330,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "Judge of the First-tier Tribunal (sitting in retirement)",
+        "Chairman",
+        "Deputy District Judge (MC)- Fee paid",
+        "Employment Judge",
+        "Recorder",
         "Tribunal Member Medical",
         "Tribunal Member Disability",
         "Member of the First-tier Tribunal Lay",
@@ -361,7 +377,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Service,AAA",
         "Tribunal Member,AAA",
         "Tribunal Judge,AAA",
-        "Judge of the First-tier Tribunal (sitting in retirement),AAA"
+        "Judge of the First-tier Tribunal (sitting in retirement),AAA",
+        "Chairman,AAA",
+        "Deputy District Judge (MC)- Fee paid,AAA",
+        "Employment Judge,AAA",
+        "Recorder,AAA"
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment,
                                                            String serviceCode) {
@@ -388,6 +408,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Regional Tribunal Judge,AAA",
         "Principal Judge,AAA",
         "Judge of the First-tier Tribunal,AAA",
+        "Recorder,AAA",
         "Tribunal Member Medical,AAA",
         "Chief Medical Member First-tier Tribunal,AAA",
         "Regional Medical Member,AAA",
@@ -425,7 +446,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Service,AAA",
         "Tribunal Member,AAA",
         "Tribunal Judge,AAA",
-        "Judge of the First-tier Tribunal (sitting in retirement),AAA"
+        "Judge of the First-tier Tribunal (sitting in retirement),AAA",
+        "Chairman,AAA",
+        "Deputy District Judge (MC)- Fee paid,AAA",
+        "Employment Judge,AAA",
+        "Recorder,AAA"
     })
     void shouldNotReturnFeePaidRolesExpiredDateAndWServiceCode(String appointment,
                                                                String serviceCode) {
@@ -645,7 +670,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         // if expecting a booking verify we got its region
         if ("Fee Paid".equals(appointmentType)
-            && List.of("Tribunal Judge", "Judge of the First-tier Tribunal (sitting in retirement)")
+            && List.of("Tribunal Judge", "Judge of the First-tier Tribunal (sitting in retirement)",
+                        "Chairman", "Deputy District Judge (MC)- Fee paid", "Employment Judge", "Recorder")
                 .contains(appointment)) {
             assertTrue(foundBookedRegion.get());
         } else {
@@ -700,7 +726,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     }
 
     private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("sscs_wa_1_3").status(true).build());
+        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3");
+
+        return flags.stream()
+                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
+                .collect(Collectors.toList());
     }
 }
