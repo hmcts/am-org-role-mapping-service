@@ -7,7 +7,7 @@ java:
   devcpuRequests: 250m
   devmemoryLimits: 2048Mi
   devcpuLimits: 1500m
- 
+
   secrets:
     SB_ACCESS_KEY:
       secretRef: am-sb-preview
@@ -66,7 +66,7 @@ java:
         scripts:
           init.sql: |
             CREATE DATABASE role_assignment WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-            CREATE DATABASE org_role_mapping WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;  
+            CREATE DATABASE org_role_mapping WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
             CREATE DATABASE judicial_booking WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
     auth:
       port: 5432
@@ -144,6 +144,7 @@ am-judicial-booking-service:
       IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
       LAUNCH_DARKLY_ENV: pr
       RUN_LD_ON_STARTUP: true
+      DB_FEATURE_FLAG_DISABLE: sscs_wa_1_1
 
 servicebus:
   releaseNameOverride: ${SERVICE_NAME}-asb
