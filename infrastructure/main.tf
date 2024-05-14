@@ -41,19 +41,37 @@ resource "azurerm_key_vault_secret" "am_org-role-mapping_service_s2s_secret" {
 
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   name          = join("-", [var.component, "POSTGRES-PASS"])
-  value         = module.org-role-mapping-database-v15.postgresql_password
+  value         = module.org-role-mapping-database-v15.password
   key_vault_id  = data.azurerm_key_vault.am_key_vault.id
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES-USER" {
   name          = join("-", [var.component, "POSTGRES-USER"])
-  value         = module.org-role-mapping-database-v15.user_name
+  value         = module.org-role-mapping-database-v15.username
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES_HOST" {
+  name          = join("-", [var.component, "POSTGRES-HOST"])
+  value         = module.role-assignment-database-v15.fqdn
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
+  name          = join("-", [var.component, "POSTGRES-PORT"])
+  value         = "5432"
+  key_vault_id  = data.azurerm_key_vault.am_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES_DATABASE" {
+  name          = join("-", [var.component, "POSTGRES-DATABASE"])
+  value         = var.database_name
   key_vault_id  = data.azurerm_key_vault.am_key_vault.id
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES-PASS-V11" {
   name          = join("-", [var.component, "POSTGRES-PASS-V11"])
-  value         = module.org-role-mapping-database-v15.postgresql_password
+  value         = module.org-role-mapping-database-v11.postgresql_password
   key_vault_id  = data.azurerm_key_vault.am_key_vault.id
 }
 
