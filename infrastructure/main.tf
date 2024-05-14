@@ -53,7 +53,7 @@ resource "azurerm_key_vault_secret" "POSTGRES-USER" {
 
 resource "azurerm_key_vault_secret" "POSTGRES_HOST" {
   name          = join("-", [var.component, "POSTGRES-HOST"])
-  value         = module.role-assignment-database-v15.fqdn
+  value         = module.org-role-mapping-database-v15.fqdn
   key_vault_id  = data.azurerm_key_vault.am_key_vault.id
 }
 
