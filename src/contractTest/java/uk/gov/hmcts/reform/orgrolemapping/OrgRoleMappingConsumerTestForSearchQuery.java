@@ -23,17 +23,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import java.util.Map;
@@ -46,12 +40,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_roleAssignment_queryAssignment")
 @PactFolder("pacts")
-@SpringBootTest
-public class OrgRoleMappingConsumerTestForSearchQuery {
+public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
 
     private static final String ACTOR_ID = "234873";
     private static final String ACTOR_ID_ADV = "14a21569-eb80-4681-b62c-6ae2ed069e5f";
@@ -60,20 +52,6 @@ public class OrgRoleMappingConsumerTestForSearchQuery {
     public static final String SERVICE = "application/vnd.uk.gov.hmcts.role-assignment-service";
     public static final String POST_ASSIGNMENTS = SERVICE
             + ".post-assignment-query-request+json;charset=UTF-8;version=2.0";
-
-    @MockBean
-    CRDTopicConsumer topicConsumer;
-
-    @MockBean
-    JRDTopicConsumer jrdTopicConsumer;
-
-
-
-    @MockBean
-    CRDMessagingConfiguration crdMessagingConfiguration;
-
-    @MockBean
-    JRDMessagingConfiguration jrdMessagingConfiguration;
 
     @MockBean
     JRDTopicPublisher jrdPublisher;

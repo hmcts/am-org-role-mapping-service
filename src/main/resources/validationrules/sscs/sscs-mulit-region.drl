@@ -1,0 +1,161 @@
+package validationrules.sscs;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.cloneNewRoleAssignmentAndChangeRegion;
+
+/*
+ * SSCS "multi-region" Org role mapping. (non-CTSC)
+ */
+
+rule "sscs_multi_region_dependency_org_role_wales"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory != RoleCategory.CTSC,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                      attributes["region"] != null && attributes["region"].asText() in ("6"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                     attributes["region"] != null && attributes["region"].asText() == "7")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "7"));
+   logMsg("Rule : sscs_multi_region_dependency_org_role_wales");
+end;
+
+rule "sscs_multi_region_dependency_org_role_southwest"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory != RoleCategory.CTSC,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                      attributes["region"] != null && attributes["region"].asText() in ("7"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                     attributes["region"] != null && attributes["region"].asText() == "6" )
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "6"));
+   logMsg("Rule : sscs_multi_region_dependency_org_role_southwest");
+end;
+
+
+
+/*
+ * SSCS "multi-region" Org role mapping. (CTSC only)
+ */
+
+rule "sscs_multi_region_dependency_org_role__ctsc__region_1"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.CTSC,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                      attributes["region"] != null && attributes["region"].asText() in ("2","3","4","5","6","7"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                     attributes["region"] != null && attributes["region"].asText() == "1")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "1"));
+   logMsg("Rule : sscs_multi_region_dependency_org_role__ctsc__region_1");
+end;
+
+rule "sscs_multi_region_dependency_org_role__ctsc__region_2"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.CTSC,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                      attributes["region"] != null && attributes["region"].asText() in ("1","3","4","5","6","7"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                     attributes["region"] != null && attributes["region"].asText() ==  "2")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "2"));
+   logMsg("Rule : sscs_multi_region_dependency_org_role__ctsc__region_2");
+end;
+
+rule "sscs_multi_region_dependency_org_role__ctsc__region_3"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.CTSC,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                      attributes["region"] != null && attributes["region"].asText() in ("1","2","4","5","6","7"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                     attributes["region"] != null && attributes["region"].asText() == "3")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "3"));
+   logMsg("Rule : sscs_multi_region_dependency_org_role__ctsc__region_3");
+end;
+
+rule "sscs_multi_region_dependency_org_role__ctsc__region_4"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.CTSC,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                      attributes["region"] != null && attributes["region"].asText() in ("1","2","3","5","6","7"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                     attributes["region"] != null && attributes["region"].asText() == "4")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "4"));
+   logMsg("Rule : sscs_multi_region_dependency_org_role__ctsc__region_4");
+end;
+
+rule "sscs_multi_region_dependency_org_role__ctsc__region_5"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.CTSC,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                      attributes["region"] != null && attributes["region"].asText() in ("1","2","3","4","6","7"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                     attributes["region"] != null && attributes["region"].asText() == "5")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "5"));
+   logMsg("Rule : sscs_multi_region_dependency_org_role__ctsc__region_5");
+end;
+
+rule "sscs_multi_region_dependency_org_role__ctsc__region_6"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.CTSC,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                      attributes["region"] != null && attributes["region"].asText() in ("1","2","3","4","5","7"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                     attributes["region"] != null && attributes["region"].asText() == "6")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "6"));
+   logMsg("Rule : sscs_multi_region_dependency_org_role__ctsc__region_6");
+end;
+
+rule "sscs_multi_region_dependency_org_role__ctsc__region_7"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.CTSC,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                      attributes["region"] != null && attributes["region"].asText() in ("1","2","3","4","5","6"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("SSCS"),
+                     attributes["region"] != null && attributes["region"].asText() == "7")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "7"));
+   logMsg("Rule : sscs_multi_region_dependency_org_role__ctsc__region_7");
+end;

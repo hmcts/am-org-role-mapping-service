@@ -1,14 +1,16 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -19,222 +21,142 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
+    static final String REGION_ID = "LDN";
+    static final String JURISDICTION = "PRIVATELAW";
+    static List<String> SKILL_CODES = List.of("privatelaw", "test", "ctsc");
+
+    static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
+
+    static {
+        expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
+        expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "routine_work,hearing_work,applications");
+        expectedRoleNameWorkTypesMap.put("hmcts-ctsc", null);
+        expectedRoleNameWorkTypesMap.put("ctsc", "routine_work,hearing_work,applications");
+        expectedRoleNameWorkTypesMap.put("ctsc-team-leader", "routine_work,hearing_work,applications");
+        expectedRoleNameWorkTypesMap.put("hearing-centre-admin", "routine_work,hearing_work,applications");
+        expectedRoleNameWorkTypesMap.put("senior-tribunal-caseworker", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("tribunal-caseworker", "routine_work,hearing_work,applications,"
+                + "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("hmcts-legal-operations", null);
+        expectedRoleNameWorkTypesMap.put("task-supervisor", "routine_work,hearing_work,applications");
+        expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("specific-access-approver-ctsc", "access_requests");
+        expectedRoleNameWorkTypesMap.put("specific-access-approver-admin", "access_requests");
+        expectedRoleNameWorkTypesMap.put("specific-access-approver-legal-ops", "access_requests");
+        expectedRoleNameWorkTypesMap.put("caseworker-privatelaw-externaluser-viewonly", null);
+    }
+
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String roleId,
+                                                     RoleCategory expectedRoleCategory) {
+        assertEquals(ActorIdType.IDAM, r.getActorIdType());
+        assertEquals(UserAccessProfileBuilder.ID1, r.getActorId());
+        assertEquals(RoleType.ORGANISATION, r.getRoleType());
+        assertEquals(expectedRoleCategory, r.getRoleCategory());
+
+        String primaryLocation = null;
+        if (r.getAttributes().get("primaryLocation") != null) {
+            primaryLocation = r.getAttributes().get("primaryLocation").asText();
+        }
+
+        if (List.of("hmcts-judiciary", "hmcts-ctsc", "hmcts-admin","hmcts-legal-operations").contains(
+                r.getRoleName())) {
+            assertEquals(Classification.PRIVATE, r.getClassification());
+            assertEquals(GrantType.BASIC, r.getGrantType());
+            assertNull(r.getAttributes().get("jurisdiction"));
+            assertTrue(r.isReadOnly());
+            assertNull(primaryLocation);
+            assertNull(r.getAttributes().get("region"));
+        } else {
+            assertEquals(Classification.PUBLIC, r.getClassification());
+            assertEquals(GrantType.STANDARD, r.getGrantType());
+            assertEquals(JURISDICTION, r.getAttributes().get("jurisdiction").asText());
+            assertFalse(r.isReadOnly());
+            assertEquals(UserAccessProfileBuilder.PRIMARY_LOCATION_ID, primaryLocation);
+            assertEquals(SKILL_CODES,r.getAuthorisations());
+            if (List.of("9", "10").contains(roleId)) {
+                assertNull(r.getAttributes().get("region"));
+            } else {
+                assertEquals(REGION_ID, r.getAttributes().get("region").asText());
+            }
+        }
+
+        String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+
+        String actualWorkTypes = null;
+        if (r.getAttributes().get("workTypes") != null) {
+            actualWorkTypes = r.getAttributes().get("workTypes").asText();
+        }
+        assertEquals(expectedWorkTypes, actualWorkTypes);
+    }
+
     @ParameterizedTest
     @CsvSource({
-        "10,ABA5,'ctsc,hmcts-ctsc',N,N",
-        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N",
+        "10,ABA5,'ctsc,hmcts-ctsc',N,N,CTSC",
+        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N,CTSC",
         "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,"
-                + "specific-access-approver-ctsc',Y,Y",
-        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc',N,Y",
-        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N"
-    })
-    void shouldReturnPrivateLawCtscMappings(String roleId, String serviceCode, String expectedRoles,
-                                            String taskSupervisorFlag, String caseAllocatorFlag) {
-
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-
-        List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
-        CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
-        cap.setServiceCode(serviceCode);
-        cap.setSuspended(false);
-        cap.setRoleId(roleId);
-        cap.setTaskSupervisorFlag(taskSupervisorFlag);
-        cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setSkillCodes(skillCodes);
-
-        allProfiles.add(cap);
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("privatelaw_wa_1_0", true));
-
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(expectedRoles.split(",")));
-        roleAssignments.forEach(r -> {
-            assertEquals("CTSC", r.getRoleCategory().toString());
-            assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(skillCodes,r.getAuthorisations());
-            }
-
-        });
-
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> {
-                    assertEquals("PRIVATELAW", r.getAttributes().get("jurisdiction").asText());
-                    assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    //assert work types
-                    if (("ctsc").equals(r.getRoleName())) {
-                        assertEquals("routine_work,hearing_work,applications",
-                                r.getAttributes().get("workTypes").asText());
-                    } else if (("ctsc-team-leader").equals(r.getRoleName())) {
-                        assertEquals("routine_work,hearing_work,applications",
-                                r.getAttributes().get("workTypes").asText());
-                    }
-                });
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "4,ABA5,'hearing-centre-admin,hmcts-admin',N,N",
+                + "specific-access-approver-ctsc',Y,Y,CTSC",
+        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc',N,Y,CTSC",
+        "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N,CTSC",
+        "4,ABA5,'hearing-centre-admin,hmcts-admin',N,N,ADMIN",
         "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,"
-                + "specific-access-approver-admin',N,N",
+                + "specific-access-approver-admin',N,N,ADMIN",
         "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
-                + "specific-access-approver-admin',Y,N",
+                + "specific-access-approver-admin',Y,N,ADMIN",
         "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,case-allocator,"
-                + "specific-access-approver-admin',N,Y",
+                + "specific-access-approver-admin',N,Y,ADMIN",
         "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator,"
-                 + "specific-access-approver-admin',Y,Y",
-    })
-    void shouldReturnPrivateLawAdminMappings(String roleId, String serviceCode, String expectedRoles,
-                                             String taskSupervisorFlag, String caseAllocatorFlag) {
-
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-        List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
-        CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
-        cap.setServiceCode(serviceCode);
-        cap.setSuspended(false);
-        cap.setRoleId(roleId);
-        cap.setTaskSupervisorFlag(taskSupervisorFlag);
-        cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setRegionId("LDN");
-        cap.setSkillCodes(skillCodes);
-
-        allProfiles.add(cap);
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("privatelaw_wa_1_0", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(expectedRoles.split(",")));
-        roleAssignments.forEach(r -> {
-            assertEquals("ADMIN", r.getRoleCategory().toString());
-            assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(skillCodes, r.getAuthorisations());
-            }
-        });
-
-        List<String> roleNamesWithRegionAttribute = List.of("hearing-centre-team-leader", "task-supervisor",
-                "case-allocator", "hearing-centre-admin");
-
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> {
-                    assertEquals("PRIVATELAW", r.getAttributes().get("jurisdiction").asText());
-                    assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    //assert region
-                    if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
-                        assertEquals("LDN", r.getAttributes().get("region").asText());
-                    }
-                    //assert work types
-                    if (("hearing-centre-team-leader").equals(r.getRoleName())) {
-                        assertEquals("routine_work,hearing_work,applications",
-                                r.getAttributes().get("workTypes").asText());
-                    } else if (("hearing-centre-admin").equals(r.getRoleName())) {
-                        assertEquals("routine_work,hearing_work,applications",
-                                r.getAttributes().get("workTypes").asText());
-                    }
-
-
-                });
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,false",
-        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N,false",
+                + "specific-access-approver-admin',Y,Y,ADMIN",
+        "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,LEGAL_OPERATIONS",
+        "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N,"
+                + "LEGAL_OPERATIONS",
         "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
-                + "specific-access-approver-legal-ops',Y,N,false",
+                + "specific-access-approver-legal-ops',Y,N,LEGAL_OPERATIONS",
         "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,case-allocator,"
-                + "specific-access-approver-legal-ops',N,Y,false",
+                + "specific-access-approver-legal-ops',N,Y,LEGAL_OPERATIONS",
         "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator,"
-                + "specific-access-approver-legal-ops',Y,Y,false",
-        "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,true",
+                + "specific-access-approver-legal-ops',Y,Y,LEGAL_OPERATIONS",
     })
-    void shouldReturnPrivateLawCaseWorkerMappings(String roleId,
-                                                  String serviceCode,
-                                                  String expectedRoles,
-                                                  String taskSupervisorFlag,
-                                                  String caseAllocatorFlag,
-                                                  String privateLawV11IsEnabled) {
+    void shouldReturnPrivateLawMappings(String roleId, String serviceCode, String expectedRoles,
+                                            String taskSupervisorFlag, String caseAllocatorFlag,
+                                            String expectedRoleCategory) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
-        List<String> skillCodes = List.of("privatelaw", "test", "ctsc");
+
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
         cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
         cap.setRoleId(roleId);
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
         cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setRegionId("LDN");
-        cap.setSkillCodes(skillCodes);
+        cap.setSkillCodes(SKILL_CODES);
+        cap.setRegionId(REGION_ID);
 
         allProfiles.add(cap);
 
-        boolean prlV11Enabled = Boolean.parseBoolean(privateLawV11IsEnabled);
-        List<FeatureFlag> featureFlags = new ArrayList<>();
-        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build());
-        featureFlags.add(FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(prlV11Enabled).build());
-
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(featureFlags);
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(true));
+
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
                 containsInAnyOrder(expectedRoles.split(",")));
-        roleAssignments.forEach(r -> {
-            assertEquals("LEGAL_OPERATIONS", r.getRoleCategory().toString());
-            assertEquals("ORGANISATION", r.getRoleType().toString());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(skillCodes, r.getAuthorisations());
-            }
-        });
 
-        List<String> roleNamesWithRegionAttribute = List.of("tribunal-caseworker", "senior-tribunal-caseworker",
-                "task-supervisor", "case-allocator");
-
-        roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
-                .forEach(r -> {
-                    assertEquals("PRIVATELAW", r.getAttributes().get("jurisdiction").asText());
-                    assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
-                    //assert region
-                    if (roleNamesWithRegionAttribute.contains(r.getRoleName())) {
-                        assertEquals("LDN", r.getAttributes().get("region").asText());
-                    }
-                    //assert work types
-                    if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("decision_making_work",
-                                r.getAttributes().get("workTypes").asText());
-                    } else if (("tribunal-caseworker").equals(r.getRoleName()) && prlV11Enabled) {
-                        assertEquals("routine_work,hearing_work,applications,decision_making_work",
-                                r.getAttributes().get("workTypes").asText());
-                    } else if (("tribunal-caseworker").equals(r.getRoleName())) {
-                        assertEquals("routine_work,hearing_work,applications",
-                                r.getAttributes().get("workTypes").asText());
-                    } else if (Objects.equals("task-supervisor", r.getRoleName())) {
-                        assertEquals("routine_work,hearing_work,applications",
-                                r.getAttributes().get("workTypes").asText());
-                    }
-                });
+        for (RoleAssignment r : roleAssignments) {
+            assertCommonRoleAssignmentAttributes(r, roleId, RoleCategory.valueOf(expectedRoleCategory));
+        }
     }
 
     @Test
@@ -252,10 +174,14 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         allProfiles.add(cap);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("privatelaw_wa_1_0", false));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(false));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
+
+    List<FeatureFlag> getFeatureFlags(Boolean status) {
+        return getAllFeatureFlagsToggleByJurisdiction("PRIVATELAW", status);
+    }
+
 }

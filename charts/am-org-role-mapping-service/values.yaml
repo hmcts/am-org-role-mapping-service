@@ -3,6 +3,8 @@ java:
   ingressHost: am-org-role-mapping-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   applicationPort: 4098
   aadIdentityName: am
+  autoscaling:
+    enabled: false
   keyVaults:
     am:
       secrets:
@@ -20,8 +22,12 @@ java:
           alias: ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD
         - name: caseworker-topic-primary-send-listen-shared-access-key
           alias: AMQP_CRD_SHARED_ACCESS_KEY_VALUE
-        - name: org-role-mapping-service-POSTGRES-PASS
+        - name: org-role-mapping-service-POSTGRES-PASS-V15
           alias: ORG_ROLE_MAPPING_DB_PASSWORD
+        - name: org-role-mapping-service-POSTGRES-USER-V15
+          alias: ORG_ROLE_MAPPING_DB_USERNAME
+        - name: org-role-mapping-service-POSTGRES-HOST-V15
+          alias: ORG_ROLE_MAPPING_DB_HOST
         - name: judicial-topic-primary-send-listen-shared-access-key
           alias: AMQP_JRD_SHARED_ACCESS_KEY_VALUE
   environment:
@@ -35,8 +41,6 @@ java:
     JUDICIAL_BOOKING_APP_URL: http://am-judicial-booking-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    JUDICIAL_REF_APP_V2_ACTIVE: false
-    JUDICIAL_REF_APP_V2_FILTER_AUTHS_BY_APP_ID: false
     LAUNCH_DARKLY_ENV: "{{ .Values.global.environment }}"
     AMQP_HOST: rd-servicebus-{{ .Values.global.environment }}.servicebus.windows.net
     AMQP_SHARED_ACCESS_KEY_NAME: SendAndListenSharedAccessKey
@@ -49,12 +53,17 @@ java:
     ORG_ROLE_MAPPING_IDAM_ADMIN_USERID: orm.admin@hmcts.NET
     ORG_ROLE_MAPPING_DB_PORT: 5432
     ORG_ROLE_MAPPING_DB_NAME: org_role_mapping
-    ORG_ROLE_MAPPING_DB_HOST: am-org-role-mapping-service-postgres-db-v11-{{ .Values.global.environment }}.postgres.database.azure.com
-    ORG_ROLE_MAPPING_DB_USERNAME: am@am-org-role-mapping-service-postgres-db-v11-{{ .Values.global.environment }}
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified&sslmode=require"
     REFRESH_JOB:
     TESTING_SUPPORT_ENABLED: false
     APPLICATION_LOGGING_LEVEL: INFO
     RUN_LD_ON_STARTUP: true
-servicebus:
-  enabled: false
+
+#subcharts conditions
+orm:
+  ras:
+    enabled: false
+  jbs:
+    enabled: false
+  servicebus:
+    enabled: false

@@ -1,4 +1,5 @@
 package validationrules.sscs;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
@@ -6,7 +7,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import java.util.ArrayList;
 import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.util.HashMap
 import java.util.Map
@@ -53,6 +53,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("pre_hearing,post_hearing,decision_making_work,applications,hearing_work,routine_work,priority"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
       RoleAssignment.builder()
@@ -82,6 +83,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
       RoleAssignment.builder()
@@ -112,6 +114,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
       RoleAssignment.builder()
@@ -141,6 +144,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
       RoleAssignment.builder()
@@ -170,6 +174,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
 
   insert(
       RoleAssignment.builder()

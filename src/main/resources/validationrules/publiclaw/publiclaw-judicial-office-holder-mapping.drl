@@ -626,10 +626,10 @@ end;
 /*
  * 23: "PUBLICLAW District Judge (MC) - Sitting in Retirement - Fee Paid" business role mapping to JOH.
  */
-rule "publiclaw_district_judge_mc_in_retirement_fee_paid_joh"
+rule "publiclaw_district_judge_mc_in_retirement_fee_paid_joh_v1_3"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_1.getValue())
-   $jap: JudicialAccessProfile(appointment == "District Judge (MC)- Sitting in Retirement",
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_3.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge (MC) (sitting in retirement)",
                                appointmentType in ("Fee Paid"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                validateAuthorisation(authorisations, "ABA3"))
@@ -647,7 +647,7 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : publiclaw_district_judge_mc_in_retirement_fee_paid_joh");
+      logMsg("Rule : publiclaw_district_judge_mc_in_retirement_fee_paid_joh_v1_3");
 end;
 
 /*

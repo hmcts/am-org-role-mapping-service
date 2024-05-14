@@ -23,7 +23,7 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "33d7a938-69d7-4316-9c54-b989d06838aa",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "dwp",
           "classification": "PUBLIC",
@@ -35,14 +35,13 @@
             "substantive": "Y",
             "primaryLocation": "21153",
             "jurisdiction": "SSCS",
-            "region" : "2",
             "workTypes": "applications,hearing_work,routine_work,priority,pre_hearing"
           }
         },
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "33d7a938-69d7-4316-9c54-b989d06838aa",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "listed-hearing-viewer",
           "classification": "PUBLIC",

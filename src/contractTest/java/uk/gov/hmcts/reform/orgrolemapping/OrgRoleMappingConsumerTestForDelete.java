@@ -17,49 +17,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
-
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_roleAssignment_deleteAssignment")
 @PactFolder("pacts")
-@SpringBootTest
-public class OrgRoleMappingConsumerTestForDelete {
+public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
 
     private static final String ACTOR_ID = "704c8b1c-e89b-436a-90f6-953b1dc40157";
     private static final String AM_RAS_URL = "/am/role-assignments";
     private static final String QUERY_PARAMS = "process=p2&reference=r2";
     private static final String RAS_DELETE_ACTOR_BY_ID = AM_RAS_URL + "/" + ACTOR_ID;
     private static final String RAS_DELETE_ACTOR_BY_PR = AM_RAS_URL + "?" + QUERY_PARAMS;
-
-    @MockBean
-    CRDTopicConsumer topicConsumer;
-
-    @MockBean
-    JRDTopicConsumer jrdTopicConsumer;
-
-
-    @MockBean
-    JRDMessagingConfiguration jrdMessagingConfiguration;
-
-    @MockBean
-    CRDMessagingConfiguration crdMessagingConfiguration;
 
     @MockBean
     JRDTopicPublisher jrdPublisher;

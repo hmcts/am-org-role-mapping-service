@@ -12,6 +12,7 @@ properties(
 @Library("Infrastructure")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
+import uk.gov.hmcts.contino.HealthChecker
 
 def type = "java"
 def product = "am"
@@ -51,7 +52,7 @@ def secrets = [
 ]
 
 // Configure branches to sync with master branch
-def branchesToSync = ['demo']
+def branchesToSync = ['demo', 'ithc', 'perftest']
 
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
@@ -84,12 +85,20 @@ env.PACT_BROKER_URL = "pact-broker.platform.hmcts.net"
 env.PACT_BROKER_PORT = "443"
 env.PACT_BROKER_SCHEME = "https"
 
+// Var to turn FTA on for azure-messaging-servicebus DTSAM-150
+env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
+env.REFRESH_FTA_ENABLED = "true"
+
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
     env.LAUNCH_DARKLY_ENV = "pr"
   }
   else if(env.BRANCH_NAME == 'master') {
     env.LAUNCH_DARKLY_ENV = "aat"
+    // Var turned off for staging as ASB is shared with AAT instances
+    env.AZURE_SERVICE_BUS_FTA_ENABLED = "false"
+    // Don't run refresh FTAs on AAT DTSAM-173
+    env.REFRESH_FTA_ENABLED = "false"
   }
   else {
     env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
@@ -98,6 +107,8 @@ withPipeline(type, product, component) {
     enableSlackNotifications('#am-master-builds')
   }
   onPR {
+    env.ROLE_ASSIGNMENT_URL = "https://ras-am-org-role-mapping-service-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    env.JUDICIAL_BOOKING_URL = "https://jbs-am-org-role-mapping-service-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     enableSlackNotifications('#am-master-builds')
   }
 
@@ -116,6 +127,11 @@ withPipeline(type, product, component) {
 
   before('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+
+    // check the extra RAS and JBS instances are up in PREVIEW for this PR
+    def healthChecker = new HealthChecker(this)
+    healthChecker.check("$ROLE_ASSIGNMENT_URL/health", 10, 40)
+    healthChecker.check("$JUDICIAL_BOOKING_URL/health", 10, 40)
   }
 
   afterAlways('functionalTest:preview') {
