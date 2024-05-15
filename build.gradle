@@ -22,6 +22,7 @@ plugins {
     id 'au.com.dius.pact' version '4.3.12'
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
     id 'org.owasp.dependencycheck' version '9.0.9'
+    id 'org.flywaydb.flyway' version '8.5.13'
 }
 
 apply plugin: "info.solidsoft.pitest"
@@ -223,6 +224,13 @@ project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
     toolVersion = "0.8.8"
+}
+
+task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
+    baselineOnMigrate = true
+    if (project.hasProperty("dburl")) {
+        url = "jdbc:postgresql://${dburl}"
+    }
 }
 
 pitest {
