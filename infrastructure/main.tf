@@ -125,6 +125,7 @@ module "org-role-mapping-database-v15" {
   component          = var.component
   common_tags        = var.common_tags
   pgsql_version      = "15"
+  pgsql_sku          = var.pgsql_sku
 
   # Setup Access Reader db user
   force_user_permissions_trigger = "5"
