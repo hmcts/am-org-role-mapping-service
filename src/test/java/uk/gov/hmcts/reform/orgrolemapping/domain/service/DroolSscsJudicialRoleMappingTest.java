@@ -130,10 +130,6 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
         "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
 
-        "SSCS Recorder-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
-        "SSCS Recorder-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
-        "SSCS Recorder-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
-
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
         "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",

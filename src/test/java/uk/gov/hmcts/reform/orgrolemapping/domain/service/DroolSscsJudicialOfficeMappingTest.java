@@ -39,7 +39,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         Regional Tribunal Judge,Salaried
         Principal Judge,Salaried
         Judge of the First-tier Tribunal,Salaried
-        Recorder,Salaried
         Tribunal Judge,Salaried
         Tribunal Member Medical,Salaried
         Chief Medical Member First-tier Tribunal,Salaried
@@ -78,8 +77,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Principal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                     + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'",
-        "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'",
-        "Recorder,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
+        "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
     })
     void shouldReturnSalariedRoles(String appointment, String appointmentType,
                                    String serviceCode, String expectedRoles) {
@@ -273,7 +271,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Regional Tribunal Judge",
         "Principal Judge",
         "Judge of the First-tier Tribunal",
-        "Recorder",
         "Tribunal Member Medical",
         "Chief Medical Member First-tier Tribunal",
         "Regional Medical Member",
@@ -303,7 +300,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Regional Tribunal Judge,AAA",
         "Principal Judge,AAA",
         "Judge of the First-tier Tribunal,AAA",
-        "Recorder,AAA",
         "Tribunal Member Medical,AAA",
         "Chief Medical Member First-tier Tribunal,AAA",
         "Regional Medical Member,AAA",
@@ -408,7 +404,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Regional Tribunal Judge,AAA",
         "Principal Judge,AAA",
         "Judge of the First-tier Tribunal,AAA",
-        "Recorder,AAA",
         "Tribunal Member Medical,AAA",
         "Chief Medical Member First-tier Tribunal,AAA",
         "Regional Medical Member,AAA",
