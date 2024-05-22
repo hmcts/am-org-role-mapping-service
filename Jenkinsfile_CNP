@@ -117,6 +117,7 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   disableLegacyDeploymentOnAAT()
   disableLegacyDeployment()
+  enableDbMigration('am')
 
   // Sync environment specific branches with master branch
   syncBranchesWithMaster(branchesToSync)
