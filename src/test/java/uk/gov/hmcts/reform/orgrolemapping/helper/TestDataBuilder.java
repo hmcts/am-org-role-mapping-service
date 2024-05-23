@@ -11,7 +11,9 @@ import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
@@ -21,6 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
@@ -258,8 +261,6 @@ public class TestDataBuilder {
         return caseWorkerProfiles;
     }
 
-
-
     public static JsonNode buildAttributesFromFile() {
         try (InputStream inputStream =
                      AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream("attributes.json")) {
@@ -292,7 +293,6 @@ public class TestDataBuilder {
                         false))
                 .build();
     }
-
 
     public static AssignmentRequest buildAssignmentRequest(Status requestStatus, Status roleStatus,
                                                            Boolean replaceExisting) {
@@ -739,6 +739,39 @@ public class TestDataBuilder {
 
     }
 
+    public static AccessTypesEntity buildAccessTypesEntity() {
+        AccessTypesEntity accessTypesEntity = new AccessTypesEntity();
+        accessTypesEntity.setVersion(11L);
+        accessTypesEntity.setAccessTypes("{ \"organisationProfiles\":\n[{\"organisationProfileId\": "
+                + "\"SOLICITOR_PROFILE\",\n \"jurisdictions\":\n[{\"jurisdictionId\": \"BEFTA_JURISDICTION_1\",\n"
+                + "      \"accessTypes\": [{\"accessTypeId\": \"1\",\"accessMandatory\": true,\"accessDefault\": true"
+                + ",\n \"roles\": [{\"caseTypeId\": \"23\",\"organisationalRoleName\": \"organisationRoleName1\","
+                + "\"groupRoleName\": \"groupname1\",\"caseGroupIdTemplate\": \"CIVIL:all:CIVIL:AS1:$ORGID$\","
+                + "\"groupAccessEnabled\": true}\n ]}]},\n {\"jurisdictionId\": \"BEFTA_JURISDICTION_2\",\n"
+                + " \"accessTypes\": [{\"accessTypeId\": \"2\",\"accessMandatory\": true,"
+                + "\"accessDefault\": true,\n \"roles\": [{\"caseTypeId\": \"23\",\"organisationalRoleName\": "
+                + "\"organisationRoleName2\",\"groupRoleName\": \"groupname2\",\"caseGroupIdTemplate\": "
+                + "\"IA:all:IA:AS1:$ORGID$\",\"groupAccessEnabled\": true}]}]}\n   ]}]}");
+        return accessTypesEntity;
+    }
+
+    public static Object buildUserRefreshQueueEntity(String userId) {
+        UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
+        userRefreshQueueEntity.setUserId(userId);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setDeleted(null);
+        userRefreshQueueEntity.setOrganisationStatus("abc");
+        userRefreshQueueEntity.setOrganisationId("OrgId");
+        userRefreshQueueEntity.setActive(true);
+        userRefreshQueueEntity.setOrganisationProfileIds(new String[]{"SOLICITOR_PROFILE","2"});
+        userRefreshQueueEntity.setAccessTypes(
+                "[{ \"jurisdictionId\": \"BEFTA_JURISDICTION_1\",\"organisationProfileId\": \"SOLICITOR_PROFILE\","
+                        + "\"accessTypeId\": \"1\",\"enabled\": true} ,{ \"jurisdictionId\": \"BEFTA_JURISDICTION_2\","
+                        + "\"organisationProfileId\": \"SOLICITOR_PROFILE\",\"accessTypeId\": \"2\","
+                        + "\"enabled\": true}]");
+        return userRefreshQueueEntity;
+    }
+
     public static class VarargsAggregator implements ArgumentsAggregator {
         @Override
         public Object aggregateArguments(ArgumentsAccessor accessor, ParameterContext context)
@@ -750,6 +783,16 @@ public class TestDataBuilder {
         }
     }
 
+    public static GetRefreshUsersResponse buildRefreshUsersResponse(String userId) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        GetRefreshUsersResponse getRefreshUsersResponse = objectMapper.readValue(
+            new File("src/main/resources/prdRefreshUserSample.json"),
+            GetRefreshUsersResponse.class);
+        getRefreshUsersResponse.getUsers().get(0).setUserIdentifier(userId);
+        return getRefreshUsersResponse;
+    }
+  
     public static AccessTypesResponse buildAccessTypesResponse() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -757,6 +800,7 @@ public class TestDataBuilder {
                 new File("src/main/resources/accessTypesSample.json"),
                 AccessTypesResponse.class);
     }
+
 
     public static OrganisationByProfileIdsResponse buildOrganisationByProfileIdsResponse() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();

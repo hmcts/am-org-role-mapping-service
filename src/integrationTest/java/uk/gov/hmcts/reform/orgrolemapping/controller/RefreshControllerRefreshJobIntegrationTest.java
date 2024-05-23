@@ -1,5 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import feign.FeignException;
+import feign.Request;
+import feign.RequestTemplate;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -28,6 +35,37 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
+import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
+import javax.inject.Inject;
+import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.NO_ACCESS_TYPES_FOUND;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.PRD_USER_NOT_FOUND;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.EXPECTED_SINGLE_PRD_USER;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
@@ -88,55 +126,49 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
     "feign.client.config.jrdClient.v2Active=false"})
+
+@Transactional
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegration {
-
-    private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
-
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
+    private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
+    private static final String PROFESSIONAL_REFRESH_URL = "/am/role-mapping/professional/refresh";
+    private static final Logger logger = LoggerFactory.getLogger(RefreshControllerIntegrationTest.class);
 
     private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
             + " comments, log FROM refresh_jobs where job_id=?";
-    private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
+
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String URL = "/am/role-mapping/refresh";
 
     private MockMvc mockMvc;
     private JdbcTemplate template;
-
+ 
     @Inject
     private WebApplicationContext wac;
-
     @Autowired
     private DataSource ds;
-
-    @MockBean
-    private CRDFeignClient crdFeignClient;
-
-    @MockBean
-    private JRDFeignClient jrdFeignClient;
-
-    @MockBean
-    private JBSFeignClient jbsFeignClient;
-
     @MockBean
     private RASFeignClient rasFeignClient;
-
     @MockBean
-    private RequestMappingService requestMappingService;
-
+    private PRDFeignClient prdFeignClient;
+    @MockBean
+    private CRDFeignClient crdFeignClient;
+    @MockBean
+    private JRDFeignClient jrdFeignClient;
+    @MockBean
+    private JBSFeignClient jbsFeignClient;
     @MockBean
     private FeatureConditionEvaluator featureConditionEvaluation;
-
     @MockBean
     private SecurityUtils securityUtils;
-
     @Mock
     private Authentication authentication;
-
     @Mock
     private SecurityContext securityContext;
+    @MockBean
+    private RequestMappingService requestMappingService;
 
     Lock sequential = new ReentrantLock();
 
@@ -156,6 +188,75 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+    public void shouldProcessProfessionalRefreshRequest() throws Exception {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("1234")))
+            .when(prdFeignClient).getRefreshUsers(any());
+
+        mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.Message").value(containsString(Constants.SUCCESS_ROLE_REFRESH)))
+            .andReturn();
+    }
+
+    @Test
+    public void shouldRejectProfessionalRefreshRequest_withoutUserId() throws Exception {
+        mockMvc.perform(post(PROFESSIONAL_REFRESH_URL)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders()))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/delete_user_refresh_queue.sql"})
+    public void shouldErrorProfessionalRefreshRequest_whenNoAccessTypesInDB() throws Exception {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("1234")))
+            .when(prdFeignClient).getRefreshUsers(any());
+        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders()))
+            .andExpect(status().isInternalServerError())
+            .andReturn();
+        assertTrue(result.getResolvedException() instanceof ServiceException);
+        assertEquals(NO_ACCESS_TYPES_FOUND, result.getResolvedException().getMessage());
+    }
+
+    @Test
+    public void shouldErrorProfessionalRefreshRequest_whenNoPRDUserFound() throws Exception {
+        Request request = Request.create(Request.HttpMethod.GET, "url", new HashMap<>(), null, new RequestTemplate());
+        doThrow(new FeignException.NotFound("Not Found", request, null, null))
+            .when(prdFeignClient).getRefreshUsers(any());
+        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+        assertTrue(result.getResolvedException() instanceof ResourceNotFoundException);
+        assertEquals(String.format(Constants.RESOURCE_NOT_FOUND + " " + PRD_USER_NOT_FOUND, "1234"),
+            result.getResolvedException().getMessage());
+    }
+
+    @Test
+    public void shouldErrorProfessionalRefreshRequest_whenMultipleUsersReturnedFromPRD() throws Exception {
+        GetRefreshUsersResponse getRefreshUsersResponse = TestDataBuilder.buildRefreshUsersResponse("1234");
+        getRefreshUsersResponse.getUsers().add(new RefreshUser());
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(getRefreshUsersResponse))
+                .when(prdFeignClient).getRefreshUsers(any());
+        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders()))
+                .andExpect(status().isInternalServerError())
+                .andReturn();
+        assertTrue(result.getResolvedException() instanceof ServiceException);
+        assertEquals(String.format(EXPECTED_SINGLE_PRD_USER, "1234", "2"), result.getResolvedException().getMessage());
     }
 
     @AfterEach

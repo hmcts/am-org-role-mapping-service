@@ -8,29 +8,56 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.ParseRequestService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.PrdService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ParseRequestService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrationHelper;
+
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.List;
 
 @TestConfiguration
 public class ProviderTestConfiguration {
-
     @MockBean
     CRDService crdService;
-
     @MockBean
     JRDService jrdService;
+    @MockBean
+    PrdService prdService;
+    @MockBean
+    AccessTypesRepository accessTypesRepository;
+    @MockBean
+    UserRefreshQueueRepository userRefreshQueueRepository;
+    @MockBean
+    SecurityUtils securityUtils;
+    @MockBean
+    ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
+    @MockBean
+    private CacheManager cacheManager;
+    @MockBean
+    JudicialBookingService judicialBookingService;
+    @MockBean
+    RoleAssignmentService roleAssignmentService;
+    @MockBean
+    PersistenceService persistenceService;
+    @MockBean
+    ProcessEventTracker processEventTracker;
+
+    private KieServices kieServices = KieServices.Factory.get();
 
     @Bean
     @Primary
@@ -45,26 +72,11 @@ public class ProviderTestConfiguration {
                 "pr", persistenceService, roleAssignmentService, getStatelessKieSession(), securityUtils);
     }
 
-    @MockBean
-    RoleAssignmentService roleAssignmentService;
-
-    @MockBean
-    PersistenceService persistenceService;
-
     @Bean
     @Primary
     public ParseRequestService getParseRequestService() {
         return new ParseRequestService();
     }
-
-    @MockBean
-    SecurityUtils securityUtils;
-
-    @MockBean
-    private CacheManager cacheManager;
-
-    @MockBean
-    JudicialBookingService judicialBookingService;
 
     @Bean
     @Primary
@@ -90,13 +102,17 @@ public class ProviderTestConfiguration {
                 judicialBookingService, getRequestMappingService());
     }
 
-    private KieServices kieServices = KieServices.Factory.get();
+    @Bean
+    @Primary
+    public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator() {
+        return new ProfessionalRefreshOrchestrator(accessTypesRepository, userRefreshQueueRepository,
+                prdService, professionalRefreshOrchestrationHelper, processEventTracker);
+    }
 
     @Bean
     public KieContainer kieContainer() {
         return kieServices.getKieClasspathContainer();
     }
-
 
     @Bean
     public StatelessKieSession getStatelessKieSession() {
