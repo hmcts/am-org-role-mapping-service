@@ -3,6 +3,8 @@ java:
   ingressHost: am-org-role-mapping-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   applicationPort: 4098
   aadIdentityName: am
+  autoscaling:
+    enabled: false
   keyVaults:
     am:
       secrets:
@@ -55,5 +57,12 @@ java:
     TESTING_SUPPORT_ENABLED: false
     APPLICATION_LOGGING_LEVEL: INFO
     RUN_LD_ON_STARTUP: true
-servicebus:
-  enabled: false
+
+#subcharts conditions
+orm:
+  ras:
+    enabled: false
+  jbs:
+    enabled: false
+  servicebus:
+    enabled: false

@@ -354,7 +354,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertThat(refreshJob.getLog(),containsString(String.join(",", refreshJob.getUserIds())));
     }
 
-    //@Disabled("Intermittent AM-2919")
+    @Disabled("Intermittent AM-2919")
     @Test
     @Order(4)
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_refresh_jobs.sql"})

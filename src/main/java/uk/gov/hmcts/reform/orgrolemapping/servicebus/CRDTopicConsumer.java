@@ -14,10 +14,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -35,40 +36,45 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class CRDTopicConsumer extends CRDMessagingConfiguration {
+public class CRDTopicConsumer {
 
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
+    private CRDMessagingConfiguration configuration;
 
     public CRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
-                            OrmDeserializer deserializer) {
+                            OrmDeserializer deserializer,
+                            CRDMessagingConfiguration configuration) {
         this.bulkAssignmentOrchestrator = bulkAssignmentOrchestrator;
         this.deserializer = deserializer;
+        this.configuration = configuration;
     }
 
     @Bean
     @Qualifier("crdConsumer")
-    @ConditionalOnProperty(name = "amqp.crd.enabled", havingValue = "true")
+    @ConditionalOnExpression("${amqp.crd.enabled} && !${amqp.crd.newAsb}")
     public SubscriptionClient getSubscriptionClient() throws URISyntaxException, ServiceBusException,
             InterruptedException {
-        logServiceBusVariables();
-        URI endpoint = new URI("sb://" + host);
-        log.debug("CRD Destination is " + topic.concat("/subscriptions/").concat(subscription));
+        configuration.logServiceBusVariables();
+        URI endpoint = new URI("sb://" + configuration.getHost());
+        log.debug("CRD Destination is " + configuration.getTopic().concat("/subscriptions/")
+                .concat(configuration.getSubscription()));
 
-        var destination = topic.concat("/subscriptions/").concat(subscription);
+        var destination = configuration.getTopic().concat("/subscriptions/")
+                .concat(configuration.getSubscription());
 
         ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(
                 endpoint,
                 destination,
-                sharedAccessKeyName,
-                sharedAccessKeyValue);
+                configuration.getSharedAccessKeyName(),
+                configuration.getSharedAccessKeyValue());
         connectionStringBuilder.setOperationTimeout(Duration.ofMinutes(10));
         return new SubscriptionClient(connectionStringBuilder, ReceiveMode.PEEKLOCK);
     }
 
     @Bean
     @Qualifier("crdConsumer")
-    @ConditionalOnProperty(name = "amqp.crd.enabled", havingValue = "true")
+    @ConditionalOnExpression("${amqp.crd.enabled} && !${amqp.crd.newAsb}")
     CompletableFuture<Void> registerCRDMessageHandlerOnClient(@Autowired @Qualifier("crdConsumer")
                                                                    SubscriptionClient receiveClient)
             throws ServiceBusException, InterruptedException {
