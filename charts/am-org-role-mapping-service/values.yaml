@@ -22,11 +22,11 @@ java:
           alias: ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD
         - name: caseworker-topic-primary-send-listen-shared-access-key
           alias: AMQP_CRD_SHARED_ACCESS_KEY_VALUE
-        - name: org-role-mapping-service-POSTGRES-PASS-V15
+        - name: org-role-mapping-service-POSTGRES-PASS
           alias: ORG_ROLE_MAPPING_DB_PASSWORD
-        - name: org-role-mapping-service-POSTGRES-USER-V15
+        - name: org-role-mapping-service-POSTGRES-USER
           alias: ORG_ROLE_MAPPING_DB_USERNAME
-        - name: org-role-mapping-service-POSTGRES-HOST-V15
+        - name: org-role-mapping-service-POSTGRES-HOST
           alias: ORG_ROLE_MAPPING_DB_HOST
         - name: judicial-topic-primary-send-listen-shared-access-key
           alias: AMQP_JRD_SHARED_ACCESS_KEY_VALUE

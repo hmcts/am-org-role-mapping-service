@@ -36,6 +36,9 @@
     "body": {
       "roleAssignmentResponse": [
         {
+          "__elementId__": "roleName"
+        },
+        {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
