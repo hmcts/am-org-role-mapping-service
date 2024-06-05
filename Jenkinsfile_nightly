@@ -80,7 +80,7 @@ env.LAUNCH_DARKLY_ENV = "aat"
 env.JUDICIAL_BOOKING_URL = "http://am-judicial-booking-service-aat.service.core-compute-aat.internal"
 
 // Turn off FTAs if RD is unavailable, DTSAM-336
-env.JUDICIAL_FTA_ENABLED = "false" // temporarily disabled DTSAM-334
+env.JUDICIAL_FTA_ENABLED = "true"
 env.CASEWORKER_FTA_ENABLED = "true"
 
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
