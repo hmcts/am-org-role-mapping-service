@@ -5,7 +5,7 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     Given an appropriate test context as detailed in the test data source
 
   @S-041
-  @FeatureToggle(DB:sscs_wa_1_2=on)
+  @FeatureToggle(DB:sscs_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create organisational role mapping for listed-hearing-viewer
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-041_DeleteDataForRoleAssignments]
@@ -17,6 +17,7 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-041_DeleteDataForRoleAssignments].
 
   @S-042
+  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create organisational role mapping for hearing-viewer and hearing-manager
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-042_DeleteDataForRoleAssignments]
@@ -28,6 +29,7 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-042_DeleteDataForRoleAssignments].
 
   @S-043
+  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create organisational role mapping for admin and legal operation role assignments
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-043_DeleteDataForRoleAssignments]
@@ -40,6 +42,7 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-043_DeleteDataForRoleAssignments].
 
   @S-044
+  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create organisational role mapping for SSCS admin and legal operation role assignments with multiple regions
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-044_DeleteDataForRoleAssignments]
@@ -52,7 +55,7 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-044_DeleteDataForRoleAssignments].
 
   @S-045
-  @FeatureToggle(DB:sscs_wa_1_0=on)
+  @FeatureToggle(DB:sscs_wa_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create organisational role mapping for hearing-viewer
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-045_DeleteDataForRoleAssignments]
