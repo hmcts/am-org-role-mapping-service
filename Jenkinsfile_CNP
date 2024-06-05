@@ -86,7 +86,7 @@ env.PACT_BROKER_PORT = "443"
 env.PACT_BROKER_SCHEME = "https"
 
 // Turn off FTAs if RD is unavailable, DTSAM-336
-env.JUDICIAL_FTA_ENABLED = "true"
+env.JUDICIAL_FTA_ENABLED = "false"
 env.CASEWORKER_FTA_ENABLED = "true"
 
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150

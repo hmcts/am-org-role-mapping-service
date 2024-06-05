@@ -84,7 +84,7 @@ env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
 // Don't run refresh FTAs on AAT DTSAM-173
 env.REFRESH_FTA_ENABLED = "false"
 // Turn off FTAs if RD is unavailable, DTSAM-336
-env.JUDICIAL_FTA_ENABLED = "true"
+env.JUDICIAL_FTA_ENABLED = "false"
 env.CASEWORKER_FTA_ENABLED = "true"
 
   overrideVaultEnvironments(vaultOverrides)
