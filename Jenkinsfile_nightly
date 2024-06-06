@@ -79,8 +79,13 @@ env.TEST_URL = "http://am-org-role-mapping-service-aat.service.core-compute-aat.
 env.LAUNCH_DARKLY_ENV = "aat"
 env.JUDICIAL_BOOKING_URL = "http://am-judicial-booking-service-aat.service.core-compute-aat.internal"
 
+// Turn off FTAs if RD is unavailable, DTSAM-336
+env.JUDICIAL_FTA_ENABLED = "false" // temporarily disabled DTSAM-334
+env.CASEWORKER_FTA_ENABLED = "true"
+
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
 env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
+
 // Don't run refresh FTAs on AAT DTSAM-173
 env.REFRESH_FTA_ENABLED = "false"
 

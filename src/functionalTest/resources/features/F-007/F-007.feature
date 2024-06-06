@@ -5,7 +5,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     Given an appropriate test context as detailed in the test data source
 
   @S-061
-  @FeatureToggle(DB:civil_wa_1_1=on)
+  @FeatureToggle(DB:civil_wa_1_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for National Business Centre Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-061_DeleteDataForRoleAssignments],
@@ -18,7 +18,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-061_DeleteDataForRoleAssignments].
 
   @S-062
-  @FeatureToggle(DB:civil_wa_1_0=on)
+  @FeatureToggle(DB:civil_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader and Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-062_DeleteDataForRoleAssignments],
@@ -32,7 +32,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-062_DeleteDataForRoleAssignments].
 
   @S-063
-  @FeatureToggle(DB:civil_wa_1_4=on)
+  @FeatureToggle(DB:civil_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Tribunal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-063_DeleteDataForRoleAssignments],
@@ -45,7 +45,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-063_DeleteDataForRoleAssignments].
 
   @S-064
-  @FeatureToggle(DB:civil_wa_1_0=on)
+  @FeatureToggle(DB:civil_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-061_DeleteDataForRoleAssignments],
@@ -58,7 +58,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-061_DeleteDataForRoleAssignments].
 
   @S-081
-  @FeatureToggle(DB:civil_wa_1_0=on)
+  @FeatureToggle(DB:civil_wa_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Judge
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-081_DeleteDataForRoleAssignments],
@@ -71,7 +71,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-081_DeleteDataForRoleAssignments].
 
   @S-082
-  @FeatureToggle(DB:civil_wa_1_1=on)
+  @FeatureToggle(DB:civil_wa_1_1=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for circuit Judge
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-082_DeleteDataForRoleAssignments],
@@ -84,7 +84,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-082_DeleteDataForRoleAssignments].
 
   @S-084
-  @FeatureToggle(DB:civil_wa_1_0=on)
+  @FeatureToggle(DB:civil_wa_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for fee paid Judge
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-084_DeleteDataForRoleAssignments],
