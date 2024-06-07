@@ -85,6 +85,10 @@ env.PACT_BROKER_URL = "pact-broker.platform.hmcts.net"
 env.PACT_BROKER_PORT = "443"
 env.PACT_BROKER_SCHEME = "https"
 
+// Var to turn on CRD/JRD FTAs: DTSAM-336 (NB: only disable temporarily if an RD service is unavailable)
+env.CASEWORKER_FTA_ENABLED = "true"
+env.JUDICIAL_FTA_ENABLED = "true"
+
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
 env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
 env.REFRESH_FTA_ENABLED = "true"
@@ -117,6 +121,7 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   disableLegacyDeploymentOnAAT()
   disableLegacyDeployment()
+  enableDbMigration('am')
 
   // Sync environment specific branches with master branch
   syncBranchesWithMaster(branchesToSync)
