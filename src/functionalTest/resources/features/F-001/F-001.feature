@@ -1,4 +1,4 @@
-@F-001
+@F-001 @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
 Feature: F-001 :Create Role Assignments for Caseworker Users
 
   Background:

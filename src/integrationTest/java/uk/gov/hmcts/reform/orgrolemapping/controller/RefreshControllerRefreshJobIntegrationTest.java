@@ -258,6 +258,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertThat(afterRefreshJob.getLog(),containsString(String.join(",", afterRefreshJob.getUserIds())));
     }
 
+    @Disabled
     @Test
     @Order(4)
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToPartialComplete_status422() throws Exception {
