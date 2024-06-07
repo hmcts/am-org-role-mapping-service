@@ -11,8 +11,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 @Component
@@ -55,7 +55,7 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
         this.userName = userName;
     }
 
-    @Override
+    //@Override
     public boolean preHandle(@NotNull HttpServletRequest request,
                              @NotNull HttpServletResponse response, @NotNull Object arg2) throws Exception {
 

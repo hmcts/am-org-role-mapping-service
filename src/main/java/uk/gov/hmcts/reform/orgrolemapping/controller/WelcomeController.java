@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import static org.springdoc.core.Constants.SWAGGER_UI_URL;
+//import static org.springdoc.core.Constants.SWAGGER_UI_URL;
 
 @RestController
 @Hidden
 public class WelcomeController {
-
+    static final String SWAGGER_UI_URL = "/swagger-ui/index.html?url=";
 
     @GetMapping(value = "/swagger")
     public RedirectView swaggerRedirect() {

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
-import org.eclipse.jetty.util.StringUtil;
+import org.apache.poi.util.StringUtil;
+//import org.eclipse.jetty.util.StringUtil;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
 import java.util.ArrayList;

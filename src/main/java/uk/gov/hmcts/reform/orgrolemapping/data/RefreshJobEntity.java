@@ -6,14 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
+//import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import java.time.ZonedDateTime;
 
 @Builder(toBuilder = true)
@@ -44,7 +44,7 @@ public class RefreshJobEntity {
     private String comments;
 
     @Column(name = "user_ids")
-    @Type(type = "uk.gov.hmcts.reform.orgrolemapping.data.GenericArrayUserType")
+    //@Type(type = "uk.gov.hmcts.reform.orgrolemapping.data.GenericArrayUserType")
     private String[] userIds;
 
     @Column(name = "log")
