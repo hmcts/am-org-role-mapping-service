@@ -62,25 +62,25 @@ public class CRDMessagingConfiguration {
             Consumer<ServiceBusReceivedMessageContext> processMessage,
             Consumer<ServiceBusErrorContext> processError) {
 
-        var connectionString = "Endpoint=sb://"
-                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
-
         AmqpRetryOptions amqpRetryOptions = new AmqpRetryOptions();
         amqpRetryOptions.setDelay(Duration.ofMinutes(1));
         amqpRetryOptions.setMaxRetries(10);
         amqpRetryOptions.setMode(AmqpRetryMode.FIXED);
 
-        ServiceBusProcessorClient processorClient = new ServiceBusClientBuilder()
+        var connectionString = "Endpoint=sb://"
+                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
+
+        return new ServiceBusClientBuilder()
                 .connectionString(connectionString)
                 .retryOptions(amqpRetryOptions)
                 .processor()
                 .topicName(topic)
                 .subscriptionName(subscription)
+                .receiveMode(ServiceBusReceiveMode.PEEK_LOCK)
+                .disableAutoComplete()
                 .processMessage(processMessage)
                 .processError(processError)
-                .receiveMode(ServiceBusReceiveMode.PEEK_LOCK)
                 .buildProcessorClient();
-        return processorClient;
     }
 
     public void logServiceBusVariables() {
@@ -88,8 +88,10 @@ public class CRDMessagingConfiguration {
         if (environment.equalsIgnoreCase("pr")) {
             sharedAccessKeyValue = System.getenv("AMQP_CRD_SHARED_ACCESS_KEY_VALUE");
             subscription = System.getenv("CRD_SUBSCRIPTION_NAME");
+
             log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
             log.debug("subscription Name is :" + subscription);
+
             log.debug("Topic Name is :" + topic);
             log.debug("subscription Name is :" + subscription);
 
