@@ -19,7 +19,7 @@
     }
   },
   "expectedResponse": {
-    "_extends_": "common_403_Response",
+    "_extends_": "Common_403_Response",
     "body" : {
       "status": 403,
       "error": "Forbidden",
