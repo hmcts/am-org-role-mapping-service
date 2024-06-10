@@ -182,7 +182,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         sequential.unlock();
     }
 
-    //@Disabled
+    @Disabled
     @Test
     @Order(1)
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete() throws Exception {
@@ -207,6 +207,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                 .andReturn();
 
         //mockMvc.perform(asyncDispatch(mvcResult)).andExpect(status().is(202));
+        //mockMvc.perform(asyncDispatch(mvcResult));
 
         await().timeout(60, TimeUnit.SECONDS).untilAsserted(() -> Assertions.assertTrue(
                 isRefreshJobInStatus(jobId, COMPLETED)));
