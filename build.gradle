@@ -577,7 +577,20 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     smokeTestImplementation sourceSets.main.runtimeClasspath
-    smokeTestImplementation sourceSets.test.runtimeClasspath
+    //smokeTestImplementation sourceSets.test.runtimeClasspath
+
+//    smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
+//    smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+//    smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
+//    smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
+//    smokeTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
+    smokeTestImplementation group: 'commons-io', name: 'commons-io', version: '2.16.1'
+    smokeTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
+    smokeTestImplementation('com.opentable.components:otj-pg-embedded:1.0.3')
+    smokeTestImplementation group : 'com.github.hmcts', name: 'befta-fw', version: versions.befta
+//    smokeTestImplementation 'com.github.hmcts:fortify-client:1.4.1:all'
+//    smokeTestImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksondata
+//    smokeTestImplementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.jacksondata, ext: 'pom'
     smokeTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     smokeTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
