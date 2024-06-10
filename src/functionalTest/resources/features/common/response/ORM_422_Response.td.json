@@ -1,0 +1,16 @@
+{
+  "_guid_": "ORM_422_Response",
+  "_extends_": "Common_Response",
+
+  "responseCode": 422,
+  "responseMessage": "Unprocessable Entity",
+  "headers": {
+    "_extends_": "Common_422_Response_Headers"
+  },
+  "body": {
+    "errorCode": 422,
+    "errorMessage": "Unprocessable Entity",
+    "errorDescription": "OVERRIDE_ME",
+    "timeStamp": "[[ANY_TIMESTAMP_NOT_NULLABLE]]"
+  }
+}

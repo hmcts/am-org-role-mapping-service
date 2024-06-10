@@ -15,12 +15,9 @@
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_422_Response",
+    "_extends_": "ORM_422_Response",
     "body" : {
-      "errorCode": 422,
-      "errorMessage": "Unprocessable Entity",
-      "errorDescription": "Provided refresh job is in an invalid state.",
-      "timeStamp": "[[ANYTHING_PRESENT]]"
+      "errorDescription": "Provided refresh job is in an invalid state."
     }
   }
 }

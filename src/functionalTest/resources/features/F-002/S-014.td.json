@@ -3,6 +3,9 @@
   "title": "must reject refresh job request if job NOT FOUND",
   "_extends_": "F-002_Test_Data_Base",
 
+  "specs": [
+    "contains a reference to the Job that was just deleted"
+  ],
   "request": {
     "queryParams": {
       "jobId": "${[scenarioContext][childContexts][S-014_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
@@ -12,12 +15,9 @@
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_422_Response",
+    "_extends_": "ORM_422_Response",
     "body" : {
-      "errorCode": 422,
-      "errorMessage": "Unprocessable Entity",
-      "errorDescription": "Provided refresh job couldn't be retrieved.",
-      "timeStamp": "[[ANYTHING_PRESENT]]"
+      "errorDescription": "Provided refresh job couldn't be retrieved."
     }
   }
 }

@@ -46,7 +46,7 @@ Feature:F-002: Refresh Role Assignments for CRD and JRD users
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [S-014_InsertJobForRefreshAPI],
     And a successful call [to delete job details from ORM DB] as in [S-014_DeleteJobFromORMDB],
-    And the request [contains an existing job details],
+    And the request [contains a reference to the Job that was just deleted],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Refresh API] operation of [Organisation Role Mapping],
     Then a negative response is received,
