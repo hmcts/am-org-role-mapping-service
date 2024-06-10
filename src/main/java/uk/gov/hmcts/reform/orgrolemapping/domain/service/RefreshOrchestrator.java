@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
@@ -105,6 +107,7 @@ public class RefreshOrchestrator {
     }
 
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
         var startTime = System.currentTimeMillis();
