@@ -11,6 +11,6 @@
     "errorCode": 422,
     "errorMessage": "Unprocessable Entity",
     "errorDescription": "OVERRIDE_ME",
-    "timeStamp": "[[ANY_TIMESTAMP_NOT_NULLABLE]]"
+    "timeStamp": "[[ANYTHING_PRESENT]]"
   }
 }
