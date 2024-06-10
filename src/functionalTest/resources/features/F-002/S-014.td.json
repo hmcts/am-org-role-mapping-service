@@ -1,0 +1,23 @@
+{
+  "_guid_": "S-014",
+  "title": "must reject refresh job request if job NOT FOUND",
+  "_extends_": "F-002_Test_Data_Base",
+
+  "request": {
+    "queryParams": {
+      "jobId": "${[scenarioContext][childContexts][S-014_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+    },
+    "body": {
+      "userIds" : ["b878398b-c7ae-4f4c-95cc-298ca2d287ac"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_422_Response",
+    "body" : {
+      "errorCode": 422,
+      "errorMessage": "Unprocessable Entity",
+      "errorDescription": "Provided refresh job couldn't be retrieved.",
+      "timeStamp": "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
