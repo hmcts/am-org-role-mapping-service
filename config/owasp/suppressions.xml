@@ -12,4 +12,8 @@
         <notes>https://tools.hmcts.net/jira/browse/DTSAM-88 azure</notes>
         <cve>CVE-2023-36052</cve>
     </suppress>
+    <suppress>
+        <notes>bcprov-jdk15on-1.69</notes>
+        <cve>CVE-2023-33202</cve>
+    </suppress>
 </suppressions>

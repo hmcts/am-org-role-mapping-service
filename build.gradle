@@ -173,6 +173,7 @@ task functional(type: JavaExec) {
     main("uk.gov.hmcts.reform.orgrolemapping.befta.OrgRoleMappingAmBeftaMain")
     classpath += configurations.cucumberRuntime + sourceSets.functionalTest.runtimeClasspath + sourceSets.main.output + sourceSets.test.output
     args = ['--strict',  '--tags', 'not @Ignore',
+//    args = ['--strict',  '--tags', '@S-213',
             '--plugin', "json:${rootDir}/target/cucumber.json", '--plugin', "junit:${buildDir}/test-results/functional/cucumber.xml",
             '--glue', 'uk.gov.hmcts.befta.player', 'src/functionalTest/resources/features'
            ]
@@ -721,7 +722,7 @@ configurations.all {
     exclude group: 'org.codehaus.groovy', module: 'groovy'
     exclude group: 'org.codehaus.groovy', module: 'groovy-xml'
     exclude group: 'org.codehaus.groovy', module: 'groovy-json'
-    exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
+//    exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
     exclude group: 'commons-jxpath', module: 'commons-jxpath'
 
     // stop guice trying to use no_aop jar which is not found
