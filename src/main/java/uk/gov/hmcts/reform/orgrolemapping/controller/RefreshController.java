@@ -88,8 +88,8 @@ public class RefreshController {
             content = @Content()
     )
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Callable<ResponseEntity<Object>> refresh(@RequestParam Long jobId,
     //public ResponseEntity<Object> refresh(@RequestParam Long jobId,
+    public Callable<ResponseEntity<Object>> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
         //return refreshOrchestrator.refresh(jobId, userRequest);
