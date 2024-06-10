@@ -24,7 +24,7 @@
       "status": 403,
       "error": "Forbidden",
       "path": "/am/role-mapping/refresh",
-      "timeStamp": "[[ANYTHING_PRESENT]]"
+      "timestamp": "[[ANYTHING_PRESENT]]"
     }
   }
 }
