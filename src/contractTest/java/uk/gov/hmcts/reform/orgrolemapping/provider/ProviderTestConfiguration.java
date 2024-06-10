@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.provider;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
@@ -60,6 +61,7 @@ public class ProviderTestConfiguration {
     @MockBean
     SecurityUtils securityUtils;
 
+    @Qualifier("cacheManager")
     @MockBean
     private CacheManager cacheManager;
 

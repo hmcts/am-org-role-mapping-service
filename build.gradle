@@ -14,7 +14,7 @@ plugins {
     id 'uk.gov.hmcts.java' version '0.12.61'
     id 'pmd'
     id 'jacoco'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'io.spring.dependency-management' version '1.1.5'
 //    id 'org.springframework.boot' version '2.7.18'
     id 'org.springframework.boot' version '3.0.13'
     id 'info.solidsoft.pitest' version '1.15.0'
