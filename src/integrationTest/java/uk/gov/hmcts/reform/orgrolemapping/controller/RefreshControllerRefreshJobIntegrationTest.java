@@ -96,6 +96,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
     "refresh.Job.authorisedServices=" + S2S_ORM + "," + S2S_RARB,
     "refresh.Job.includeJudicialBookings=true",
     "refresh.Job.pageSize=" + TEST_PAGE_SIZE,
+    "testing.support.enabled=true" // NB: needed for access to test support URLs
 })
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegration {
@@ -112,7 +113,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     private static final String REFRESH_JOB_URL = "/am/role-mapping/refresh";
 
-    // test support URLs
+    // test support URLs: to create and verify RefreshJob records
     private static final String CREATE_REFRESH_JOB_URL = "/am/testing-support/job";
     private static final String GET_REFRESH_JOB_URL = "/am/testing-support/jobs/{jobId}";
 
