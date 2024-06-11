@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-//import java.util.concurrent.Callable;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
@@ -106,8 +105,6 @@ public class RefreshOrchestrator {
     }
 
     @Async
-    //public void refresh(Long jobId, UserRequest userRequest) {
-    //public Callable<ResponseEntity<Object>> refresh(Long jobId, UserRequest userRequest) {
     public void refresh(Long jobId, UserRequest userRequest) {
 
         var startTime = System.currentTimeMillis();
@@ -136,8 +133,6 @@ public class RefreshOrchestrator {
                             .retrieveProfiles(userRequest, UserType.CASEWORKER);
                     log.info("Total profiles received from CRD is {}", userAccessProfiles.size());
                     //prepare the response code
-                    //responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
-                    //return () -> prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                     prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.CASEWORKER);
                 } else if (refreshJobEntity.get().getRoleCategory()
@@ -146,8 +141,6 @@ public class RefreshOrchestrator {
                             .retrieveProfiles(userRequest, UserType.JUDICIAL);
                     log.info("Total profiles received from JRD is {}", userAccessProfiles.size());
                     //prepare the response code
-                    //responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
-                    //return () -> prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                     prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.JUDICIAL);
                 }
@@ -164,17 +157,12 @@ public class RefreshOrchestrator {
 
         } else {
             // replace the records by service name api
-            //responseEntity = refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity.get(),
-            //return () -> refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity.get(),
             refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity.get(),
                      refreshJobEntity.get().getRoleCategory()
                             .equals(RoleCategory.LEGAL_OPERATIONS.name()) ? UserType.CASEWORKER : UserType.JUDICIAL);
         }
 
-
         log.debug("Execution refresh() : {} ms", (Math.subtractExact(System.currentTimeMillis(), startTime)));
-
-        //return () -> responseEntity;
     }
 
 

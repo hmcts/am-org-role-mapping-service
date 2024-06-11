@@ -55,7 +55,7 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
         this.userName = userName;
     }
 
-    //@Override
+    @Override
     public boolean preHandle(@NotNull HttpServletRequest request,
                              @NotNull HttpServletResponse response, @NotNull Object arg2) throws Exception {
 
