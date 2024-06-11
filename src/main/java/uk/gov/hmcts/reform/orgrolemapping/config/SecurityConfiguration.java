@@ -69,7 +69,6 @@ public class SecurityConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        //return web -> web.ignoring().antMatchers(anonymousPaths.toArray(String[]::new));
         return web -> web.ignoring().requestMatchers(anonymousPaths.toArray(String[]::new));
     }
 
@@ -83,7 +82,6 @@ public class SecurityConfiguration {
                 .formLogin().disable()
                 .logout().disable()
                 .authorizeRequests()
-                //.antMatchers("/error").permitAll()
                 .requestMatchers("/error").permitAll()
                 .anyRequest()
                 .authenticated()

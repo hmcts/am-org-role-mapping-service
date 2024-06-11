@@ -1,9 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import com.launchdarkly.sdk.server.LDClient;
-//import org.apache.http.client.config.RequestConfig;
-//import org.apache.http.impl.client.CloseableHttpClient;
-//import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -40,13 +37,6 @@ public class ApplicationConfiguration {
         return s2sUrl;
     }
 
-    //@Bean
-    //public RestTemplate restTemplate() {
-    //    RestTemplate restTemplate = new RestTemplate();
-    //    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(getHttpClient()));
-    //    return restTemplate;
-    //}
-
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         var timeout = 10;
@@ -61,20 +51,4 @@ public class ApplicationConfiguration {
     public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
         return new LDClient(sdkKey);
     }
-
-
-    //private CloseableHttpClient getHttpClient() {
-    //    var timeout = 10000;
-    //    RequestConfig config = RequestConfig.custom()
-    //                                        .setConnectTimeout(timeout)
-    //                                        .setConnectionRequestTimeout(timeout)
-    //                                        .setSocketTimeout(timeout)
-    //                                        .build();
-
-    //    return HttpClientBuilder
-    //        .create()
-    //        .useSystemProperties()
-    //        .setDefaultRequestConfig(config)
-    //        .build();
-    //}
 }
