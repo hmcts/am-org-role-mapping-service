@@ -378,7 +378,6 @@ dependencies {
     implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
     implementation group: 'org.json', name: 'json', version: '20231013'
-    implementation group: 'javax.inject', name: 'javax.inject', version: '1'
 
     implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.2'
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-core', version: '3.4.11'
@@ -407,7 +406,6 @@ dependencies {
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.13'
     //Added for S2S and User Authentication
     implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: versions.reformS2sClient
-    implementation group: 'javax.inject', name: 'javax.inject', version: '1'
     implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
 
     //Azure service bus libraries
