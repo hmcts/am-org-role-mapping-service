@@ -695,7 +695,7 @@ configurations.all {
     exclude group: 'org.codehaus.groovy', module: 'groovy'
     exclude group: 'org.codehaus.groovy', module: 'groovy-xml'
     exclude group: 'org.codehaus.groovy', module: 'groovy-json'
-//    exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
+    exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
     exclude group: 'commons-jxpath', module: 'commons-jxpath'
 
     // stop guice trying to use no_aop jar which is not found
