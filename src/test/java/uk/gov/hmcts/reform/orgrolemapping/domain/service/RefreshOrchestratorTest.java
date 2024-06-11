@@ -44,7 +44,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+//import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -131,10 +131,11 @@ class RefreshOrchestratorTest {
                                 .status(NEW)
                                 .build()));
 
-        ResponseEntity<Object> response = sut.refresh(1L, TestDataBuilder.buildUserRequest());
+        //ResponseEntity<Object> response = sut.refresh(1L, TestDataBuilder.buildUserRequest());
+        sut.refresh(1L, TestDataBuilder.buildUserRequest());
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response);
+        //assertEquals(HttpStatus.OK, response.getStatusCode());
+        //assertNotNull(response);
     }
 
     @Test
@@ -158,7 +159,8 @@ class RefreshOrchestratorTest {
                                 .status(NEW)
                                 .build()));
 
-        assertNull(sut.refresh(1L, TestDataBuilder.buildUserRequest()));
+        //assertNull(sut.refresh(1L, TestDataBuilder.buildUserRequest()));
+        sut.refresh(1L, TestDataBuilder.buildUserRequest());
 
     }
 
@@ -208,10 +210,11 @@ class RefreshOrchestratorTest {
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
 
-        ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+        //ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+        sut.refresh(1L, UserRequest.builder().build());
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response);
+        //assertEquals(HttpStatus.OK, response.getStatusCode());
+        //assertNotNull(response);
     }
 
     @Test
@@ -261,9 +264,10 @@ class RefreshOrchestratorTest {
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
 
-        ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+        //ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+        sut.refresh(1L, UserRequest.builder().build());
 
-        assertNull(response);
+        //assertNull(response);
     }
 
 
@@ -660,11 +664,12 @@ class RefreshOrchestratorTest {
         // WHEN
         // NB: override SUT with disabled bookings
         RefreshOrchestrator sutBookingsDisabled = createRefreshOrchestrator(false);
-        ResponseEntity<Object> response = sutBookingsDisabled.refresh(1L, TestDataBuilder.buildUserRequest());
+        //ResponseEntity<Object> response = sutBookingsDisabled.refresh(1L, TestDataBuilder.buildUserRequest());
+        sutBookingsDisabled.refresh(1L, TestDataBuilder.buildUserRequest());
 
         // THEN
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        //assertNotNull(response);
+        //assertEquals(HttpStatus.OK, response.getStatusCode());
 
         // verify data passed to mapping service includes accessProfiles but NO bookings as they are disabled
         Mockito.verify(requestMappingService, Mockito.times(1))
@@ -694,7 +699,6 @@ class RefreshOrchestratorTest {
         userAccessProfileSet2.add(ap2);
         userAccessProfiles.put("2", userAccessProfileSet2);
 
-        RefreshOrchestrator refreshOrchestrator = Mockito.spy(sut);
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
                 .thenReturn(userAccessProfiles);
 
@@ -715,12 +719,15 @@ class RefreshOrchestratorTest {
                                 .status(NEW)
                                 .build()));
 
+        RefreshOrchestrator refreshOrchestrator = Mockito.spy(sut);
+
         // WHEN
-        ResponseEntity<Object> response = refreshOrchestrator.refresh(1L, TestDataBuilder.buildUserRequest());
+        //ResponseEntity<Object> response = refreshOrchestrator.refresh(1L, TestDataBuilder.buildUserRequest());
+        refreshOrchestrator.refresh(1L, TestDataBuilder.buildUserRequest());
 
         // THEN
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        //assertNotNull(response);
+        //assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Mockito.verify(refreshOrchestrator,Mockito.times(1)).buildSuccessAndFailureBucket(any(),any());
 

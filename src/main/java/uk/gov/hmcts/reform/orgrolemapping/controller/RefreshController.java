@@ -28,7 +28,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
-import java.util.concurrent.Callable;
+//import java.util.concurrent.Callable;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
@@ -89,11 +89,14 @@ public class RefreshController {
     )
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     //public ResponseEntity<Object> refresh(@RequestParam Long jobId,
-    public Callable<ResponseEntity<Object>> refresh(@RequestParam Long jobId,
+    //public Callable<ResponseEntity<Object>> refresh(@RequestParam Long jobId,
+    public void refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
         //return refreshOrchestrator.refresh(jobId, userRequest);
-        return () -> refreshOrchestrator.refresh(jobId, userRequest);
+        //return () -> refreshOrchestrator.refresh(jobId, userRequest);
+        //return refreshOrchestrator.refresh(jobId, userRequest);
+        refreshOrchestrator.refresh(jobId, userRequest);
     }
 
     @PostMapping(
