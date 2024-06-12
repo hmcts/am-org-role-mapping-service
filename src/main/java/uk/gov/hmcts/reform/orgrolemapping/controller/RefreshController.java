@@ -28,8 +28,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
-//import java.util.concurrent.Callable;
-
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 

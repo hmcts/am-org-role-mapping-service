@@ -1,0 +1,23 @@
+{
+  "_guid_": "S-014",
+  "title": "must reject refresh job request if job NOT FOUND",
+  "_extends_": "F-002_Test_Data_Base",
+
+  "specs": [
+    "contains a reference to the Job that was just deleted"
+  ],
+  "request": {
+    "queryParams": {
+      "jobId": "${[scenarioContext][childContexts][S-014_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+    },
+    "body": {
+      "userIds" : ["b878398b-c7ae-4f4c-95cc-298ca2d287ac"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "ORM_422_Response",
+    "body" : {
+      "errorDescription": "Provided refresh job couldn't be retrieved."
+    }
+  }
+}
