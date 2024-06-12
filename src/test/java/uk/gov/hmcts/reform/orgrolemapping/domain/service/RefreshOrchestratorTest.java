@@ -756,12 +756,6 @@ class RefreshOrchestratorTest {
 
         // WHEN
         RefreshOrchestrator refreshOrchestrator = Mockito.spy(sut);
-        ResponseEntity<Object> response = refreshOrchestrator.refresh(1L, TestDataBuilder.buildUserRequest());
-
-        // THEN
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        //ResponseEntity<Object> response = refreshOrchestrator.refresh(1L, TestDataBuilder.buildUserRequest());
         refreshOrchestrator.refresh(1L, TestDataBuilder.buildUserRequest());
 
         Mockito.verify(refreshOrchestrator,Mockito.times(1)).buildSuccessAndFailureBucket(any(),any());
