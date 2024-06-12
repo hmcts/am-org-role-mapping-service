@@ -87,6 +87,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_ORM;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_RARB;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_REFRESH_JOB_INVALID_STATE;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_REFRESH_JOB_NOT_FOUND;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialProfilesResponseV2;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUserIdList;
@@ -380,6 +382,42 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     @Test
     @Order(10)
+    public void shouldFailProcessRefreshRoleAssignmentsWithJobIDNotFound() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
+
+        logger.info(" Refresh Job when job ID does not exist");
+        MvcResult result = mockMvc.perform(post(REFRESH_JOB_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
+                        .param("jobId", "9999")) // i.e. job-id that does not exist
+                .andExpect(status().is(422))
+                .andReturn();
+
+        var contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains(ERROR_REFRESH_JOB_NOT_FOUND));
+    }
+
+    @Test
+    @Order(11)
+    public void shouldFailProcessRefreshRoleAssignmentsWithJobInvalidState() throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
+
+        Long jobIdAborted = createRefreshJobLegalOperations(ABORTED, null, null);
+
+        logger.info(" Refresh Job when job is in an invalid state");
+        MvcResult result = mockMvc.perform(post(REFRESH_JOB_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
+                        .param("jobId", jobIdAborted.toString()))
+                .andExpect(status().is(422))
+                .andReturn();
+
+        var contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains(ERROR_REFRESH_JOB_INVALID_STATE));
+    }
+
+    @Test
+    @Order(12)
     public void shouldFailProcessRefreshRoleAssignmentsWithInvalidServiceToken() throws Exception {
         logger.info("Refresh request rejected with invalid service token");
 
@@ -397,7 +435,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     }
 
     @Test
-    @Order(11)
+    @Order(13)
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_retryFail() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
@@ -426,7 +464,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     }
 
     @Test
-    @Order(12)
+    @Order(14)
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_CRDRetry() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
@@ -461,7 +499,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
      */
     @ParameterizedTest
     @ValueSource(ints = {1, 2})
-    @Order(13)
+    @Order(15)
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToComplete_Judicial(int numberOfBatches) throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
@@ -497,7 +535,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     }
 
     @Test
-    @Order(14)
+    @Order(16)
     public void shouldProcessRefreshRoleAssignmentsWithJobIdToAborted_Judicial() throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
