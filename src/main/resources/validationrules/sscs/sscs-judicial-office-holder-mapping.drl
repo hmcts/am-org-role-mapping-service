@@ -174,36 +174,6 @@ then
 end;
 
 /*
- * "SSCS Recorder-Salaried" business role mapping to JOH.
- */
-rule "sscs_recorder_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_1.getValue())
-   $jap: JudicialAccessProfile(appointment == "Recorder",
-                               appointmentType in ("Salaried", "SPTW"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "BBA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("SSCS Recorder-Salaried")
-      .jurisdiction("SSCS")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      // NB: no region or baseLocation if National (i.e. regionId == "12")
-      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
-      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-  $jap.setStatus("JOH_Mapped");
-  update($jap);
-  logMsg("Rule : sscs_recorder_salaried_joh");
-end;
-
-/*
  * "SSCS Tribunal Judge-Fee Paid" business role mapping to JOH.
  */
 rule "sscs_tribunal_judge_fee_paid_joh"
