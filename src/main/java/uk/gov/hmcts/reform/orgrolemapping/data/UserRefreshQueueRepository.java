@@ -1,12 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.data;
 
 import org.hibernate.cfg.AvailableSettings;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
 import javax.persistence.QueryHint;
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
-public interface UserRefreshQueueRepository extends CrudRepository<UserRefreshQueueEntity, Long> {
+public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQueueEntity, String> {
 
     String SKIP_LOCKED = "-2";
 
@@ -49,4 +51,52 @@ public interface UserRefreshQueueRepository extends CrudRepository<UserRefreshQu
     void upsert(String userId, LocalDateTime userLastUpdated, Long accessTypesMinVersion, LocalDateTime deleted,
                 String accessTypes, String organisationId, String organisationStatus,
                 String organisationProfileIds);
+
+
+    @Query(value = """
+        select user_id, last_updated, user_last_updated, access_types_min_version, deleted,
+               access_types, organisation_id,
+               organisation_status, organisation_profile_ids, active, retry, retry_after
+        from user_refresh_queue
+        where active and retry < 4
+        and retry_after < now()
+        limit 1
+        for update skip locked""", nativeQuery = true)
+    UserRefreshQueueEntity retrieveSingleActiveRecord();
+
+    @Modifying
+    @Query(value = """
+        update user_refresh_queue
+                              set active = false,
+                              retry = 0,
+                              retry_after = null
+                              where user_id = :userId
+                              and last_updated <= :lastUpdated
+                              and access_types_min_version <= :accessTypesMinVersion""", nativeQuery = true)
+    void clearUserRefreshRecord(String userId, LocalDateTime lastUpdated,
+                                                  Long accessTypesMinVersion);
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Modifying
+    @Query(value = "update user_refresh_queue "
+            + "set "
+            + "retry = case "
+            + "when retry = 0 then 1 "
+            + "when retry = 1 then 2 "
+            + "when retry = 2 then 3 "
+            + "else 4 "
+            + "end, "
+            + "retry_after = case "
+            + "when retry = 0 then now() + (interval '1' Minute) * :retryOneIntervalMin "
+            + "when retry = 1 then now() + (interval '1' Minute) * :retryTwoIntervalMin "
+            + "when retry = 2 then now() + (interval '1' Minute) * :retryThreeIntervalMin "
+            + "else NULL "
+            + "end "
+            + "where user_id = :userId", nativeQuery = true)
+    void updateRetry(String userId, String retryOneIntervalMin,
+                     String retryTwoIntervalMin, String retryThreeIntervalMin);
+
+    @Query(value = "select count(*) from user_refresh_queue where active = true and retry_after < now()",
+            nativeQuery = true)
+    Long getActiveUserRefreshQueueCount();
 }

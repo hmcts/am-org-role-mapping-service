@@ -4,9 +4,9 @@ import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
