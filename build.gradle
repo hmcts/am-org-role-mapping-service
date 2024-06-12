@@ -379,14 +379,13 @@ dependencies {
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
     implementation group: 'org.json', name: 'json', version: '20231013'
 
-    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.2'
+    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.3'
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-core', version: '3.4.11'
     implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.2'
     implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
     implementation group: 'org.codehaus.jettison', name: 'jettison', version: '1.5.4'
     implementation group: 'com.fasterxml.woodstox', name: 'woodstox-core', version: '6.4.0'
-
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
 
     // drools engine dependency
@@ -428,7 +427,7 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.16.1'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
-    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.26.1'
+    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.26.2'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: versions.tomcat
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: versions.tomcat
 
