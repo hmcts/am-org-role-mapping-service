@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
@@ -47,6 +49,11 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
 @Service
 @Slf4j
 public class RefreshOrchestrator {
+
+    public static final String ERROR_REFRESH_JOB_NOT_FOUND = "Provided refresh job couldn't be retrieved.";
+    public static final String ERROR_REFRESH_JOB_INVALID_STATE = "Provided refresh job is in an invalid state.";
+    public static final String ERROR_INVALID_JOB_ID = "Invalid JobId request";
+
     private final RetrieveDataService retrieveDataService;
     private final RequestMappingService<UserAccessProfile> requestMappingService;
     private final ParseRequestService parseRequestService;
@@ -94,7 +101,10 @@ public class RefreshOrchestrator {
         }
 
         if (jobId == null) {
-            throw new BadRequestException("Invalid JobId request");
+            throw new BadRequestException(ERROR_INVALID_JOB_ID);
+        } else {
+            // extra call to fetch refresh job to allow validation to kick in before ASYNC call
+            fetchRefreshJobAndValidateStatus(jobId);
         }
 
         if (userRequest != null && nullCheckPredicate.test(userRequest.getUserIds())) {
@@ -104,7 +114,20 @@ public class RefreshOrchestrator {
         }
     }
 
+    private RefreshJobEntity fetchRefreshJobAndValidateStatus(Long jobId) {
+        // fetch the entity based on jobId
+        Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
+        if (refreshJobEntity.isEmpty()) {
+            throw new UnprocessableEntityException(ERROR_REFRESH_JOB_NOT_FOUND);
+        } else if (!NEW.equalsIgnoreCase(refreshJobEntity.get().getStatus())) {
+            throw new UnprocessableEntityException(ERROR_REFRESH_JOB_INVALID_STATE);
+        }
+
+        return refreshJobEntity.get();
+    }
+
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
         var startTime = System.currentTimeMillis();
@@ -112,33 +135,24 @@ public class RefreshOrchestrator {
         ResponseEntity<Object> responseEntity = null;
         Map<String, Set<UserAccessProfile>> userAccessProfiles;
 
-        //fetch the entity based on jobId
-        Optional<RefreshJobEntity> refreshJobEntity = persistenceService.fetchRefreshJobById(jobId);
-        if (refreshJobEntity.isEmpty()) {
-            throw new UnprocessableEntityException("Provided refresh job couldn't be retrieved.");
-        } else if (!NEW.equalsIgnoreCase(refreshJobEntity.get().getStatus())) {
-            throw new UnprocessableEntityException("Provided refresh job is in an invalid state.");
-        } else {
-            log.info("The refresh job {} retrieved from the DB to run {}", refreshJobEntity.get().getJobId(),
-                    refreshJobEntity.get().getRoleCategory());
-        }
+        // fetch the entity based on jobId
+        RefreshJobEntity refreshJobEntity = fetchRefreshJobAndValidateStatus(jobId);
+        log.info("The refresh job {} retrieved from the DB to run {}", refreshJobEntity.getJobId(),
+                    refreshJobEntity.getRoleCategory());
 
         if (userRequest != null && nullCheckPredicate.test(userRequest.getUserIds())) {
             try {
-                //Create userAccessProfiles based upon userIds
+                // Create userAccessProfiles based upon userIds
 
-                if (refreshJobEntity.get().getRoleCategory()
-                        .equals(RoleCategory.LEGAL_OPERATIONS.name())) {
-                    userAccessProfiles = retrieveDataService
-                            .retrieveProfiles(userRequest, UserType.CASEWORKER);
+                if (refreshJobEntity.getRoleCategory().equals(RoleCategory.LEGAL_OPERATIONS.name())) {
+                    userAccessProfiles = retrieveDataService.retrieveProfiles(userRequest, UserType.CASEWORKER);
                     log.info("Total profiles received from CRD is {}", userAccessProfiles.size());
                     //prepare the response code
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.CASEWORKER);
-                } else if (refreshJobEntity.get().getRoleCategory()
-                        .equals(RoleCategory.JUDICIAL.name())) {
-                    userAccessProfiles = retrieveDataService
-                            .retrieveProfiles(userRequest, UserType.JUDICIAL);
+
+                } else if (refreshJobEntity.getRoleCategory().equals(RoleCategory.JUDICIAL.name())) {
+                    userAccessProfiles = retrieveDataService.retrieveProfiles(userRequest, UserType.JUDICIAL);
                     log.info("Total profiles received from JRD is {}", userAccessProfiles.size());
                     //prepare the response code
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
@@ -152,13 +166,13 @@ public class RefreshOrchestrator {
 
             }
 
-            //build success and failure list
-            buildSuccessAndFailureBucket(responseCodeWithUserId, refreshJobEntity.get());
+            // build success and failure list
+            buildSuccessAndFailureBucket(responseCodeWithUserId, refreshJobEntity);
 
         } else {
             // replace the records by service name api
-            responseEntity = refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity.get(),
-                     refreshJobEntity.get().getRoleCategory()
+            responseEntity = refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity,
+                     refreshJobEntity.getRoleCategory()
                             .equals(RoleCategory.LEGAL_OPERATIONS.name()) ? UserType.CASEWORKER : UserType.JUDICIAL);
         }
 

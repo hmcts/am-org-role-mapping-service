@@ -70,6 +70,8 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 return LocalDate.now().plusDays(1);
             case ("generateS2STokenForOrm"):
                 return new TokenUtils().generateServiceToken(buildOrmSpecificConfig());
+            case ("generateS2STokenForXui"):
+                return new TokenUtils().generateServiceToken(buildXuiSpecificConfig());
             default:
                 return super.calculateCustomValue(scenarioContext, key);
         }
@@ -82,4 +84,13 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
         config.setS2sUrl(EnvironmentVariableUtils.getRequiredVariable("IDAM_S2S_URL"));
         return config;
     }
+
+    private UserTokenProviderConfig buildXuiSpecificConfig() {
+        UserTokenProviderConfig config = new UserTokenProviderConfig();
+        config.setMicroService("xui_webapp");
+        config.setSecret(System.getenv("XUI_WEBAPP_S2S_SECRET"));
+        config.setS2sUrl(EnvironmentVariableUtils.getRequiredVariable("IDAM_S2S_URL"));
+        return config;
+    }
+
 }
