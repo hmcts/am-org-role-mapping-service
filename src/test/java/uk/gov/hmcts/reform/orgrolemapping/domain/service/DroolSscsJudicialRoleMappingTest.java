@@ -249,9 +249,9 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Employment Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true,true",
         "SSCS Employment Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true,true",
         // ^ judge RA will be created if a booking created
-        "SSCS Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
+        "SSCS Employment Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
         // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
-        "SSCS Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
+        "SSCS Employment Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
         // ^ judge RA will not be created as there is no booking
 
         "SSCS Recorder-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false,true",
