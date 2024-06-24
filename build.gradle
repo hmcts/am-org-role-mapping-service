@@ -223,7 +223,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.12"
 }
 
 task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
