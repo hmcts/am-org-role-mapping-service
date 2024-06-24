@@ -128,7 +128,7 @@ public class RefreshOrchestrator {
 
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
+    public void refresh(Long jobId, UserRequest userRequest) {
 
         var startTime = System.currentTimeMillis();
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
@@ -148,14 +148,14 @@ public class RefreshOrchestrator {
                     userAccessProfiles = retrieveDataService.retrieveProfiles(userRequest, UserType.CASEWORKER);
                     log.info("Total profiles received from CRD is {}", userAccessProfiles.size());
                     //prepare the response code
-                    responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
+                    prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.CASEWORKER);
 
                 } else if (refreshJobEntity.getRoleCategory().equals(RoleCategory.JUDICIAL.name())) {
                     userAccessProfiles = retrieveDataService.retrieveProfiles(userRequest, UserType.JUDICIAL);
                     log.info("Total profiles received from JRD is {}", userAccessProfiles.size());
                     //prepare the response code
-                    responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
+                    prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.JUDICIAL);
                 }
             } catch (FeignException.NotFound feignClientException) {
@@ -171,15 +171,12 @@ public class RefreshOrchestrator {
 
         } else {
             // replace the records by service name api
-            responseEntity = refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity,
+            refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity,
                      refreshJobEntity.getRoleCategory()
                             .equals(RoleCategory.LEGAL_OPERATIONS.name()) ? UserType.CASEWORKER : UserType.JUDICIAL);
         }
 
-
         log.debug("Execution refresh() : {} ms", (Math.subtractExact(System.currentTimeMillis(), startTime)));
-
-        return responseEntity;
     }
 
 
@@ -258,7 +255,7 @@ public class RefreshOrchestrator {
                         .convertRoleAssignmentResource(entity.getBody());
 
                     responseCodeWithUserId.put(resource.getRoleAssignmentRequest()
-                        .getRequest().getReference(), entity.getStatusCode()
+                        .getRequest().getReference(), HttpStatus.valueOf(entity.getStatusCode().value())
                     );
                 });
 
