@@ -5,6 +5,7 @@ public enum FeatureFlagEnum {
     IAC_JRD_1_0("iac_jrd_1_0"),
     SSCS_HEARING_1_0("sscs_hearing_1_0"),
     SSCS_WA_1_0("sscs_wa_1_0"),
+    SSCS_WA_1_1("sscs_wa_1_1"),
     SSCS_WA_1_2("sscs_wa_1_2"),
     SSCS_WA_1_3("sscs_wa_1_3"),
     CIVIL_WA_1_0("civil_wa_1_0"),
