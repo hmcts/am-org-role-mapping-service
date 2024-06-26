@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,13 +36,13 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         false,
                         true,
                         List.of(""),
-                        List.of("circuit-judge", "hmcts-judiciary", "hearing-viewer")),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary", "hearing-viewer")),
                 Arguments.of("Deputy Circuit Judge",
                         "Fee Paid",
                         true,
                         true,
                         List.of("Deputy District Judge"),
-                        List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary",
+                        List.of("judge", "circuit-judge", "fee-paid-judge", "hmcts-judiciary",
                                 "hearing-viewer")),
                 Arguments.of("Deputy District Judge- Sitting in Retirement",
                         "Fee Paid",
@@ -71,21 +70,21 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         true,
                         true,
                         List.of(""),
-                        List.of("circuit-judge", "hmcts-judiciary",
+                        List.of("judge", "circuit-judge", "hmcts-judiciary",
                                 "hearing-viewer")),
             Arguments.of("Senior Circuit Judge",
                 "Salaried",
                 true,
                 true,
                 List.of(""),
-                List.of("circuit-judge", "hmcts-judiciary",
+                List.of("judge", "circuit-judge", "hmcts-judiciary",
                     "hearing-viewer")),
             Arguments.of("Specialist Circuit Judge",
                 "Salaried",
                 true,
                 true,
                 List.of(""),
-                List.of("circuit-judge", "hmcts-judiciary",
+                List.of("judge", "circuit-judge", "hmcts-judiciary",
                     "hearing-viewer")),
                 Arguments.of("Recorder", "Fee Paid",
                         false,
@@ -110,7 +109,19 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         false,
                         true,
                         List.of(""),
-                        List.of("judge", "hmcts-judiciary", "hearing-viewer"))
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Employment Judge",
+                        "Salaried",
+                        false,
+                        true,
+                        List.of(""),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Employment Judge",
+                        "Fee Paid",
+                        true,
+                        true,
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer"))
         );
     }
 
@@ -151,19 +162,13 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
         );
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build(),
-                                FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build(),
-                                FeatureFlag.builder().flagName("civil_wa_1_3").status(true).build())
-                );
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(hearingFlag));
 
         //assertions
         assertFalse(roleAssignments.isEmpty());
 
         List<String> roleNameResults =
-                roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
+                roleAssignments.stream().map(RoleAssignment::getRoleName).toList();
         assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
         roleAssignments.forEach(r -> {
@@ -197,4 +202,17 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
         });
 
     }
+
+    private List<FeatureFlag> setFeatureFlags(boolean hearingFlag) {
+        List<String> flags = List.of("civil_wa_1_0", "civil_wa_1_1", "civil_wa_1_2",
+                "civil_wa_1_3", "civil_wa_1_4", "civil_wa_1_5", "sscs_hearing_1_0");
+
+        return flags.stream()
+                .map(flag -> FeatureFlag.builder()
+                        .flagName(flag)
+                        .status(!flag.equals("sscs_hearing_1_0") || hearingFlag)
+                        .build())
+                .toList();
+    }
+
 }

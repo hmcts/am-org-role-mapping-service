@@ -11,12 +11,14 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import java.util.ArrayList;
 import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.Arrays
 import java.util.HashMap
+import java.util.List;
 import java.util.Map
 import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
-
+import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.cloneNewRoleAssignmentAndChangeRegion
 
 /*
  * CIVIL "judge" Org role mapping.
@@ -89,6 +91,46 @@ then
       logMsg("Rule : v11_civil_judge_org_role");
 end;
 
+/*
+ * CIVIL "judge" Org role mapping (multi region - see DTSAM-353).
+ */
+rule "civil_judge_org_role_multi_region"
+when
+  $joh: JudicialOfficeHolder(office == "CIVIL Employment Judge-Salaried")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+
+   RoleAssignment ra = RoleAssignment.builder()
+                             .actorIdType(ActorIdType.IDAM)
+                             .actorId($joh.getUserId())
+                             .roleCategory(RoleCategory.JUDICIAL)
+                             .roleType(RoleType.ORGANISATION)
+                             .roleName("judge")
+                             .grantType(GrantType.STANDARD)
+                             .classification(Classification.PUBLIC)
+                             .readOnly(false)
+                             .beginTime($joh.getBeginTime())
+                             .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+                             .attributes(attribute)
+                             .authorisations($joh.getTicketCodes())
+                             .build();
+
+   // For users with any England/Wales region, create a role assignment for each England/Wales region.
+   List<String> englandWalesRegions = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
+   if (englandWalesRegions.contains($joh.getRegionId())) {
+       for (String regionId : englandWalesRegions) {
+           insert(cloneNewRoleAssignmentAndChangeRegion(ra, regionId));
+       }
+   } else {
+       insert(ra);
+   }
+   logMsg("Rule : civil_judge_org_role_multi_region");
+end;
 
 /*
  * CIVIL "leadership-judge" Org role mapping.
@@ -261,6 +303,92 @@ then
       logMsg("Rule : civil_fee_paid_judge_org_role");
 end;
 
+/*
+ * CIVIL "fee-paid-judge" Org role mapping (multi region - see DTSAM-353).
+ */
+rule "civil_fee_paid_judge_org_role_multi_region"
+when
+  $joh: JudicialOfficeHolder(office == "CIVIL Employment Judge-Fee-Paid")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+   attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+
+   RoleAssignment ra = RoleAssignment.builder()
+                             .actorIdType(ActorIdType.IDAM)
+                             .actorId($joh.getUserId())
+                             .roleCategory(RoleCategory.JUDICIAL)
+                             .roleType(RoleType.ORGANISATION)
+                             .roleName("fee-paid-judge")
+                             .grantType(GrantType.STANDARD)
+                             .classification(Classification.PUBLIC)
+                             .readOnly(false)
+                             .beginTime($joh.getBeginTime())
+                             .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+                             .attributes(attribute)
+                             .authorisations($joh.getTicketCodes())
+                             .build();
+
+   // For users with any England/Wales region, create a role assignment for each England/Wales region.
+   List<String> englandWalesRegions = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
+   if (englandWalesRegions.contains($joh.getRegionId())) {
+       for (String regionId : englandWalesRegions) {
+           insert(cloneNewRoleAssignmentAndChangeRegion(ra, regionId));
+       }
+   } else {
+       insert(ra);
+   }
+   logMsg("Rule : civil_fee_paid_judge_org_role_multi_region");
+end;
+
+/*
+ * CIVIL "judge" org role (multi region - see DTSAM-353) is created if judicial office holder
+ * is a "CIVIL Employment Judge-Fee-Paid" and has a booking.
+ */
+rule "civil_judge_org_role_for_fee_paid_judge_multi_region"
+when
+  $joh: JudicialOfficeHolder(office == "CIVIL Employment Judge-Fee-Paid")
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+   $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+
+   RoleAssignment ra = RoleAssignment.builder()
+                             .actorIdType(ActorIdType.IDAM)
+                             .actorId($joh.getUserId())
+                             .roleCategory(RoleCategory.JUDICIAL)
+                             .roleType(RoleType.ORGANISATION)
+                             .roleName("judge")
+                             .grantType(GrantType.STANDARD)
+                             .classification(Classification.PUBLIC)
+                             .readOnly(false)
+                             .beginTime($bk.getBeginTime())
+                             .endTime($bk.getEndTime())
+                             .attributes(attribute)
+                             .authorisations($joh.getTicketCodes())
+                             .build();
+
+   // For users with any England/Wales region, create a role assignment for each England/Wales region.
+   List<String> englandWalesRegions = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
+   if (englandWalesRegions.contains($joh.getRegionId())) {
+       for (String regionId : englandWalesRegions) {
+           insert(cloneNewRoleAssignmentAndChangeRegion(ra, regionId));
+       }
+   } else {
+       insert(ra);
+   }
+   logMsg("Rule : civil_judge_org_role_for_fee_paid_judge_multi_region");
+end;
 
 /*
  * CIVIL "hmcts-judiciary" Org role mapping.
@@ -275,7 +403,8 @@ $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL P
                                       "CIVIL Deputy Circuit Judge-Fee-Paid", "CIVIL Deputy District Judge-Fee-Paid",
                                       "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                       "CIVIL Recorder-Fee-Paid", "CIVIL District Judge (sitting in retirement)-Fee-Paid",
-                                      "CIVIL Tribunal Judge-Salaried", "CIVIL Tribunal Judge-Fee-Paid"))
+                                      "CIVIL Tribunal Judge-Salaried", "CIVIL Tribunal Judge-Fee-Paid",
+                                      "CIVIL Employment Judge-Salaried", "CIVIL Employment Judge-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if($joh.getOffice().contains("Fee-Paid")) {
