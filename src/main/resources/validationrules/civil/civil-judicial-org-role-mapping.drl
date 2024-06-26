@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import java.util.ArrayList;
 import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
-import java.util.Arrays
 import java.util.HashMap
 import java.util.List;
 import java.util.Map
@@ -121,7 +120,7 @@ then
                              .build();
 
    // For users with any England/Wales region, create a role assignment for each England/Wales region.
-   List<String> englandWalesRegions = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
+   List<String> englandWalesRegions = List.of("1", "2", "3", "4", "5", "6", "7");
    if (englandWalesRegions.contains($joh.getRegionId())) {
        for (String regionId : englandWalesRegions) {
            insert(cloneNewRoleAssignmentAndChangeRegion(ra, regionId));
@@ -334,7 +333,7 @@ then
                              .build();
 
    // For users with any England/Wales region, create a role assignment for each England/Wales region.
-   List<String> englandWalesRegions = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
+   List<String> englandWalesRegions = List.of("1", "2", "3", "4", "5", "6", "7");
    if (englandWalesRegions.contains($joh.getRegionId())) {
        for (String regionId : englandWalesRegions) {
            insert(cloneNewRoleAssignmentAndChangeRegion(ra, regionId));
@@ -379,7 +378,7 @@ then
                              .build();
 
    // For users with any England/Wales region, create a role assignment for each England/Wales region.
-   List<String> englandWalesRegions = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
+   List<String> englandWalesRegions = List.of("1", "2", "3", "4", "5", "6", "7");
    if (englandWalesRegions.contains($joh.getRegionId())) {
        for (String regionId : englandWalesRegions) {
            insert(cloneNewRoleAssignmentAndChangeRegion(ra, regionId));
