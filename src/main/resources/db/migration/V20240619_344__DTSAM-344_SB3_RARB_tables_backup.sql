@@ -65,7 +65,7 @@ DO $$
             )
         THEN
             create table batch_job_instance_v4 (like batch_job_instance including all);
-            drop table batch_job_instance;
+            insert into batch_job_instance_v4 select * from batch_job_instance;
         END IF ;
     END
 $$ ;
