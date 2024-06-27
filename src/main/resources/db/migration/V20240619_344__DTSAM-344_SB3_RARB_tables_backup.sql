@@ -11,7 +11,6 @@ DO $$
         THEN
             create table batch_job_execution_context_v4 (like batch_job_execution_context including all);
             insert into batch_job_execution_context_v4 select * from batch_job_execution_context;
-            drop table batch_job_execution_context;
         END IF ;
 
         IF EXISTS
@@ -23,7 +22,6 @@ DO $$
         THEN
             create table batch_step_execution_context_v4 (like batch_step_execution_context including all);
             insert into batch_step_execution_context_v4 select * from batch_step_execution_context;
-            drop table batch_step_execution_context;
         END IF ;
 
         IF EXISTS
@@ -35,7 +33,6 @@ DO $$
         THEN
             create table batch_step_execution_v4 (like batch_step_execution including all);
             insert into batch_step_execution_v4 select * from batch_step_execution;
-            drop table batch_step_execution;
         END IF ;
 
         IF EXISTS
@@ -47,7 +44,6 @@ DO $$
         THEN
             create table batch_job_execution_params_v4 (like batch_job_execution_params including all);
             insert into batch_job_execution_params_v4 select * from batch_job_execution_params;
-            drop table batch_job_execution_params;
         END IF ;
 
         IF EXISTS
@@ -59,7 +55,6 @@ DO $$
         THEN
             create table batch_job_execution_v4 (like batch_job_execution including all);
             insert into batch_job_execution_v4 select * from batch_job_execution;
-            drop table batch_job_execution;
         END IF ;
 
         IF EXISTS
@@ -70,7 +65,6 @@ DO $$
             )
         THEN
             create table batch_job_instance_v4 (like batch_job_instance including all);
-            insert into batch_job_instance_v4 select * from batch_job_instance;
             drop table batch_job_instance;
         END IF ;
     END
