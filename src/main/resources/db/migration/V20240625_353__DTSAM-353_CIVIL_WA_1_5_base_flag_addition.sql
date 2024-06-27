@@ -1,3 +1,4 @@
+-- DTSAM-353: insert civil_wa_1_5 base flag into flag_config table
 INSERT INTO flag_config (flag_name, env, service_name, status) VALUES ('civil_wa_1_5', 'local', 'civil', 'true');
 INSERT INTO flag_config (flag_name, env, service_name, status) VALUES ('civil_wa_1_5', 'pr', 'civil', 'true');
 INSERT INTO flag_config (flag_name, env, service_name, status) VALUES ('civil_wa_1_5', 'aat', 'civil', 'false');
