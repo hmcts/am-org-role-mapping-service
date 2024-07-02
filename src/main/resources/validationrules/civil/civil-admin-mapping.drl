@@ -140,12 +140,17 @@ end;
 rule "civil_hearing_centre_team_leader_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(flagName == FeatureFlagEnum.CIVIL_WA_1_6.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("3"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,access_requests"));
+   if ($f2.isStatus()) {
+     attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,access_requests,routine_work"));
+   } else {
+     attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,access_requests"));
+   }
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
   insert(
       RoleAssignment.builder()
@@ -170,12 +175,17 @@ end;
 rule "civil_hearing_centre_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("4"), serviceCode in ("AAA6", "AAA7"), !suspended)
+  $f2: FeatureFlag(flagName == FeatureFlagEnum.CIVIL_WA_1_6.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("3", "4"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work"));
+   if ($f2.isStatus()) {
+     attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work"));
+   } else {
+     attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work"));
+   }
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
   insert(
       RoleAssignment.builder()
@@ -191,36 +201,6 @@ then
       .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : civil_hearing_centre_admin_org_role");
-end;
-
-/*
- * CIVIL admin "hearing-centre-admin" V11 Org role mapping.
- */
-
-rule "v11_civil_hearing_centre_admin_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_1.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("3"), serviceCode in ("AAA6", "AAA7"), !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.ADMIN)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("hearing-centre-admin")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
-      .build());
-      logMsg("Rule : v11_civil_hearing_centre_admin_org_role");
 end;
 
 /*
