@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertHelper.MultiRegion;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,75 +40,162 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsA
 
 @RunWith(MockitoJUnitRunner.class)
 class DroolCivilJudicialRoleMappingTest extends DroolBase {
+
+    // NB: multi-regions are: all English and Welsh regions
+    static List<String> multiRegionJudicialList = List.of("1", "2", "3", "4", "5", "6", "7");
+
     @ParameterizedTest
     @CsvSource({
-        "CIVIL District Judge-Salaried,judge",
-        "CIVIL Presiding Judge-Salaried,judge",
-        "CIVIL Resident Judge-Salaried,judge",
-        "CIVIL Circuit Judge-Salaried,circuit-judge",
-        "CIVIL Tribunal Judge-Salaried,judge",
-        "CIVIL Specialist Circuit Judge-Salaried,circuit-judge",
-        "CIVIL Senior Circuit Judge-Salaried,circuit-judge",
-        "CIVIL High Court Judge-Salaried,circuit-judge"
-    })
-    void shouldReturnSalariedRoles(String setOffice, String roleNameOutput) {
+        "CIVIL District Judge-Salaried,'judge,hmcts-judiciary',1,false",
+        "CIVIL Presiding Judge-Salaried,'judge,hmcts-judiciary',1,false",
+        "CIVIL Resident Judge-Salaried,'judge,hmcts-judiciary',1,false",
+        "CIVIL Tribunal Judge-Salaried,'judge,hmcts-judiciary',1,false",
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',1,true",
+        "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',2,true",
+        "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',3,true",
+        "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',4,true",
+        "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',5,true",
+        "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',6,true",
+        "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',7,true",
+        "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',11,false", // Scotland
+
+        "CIVIL Designated Civil Judge-Salaried,"
+                + "'judge,leadership-judge,task-supervisor,hmcts-judiciary,case-allocator',1,false",
+        "CIVIL Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,false",
+        "CIVIL Specialist Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,false",
+        "CIVIL Senior Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,false",
+        "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,false"
+    })
+    void shouldReturnSalariedRoles(String setOffice, String expectedRoles, String region, boolean expectMultiRegion) {
+
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(setOffice);
+            joh.setRegionId(region);
+        });
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
+
+        List<String> rolesThatRequireRegions = List.of(
+                "judge", "leadership-judge", "task-supervisor", "case-allocator", "circuit-judge"
+        );
 
         //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
+        List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
+        MultiRegion.assertRoleAssignmentCount(
+                roleAssignments,
+                expectedRoleList,
+                expectMultiRegion,
+                rolesThatRequireRegions,
+                multiRegionJudicialList
+        );
+
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "hmcts-judiciary"));
-        String regionId = allProfiles.iterator().next().getRegionId();
+
+        Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
+
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(regionId, r.getAttributes().get("region").asText());
-            }
+            assertEquals("JUDICIAL", r.getRoleCategory().toString());
+            assertEquals("ORGANISATION", r.getRoleType().toString());
+
+            // check region status and add to map
+            MultiRegion.assertRegionStatusAndUpdateRoleToRegionMap(r, roleNameToRegionsMap);
         });
 
+        // verify regions add to map
+        MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
+                roleNameToRegionsMap,
+                expectedRoleList,
+                expectMultiRegion,
+                multiRegionJudicialList,
+                region, // fallback if not multi-region scenario
+                null // i.e. no bookings
+        );
     }
 
     @ParameterizedTest
     @CsvSource({
-        "CIVIL Deputy District Judge-Fee-Paid,fee-paid-judge",
-        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,fee-paid-judge",
-        "CIVIL Recorder-Fee-Paid,fee-paid-judge",
-        "CIVIL District Judge (sitting in retirement)-Fee-Paid,fee-paid-judge",
-        "CIVIL Tribunal Judge-Fee-Paid,fee-paid-judge"
-    })
-    void shouldReturnFeePaidRoles(String setOffice, String roleNameOutput) throws IOException {
+        "CIVIL Deputy Circuit Judge-Fee-Paid,'judge,circuit-judge,fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Deputy District Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Recorder-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL District Judge (sitting in retirement)-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Tribunal Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,true",
+        "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',2,true",
+        "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',3,true",
+        "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',4,true",
+        "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',5,true",
+        "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',6,true",
+        "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',7,true",
+        "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',11,false" // Scotland
+    })
+    void shouldReturnFeePaidRoles(String setOffice, String expectedRoles, String region,
+                                  boolean expectMultiRegion) throws IOException {
+
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(setOffice);
+            joh.setRegionId(region);
+        });
+
         JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
         judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("location1");
         judicialBooking.setRegionId("1");
         judicialBookings = Set.of(judicialBooking);
+
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("civil_wa_1_0", true));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
+
+        List<String> rolesThatRequireRegions = new ArrayList<>(List.of(
+                "judge", "circuit-judge"
+        ));
+        if (setOffice.equals("CIVIL Employment Judge-Fee-Paid")) {
+            rolesThatRequireRegions.add("fee-paid-judge");
+        }
 
         //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
+        List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
+        MultiRegion.assertRoleAssignmentCount(
+                roleAssignments,
+                expectedRoleList,
+                expectMultiRegion,
+                rolesThatRequireRegions,
+                multiRegionJudicialList
+        );
+
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
+
+        Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
+
+        roleAssignments.forEach(r -> {
+            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+
+            // check region status and add to map
+            MultiRegion.assertRegionStatusAndUpdateRoleToRegionMap(r, roleNameToRegionsMap);
+        });
         RoleAssignment role = roleAssignments.stream().filter(r -> "judge".equals(r.getRoleName())).findFirst().get();
         assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
         assertEquals(judicialBooking.getRegionId(), role.getAttributes().get("region").asText());
+
+        // verify regions add to map
+        MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
+                roleNameToRegionsMap,
+                expectedRoleList,
+                expectMultiRegion,
+                multiRegionJudicialList,
+                region, // fallback if not multi-region scenario
+                judicialBooking.getRegionId()
+        );
     }
 
     @ParameterizedTest
