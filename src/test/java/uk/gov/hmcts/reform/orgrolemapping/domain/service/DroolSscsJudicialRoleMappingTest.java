@@ -4,6 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -113,13 +114,19 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Principal Judge-Salaried,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                 + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary',7,true",
 
-        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
-        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
-        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,"
+                + "case-allocator,task-supervisor',1,false",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,"
+                + "case-allocator,task-supervisor',6,true",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,"
+                + "case-allocator,task-supervisor',7,true",
 
-        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
-        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
-        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,case-allocator,"
+                + "task-supervisor',1,false",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,case-allocator,"
+                + "task-supervisor',6,true",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,case-allocator,"
+                + "task-supervisor',7,true",
 
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary',1,false",
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary',6,true",
@@ -157,8 +164,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -288,8 +294,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -335,6 +340,14 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("2");
         judicialBookings = Set.of(judicialBooking);
+    }
+
+    private static List<FeatureFlag> setFeatureFlags() {
+        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3", "sscs_wa_1_4");
+
+        return flags.stream()
+                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
+                .toList();
     }
 
 }
