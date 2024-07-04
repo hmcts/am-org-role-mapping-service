@@ -94,6 +94,10 @@ env.JUDICIAL_FTA_ENABLED = "true"
 env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
 env.REFRESH_FTA_ENABLED = "true"
 
+// Vars for Azure Container Registries DTSAM-370
+env.TESTCONTAINERS_HOST_OVERRIDE="localhost"
+env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctspublic.azurecr.io/imported/"
+
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
     env.LAUNCH_DARKLY_ENV = "pr"

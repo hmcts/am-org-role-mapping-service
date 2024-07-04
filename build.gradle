@@ -593,7 +593,8 @@ dependencyManagement {
 
 project.ext {
     pacticipant = 'accessMgmt_orgRoleMapping'
-    pacticipantVersion = getCheckedOutGitCommitHash()
+    // DTSAM-379 canIDeploy Index 0 out of bounds for length 0 Issue
+    pacticipantVersion = System.env.GIT_COMMIT.substring(0,9)
 }
 
 task contract(type: Test) {
@@ -632,10 +633,6 @@ task runProviderPactVerification(type: Test) {
 }
 
 runProviderPactVerification.finalizedBy pactVerify
-
-static def getCheckedOutGitCommitHash() {
-    'git rev-parse --verify --short HEAD'.execute().text.trim()
-}
 
 pact {
     broker {
