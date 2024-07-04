@@ -42,7 +42,7 @@ def versions = [
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
         springBoot     : '2.7.18',
-        spring         : '5.3.36',
+        spring         : '5.3.37',
         springSecurity : '5.7.11',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
@@ -378,7 +378,7 @@ dependencies {
     implementation group: 'javax.inject', name: 'javax.inject', version: '1'
 
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
-    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.3'
+    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.4'
 
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
 
@@ -407,7 +407,7 @@ dependencies {
         exclude group: 'com.microsoft.azure', module: 'adal4j'
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
-    implementation group: 'com.azure', name: 'azure-core', version: '1.48.0'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.49.1'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.16.0'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.7'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.7.0'
@@ -593,7 +593,8 @@ dependencyManagement {
 
 project.ext {
     pacticipant = 'accessMgmt_orgRoleMapping'
-    pacticipantVersion = getCheckedOutGitCommitHash()
+    // DTSAM-379 canIDeploy Index 0 out of bounds for length 0 Issue
+    pacticipantVersion = System.env.GIT_COMMIT.substring(0,9)
 }
 
 task contract(type: Test) {
@@ -632,10 +633,6 @@ task runProviderPactVerification(type: Test) {
 }
 
 runProviderPactVerification.finalizedBy pactVerify
-
-static def getCheckedOutGitCommitHash() {
-    'git rev-parse --verify --short HEAD'.execute().text.trim()
-}
 
 pact {
     broker {
