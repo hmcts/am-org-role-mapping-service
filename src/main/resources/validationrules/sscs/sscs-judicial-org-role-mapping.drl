@@ -220,7 +220,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried") && $joh.getRegionId() != null) {
+   if (($joh.getOffice().equalsIgnoreCase("SSCS Regional Tribunal Judge-Salaried") ||
+        $joh.getOffice().equalsIgnoreCase("SSCS Principal Judge-Salaried")) && $joh.getRegionId() != null) {
      attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
   insert(
@@ -295,7 +296,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   if (!$joh.getOffice().equalsIgnoreCase("SSCS President of Tribunal-Salaried") && $joh.getRegionId() != null) {
+   if (($joh.getOffice().equalsIgnoreCase("SSCS Regional Tribunal Judge-Salaried") ||
+        $joh.getOffice().equalsIgnoreCase("SSCS Principal Judge-Salaried")) && $joh.getRegionId() != null) {
      attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
   insert(

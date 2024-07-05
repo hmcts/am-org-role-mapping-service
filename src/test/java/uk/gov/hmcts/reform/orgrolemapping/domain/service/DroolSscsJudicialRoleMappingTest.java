@@ -160,6 +160,12 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         );
         if (setOffice.contains("President of Tribunal")) {
             rolesThatRequireRegions = List.of(); // NB: no regions for "President of Tribunal"
+        } else if (List.of("SSCS Tribunal Judge-Salaried", "SSCS Judge of the First-tier Tribunal-Salaried")
+                .contains(setOffice)) {
+            rolesThatRequireRegions = List.of(
+                    "judge",
+                    "post-hearing-salaried-judge"
+            );
         }
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
