@@ -38,25 +38,25 @@ def versions = [
         junit          : '5.9.0',
         lombok         : '1.18.32',
         pitest         : '1.16.1',
-        reformLogging  : '6.1.4',
+        reformLogging  : '6.1.5',
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
         springBoot     : '2.7.18',
-        spring         : '5.3.36',
+        spring         : '5.3.37',
         springSecurity : '5.7.11',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
-        tomcat         : '9.0.88',
+        tomcat         : '9.0.90',
         pact_version   : '4.1.41',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
-        jacksondata    : '2.17.0',
+        jacksondata    : '2.17.1',
         drools         : '7.73.0.Final',
         log4JVersion   : '2.20.0',
         logbackVersion : '1.2.13',
         launchDarklySdk: '5.10.9',
-        netty_version  : '4.1.109.Final'
+        netty_version  : '4.1.111.Final'
 
 ]
 
@@ -372,14 +372,13 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.spring
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.8'
-    implementation group: 'com.github.hmcts', name:'properties-volume-spring-boot-starter', version:'0.1.1'
     implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
     implementation group: 'org.json', name: 'json', version: '20231013'
     implementation group: 'javax.inject', name: 'javax.inject', version: '1'
 
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
-    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.3'
+    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.4'
 
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
 
@@ -408,9 +407,9 @@ dependencies {
         exclude group: 'com.microsoft.azure', module: 'adal4j'
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
-    implementation group: 'com.azure', name: 'azure-core', version: '1.48.0'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.49.1'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.16.0'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.6'
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.7'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.7.0'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '32.1.3-jre'
@@ -526,7 +525,7 @@ dependencies {
     testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
-    testImplementation 'com.github.hmcts:fortify-client:1.4.1:all'
+    testImplementation 'com.github.hmcts:fortify-client:1.4.3:all'
 
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
@@ -594,7 +593,8 @@ dependencyManagement {
 
 project.ext {
     pacticipant = 'accessMgmt_orgRoleMapping'
-    pacticipantVersion = getCheckedOutGitCommitHash()
+    // DTSAM-379 canIDeploy Index 0 out of bounds for length 0 Issue
+    pacticipantVersion = System.env.GIT_COMMIT.substring(0,9)
 }
 
 task contract(type: Test) {
@@ -633,10 +633,6 @@ task runProviderPactVerification(type: Test) {
 }
 
 runProviderPactVerification.finalizedBy pactVerify
-
-static def getCheckedOutGitCommitHash() {
-    'git rev-parse --verify --short HEAD'.execute().text.trim()
-}
 
 pact {
     broker {
