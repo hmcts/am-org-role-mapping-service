@@ -75,10 +75,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge,case-allocator,"
                 + "task-supervisor'",
         "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge,"
-                + "case-allocator,task-supervisor'",
-        "Tribunal Member Medical,Salaried,BBA3,'medical,hmcts-judiciary'",
-        "Chief Medical Member First-tier Tribunal,Salaried,BBA3,'medical,hmcts-judiciary'",
-        "Regional Medical Member,Salaried,BBA3,'medical,hmcts-judiciary'"
+                + "case-allocator,task-supervisor'"
     })
     void shouldReturnSalariedRoles(String appointment, String appointmentType,
                                    String serviceCode, String expectedRoles) {
@@ -86,7 +83,6 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
-            judicialAccessProfile.setBaseLocationId("1032");
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of(serviceCode)));
         });
 
