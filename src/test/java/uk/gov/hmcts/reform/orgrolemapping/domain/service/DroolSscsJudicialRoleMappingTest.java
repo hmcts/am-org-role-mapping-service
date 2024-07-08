@@ -126,13 +126,19 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Principal Judge-Salaried,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                 + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary',7,true",
 
-        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
-        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
-        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,"
+                + "case-allocator,task-supervisor',1,false",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,"
+                + "case-allocator,task-supervisor',6,true",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,"
+                + "case-allocator,task-supervisor',7,true",
 
-        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
-        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
-        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,case-allocator,"
+                + "task-supervisor',1,false",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,case-allocator,"
+                + "task-supervisor',6,true",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,case-allocator,"
+                + "task-supervisor',7,true",
 
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary',1,false",
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary',6,true",
@@ -166,6 +172,12 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         );
         if (setOffice.contains("President of Tribunal")) {
             rolesThatRequireRegions = List.of(); // NB: no regions for "President of Tribunal"
+        } else if (List.of("SSCS Tribunal Judge-Salaried", "SSCS Judge of the First-tier Tribunal-Salaried")
+                .contains(setOffice)) {
+            rolesThatRequireRegions = List.of(
+                    "judge",
+                    "post-hearing-salaried-judge"
+            );
         }
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
