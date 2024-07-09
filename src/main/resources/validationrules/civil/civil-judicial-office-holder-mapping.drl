@@ -431,5 +431,59 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : civil_tribunal_judge_salaried_joh");
+      logMsg("Rule : civil_tribunal_judge_fee_paid_joh");
+end;
+
+/*
+ * "CIVIL Employment Judge - Salaried" business role business role mapping to JOH.
+ */
+rule "civil_employment_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_5.getValue())
+   $jap: JudicialAccessProfile(appointment == "Employment Judge",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("CIVIL Employment Judge-Salaried")
+      .jurisdiction("CIVIL")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : civil_employment_judge_salaried_joh");
+end;
+
+/*
+ * "CIVIL Employment Judge - Fee Paid" business role business role mapping to JOH.
+ */
+rule "civil_employment_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_5.getValue())
+   $jap: JudicialAccessProfile(appointment == "Employment Judge",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("CIVIL Employment Judge-Fee-Paid")
+      .jurisdiction("CIVIL")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : civil_employment_judge_fee_paid_joh");
 end;
