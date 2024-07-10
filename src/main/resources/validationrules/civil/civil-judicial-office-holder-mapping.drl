@@ -164,7 +164,7 @@ then
 end;
 
 /*
- * "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid" business role business role mapping to JOH. v1.7
+ * "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid" business role mapping to JOH. v1.7
  * The creation of the JOH object accommodates for both 'Deputy District Judge- Sitting in Retirement'
  * and 'Deputy District Judge (sitting in retirement)' appointments. See DTSAM-384.
  */
