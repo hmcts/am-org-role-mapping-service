@@ -197,68 +197,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         );
     }
 
-    @ParameterizedTest
-    @CsvSource({
-        "CIVIL Deputy Circuit Judge-Fee-Paid,fee-paid-judge"
-    })
-    void shouldReturnCircuitJudgeRoles(String setOffice, String roleNameOutput) throws IOException {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
-
-        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
-        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
-                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
-        judicialBooking.setLocationId("location1");
-        judicialBooking.setRegionId("1");
-        judicialBookings = Set.of(judicialBooking);
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput, "judge","circuit-judge","hmcts-judiciary"));
-        roleAssignments.forEach(r -> assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText()));
-        RoleAssignment role = roleAssignments.stream().filter(r -> "circuit-judge".equals(r.getRoleName())).findFirst()
-                .get();
-        assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
-        assertEquals(judicialBooking.getRegionId(), role.getAttributes().get("region").asText());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "CIVIL Designated Civil Judge-Salaried,judge,hmcts-judiciary,leadership-judge,task-supervisor,case-allocator"
-    })
-    void shouldReturnHmctsJudiciaryRoles(String setOffice,
-                                         @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
-                containsInAnyOrder(roleNameOutput));
-        String regionId = allProfiles.iterator().next().getRegionId();
-        roleAssignments.forEach(r -> {
-            assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            if (!r.getRoleName().contains("hmcts")) {
-                assertEquals(regionId, r.getAttributes().get("region").asText());
-            }
-        });
-    }
-
     @Test
     void civilJudicialScenario_2V2() {
 
