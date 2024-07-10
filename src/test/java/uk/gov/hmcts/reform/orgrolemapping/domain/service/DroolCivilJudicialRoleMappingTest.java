@@ -309,7 +309,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         List<AppointmentV2> appointmentList = new ArrayList<>();
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 "487294","FALSE","Recorder", "Fee Paid",
-                LocalDate.now().minusDays(20L),null,null));
+                LocalDate.now().minusYears(1L),null,null));
         appointmentList.add(TestDataBuilder.buildAppointmentWithParamsV2(
                 "487294","FALSE","Deputy Upper Tribunal Judge","Fee Paid",
                 LocalDate.now().minusYears(1L),null,null));
@@ -351,7 +351,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertNotNull(r.getBeginTime().getDayOfYear());
+            assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
             assertNull(r.getEndTime());
         });
     }

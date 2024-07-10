@@ -115,7 +115,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         "Fee Paid",
                         true,
                         true,
-                        List.of("Deputy District Judge"),
+                        List.of(""),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
                 Arguments.of("Recorder",
                         "Fee Paid",
