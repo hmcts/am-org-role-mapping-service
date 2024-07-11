@@ -18,7 +18,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-061_DeleteDataForRoleAssignments].
 
   @S-062
-  @FeatureToggle(DB:civil_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_1_6=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader and Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-062_DeleteDataForRoleAssignments],

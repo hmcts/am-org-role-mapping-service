@@ -20,7 +20,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -39,13 +38,13 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
-    {
+    static {
         expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
-        expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "hearing_work,access_requests");
+        expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "hearing_work,access_requests,routine_work");
         expectedRoleNameWorkTypesMap.put("hmcts-ctsc", null);
         expectedRoleNameWorkTypesMap.put("ctsc", "routine_work");
         expectedRoleNameWorkTypesMap.put("ctsc-team-leader", "routine_work,access_requests");
-        expectedRoleNameWorkTypesMap.put("hearing-centre-admin", "hearing_work");
+        expectedRoleNameWorkTypesMap.put("hearing-centre-admin", "hearing_work,routine_work");
         expectedRoleNameWorkTypesMap.put("senior-tribunal-caseworker", "decision_making_work,access_requests");
         expectedRoleNameWorkTypesMap.put("tribunal-caseworker", "decision_making_work");
         expectedRoleNameWorkTypesMap.put("hmcts-legal-operations", null);
@@ -161,11 +160,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
-                        FeatureFlag.builder().flagName("civil_wa_1_1").status(true).build(),
-                        FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build(),
-                        FeatureFlag.builder().flagName("civil_wa_1_3").status(true).build(),
-                        FeatureFlag.builder().flagName("civil_wa_1_4").status(true).build()));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
