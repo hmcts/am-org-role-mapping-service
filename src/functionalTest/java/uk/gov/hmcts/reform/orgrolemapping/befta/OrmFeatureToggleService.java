@@ -21,8 +21,12 @@ public class OrmFeatureToggleService implements FeatureToggleService<String, Boo
 
         if (response.getStatusCode() == HttpStatus.SC_OK) {
             return response.getBody().as(Boolean.class);
+        } else {
+            throw new RuntimeException(
+                    String.format("Http status error code %d, when invoking flag query endpoint with flag: %s",
+                    response.getStatusCode(), flagId)
+            );
         }
-        return false;
     }
 }
 
