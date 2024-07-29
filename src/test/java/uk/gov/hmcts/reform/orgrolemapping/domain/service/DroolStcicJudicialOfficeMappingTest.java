@@ -93,8 +93,8 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Lay,Fee Paid,BBA2,Y,'fee-paid-tribunal-member'",
         "Tribunal Member Disability,Fee Paid,BBA2,N,'fee-paid-disability'",
         "Tribunal Member Disability,Fee Paid,BBA2,Y,'fee-paid-disability'",
-        "Tribunal Member Financial,Fee Paid,BBA2,N,'fee-paid-financial'",
-        "Tribunal Member Financial,Fee Paid,BBA2,Y,'fee-paid-financial'",
+        "Tribunal Member Financially Qualified,Fee Paid,BBA2,N,'fee-paid-financial'",
+        "Tribunal Member Financially Qualified,Fee Paid,BBA2,Y,'fee-paid-financial'",
     })
     void shouldReturnFeePaidRoles(String appointment, String appointmentType,
                                   String serviceCode,String endDateNull, String expectedRoles) {
@@ -170,7 +170,7 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Medical",
         "Tribunal Member Lay",
         "Tribunal Member Disability",
-        "Tribunal Member Financial"
+        "Tribunal Member Financially Qualified"
     })
     void shouldNotReturnFeePaidRolesExpiredEndDate(String appointment) {
 
@@ -226,7 +226,7 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Medical",
         "Tribunal Member Lay",
         "Tribunal Member Disability",
-        "Tribunal Member Financial"
+        "Tribunal Member Financially Qualified"
     })
     void shouldNotReturnFeePaidRolesWrongServiceCode(String appointment) {
 
@@ -277,7 +277,7 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Lay",
         "Tribunal Member Medical",
         "Tribunal Member Disability",
-        "Tribunal Member Financial",
+        "Tribunal Member Financially Qualified",
     })
     void shouldNotReturnFeePaidRolesWrongBaseLocation(String appointment) {
 
