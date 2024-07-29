@@ -102,7 +102,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
         "Senior Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
         "Senior Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
-        "Senior Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',11,false",
+        "Senior Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',11,false"
     })
     void shouldReturnSalariedRolesFromJudicialAccessProfile(
             String appointment, String appointmentType, boolean hearingFlag, String assignedRoles,
@@ -158,20 +158,81 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         );
 
         roleAssignments.forEach(r -> {
-            assertEquals(ActorIdType.IDAM, r.getActorIdType());
-            assertEquals(USER_ID, r.getActorId());
-            assertEquals(RoleType.ORGANISATION, r.getRoleType());
-            assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
             if (r.getAttributes().get("contractType") != null) {
                 assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             }
 
-            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
-            String actualWorkTypes = null;
-            if (r.getAttributes().get("workTypes") != null) {
-                actualWorkTypes = r.getAttributes().get("workTypes").asText();
+            assertRoleSpecificAttributes(r, appointmentType, roleNameToRegionsMap, region);
+        });
+
+        // verify regions add to map
+        MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
+                roleNameToRegionsMap,
+                expectedRoleList,
+                expectMultiRegion,
+                multiRegionList,
+                region, // fallback if not multi-region scenario
+                null // i.e. no bookings
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "Magistrate,Voluntary,true,'','magistrate,hearing-viewer',1,false"
+    })
+    void shouldReturnVoluntaryRolesFromJudicialAccessProfile(
+            String appointment, String appointmentType, boolean hearingFlag, String assignedRoles,
+            String expectedRoleNames, String region, boolean expectMultiRegion) {
+
+        allProfiles.clear();
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+
+        judicialAccessProfiles.add(
+                JudicialAccessProfile.builder()
+                        .appointment(appointment)
+                        .appointmentType(appointmentType)
+                        .userId(USER_ID)
+                        .roles(Arrays.stream(assignedRoles.split(",")).toList())
+                        .regionId(region)
+                        .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
+                        .ticketCodes(List.of("ABA3"))
+                        .beginTime(ACCESS_PROFILE_BEGIN_TIME)
+                        .endTime(ACCESS_PROFILE_END_TIME)
+                        .authorisations(List.of(
+                                Authorisation.builder()
+                                        .serviceCodes(List.of("ABA3"))
+                                        .jurisdiction("PUBLICLAW")
+                                        .endDate(LocalDateTime.now().plusYears(1L))
+                                        .build()
+                        ))
+                        .build()
+        );
+
+        // create map for all voluntary roleNames that need regions
+        List<String> rolesThatRequireRegions = List.of(
+                "magistrate"
+        );
+
+        Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(hearingFlag));
+
+        //assertions
+        List<String> expectedRoleList = Arrays.stream(expectedRoleNames.split(",")).toList();
+        MultiRegion.assertRoleAssignmentCount(
+                roleAssignments,
+                expectedRoleList,
+                expectMultiRegion,
+                rolesThatRequireRegions,
+                multiRegionList
+        );
+
+        roleAssignments.forEach(r -> {
+            if (r.getAttributes().get("contractType") != null) {
+                assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
             }
-            assertEquals(expectedWorkTypes, actualWorkTypes);
 
             assertRoleSpecificAttributes(r, appointmentType, roleNameToRegionsMap, region);
         });
@@ -215,7 +276,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "District Judge (MC) (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
                 + "hearing-viewer,hearing-manager',12,false",
         "District Judge (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager',1,false",
+                + "hearing-viewer,hearing-manager',1,false"
     })
     void shouldReturnFeePaidRolesFromJudicialAccessProfile(
             String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
@@ -280,20 +341,9 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         );
 
         roleAssignments.forEach(r -> {
-            assertEquals(ActorIdType.IDAM, r.getActorIdType());
-            assertEquals(USER_ID, r.getActorId());
-            assertEquals(RoleType.ORGANISATION, r.getRoleType());
-            assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
             if (r.getAttributes().get("contractType") != null) {
                 assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             }
-
-            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
-            String actualWorkTypes = null;
-            if (r.getAttributes().get("workTypes") != null) {
-                actualWorkTypes = r.getAttributes().get("workTypes").asText();
-            }
-            assertEquals(expectedWorkTypes, actualWorkTypes);
 
             assertRoleSpecificAttributes(r, appointmentType, roleNameToRegionsMap, region);
         });
@@ -311,6 +361,18 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     private void assertRoleSpecificAttributes(RoleAssignment r, String appointmentType,
                                               Map<String, List<String>> roleNameToRegionsMap, String region) {
+        assertEquals(ActorIdType.IDAM, r.getActorIdType());
+        assertEquals(USER_ID, r.getActorId());
+        assertEquals(RoleType.ORGANISATION, r.getRoleType());
+        assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
+
+        String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+        String actualWorkTypes = null;
+        if (r.getAttributes().get("workTypes") != null) {
+            actualWorkTypes = r.getAttributes().get("workTypes").asText();
+        }
+        assertEquals(expectedWorkTypes, actualWorkTypes);
+
         String primaryLocation = null;
         if (r.getAttributes().get("primaryLocation") != null) {
             primaryLocation = r.getAttributes().get("primaryLocation").asText();
