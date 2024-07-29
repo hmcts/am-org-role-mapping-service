@@ -3,7 +3,7 @@
   "title": "must successfully create org role mapping for CICA Caseworker",
   "_extends_": "F-012_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Court Clerk"
+    "contains the actorId of the user just published who has CICA Caseworker"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",

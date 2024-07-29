@@ -107,7 +107,6 @@
             "substantive" : "N",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "ST_CIC",
-            "region" : "[[ANYTHING_PRESENT]]",
             "workTypes" : "access_requests"
           }
         },
