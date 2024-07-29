@@ -1,0 +1,45 @@
+package validationrules.publiclaw;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.cloneNewRoleAssignmentAndChangeRegion;
+
+/*
+ * PUBLICLAW "multi-region" Org role mapping. (JUDICIAL)
+ */
+
+rule "publiclaw_multi_region_dependency_org_role__judicial__region_1"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_4.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.JUDICIAL,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("PUBLICLAW"),
+                      attributes["contractType"] != null && attributes["contractType"].asText() in ("Salaried"),
+                      attributes["region"] != null && attributes["region"].asText() in ("5"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("PUBLICLAW"),
+                     attributes["region"] != null && attributes["region"].asText() == "1")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "1"));
+   logMsg("Rule : publiclaw_multi_region_dependency_org_role__judicial__region_1");
+end;
+
+rule "publiclaw_multi_region_dependency_org_role__judicial__region_5"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_4.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.JUDICIAL,
+                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("PUBLICLAW"),
+                      attributes["contractType"] != null && attributes["contractType"].asText() in ("Salaried"),
+                      attributes["region"] != null && attributes["region"].asText() in ("1"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("PUBLICLAW"),
+                     attributes["region"] != null && attributes["region"].asText() == "5")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "5"));
+   logMsg("Rule : publiclaw_multi_region_dependency_org_role__judicial__region_5");
+end;
