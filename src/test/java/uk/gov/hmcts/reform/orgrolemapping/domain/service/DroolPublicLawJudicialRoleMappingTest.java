@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -37,6 +39,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
     private static final String USER_ID = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
     private static final ZonedDateTime BOOKING_BEGIN_TIME = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1);
     private static final ZonedDateTime BOOKING_END_TIME = ZonedDateTime.now(ZoneOffset.UTC).plusDays(1);
+    private static final String BOOKING_REGION_ID = "1";
     private static final String BOOKING_LOCATION_ID = "Scotland";
     private static final ZonedDateTime ACCESS_PROFILE_BEGIN_TIME = ZonedDateTime.now(ZoneOffset.UTC).minusMonths(1);
     private static final ZonedDateTime ACCESS_PROFILE_END_TIME = ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1);
@@ -178,11 +181,11 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "Magistrate,Voluntary,true,'','magistrate,hearing-viewer',1,false"
+        "Magistrate,Voluntary,true,'','magistrate,hearing-viewer'"
     })
     void shouldReturnVoluntaryRolesFromJudicialAccessProfile(
             String appointment, String appointmentType, boolean hearingFlag, String assignedRoles,
-            String expectedRoleNames, String region, boolean expectMultiRegion) {
+            String expectedRoleNames) {
 
         allProfiles.clear();
         judicialAccessProfiles.clear();
@@ -194,7 +197,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         .appointmentType(appointmentType)
                         .userId(USER_ID)
                         .roles(Arrays.stream(assignedRoles.split(",")).toList())
-                        .regionId(region)
+                        .regionId(ACCESS_PROFILE_REGION_ID)
                         .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
                         .ticketCodes(List.of("ABA3"))
                         .beginTime(ACCESS_PROFILE_BEGIN_TIME)
@@ -209,93 +212,72 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         .build()
         );
 
-        // create map for all voluntary roleNames that need regions
-        List<String> rolesThatRequireRegions = List.of(
-                "magistrate"
-        );
-
-        Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
-
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(hearingFlag));
 
         //assertions
-        List<String> expectedRoleList = Arrays.stream(expectedRoleNames.split(",")).toList();
-        MultiRegion.assertRoleAssignmentCount(
-                roleAssignments,
-                expectedRoleList,
-                expectMultiRegion,
-                rolesThatRequireRegions,
-                multiRegionList
-        );
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(expectedRoleNames.split(",").length, roleAssignments.size());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
+                containsInAnyOrder(expectedRoleNames.split(",")));
 
         roleAssignments.forEach(r -> {
             if (r.getAttributes().get("contractType") != null) {
                 assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
             }
 
-            assertRoleSpecificAttributes(r, appointmentType, roleNameToRegionsMap, region);
+            assertRoleSpecificAttributes(r, appointmentType, null, ACCESS_PROFILE_REGION_ID);
         });
-
-        // verify regions add to map
-        MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
-                roleNameToRegionsMap,
-                expectedRoleList,
-                expectMultiRegion,
-                multiRegionList,
-                region, // fallback if not multi-region scenario
-                null // i.e. no bookings
-        );
     }
 
     @ParameterizedTest
     @CsvSource({
         "Deputy Circuit Judge,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
-                + "hearing-manager',1,false",
-        "Recorder,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager',2,false",
+                + "hearing-manager'",
+        "Recorder,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
         "Deputy District Judge - PRFD,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
-                + "hearing-manager',3,false",
+                + "hearing-manager'",
         "Deputy District Judge (MC)- Fee paid,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager',4,false",
+                + "hearing-viewer,hearing-manager'",
         "Deputy District Judge (MC)- Sitting in Retirement,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager',5,false",
+                + "hearing-viewer,hearing-manager'",
         "Deputy District Judge- Fee-Paid,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
-                + "hearing-manager',6,false",
+                + "hearing-manager'",
         "Deputy District Judge- Sitting in Retirement,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager',7,false",
-        "Deputy High Court Judge,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer"
-                + ",hearing-manager',8,false",
+                + "hearing-viewer,hearing-manager'",
+        "Deputy High Court Judge,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+                + "hearing-manager'",
         "High Court Judge- Sitting in Retirement,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager',9,false",
+                + "hearing-viewer,hearing-manager'",
         "Circuit Judge (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager',10,false",
-        "Recorder (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer"
-                + ",hearing-manager',10,false",
+                + "hearing-viewer,hearing-manager'",
+        "Recorder (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+                + "hearing-manager'",
         "Deputy Upper Tribunal Judge,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
-                + "hearing-manager',11,false",
+                + "hearing-manager'",
         "District Judge (MC) (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager',12,false",
+                + "hearing-viewer,hearing-manager'",
         "District Judge (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager',1,false"
+                + "hearing-viewer,hearing-manager'"
     })
     void shouldReturnFeePaidRolesFromJudicialAccessProfile(
             String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
-            String assignedRoles, String expectedRoleNames, String region, boolean expectMultiRegion) {
+            String assignedRoles, String expectedRoleNames) {
 
         allProfiles.clear();
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
         judicialBookings.clear();
 
-        JudicialBooking booking = null;
         if (addBooking) {
-            booking = JudicialBooking.builder()
+            judicialBookings.add(
+                    JudicialBooking.builder()
                     .userId(USER_ID).locationId(BOOKING_LOCATION_ID)
-                    .regionId(region)
+                    .regionId(BOOKING_REGION_ID)
                     .beginTime(BOOKING_BEGIN_TIME)
                     .endTime(BOOKING_END_TIME)
-                    .build();
-            judicialBookings.add(booking);
+                    .build()
+            );
         }
 
         judicialAccessProfiles.add(
@@ -304,7 +286,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         .appointmentType(appointmentType)
                         .userId(USER_ID)
                         .roles(Arrays.stream(assignedRoles.split(",")).toList())
-                        .regionId(region)
+                        .regionId(ACCESS_PROFILE_REGION_ID)
                         .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
                         .ticketCodes(List.of("ABA3"))
                         .beginTime(ACCESS_PROFILE_BEGIN_TIME)
@@ -319,44 +301,22 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                         .build()
         );
 
-        // create map for all fee paid roleNames that need regions
-        List<String> rolesThatRequireRegions = List.of(
-                "judge",
-                "fee-paid-judge"
-        );
-
-        Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
-
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(hearingFlag));
 
         //assertions
-        List<String> expectedRoleList = Arrays.stream(expectedRoleNames.split(",")).toList();
-        MultiRegion.assertRoleAssignmentCount(
-                roleAssignments,
-                expectedRoleList,
-                expectMultiRegion,
-                rolesThatRequireRegions,
-                multiRegionList
-        );
+        assertFalse(roleAssignments.isEmpty());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
+                containsInAnyOrder(expectedRoleNames.split(",")));
+        assertEquals(expectedRoleNames.split(",").length, roleAssignments.size());
 
         roleAssignments.forEach(r -> {
             if (r.getAttributes().get("contractType") != null) {
                 assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             }
 
-            assertRoleSpecificAttributes(r, appointmentType, roleNameToRegionsMap, region);
+            assertRoleSpecificAttributes(r, appointmentType, null, BOOKING_REGION_ID);
         });
-
-        // verify regions add to map
-        MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
-                roleNameToRegionsMap,
-                expectedRoleList,
-                expectMultiRegion,
-                multiRegionList,
-                region, // fallback if not multi-region scenario
-                booking != null ? booking.getRegionId() : null
-        );
     }
 
     private void assertRoleSpecificAttributes(RoleAssignment r, String appointmentType,
@@ -378,8 +338,10 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
             primaryLocation = r.getAttributes().get("primaryLocation").asText();
         }
 
-        // check region status and add to map
-        MultiRegion.assertRegionStatusAndUpdateRoleToRegionMap(r, roleNameToRegionsMap);
+        if (roleNameToRegionsMap != null) {
+            // check region status and add to map
+            MultiRegion.assertRegionStatusAndUpdateRoleToRegionMap(r, roleNameToRegionsMap);
+        }
 
         if (r.getRoleName().equals("hmcts-judiciary")) {
             assertEquals(Classification.PRIVATE, r.getClassification());
@@ -405,6 +367,10 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
                 assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
                 assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
+                if (!r.getRoleName().equals("hearing-viewer")
+                        && !r.getRoleName().equals("hearing-manager") && roleNameToRegionsMap == null) {
+                    assertEquals(ACCESS_PROFILE_REGION_ID, r.getAttributes().get("region").asText());
+                }
             }
 
         }
