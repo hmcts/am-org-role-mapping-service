@@ -165,7 +165,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             }
 
-            assertRoleSpecificAttributes(r, appointmentType, roleNameToRegionsMap, region);
+            assertRoleSpecificAttributes(r, appointmentType, roleNameToRegionsMap);
         });
 
         // verify regions add to map
@@ -226,7 +226,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
             }
 
-            assertRoleSpecificAttributes(r, appointmentType, null, ACCESS_PROFILE_REGION_ID);
+            assertRoleSpecificAttributes(r, appointmentType, null);
         });
     }
 
@@ -315,12 +315,12 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             }
 
-            assertRoleSpecificAttributes(r, appointmentType, null, BOOKING_REGION_ID);
+            assertRoleSpecificAttributes(r, appointmentType, null);
         });
     }
 
     private void assertRoleSpecificAttributes(RoleAssignment r, String appointmentType,
-                                              Map<String, List<String>> roleNameToRegionsMap, String region) {
+                                              Map<String, List<String>> roleNameToRegionsMap) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(USER_ID, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
@@ -361,7 +361,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
             if (r.getRoleName().equals("judge") && appointmentType.equals("Fee Paid")) {
                 assertEquals(BOOKING_BEGIN_TIME, r.getBeginTime());
                 assertEquals(BOOKING_END_TIME, r.getEndTime());
-                assertEquals(region, r.getAttributes().get("region").asText());
+                assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
                 assertEquals(BOOKING_LOCATION_ID, primaryLocation);
             } else {
                 assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
