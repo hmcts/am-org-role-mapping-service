@@ -68,72 +68,55 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
-        "Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
-        "Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',2,false",
+        "Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
+        "Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
+        "Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',2,false",
 
-        "District Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
-        "District Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
-        "District Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',3,false",
+        "District Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
+        "District Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
+        "District Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',3,false",
 
-        "District Judge (MC),Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
-        "District Judge (MC),Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
-        "District Judge (MC),Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',4,false",
+        "District Judge (MC),'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
+        "District Judge (MC),'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
+        "District Judge (MC),'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',4,false",
 
-        "High Court Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
-        "High Court Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
-        "High Court Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',6,false",
+        "High Court Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
+        "High Court Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
+        "High Court Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',6,false",
 
-        "_,Salaried,true,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
+        "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer,hearing-manager',1,true",
-        "_,Salaried,true,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
+        "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer,hearing-manager',5,true",
-        "_,Salaried,true,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
+        "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer,hearing-manager',7,false",
 
-        "Tribunal Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
-        "Tribunal Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
-        "Tribunal Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',8,false",
+        "Tribunal Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
+        "Tribunal Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
+        "Tribunal Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',11,false",
 
-        "Employment Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
-        "Employment Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
-        "Employment Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',9,false",
+        "Employment Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
+        "Employment Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
+        "Employment Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',11,false",
 
-        "Specialist Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
-        "Specialist Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
-        "Specialist Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',10,false",
+        "Specialist Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
+        "Specialist Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
+        "Specialist Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',11,false",
 
-        "Senior Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
-        "Senior Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
-        "Senior Circuit Judge,Salaried,true,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',11,false"
+        "Senior Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',1,true",
+        "Senior Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',5,true",
+        "Senior Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer,hearing-manager',11,false"
     })
     void shouldReturnSalariedRolesFromJudicialAccessProfile(
-            String appointment, String appointmentType, boolean hearingFlag, String assignedRoles,
-            String expectedRoleNames, String region, boolean expectMultiRegion) {
+            String appointment, String assignedRoles, String expectedRoleNames,
+            String region, boolean expectMultiRegion) {
 
-        allProfiles.clear();
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-
-        judicialAccessProfiles.add(
-                JudicialAccessProfile.builder()
-                        .appointment(appointment)
-                        .appointmentType(appointmentType)
-                        .userId(USER_ID)
-                        .roles(Arrays.stream(assignedRoles.split(",")).toList())
-                        .regionId(region)
-                        .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
-                        .ticketCodes(List.of("ABA3"))
-                        .beginTime(ACCESS_PROFILE_BEGIN_TIME)
-                        .endTime(ACCESS_PROFILE_END_TIME)
-                        .authorisations(List.of(
-                                Authorisation.builder()
-                                        .serviceCodes(List.of("ABA3"))
-                                        .jurisdiction("PUBLICLAW")
-                                        .endDate(LocalDateTime.now().plusYears(1L))
-                                        .build()
-                        ))
-                        .build()
+        clearAndPrepareProfilesForDroolSession(
+                appointment,
+                "Salaried",
+                Arrays.stream(assignedRoles.split(",")).toList(),
+                region,
+                false
         );
 
         // create map for all salaried roleNames that need regions
@@ -148,7 +131,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(hearingFlag));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertions
         List<String> expectedRoleList = Arrays.stream(expectedRoleNames.split(",")).toList();
@@ -165,7 +148,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             }
 
-            assertRoleSpecificAttributes(r, appointmentType, roleNameToRegionsMap);
+            assertRoleSpecificAttributes(r, "Salaried", roleNameToRegionsMap);
         });
 
         // verify regions add to map
@@ -181,39 +164,21 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "Magistrate,Voluntary,true,'','magistrate,hearing-viewer'"
+        "Magistrate,'','magistrate,hearing-viewer'"
     })
     void shouldReturnVoluntaryRolesFromJudicialAccessProfile(
-            String appointment, String appointmentType, boolean hearingFlag, String assignedRoles,
-            String expectedRoleNames) {
+            String appointment, String assignedRoles, String expectedRoleNames) {
 
-        allProfiles.clear();
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-
-        judicialAccessProfiles.add(
-                JudicialAccessProfile.builder()
-                        .appointment(appointment)
-                        .appointmentType(appointmentType)
-                        .userId(USER_ID)
-                        .roles(Arrays.stream(assignedRoles.split(",")).toList())
-                        .regionId(ACCESS_PROFILE_REGION_ID)
-                        .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
-                        .ticketCodes(List.of("ABA3"))
-                        .beginTime(ACCESS_PROFILE_BEGIN_TIME)
-                        .endTime(ACCESS_PROFILE_END_TIME)
-                        .authorisations(List.of(
-                                Authorisation.builder()
-                                        .serviceCodes(List.of("ABA3"))
-                                        .jurisdiction("PUBLICLAW")
-                                        .endDate(LocalDateTime.now().plusYears(1L))
-                                        .build()
-                        ))
-                        .build()
+        clearAndPrepareProfilesForDroolSession(
+                appointment,
+                "Voluntary",
+                Arrays.stream(assignedRoles.split(",")).toList(),
+                ACCESS_PROFILE_REGION_ID,
+                false
         );
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(hearingFlag));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertions
         assertFalse(roleAssignments.isEmpty());
@@ -226,83 +191,74 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
             }
 
-            assertRoleSpecificAttributes(r, appointmentType, null);
+            assertRoleSpecificAttributes(r, "Voluntary", null);
         });
     }
 
     @ParameterizedTest
     @CsvSource({
-        "Deputy Circuit Judge,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+        "Deputy Circuit Judge,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Recorder,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy District Judge - PRFD,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy District Judge (MC)- Fee paid,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy District Judge (MC)- Sitting in Retirement,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
                 + "hearing-manager'",
-        "Recorder,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
-        "Deputy District Judge - PRFD,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+        "Deputy District Judge- Fee-Paid,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy District Judge- Sitting in Retirement,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
                 + "hearing-manager'",
-        "Deputy District Judge (MC)- Fee paid,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager'",
-        "Deputy District Judge (MC)- Sitting in Retirement,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager'",
-        "Deputy District Judge- Fee-Paid,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+        "Deputy High Court Judge,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "High Court Judge- Sitting in Retirement,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
                 + "hearing-manager'",
-        "Deputy District Judge- Sitting in Retirement,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager'",
-        "Deputy High Court Judge,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+        "Circuit Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
                 + "hearing-manager'",
-        "High Court Judge- Sitting in Retirement,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager'",
-        "Circuit Judge (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager'",
-        "Recorder (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+        "Recorder (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy Upper Tribunal Judge,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "District Judge (MC) (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
                 + "hearing-manager'",
-        "Deputy Upper Tribunal Judge,Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
-                + "hearing-manager'",
-        "District Judge (MC) (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager'",
-        "District Judge (sitting in retirement),Fee Paid,true,true,'','judge,fee-paid-judge,hmcts-judiciary,"
-                + "hearing-viewer,hearing-manager'"
+        "District Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+                + "hearing-manager'"
     })
+    void verifyFeePaidRolesWithBooking(String appointment, String assignedRoles, String expectedRoleNames) {
+        shouldReturnFeePaidRolesFromJudicialAccessProfile(appointment, true, assignedRoles, expectedRoleNames);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "Deputy Circuit Judge,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Recorder,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy District Judge - PRFD,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy District Judge (MC)- Fee paid,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy District Judge (MC)- Sitting in Retirement,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+                + "hearing-manager'",
+        "Deputy District Judge- Fee-Paid,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy District Judge- Sitting in Retirement,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+                + "hearing-manager'",
+        "Deputy High Court Judge,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "High Court Judge- Sitting in Retirement,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Circuit Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Recorder (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "Deputy Upper Tribunal Judge,'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'",
+        "District Judge (MC) (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer,"
+                + "hearing-manager'",
+        "District Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer,hearing-manager'"
+    })
+    void verifyFeePaidRolesWithoutBooking(String appointment, String assignedRoles, String expectedRoleNames) {
+        shouldReturnFeePaidRolesFromJudicialAccessProfile(appointment, false, assignedRoles, expectedRoleNames);
+    }
+
     void shouldReturnFeePaidRolesFromJudicialAccessProfile(
-            String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
-            String assignedRoles, String expectedRoleNames) {
+            String appointment, boolean addBooking, String assignedRoles, String expectedRoleNames) {
 
-        allProfiles.clear();
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-        judicialBookings.clear();
-
-        if (addBooking) {
-            judicialBookings.add(
-                    JudicialBooking.builder()
-                    .userId(USER_ID).locationId(BOOKING_LOCATION_ID)
-                    .regionId(BOOKING_REGION_ID)
-                    .beginTime(BOOKING_BEGIN_TIME)
-                    .endTime(BOOKING_END_TIME)
-                    .build()
-            );
-        }
-
-        judicialAccessProfiles.add(
-                JudicialAccessProfile.builder()
-                        .appointment(appointment)
-                        .appointmentType(appointmentType)
-                        .userId(USER_ID)
-                        .roles(Arrays.stream(assignedRoles.split(",")).toList())
-                        .regionId(ACCESS_PROFILE_REGION_ID)
-                        .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
-                        .ticketCodes(List.of("ABA3"))
-                        .beginTime(ACCESS_PROFILE_BEGIN_TIME)
-                        .endTime(ACCESS_PROFILE_END_TIME)
-                        .authorisations(List.of(
-                                Authorisation.builder()
-                                        .serviceCodes(List.of("ABA3"))
-                                        .jurisdiction("PUBLICLAW")
-                                        .endDate(LocalDateTime.now().plusYears(1L))
-                                        .build()
-                        ))
-                        .build()
+        clearAndPrepareProfilesForDroolSession(
+                appointment,
+                "Fee Paid",
+                Arrays.stream(assignedRoles.split(",")).toList(),
+                ACCESS_PROFILE_REGION_ID,
+                addBooking
         );
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(hearingFlag));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertions
         assertFalse(roleAssignments.isEmpty());
@@ -315,7 +271,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             }
 
-            assertRoleSpecificAttributes(r, appointmentType, null);
+            assertRoleSpecificAttributes(r, "Fee Paid", null);
         });
     }
 
@@ -376,6 +332,45 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         }
     }
 
+    private void clearAndPrepareProfilesForDroolSession(String appointment, String appointmentType, List<String> roles,
+                                                        String region, boolean addBooking) {
+        allProfiles.clear();
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+        judicialBookings.clear();
+
+        judicialAccessProfiles.add(
+                JudicialAccessProfile.builder()
+                        .appointment(appointment)
+                        .appointmentType(appointmentType)
+                        .userId(USER_ID)
+                        .roles(roles)
+                        .regionId(region)
+                        .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
+                        .ticketCodes(List.of("ABA3"))
+                        .beginTime(ACCESS_PROFILE_BEGIN_TIME)
+                        .endTime(ACCESS_PROFILE_END_TIME)
+                        .authorisations(List.of(
+                                Authorisation.builder()
+                                        .serviceCodes(List.of("ABA3"))
+                                        .jurisdiction("PUBLICLAW")
+                                        .endDate(LocalDateTime.now().plusYears(1L))
+                                        .build()
+                        ))
+                        .build()
+        );
+
+        if (addBooking) {
+            judicialBookings.add(
+                    JudicialBooking.builder()
+                            .userId(USER_ID).locationId(BOOKING_LOCATION_ID)
+                            .regionId(BOOKING_REGION_ID)
+                            .beginTime(BOOKING_BEGIN_TIME)
+                            .endTime(BOOKING_END_TIME)
+                            .build()
+            );
+        }
+    }
 
     @Test
     void falsePublicLawFlagTest() {
@@ -409,13 +404,13 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-    private List<FeatureFlag> setFeatureFlags(boolean hearingFlag) {
+    private List<FeatureFlag> setFeatureFlags() {
         List<FeatureFlag> featureFlags = new ArrayList<>(getAllFeatureFlagsToggleByJurisdiction("PUBLICLAW", true));
 
         featureFlags.add(
                 FeatureFlag.builder()
                         .flagName("sscs_hearing_1_0")
-                        .status(hearingFlag)
+                        .status(true)
                         .build()
         );
 

@@ -21,6 +21,7 @@ when
                      roleName == $ra.getRoleName(),
                      roleCategory == $ra.getRoleCategory(),
                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("PUBLICLAW"),
+                     attributes["contractType"] != null && attributes["contractType"].asText() in ("Salaried"),
                      attributes["region"] != null && attributes["region"].asText() == "1")
 then
    insert(cloneNewRoleAssignmentAndChangeRegion($ra, "1"));
@@ -38,6 +39,7 @@ when
                      roleName == $ra.getRoleName(),
                      roleCategory == $ra.getRoleCategory(),
                      attributes["jurisdiction"] != null && attributes["jurisdiction"].asText() in ("PUBLICLAW"),
+                     attributes["contractType"] != null && attributes["contractType"].asText() in ("Salaried"),
                      attributes["region"] != null && attributes["region"].asText() == "5")
 then
    insert(cloneNewRoleAssignmentAndChangeRegion($ra, "5"));
