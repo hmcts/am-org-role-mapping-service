@@ -275,7 +275,8 @@ when
                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                         "CIVIL Recorder-Fee-Paid",
                                         "CIVIL District Judge (sitting in retirement)-Fee-Paid",
-                                        "CIVIL Tribunal Judge-Fee-Paid"))
+                                        "CIVIL Tribunal Judge-Fee-Paid",
+                                        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
@@ -403,7 +404,8 @@ $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL P
                                       "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                       "CIVIL Recorder-Fee-Paid", "CIVIL District Judge (sitting in retirement)-Fee-Paid",
                                       "CIVIL Tribunal Judge-Salaried", "CIVIL Tribunal Judge-Fee-Paid",
-                                      "CIVIL Employment Judge-Salaried", "CIVIL Employment Judge-Fee-Paid"))
+                                      "CIVIL Employment Judge-Salaried", "CIVIL Employment Judge-Fee-Paid",
+                                      "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if($joh.getOffice().contains("Fee-Paid")) {
@@ -511,7 +513,8 @@ when
   $joh: JudicialOfficeHolder(office in ("CIVIL Deputy District Judge-Fee-Paid", "CIVIL Recorder-Fee-Paid",
                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                         "CIVIL District Judge (sitting in retirement)-Fee-Paid",
-                                        "CIVIL Tribunal Judge-Fee-Paid"))
+                                        "CIVIL Tribunal Judge-Fee-Paid",
+                                        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
