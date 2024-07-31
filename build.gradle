@@ -512,7 +512,7 @@ dependencies {
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
         exclude group: 'junit', module: 'junit'
     }
-    testImplementation 'com.github.hmcts:befta-fw:8.7.11'
+    testImplementation 'com.github.hmcts:befta-fw:9.0.2'
 
     testImplementation(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
         exclude group: 'javascript', module: 'jquery'
