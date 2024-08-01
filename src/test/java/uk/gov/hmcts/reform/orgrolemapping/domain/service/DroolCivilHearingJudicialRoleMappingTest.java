@@ -111,6 +111,12 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         true,
                         List.of("Deputy District Judge"),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Deputy District Judge (sitting in retirement)",
+                        "Fee Paid",
+                        true,
+                        true,
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
                 Arguments.of("Recorder",
                         "Fee Paid",
                         true,
@@ -220,7 +226,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
 
     private List<FeatureFlag> setFeatureFlags(boolean hearingFlag) {
         List<String> flags = List.of("civil_wa_1_0", "civil_wa_1_1", "civil_wa_1_2",
-                "civil_wa_1_3", "civil_wa_1_4", "civil_wa_1_5", "sscs_hearing_1_0");
+                "civil_wa_1_3", "civil_wa_1_4", "civil_wa_1_5", "civil_wa_1_7", "sscs_hearing_1_0");
 
         return flags.stream()
                 .map(flag -> FeatureFlag.builder()
