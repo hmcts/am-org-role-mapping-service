@@ -6,6 +6,7 @@ Feature: F-001 :Create Role Assignments for Caseworker Users
 
   @S-002
   @FeatureToggle(DB:iac_1_1=on)
+  @Retryable(maxAttempts=3,delay=500,statusCodes={502,503,504})
   Scenario: must successfully create org role mapping for a multiple user having single role
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments01],
