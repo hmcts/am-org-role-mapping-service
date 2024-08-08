@@ -100,6 +100,10 @@ spring:
     cache-names: token, userToken
     caffeine:
       spec: maximumSize=50,expireAfterWrite=3600s
+  cloud:
+    discovery:
+      enabled: false
+
 oidc.issuer: ${OIDC_ISSUER_URL:https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts}
 
 ### dependency configuration

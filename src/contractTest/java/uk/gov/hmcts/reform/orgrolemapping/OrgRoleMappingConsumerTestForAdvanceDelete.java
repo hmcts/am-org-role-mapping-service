@@ -12,7 +12,7 @@ import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -56,7 +56,7 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContrac
         Thread.sleep(2000);
     }
 
-    @After
+    @AfterEach
     void teardown() {
         Executor.closeIdleConnections();
     }
