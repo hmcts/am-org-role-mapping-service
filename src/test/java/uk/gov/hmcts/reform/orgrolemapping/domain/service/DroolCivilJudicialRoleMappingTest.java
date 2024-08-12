@@ -38,15 +38,28 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @RunWith(MockitoJUnitRunner.class)
 class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
-    // NB: multi-regions are: all English and Welsh regions
-    static List<String> multiRegionJudicialList = List.of("1", "2", "3", "4", "5", "6", "7");
+    // Salaried & Fee Paid Employment Judge's should have their 'judge' & 'fee-paid-judge' RAs expanded from 1-7
+    static List<String> employmentJudgeMultiRegionList = List.of("1", "2", "3", "4", "5", "6", "7");
+    // All salaried RAs with region 1 should also have RA with region 5 & vice versa
+    static List<String> salariedMultiRegionList = List.of("1", "5");
 
     @ParameterizedTest
     @CsvSource({
-        "CIVIL District Judge-Salaried,'judge,hmcts-judiciary',1,false",
-        "CIVIL Presiding Judge-Salaried,'judge,hmcts-judiciary',1,false",
-        "CIVIL Resident Judge-Salaried,'judge,hmcts-judiciary',1,false",
-        "CIVIL Tribunal Judge-Salaried,'judge,hmcts-judiciary',1,false",
+        "CIVIL District Judge-Salaried,'judge,hmcts-judiciary',1,true",
+        "CIVIL District Judge-Salaried,'judge,hmcts-judiciary',5,true",
+        "CIVIL District Judge-Salaried,'judge,hmcts-judiciary',2,false",
+
+        "CIVIL Presiding Judge-Salaried,'judge,hmcts-judiciary',1,true",
+        "CIVIL Presiding Judge-Salaried,'judge,hmcts-judiciary',5,true",
+        "CIVIL Presiding Judge-Salaried,'judge,hmcts-judiciary',3,false",
+
+        "CIVIL Resident Judge-Salaried,'judge,hmcts-judiciary',1,true",
+        "CIVIL Resident Judge-Salaried,'judge,hmcts-judiciary',5,true",
+        "CIVIL Resident Judge-Salaried,'judge,hmcts-judiciary',4,false",
+
+        "CIVIL Tribunal Judge-Salaried,'judge,hmcts-judiciary',1,true",
+        "CIVIL Tribunal Judge-Salaried,'judge,hmcts-judiciary',5,true",
+        "CIVIL Tribunal Judge-Salaried,'judge,hmcts-judiciary',6,false",
 
         "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',1,true",
         "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',2,true",
@@ -58,11 +71,27 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         "CIVIL Employment Judge-Salaried,'judge,hmcts-judiciary',11,false", // Scotland
 
         "CIVIL Designated Civil Judge-Salaried,"
-                + "'judge,leadership-judge,task-supervisor,hmcts-judiciary,case-allocator',1,false",
-        "CIVIL Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,false",
-        "CIVIL Specialist Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,false",
-        "CIVIL Senior Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,false",
-        "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,false"
+                + "'judge,leadership-judge,task-supervisor,hmcts-judiciary,case-allocator',1,true",
+        "CIVIL Designated Civil Judge-Salaried,"
+                + "'judge,leadership-judge,task-supervisor,hmcts-judiciary,case-allocator',5,true",
+        "CIVIL Designated Civil Judge-Salaried,"
+                + "'judge,leadership-judge,task-supervisor,hmcts-judiciary,case-allocator',7,false",
+
+        "CIVIL Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,true",
+        "CIVIL Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',5,true",
+        "CIVIL Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',11,false",
+
+        "CIVIL Specialist Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,true",
+        "CIVIL Specialist Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',5,true",
+        "CIVIL Specialist Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',11,false",
+
+        "CIVIL Senior Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,true",
+        "CIVIL Senior Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',5,true",
+        "CIVIL Senior Circuit Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',11,false",
+
+        "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,true",
+        "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',5,true",
+        "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',11,false"
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles, String region, boolean expectMultiRegion) {
 
@@ -86,7 +115,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 expectedRoleList,
                 expectMultiRegion,
                 rolesThatRequireRegions,
-                multiRegionJudicialList
+                setOffice.equals("CIVIL Employment Judge-Salaried")
+                        ? employmentJudgeMultiRegionList : salariedMultiRegionList
         );
 
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
@@ -108,7 +138,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 roleNameToRegionsMap,
                 expectedRoleList,
                 expectMultiRegion,
-                multiRegionJudicialList,
+                setOffice.equals("CIVIL Employment Judge-Salaried")
+                        ? employmentJudgeMultiRegionList : salariedMultiRegionList,
                 region, // fallback if not multi-region scenario
                 null // i.e. no bookings
         );
@@ -198,7 +229,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 expectedRoleList,
                 expectMultiRegion,
                 rolesThatRequireRegions,
-                multiRegionJudicialList
+                employmentJudgeMultiRegionList
         );
 
         for (RoleAssignment roleAssignment : roleAssignments) {
@@ -226,7 +257,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 roleNameToRegionsMap,
                 expectedRoleList,
                 expectMultiRegion,
-                multiRegionJudicialList,
+                employmentJudgeMultiRegionList,
                 region, // fallback if not multi-region scenario
                 judicialBooking != null ? judicialBooking.getRegionId() : null
         );
@@ -264,8 +295,13 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertEquals(5, roleAssignments.size());
+        // 2x judge => region 1 + 5
+        // 2x circuit-judge => region 1 + 5
+        // 1x hmcts-judiciary
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName)
+                        .distinct()
+                        .collect(Collectors.toList()),
                 containsInAnyOrder("judge","circuit-judge","hmcts-judiciary"));
         assertEquals(appointmentList.get(0).getEpimmsId(),
                 roleAssignments.get(0).getAttributes().get("primaryLocation").asText());
@@ -421,8 +457,16 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertEquals(11, roleAssignments.size());
+        // 2x judge => region 1 + 5
+        // 2x leadership-judge => region 1 + 5
+        // 2x circuit-judge => region 1 + 5
+        // 2x task-supervisor => region 1 + 5
+        // 2x case-allocator => region 1 + 5
+        // 1x hmcts-judiciary
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName)
+                        .distinct()
+                        .collect(Collectors.toList()),
                 containsInAnyOrder("judge", "leadership-judge", "circuit-judge", "task-supervisor",
                         "case-allocator", "hmcts-judiciary"));
         roleAssignments.stream().filter(c -> c.getGrantType().equals(GrantType.STANDARD)).toList()
