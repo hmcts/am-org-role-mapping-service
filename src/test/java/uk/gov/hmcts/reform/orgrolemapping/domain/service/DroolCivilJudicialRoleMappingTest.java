@@ -121,6 +121,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
         "CIVIL Recorder-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
         "CIVIL District Judge (sitting in retirement)-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
         "CIVIL Tribunal Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
 
         "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,true",
@@ -132,20 +133,52 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',7,true",
         "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',11,false" // Scotland
     })
+    void verifyFeePaidRolesWithBooking(String setOffice, String expectedRoles, String region,
+                                       boolean expectMultiRegion) throws IOException {
+        shouldReturnFeePaidRoles(setOffice, expectedRoles, region, expectMultiRegion, true);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "CIVIL Deputy Circuit Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Deputy District Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,'fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Recorder-Fee-Paid,'fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL District Judge (sitting in retirement)-Fee-Paid,'fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid,'fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Tribunal Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',1,false",
+
+        "CIVIL Employment Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',1,true",
+        "CIVIL Employment Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',2,true",
+        "CIVIL Employment Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',3,true",
+        "CIVIL Employment Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',4,true",
+        "CIVIL Employment Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',5,true",
+        "CIVIL Employment Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',6,true",
+        "CIVIL Employment Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',7,true",
+        "CIVIL Employment Judge-Fee-Paid,'fee-paid-judge,hmcts-judiciary',11,false" // Scotland
+    })
+    void verifyFeePaidRolesWithoutBooking(String setOffice, String expectedRoles, String region,
+                                          boolean expectMultiRegion) throws IOException {
+        shouldReturnFeePaidRoles(setOffice, expectedRoles, region, expectMultiRegion, false);
+    }
+
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles, String region,
-                                  boolean expectMultiRegion) throws IOException {
+                                  boolean expectMultiRegion, boolean addBooking) throws IOException {
 
         judicialOfficeHolders.forEach(joh -> {
             joh.setOffice(setOffice);
             joh.setRegionId(region);
         });
 
-        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
-        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
-                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
-        judicialBooking.setLocationId("location1");
-        judicialBooking.setRegionId("1");
-        judicialBookings = Set.of(judicialBooking);
+        JudicialBooking judicialBooking = null;
+        if (addBooking) {
+            judicialBooking = TestDataBuilder.buildJudicialBooking();
+            judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
+                    .orElse(JudicialOfficeHolder.builder().build()).getUserId());
+            judicialBooking.setLocationId("location1");
+            judicialBooking.setRegionId("1");
+            judicialBookings = Set.of(judicialBooking);
+        }
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
@@ -168,9 +201,9 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 multiRegionJudicialList
         );
 
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        for (RoleAssignment roleAssignment : roleAssignments) {
+            assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(), roleAssignment.getActorId());
+        }
 
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
@@ -180,9 +213,13 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
             // check region status and add to map
             MultiRegion.assertRegionStatusAndUpdateRoleToRegionMap(r, roleNameToRegionsMap);
         });
-        RoleAssignment role = roleAssignments.stream().filter(r -> "judge".equals(r.getRoleName())).findFirst().get();
-        assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
-        assertEquals(judicialBooking.getRegionId(), role.getAttributes().get("region").asText());
+
+        if (addBooking) {
+            RoleAssignment role = roleAssignments.stream()
+                    .filter(r -> "judge".equals(r.getRoleName())).findFirst().get();
+            assertEquals(judicialBooking.getLocationId(), role.getAttributes().get("baseLocation").asText());
+            assertEquals(judicialBooking.getRegionId(), role.getAttributes().get("region").asText());
+        }
 
         // verify regions add to map
         MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
@@ -191,7 +228,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 expectMultiRegion,
                 multiRegionJudicialList,
                 region, // fallback if not multi-region scenario
-                judicialBooking.getRegionId()
+                judicialBooking != null ? judicialBooking.getRegionId() : null
         );
     }
 
