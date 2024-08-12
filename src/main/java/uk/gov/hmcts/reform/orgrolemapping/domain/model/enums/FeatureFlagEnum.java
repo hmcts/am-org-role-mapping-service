@@ -30,8 +30,10 @@ public enum FeatureFlagEnum {
     CIVIL_WA_1_5("civil_wa_1_5"),
     CIVIL_WA_1_6("civil_wa_1_6"),
     CIVIL_WA_1_7("civil_wa_1_7"),
+    CIVIL_WA_1_8("civil_wa_1_8"),
     CIVIL_WA_1_9("civil_wa_1_9"),
     PUBLICLAW_WA_1_3("publiclaw_wa_1_3"),
+    PUBLICLAW_WA_1_4("publiclaw_wa_1_4"),
     IAC_JRD_1_1("iac_jrd_1_1");
 
     private final String value;
