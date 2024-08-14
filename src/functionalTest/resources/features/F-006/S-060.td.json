@@ -39,6 +39,7 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",
@@ -61,6 +62,7 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
