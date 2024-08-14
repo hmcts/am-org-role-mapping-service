@@ -24,7 +24,7 @@
       "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
     },
     "body": {
-      "_extends_": "S-031_JRDTribunalJudgeFeepaidUser"
+      "_extends_": "JRDTribunalJudgeFeepaidUserForBooking"
     }
   },
 
