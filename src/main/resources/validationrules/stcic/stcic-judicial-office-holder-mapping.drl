@@ -290,7 +290,7 @@ rule "st_cic_tribunal_member_financially_qualified_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
-                               appointment == "Tribunal Member Financial",
+                               appointment == "Tribunal Member Financially Qualified",
                                appointmentType == "Fee Paid",
                                baseLocationId == "1032",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),

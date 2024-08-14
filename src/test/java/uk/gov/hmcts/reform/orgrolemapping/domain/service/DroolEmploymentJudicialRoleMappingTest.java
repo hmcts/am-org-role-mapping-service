@@ -105,7 +105,9 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
-                + "hmcts-judiciary,specific-access-approver-judiciary"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
+        "EMPLOYMENT Acting Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
     })
     void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRoles(String setOffice,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -234,11 +236,8 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         });
     }
 
-    private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_1").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_2").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_3").status(true).build());
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("EMPLOYMENT", true);
     }
 
 }
