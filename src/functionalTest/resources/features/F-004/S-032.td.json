@@ -8,6 +8,11 @@
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser1"
+    }
+  },
   "request": {
     "body": {
       "actorId": "${[scenarioContext][childContexts][S-032_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
