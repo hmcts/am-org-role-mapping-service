@@ -379,7 +379,7 @@ dependencies {
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
     implementation group: 'org.json', name: 'json', version: '20231013'
 
-    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.4'
+    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.5'
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-core', version: '3.4.11'
     implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.2'
     implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
@@ -413,7 +413,7 @@ dependencies {
         exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
     }
     implementation group: 'com.azure', name: 'azure-core', version: '1.50.0'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.1'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.2'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.8'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.8.0'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
@@ -554,7 +554,7 @@ dependencies {
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
-    integrationTestImplementation group: 'org.awaitility', name: 'awaitility', version: '4.2.1'
+    integrationTestImplementation group: 'org.awaitility', name: 'awaitility', version: '4.2.2'
     integrationTestImplementation group: 'org.awaitility', name: 'awaitility-proxy', version: '3.1.6'
 
     integrationTestImplementation sourceSets.main.runtimeClasspath
