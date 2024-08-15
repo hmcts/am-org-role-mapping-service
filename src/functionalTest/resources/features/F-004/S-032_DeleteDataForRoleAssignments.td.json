@@ -10,7 +10,7 @@
   ],
   "users": {
     "invokingUser": {
-      "_extends_": "AmBeftaUser1"
+      "_extends_": "AmJRDUser1"
     }
   },
   "request": {
@@ -24,7 +24,7 @@
       "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
     },
     "body": {
-      "_extends_": "JRDTribunalJudgeFeepaidUser"
+      "_extends_": "JRDTribunalJudgeFeepaidUserForBooking"
     }
   },
 
