@@ -1,0 +1,49 @@
+{
+  "_guid_": "CreateIDAMUserForBookings",
+  "productName": "IDAM Service",
+  "operationName": "Create IDAM User",
+  "method": "POST",
+  "uri": "{{IDAM_TESTING_SUPPORT_URL}}/test/idam/users",
+  "specs": [
+    "to create idam user for the test actorId"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]"
+    },
+    "body": {
+      "password": "[[$TEST_AM_JRD_USER1_BEFTA_PASSWORD]]",
+      "user": {
+        "id": "ff076da7-9fca-492c-806f-b0c6115530a6",
+        "email": "[[$TEST_AM_JRD_USER1_BEFTA]]",
+        "forename": "Mr Test",
+        "surname": "Test",
+        "displayName": "Test",
+        "roleNames": [
+          "caseworker",
+          "cwd-admin",
+          "cwd-system-user",
+          "jrd-system-user",
+          "org-role-cwd-system-user",
+          "judiciary"
+        ],
+        "accountStatus": "ACTIVE",
+        "recordType": "LIVE"
+      }
+    }
+  },
+  "expectedResponse": {
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "responseCode": "[[ANY_INTEGER_NOT_NULLABLE]]",
+    "responseMessage": "[[ANY_STRING_NOT_NULLABLE]]",
+    "body": "[[ANYTHING_PRESENT]]"
+  }
+}
