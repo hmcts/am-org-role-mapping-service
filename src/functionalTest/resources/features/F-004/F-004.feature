@@ -9,7 +9,6 @@ Feature: F-004 : Refresh Role Assignments for Judicial Users
   @FeatureToggle(LD:jbs-query-bookings-api-flag=on)
   Scenario: must successfully create judicial role assignments for a user having single judicial booking
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to create idam user for the test actorId] as in [CreateIDAMUserForBookings]
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-031_DeleteDataForRoleAssignments]
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-031_DeleteDataForBookings],
     And a successful call [to create single booking for this user] as in [S-031_CreateDataForBookings],
