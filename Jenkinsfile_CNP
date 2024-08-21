@@ -93,7 +93,7 @@ env.CASEWORKER_FTA_ENABLED = "true"
 env.JUDICIAL_FTA_ENABLED = "true"
 
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
-env.AZURE_SERVICE_BUS_FTA_ENABLED = "false" // DTSAM-380 - Temp Disabled
+env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
 env.REFRESH_FTA_ENABLED = "true"
 
 // Vars for Azure Container Registries DTSAM-370
