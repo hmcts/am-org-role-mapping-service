@@ -27,6 +27,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -51,7 +53,7 @@ class RetrieveDataServiceTest {
     private final JRDService jrdService = Mockito.mock(JRDService.class);
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
 
-    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdService, jrdService);
+    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdService, jrdService, true);
 
     @Test
     void retrieveCaseWorkerProfilesTest() {
@@ -206,6 +208,21 @@ class RetrieveDataServiceTest {
                 assertEquals(2, ((JudicialAccessProfile) userAccessProfile).getAuthorisations().size());
             });
         });
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldReturnJudicialProfileV2_deletedFlag(Boolean deletedFlagStatus) throws IOException {
+        JudicialProfileV2 profile = TestDataBuilder.buildJudicialProfileV2();
+        profile.setDeletedFlag(deletedFlagStatus.toString());
+
+        doReturn(ResponseEntity.ok(List.of(profile))).when(jrdService).fetchJudicialProfiles(any());
+
+        Map<String, Set<UserAccessProfile>> response
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
+
+        assertNotNull(response);
+        assertEquals(deletedFlagStatus, response.get(profile.getSidamId()).isEmpty());
     }
 
     @Test
