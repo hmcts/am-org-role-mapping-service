@@ -175,31 +175,7 @@ public class RetrieveDataService {
                 caseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                         AssignmentRequestBuilder.convertUserProfileToCaseworkerAccessProfile(userProfile)));
             } else if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.JUDICIAL)) {
-                List<String> softDeletedUsers = new ArrayList<>();
-
-                validProfiles.forEach(userProfile -> {
-                    JudicialProfileV2 judicialProfile = (JudicialProfileV2) userProfile;
-                    boolean isJudicialUserSoftDeleted = Boolean.parseBoolean(judicialProfile.getDeletedFlag());
-
-                    if (isJudicialUserSoftDeleted) {
-                        softDeletedUsers.add(judicialProfile.getSidamId());
-                    }
-
-                    if (filterSoftDeletedUsers && isJudicialUserSoftDeleted) {
-                        usersAccessProfiles.put(judicialProfile.getSidamId(), Collections.emptySet());
-                    } else {
-                        usersAccessProfiles.put(judicialProfile.getSidamId(),
-                                convertProfileToJudicialAccessProfileV2(judicialProfile));
-                    }
-                });
-
-                if (!softDeletedUsers.isEmpty()) {
-                    log.info("Soft deleted JRD users :: {}", softDeletedUsers);
-                }
-
-                Set<JudicialProfileV2> invalidJProfiles = (Set<JudicialProfileV2>)(Set<?>) invalidProfiles;
-                invalidJProfiles.forEach(profile ->
-                        usersAccessProfiles.put(profile.getSidamId(), Collections.emptySet()));
+                addJudicialProfilesToUsersAccessProfiles(validProfiles, usersAccessProfiles, invalidProfiles);
             }
             Map<String, Integer> userAccessProfileCount = new HashMap<>();
             usersAccessProfiles.forEach((k, v) -> {
@@ -217,6 +193,37 @@ public class RetrieveDataService {
         } else {
             log.error("No UserProfile received from RD");
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addJudicialProfilesToUsersAccessProfiles(List<Object> validProfiles,
+                                                          Map<String, Set<UserAccessProfile>> usersAccessProfiles,
+                                                          Set<Object> invalidProfiles) {
+        List<String> softDeletedUsers = new ArrayList<>();
+
+        validProfiles.forEach(userProfile -> {
+            JudicialProfileV2 judicialProfile = (JudicialProfileV2) userProfile;
+            boolean isJudicialUserSoftDeleted = Boolean.parseBoolean(judicialProfile.getDeletedFlag());
+
+            if (isJudicialUserSoftDeleted) {
+                softDeletedUsers.add(judicialProfile.getSidamId());
+            }
+
+            if (filterSoftDeletedUsers && isJudicialUserSoftDeleted) {
+                usersAccessProfiles.put(judicialProfile.getSidamId(), Collections.emptySet());
+            } else {
+                usersAccessProfiles.put(judicialProfile.getSidamId(),
+                        convertProfileToJudicialAccessProfileV2(judicialProfile));
+            }
+        });
+
+        if (!softDeletedUsers.isEmpty()) {
+            log.info("Soft deleted JRD users :: {}", softDeletedUsers);
+        }
+
+        Set<JudicialProfileV2> invalidJProfiles = (Set<JudicialProfileV2>)(Set<?>) invalidProfiles;
+        invalidJProfiles.forEach(profile ->
+                usersAccessProfiles.put(profile.getSidamId(), Collections.emptySet()));
     }
 
 }
