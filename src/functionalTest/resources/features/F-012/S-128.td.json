@@ -16,6 +16,13 @@
     "body": {
       "queryRequests":[
         {
+          "actorId": "${[scenarioContext][childContexts][S-127_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "roleName": ["hmcts-judiciary"],
+          "attributes": {
+            "contractType": ["Fee-Paid"]
+          }
+        },
+        {
           "actorId": "${[scenarioContext][childContexts][S-128_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["ST_CIC"]
@@ -67,27 +74,6 @@
             "substantive": "N",
             "contractType": "Fee-Paid"
           }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "judge",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "contractType": "Fee-Paid",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "ST_CIC",
-            "workTypes": "hearing_work,decision_making_work,routine_work,applications,priority"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
         }
       ]
     }
