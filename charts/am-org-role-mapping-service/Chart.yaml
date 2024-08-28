@@ -19,6 +19,6 @@ dependencies:
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
     condition: orm.ras.enabled
   - name: am-judicial-booking-service
-    version: 0.0.62
+    version: 0.0.63
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
     condition: orm.jbs.enabled
