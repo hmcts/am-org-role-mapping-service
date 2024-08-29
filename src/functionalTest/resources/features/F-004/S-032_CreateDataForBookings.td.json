@@ -24,7 +24,7 @@
       "bookingRequest": {
         "userId": "${[scenarioContext][parentContext][childContexts][S-032_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
         "locationId": "10",
-        "regionId": "6",
+        "regionId": "2",
         "beginDate": "${[scenarioContext][customValues][today]}",
         "endDate": "${[scenarioContext][customValues][today]}"
       }

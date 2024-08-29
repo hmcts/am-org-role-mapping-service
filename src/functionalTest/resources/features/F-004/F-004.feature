@@ -1,4 +1,4 @@
-@F-004 @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on) @Ignore
+@F-004 @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
 Feature: F-004 : Refresh Role Assignments for Judicial Users
 
   Background:
