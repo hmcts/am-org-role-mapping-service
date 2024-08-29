@@ -16,7 +16,7 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][childContexts][S-127_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": "${[scenarioContext][childContexts][S-128_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "roleName": ["hmcts-judiciary"],
           "attributes": {
             "contractType": ["Fee-Paid"]
@@ -61,7 +61,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-judiciary",
           "classification": "PRIVATE",
@@ -69,6 +69,7 @@
           "roleCategory": "JUDICIAL",
           "readOnly": true,
           "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
