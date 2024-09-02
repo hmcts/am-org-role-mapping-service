@@ -24,8 +24,6 @@ public class JobConfiguration implements CommandLineRunner {
     private final String jobDetail;
     private final boolean jobDetailAllowUpdate;
 
-    private static final String REFRESH_JOBS_CONFIG_SPLITTER = ":";
-
 
     @Autowired
     public JobConfiguration(RefreshJobConfigService refreshJobConfigService,

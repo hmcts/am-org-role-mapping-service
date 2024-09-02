@@ -19,7 +19,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesV2Response;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -288,13 +287,6 @@ public class TestDataBuilder {
                         "workArea1",
                         "workArea2",
                         false))
-                .build();
-    }
-
-    public static JudicialProfilesResponse buildJudicialProfilesResponse() throws IOException {
-        return  JudicialProfilesResponse.builder()
-                .serviceName("ccd_service_name")
-                .judicialProfile(buildJudicialProfile())
                 .build();
     }
 

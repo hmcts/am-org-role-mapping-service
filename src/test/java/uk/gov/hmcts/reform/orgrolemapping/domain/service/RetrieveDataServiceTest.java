@@ -266,20 +266,6 @@ class RetrieveDataServiceTest {
     }
 
     @Test
-    void getUserAccessProfileJudicial() throws IOException {
-
-        List<Object> userProfilesResponses = new ArrayList<>();
-        userProfilesResponses.add(TestDataBuilder.buildJudicialProfilesResponse());
-        ResponseEntity<List<Object>> responseEntity
-                = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
-
-        Map<String, Set<UserAccessProfile>> response = sutJrdV1.retrieveProfilesByServiceName(responseEntity,
-                UserType.JUDICIAL);
-        assertNotNull(response);
-        assertEquals(2, response.get("37395").size());
-    }
-
-    @Test
     void getUserAccessProfileJudicialV2() throws IOException {
 
         List<Object> userProfilesResponses = new ArrayList<>();
@@ -287,7 +273,7 @@ class RetrieveDataServiceTest {
         ResponseEntity<List<Object>> responseEntity
                 = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
 
-        Map<String, Set<UserAccessProfile>> response = sutJrdV2.retrieveProfilesByServiceName(responseEntity,
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfilesByServiceName(responseEntity,
                 UserType.JUDICIAL);
         assertNotNull(response);
         assertEquals(2, response.get("37396").size());
