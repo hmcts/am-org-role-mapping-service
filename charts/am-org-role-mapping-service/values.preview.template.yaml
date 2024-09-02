@@ -7,7 +7,7 @@ java:
   devcpuRequests: 250m
   devmemoryLimits: 2048Mi
   devcpuLimits: 1500m
- 
+
   secrets:
     SB_ACCESS_KEY:
       secretRef: am-sb-preview
@@ -59,6 +59,7 @@ java:
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
     RUN_LD_ON_STARTUP: true
+    REFRESH_JUDICIAL_FILTER_SOFT_DELETED_USERS: false
   postgresql:
     enabled: true
     primary:
@@ -66,7 +67,7 @@ java:
         scripts:
           init.sql: |
             CREATE DATABASE role_assignment WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-            CREATE DATABASE org_role_mapping WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;  
+            CREATE DATABASE org_role_mapping WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
             CREATE DATABASE judicial_booking WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
     auth:
       port: 5432
