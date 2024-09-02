@@ -1,21 +1,30 @@
 {
   "_guid_": "S-013",
-  "title": "must set the refresh job to aborted for a non existent failed userIds",
+  "title": "must reject refresh job request from non-approved S2S service",
   "_extends_": "F-002_Test_Data_Base",
 
   "specs": [
-    "contains an existing job details with suspended/nonexistent userIds"
+    "contains an existing job details",
+    "uses the xui_webapp S2S token, which is an authorised service for ORM but not for Refresh Job endpoint"
   ],
   "request": {
+    "headers": {
+      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForXui]}"
+    },
     "queryParams": {
-      "jobId": "${[scenarioContext][childContexts][InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+      "jobId": "${[scenarioContext][childContexts][S-013_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
     },
     "body": {
-      "userIds": ["33191043-fedd-4016-a5ab-a9e23e159999" ]
+      "userIds" : ["b878398b-c7ae-4f4c-95cc-298ca2d287ac"]
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_202_Response",
-    "body" : null
+    "_extends_": "Common_403_Response",
+    "body" : {
+      "status": 403,
+      "error": "Forbidden",
+      "path": "/am/role-mapping/refresh",
+      "timestamp": "[[ANYTHING_PRESENT]]"
+    }
   }
 }

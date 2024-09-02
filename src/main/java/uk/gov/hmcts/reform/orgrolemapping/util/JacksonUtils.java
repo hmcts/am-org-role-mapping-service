@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfilesResponse;
@@ -106,11 +105,6 @@ public class JacksonUtils {
         }
 
         return judicialProfilesResponses;
-    }
-
-    public static JudicialProfile convertInJudicialProfile(Object from) {
-        return MAPPER.convertValue(from, new TypeReference<>() {
-        });
     }
 
     public static JudicialProfileV2 convertInJudicialProfileV2(Object from) {
