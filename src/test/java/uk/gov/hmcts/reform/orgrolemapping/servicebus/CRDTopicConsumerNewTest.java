@@ -75,7 +75,6 @@ class CRDTopicConsumerNewTest {
 
         try {
             topicConsumer.processMessage(serviceBusReceivedMessageContext, UserType.CASEWORKER);
-
         } catch (InvalidRequest exception) {
             assertThat(exception.getMessage(), containsString("Error processing message from service bus"));
         }

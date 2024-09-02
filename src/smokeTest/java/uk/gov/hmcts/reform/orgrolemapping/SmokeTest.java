@@ -20,7 +20,7 @@ import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfigur
 import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
@@ -43,7 +43,7 @@ public class SmokeTest {
     private CRDTopicConsumerNew crdTopicConsumerNew;
 
     @MockBean
-    private JRDTopicConsumer jrdTopicConsumer;
+    private JRDTopicConsumerNew jrdTopicConsumerNew;
 
     @MockBean
     private CRDTopicPublisher crdTopicPublisher;
