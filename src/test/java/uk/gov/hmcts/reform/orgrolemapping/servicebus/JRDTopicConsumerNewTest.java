@@ -4,7 +4,6 @@ import com.azure.core.util.BinaryData;
 import com.azure.messaging.servicebus.ServiceBusProcessorClient;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessage;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
-import com.microsoft.azure.servicebus.SubscriptionClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -64,7 +63,8 @@ class JRDTopicConsumerNewTest {
     void shouldThrowExceptionWhenMessageReceivedWithIncorrectFormat() throws InterruptedException {
         when(deserializer.deserialize(any())).thenThrow(RuntimeException.class);
 
-        ServiceBusReceivedMessageContext serviceBusReceivedMessageContext = mockServiceBusMessage("{invalidUserRequest}");
+        ServiceBusReceivedMessageContext serviceBusReceivedMessageContext =
+                mockServiceBusMessage("{invalidUserRequest}");
 
         CompletableFuture<Void> voidCompletableFuture = sut.startJRDProcessorClient();
 
