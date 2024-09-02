@@ -37,9 +37,6 @@ class JRDTopicConsumerNewTest {
     private OrmDeserializer deserializer;
 
     @Mock
-    public SubscriptionClient subscriptionClient;
-
-    @Mock
     JRDMessagingConfiguration configuration;
 
     @Mock
@@ -67,13 +64,7 @@ class JRDTopicConsumerNewTest {
     void shouldThrowExceptionWhenMessageReceivedWithIncorrectFormat() throws InterruptedException {
         when(deserializer.deserialize(any())).thenThrow(RuntimeException.class);
 
-        ServiceBusReceivedMessage message = Mockito.mock(ServiceBusReceivedMessage.class);
-        // When getBody is called on the mock, return a BinaryData with the desired body
-        Mockito.when(message.getBody()).thenReturn(BinaryData.fromString("{invalidUserRequest}"));
-        ServiceBusReceivedMessageContext serviceBusReceivedMessageContext =
-                Mockito.mock(ServiceBusReceivedMessageContext.class);
-        // Stub the getMessage method to return the message
-        Mockito.when(serviceBusReceivedMessageContext.getMessage()).thenReturn(message);
+        ServiceBusReceivedMessageContext serviceBusReceivedMessageContext = mockServiceBusMessage("{invalidUserRequest}");
 
         CompletableFuture<Void> voidCompletableFuture = sut.startJRDProcessorClient();
 
@@ -98,13 +89,7 @@ class JRDTopicConsumerNewTest {
         when(bulkAssignmentOrchestrator.createBulkAssignmentsRequest(userRequest, UserType.JUDICIAL))
                 .thenThrow(RuntimeException.class);
 
-        ServiceBusReceivedMessage message = Mockito.mock(ServiceBusReceivedMessage.class);
-        // When getBody is called on the mock, return a BinaryData with the desired body
-        Mockito.when(message.getBody()).thenReturn(BinaryData.fromString(request));
-        ServiceBusReceivedMessageContext serviceBusReceivedMessageContext =
-                Mockito.mock(ServiceBusReceivedMessageContext.class);
-        // Stub the getMessage method to return the message
-        Mockito.when(serviceBusReceivedMessageContext.getMessage()).thenReturn(message);
+        ServiceBusReceivedMessageContext serviceBusReceivedMessageContext = mockServiceBusMessage(request);
 
         CompletableFuture<Void> voidCompletableFuture = sut.startJRDProcessorClient();
 
@@ -113,5 +98,17 @@ class JRDTopicConsumerNewTest {
         } catch (InvalidRequest exception) {
             assertThat(exception.getMessage(), containsString("Error processing message from service bus"));
         }
+    }
+
+    private ServiceBusReceivedMessageContext mockServiceBusMessage(String requestBody) {
+        ServiceBusReceivedMessage message = Mockito.mock(ServiceBusReceivedMessage.class);
+        // When getBody is called on the mock, return a BinaryData with the desired body
+        Mockito.when(message.getBody()).thenReturn(BinaryData.fromString(requestBody));
+        ServiceBusReceivedMessageContext serviceBusReceivedMessageContext =
+                Mockito.mock(ServiceBusReceivedMessageContext.class);
+        // Stub the getMessage method to return the message
+        Mockito.when(serviceBusReceivedMessageContext.getMessage()).thenReturn(message);
+
+        return serviceBusReceivedMessageContext;
     }
 }
