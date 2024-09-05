@@ -163,8 +163,8 @@ launchdarkly:
     user: am-${LAUNCH_DARKLY_ENV:local}
   runOnStartup: ${RUN_LD_ON_STARTUP:false}
 
-#orm:
-#  environment: local
+orm:
+  environment: ${ORM_ENV:local}
 
 refresh:
   Job:

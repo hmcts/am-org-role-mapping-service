@@ -80,7 +80,7 @@ env.CRD_TOPIC_NAME = "rd-caseworker-topic-aat"
 env.JRD_TOPIC_NAME = "rd-judicial-topic-aat"
 env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
 env.TEST_URL = "http://am-org-role-mapping-service-aat.service.core-compute-aat.internal"
-env.LAUNCH_DARKLY_ENV = "aat"
+env.ORM_ENV = "aat"
 env.JUDICIAL_BOOKING_URL = "http://am-judicial-booking-service-aat.service.core-compute-aat.internal"
 
 // Var to turn on CRD/JRD FTAs: DTSAM-336 (NB: only disable temporarily if an RD service is unavailable)

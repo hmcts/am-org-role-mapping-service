@@ -37,7 +37,7 @@ public class PersistenceService {
 
     public boolean getStatusByParam(String flagName, String envName) {
         if (StringUtils.isEmpty(envName)) {
-            envName = System.getenv(Constants.LAUNCH_DARKLY_ENV);
+            envName = System.getenv(Constants.ORM_ENV);
         }
         return flagConfigRepository.findByFlagNameAndEnv(flagName, envName).getStatus();
     }

@@ -38,7 +38,7 @@ java:
     JUDICIAL_BOOKING_APP_URL: "http://{{ .Release.Name }}-am-judicial-booking-service"
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
-    LAUNCH_DARKLY_ENV: pr
+    ORM_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
     AMQP_JRD_NEW_ASB_ENABLED: true
@@ -110,7 +110,7 @@ am-role-assignment-service:
       ROLE_ASSIGNMENT_IDAM_ADMIN_USERID: "ras-validation-system@hmcts.net"
       APPLICATION_LOGGING_LEVEL: INFO
       BYPASS_ORG_DROOL_RULE: true
-      LAUNCH_DARKLY_ENV: pr
+      ORM_ENV: pr
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
       RUN_LD_ON_STARTUP: true

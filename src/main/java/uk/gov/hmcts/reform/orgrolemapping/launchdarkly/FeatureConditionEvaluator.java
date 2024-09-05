@@ -27,7 +27,7 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     @Autowired
     private LDClientInterface ldClient;
 
-    @Value("${orm.environment:${launchdarkly.sdk.environment}}")
+    @Value("${orm.environment:launchdarkly.sdk.environment}")
     private String environment;
 
     @Value("${launchdarkly.sdk.user}")
@@ -48,7 +48,7 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
 
     @Autowired
     public FeatureConditionEvaluator(@Autowired LDClient ldClient,
-                                     @Value("${orm.environment:${launchdarkly.sdk.environment}}") String environment,
+                                     @Value("${orm.environment:launchdarkly.sdk.environment}") String environment,
                                      @Value("${launchdarkly.sdk.user}") String userName) {
         this.ldClient = ldClient;
         this.environment = environment;

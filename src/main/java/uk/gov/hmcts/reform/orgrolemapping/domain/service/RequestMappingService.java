@@ -51,7 +51,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 @NoArgsConstructor
 public class RequestMappingService<T> {
 
-    @Value("${orm.environment:${launchdarkly.sdk.environment}}")
+    @Value("${orm.environment:launchdarkly.sdk.environment}")
     private String environment;
 
     @Autowired
