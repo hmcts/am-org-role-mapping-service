@@ -5,7 +5,6 @@ Feature: F-004 : Refresh Role Assignments for Judicial Users
     Given an appropriate test context as detailed in the test data source
 
   @S-031
-  @FeatureToggle(LD:orm-judicial-refresh-role-api=on)
   Scenario: must successfully create judicial role assignments for a user having single judicial booking
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-031_DeleteDataForRoleAssignments]
@@ -21,7 +20,6 @@ Feature: F-004 : Refresh Role Assignments for Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-031_DeleteDataForRoleAssignments].
 
   @S-032
-  @FeatureToggle(LD:orm-judicial-refresh-role-api=on)
   Scenario: must successfully create judicial role mappings for User having multiple Judicial bookings
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-032_DeleteDataForRoleAssignments]
@@ -38,7 +36,6 @@ Feature: F-004 : Refresh Role Assignments for Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-032_DeleteDataForRoleAssignments].
 
   @S-033
-  @FeatureToggle(LD:orm-judicial-refresh-role-api=on)
   Scenario: must successfully create judicial role mappings for User having no judicial booking
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-033_DeleteDataForRoleAssignments]
