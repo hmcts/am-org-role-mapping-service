@@ -23,7 +23,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions.getJuri
 /*
  * All services "listed-hearing-viewer" Org role mapping.
  */
-rule "v1_1_global_listed_hearing_viewer_other_gov_dept"
+rule "v1_5_global_listed_hearing_viewer_other_gov_dept"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_5.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("14","15","19"),
@@ -46,5 +46,5 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : v1_1_global_listed_hearing_viewer_other_gov_dept");
+      logMsg("Rule : v1_5_global_listed_hearing_viewer_other_gov_dept");
 end;

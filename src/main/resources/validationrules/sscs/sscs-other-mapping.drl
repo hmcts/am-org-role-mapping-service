@@ -18,7 +18,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  * SSCS OGD "dwp" Org role mapping.
  */
 
-rule "v1_1_sscs_dwp_ogd_org_role"
+rule "v1_5_sscs_dwp_ogd_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_5.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("14"), serviceCode == "BBA3", !suspended)
@@ -40,14 +40,14 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : v1_1_sscs_dwp_ogd_org_role");
+      logMsg("Rule : v1_5_sscs_dwp_ogd_org_role");
 end;
 
 /*
  * SSCS OGD "hmrc" Org role mapping.
  */
 
-rule "v1_1_sscs_hmrc_ogd_org_role"
+rule "v1_5_sscs_hmrc_ogd_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_5.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("15"), serviceCode == "BBA3", !suspended)
@@ -69,7 +69,7 @@ then
       .readOnly(false)
       .attributes(attribute)
       .build());
-      logMsg("Rule : v1_1_sscs_hmrc_ogd_org_role");
+      logMsg("Rule : v1_5_sscs_hmrc_ogd_org_role");
 end;
 
 /*
