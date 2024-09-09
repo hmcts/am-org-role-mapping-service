@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.PersistenceUtil;
 
 @RestController
 @Hidden
+@ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
 public class FeatureFlagController {
 
     @Autowired
