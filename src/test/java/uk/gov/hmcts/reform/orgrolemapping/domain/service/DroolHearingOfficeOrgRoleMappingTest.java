@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -17,6 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
@@ -204,6 +204,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @CsvSource({
         "14,BBA3,SSCS",
         "15,BBA3,SSCS",
+        "19,BBA3,SSCS",
         "14,ABA5,PRIVATELAW",
         "15,ABA5,PRIVATELAW"
     })
@@ -214,7 +215,13 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
+
+        if (jurisdiction.equals("SSCS")) {
+            roleAssignments = roleAssignments.stream()
+                    .filter(roleAssignment -> roleAssignment.getRoleName().equals("listed-hearing-viewer"))
+                    .toList();
+        }
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -226,4 +233,13 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             assertThat(r.getRoleName()).matches(s -> Stream.of("listed-hearing-viewer").anyMatch(s::contains));
         });
     }
+
+    private static List<FeatureFlag> setFeatureFlags() {
+        List<String> flags = List.of("sscs_hearing_1_0", "sscs_wa_1_5");
+
+        return flags.stream()
+                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
+                .toList();
+    }
+
 }

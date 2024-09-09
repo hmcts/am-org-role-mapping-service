@@ -6,7 +6,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertHelper.MultiRegion;
@@ -422,9 +421,9 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "14,BBA3,'dwp',N,N",
-        "15,BBA3,'hmrc',N,N",
-        "19,BBA3,'ibca',N,N"
+        "14,BBA3,'dwp,listed-hearing-viewer',N,N",
+        "15,BBA3,'hmrc,listed-hearing-viewer',N,N",
+        "19,BBA3,'ibca,listed-hearing-viewer',N,N"
     })
     void shouldReturnSscsOtherGovDepMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -441,11 +440,12 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         cap.setRegionId("LDN");
         cap.setSkillCodes(skillCodes);
 
+        allProfiles.clear();
         allProfiles.add(cap);
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(setFeatureFlags());
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -465,9 +465,13 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
             assertNull(r.getAttributes().get("region"));
 
             //assert work types
-            assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                    arrayContainingInAnyOrder("applications", "hearing_work",
-                            "routine_work", "priority", "pre_hearing"));
+            if (List.of("dwp", "hmrc", "ibca").contains(r.getRoleName())) {
+                assertThat(r.getAttributes().get("workTypes").asText().split(","),
+                        arrayContainingInAnyOrder("applications", "hearing_work",
+                                "routine_work", "priority", "pre_hearing"));
+            } else {
+                assertNull(r.getAttributes().get("workTypes"));
+            }
         });
     }
 
@@ -493,12 +497,4 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-    private static List<FeatureFlag> setFeatureFlags() {
-        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3", "sscs_wa_1_4",
-                "sscs_wa_1_5");
-
-        return flags.stream()
-                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
-                .toList();
-    }
 }
