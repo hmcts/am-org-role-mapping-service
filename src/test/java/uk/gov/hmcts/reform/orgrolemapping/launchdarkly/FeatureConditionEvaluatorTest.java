@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -48,16 +47,6 @@ class FeatureConditionEvaluatorTest {
     @InjectMocks
     FeatureConditionEvaluator featureConditionEvaluator =
             new FeatureConditionEvaluator(ldClient, "dev", "username");
-
-    @ParameterizedTest
-    @CsvSource({
-        "/am/role-mapping/refresh,POST,orm-refresh-role"
-    })
-    void getLaunchDarklyFlagName_Post(String url, String method, String flag)  {
-        when(request.getRequestURI()).thenReturn(url);
-        when(request.getMethod()).thenReturn(method);
-        assertEquals(flag,featureConditionEvaluator.getLaunchDarklyFlag(request));
-    }
 
     @ParameterizedTest
     @CsvSource({
@@ -117,17 +106,6 @@ class FeatureConditionEvaluatorTest {
         Assertions.assertThrows(ForbiddenException.class, () ->
                 featureConditionEvaluator.preHandle(request, response, object)
         );
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "/am/role-mapping/refresh,POST,orm-refresh-role",
-    })
-    void getLdFlagGetCase(String url, String method, String flag) {
-        when(request.getRequestURI()).thenReturn(url);
-        when(request.getMethod()).thenReturn(method);
-        String flagName = featureConditionEvaluator.getLaunchDarklyFlag(request);
-        Assertions.assertEquals(flag, flagName);
     }
 
     @ParameterizedTest
