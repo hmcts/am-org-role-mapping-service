@@ -16,7 +16,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
@@ -215,7 +214,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true));
 
         if (jurisdiction.equals("SSCS")) {
             roleAssignments = roleAssignments.stream()
@@ -233,13 +233,4 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             assertThat(r.getRoleName()).matches(s -> Stream.of("listed-hearing-viewer").anyMatch(s::contains));
         });
     }
-
-    private static List<FeatureFlag> setFeatureFlags() {
-        List<String> flags = List.of("sscs_hearing_1_0", "sscs_wa_1_5");
-
-        return flags.stream()
-                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
-                .toList();
-    }
-
 }
