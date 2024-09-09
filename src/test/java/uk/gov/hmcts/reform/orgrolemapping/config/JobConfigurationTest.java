@@ -25,7 +25,6 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @SuppressWarnings("UnnecessaryLocalVariable")
 @ExtendWith(MockitoExtension.class)
@@ -53,28 +52,11 @@ class JobConfigurationTest {
         logsList = listAppender.list;
     }
 
-    @Test
-    void testRun_featureFlagDisabled() {
-
-        // GIVEN
-        setUpFeatureFlag(false);
-        String jobDetail = JOB_CONFIG;
-        JobConfiguration jobConfigurationRunner = new JobConfiguration(refreshJobConfigService,
-                jobDetail, false, featureConditionEvaluator);
-
-        // WHEN
-        jobConfigurationRunner.run("input.txt");
-
-        // THEN
-        verify(refreshJobConfigService, never()).processJobDetail(any(), anyBoolean());
-    }
-
     @ParameterizedTest
     @NullAndEmptySource
     void testRun_jobDetailEmptyOrNull(String jobDetail) {
 
         // GIVEN
-        setUpFeatureFlag(true);
         JobConfiguration jobConfigurationRunner = new JobConfiguration(refreshJobConfigService,
                 jobDetail, false, featureConditionEvaluator);
 
@@ -90,7 +72,6 @@ class JobConfigurationTest {
     void testRun_withJobDetails(boolean allowUpdate) {
 
         // GIVEN
-        setUpFeatureFlag(true);
         String jobDetail = JOB_CONFIG;
         JobConfiguration jobConfigurationRunner = new JobConfiguration(refreshJobConfigService,
                 jobDetail, allowUpdate, featureConditionEvaluator);
@@ -106,7 +87,6 @@ class JobConfigurationTest {
     void testRun_withJobDetailsException() {
 
         // GIVEN
-        setUpFeatureFlag(true);
         String jobDetail = JOB_CONFIG;
         boolean allowUpdate = false;
         JobConfiguration jobConfigurationRunner = new JobConfiguration(refreshJobConfigService,
@@ -121,11 +101,6 @@ class JobConfigurationTest {
         verify(refreshJobConfigService, atLeastOnce()).processJobDetail(jobDetail, allowUpdate);
 
         assertEquals(JobConfiguration.ERROR_ABORTED_JOB_IMPORT, logsList.get(0).getMessage());
-    }
-
-    private void setUpFeatureFlag(boolean enabled) {
-        when(featureConditionEvaluator.isFlagEnabled("am_org_role_mapping_service", "orm-refresh-job-enable"))
-                .thenReturn(enabled);
     }
 
 }

@@ -41,14 +41,10 @@ public class JobConfiguration implements CommandLineRunner {
     public void run(String... args) {
 
         if (StringUtils.isNotEmpty(jobDetail)) {
-            if (featureConditionEvaluator.isFlagEnabled("am_org_role_mapping_service", "orm-refresh-job-enable")) {
-                try {
-                    this.refreshJobConfigService.processJobDetail(this.jobDetail, this.jobDetailAllowUpdate);
-                } catch (UnprocessableEntityException ex) {
-                    log.error(ERROR_ABORTED_JOB_IMPORT, ex.getMessage(), ex);
-                }
-            } else {
-                log.warn("LD flag 'orm-refresh-job-enable' is not enabled");
+            try {
+                this.refreshJobConfigService.processJobDetail(this.jobDetail, this.jobDetailAllowUpdate);
+            } catch (UnprocessableEntityException ex) {
+                log.error(ERROR_ABORTED_JOB_IMPORT, ex.getMessage(), ex);
             }
         } else {
             log.info("No Job Configuration to create");
