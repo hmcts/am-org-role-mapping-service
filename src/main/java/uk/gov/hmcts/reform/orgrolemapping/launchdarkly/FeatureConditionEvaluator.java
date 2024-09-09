@@ -39,8 +39,6 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
     static {
         //Get Map
         //post Map
-        getRequestMap.put("/am/role-mapping/fetchFlagStatus","get-db-drools-flag");
-        postRequestMap.put("/am/role-mapping/createFeatureFlag","get-db-drools-flag");
     }
 
     @Autowired
