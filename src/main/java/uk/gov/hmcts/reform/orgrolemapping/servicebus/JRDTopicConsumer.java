@@ -110,18 +110,13 @@ public class JRDTopicConsumer {
                 try {
                     log.debug("    Locked Until Utc : {}", message.getLockedUntilUtc());
                     AtomicBoolean result = new AtomicBoolean();
-                    if (featureConditionEvaluator.isFlagEnabled("am_org_role_mapping_service",
-                            "orm-jrd-org-role")) {
-                        processMessage(body, result);
-                        if (result.get()) {
-                            return receiveClient.completeAsync(message.getLockToken());
-                        }
 
-                        log.debug("    getLockToken......{}", message.getLockToken());
-                    } else {
-                        log.info("The JRD feature flag is currently disabled. This message would be suppressed");
+                    processMessage(body, result);
+                    if (result.get()) {
                         return receiveClient.completeAsync(message.getLockToken());
                     }
+
+                    log.debug("    getLockToken......{}", message.getLockToken());
 
                 } catch (Exception e) { // java.lang.Throwable introduces the Sonar issues
                     log.error("Error processing JRD message from service bus : {}", e.getMessage());
