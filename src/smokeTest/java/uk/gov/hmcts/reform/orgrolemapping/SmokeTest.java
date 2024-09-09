@@ -69,7 +69,6 @@ public class SmokeTest {
 
     @Tag("smoke")
     @Test
-    @FeatureFlagToggle("orm-base-flag")
     public void should_receive_response_for_welcomeAPI() {
 
         var targetInstance = config.getOrgRoleMappingUrl();

@@ -22,7 +22,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 
 @RunWith(MockitoJUnitRunner.class)
 class FeatureConditionEvaluatorTest {
@@ -52,16 +51,6 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-        "/welcome,GET,orm-base-flag"
-    })
-    void getLaunchDarklyFlagName_Get(String url, String method, String flag)  {
-        when(request.getRequestURI()).thenReturn(url);
-        when(request.getMethod()).thenReturn(method);
-        assertEquals(flag,featureConditionEvaluator.getLaunchDarklyFlag(request));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
         "/am/role-mapping/refresh,POST,orm-refresh-role"
     })
     void getLaunchDarklyFlagName_Post(String url, String method, String flag)  {
@@ -77,18 +66,6 @@ class FeatureConditionEvaluatorTest {
     void getLaunchDarklyFlagName_Delete(String url, String method, String flag)  {
         when(request.getMethod()).thenReturn(method);
         assertNull(featureConditionEvaluator.getLaunchDarklyFlag(request));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "/welcome,GET,orm-base-flag"
-    })
-    void getPositiveResponseForFlag(String url, String method, String flag) throws Exception {
-        when(request.getRequestURI()).thenReturn(url);
-        when(request.getMethod()).thenReturn(method);
-        when(ldClient.boolVariation(any(), any(), anyBoolean())).thenReturn(true);
-        when(ldClient.isFlagKnown(any())).thenReturn(true);
-        Assertions.assertTrue(featureConditionEvaluator.preHandle(request, response, object));
     }
 
     @ParameterizedTest
@@ -131,19 +108,6 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-        "/welcome,GET,orm-base-flag"
-    })
-    void expectExceptionForInvalidFlagName(String url, String method, String flag) {
-        when(request.getRequestURI()).thenReturn(url);
-        when(request.getMethod()).thenReturn(method);
-        when(ldClient.isFlagKnown(any())).thenReturn(false);
-        Assertions.assertThrows(ResourceNotFoundException.class, () ->
-            featureConditionEvaluator.preHandle(request, response, object)
-        );
-    }
-
-    @ParameterizedTest
-    @CsvSource({
         "/url,GET,orm-base-flag"
     })
     void getLdFlagGetCaseNullUrlForbidden(String url, String method, String flag) {
@@ -157,7 +121,6 @@ class FeatureConditionEvaluatorTest {
 
     @ParameterizedTest
     @CsvSource({
-        "/welcome,GET,orm-base-flag",
         "/am/role-mapping/refresh,POST,orm-refresh-role",
     })
     void getLdFlagGetCase(String url, String method, String flag) {

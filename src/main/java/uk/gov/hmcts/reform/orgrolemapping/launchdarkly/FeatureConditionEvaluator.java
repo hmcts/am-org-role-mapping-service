@@ -38,7 +38,6 @@ public class FeatureConditionEvaluator implements HandlerInterceptor {
 
     static {
         //Get Map
-        getRequestMap.put("/welcome", "orm-base-flag");
         //post Map
         postRequestMap.put("/am/role-mapping/refresh", "orm-refresh-role");
         getRequestMap.put("/am/role-mapping/fetchFlagStatus","get-db-drools-flag");

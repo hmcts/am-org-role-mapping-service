@@ -3,7 +3,7 @@ Feature:F-000 Access Organisation Role Mapping API
 
   Background:
     Given an appropriate test context as detailed in the test data source
-  @S-000 @FeatureToggle(orm-base-flag)
+  @S-000
   Scenario: must access Organisation Role Mapping API
     Given a user with [an active caseworker profile],
 
