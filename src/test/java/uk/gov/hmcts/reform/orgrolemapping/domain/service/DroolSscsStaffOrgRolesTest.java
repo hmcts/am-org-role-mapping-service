@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
@@ -424,7 +423,8 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "14,BBA3,'dwp',N,N",
-        "15,BBA3,'hmrc',N,N"
+        "15,BBA3,'hmrc',N,N",
+        "19,BBA3,'ibca',N,N"
     })
     void shouldReturnSscsOtherGovDepMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -450,7 +450,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         roleAssignments.forEach(r -> {
             assertEquals("OTHER_GOV_DEPT", r.getRoleCategory().toString());
@@ -465,17 +465,9 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
             assertNull(r.getAttributes().get("region"));
 
             //assert work types
-            if (("dwp").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("applications", "hearing_work",
-                                "routine_work", "priority", "pre_hearing"));
-            } else if (("hmrc").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("applications", "hearing_work",
-                                "routine_work", "priority", "pre_hearing"));
-            } else {
-                assertNull(r.getAttributes().get("workTypes"));
-            }
+            assertThat(r.getAttributes().get("workTypes").asText().split(","),
+                    arrayContainingInAnyOrder("applications", "hearing_work",
+                            "routine_work", "priority", "pre_hearing"));
         });
     }
 
@@ -502,7 +494,11 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
     }
 
     private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("sscs_wa_1_2").status(true).build());
+        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3", "sscs_wa_1_4",
+                "sscs_wa_1_5");
+
+        return flags.stream()
+                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
+                .toList();
     }
 }
