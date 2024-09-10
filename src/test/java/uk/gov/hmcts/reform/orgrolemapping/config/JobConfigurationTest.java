@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshJobConfigService;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 
 import java.util.List;
 
@@ -31,9 +30,6 @@ import static org.mockito.Mockito.verify;
 class JobConfigurationTest {
 
     private static final String JOB_CONFIG = "LEGAL_OPERATIONS-PUBLICLAW-NEW-0-11";
-
-    @Mock(lenient = true)
-    private FeatureConditionEvaluator featureConditionEvaluator;
 
     @Mock
     private RefreshJobConfigService refreshJobConfigService;
@@ -58,7 +54,7 @@ class JobConfigurationTest {
 
         // GIVEN
         JobConfiguration jobConfigurationRunner = new JobConfiguration(refreshJobConfigService,
-                jobDetail, false, featureConditionEvaluator);
+                jobDetail, false);
 
         // WHEN
         jobConfigurationRunner.run("input.txt");
@@ -74,7 +70,7 @@ class JobConfigurationTest {
         // GIVEN
         String jobDetail = JOB_CONFIG;
         JobConfiguration jobConfigurationRunner = new JobConfiguration(refreshJobConfigService,
-                jobDetail, allowUpdate, featureConditionEvaluator);
+                jobDetail, allowUpdate);
 
         // WHEN
         jobConfigurationRunner.run("input.txt");
@@ -90,7 +86,7 @@ class JobConfigurationTest {
         String jobDetail = JOB_CONFIG;
         boolean allowUpdate = false;
         JobConfiguration jobConfigurationRunner = new JobConfiguration(refreshJobConfigService,
-                jobDetail, allowUpdate, featureConditionEvaluator);
+                jobDetail, allowUpdate);
         Mockito.doThrow(new UnprocessableEntityException("AN ERROR"))
                 .when(refreshJobConfigService).processJobDetail(jobDetail, allowUpdate);
 

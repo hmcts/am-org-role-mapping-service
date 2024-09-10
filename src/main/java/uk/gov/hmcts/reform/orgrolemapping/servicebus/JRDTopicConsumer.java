@@ -23,7 +23,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.BulkAssignmentOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.deserializer.OrmDeserializer;
 
 import java.net.URI;
@@ -42,9 +41,6 @@ public class JRDTopicConsumer {
     private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
     private OrmDeserializer deserializer;
     private JRDMessagingConfiguration configuration;
-
-    @Autowired
-    private FeatureConditionEvaluator featureConditionEvaluator;
 
     public JRDTopicConsumer(BulkAssignmentOrchestrator bulkAssignmentOrchestrator,
                             OrmDeserializer deserializer,

@@ -40,7 +40,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
@@ -112,9 +111,6 @@ public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
     private JBSFeignClient jbsFeignClient;
 
     @MockBean
-    private FeatureConditionEvaluator featureConditionEvaluator;
-
-    @MockBean
     private FeignClientInterceptor feignClientInterceptor;
 
     @MockBean
@@ -175,7 +171,6 @@ public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
 
         );
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
-        doReturn(true).when(featureConditionEvaluator).preHandle(any(), any(), any());
         userRequest = UserRequest.builder().userIds(List.of("4dc7dd3c-3fb5-4611-bbde-5101a97681e2"))
                 .build();
 
