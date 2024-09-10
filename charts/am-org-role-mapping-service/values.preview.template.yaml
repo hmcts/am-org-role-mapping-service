@@ -23,8 +23,6 @@ java:
           alias: app-insights-connection-string
         - name: am-org-role-mapping-service-s2s-secret
           alias: AM_ORG_ROLE_MAPPING_SERVICE_SECRET
-        - name: role-assignment-service-LD-SDK-KEY
-          alias: LD_SDK_KEY
         - name: orm-IDAM-CLIENT-ID
           alias: ORM_IDAM_CLIENT_ID
         - name: orm-IDAM-CLIENT-SECRET
@@ -96,8 +94,6 @@ am-role-assignment-service:
             alias: ROLE_ASSIGNMENT_IDAM_CLIENT_SECRET
           - name: role-assignment-service-IDAM-ADMIN-SECRET
             alias: ROLE_ASSIGNMENT_IDAM_ADMIN_PASSWORD
-          - name: role-assignment-service-LD-SDK-KEY
-            alias: LD_SDK_KEY
     environment:
       ROLE_ASSIGNMENT_DB_HOST: "{{ .Release.Name }}-postgresql"
       ROLE_ASSIGNMENT_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
