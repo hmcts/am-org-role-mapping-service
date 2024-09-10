@@ -31,12 +31,6 @@ public class SmokeTest {
     @Value("${orm.environment:launchdarkly.sdk.environment}")
     private String environment;
 
-    @Value("${launchdarkly.sdk.user}")
-    private String userName;
-
-    @Value("${launchdarkly.sdk.key}")
-    private String sdkKey;
-
     UserTokenProviderConfig config;
 
     @MockBean
@@ -87,11 +81,4 @@ public class SmokeTest {
         return environment;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getSdkKey() {
-        return sdkKey;
-    }
 }
