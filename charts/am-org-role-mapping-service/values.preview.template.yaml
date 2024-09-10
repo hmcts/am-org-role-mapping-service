@@ -58,7 +58,6 @@ java:
     REFRESH_JOB_INCLUDE_BOOKINGS: false
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
-    RUN_LD_ON_STARTUP: true
   postgresql:
     enabled: true
     primary:
@@ -113,7 +112,6 @@ am-role-assignment-service:
       ORM_ENV: pr
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
-      RUN_LD_ON_STARTUP: true
 
 am-judicial-booking-service:
   java:

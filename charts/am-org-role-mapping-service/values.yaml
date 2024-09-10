@@ -57,7 +57,6 @@ java:
     REFRESH_JOB:
     TESTING_SUPPORT_ENABLED: false
     APPLICATION_LOGGING_LEVEL: INFO
-    RUN_LD_ON_STARTUP: true
 
 #subcharts conditions
 orm:
