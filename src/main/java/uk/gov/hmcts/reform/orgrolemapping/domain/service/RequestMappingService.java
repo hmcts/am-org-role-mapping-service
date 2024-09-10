@@ -218,7 +218,7 @@ public class RequestMappingService<T> {
     private List<FeatureFlag> getDBFeatureFlags() {
         List<FeatureFlag> featureFlags = new ArrayList<>();
         Map<String, Boolean> droolFlagStates = new ConcurrentHashMap<>();
-        // building the LDFeature Flag
+        // building the Feature Flag
         if (environment.equals("prod")) {
             droolFlagStates = DBFlagConfigurtion.getDroolFlagStates();
         } else {

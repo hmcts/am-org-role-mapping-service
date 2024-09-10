@@ -17,7 +17,7 @@ public class OrmDefaultMultiSourceFeatureToggleService extends DefaultMultiSourc
     @SuppressWarnings("unchecked")
     public ScenarioFeatureToggleInfo getToggleStatusFor(Scenario toggleable) {
         ScenarioFeatureToggleInfo scenarioFeatureToggleInfo = new ScenarioFeatureToggleInfo();
-        //@FeatureToggle(LD:feature_id_1=on) @FeatureToggle(IAC:feature_id_2=off)
+        // @FeatureToggle(IAC:feature_id_2=off)
         toggleable.getSourceTagNames().stream().filter(tag -> tag.contains(FEATURE_TOGGLE)).forEach(tag -> {
 
             String id = null;
