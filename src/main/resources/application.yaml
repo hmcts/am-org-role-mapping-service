@@ -178,6 +178,8 @@ refresh:
     includeJudicialBookings: ${REFRESH_JOB_INCLUDE_BOOKINGS:false}
   BulkAssignment:
     includeJudicialBookings: ${REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS:false}
+  judicial:
+    filterSoftDeletedUsers: ${REFRESH_JUDICIAL_FILTER_SOFT_DELETED_USERS:false}
 
 testing:
   support:

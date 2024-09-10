@@ -2,6 +2,10 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -38,12 +43,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,7 +63,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.build
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialProfilesResponseV2;
 
 @TestPropertySource(properties = {
-    "refresh.BulkAssignment.includeJudicialBookings=true"
+    "refresh.BulkAssignment.includeJudicialBookings=true",
+    "refresh.judicial.filterSoftDeletedUsers=true"
 })
 public class RefreshControllerJudicialRefreshIntegrationTest extends BaseTestIntegration {
 
@@ -93,6 +103,9 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseTestInt
     @Mock
     private SecurityContext securityContext;
 
+    @Captor
+    private ArgumentCaptor<Map<String, Set<UserAccessProfile>>> usersAccessProfilesCaptor;
+
     private static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
@@ -128,6 +141,40 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseTestInt
         var contentAsString = result.getResponse().getContentAsString();
         assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void shouldProcessRefreshRoleAssignmentsWithJudicialProfilesV2_deletedFlag(Boolean deletedFlagStatus)
+            throws Exception {
+        logger.info(" Refresh role assignments when judicial user deleted flag {}", deletedFlagStatus);
+        var uuid = UUID.randomUUID().toString();
+
+        ResponseEntity<List<JudicialProfileV2>> res = buildJudicialProfilesResponseV2(uuid);
+        res.getBody().get(0).setDeletedFlag(deletedFlagStatus.toString());
+
+        doReturn(res).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+        doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
+        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
+
+        MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(S2S_XUI))
+                        .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
+                                .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        verify(requestMappingService, times(1))
+                .createJudicialAssignments(usersAccessProfilesCaptor.capture(), any());
+
+        Map<String, Set<UserAccessProfile>> usersAccessProfiles = usersAccessProfilesCaptor.getValue();
+        assertEquals(deletedFlagStatus, usersAccessProfiles.get(uuid).isEmpty());
+
+        var contentAsString = result.getResponse().getContentAsString();
+        assertTrue(contentAsString.contains(Constants.SUCCESS_ROLE_REFRESH));
+        logger.info(" -- Refresh Role Assignment record updated successfully when judicial user deleted flag {} -- ",
+                deletedFlagStatus);
     }
 
     @Test
