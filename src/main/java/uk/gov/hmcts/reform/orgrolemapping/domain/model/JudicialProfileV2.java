@@ -29,6 +29,7 @@ public class JudicialProfileV2 implements Serializable, UserAccessProfile {
     private String initials;
     private String retirementDate;
     private String activeFlag;
+    private String deletedFlag;
     private List<AppointmentV2> appointments;
     private List<AuthorisationV2> authorisations;
     private List<RoleV2> roles;

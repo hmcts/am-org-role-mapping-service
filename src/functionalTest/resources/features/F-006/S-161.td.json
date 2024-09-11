@@ -155,7 +155,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "4e7d6cfa-5035-4d97-8072-2ed330b8a88f",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "specific-access-approver-judiciary",
           "classification": "PUBLIC",
@@ -176,7 +176,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "4e7d6cfa-5035-4d97-8072-2ed330b8a88f",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "task-supervisor",
           "classification": "PUBLIC",
