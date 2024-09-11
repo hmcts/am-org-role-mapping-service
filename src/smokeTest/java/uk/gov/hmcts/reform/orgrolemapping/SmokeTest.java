@@ -28,7 +28,7 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 @WithTags({@WithTag("testType:Smoke")})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SmokeTest {
-    @Value("${orm.environment:launchdarkly.sdk.environment}")
+    @Value("${orm.environment?:${launchdarkly.sdk.environment}}")
     private String environment;
 
     UserTokenProviderConfig config;

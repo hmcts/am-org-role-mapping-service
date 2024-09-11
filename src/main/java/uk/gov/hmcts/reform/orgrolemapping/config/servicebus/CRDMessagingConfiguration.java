@@ -37,7 +37,7 @@ public class CRDMessagingConfiguration {
     String sharedAccessKeyValue;
     @Value("${amqp.crd.subscription}")
     String subscription;
-    @Value("${orm.environment:launchdarkly.sdk.environment}")
+    @Value("${orm.environment?:${launchdarkly.sdk.environment}}")
     String environment;
 
     @Bean("crdPublisher")
