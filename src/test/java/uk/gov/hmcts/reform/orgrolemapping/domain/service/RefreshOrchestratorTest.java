@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -51,8 +50,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
@@ -166,99 +167,47 @@ class RefreshOrchestratorTest {
     @Test
     void refreshRoleAssignmentRecords_nullUserRequest() {
 
+        // GIVEN
         mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
 
-        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
-        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
-        MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("total_records", "4");
+        setUpMocks_RefreshJobByServiceName_Caseworker(1);
 
-        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
-                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
-
-
-        doReturn(responseEntity).when(crdService)
-                .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
-
-        Mockito.doNothing().when(parseRequestService)
-                .validateUserRequest(any());
-
-        Map<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
-        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
-                .id("1")
-                .roleId("1")
-                .roleName("roleName")
-                .primaryLocationName("primary")
-                .primaryLocationId("1")
-                .areaOfWorkId("1")
-                .serviceCode("1")
-                .suspended(false)
-                .build());
-        userAccessProfiles.put("1", userAccessProfileSet);
-
-        doReturn(userAccessProfiles).when(retrieveDataService)
-                .retrieveProfiles(any(), eq(UserType.CASEWORKER));
-
-        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
-
-        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
-
+        // WHEN
         ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
 
+        // THEN
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response);
+
+        // verify refreshById calls not made
+        verify(parseRequestService, never()).validateUserRequest(any());
+        verify(retrieveDataService, never()).retrieveProfiles(any(), eq(UserType.CASEWORKER));
+        // verify refreshByServiceName calls have been made
+        verify(crdService, atLeast(1)).fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+        verify(retrieveDataService, Mockito.times(1)).retrieveProfilesByServiceName(any(), eq(UserType.CASEWORKER));
     }
 
-    @Disabled("TODO: fix in AM-2902")
     @Test
-    @DisplayName("refreshRoleAssignmentJudicialRecords_nullUserRequest")
     void refreshRoleAssignmentJudicialRecords_nullUserRequest() {
 
+        // GIVEN
         mockFetchRefreshJobById(1L, RoleCategory.JUDICIAL, NEW);
 
-        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
-        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
-        MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("total_records", "4");
+        setUpMocks_RefreshJobByServiceName_Judicial(1);
 
-        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
-                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
-
-
-        doReturn(responseEntity).when(jrdService)
-                .fetchJudicialDetailsByServiceName(any(), any(), any(), any(), any());
-
-        Mockito.doNothing().when(parseRequestService)
-                .validateUserRequest(any());
-
-        Map<String, Set<CaseWorkerAccessProfile>> userAccessProfiles = new HashMap<>();
-        Set<CaseWorkerAccessProfile> userAccessProfileSet = new HashSet<>();
-        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
-                .id("1")
-                .roleId("1")
-                .roleName("roleName")
-                .primaryLocationName("primary")
-                .primaryLocationId("1")
-                .areaOfWorkId("1")
-                .serviceCode("1")
-                .suspended(false)
-                .build());
-        userAccessProfiles.put("1", userAccessProfileSet);
-
-        doReturn(userAccessProfiles).when(retrieveDataService)
-                .retrieveProfiles(any(), eq(UserType.JUDICIAL));
-        //TODO should call Judicial but after AM-2902 mergerd into Master
-        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
-
-        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
-
+        // WHEN
         ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
 
+        // THEN
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response);
+
+        // verify refreshById calls not made
+        verify(parseRequestService, never()).validateUserRequest(any());
+        verify(retrieveDataService, never()).retrieveProfiles(any(), eq(UserType.CASEWORKER));
+        // verify refreshByServiceName calls have been made
+        verify(jrdService, atLeast(1)).fetchJudicialDetailsByServiceName(any(), any(), any(), any(), any());
+        verify(retrieveDataService, Mockito.times(1)).retrieveProfilesByServiceName(any(), eq(UserType.JUDICIAL));
     }
 
     @Test
@@ -417,28 +366,11 @@ class RefreshOrchestratorTest {
     @Nested
     class RefreshJobByServiceNameForCaseworker {
 
-        void setUpMocks(int totalRecords) {
-
-            List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
-            userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
-            MultiValueMap<String, String> headers = new HttpHeaders();
-            headers.add("total_records", String.valueOf(totalRecords));
-
-            ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
-                    = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
-
-            doReturn(responseEntity).when(crdService)
-                    .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
-
-            Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
-                    .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
-        }
-
         @Test
         void refreshJobByServiceName() {
 
             // GIVEN
-            setUpMocks(4);
+            setUpMocks_RefreshJobByServiceName_Caseworker(4);
 
             RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
                     .roleCategory(RoleCategory.ADMIN.name())
@@ -469,7 +401,7 @@ class RefreshOrchestratorTest {
         void refreshJobByServiceWithInvalidRoleCategory() {
 
             // GIVEN
-            setUpMocks(4);
+            setUpMocks_RefreshJobByServiceName_Caseworker(4);
 
             RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
                     .roleCategory("ABC")
@@ -490,7 +422,7 @@ class RefreshOrchestratorTest {
         void refreshJobByServiceNameWithNoPageSize() {
 
             // GIVEN
-            setUpMocks(4);
+            setUpMocks_RefreshJobByServiceName_Caseworker(4);
 
             RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
                     .roleCategory(RoleCategory.ADMIN.name())
@@ -519,7 +451,7 @@ class RefreshOrchestratorTest {
         void refreshJobByServiceNameWithDecimalPageSize() {
 
             // GIVEN
-            setUpMocks(3);
+            setUpMocks_RefreshJobByServiceName_Caseworker(3);
 
             RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
                     .roleCategory(RoleCategory.ADMIN.name())
@@ -582,29 +514,11 @@ class RefreshOrchestratorTest {
     @Nested
     class RefreshJobByServiceNameForJudicial {
 
-        void setUpMocks(int totalRecords) {
-
-            List<Object> userProfilesResponseList = new ArrayList<>(buildJudicialProfileV2(
-                    TestDataBuilder.buildRefreshRoleRequest(), "judicialProfileSampleV2.json"
-            ));
-            MultiValueMap<String, String> headers = new HttpHeaders();
-            headers.add("total_records", String.valueOf(totalRecords));
-
-            ResponseEntity<List<Object>> responseEntity
-                    = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
-
-            doReturn(responseEntity).when(jrdService)
-                    .fetchJudicialDetailsByServiceName(any(), any(), any(), any(), any());
-
-            Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
-                    .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
-        }
-
         @Test
         void refreshJobByServiceName() {
 
             // GIVEN
-            setUpMocks(4);
+            setUpMocks_RefreshJobByServiceName_Judicial(4);
 
             RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
                     .roleCategory(RoleCategory.JUDICIAL.name())
@@ -635,7 +549,7 @@ class RefreshOrchestratorTest {
         void refreshJobByServiceWithInvalidRoleCategory() {
 
             // GIVEN
-            setUpMocks(4);
+            setUpMocks_RefreshJobByServiceName_Judicial(4);
 
             RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
                     .roleCategory("ABC")
@@ -656,7 +570,7 @@ class RefreshOrchestratorTest {
         void refreshJobByServiceNameWithNoPageSize() {
 
             // GIVEN
-            setUpMocks(4);
+            setUpMocks_RefreshJobByServiceName_Judicial(4);
 
             RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
                     .roleCategory(RoleCategory.JUDICIAL.name())
@@ -685,7 +599,7 @@ class RefreshOrchestratorTest {
         void refreshJobByServiceNameWithDecimalPageSize() {
 
             // GIVEN
-            setUpMocks(3);
+            setUpMocks_RefreshJobByServiceName_Judicial(3);
 
             RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
                     .roleCategory(RoleCategory.JUDICIAL.name())
@@ -1013,6 +927,41 @@ class RefreshOrchestratorTest {
         );
 
         assertTrue(exception.getLocalizedMessage().contains(ERROR_REFRESH_JOB_INVALID_STATE));
+    }
+
+    private void setUpMocks_RefreshJobByServiceName_Caseworker(int totalRecords) {
+
+        List<CaseWorkerProfilesResponse> userProfilesResponseList = new ArrayList<>();
+        userProfilesResponseList.add(TestDataBuilder.buildUserProfilesResponse());
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.add("total_records", String.valueOf(totalRecords));
+
+        ResponseEntity<List<CaseWorkerProfilesResponse>> responseEntity
+                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
+
+        doReturn(responseEntity).when(crdService)
+                .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+    }
+
+    private void setUpMocks_RefreshJobByServiceName_Judicial(int totalRecords) {
+
+        List<Object> userProfilesResponseList = new ArrayList<>(buildJudicialProfileV2(
+                TestDataBuilder.buildRefreshRoleRequest(), "judicialProfileSampleV2.json"
+        ));
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.add("total_records", String.valueOf(totalRecords));
+
+        ResponseEntity<List<Object>> responseEntity
+                = new ResponseEntity<>(userProfilesResponseList, headers, HttpStatus.OK);
+
+        doReturn(responseEntity).when(jrdService)
+                .fetchJudicialDetailsByServiceName(any(), any(), any(), any(), any());
+
+        Mockito.when(requestMappingService.createJudicialAssignments(any(), any()))
+                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
     }
 
     private void mockFetchRefreshJobById(Long jobId, RoleCategory category, String status) {
