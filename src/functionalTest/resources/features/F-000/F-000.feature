@@ -7,10 +7,6 @@ Feature:F-000 Access Organisation Role Mapping API
   Scenario: must access Organisation Role Mapping API
     Given a user with [an active caseworker profile],
 
-  @S-120
-  Scenario: must access Role Assignment API
-    Given a user with [an active caseworker profile],
-
 
   @S-110
   Scenario: must access Role Assignment API
