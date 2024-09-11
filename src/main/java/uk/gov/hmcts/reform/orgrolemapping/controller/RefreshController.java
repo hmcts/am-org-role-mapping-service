@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -85,7 +83,6 @@ public class RefreshController {
             description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED,
             content = @Content()
     )
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
@@ -129,4 +126,5 @@ public class RefreshController {
         }
         return judicialRefreshOrchestrator.judicialRefresh(judicialRefreshRequest.getRefreshRequest());
     }
+
 }

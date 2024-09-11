@@ -35,7 +35,7 @@ public class ProviderTestConfiguration {
     @Bean
     @Primary
     public RetrieveDataService getRetrieveDataService() {
-        return new RetrieveDataService(getParseRequestService(), crdService, jrdService, false, false);
+        return new RetrieveDataService(getParseRequestService(), crdService, jrdService);
     }
 
     @Bean
@@ -77,10 +77,12 @@ public class ProviderTestConfiguration {
                 jrdService,
                 persistenceService,
                 securityUtils,
+                judicialBookingService,
                 "1",
                 "descending",
                 "1",
-                List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch")
+                List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch"),
+                true
         );
     }
 

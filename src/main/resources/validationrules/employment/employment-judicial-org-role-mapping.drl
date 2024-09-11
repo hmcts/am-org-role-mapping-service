@@ -29,7 +29,10 @@ $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salarie
                                         "EMPLOYMENT Employment Judge-Salaried",
                                         "EMPLOYMENT Employment Judge-Fee-Paid",
                                         "EMPLOYMENT Tribunal Member-Fee-Paid",
-                                        "EMPLOYMENT Tribunal Member Lay-Fee-Paid"))
+                                        "EMPLOYMENT Tribunal Member Lay-Fee-Paid",
+                                        "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
+                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if ($joh.getOffice().contains("Salaried")) {
@@ -63,7 +66,10 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salaried",
                                          "EMPLOYMENT Vice President-Salaried",
-                                         "EMPLOYMENT Regional Employment Judge-Salaried"))
+                                         "EMPLOYMENT Regional Employment Judge-Salaried",
+                                         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
+                                         "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                         "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -95,7 +101,11 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salaried",
                                         "EMPLOYMENT Vice President-Salaried",
-                                        "EMPLOYMENT Regional Employment Judge-Salaried"))
+                                        "EMPLOYMENT Regional Employment Judge-Salaried",
+                                        "EMPLOYMENT Employment Judge-Salaried",
+                                        "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
+                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -127,7 +137,10 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salaried",
                                         "EMPLOYMENT Vice President-Salaried",
-                                        "EMPLOYMENT Regional Employment Judge-Salaried"))
+                                        "EMPLOYMENT Regional Employment Judge-Salaried",
+                                        "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
+                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -163,7 +176,10 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT Vice President-Salaried",
                                         "EMPLOYMENT Regional Employment Judge-Salaried",
-                                        "EMPLOYMENT President of Tribunal-Salaried"))
+                                        "EMPLOYMENT President of Tribunal-Salaried",
+                                        "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
+                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -199,7 +215,10 @@ when
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT Vice President-Salaried",
                                          "EMPLOYMENT Regional Employment Judge-Salaried",
                                          "EMPLOYMENT President of Tribunal-Salaried",
-                                         "EMPLOYMENT Employment Judge-Salaried"))
+                                         "EMPLOYMENT Employment Judge-Salaried",
+                                         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
+                                         "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                         "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));

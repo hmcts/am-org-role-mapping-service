@@ -19,7 +19,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -53,12 +52,6 @@ class JacksonUtilsTest {
                 objectMapper.readValue(new File("src/main/resources/userProfileSample.json"),
                         CaseWorkerProfile.class);
         assertNotNull(JacksonUtils.convertInCaseWorkerProfile(caseWorkerProfile));
-    }
-
-    @Test
-    void convertInJudicialProfile() throws IOException {
-        JudicialProfile judicialProfile = TestDataBuilder.buildJudicialProfile();
-        assertNotNull(JacksonUtils.convertInJudicialProfile(judicialProfile));
     }
 
     @Test
@@ -155,4 +148,5 @@ class JacksonUtilsTest {
         JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
         assertNotNull(JacksonUtils.convertInJudicialBooking(judicialBooking));
     }
+
 }

@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 
@@ -31,7 +30,6 @@ public class JacksonUtils {
 
     private JacksonUtils() {
     }
-
 
 
     public static final ObjectMapper MAPPER = JsonMapper.builder()
@@ -87,18 +85,12 @@ public class JacksonUtils {
     }
 
     public static List<JudicialProfileV2> convertListInJudicialProfileV2(List<Object> from) {
-        List<JudicialProfileV2> judicialProfileV2s = new ArrayList<>();
+        List<JudicialProfileV2> judicialProfiles = new ArrayList<>();
         for (Object obj : from) {
-            judicialProfileV2s.add(convertInJudicialProfileV2(obj));
+            judicialProfiles.add(convertInJudicialProfileV2(obj));
         }
 
-        return judicialProfileV2s;
-    }
-
-
-    public static JudicialProfile convertInJudicialProfile(Object from) {
-        return MAPPER.convertValue(from, new TypeReference<>() {
-        });
+        return judicialProfiles;
     }
 
     public static JudicialProfileV2 convertInJudicialProfileV2(Object from) {
@@ -110,4 +102,5 @@ public class JacksonUtils {
         return MAPPER.convertValue(from, new TypeReference<>() {
         });
     }
+
 }
