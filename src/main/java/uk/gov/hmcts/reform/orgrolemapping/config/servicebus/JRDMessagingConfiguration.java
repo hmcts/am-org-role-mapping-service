@@ -37,7 +37,7 @@ public class JRDMessagingConfiguration {
     String sharedAccessKeyValue;
     @Value("${amqp.jrd.subscription}")
     String subscription;
-    @Value("${orm.environment?:${launchdarkly.sdk.environment}}")
+    @Value("#{'${orm.environment?:${launchdarkly.sdk.environment}}'}")
     String environment;
 
     @Bean("jrdPublisher")
