@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -55,6 +57,8 @@ import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -97,6 +101,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
     "refresh.Job.authorisedServices=" + S2S_ORM + "," + S2S_RARB,
     "refresh.Job.includeJudicialBookings=true",
     "refresh.Job.pageSize=" + TEST_PAGE_SIZE,
+    "refresh.judicial.filterSoftDeletedUsers=true",
     "testing.support.enabled=true" // NB: needed for access to test support URLs
 })
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -150,6 +155,9 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     @Mock
     private SecurityContext securityContext;
+
+    @Captor
+    private ArgumentCaptor<Map<String, Set<UserAccessProfile>>> usersAccessProfilesCaptor;
 
     Lock sequential = new ReentrantLock();
 
@@ -561,6 +569,50 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertEquals(ABORTED, refreshJob.getStatus());
         assertNotNull(refreshJob.getUserIds());
         assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
+    }
+
+    @Order(17)
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void shouldProcessRefreshRoleAssignments_deletedFlag(Boolean deletedFlagStatus) throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
+
+        logger.info(" RefreshJob record with judicial user deleted flag {}", deletedFlagStatus);
+        String[] userIds = buildUserIdList(1);
+
+        ResponseEntity<List<JudicialProfileV2>> res = buildJudicialProfilesResponseV2(userIds);
+        res.getBody().get(0).setDeletedFlag(deletedFlagStatus.toString());
+        doReturn(res).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+
+        mockJBSService(userIds);
+        mockRequestMappingServiceWithJudicialStatus(HttpStatus.CREATED);
+
+        Long jobId = createRefreshJobJudicialTargetedUserList(userIds);
+        UserRequest userRequest = buildUserRequestWithUserIds(userIds);
+
+        mockMvc.perform(post(REFRESH_JOB_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
+                        .param("jobId", jobId.toString())
+                        .content(mapper.writeValueAsBytes(userRequest)))
+                .andExpect(status().is(202))
+                .andReturn();
+
+        await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
+                .timeout(WAIT_FOR_ASYNC_TO_TIMEOUT, TimeUnit.SECONDS)
+                .untilAsserted(() -> Assertions.assertTrue(isRefreshJobInStatus(jobId, COMPLETED)));
+
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
+        assertEquals(COMPLETED, refreshJob.getStatus());
+        assertNotNull(refreshJob.getLog());
+
+        verify(jrdFeignClient, times(1)).getJudicialDetailsById(any(), any());
+        verify(jbsFeignClient, deletedFlagStatus ? times(0) : times(1)).getJudicialBookingByUserIds(any());
+        verify(requestMappingService, times(1)).createJudicialAssignments(usersAccessProfilesCaptor.capture(), any());
+
+        Map<String, Set<UserAccessProfile>> usersAccessProfiles = usersAccessProfilesCaptor.getValue();
+        assertEquals(deletedFlagStatus, usersAccessProfiles.get(userIds[0]).isEmpty());
     }
 
     @NotNull
