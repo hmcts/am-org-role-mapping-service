@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 public class EnvironmentConfiguration {
 
     @Value("${launchdarkly.sdk.environment}")
-    String launchDarklyEnvironment;
+    private String launchDarklyEnvironment;
 
-    @Value("${orm.environment:null}")
-    String ormEnvironment;
+    @Value("${orm.environment}")
+    private String ormEnvironment;
 
     public String getEnvironment() {
         if (StringUtils.isNotEmpty(ormEnvironment)) {
