@@ -27,11 +27,11 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
+import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
@@ -50,12 +50,11 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestMappingService<T> {
-
-    @Value("#{'${orm.environment?:${launchdarkly.sdk.environment}}'}")
-    private String environment;
-
     @Autowired
     private PersistenceService persistenceService;
+
+    @Autowired
+    private EnvironmentConfiguration environmentConfiguration;
 
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
     public static final String JUDICIAL_ORGANISATIONAL_ROLE_MAPPING = "judicial-organisational-role-mapping";
@@ -219,7 +218,7 @@ public class RequestMappingService<T> {
         List<FeatureFlag> featureFlags = new ArrayList<>();
         Map<String, Boolean> droolFlagStates = new ConcurrentHashMap<>();
         // building the Feature Flag
-        if (environment.equals("prod")) {
+        if (environmentConfiguration.getEnvironment().equals("prod")) {
             droolFlagStates = DBFlagConfigurtion.getDroolFlagStates();
         } else {
             // fetch the latest value from db for lower env
@@ -350,7 +349,8 @@ public class RequestMappingService<T> {
 
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
-            var status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
+            var status = persistenceService.getStatusByParam(featureFlagEnum.getValue(),
+                    environmentConfiguration.getEnvironment());
             droolFlagStates.put(featureFlagEnum.getValue(), status);
         }
     }

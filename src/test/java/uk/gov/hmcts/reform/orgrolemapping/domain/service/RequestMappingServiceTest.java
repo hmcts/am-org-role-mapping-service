@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +33,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
+import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -52,6 +54,9 @@ class RequestMappingServiceTest {
     PersistenceService persistenceService;
 
     @Mock
+    EnvironmentConfiguration environmentConfiguration;
+
+    @Mock
     List<RoleAssignment> roleAssignments;
 
     @Mock
@@ -65,9 +70,10 @@ class RequestMappingServiceTest {
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer();
         StatelessKieSession kieSession = kieContainer.newStatelessKieSession("org-role-mapping-validation-session");
-        sut = new RequestMappingService("pr", persistenceService, roleAssignmentService, kieSession,
+        sut = new RequestMappingService(persistenceService, environmentConfiguration, roleAssignmentService, kieSession,
                 securityUtils);
         MockitoAnnotations.openMocks(this);
+        when(environmentConfiguration.getEnvironment()).thenReturn("pr");
     }
 
     @Test

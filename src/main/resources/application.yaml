@@ -161,7 +161,7 @@ launchdarkly:
     environment: ${LAUNCH_DARKLY_ENV:local}
 
 orm:
-  environment: ${ORM_ENV}
+  environment: ${ORM_ENV:}
 
 refresh:
   Job:
