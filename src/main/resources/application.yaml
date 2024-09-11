@@ -156,6 +156,10 @@ amqp:
     topic: ${JRD_TOPIC_NAME:test}
     subscription: ${JRD_SUBSCRIPTION_NAME:test}
 
+launchdarkly:
+  sdk:
+    environment: ${LAUNCH_DARKLY_ENV:local}
+
 orm:
   environment: ${ORM_ENV:local}
 
