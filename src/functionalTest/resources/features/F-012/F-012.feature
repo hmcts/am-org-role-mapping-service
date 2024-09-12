@@ -117,7 +117,7 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
 
   @S-129
   @FeatureToggle(DB:st_cic_wa_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment
+  Scenario: must successfully create judicial role mapping for Tribunal Member Lay - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-129_DeleteDataForRoleAssignments],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-129_PushMessageToJRDService],
