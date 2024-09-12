@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.provider;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
@@ -35,9 +36,6 @@ public class ProviderTestConfiguration {
     @MockBean
     JRDService jrdService;
 
-    @MockBean
-    EnvironmentConfiguration environmentConfiguration;
-
     @Bean
     @Primary
     public RetrieveDataService getRetrieveDataService() {
@@ -47,8 +45,7 @@ public class ProviderTestConfiguration {
     @Bean
     @Primary
     public RequestMappingService<UserAccessProfile> getRequestMappingService() {
-        when(environmentConfiguration.getEnvironment()).thenReturn("pr");
-        return new RequestMappingService<>(persistenceService, environmentConfiguration, roleAssignmentService,
+        return new RequestMappingService<>(persistenceService, getEnvironmentConfiguration(), roleAssignmentService,
                 getStatelessKieSession(), securityUtils);
     }
 
@@ -62,6 +59,14 @@ public class ProviderTestConfiguration {
     @Primary
     public ParseRequestService getParseRequestService() {
         return new ParseRequestService();
+    }
+
+    @Bean
+    @Primary
+    public EnvironmentConfiguration getEnvironmentConfiguration() {
+        EnvironmentConfiguration environmentConfiguration = Mockito.mock(EnvironmentConfiguration.class);
+        when(environmentConfiguration.getEnvironment()).thenReturn("pr");
+        return environmentConfiguration;
     }
 
     @MockBean
