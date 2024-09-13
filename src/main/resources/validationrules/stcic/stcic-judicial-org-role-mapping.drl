@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import java.util.ArrayList;
 import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.util.HashMap
+import java.util.List;
 import java.util.Map
 import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
@@ -57,8 +58,11 @@ rule "st_cic_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
+                                        "ST_CIC Principal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried",
-                                        "ST_CIC Principal Judge-Salaried"))
+                                        "ST_CIC Judge of the First-tier Tribunal-Salaried",
+                                        "ST_CIC Circuit Judge-Salaried",
+                                        "ST_CIC Regional Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -93,7 +97,12 @@ end;
 rule "st_cic_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office == "ST_CIC Tribunal Judge-Fee Paid")
+  $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Judge-Fee Paid",
+                                        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid",
+                                        "ST_CIC Chairman-Fee Paid",
+                                        "ST_CIC Recorder-Fee Paid",
+                                        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid"),
+                                        ticketCodes != null && ticketCodes.contains("328"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -129,8 +138,11 @@ rule "st_cic_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
+                                        "ST_CIC Principal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried",
-                                        "ST_CIC Principal Judge-Salaried"))
+                                        "ST_CIC Judge of the First-tier Tribunal-Salaried",
+                                        "ST_CIC Circuit Judge-Salaried",
+                                        "ST_CIC Regional Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -162,8 +174,11 @@ rule "st_cic_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
+                                        "ST_CIC Principal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried",
-                                        "ST_CIC Principal Judge-Salaried"))
+                                        "ST_CIC Judge of the First-tier Tribunal-Salaried",
+                                        "ST_CIC Circuit Judge-Salaried",
+                                        "ST_CIC Regional Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -197,8 +212,24 @@ when
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
                                         "ST_CIC Principal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Salaried",
+                                        "ST_CIC Judge of the First-tier Tribunal-Salaried",
+                                        "ST_CIC Circuit Judge-Salaried",
+                                        "ST_CIC Regional Tribunal Judge-Salaried",
                                         "ST_CIC Tribunal Judge-Fee Paid",
-                                        "ST_CIC Tribunal Member Medical-Salaried"))
+                                        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid",
+                                        "ST_CIC Chairman-Fee Paid",
+                                        "ST_CIC Recorder-Fee Paid",
+                                        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid",
+                                        "ST_CIC Tribunal Member-Fee Paid",
+                                        "ST_CIC Tribunal Member Lay-Fee Paid",
+                                        "ST_CIC Advisory Committee Member - Magistrate-Fee Paid",
+                                        "ST_CIC Magistrate-Fee Paid",
+                                        "ST_CIC Tribunal Member Medical-Salaried",
+                                        "ST_CIC Tribunal Member Medical-Fee Paid",
+                                        "ST_CIC Tribunal Member Optometrist-Fee Paid",
+                                        "ST_CIC Tribunal Member Disability-Fee Paid",
+                                        "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid",
+                                        "ST_CIC Tribunal Member Financially Qualified-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if ($joh.getOffice().contains("Salaried")) {
@@ -232,7 +263,10 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
                                         "ST_CIC Principal Judge-Salaried",
-                                        "ST_CIC Tribunal Judge-Salaried"))
+                                        "ST_CIC Tribunal Judge-Salaried",
+                                        "ST_CIC Judge of the First-tier Tribunal-Salaried",
+                                        "ST_CIC Circuit Judge-Salaried",
+                                        "ST_CIC Regional Tribunal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -264,7 +298,8 @@ end;
 rule "st_cic_leadership_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office == "ST_CIC Principal Judge-Salaried")
+  $joh: JudicialOfficeHolder(office in ("ST_CIC President of Tribunal-Salaried",
+                                        "ST_CIC Principal Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -295,7 +330,11 @@ end;
 rule "st_cic_fee_paid_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office == "ST_CIC Tribunal Judge-Fee Paid")
+  $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Judge-Fee Paid",
+                                        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid",
+                                        "ST_CIC Chairman-Fee Paid",
+                                        "ST_CIC Recorder-Fee Paid",
+                                        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -303,7 +342,9 @@ then
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
                                                                            + "applications,priority"));
-   attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
+   if ($joh.getTicketCodes() != null && $joh.getTicketCodes().contains("328")) {
+     attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -330,17 +371,22 @@ rule "st_cic_fee_paid_tribunal_member_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member-Fee Paid",
-                                        "ST_CIC Tribunal Member Lay-Fee Paid"))
+                                        "ST_CIC Tribunal Member Lay-Fee Paid",
+                                        "ST_CIC Advisory Committee Member - Magistrate-Fee Paid",
+                                        "ST_CIC Magistrate-Fee Paid",
+                                        "ST_CIC Tribunal Member Disability-Fee Paid",
+                                        "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   if ($joh.getOffice().equalsIgnoreCase("ST_CIC Tribunal Member-Fee Paid")) {
+   if (List.of("ST_CIC Tribunal Member Disability-Fee Paid",
+               "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid").contains($joh.getOffice())) {
+    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
+   } else {
     attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
                                                                                + "applications,priority"));
-   } else if ($joh.getOffice().equalsIgnoreCase("ST_CIC Tribunal Member Lay-Fee Paid")) {
-    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
    }
   insert(
       RoleAssignment.builder()
@@ -400,7 +446,8 @@ end;
 rule "st_cic_fee_paid_medical_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office == "ST_CIC Tribunal Member Medical-Fee Paid")
+  $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member Medical-Fee Paid",
+                                        "ST_CIC Tribunal Member Optometrist-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
@@ -433,7 +480,8 @@ end;
 rule "st_cic_fee_paid_disability_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office == "ST_CIC Tribunal Member Disability-Fee Paid")
+  $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member Disability-Fee Paid",
+                                        "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
