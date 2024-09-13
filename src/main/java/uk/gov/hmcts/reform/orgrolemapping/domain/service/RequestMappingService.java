@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctRoleAssignments;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

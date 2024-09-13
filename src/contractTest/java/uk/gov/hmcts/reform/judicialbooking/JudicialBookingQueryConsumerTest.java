@@ -11,7 +11,7 @@ import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
-import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
