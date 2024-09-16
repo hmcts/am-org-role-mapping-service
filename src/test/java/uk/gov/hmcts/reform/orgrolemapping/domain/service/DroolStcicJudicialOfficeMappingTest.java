@@ -23,6 +23,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 class DroolStcicJudicialOfficeMappingTest extends DroolBase {
 
+    static final String ALL_APPOINTMENTS_CSV = """
+            President of Tribunal,Salaried
+            Principal Judge,Salaried
+            Tribunal Judge,Salaried
+            Judge of the First-tier Tribunal,Salaried
+            Circuit Judge,Salaried
+            Regional Tribunal Judge,Salaried
+            Tribunal Member Medical,Salaried
+            Tribunal Judge,Fee Paid
+            Judge of the First-tier Tribunal (sitting in retirement),Fee Paid
+            Chairman,Fee Paid
+            Recorder,Fee Paid
+            Deputy Upper Tribunal Judge,Fee Paid
+            Tribunal Member,Fee Paid
+            Tribunal Member Lay,Fee Paid
+            Advisory Committee Member - Magistrate,Voluntary
+            Magistrate,Voluntary
+            Tribunal Member Medical,Fee Paid
+            Tribunal Member Optometrist,Fee Paid
+            Tribunal Member Disability,Fee Paid
+            Member of the First-tier Tribunal (sitting in retirement),Fee Paid
+            Tribunal Member Financially Qualified,Fee Paid
+            """;
+
     //=================================SALARIED ROLES==================================
     @ParameterizedTest
     @CsvSource({
@@ -94,8 +118,6 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         "Deputy Upper Tribunal Judge,Fee Paid,BBA2,'fee-paid-judge,hmcts-judiciary'",
         "Tribunal Member,Fee Paid,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
         "Tribunal Member Lay,Fee Paid,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Advisory Committee Member - Magistrate,Voluntary,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Magistrate,Voluntary,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
         "Tribunal Member Medical,Fee Paid,BBA2,'fee-paid-medical,hmcts-judiciary'",
         "Tribunal Member Optometrist,Fee Paid,BBA2,'fee-paid-medical,hmcts-judiciary'",
         "Tribunal Member Disability,Fee Paid,BBA2,'fee-paid-disability,fee-paid-tribunal-member,hmcts-judiciary'",
@@ -146,22 +168,62 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         });
     }
 
-    // Invalid authorisation(expired enddate) and valid appointment(Salaried) and base location(1032)
     @ParameterizedTest
     @CsvSource({
-        "President of Tribunal",
-        "Principal Judge",
-        "Tribunal Judge",
-        "Judge of the First-tier Tribunal",
-        "Circuit Judge",
-        "Regional Tribunal Judge",
-        "Tribunal Member Medical"
+        "Advisory Committee Member - Magistrate,Voluntary,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "Magistrate,Voluntary,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'"
     })
-    void shouldNotReturnSalariedRolesExpiredEndDate(String appointment) {
+    void verifyVoluntaryRoles(String appointment, String appointmentType, String serviceCode, String expectedRoles) {
+        shouldReturnVoluntaryRoles(appointment, appointmentType, serviceCode, "N", expectedRoles);
+        shouldReturnVoluntaryRoles(appointment, appointmentType, serviceCode, "Y", expectedRoles);
+    }
+
+    void shouldReturnVoluntaryRoles(String appointment, String appointmentType, String serviceCode,
+                                    String endDateNull, String expectedRoles) {
+
+        judicialAccessProfiles.forEach(judicialAccessProfile -> {
+            judicialAccessProfile.setAppointment(appointment);
+            judicialAccessProfile.setAppointmentType(appointmentType);
+            judicialAccessProfile.setTicketCodes(List.of("376"));
+            judicialAccessProfile.getAuthorisations().forEach(a -> {
+                a.setServiceCodes(List.of(serviceCode));
+                a.setTicketCode("376");
+
+            });
+            if (endDateNull.equals("Y")) {
+                judicialAccessProfile.getAuthorisations().forEach(a -> a.setEndDate(null));
+            }
+        });
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        roleAssignments.forEach(r -> {
+            assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
+            assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
+            if ("hmcts-judiciary".equals(r.getRoleName())) {
+                assertNull(r.getAuthorisations());
+                assertNull(r.getAttributes().get("primaryLocation"));
+            } else {
+                assertEquals("[376]", r.getAuthorisations().toString());
+                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+                assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
+            }
+        });
+    }
+
+    // Invalid authorisation(expired enddate) and valid appointment(Salaried/Fee Paid/Voluntary)
+    @ParameterizedTest
+    @CsvSource(textBlock = ALL_APPOINTMENTS_CSV)
+    void shouldNotReturnRolesExpiredEndDate(String appointment, String appointmentType) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
-        profile.setAppointmentType("Salaried");
+        profile.setAppointmentType(appointmentType);
         profile.setBaseLocationId("1032");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
@@ -176,104 +238,14 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-    // Invalid authorisation(expired enddate) and valid appointment(Fee Paid) and base location(1032)
+    //Invalid authorisation(wrong servicecode) and valid appointment(Salaried/Fee Paid/Voluntary)
     @ParameterizedTest
-    @CsvSource({
-        "Tribunal Judge",
-        "Judge of the First-tier Tribunal (sitting in retirement)",
-        "Chairman",
-        "Recorder",
-        "Deputy Upper Tribunal Judge",
-        "Tribunal Member",
-        "Tribunal Member Lay",
-        "Advisory Committee Member - Magistrate",
-        "Magistrate",
-        "Tribunal Member Medical",
-        "Tribunal Member Optometrist",
-        "Tribunal Member Disability",
-        "Member of the First-tier Tribunal (sitting in retirement)",
-        "Tribunal Member Financially Qualified"
-    })
-    void shouldNotReturnFeePaidRolesExpiredEndDate(String appointment) {
+    @CsvSource(textBlock = ALL_APPOINTMENTS_CSV)
+    void shouldNotReturnRolesWrongServiceCode(String appointment, String appointmentType) {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
-        if (appointment.contains("Magistrate")) {
-            profile.setAppointmentType("Voluntary");
-        } else {
-            profile.setAppointmentType("Fee Paid");
-        }
-        profile.setBaseLocationId("1032");
-        judicialAccessProfiles.add(profile);
-        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCodes(List.of("BBA2")).endDate(LocalDateTime.now()
-                        .minusMonths(5)).build())));
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
-
-        //assertion
-        assertTrue(roleAssignments.isEmpty());
-    }
-
-    //Invalid authorisation(wrong servicecode) and valid appointment and base location(1032)
-    @ParameterizedTest
-    @CsvSource({
-        "President of Tribunal",
-        "Principal Judge",
-        "Tribunal Judge",
-        "Judge of the First-tier Tribunal",
-        "Circuit Judge",
-        "Regional Tribunal Judge",
-        "Tribunal Member Medical"
-    })
-    void shouldNotReturnSalariedRolesWrongServiceCode(String appointment) {
-
-        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
-        profile.setAppointment(appointment);
-        profile.setAppointmentType("Salaried");
-        profile.setBaseLocationId("1032");
-        judicialAccessProfiles.add(profile);
-        judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
-                List.of(Authorisation.builder().serviceCodes(List.of("wrong service code"))
-                        .build())));
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
-
-        //assertion
-        assertTrue(roleAssignments.isEmpty());
-    }
-
-    //Invalid authorisation(wrong servicecode) and valid appointment and base location(1032)
-    @ParameterizedTest
-    @CsvSource({
-        "Tribunal Judge",
-        "Judge of the First-tier Tribunal (sitting in retirement)",
-        "Chairman",
-        "Recorder",
-        "Deputy Upper Tribunal Judge",
-        "Tribunal Member",
-        "Tribunal Member Lay",
-        "Advisory Committee Member - Magistrate",
-        "Magistrate",
-        "Tribunal Member Medical",
-        "Tribunal Member Optometrist",
-        "Tribunal Member Disability",
-        "Member of the First-tier Tribunal (sitting in retirement)",
-        "Tribunal Member Financially Qualified"
-    })
-    void shouldNotReturnFeePaidRolesWrongServiceCode(String appointment) {
-
-        JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
-        profile.setAppointment(appointment);
-        if (appointment.contains("Magistrate")) {
-            profile.setAppointmentType("Voluntary");
-        } else {
-            profile.setAppointmentType("Fee Paid");
-        }
+        profile.setAppointmentType(appointmentType);
         profile.setBaseLocationId("1032");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(

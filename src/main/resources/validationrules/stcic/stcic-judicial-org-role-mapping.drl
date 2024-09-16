@@ -234,8 +234,10 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    if ($joh.getOffice().contains("Salaried")) {
     attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   } else {
+   } else if ($joh.getOffice().contains("Fee Paid")) {
     attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   } else {
+    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Voluntary"));
    }
   insert(
       RoleAssignment.builder()
@@ -380,7 +382,11 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   if ($joh.getOffice().contains("Fee Paid")) {
+    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   } else {
+    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Voluntary"));
+   }
    if (List.of("ST_CIC Tribunal Member Disability-Fee Paid",
                "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid").contains($joh.getOffice())) {
     attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));

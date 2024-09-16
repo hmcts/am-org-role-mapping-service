@@ -148,8 +148,6 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         "ST_CIC Deputy Upper Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
         "ST_CIC Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary'",
         "ST_CIC Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "ST_CIC Advisory Committee Member - Magistrate-Voluntary,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "ST_CIC Magistrate-Voluntary,'fee-paid-tribunal-member,hmcts-judiciary'",
         "ST_CIC Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary'",
         "ST_CIC Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary'",
         "ST_CIC Tribunal Member Disability-Fee Paid,'fee-paid-disability,fee-paid-tribunal-member,hmcts-judiciary'",
@@ -218,6 +216,34 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             assertCommonRoleAssignmentAttributes(r, setOffice, ticketCodes);
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "ST_CIC Advisory Committee Member - Magistrate-Voluntary,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "ST_CIC Magistrate-Voluntary,'fee-paid-tribunal-member,hmcts-judiciary'"
+    })
+    void shouldReturnVoluntaryRoles(String setOffice, String expectedRoles) {
+
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(setOffice);
+            joh.setTicketCodes(List.of(""));
+        });
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
+                containsInAnyOrder(expectedRoles.split(",")));
+        assertEquals(expectedRoles.split(",").length, roleAssignments.size());
+        roleAssignments.forEach(r -> {
+            assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
+            assertCommonRoleAssignmentAttributes(r, setOffice, null);
         });
     }
 
