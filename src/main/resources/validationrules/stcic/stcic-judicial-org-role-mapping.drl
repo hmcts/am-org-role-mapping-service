@@ -222,8 +222,8 @@ when
                                         "ST_CIC Deputy Upper Tribunal Judge-Fee Paid",
                                         "ST_CIC Tribunal Member-Fee Paid",
                                         "ST_CIC Tribunal Member Lay-Fee Paid",
-                                        "ST_CIC Advisory Committee Member - Magistrate-Fee Paid",
-                                        "ST_CIC Magistrate-Fee Paid",
+                                        "ST_CIC Advisory Committee Member - Magistrate-Voluntary",
+                                        "ST_CIC Magistrate-Voluntary",
                                         "ST_CIC Tribunal Member Medical-Salaried",
                                         "ST_CIC Tribunal Member Medical-Fee Paid",
                                         "ST_CIC Tribunal Member Optometrist-Fee Paid",
@@ -372,8 +372,8 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member-Fee Paid",
                                         "ST_CIC Tribunal Member Lay-Fee Paid",
-                                        "ST_CIC Advisory Committee Member - Magistrate-Fee Paid",
-                                        "ST_CIC Magistrate-Fee Paid",
+                                        "ST_CIC Advisory Committee Member - Magistrate-Voluntary",
+                                        "ST_CIC Magistrate-Voluntary",
                                         "ST_CIC Tribunal Member Disability-Fee Paid",
                                         "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid"))
 then

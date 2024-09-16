@@ -335,21 +335,21 @@ then
 end;
 
 /*
- * 12: "ST_CIC Advisory Committee Member - Magistrate-Fee Paid" business role mapping to JOH.
+ * 12: "ST_CIC Advisory Committee Member - Magistrate-Voluntary" business role mapping to JOH.
  */
-rule "st_cic_advisory_committee_member_magistrate_fee_paid_joh"
+rule "st_cic_advisory_committee_member_magistrate_voluntary_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Advisory Committee Member - Magistrate",
-                               appointmentType == "Fee Paid",
+                               appointmentType == "Voluntary",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "BBA2") ))
 then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("ST_CIC Advisory Committee Member - Magistrate-Fee Paid")
+      .office("ST_CIC Advisory Committee Member - Magistrate-Voluntary")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -359,7 +359,7 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : st_cic_advisory_committee_member_magistrate_fee_paid_joh");
+      logMsg("Rule : st_cic_advisory_committee_member_magistrate_voluntary_joh");
 end;
 
 /*
@@ -587,21 +587,21 @@ then
 end;
 
 /*
- * 21: "ST_CIC Magistrate-Fee Paid" business role mapping to JOH.
+ * 21: "ST_CIC Magistrate-Voluntary" business role mapping to JOH.
  */
-rule "st_cic_magistrate_fee_paid_joh"
+rule "st_cic_magistrate_voluntary_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Magistrate",
-                               appointmentType == "Fee Paid",
+                               appointmentType == "Voluntary",
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
                                (validateAuthorisation(authorisations, "BBA2") ))
 then
   insert(
       JudicialOfficeHolder.builder()
       .userId($jap.getUserId())
-      .office("ST_CIC Magistrate-Fee Paid")
+      .office("ST_CIC Magistrate-Voluntary")
       .jurisdiction("ST_CIC")
       .ticketCodes($jap.getTicketCodes())
       .beginTime($jap.getBeginTime())
@@ -611,5 +611,5 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : st_cic_magistrate_fee_paid_joh");
+      logMsg("Rule : st_cic_magistrate_voluntary_joh");
 end;

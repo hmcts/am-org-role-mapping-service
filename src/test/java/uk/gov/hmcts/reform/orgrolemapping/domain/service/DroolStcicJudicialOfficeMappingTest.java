@@ -87,32 +87,33 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
     //=================================FEE-PAID ROLES==================================
     @ParameterizedTest
     @CsvSource({
-        "Tribunal Judge,BBA2,'fee-paid-judge,hmcts-judiciary'",
-        "Judge of the First-tier Tribunal (sitting in retirement),BBA2,'fee-paid-judge,hmcts-judiciary'",
-        "Chairman,BBA2,'fee-paid-judge,hmcts-judiciary'",
-        "Recorder,BBA2,'fee-paid-judge,hmcts-judiciary'",
-        "Deputy Upper Tribunal Judge,BBA2,'fee-paid-judge,hmcts-judiciary'",
-        "Tribunal Member,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Tribunal Member Lay,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Advisory Committee Member - Magistrate,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Magistrate,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Tribunal Member Medical,BBA2,'fee-paid-medical,hmcts-judiciary'",
-        "Tribunal Member Optometrist,BBA2,'fee-paid-medical,hmcts-judiciary'",
-        "Tribunal Member Disability,BBA2,'fee-paid-disability,fee-paid-tribunal-member,hmcts-judiciary'",
-        "Member of the First-tier Tribunal (sitting in retirement),BBA2,'fee-paid-disability,"
+        "Tribunal Judge,Fee Paid,BBA2,'fee-paid-judge,hmcts-judiciary'",
+        "Judge of the First-tier Tribunal (sitting in retirement),Fee Paid,BBA2,'fee-paid-judge,hmcts-judiciary'",
+        "Chairman,Fee Paid,BBA2,'fee-paid-judge,hmcts-judiciary'",
+        "Recorder,Fee Paid,BBA2,'fee-paid-judge,hmcts-judiciary'",
+        "Deputy Upper Tribunal Judge,Fee Paid,BBA2,'fee-paid-judge,hmcts-judiciary'",
+        "Tribunal Member,Fee Paid,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "Tribunal Member Lay,Fee Paid,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "Advisory Committee Member - Magistrate,Voluntary,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "Magistrate,Voluntary,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "Tribunal Member Medical,Fee Paid,BBA2,'fee-paid-medical,hmcts-judiciary'",
+        "Tribunal Member Optometrist,Fee Paid,BBA2,'fee-paid-medical,hmcts-judiciary'",
+        "Tribunal Member Disability,Fee Paid,BBA2,'fee-paid-disability,fee-paid-tribunal-member,hmcts-judiciary'",
+        "Member of the First-tier Tribunal (sitting in retirement),Fee Paid,BBA2,'fee-paid-disability,"
                 + "fee-paid-tribunal-member,hmcts-judiciary'",
-        "Tribunal Member Financially Qualified,BBA2,'fee-paid-financial,hmcts-judiciary'"
+        "Tribunal Member Financially Qualified,Fee Paid,BBA2,'fee-paid-financial,hmcts-judiciary'"
     })
-    void verifyFeePaidRoles(String appointment, String serviceCode, String expectedRoles) {
-        shouldReturnFeePaidRoles(appointment, serviceCode, "N", expectedRoles);
-        shouldReturnFeePaidRoles(appointment, serviceCode, "Y", expectedRoles);
+    void verifyFeePaidRoles(String appointment, String appointmentType, String serviceCode, String expectedRoles) {
+        shouldReturnFeePaidRoles(appointment, appointmentType, serviceCode, "N", expectedRoles);
+        shouldReturnFeePaidRoles(appointment, appointmentType, serviceCode, "Y", expectedRoles);
     }
 
-    void shouldReturnFeePaidRoles(String appointment, String serviceCode, String endDateNull, String expectedRoles) {
+    void shouldReturnFeePaidRoles(String appointment, String appointmentType, String serviceCode,
+                                  String endDateNull, String expectedRoles) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
-            judicialAccessProfile.setAppointmentType("Fee Paid");
+            judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.setTicketCodes(List.of("376"));
             judicialAccessProfile.getAuthorisations().forEach(a -> {
                 a.setServiceCodes(List.of(serviceCode));
@@ -197,7 +198,11 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
-        profile.setAppointmentType("Fee Paid");
+        if (appointment.contains("Magistrate")) {
+            profile.setAppointmentType("Voluntary");
+        } else {
+            profile.setAppointmentType("Fee Paid");
+        }
         profile.setBaseLocationId("1032");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
@@ -264,7 +269,11 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
 
         JudicialAccessProfile profile = TestDataBuilder.buildJudicialAccessProfile();
         profile.setAppointment(appointment);
-        profile.setAppointmentType("Fee Paid");
+        if (appointment.contains("Magistrate")) {
+            profile.setAppointmentType("Voluntary");
+        } else {
+            profile.setAppointmentType("Fee Paid");
+        }
         profile.setBaseLocationId("1032");
         judicialAccessProfiles.add(profile);
         judicialAccessProfiles.forEach(profiles -> profiles.setAuthorisations(
