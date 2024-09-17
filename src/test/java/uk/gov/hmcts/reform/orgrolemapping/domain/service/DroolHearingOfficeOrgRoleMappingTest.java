@@ -23,8 +23,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 @RunWith(MockitoJUnitRunner.class)
 class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
-    static final String LD_FLAG = "sscs_hearing_1_0";
-
     @ParameterizedTest
     @CsvSource({
         "BBA3,SSCS",
@@ -37,7 +35,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         judicialAccessProfiles.forEach(judicialAccessProfile -> judicialAccessProfile.getAuthorisations().forEach(a ->
                 a.setServiceCodes(List.of(serviceCode))));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags());
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -69,7 +67,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
             a.setEndDate(LocalDateTime.now().minusDays(1));
         }));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags());
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags(true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -89,7 +87,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         List.of("2","4","5","9","10","12","13","14","15").forEach(a ->
                 allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(LD_FLAG, ldFlag));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags(ldFlag));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -113,7 +111,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags());
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -144,7 +142,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         roleIds.forEach(a -> allProfiles.add(buildUserAccessProfile3(serviceCode, a, "")));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags());
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -185,7 +183,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags());
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -213,7 +211,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags());
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
