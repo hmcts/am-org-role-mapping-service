@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,17 +21,18 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -62,9 +62,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.NEW;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_INVALID_JOB_ID;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_INVALID_ROLE_CATEGORY;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_INVALID_USER_TYPE;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_REFRESH_JOB_INVALID_STATE;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_REFRESH_JOB_NOT_FOUND;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfileV2;
@@ -124,8 +127,11 @@ class RefreshOrchestratorTest {
 
         @Test
         void refreshRoleAssignmentRecordsCouldNotBeRetrieved_Exception() {
+
+            // GIVEN
             UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
+            // WHEN / THEN
             UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
                     sut.refresh(1L, userRequest)
             );
@@ -136,15 +142,34 @@ class RefreshOrchestratorTest {
         @ParameterizedTest
         @EnumSource(value = RoleCategory.class, names = {"JUDICIAL", "LEGAL_OPERATIONS"})
         void refreshRoleAssignmentRecordsInvalidStatus_Exception(RoleCategory roleCategory) {
+
+            // GIVEN
             UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
             mockFetchRefreshJobById(1L, roleCategory, COMPLETED);
 
+            // WHEN / THEN
             UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
                     sut.refresh(1L, userRequest)
             );
 
             assertTrue(exception.getLocalizedMessage().contains(ERROR_REFRESH_JOB_INVALID_STATE));
+        }
+
+        @Test
+        void refreshRoleAssignmentRecordsInvalidRoleCategory_Exception() {
+
+            // GIVEN
+            UserRequest userRequest = TestDataBuilder.buildUserRequest();
+
+            mockFetchRefreshJobById(1L, RoleCategory.ADMIN, NEW);
+
+            // WHEN / THEN
+            UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
+                    sut.refresh(1L, userRequest)
+            );
+
+            assertTrue(exception.getLocalizedMessage().contains(ERROR_INVALID_ROLE_CATEGORY));
         }
 
     }
@@ -156,6 +181,7 @@ class RefreshOrchestratorTest {
         @Test
         void refreshRoleAssignmentRecords() {
 
+            // GIVEN
             doNothing().when(parseRequestService).validateUserRequest(any());
 
             Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
@@ -177,21 +203,26 @@ class RefreshOrchestratorTest {
 
             when(requestMappingService.createCaseworkerAssignments(any()))
                     .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                            .body(Collections.emptyList())));
+                            .body(createResponseEntitiesForCreateAssignmentSuccess(List.of("1")))));
 
             doNothing().when(parseRequestService).validateUserRequest(any());
 
-            mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
+            RefreshJobEntity refreshJobEntitySpy = mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
 
+            // WHEN
             ResponseEntity<Object> response = sut.refresh(1L, TestDataBuilder.buildUserRequest());
 
+            // THEN
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response);
+
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
         }
 
         @Test
         void refreshRoleAssignmentRecords_profileNotFound() {
 
+            // GIVEN
             doNothing().when(parseRequestService).validateUserRequest(any());
 
             when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
@@ -203,10 +234,12 @@ class RefreshOrchestratorTest {
 
             doNothing().when(parseRequestService).validateUserRequest(any());
 
-            mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
+            RefreshJobEntity refreshJobEntitySpy = mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
 
+            // WHEN / THEN
             assertNull(sut.refresh(1L, TestDataBuilder.buildUserRequest()));
 
+            verifyPersistRefreshJob(refreshJobEntitySpy, ABORTED);
         }
 
         @Test
@@ -218,7 +251,7 @@ class RefreshOrchestratorTest {
             setUpMocks_RefreshJobByServiceName_Caseworker(1);
 
             // WHEN
-            ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+            ResponseEntity<Object> response = sut.refresh(1L, null);
 
             // THEN
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -232,19 +265,32 @@ class RefreshOrchestratorTest {
             verify(retrieveDataService, times(1)).retrieveProfilesByServiceName(any(), eq(UserType.CASEWORKER));
         }
 
-        @Test
-        void refreshRoleAssignmentRecords_nullUserRequest_feignException() {
+        @ParameterizedTest
+        @NullAndEmptySource
+        void refreshRoleAssignmentRecords_nullOrEmptyUserIDs(List<String> userIds) {
 
+            // GIVEN
             mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
 
-            when(crdService.fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any()))
-                    .thenThrow(feignClientException);
+            setUpMocks_RefreshJobByServiceName_Caseworker(1);
 
-            UserRequest userRequestSpy = Mockito.spy(UserRequest.builder().build());
+            UserRequest userRequest = UserRequest.builder()
+                    .userIds(userIds)
+                    .build();
 
-            sut.refresh(1L, userRequestSpy);
+            // WHEN
+            ResponseEntity<Object> response = sut.refresh(1L, userRequest);
 
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            // THEN
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response);
+
+            // verify refreshById calls not made
+            verify(parseRequestService, never()).validateUserRequest(any());
+            verify(retrieveDataService, never()).retrieveProfiles(any(), eq(UserType.CASEWORKER));
+            // verify refreshByServiceName calls have been made
+            verify(crdService, atLeast(1)).fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
+            verify(retrieveDataService, times(1)).retrieveProfilesByServiceName(any(), eq(UserType.CASEWORKER));
         }
 
     }
@@ -271,11 +317,11 @@ class RefreshOrchestratorTest {
 
             when(requestMappingService.createJudicialAssignments(any(), any()))
                     .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                            .body(Collections.emptyList())));
+                            .body(createResponseEntitiesForCreateAssignmentSuccess(List.of(TestDataBuilder.id_1)))));
 
             doNothing().when(parseRequestService).validateUserRequest(any());
 
-            mockFetchRefreshJobById(1L, RoleCategory.JUDICIAL, NEW);
+            RefreshJobEntity refreshJobEntitySpy = mockFetchRefreshJobById(1L, RoleCategory.JUDICIAL, NEW);
 
             // WHEN
             // NB: override SUT with disabled bookings
@@ -285,6 +331,8 @@ class RefreshOrchestratorTest {
             // THEN
             assertNotNull(response);
             assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
 
             // verify data passed to mapping service includes accessProfiles but NO bookings as they are disabled
             verify(requestMappingService, times(1))
@@ -323,11 +371,13 @@ class RefreshOrchestratorTest {
 
             when(requestMappingService.createJudicialAssignments(any(), any()))
                     .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                            .body(Collections.emptyList())));
+                            .body(createResponseEntitiesForCreateAssignmentSuccess(
+                                    List.of(TestDataBuilder.id_1, TestDataBuilder.id_2)
+                            ))));
 
             doNothing().when(parseRequestService).validateUserRequest(any());
 
-            mockFetchRefreshJobById(1L, RoleCategory.JUDICIAL, NEW);
+            RefreshJobEntity refreshJobEntitySpy = mockFetchRefreshJobById(1L, RoleCategory.JUDICIAL, NEW);
 
             // WHEN
             RefreshOrchestrator refreshOrchestrator = Mockito.spy(sut);
@@ -336,6 +386,8 @@ class RefreshOrchestratorTest {
             // THEN
             assertNotNull(response);
             assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
 
             verify(refreshOrchestrator, times(1)).buildSuccessAndFailureBucket(any(), any());
 
@@ -352,6 +404,29 @@ class RefreshOrchestratorTest {
         }
 
         @Test
+        void refreshRoleAssignmentRecords_profileNotFound() {
+
+            // GIVEN
+            doNothing().when(parseRequestService).validateUserRequest(any());
+
+            when(retrieveDataService.retrieveProfiles(any(), eq(UserType.JUDICIAL)))
+                    .thenThrow(FeignException.NotFound.class);
+
+            when(requestMappingService.createCaseworkerAssignments(any()))
+                    .thenReturn((ResponseEntity.status(HttpStatus.OK)
+                            .body(Collections.emptyList())));
+
+            doNothing().when(parseRequestService).validateUserRequest(any());
+
+            RefreshJobEntity refreshJobEntitySpy = mockFetchRefreshJobById(1L, RoleCategory.JUDICIAL, NEW);
+
+            // WHEN / THEN
+            assertNull(sut.refresh(1L, TestDataBuilder.buildUserRequest()));
+
+            verifyPersistRefreshJob(refreshJobEntitySpy, ABORTED);
+        }
+
+        @Test
         void refreshRoleAssignmentRecords_nullUserRequest() {
 
             // GIVEN
@@ -360,7 +435,7 @@ class RefreshOrchestratorTest {
             setUpMocks_RefreshJobByServiceName_Judicial(1);
 
             // WHEN
-            ResponseEntity<Object> response = sut.refresh(1L, UserRequest.builder().build());
+            ResponseEntity<Object> response = sut.refresh(1L, null);
 
             // THEN
             assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -374,19 +449,32 @@ class RefreshOrchestratorTest {
             verify(retrieveDataService, times(1)).retrieveProfilesByServiceName(any(), eq(UserType.JUDICIAL));
         }
 
-        @Test
-        void refreshRoleAssignmentRecords_nullUserRequest_feignException() {
+        @ParameterizedTest
+        @NullAndEmptySource
+        void refreshRoleAssignmentRecords_nullOrEmptyUserIDs(List<String> userIds) {
 
+            // GIVEN
             mockFetchRefreshJobById(1L, RoleCategory.JUDICIAL, NEW);
 
-            when(jrdService.fetchJudicialDetailsByServiceName(any(), any(), any(), any(), any()))
-                    .thenThrow(feignClientException);
+            setUpMocks_RefreshJobByServiceName_Judicial(1);
 
-            UserRequest userRequestSpy = Mockito.spy(UserRequest.builder().build());
+            UserRequest userRequest = UserRequest.builder()
+                    .userIds(userIds)
+                    .build();
 
-            sut.refresh(1L, userRequestSpy);
+            // WHEN
+            ResponseEntity<Object> response = sut.refresh(1L, userRequest);
 
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            // THEN
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response);
+
+            // verify refreshById calls not made
+            verify(parseRequestService, never()).validateUserRequest(any());
+            verify(retrieveDataService, never()).retrieveProfiles(any(), eq(UserType.JUDICIAL));
+            // verify refreshByServiceName calls have been made
+            verify(jrdService, atLeast(1)).fetchJudicialDetailsByServiceName(any(), any(), any(), any(), any());
+            verify(retrieveDataService, times(1)).retrieveProfilesByServiceName(any(), eq(UserType.JUDICIAL));
         }
 
     }
@@ -536,6 +624,31 @@ class RefreshOrchestratorTest {
 
 
     @Nested
+    class RefreshJobByServiceNameForBothCaseworkerJudicial {
+
+        @Test
+        void refreshJobByServiceNameInvalidUserType_Exception() {
+
+            // GIVEN
+            Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();
+            responseCodeWithUserId.put("1234", HttpStatus.CREATED);
+
+            RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                    .roleCategory(RoleCategory.OTHER_GOV_DEPT.name())
+                    .build();
+
+            // WHEN / THEN
+            UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
+                    sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntity, null)
+            );
+
+            assertTrue(exception.getLocalizedMessage().contains(ERROR_INVALID_USER_TYPE));
+        }
+
+    }
+
+
+    @Nested
     class RefreshJobByServiceNameForCaseworker {
 
         @Test
@@ -560,10 +673,8 @@ class RefreshOrchestratorTest {
             sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
 
             // THEN
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
-            verify(refreshJobEntitySpy, times(1)).setCreated(any());
-            verify(refreshJobEntitySpy, times(1)).setLog(any());
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
+
             // verify pagination calls
             verify(crdService, atLeast(1))
                     .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(PAGE_SIZE), eq(0), any(), any());
@@ -620,7 +731,8 @@ class RefreshOrchestratorTest {
             sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
 
             // THEN
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
+
             // verify pagination calls
             verify(crdService, atLeast(1))
                     .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(0), any(), any());
@@ -656,7 +768,8 @@ class RefreshOrchestratorTest {
             sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
 
             // THEN
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
+
             // verify pagination calls
             // NB: first page is called twice as first call extracts the total record count
             verify(crdService,  times(2))
@@ -695,14 +808,10 @@ class RefreshOrchestratorTest {
             sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.CASEWORKER);
 
             // THEN
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
-            verify(refreshJobEntitySpy, times(1)).setCreated(any());
-            verify(refreshJobEntitySpy, times(1)).setLog(any());
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, ABORTED);
         }
 
     }
-
 
     @Nested
     class RefreshJobByServiceNameForJudicial {
@@ -732,10 +841,8 @@ class RefreshOrchestratorTest {
             sutBookingsDisabled.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL);
 
             // THEN
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
-            verify(refreshJobEntitySpy, times(1)).setCreated(any());
-            verify(refreshJobEntitySpy, times(1)).setLog(any());
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
+
             // verify pagination calls
             verify(jrdService, atLeast(1))
                     .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(PAGE_SIZE), eq(0), any(), any());
@@ -778,10 +885,8 @@ class RefreshOrchestratorTest {
             sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL);
 
             // THEN
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
-            verify(refreshJobEntitySpy, times(1)).setCreated(any());
-            verify(refreshJobEntitySpy, times(1)).setLog(any());
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
+
             // verify pagination calls
             verify(jrdService, atLeast(1))
                     .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(PAGE_SIZE), eq(0), any(), any());
@@ -846,7 +951,8 @@ class RefreshOrchestratorTest {
             sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL);
 
             // THEN
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
+
             // verify pagination calls
             verify(jrdService, atLeast(1))
                     .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(0), any(), any());
@@ -883,7 +989,8 @@ class RefreshOrchestratorTest {
             sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL);
 
             // THEN
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
+
             // verify pagination calls
             // NB: first page is called twice as first call extracts the total record count
             verify(jrdService,  times(expectedNumberOfPages))
@@ -928,10 +1035,7 @@ class RefreshOrchestratorTest {
             sut.refreshJobByServiceName(responseCodeWithUserId, refreshJobEntitySpy, UserType.JUDICIAL);
 
             // THEN
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
-            verify(refreshJobEntitySpy, times(1)).setCreated(any());
-            verify(refreshJobEntitySpy, times(1)).setLog(any());
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, ABORTED);
         }
 
     }
@@ -945,7 +1049,7 @@ class RefreshOrchestratorTest {
 
             // GIVEN
             Map<String, HttpStatus> responseEntityMap = new HashMap<>();
-            responseEntityMap.put("1234", HttpStatus.CREATED);
+            responseEntityMap.put("1", HttpStatus.CREATED);
 
             Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
             Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
@@ -980,7 +1084,7 @@ class RefreshOrchestratorTest {
 
             // GIVEN
             Map<String, HttpStatus> responseEntityMap = new HashMap<>();
-            responseEntityMap.put("1234", HttpStatus.CREATED);
+            responseEntityMap.put("1", HttpStatus.CREATED);
 
             Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
             Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
@@ -996,11 +1100,8 @@ class RefreshOrchestratorTest {
                     .build());
             userAccessProfiles.put("1", userAccessProfileSet);
 
-            List<ResponseEntity<Object>> responseEntities = List.of(
-                    ResponseEntity.ok(new RoleAssignmentRequestResource(AssignmentRequestBuilder
-                            .buildAssignmentRequest(false))),
-                    ResponseEntity.ok(new RoleAssignmentRequestResource(AssignmentRequestBuilder
-                            .buildAssignmentRequest(false))));
+            List<ResponseEntity<Object>> responseEntities
+                    = createResponseEntitiesForCreateAssignmentSuccess(List.of("1"));
 
             when(requestMappingService.createCaseworkerAssignments(any()))
                     .thenReturn((ResponseEntity.status(HttpStatus.OK)
@@ -1029,7 +1130,7 @@ class RefreshOrchestratorTest {
 
             // GIVEN
             Map<String, HttpStatus> responseEntityMap = new HashMap<>();
-            responseEntityMap.put("1234", HttpStatus.CREATED);
+            responseEntityMap.put(TestDataBuilder.id_1, HttpStatus.CREATED);
 
             Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
 
@@ -1066,7 +1167,7 @@ class RefreshOrchestratorTest {
 
             // GIVEN
             Map<String, HttpStatus> responseEntityMap = new HashMap<>();
-            responseEntityMap.put("1234", HttpStatus.CREATED);
+            responseEntityMap.put(TestDataBuilder.id_1, HttpStatus.CREATED);
 
             Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
 
@@ -1110,7 +1211,7 @@ class RefreshOrchestratorTest {
 
             // GIVEN
             Map<String, HttpStatus> responseEntityMap = new HashMap<>();
-            responseEntityMap.put("1234", HttpStatus.CREATED);
+            responseEntityMap.put(TestDataBuilder.id_1, HttpStatus.CREATED);
 
             Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
 
@@ -1123,11 +1224,8 @@ class RefreshOrchestratorTest {
             when(judicialBookingService.fetchJudicialBookingsInBatches(any(), any()))
                     .thenReturn(Collections.emptyList());
 
-            List<ResponseEntity<Object>> responseEntities = List.of(
-                    ResponseEntity.ok(new RoleAssignmentRequestResource(AssignmentRequestBuilder
-                            .buildAssignmentRequest(false))),
-                    ResponseEntity.ok(new RoleAssignmentRequestResource(AssignmentRequestBuilder
-                            .buildAssignmentRequest(false))));
+            List<ResponseEntity<Object>> responseEntities
+                    = createResponseEntitiesForCreateAssignmentSuccess(List.of(TestDataBuilder.id_1));
 
             when(requestMappingService.createJudicialAssignments(any(), any()))
                     .thenReturn((ResponseEntity.status(HttpStatus.OK)
@@ -1154,89 +1252,126 @@ class RefreshOrchestratorTest {
         @Test
         void buildSuccessAndFailureBucket_Success() {
 
+            // GIVEN
             Map<String, HttpStatus> responseEntityMap = new HashMap<>();
             responseEntityMap.put("1234", HttpStatus.CREATED);
 
             RefreshJobEntity refreshJobEntitySpy = Mockito.spy(TestDataBuilder.buildRefreshJobEntity());
 
+            // WHEN
             sut.buildSuccessAndFailureBucket(responseEntityMap, refreshJobEntitySpy);
 
-
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
-            verify(refreshJobEntitySpy, times(1)).setCreated(any());
-            verify(refreshJobEntitySpy, times(1)).setLog(any());
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            // THEN
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
         }
 
         @Test
         void buildSuccessAndFailureBucket_Failure() {
 
+            // GIVEN
             Map<String, HttpStatus> responseEntityMap = new HashMap<>();
             responseEntityMap.put("1234", HttpStatus.CONFLICT);
 
             RefreshJobEntity refreshJobEntitySpy = Mockito.spy(TestDataBuilder.buildRefreshJobEntity());
 
+            // WHEN
             sut.buildSuccessAndFailureBucket(responseEntityMap, refreshJobEntitySpy);
 
-
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
+            // THEN
             verify(refreshJobEntitySpy, times(1)).setUserIds(any());
-            verify(refreshJobEntitySpy, times(1)).setCreated(any());
-            verify(refreshJobEntitySpy, times(1)).setLog(any());
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, ABORTED);
         }
 
     }
+
 
     @Nested
     class UpdateJobStatusTests {
 
         @Test
         void updateJobStatus_Success() {
+
+            // GIVEN
             String successId = "1234";
             RefreshJobEntity refreshJobEntitySpy = Mockito.spy(TestDataBuilder.buildRefreshJobEntity());
+
+            // WHEN
             sut.updateJobStatus(
                     Collections.singletonList(successId),
                     new ArrayList<>(),
                     refreshJobEntitySpy);
 
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
-            verify(refreshJobEntitySpy, times(1)).setCreated(any());
-            verify(refreshJobEntitySpy, times(1)).setLog(any());
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            // THEN
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
 
         }
 
         @Test
         void updateJobStatus_Failure() {
+
+            // GIVEN
             String failureId = "1234";
             RefreshJobEntity refreshJobEntitySpy = Mockito.spy(TestDataBuilder.buildRefreshJobEntity());
+
+            // GIVEN
             sut.updateJobStatus(
                     new ArrayList<>(),
                     Collections.singletonList(failureId),
                     refreshJobEntitySpy);
 
-            verify(refreshJobEntitySpy, times(1)).setStatus(any());
+            // THEN
             verify(refreshJobEntitySpy, times(1)).setUserIds(any());
-            verify(refreshJobEntitySpy, times(1)).setCreated(any());
-            verify(refreshJobEntitySpy, times(1)).setLog(any());
-            verify(persistenceService, times(1)).persistRefreshJob(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, ABORTED);
 
         }
 
         @Test
-        @DisplayName("updateJobStatus_EmptyList")
         void updateJobStatus_EmptyList() {
+
+            // GIVEN
             RefreshJobEntity refreshJobEntitySpy = Mockito.spy(TestDataBuilder.buildRefreshJobEntity());
+
+            // WHEN
             sut.updateJobStatus(
                     Collections.emptyList(),
                     Collections.emptyList(),
                     refreshJobEntitySpy);
+
+            // THEN
             verify(refreshJobEntitySpy, times(0)).setStatus(any());
+        }
+
+        @Test
+        void updateJobStatus_nulls() {
+
+            // GIVEN
+            RefreshJobEntity refreshJobEntitySpy = Mockito.spy(TestDataBuilder.buildRefreshJobEntity());
+
+            // WHEN
+            sut.updateJobStatus(null, null, null);
+
+            // THEN
+            verify(refreshJobEntitySpy, never()).setStatus(any());
         }
 
     }
 
+
+    private List<ResponseEntity<Object>> createResponseEntitiesForCreateAssignmentSuccess(List<String> userIds) {
+
+        List<ResponseEntity<Object>> responseEntities = new ArrayList<>();
+
+        userIds.forEach(userId -> responseEntities.add(ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new RoleAssignmentRequestResource(
+                        AssignmentRequest.builder()
+                                .request(Request.builder().reference(userId).build())
+                                .build()
+                ))
+        ));
+
+        return responseEntities;
+    }
 
     private void setUpMocks_RefreshJobByServiceName_Caseworker(int totalRecords) {
 
@@ -1252,7 +1387,12 @@ class RefreshOrchestratorTest {
                 .fetchCaseworkerDetailsByServiceName(any(), any(), any(), any(), any());
 
         when(requestMappingService.createCaseworkerAssignments(any()))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+                .thenReturn((ResponseEntity.status(HttpStatus.OK)
+                        .body(createResponseEntitiesForCreateAssignmentSuccess(
+                                userProfilesResponseList.stream()
+                                        .map(item -> item.getUserProfile().getId())
+                                        .toList()
+                        ))));
     }
 
     private Map<String, Set<UserAccessProfile>> setUpMocks_RefreshJobByServiceName_Judicial(int totalRecords) {
@@ -1283,18 +1423,31 @@ class RefreshOrchestratorTest {
                 .thenReturn(userAccessProfiles);
 
         when(requestMappingService.createJudicialAssignments(eq(userAccessProfiles), any()))
-                .thenReturn((ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList())));
+                .thenReturn((ResponseEntity.status(HttpStatus.OK)
+                        .body(createResponseEntitiesForCreateAssignmentSuccess(
+                                userAccessProfiles.keySet().stream().toList()
+                        ))));
 
         return userAccessProfiles;
     }
 
-    private void mockFetchRefreshJobById(Long jobId, RoleCategory category, String status) {
-        when(persistenceService.fetchRefreshJobById(jobId))
-                .thenReturn(Optional.of(
-                        RefreshJobEntity.builder()
-                                .roleCategory(category.toString())
-                                .status(status)
-                                .build()));
+    private RefreshJobEntity mockFetchRefreshJobById(Long jobId, RoleCategory category, String status) {
+        RefreshJobEntity refreshJobEntity = RefreshJobEntity.builder()
+                .roleCategory(category.toString())
+                .status(status)
+                .build();
+        RefreshJobEntity refreshJobEntitySpy = Mockito.spy(refreshJobEntity);
+
+        when(persistenceService.fetchRefreshJobById(jobId)).thenReturn(Optional.of(refreshJobEntitySpy));
+
+        return refreshJobEntitySpy;
+    }
+
+    private void verifyPersistRefreshJob(RefreshJobEntity refreshJobEntitySpy, String status) {
+        verify(refreshJobEntitySpy, times(1)).setStatus(status);
+        verify(refreshJobEntitySpy, times(1)).setCreated(any());
+        verify(refreshJobEntitySpy, times(1)).setLog(any());
+        verify(persistenceService, times(1)).persistRefreshJob(any());
     }
 
 }
