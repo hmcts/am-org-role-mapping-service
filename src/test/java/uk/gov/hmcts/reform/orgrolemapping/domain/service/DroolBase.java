@@ -139,4 +139,14 @@ public abstract class DroolBase {
             .toList();
     }
 
+    @NotNull
+    protected List<FeatureFlag> getAllHearingFlags() {
+        return Arrays.stream(FeatureFlagEnum.values())
+                .map(featureFlagEnum -> FeatureFlag.builder()
+                        .flagName(featureFlagEnum.getValue())
+                        .status(featureFlagEnum.name().toLowerCase().contains("hearing"))
+                        .build())
+                .toList();
+    }
+
 }
