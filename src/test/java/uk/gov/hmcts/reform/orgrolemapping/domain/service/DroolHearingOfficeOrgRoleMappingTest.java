@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -73,6 +74,29 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "BBA3",
+        "ABA5",
+        "AAA6",
+        "BFA1"
+    })
+    void shouldReturnEmptyRoles_expiredAppointment(String serviceCode) {
+
+        allProfiles.clear();
+        judicialAccessProfiles.forEach(jap -> {
+            jap.setEndTime(ZonedDateTime.now().minusDays(1));
+            jap.getAuthorisations().forEach(a -> {
+                a.setServiceCodes(List.of(serviceCode));
+            });
+        });
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags(true));
+
+        //assertion
+        assertTrue(roleAssignments.isEmpty());
+    }
 
     @ParameterizedTest
     @CsvSource({
