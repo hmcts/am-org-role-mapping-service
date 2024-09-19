@@ -7,7 +7,7 @@ java:
   devcpuRequests: 250m
   devmemoryLimits: 2048Mi
   devcpuLimits: 1500m
- 
+
   secrets:
     SB_ACCESS_KEY:
       secretRef: am-sb-preview
@@ -66,7 +66,7 @@ java:
         scripts:
           init.sql: |
             CREATE DATABASE role_assignment WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
-            CREATE DATABASE org_role_mapping WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;  
+            CREATE DATABASE org_role_mapping WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
             CREATE DATABASE judicial_booking WITH OWNER = javapostgres ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
     auth:
       port: 5432
@@ -82,12 +82,11 @@ orm:
 
 am-role-assignment-service:
   java:
-    # temporary override until hmcts/am-role-assignment-service#2329 is merged: image: 'hmctspublic.azurecr.io/am/role-assignment-service:pr-2329'
-    image: 'hmctspublic.azurecr.io/am/role-assignment-service:pr-2329'
+    image: 'hmctspublic.azurecr.io/am/role-assignment-service:latest'
     imagePullPolicy: Always
     ingressHost: ras-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-role-assignment-service"
-    
+
     # overidding dev memory and cpu limits to make it match with standard limits
     # https://github.com/hmcts/chart-java/blob/master/java/values.yaml
     devmemoryRequests: 1024Mi
