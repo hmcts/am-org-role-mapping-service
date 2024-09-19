@@ -225,6 +225,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
     @CsvSource({
         "14,BBA3,SSCS",
         "15,BBA3,SSCS",
+        "19,BBA3,SSCS",
         "14,ABA5,PRIVATELAW",
         "15,ABA5,PRIVATELAW"
     })
@@ -235,7 +236,14 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         allProfiles.add(buildUserAccessProfile3(serviceCode, roleId, ""));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getAllHearingFlags(true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true));
+
+        if (jurisdiction.equals("SSCS")) {
+            roleAssignments = roleAssignments.stream()
+                    .filter(roleAssignment -> roleAssignment.getRoleName().equals("listed-hearing-viewer"))
+                    .toList();
+        }
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
