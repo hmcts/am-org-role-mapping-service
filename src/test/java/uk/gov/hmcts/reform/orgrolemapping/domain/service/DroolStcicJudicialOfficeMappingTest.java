@@ -170,8 +170,8 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "Advisory Committee Member - Magistrate,Voluntary,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "Magistrate,Voluntary,BBA2,'fee-paid-tribunal-member,hmcts-judiciary'"
+        "Advisory Committee Member - Magistrate,Voluntary,BBA2,'magistrate'",
+        "Magistrate,Voluntary,BBA2,'magistrate'"
     })
     void verifyVoluntaryRoles(String appointment, String appointmentType, String serviceCode, String expectedRoles) {
         shouldReturnVoluntaryRoles(appointment, appointmentType, serviceCode, "N", expectedRoles);
@@ -205,14 +205,9 @@ class DroolStcicJudicialOfficeMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals(judicialAccessProfiles.stream().iterator().next().getUserId(), r.getActorId());
             assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
-            if ("hmcts-judiciary".equals(r.getRoleName())) {
-                assertNull(r.getAuthorisations());
-                assertNull(r.getAttributes().get("primaryLocation"));
-            } else {
-                assertEquals("[376]", r.getAuthorisations().toString());
-                assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
-                assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
-            }
+            assertEquals("[376]", r.getAuthorisations().toString());
+            assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
+            assertEquals("ST_CIC", r.getAttributes().get("jurisdiction").asText());
         });
     }
 

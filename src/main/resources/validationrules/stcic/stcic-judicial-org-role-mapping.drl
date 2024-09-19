@@ -222,8 +222,6 @@ when
                                         "ST_CIC Deputy Upper Tribunal Judge-Fee Paid",
                                         "ST_CIC Tribunal Member-Fee Paid",
                                         "ST_CIC Tribunal Member Lay-Fee Paid",
-                                        "ST_CIC Advisory Committee Member - Magistrate-Voluntary",
-                                        "ST_CIC Magistrate-Voluntary",
                                         "ST_CIC Tribunal Member Medical-Salaried",
                                         "ST_CIC Tribunal Member Medical-Fee Paid",
                                         "ST_CIC Tribunal Member Optometrist-Fee Paid",
@@ -234,10 +232,8 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    if ($joh.getOffice().contains("Salaried")) {
     attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   } else if ($joh.getOffice().contains("Fee Paid")) {
-    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    } else {
-    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Voluntary"));
+    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    }
   insert(
       RoleAssignment.builder()
@@ -374,19 +370,13 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member-Fee Paid",
                                         "ST_CIC Tribunal Member Lay-Fee Paid",
-                                        "ST_CIC Advisory Committee Member - Magistrate-Voluntary",
-                                        "ST_CIC Magistrate-Voluntary",
                                         "ST_CIC Tribunal Member Disability-Fee Paid",
                                         "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   if ($joh.getOffice().contains("Fee Paid")) {
-    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   } else {
-    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Voluntary"));
-   }
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    if (List.of("ST_CIC Tribunal Member Disability-Fee Paid",
                "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid").contains($joh.getOffice())) {
     attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
@@ -542,4 +532,38 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : st_cic_fee_paid_financial_org_role");
+end;
+
+/*
+ * 14: ST_CIC "magistrate" Org role mapping.
+ */
+
+rule "st_cic_magistrate_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in ("ST_CIC Advisory Committee Member - Magistrate-Voluntary",
+                                        "ST_CIC Magistrate-Voluntary"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Voluntary"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
+                                                                                  + "applications,priority"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("magistrate")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : st_cic_magistrate_org_role");
 end;

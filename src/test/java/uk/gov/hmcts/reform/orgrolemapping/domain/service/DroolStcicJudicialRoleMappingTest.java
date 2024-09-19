@@ -51,6 +51,8 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
                 + "routine_work,applications,priority");
         expectedRoleNameWorkTypesMap.put("fee-paid-disability", "hearing_work,priority");
         expectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
+        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work,decision_making_work,"
+                + "routine_work,applications,priority");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String office, List<String> ticketCodes) {
@@ -221,8 +223,8 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "ST_CIC Advisory Committee Member - Magistrate-Voluntary,'fee-paid-tribunal-member,hmcts-judiciary'",
-        "ST_CIC Magistrate-Voluntary,'fee-paid-tribunal-member,hmcts-judiciary'"
+        "ST_CIC Advisory Committee Member - Magistrate-Voluntary,'magistrate'",
+        "ST_CIC Magistrate-Voluntary,'magistrate'"
     })
     void shouldReturnVoluntaryRoles(String setOffice, String expectedRoles) {
 
