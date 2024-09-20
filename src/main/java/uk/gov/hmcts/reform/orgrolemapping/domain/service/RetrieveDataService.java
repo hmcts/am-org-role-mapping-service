@@ -4,6 +4,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,7 @@ public class RetrieveDataService {
 
      */
 
+    public static final String ERROR_INVALID_USER_TYPE = "Invalid user type";
 
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
@@ -129,7 +131,7 @@ public class RetrieveDataService {
                                                                      userProfileResponsesEntity, UserType userType) {
         //Fetch the user profile from the response
         List<Object> userProfiles = new ArrayList<>();
-        if (userType.equals(UserType.CASEWORKER)) {
+        if (UserType.CASEWORKER.equals(userType)) {
             log.info("Caseworker Service");
             List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
                     Objects
@@ -138,14 +140,25 @@ public class RetrieveDataService {
 
             caseWorkerProfilesResponse.forEach(cwpr -> userProfiles.add(cwpr
                     .getUserProfile()));
-        } else if (userType.equals(UserType.JUDICIAL)) {
+        } else if (UserType.JUDICIAL.equals(userType)) {
             log.info("Judicial Service");
             List<JudicialProfileV2> judicialProfiles =
                     Objects
                             .requireNonNull(convertListInJudicialProfileV2(
                                     requireNonNull(userProfileResponsesEntity.getBody())));
 
-            userProfiles.addAll(judicialProfiles);
+            judicialProfiles.forEach(judicialProfileV2 -> {
+                // filter out unmapped profiles profiles: i.e. those missing an IDAM ID
+                if (StringUtils.isNotBlank(judicialProfileV2.getSidamId())) {
+                    userProfiles.add(judicialProfileV2);
+                }
+            });
+
+            log.info("Judicial Profile filter: remove unmapped profiles: before {}, after {}",
+                    judicialProfiles.size(), userProfiles.size()
+            );
+        } else {
+            throw new UnprocessableEntityException(ERROR_INVALID_USER_TYPE);
         }
 
         //Collect the userIds to build the UserRequest
@@ -158,7 +171,6 @@ public class RetrieveDataService {
 
         getAccessProfile(userRequest, userType, invalidUserProfilesCount, invalidProfiles,
                 usersAccessProfiles, userProfileResponsesEntity, userProfiles);
-
 
         return usersAccessProfiles;
     }

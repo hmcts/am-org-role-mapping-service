@@ -19,6 +19,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_INVALID_USER_TYPE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfileV2;
@@ -26,9 +27,11 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserRequest;
 
 import feign.FeignException;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -277,36 +280,125 @@ class RetrieveDataServiceTest {
         assertThrows(UnprocessableEntityException.class, () -> sut.retrieveProfiles(request, UserType.JUDICIAL));
     }
 
-    @Test
-    void getUserAccessProfile() {
+    @Nested
+    class RetrieveProfilesByServiceName {
 
-        List<Object> userProfilesResponses = new ArrayList<>();
-        userProfilesResponses.add(TestDataBuilder.buildUserProfilesResponse());
-        ResponseEntity<List<Object>> responseEntity
-                = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
+        @Test
+        void shouldThrowUnprocessableOnInvalidUserType() {
 
-        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfilesByServiceName(responseEntity,
-                UserType.CASEWORKER);
-        assertNotNull(response);
-        assertEquals(4, response.get("1").size());
-    }
+            // GIVEN
+            ResponseEntity<List<Object>> responseEntity
+                    = new ResponseEntity<>(new ArrayList<>(), HttpStatus.CREATED);
 
-    @Test
-    void getUserAccessProfileJudicialV2() throws IOException {
+            // WHEN / THEN
+            UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class,() ->
+                    sut.retrieveProfilesByServiceName(responseEntity, null)
+            );
 
-        List<Object> userProfilesResponses = new ArrayList<>(buildJudicialProfileV2(
-                TestDataBuilder.buildRefreshRoleRequest(), "judicialProfileSampleV2.json"
-        ));
-        ResponseEntity<List<Object>> responseEntity
-                = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
+            assertTrue(exception.getLocalizedMessage().contains(ERROR_INVALID_USER_TYPE));
+        }
 
-        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfilesByServiceName(responseEntity,
-                UserType.JUDICIAL);
+        @Test
+        void getUserAccessProfile_Caseworker() {
 
-        assertNotNull(response);
-        assertEquals(userProfilesResponses.size(), response.size());
-        // verify at least one profile.  NB: size 2 as two appointments in "judicialProfileSampleV2.json"
-        assertEquals(2, response.get(TestDataBuilder.id_2).size());
+            // GIVEN
+            List<Object> userProfilesResponses = new ArrayList<>();
+            userProfilesResponses.add(TestDataBuilder.buildUserProfilesResponse());
+            ResponseEntity<List<Object>> responseEntity
+                    = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
+
+            // WHEN
+            Map<String, Set<UserAccessProfile>> response = sut.retrieveProfilesByServiceName(responseEntity,
+                    UserType.CASEWORKER);
+
+            // THEN
+            assertNotNull(response);
+            assertEquals(4, response.get("1").size());
+        }
+
+        @Test
+        void getUserAccessProfile_Judicial() {
+
+            // GIVEN
+            List<Object> userProfilesResponses = new ArrayList<>(buildJudicialProfileV2(
+                    TestDataBuilder.buildRefreshRoleRequest(), "judicialProfileSampleV2.json"
+            ));
+            ResponseEntity<List<Object>> responseEntity
+                    = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
+
+            // WHEN
+            Map<String, Set<UserAccessProfile>> response = sut.retrieveProfilesByServiceName(responseEntity,
+                    UserType.JUDICIAL);
+
+            // THEN
+            assertNotNull(response);
+            assertEquals(userProfilesResponses.size(), response.size());
+            // verify both test profiles found.  NB: size 2 as two appointments in "judicialProfileSampleV2.json"
+            assertEquals(2, response.get(TestDataBuilder.id_1).size());
+            assertEquals(2, response.get(TestDataBuilder.id_2).size());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void getUserAccessProfile_Judicial_shouldFilterProfilesWithNoIdamId(String nullOrEmptyIdamId) {
+
+            // GIVEN
+            List<JudicialProfileV2> judicialProfiles = buildJudicialProfileV2(
+                    TestDataBuilder.buildRefreshRoleRequest(), "judicialProfileSampleV2.json"
+            );
+            List<Object> userProfilesResponses = new ArrayList<>();
+            // add profiles to test input but clear IDAM_ID 1
+            judicialProfiles.forEach(judicialProfile -> {
+                if (TestDataBuilder.id_1.equals(judicialProfile.getSidamId())) {
+                    judicialProfile.setSidamId(nullOrEmptyIdamId);
+                }
+                userProfilesResponses.add(judicialProfile);
+            });
+            ResponseEntity<List<Object>> responseEntity
+                    = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
+
+            // WHEN
+            Map<String, Set<UserAccessProfile>> response = sut.retrieveProfilesByServiceName(responseEntity,
+                    UserType.JUDICIAL);
+
+            // THEN
+            assertNotNull(response);
+            assertEquals(1, response.size()); // i.e. as ID 1 is removed
+            // verify test profiles ID 1 not found.
+            assertFalse(response.containsKey(TestDataBuilder.id_1));
+            // verify test profiles ID 2 found.  NB: size 2 as two appointments in "judicialProfileSampleV2.json"
+            assertEquals(2, response.get(TestDataBuilder.id_2).size());
+        }
+
+        @Test
+        void getUserAccessProfile_Judicial_shouldNotErrorIfAllProfilesFiltered() {
+
+            // GIVEN
+            List<JudicialProfileV2> judicialProfiles = buildJudicialProfileV2(
+                    TestDataBuilder.buildRefreshRoleRequest(), "judicialProfileSampleV2.json"
+            );
+            List<Object> userProfilesResponses = new ArrayList<>();
+            // add profiles to test input but clear all IDAM IDs
+            judicialProfiles.forEach(judicialProfile -> {
+                if (TestDataBuilder.id_1.equals(judicialProfile.getSidamId())) {
+                    judicialProfile.setSidamId(null);
+                } else {
+                    judicialProfile.setSidamId("");
+                }
+                userProfilesResponses.add(judicialProfile);
+            });
+            ResponseEntity<List<Object>> responseEntity
+                    = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
+
+            // WHEN
+            Map<String, Set<UserAccessProfile>> response = sut.retrieveProfilesByServiceName(responseEntity,
+                    UserType.JUDICIAL);
+
+            // THEN
+            assertNotNull(response);
+            assertEquals(0, response.size()); // i.e. all profiles filtered
+        }
+
     }
 
 }
