@@ -55,7 +55,7 @@ java:
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
     # temporary override: REFRESH_JOB_INCLUDE_BOOKINGS: false
     REFRESH_JOB_INCLUDE_BOOKINGS: true
-    # temporary override: REFRESH_JOB_PAGE_SIZE: 20
+    # temporary override: REFRESH_JOB_PAGE_SIZE: 75
     REFRESH_JOB_PAGE_SIZE: 20
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
