@@ -19,9 +19,9 @@ import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
@@ -35,10 +35,10 @@ public class SmokeTest {
     UserTokenProviderConfig config;
 
     @MockBean
-    private CRDTopicConsumer crdTopicConsumer;
+    private CRDTopicConsumerNew crdTopicConsumerNew;
 
     @MockBean
-    private JRDTopicConsumer jrdTopicConsumer;
+    private JRDTopicConsumerNew jrdTopicConsumerNew;
 
     @MockBean
     private CRDTopicPublisher crdTopicPublisher;
