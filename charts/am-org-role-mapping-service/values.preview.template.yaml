@@ -41,8 +41,6 @@ java:
     LAUNCH_DARKLY_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
-    AMQP_JRD_NEW_ASB_ENABLED: true
-    AMQP_CRD_NEW_ASB_ENABLED: false
     CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-crd-topic"
     JRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-jrd-topic"
     CRD_TOPIC_NAME: "{{ .Release.Name}}-asb-crd-topic"
