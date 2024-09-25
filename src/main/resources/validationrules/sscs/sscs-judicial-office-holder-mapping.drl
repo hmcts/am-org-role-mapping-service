@@ -27,10 +27,13 @@ import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuild
 /*
  * "Stage 1 mapping from judicial appointments/roles(coming from RD JRD access profiles) to judicial office holder.
  * "SSCS Judge" business role mapping to JOH.
+ * Made obsolete in DTSAM-517 - rule will be disabled when SSCS_HEARING_1_1 flag is enabled.
+ * To be removed in DTSAM-529
  */
 rule "sscs_judge_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.SSCS_HEARING_1_1.getValue())
    $jap: JudicialAccessProfile(appointment !=null && validateAuthorisation(authorisations, "BBA3"))
 then
   insert(
@@ -50,6 +53,36 @@ then
   $jap.setStatus("JOH_Mapped");
   update($jap);
   logMsg("Rule : sscs_judge_joh");
+end;
+
+/*
+ * "Stage 1 mapping from judicial appointments/roles(coming from RD JRD access profiles) to judicial office holder.
+ * "SSCS Judge" business role mapping to JOH.
+ */
+rule "v1_1_sscs_judge_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_1.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "BBA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("SSCS Judge")
+      .jurisdiction("SSCS")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      // NB: no region or baseLocation if National (i.e. regionId == "12")
+      .regionId("12".equals($jap.getRegionId()) ? null : $jap.getRegionId())
+      .baseLocationId("12".equals($jap.getRegionId()) ? null : $jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+  $jap.setStatus("JOH_Mapped");
+  update($jap);
+  logMsg("Rule : v1_1_sscs_judge_joh");
 end;
 
 /*
