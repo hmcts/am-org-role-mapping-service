@@ -37,7 +37,7 @@ ext['snakeyaml.version'] = '2.0'
 def versions = [
         junit          : '5.9.0',
         lombok         : '1.18.34',
-        pitest         : '1.16.3',
+        pitest         : '1.17.0',
         reformLogging  : '6.1.6',
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
@@ -236,7 +236,7 @@ task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
 }
 
 pitest {
-    testPlugin = "junit5"
+    pitestVersion = versions.pitest
     targetClasses = ['uk.gov.hmcts.reform.*']
     excludedClasses = ['uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication',
                        'uk.gov.hmcts.reform.orgrolemapping.util.GetSasToken',
