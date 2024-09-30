@@ -46,7 +46,7 @@
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "ST_CIC",
-            "workTypes": "hearing_work,priority"
+            "workTypes": "hearing_work,decision_making_work,routine_work,applications,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
