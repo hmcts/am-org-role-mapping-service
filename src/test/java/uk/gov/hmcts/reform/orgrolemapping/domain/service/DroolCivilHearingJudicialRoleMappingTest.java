@@ -215,12 +215,11 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
     private List<FeatureFlag> setFeatureFlags() {
         List<FeatureFlag> featureFlags = new ArrayList<>(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
 
-        featureFlags.add(
-                FeatureFlag.builder()
-                        .flagName("sscs_hearing_1_0")
-                        .status(true)
-                        .build()
-        );
+        for (FeatureFlag flag : featureFlags) {
+            if (flag.getFlagName().contains("hearing")) {
+                flag.setStatus(true);
+            }
+        }
 
         return featureFlags;
     }
