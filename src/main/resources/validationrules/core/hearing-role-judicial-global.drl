@@ -50,9 +50,14 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
        logMsg("Rule : global_hearing_viewer_judicial");
  end;
 
+  /*
+   * Made obsolete in DTSAM-552 - rule will be disabled when PUBLICLAW_HEARING_1_0 flag is enabled.
+   * To be removed in DTSAM-553
+   */
   rule "global_hearing_manager_judicial"
   when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+    $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_HEARING_1_0.getValue())
     $joh: JudicialOfficeHolder( jurisdiction in ("PUBLICLAW") &&
                                 office not in ("PUBLICLAW Magistrate - Voluntary"))
   then
