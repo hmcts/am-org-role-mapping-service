@@ -47,7 +47,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-093_DeleteDataForRoleAssignments].
 
   @S-094
-  @FeatureToggle(DB:publiclaw_wa_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  @FeatureToggle(DB:publiclaw_hearing_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create judicial role mapping for Deputy District Judge - Fee-Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-094_DeleteDataForRoleAssignments],
@@ -61,7 +61,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-094_DeleteDataForRoleAssignments].
 
   @S-095
-  @FeatureToggle(DB:publiclaw_wa_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  @FeatureToggle(DB:publiclaw_hearing_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create judicial role mapping for Designated Family Judge - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-095_DeleteDataForRoleAssignments],
