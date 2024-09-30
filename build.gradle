@@ -582,10 +582,6 @@ dependencyManagement {
             entry 'jackson-core'
             entry 'jackson-annotations'
         }
-        // CVE-2023-3635 override okio dependency in azure-servicebus:3.6.7
-        dependencySet(group: 'com.squareup.okio', version: '3.9.1') {
-            entry 'okio'
-        }
     }
 }
 
