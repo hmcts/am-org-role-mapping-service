@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.BooleanUtils;
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

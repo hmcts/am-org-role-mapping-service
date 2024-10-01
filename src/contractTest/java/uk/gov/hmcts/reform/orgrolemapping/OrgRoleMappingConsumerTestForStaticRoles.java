@@ -8,7 +8,7 @@ import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
 import org.apache.http.client.fluent.Executor;
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;

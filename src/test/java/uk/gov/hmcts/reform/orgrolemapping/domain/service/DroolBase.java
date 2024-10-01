@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
