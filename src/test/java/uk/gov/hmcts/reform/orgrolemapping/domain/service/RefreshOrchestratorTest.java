@@ -83,6 +83,10 @@ class RefreshOrchestratorTest {
     private static final String S2S_ORM = "am_org_role_mapping_service";
     private static final String S2S_RARB = "am_role_assignment_refresh_batch";
 
+    private static final String SORT_COLUMN_CRD = "sort_column_crd";
+    private static final String SORT_COLUMN_JRD = "sort_column_jrd";
+    private static final String SORT_DIRECTION = "descending";
+
     @SuppressWarnings("unchecked")
     private final RequestMappingService<UserAccessProfile> requestMappingService
             = (RequestMappingService<UserAccessProfile>)mock(RequestMappingService.class);
@@ -115,8 +119,9 @@ class RefreshOrchestratorTest {
                 securityUtils,
                 judicialBookingService,
                 String.valueOf(PAGE_SIZE),
-                "descending",
-                "1",
+                SORT_DIRECTION,
+                SORT_COLUMN_CRD,
+                SORT_COLUMN_JRD,
                 List.of(S2S_ORM, S2S_RARB),
                 includeJudicialBookings);
     }
@@ -735,7 +740,7 @@ class RefreshOrchestratorTest {
 
             // verify pagination calls
             verify(crdService, atLeast(1))
-                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(0), any(), any());
+                    .fetchCaseworkerDetailsByServiceName(JURISDICTION, pageSize, 0, SORT_DIRECTION, SORT_COLUMN_CRD);
             // verify no second pagination call: i.e. pagination disabled
             verify(crdService, never())
                     .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(1), any(), any());
@@ -773,9 +778,9 @@ class RefreshOrchestratorTest {
             // verify pagination calls
             // NB: first page is called twice as first call extracts the total record count
             verify(crdService,  times(2))
-                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(0), any(), any());
+                    .fetchCaseworkerDetailsByServiceName(JURISDICTION, pageSize, 0, SORT_DIRECTION, SORT_COLUMN_CRD);
             verify(crdService,  times(1))
-                    .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(1), any(), any());
+                    .fetchCaseworkerDetailsByServiceName(JURISDICTION, pageSize, 1, SORT_DIRECTION, SORT_COLUMN_CRD);
             // NB: page 3 (i.e. index 2)  never loaded
             verify(crdService,  never())
                     .fetchCaseworkerDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(2), any(), any());
@@ -955,7 +960,7 @@ class RefreshOrchestratorTest {
 
             // verify pagination calls
             verify(jrdService, atLeast(1))
-                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(0), any(), any());
+                    .fetchJudicialDetailsByServiceName(JURISDICTION, pageSize, 0, SORT_DIRECTION, SORT_COLUMN_JRD);
             // verify no second pagination call: i.e. pagination disabled
             verify(jrdService, never())
                     .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(1), any(), any());
@@ -994,9 +999,9 @@ class RefreshOrchestratorTest {
             // verify pagination calls
             // NB: first page is called twice as first call extracts the total record count
             verify(jrdService,  times(expectedNumberOfPages))
-                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(0), any(), any());
+                    .fetchJudicialDetailsByServiceName(JURISDICTION, pageSize, 0, SORT_DIRECTION, SORT_COLUMN_JRD);
             verify(jrdService,  times(1))
-                    .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(1), any(), any());
+                    .fetchJudicialDetailsByServiceName(JURISDICTION, pageSize, 1, SORT_DIRECTION, SORT_COLUMN_JRD);
             // NB: page 3 (i.e. index 2)  never loaded
             verify(jrdService,  never())
                     .fetchJudicialDetailsByServiceName(eq(JURISDICTION), eq(pageSize), eq(2), any(), any());
