@@ -170,6 +170,7 @@ refresh:
     pageSize: ${REFRESH_JOB_PAGE_SIZE:400}
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
+    sortColumnJrd: ${REFRESH_JOB_SORT_COL_JRD:}
     authorisedServices: am_org_role_mapping_service,am_role_assignment_refresh_batch
     includeJudicialBookings: ${REFRESH_JOB_INCLUDE_BOOKINGS:false}
   BulkAssignment:

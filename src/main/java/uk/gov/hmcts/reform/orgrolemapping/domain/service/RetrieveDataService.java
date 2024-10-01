@@ -148,7 +148,7 @@ public class RetrieveDataService {
                                     requireNonNull(userProfileResponsesEntity.getBody())));
 
             judicialProfiles.forEach(judicialProfileV2 -> {
-                // filter out unmapped profiles profiles: i.e. those missing an IDAM ID
+                // filter out unmapped profiles: i.e. those missing an IDAM ID
                 if (StringUtils.isNotBlank(judicialProfileV2.getSidamId())) {
                     userProfiles.add(judicialProfileV2);
                 }

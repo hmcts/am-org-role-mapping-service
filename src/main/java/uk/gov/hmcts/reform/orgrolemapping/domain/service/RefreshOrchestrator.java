@@ -66,6 +66,7 @@ public class RefreshOrchestrator {
     private final JudicialBookingService judicialBookingService;
     private final String sortDirection;
     private final String sortColumn;
+    private final String sortColumnJrd;
     private final List<String> authorisedServices;
     private final boolean includeJudicialBookings;
     String pageSize;
@@ -74,13 +75,15 @@ public class RefreshOrchestrator {
     public RefreshOrchestrator(RetrieveDataService retrieveDataService,
                                RequestMappingService<UserAccessProfile> requestMappingService,
                                ParseRequestService parseRequestService,
-                               CRDService crdService,JRDService jrdService,
+                               CRDService crdService,
+                               JRDService jrdService,
                                PersistenceService persistenceService,
                                SecurityUtils securityUtils,
                                JudicialBookingService judicialBookingService,
                                @Value("${refresh.Job.pageSize}") String pageSize,
                                @Value("${refresh.Job.sortDirection}") String sortDirection,
                                @Value("${refresh.Job.sortColumn}") String sortColumn,
+                               @Value("${refresh.Job.sortColumnJrd}") String sortColumnJrd,
                                @Value("${refresh.Job.authorisedServices}") List<String> authorisedServices,
                                @Value("${refresh.Job.includeJudicialBookings}") Boolean  includeJudicialBookings) {
         this.retrieveDataService = retrieveDataService;
@@ -94,6 +97,7 @@ public class RefreshOrchestrator {
         this.pageSize = pageSize;
         this.sortDirection = sortDirection;
         this.sortColumn = sortColumn;
+        this.sortColumnJrd = sortColumnJrd;
         this.authorisedServices = authorisedServices;
         this.includeJudicialBookings = BooleanUtils.isTrue(includeJudicialBookings);
     }
@@ -227,7 +231,7 @@ public class RefreshOrchestrator {
                 ResponseEntity<List<Object>> response = jrdService
                         .fetchJudicialDetailsByServiceName(refreshJobEntity.getJurisdiction(),
                                 Integer.parseInt(pageSize), 0,
-                                sortDirection, sortColumn);
+                                sortDirection, sortColumnJrd);
 
                 // 2 step to find out the total number of records from header
                 double pageNumber = getPageCountFromResponse(response);
@@ -237,7 +241,7 @@ public class RefreshOrchestrator {
                     ResponseEntity<List<Object>> userProfilesResponse = jrdService
                             .fetchJudicialDetailsByServiceName(refreshJobEntity.getJurisdiction(),
                                     Integer.parseInt(pageSize), page,
-                                    sortDirection, sortColumn);
+                                    sortDirection, sortColumnJrd);
                     Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
                             .retrieveProfilesByServiceName(userProfilesResponse, userType);
 
