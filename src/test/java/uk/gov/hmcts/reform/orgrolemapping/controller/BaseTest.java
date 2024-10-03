@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.microsoft.azure.servicebus.SubscriptionClient;
+import com.azure.messaging.servicebus.ServiceBusReceiverClient;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,16 +26,16 @@ public abstract class BaseTest {
     protected static final ObjectMapper mapper = new ObjectMapper();
 
     @MockBean(name = "jrdConsumer")
-    private SubscriptionClient jrdConsumer;
+    private ServiceBusReceiverClient jrdConsumer;
 
     @MockBean(name = "crdConsumer")
-    private SubscriptionClient crdConsumer;
+    private ServiceBusReceiverClient crdConsumer;
 
     @MockBean(name = "getSubscriptionClient")
-    private SubscriptionClient getSubscriptionClient;
+    private ServiceBusReceiverClient getSubscriptionClient;
 
     @MockBean(name = "getSubscriptionClient1")
-    private SubscriptionClient getSubscriptionClient1;
+    private ServiceBusReceiverClient getSubscriptionClient1;
 
     @MockBean(name = "clientRegistrationRepository")
     private ClientRegistrationRepository getClientRegistrationRepository;
