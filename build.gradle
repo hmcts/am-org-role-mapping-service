@@ -404,10 +404,7 @@ dependencies {
     implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
 
     //Azure service bus libraries
-    implementation(group: 'com.microsoft.azure', name: 'azure-servicebus', version: '3.6.7'){
-        exclude group: 'com.microsoft.azure', module: 'adal4j'
-        exclude group: 'org.asynchttpclient', module: 'async-http-client-netty-utils'
-    }
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
     implementation group: 'com.azure', name: 'azure-core', version: '1.51.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.3'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.10'
@@ -584,10 +581,6 @@ dependencyManagement {
             entry 'jackson-databind'
             entry 'jackson-core'
             entry 'jackson-annotations'
-        }
-        // CVE-2023-3635 override okio dependency in azure-servicebus:3.6.7
-        dependencySet(group: 'com.squareup.okio', version: '3.9.1') {
-            entry 'okio'
         }
     }
 }
