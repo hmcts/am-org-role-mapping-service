@@ -42,8 +42,8 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClient
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumerNew;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import jakarta.inject.Inject;
@@ -118,10 +118,10 @@ public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
     private FeignClientInterceptor feignClientInterceptor;
 
     @MockBean
-    private CRDTopicConsumer crdTopicConsumer;
+    private CRDTopicConsumerNew crdTopicConsumerNew;
 
     @MockBean
-    private JRDTopicConsumer jrdTopicConsumer;
+    private JRDTopicConsumerNew jrdTopicConsumerNew;
 
     @Inject
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
