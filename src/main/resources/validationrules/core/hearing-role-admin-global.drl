@@ -87,10 +87,13 @@ end;
 
 /*
  * All services  "listed-hearing-viewer" Org role mapping.
+ * Rule moved to "hearing-role-other-global.drl", hence made obsolete in DTSAM-506 - disabled by SSCS_WA_1_5 flag.
+ * To be removed in DTSAM-510.
  */
 rule "global_listed_hearing_viewer_other_gov_dept"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_HEARING_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.SSCS_WA_1_5.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("14","15"),
                                 serviceCode in ("BBA3","ABA5"),
                                 !suspended)
