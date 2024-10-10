@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 public class OrmDefaultMultiSourceFeatureToggleService extends DefaultMultiSourceFeatureToggleService {
 
-    private static final String LAUNCH_DARKLY_FLAG = "FeatureToggle";
+    private static final String FEATURE_TOGGLE = "FeatureToggle";
     public static final OrmDefaultMultiSourceFeatureToggleService INSTANCE
         = new OrmDefaultMultiSourceFeatureToggleService();
 
@@ -17,8 +17,8 @@ public class OrmDefaultMultiSourceFeatureToggleService extends DefaultMultiSourc
     @SuppressWarnings("unchecked")
     public ScenarioFeatureToggleInfo getToggleStatusFor(Scenario toggleable) {
         ScenarioFeatureToggleInfo scenarioFeatureToggleInfo = new ScenarioFeatureToggleInfo();
-        //@FeatureToggle(LD:feature_id_1=on) @FeatureToggle(IAC:feature_id_2=off)
-        toggleable.getSourceTagNames().stream().filter(tag -> tag.contains(LAUNCH_DARKLY_FLAG)).forEach(tag -> {
+        // @FeatureToggle(IAC:feature_id_2=off)
+        toggleable.getSourceTagNames().stream().filter(tag -> tag.contains(FEATURE_TOGGLE)).forEach(tag -> {
 
             String id = null;
             var domain = tag.contains(COLON) ? tag.substring(tag.indexOf("(") + 1, tag.indexOf(COLON)) : "LD";
