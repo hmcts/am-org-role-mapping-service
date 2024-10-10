@@ -28,6 +28,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
 
   insert(
       RoleAssignment.builder()
@@ -56,7 +57,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("applications,hearing_work,routine_work,priority,decision_making_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
 
   insert(
       RoleAssignment.builder()
