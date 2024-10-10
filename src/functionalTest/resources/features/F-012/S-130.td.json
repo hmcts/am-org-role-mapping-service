@@ -1,0 +1,79 @@
+{
+  "_guid_": "S-130",
+  "title": "must successfully create judicial role mapping for Tribunal Member Medical - Salaried appointment",
+  "_extends_": "F-012_Test_Data_Base",
+  "specs": [
+    "contains the actorIds of the user just published"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+    },
+    "body": {
+      "queryRequests":[
+        {
+          "actorId": "${[scenarioContext][childContexts][S-130_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "roleName": ["hmcts-judiciary"],
+          "attributes": {
+            "contractType": ["Salaried"]
+          }
+        },
+        {
+          "actorId": "${[scenarioContext][childContexts][S-130_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "attributes": {
+            "jurisdiction": ["ST_CIC"]
+          }
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "medical",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Salaried",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "ST_CIC",
+            "workTypes": "hearing_work,decision_making_work,routine_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        }
+      ]
+    }
+  }
+}
