@@ -83,7 +83,8 @@
           "attributes": {
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "ST_CIC"
+            "jurisdiction": "ST_CIC",
+            "workTypes" : "decision_making_work"
           }
         },{
           "id" : "[[ANYTHING_PRESENT]]",
@@ -135,7 +136,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "ST_CIC",
-            "workTypes": "applications,hearing_work,routine_work,priority,decision_making_work"
+            "workTypes": "decision_making_work"
           }
         }
       ]
