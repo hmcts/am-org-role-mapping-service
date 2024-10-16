@@ -1,14 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import com.launchdarkly.sdk.server.LDClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.Duration;
 
 @Configuration
 public class ApplicationConfiguration {
@@ -38,30 +38,17 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(getHttpClient()));
-        return restTemplate;
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        var timeout = 10;
+        return builder.requestFactory(HttpComponentsClientHttpRequestFactory.class)
+                .setConnectTimeout(Duration.ofSeconds(timeout))
+                .setReadTimeout(Duration.ofSeconds(timeout))
+                .setBufferRequestBody(true)
+                .build();
     }
 
     @Bean
     public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
         return new LDClient(sdkKey);
-    }
-
-
-    private CloseableHttpClient getHttpClient() {
-        var timeout = 10000;
-        RequestConfig config = RequestConfig.custom()
-                                            .setConnectTimeout(timeout)
-                                            .setConnectionRequestTimeout(timeout)
-                                            .setSocketTimeout(timeout)
-                                            .build();
-
-        return HttpClientBuilder
-            .create()
-            .useSystemProperties()
-            .setDefaultRequestConfig(config)
-            .build();
     }
 }
