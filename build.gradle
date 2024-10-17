@@ -46,7 +46,7 @@ def versions = [
         springSecurity : '5.7.11',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
-        tomcat         : '9.0.95',
+        tomcat         : '9.0.96',
         pact_version   : '4.1.41',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
