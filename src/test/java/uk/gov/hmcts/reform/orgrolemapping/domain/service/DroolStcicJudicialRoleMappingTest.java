@@ -34,25 +34,13 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
     static {
         expectedRoleNameWorkTypesMap.put("senior-judge", null);
-        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,"
-                + "applications,priority");
+        expectedRoleNameWorkTypesMap.put("judge", "decision_making_work");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", null);
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
         expectedRoleNameWorkTypesMap.put("leadership-judge", null);
-        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
-        expectedRoleNameWorkTypesMap.put("medical", "hearing_work,decision_making_work,"
-                + "routine_work,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-medical", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-disability", "hearing_work,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
-        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "decision_making_work");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String office, List<String> ticketCodes) {
@@ -92,9 +80,6 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
             if (List.of("ST_CIC Tribunal Member Disability-Fee Paid",
                     "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid").contains(office)) {
                 expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
-            } else {
-                expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member",
-                        "hearing_work,decision_making_work,routine_work,applications,priority");
             }
         }
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
