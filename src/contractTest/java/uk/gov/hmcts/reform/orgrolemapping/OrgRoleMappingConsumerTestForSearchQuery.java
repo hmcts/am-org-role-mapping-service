@@ -13,7 +13,7 @@ import groovy.util.logging.Slf4j;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
