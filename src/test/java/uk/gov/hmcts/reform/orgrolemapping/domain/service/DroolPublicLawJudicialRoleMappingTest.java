@@ -107,13 +107,24 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "Senior Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer',5,true",
         "Senior Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer',11,false"
     })
+    void verifySalariedAndSptwRoles(String appointment, String assignedRoles, String expectedRoleNames,
+                                    String region, boolean expectMultiRegion) {
+        shouldReturnSalariedRolesFromJudicialAccessProfile(
+                appointment, "Salaried", assignedRoles, expectedRoleNames, region, expectMultiRegion);
+        if (List.of("Circuit Judge", "District Judge", "District Judge (MC)").contains(appointment)
+            || assignedRoles.equals("Designated Family Judge")) {
+            shouldReturnSalariedRolesFromJudicialAccessProfile(
+                    appointment, "SPTW", assignedRoles, expectedRoleNames, region, expectMultiRegion);
+        }
+    }
+
     void shouldReturnSalariedRolesFromJudicialAccessProfile(
-            String appointment, String assignedRoles, String expectedRoleNames,
-            String region, boolean expectMultiRegion) {
+            String appointment, String appointmentType, String assignedRoles,
+            String expectedRoleNames, String region, boolean expectMultiRegion) {
 
         clearAndPrepareProfilesForDroolSession(
                 appointment,
-                "Salaried",
+                appointmentType,
                 Arrays.stream(assignedRoles.split(",")).toList(),
                 region,
                 false
