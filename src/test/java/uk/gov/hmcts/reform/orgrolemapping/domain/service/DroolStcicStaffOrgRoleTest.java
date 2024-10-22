@@ -8,18 +8,43 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DroolStcicStaffOrgRoleTest extends DroolBase {
+class DroolStcicStaffOrgRoleTest extends DroolBase {
+
+    static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
+
+    static {
+        expectedRoleNameWorkTypesMap.put("senior-tribunal-caseworker", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("tribunal-caseworker", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("hmcts-legal-operations", null);
+        expectedRoleNameWorkTypesMap.put("task-supervisor", null);
+        expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("specific-access-approver-legal-ops", "access_requests");
+        expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "applications,hearing_work,routine_work,"
+                + "priority");
+        expectedRoleNameWorkTypesMap.put("hearing-centre-admin", "applications,hearing_work,routine_work,priority");
+        expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
+        expectedRoleNameWorkTypesMap.put("specific-access-approver-admin", "access_requests");
+        expectedRoleNameWorkTypesMap.put("regional-centre-team-leader", "applications,hearing_work,routine_work,"
+                + "priority");
+        expectedRoleNameWorkTypesMap.put("regional-centre-admin", "applications,hearing_work,routine_work,priority");
+        expectedRoleNameWorkTypesMap.put("cica", null);
+        expectedRoleNameWorkTypesMap.put("ctsc-team-leader", "applications,hearing_work,routine_work,priority");
+        expectedRoleNameWorkTypesMap.put("ctsc", "applications,hearing_work,routine_work,priority");
+        expectedRoleNameWorkTypesMap.put("hmcts-ctsc", null);
+        expectedRoleNameWorkTypesMap.put("specific-access-approver-ctsc", "access_requests");
+    }
 
     @ParameterizedTest
     @CsvSource({
@@ -89,21 +114,12 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             //assert region
             assertNull(r.getAttributes().get("region"));
             //assert work types
-            if (("hearing-centre-team-leader").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("hearing-centre-admin").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("applications", "hearing_work",
-                                "routine_work", "priority"));
-            } else if (("hmcts-admin").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("task-supervisor").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("case-allocator").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("specific-access-approver-admin").equals(r.getRoleName())) {
-                assertEquals("access_requests", r.getAttributes().get("workTypes").asText());
+            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+            String actualWorkTypes = null;
+            if (r.getAttributes().get("workTypes") != null) {
+                actualWorkTypes = r.getAttributes().get("workTypes").asText();
             }
+            assertEquals(expectedWorkTypes, actualWorkTypes);
             //assert classification
             List<String> rolesWithPublicClassification = List.of("hearing-centre-team-leader", "hearing-centre-admin",
                                                                 "task-supervisor", "case-allocator",
@@ -183,23 +199,12 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             //assert region
             assertNull(r.getAttributes().get("region"));
             //assert work types
-            if (("ctsc-team-leader").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("applications", "hearing_work",
-                                "routine_work"));
-            } else if (("ctsc").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("applications", "hearing_work",
-                                "routine_work"));
-            } else if (("hmcts-ctsc").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("task-supervisor").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("case-allocator").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("specific-access-approver-ctsc").equals(r.getRoleName())) {
-                assertEquals("access_requests", r.getAttributes().get("workTypes").asText());
+            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+            String actualWorkTypes = null;
+            if (r.getAttributes().get("workTypes") != null) {
+                actualWorkTypes = r.getAttributes().get("workTypes").asText();
             }
+            assertEquals(expectedWorkTypes, actualWorkTypes);
             //assert classification
             List<String> rolesWithPublicClassification = List.of("ctsc-team-leader", "ctsc",
                     "task-supervisor", "case-allocator", "specific-access-approver-ctsc");
@@ -276,21 +281,12 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             //assert region
             assertNull(r.getAttributes().get("region"));
             //assert work types
-            if (("senior-tribunal-caseworker").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("tribunal-caseworker").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("applications", "hearing_work",
-                                "routine_work", "priority", "decision_making_work"));
-            } else if (("hmcts-legal-operations").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("task-supervisor").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("case-allocator").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
-            } else if (("specific-access-approver-legal-ops").equals(r.getRoleName())) {
-                assertEquals("access_requests", r.getAttributes().get("workTypes").asText());
+            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+            String actualWorkTypes = null;
+            if (r.getAttributes().get("workTypes") != null) {
+                actualWorkTypes = r.getAttributes().get("workTypes").asText();
             }
+            assertEquals(expectedWorkTypes, actualWorkTypes);
             //assert classification
             List<String> rolesWithPublicClassification = List.of("senior-tribunal-caseworker", "tribunal-caseworker",
                     "task-supervisor", "case-allocator", "specific-access-approver-legal-ops");
@@ -349,9 +345,12 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             //assert region
             assertNull(r.getAttributes().get("region"));
             //assert work types
-            if (("cica").equals(r.getRoleName())) {
-                assertNull(r.getAttributes().get("workTypes"));
+            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+            String actualWorkTypes = null;
+            if (r.getAttributes().get("workTypes") != null) {
+                actualWorkTypes = r.getAttributes().get("workTypes").asText();
             }
+            assertEquals(expectedWorkTypes, actualWorkTypes);
             //assert classification
             List<String> rolesWithPublicClassification = List.of("cica");
             if (rolesWithPublicClassification.contains(r.getRoleName())) {
@@ -368,4 +367,5 @@ public class DroolStcicStaffOrgRoleTest extends DroolBase {
             }
         });
     }
+
 }
