@@ -74,14 +74,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
         //region assertions
         assertNull(r.getAttributes().get("region"));
-
-        //work types assertions
-        if (r.getRoleName().equals("fee-paid-tribunal-member")) {
-            if (List.of("ST_CIC Tribunal Member Disability-Fee Paid",
-                    "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid").contains(office)) {
-                expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
-            }
-        }
+        
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
         String actualWorkTypes = null;
         if (r.getAttributes().get("workTypes") != null) {
