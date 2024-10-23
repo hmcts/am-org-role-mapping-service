@@ -374,10 +374,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   if (List.of("ST_CIC Tribunal Member Disability-Fee Paid",
-               "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid").contains($joh.getOffice())) {
-    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
-   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
