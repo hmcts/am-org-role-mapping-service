@@ -68,8 +68,7 @@
             "substantive": "Y",
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "ST_CIC",
-            "workTypes": "hearing_work,decision_making_work,routine_work,priority"
+            "jurisdiction": "ST_CIC"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
