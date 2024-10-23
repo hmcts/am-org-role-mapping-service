@@ -33,14 +33,20 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     static {
+        expectedRoleNameWorkTypesMap.put("leadership-judge", null);
         expectedRoleNameWorkTypesMap.put("senior-judge", null);
         expectedRoleNameWorkTypesMap.put("judge", "decision_making_work");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", null);
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        expectedRoleNameWorkTypesMap.put("leadership-judge", null);
         expectedRoleNameWorkTypesMap.put("fee-paid-judge", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", null);
+        expectedRoleNameWorkTypesMap.put("magistrate", null);
+        expectedRoleNameWorkTypesMap.put("medical", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-medical", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-disability", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-financial", null);
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String office, List<String> ticketCodes) {
@@ -74,7 +80,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
         //region assertions
         assertNull(r.getAttributes().get("region"));
-        
+
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
         String actualWorkTypes = null;
         if (r.getAttributes().get("workTypes") != null) {
