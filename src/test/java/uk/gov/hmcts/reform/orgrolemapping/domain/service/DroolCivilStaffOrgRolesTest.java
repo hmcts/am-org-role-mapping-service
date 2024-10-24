@@ -32,7 +32,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 class DroolCivilStaffOrgRolesTest extends DroolBase {
 
     static final String SERVICE_CODE_1 = "AAA6";
-    static final String SERVICE_CODE_2 = "AAA6";
+    static final String SERVICE_CODE_2 = "AAA7";
     static final String REGION_ID = "region1";
     static final String JURISDICTION = "CIVIL";
     static final String ROLE_TYPE = "ORGANISATION";
