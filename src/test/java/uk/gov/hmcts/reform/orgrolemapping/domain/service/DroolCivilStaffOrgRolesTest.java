@@ -31,7 +31,8 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 @RunWith(MockitoJUnitRunner.class)
 class DroolCivilStaffOrgRolesTest extends DroolBase {
 
-    static final String SERVICE_CODE = "AAA6";
+    static final String SERVICE_CODE_1 = "AAA6";
+    static final String SERVICE_CODE_2 = "AAA6";
     static final String REGION_ID = "region1";
     static final String JURISDICTION = "CIVIL";
     static final String ROLE_TYPE = "ORGANISATION";
@@ -142,6 +143,21 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                                             RoleCategory expectedRoleCategory,
                                             String taskSupervisorFlag,
                                             String taskAllocatorFlag) {
+        // As CIVIL has 2 service codes AAA6 and AAA7 and the CaseWorkerAccessProfile has one service code we run
+        // the test method twice, once with each service code
+        shouldReturnCivilAdminMappings_v14(roleId, roleNames, roleCount, expectedRoleCategory, taskSupervisorFlag,
+            taskAllocatorFlag, SERVICE_CODE_1);
+        shouldReturnCivilAdminMappings_v14(roleId, roleNames, roleCount, expectedRoleCategory, taskSupervisorFlag,
+                taskAllocatorFlag, SERVICE_CODE_2);
+    }
+
+    void shouldReturnCivilAdminMappings_v14(String roleId,
+                                            List<String> roleNames,
+                                            int roleCount,
+                                            RoleCategory expectedRoleCategory,
+                                            String taskSupervisorFlag,
+                                            String taskAllocatorFlag,
+                                            String serviceCode) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -149,7 +165,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId3();
         List<String> skillCodes = List.of("civil", "test", "ctsc");
         cap.setRoleId(roleId);
-        cap.setServiceCode(SERVICE_CODE);
+        cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
         cap.setRegionId(REGION_ID);
         cap.setSkillCodes(skillCodes);
