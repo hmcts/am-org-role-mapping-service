@@ -55,10 +55,11 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "BBA3",
-        "ABA5",
-        "AAA6",
-        "BFA1"
+        "BBA3", // SSCS
+        "ABA5", // PRIVATELAW
+        "AAA6", // CIVIL
+        "AAA7", // CIVIL
+        "BFA1"  // IA
     })
     void shouldReturnEmptyRoles_expiredAuthorisation(String serviceCode) {
 
@@ -76,10 +77,11 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "BBA3",
-        "ABA5",
-        "AAA6",
-        "BFA1"
+        "BBA3", // SSCS
+        "ABA5", // PRIVATELAW
+        "AAA6", // CIVIL
+        "AAA7", // CIVIL
+        "BFA1"  // IA
     })
     void shouldReturnEmptyRoles_expiredAppointment(String serviceCode) {
 
@@ -124,6 +126,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         "'3,4',ABA3,PUBLICLAW",
         "'3,4',ABA5,PRIVATELAW",
         "'3,4,6,11',AAA6,CIVIL",
+        "'3,4,6,11',AAA7,CIVIL",
         "'3,4,5,12,13',BHA1,EMPLOYMENT",
         "'3,4,5,6,7,8',BFA1,IA"
     })
@@ -154,6 +157,7 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         "'9,10',ABA5,PRIVATELAW",
         "'9,10',ABA3,PUBLICLAW",
         "'9,10',AAA6,CIVIL",
+        "'9,10',AAA7,CIVIL",
         "'9,10',BHA1,EMPLOYMENT",
         "'9,10',BFA1,IA",
         "'9,10',BBA3,SSCS"
@@ -195,6 +199,8 @@ class DroolHearingOfficeOrgRoleMappingTest extends DroolBase {
         "1,ABA5,PRIVATELAW",
         "1,AAA6,CIVIL",
         "2,AAA6,CIVIL",
+        "1,AAA7,CIVIL",
+        "2,AAA7,CIVIL",
         "1,BHA1,EMPLOYMENT",
         "2,BHA1,EMPLOYMENT",
         "1,BFA1,IA",
