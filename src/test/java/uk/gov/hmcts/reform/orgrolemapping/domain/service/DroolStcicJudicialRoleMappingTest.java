@@ -49,14 +49,12 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("fee-paid-financial", null);
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String office, List<String> ticketCodes) {
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String office) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
-        if (r.getRoleName().equals("fee-paid-judge") && ticketCodes != null && ticketCodes.contains("328")) {
-            assertTrue(r.getAttributes().get("bookable").asBoolean());
-        } else {
+        if (r.getRoleName().equals("fee-paid-judge")) {
             assertNull(r.getAttributes().get("bookable"));
         }
 
@@ -121,7 +119,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice, null);
+            assertCommonRoleAssignmentAttributes(r, setOffice);
         });
     }
 
@@ -143,30 +141,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
     })
     void verifyFeePaidRoles(String setOffice, String expectedRoles) throws IOException {
         shouldReturnFeePaidRoles(setOffice, expectedRoles, false, "");
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
-        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,'fee-paid-judge,"
-                + "hmcts-judiciary,judge'",
-        "ST_CIC Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
-        "ST_CIC Recorder-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
-        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'"
-    })
-    void verifyFeePaidRolesWithBookingAndValidTicketCode(String setOffice, String expectedRoles) throws IOException {
         shouldReturnFeePaidRoles(setOffice, expectedRoles, true, "328");
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-        "ST_CIC Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-        "ST_CIC Recorder-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'"
-    })
-    void verifyFeePaidRolesWithBookingAndInvalidTicketCode(String setOffice, String expectedRoles) throws IOException {
         shouldReturnFeePaidRoles(setOffice, expectedRoles, true, "");
     }
 
@@ -196,12 +171,9 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        List<String> ticketCodes = judicialOfficeHolders.stream()
-                .flatMap(judicialOfficeHolder -> judicialOfficeHolder.getTicketCodes().stream())
-                .toList();
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice, ticketCodes);
+            assertCommonRoleAssignmentAttributes(r, setOffice);
         });
     }
 
@@ -229,7 +201,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice, null);
+            assertCommonRoleAssignmentAttributes(r, setOffice);
         });
     }
 
