@@ -49,14 +49,12 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("fee-paid-financial", null);
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String office) {
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
-        if (r.getRoleName().equals("fee-paid-judge")) {
-            assertNull(r.getAttributes().get("bookable"));
-        }
+        assertNull(r.getAttributes().get("bookable"));
 
         String primaryLocation = null;
         if (r.getAttributes().get("primaryLocation") != null) {
@@ -119,7 +117,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
@@ -173,7 +171,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
@@ -201,7 +199,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
