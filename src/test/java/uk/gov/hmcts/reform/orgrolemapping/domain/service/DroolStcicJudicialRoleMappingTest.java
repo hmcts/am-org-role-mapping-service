@@ -33,38 +33,28 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     static {
+        expectedRoleNameWorkTypesMap.put("leadership-judge", null);
         expectedRoleNameWorkTypesMap.put("senior-judge", null);
-        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,"
-                + "applications,priority");
+        expectedRoleNameWorkTypesMap.put("judge", "decision_making_work");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", null);
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        expectedRoleNameWorkTypesMap.put("leadership-judge", null);
-        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
-        expectedRoleNameWorkTypesMap.put("medical", "hearing_work,decision_making_work,"
-                + "routine_work,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-medical", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-disability", "hearing_work,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
-        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", null);
+        expectedRoleNameWorkTypesMap.put("magistrate", null);
+        expectedRoleNameWorkTypesMap.put("medical", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-medical", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-disability", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-financial", null);
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String office, List<String> ticketCodes) {
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
-        if (r.getRoleName().equals("fee-paid-judge") && ticketCodes != null && ticketCodes.contains("328")) {
-            assertTrue(r.getAttributes().get("bookable").asBoolean());
-        } else {
-            assertNull(r.getAttributes().get("bookable"));
-        }
+        assertNull(r.getAttributes().get("bookable"));
 
         String primaryLocation = null;
         if (r.getAttributes().get("primaryLocation") != null) {
@@ -87,16 +77,6 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         //region assertions
         assertNull(r.getAttributes().get("region"));
 
-        //work types assertions
-        if (r.getRoleName().equals("fee-paid-tribunal-member")) {
-            if (List.of("ST_CIC Tribunal Member Disability-Fee Paid",
-                    "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid").contains(office)) {
-                expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
-            } else {
-                expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member",
-                        "hearing_work,decision_making_work,routine_work,applications,priority");
-            }
-        }
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
         String actualWorkTypes = null;
         if (r.getAttributes().get("workTypes") != null) {
@@ -137,7 +117,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice, null);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
@@ -159,30 +139,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
     })
     void verifyFeePaidRoles(String setOffice, String expectedRoles) throws IOException {
         shouldReturnFeePaidRoles(setOffice, expectedRoles, false, "");
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
-        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,'fee-paid-judge,"
-                + "hmcts-judiciary,judge'",
-        "ST_CIC Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
-        "ST_CIC Recorder-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
-        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'"
-    })
-    void verifyFeePaidRolesWithBookingAndValidTicketCode(String setOffice, String expectedRoles) throws IOException {
         shouldReturnFeePaidRoles(setOffice, expectedRoles, true, "328");
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-        "ST_CIC Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-        "ST_CIC Recorder-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'"
-    })
-    void verifyFeePaidRolesWithBookingAndInvalidTicketCode(String setOffice, String expectedRoles) throws IOException {
         shouldReturnFeePaidRoles(setOffice, expectedRoles, true, "");
     }
 
@@ -212,12 +169,9 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        List<String> ticketCodes = judicialOfficeHolders.stream()
-                .flatMap(judicialOfficeHolder -> judicialOfficeHolder.getTicketCodes().stream())
-                .toList();
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice, ticketCodes);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
@@ -245,7 +199,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice, null);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
