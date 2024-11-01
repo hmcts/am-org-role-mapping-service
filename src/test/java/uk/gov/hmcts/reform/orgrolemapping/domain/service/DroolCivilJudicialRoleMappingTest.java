@@ -530,7 +530,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         });
     }
 
-//  @ParameterizedTest
     @CsvSource({
         "CIVIL Designated Civil Judge-Salaried,Salaried",
         "CIVIL Circuit Judge-Salaried,Salaried",
@@ -552,12 +551,12 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("civil_wa_1_1", true));
+                buildExecuteKieSession(getFeatureFlags("civil_wa_2_1", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
 
-        assertEquals(1, roleAssignments.size());
+        assertEquals(2, roleAssignments.size());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
         assertEquals("judge", roleAssignments.get(0).getRoleName());
 
