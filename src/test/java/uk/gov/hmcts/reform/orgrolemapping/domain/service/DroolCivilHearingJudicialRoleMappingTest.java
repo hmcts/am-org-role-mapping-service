@@ -28,8 +28,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
 
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
-    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "task-supervisor", "circuit-judge",
-            "specific-access-approver-judiciary", "fee-paid-judge");
+    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "specific-access-approver-judiciary", "fee-paid-judge");
+
+    List<String> judgeRoleNamesWithExtendedWorkTypes = List.of("circuit-judge", "district-judge", "district-judge",
+            "deputy-district-judge", "recorder");
 
     static Stream<Arguments> endToEndData() {
         return Stream.of(
@@ -37,7 +39,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         "Salaried",
                         true,
                         List.of(""),
-                        List.of("judge", "hmcts-judiciary", "hearing-viewer")),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer", "district-judge")),
                 Arguments.of("",
                         "Salaried",
                         true,
@@ -93,27 +95,31 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         "Fee Paid",
                         true,
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer",
+                                "deputy-district-judge")),
                 Arguments.of("Deputy District Judge- Sitting in Retirement",
                         "Fee Paid",
                         true,
                         List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer",
+                                "deputy-district-judge")),
                 Arguments.of("Deputy District Judge (sitting in retirement)",
                         "Fee Paid",
                         true,
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer",
+                                "deputy-district-judge")),
                 Arguments.of("Recorder",
                         "Fee Paid",
                         true,
                         List.of("Recorder - Fee Paid"),
-                        List.of("judge", "fee-paid-judge","hmcts-judiciary", "hearing-viewer")),
+                        List.of("judge", "fee-paid-judge","hmcts-judiciary", "hearing-viewer", "recorder")),
                 Arguments.of("District Judge (sitting in retirement)",
                         "Fee Paid",
                         true,
                         List.of("District Judge (sitting in retirement)"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer",
+                                "deputy-district-judge")),
                 Arguments.of("Tribunal Judge",
                         "Fee Paid",
                         true,
@@ -199,11 +205,20 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                     assertEquals("London", r.getAttributes().get("primaryLocation").asText());
                 }
                 if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
-                    assertEquals("hearing_work,decision_making_work,applications",
+                    assertEquals("decision_making_work,applications",
+                            r.getAttributes().get("workTypes").asText());
+                } else if (judgeRoleNamesWithExtendedWorkTypes.contains(r.getRoleName())) {
+                    assertEquals("decision_making_work,applications,multi_track_decision_making_work,"
+                                   + "intermediate_track_decision_making_work,CNSPI_work",
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
-                    assertEquals("access_requests",
+                    assertEquals("access_requests,multi_track_decision_making_work,"
+                                   + "intermediate_track_decision_making_work,CNSPI_work",
+                            r.getAttributes().get("workTypes").asText());
+                } else if (r.getRoleName().contains("task-supervisor")) {
+                    assertEquals("LDN", r.getAttributes().get("region").asText());
+                    assertEquals("hearing_work,decision_making_work,applications",
                             r.getAttributes().get("workTypes").asText());
                 } else {
                     assertNull(r.getAttributes().get("workTypes"));
