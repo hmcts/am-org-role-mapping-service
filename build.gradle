@@ -38,7 +38,7 @@ def versions = [
         junit          : '5.9.0',
         lombok         : '1.18.34',
         pitest         : '1.17.0',
-        reformLogging  : '6.1.6',
+        reformLogging  : '6.1.7',
         reformS2sClient: '4.0.2',
         serenity       : '2.2.12',
         springBoot     : '2.7.18',
@@ -46,7 +46,7 @@ def versions = [
         springSecurity : '5.7.11',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
-        tomcat         : '9.0.95',
+        tomcat         : '9.0.96',
         pact_version   : '4.1.41',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
@@ -406,8 +406,8 @@ dependencies {
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
     implementation group: 'com.azure', name: 'azure-core', version: '1.53.0'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.4'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.10'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.5'
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '32.1.3-jre'
@@ -523,7 +523,7 @@ dependencies {
     testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
-    testImplementation 'com.github.hmcts:fortify-client:1.4.4:all'
+    testImplementation 'com.github.hmcts:fortify-client:1.4.5:all'
 
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
