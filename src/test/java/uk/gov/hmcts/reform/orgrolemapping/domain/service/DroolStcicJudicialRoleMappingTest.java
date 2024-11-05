@@ -121,7 +121,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice, null);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
@@ -184,12 +184,9 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        List<String> ticketCodes = judicialOfficeHolders.stream()
-                .flatMap(judicialOfficeHolder -> judicialOfficeHolder.getTicketCodes().stream())
-                .toList();
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice, ticketCodes);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
@@ -217,7 +214,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
         roleAssignments.forEach(r -> {
             assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, setOffice, null);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
