@@ -406,7 +406,7 @@ dependencies {
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
     implementation group: 'com.azure', name: 'azure-core', version: '1.53.0'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.4'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.5'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
@@ -523,7 +523,7 @@ dependencies {
     testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
-    testImplementation 'com.github.hmcts:fortify-client:1.4.4:all'
+    testImplementation 'com.github.hmcts:fortify-client:1.4.5:all'
 
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
