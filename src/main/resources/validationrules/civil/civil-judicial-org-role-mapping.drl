@@ -74,9 +74,8 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
-                                                                     "multi_track_decision_making_work," +
-                                                                     "intermediate_track_decision_making_work," +
-                                                                     "CNSPI_work"));
+                                                                     "Multi_Track_decision_making_work," +
+                                                                     "Intermediate_Track_decision_making_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -107,6 +106,7 @@ when
 $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
    $bk.getLocationId():$joh.getPrimaryLocation()));
@@ -114,9 +114,8 @@ then
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
-                                                                     "multi_track_decision_making_work," +
-                                                                     "intermediate_track_decision_making_work," +
-                                                                     "CNSPI_work"));
+                                                                     "Multi_Track_decision_making_work," +
+                                                                     "Intermediate_Track_decision_making_work"));
 
   insert(
       RoleAssignment.builder()
@@ -344,8 +343,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests,multi_track_decision_making_work," +
-                                                                     "intermediate_track_decision_making_work,CNSPI_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests,Multi_Track_decision_making_work," +
+                                                                     "Intermediate_Track_decision_making_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -425,8 +424,8 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
-                                                                     "multi_track_decision_making_work," +
-                                                                     "intermediate_track_decision_making_work,CNSPI_work"));
+                                                                     "Multi_Track_decision_making_work," +
+                                                                     "Intermediate_Track_decision_making_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -869,8 +868,8 @@ then
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
-                                                                     "multi_track_decision_making_work," +
-                                                                     "intermediate_track_decision_making_work,CNSPI_work"));
+                                                                     "Multi_Track_decision_making_work," +
+                                                                     "Intermediate_Track_decision_making_work"));
 
   insert(
       RoleAssignment.builder()
@@ -1036,8 +1035,8 @@ then
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
-                                                                     "multi_track_decision_making_work," +
-                                                                     "intermediate_track_decision_making_work,CNSPI_work"));
+                                                                     "Multi_Track_decision_making_work," +
+                                                                     "Intermediate_Track_decision_making_work"));
 
   insert(
       RoleAssignment.builder()
