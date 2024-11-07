@@ -46,6 +46,8 @@ def secrets = [
       secret('test-am-user2-befta-pwd', 'TEST_AM_USER2_BEFTA_PWD'),
       secret('test-am-crd-user1-befta', 'TEST_AM_CRD_USER1_BEFTA'),
       secret('test-am-crd-user1-befta-password', 'TEST_AM_CRD_USER1_BEFTA_PASSWORD'),
+      secret('test-am-jrd-user1-befta', 'TEST_AM_JRD_USER1_BEFTA'),
+      secret('test-am-jrd-user1-befta-password', 'TEST_AM_JRD_USER1_BEFTA_PASSWORD'),
       secret('caseworker-topic-primary-send-listen-shared-access-key', 'AMQP_CRD_SHARED_ACCESS_KEY_VALUE'),
       secret('judicial-topic-primary-send-listen-shared-access-key', 'AMQP_JRD_SHARED_ACCESS_KEY_VALUE')
     ]
@@ -56,6 +58,7 @@ withNightlyPipeline(type, product, component) {
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
 env.IDAM_API_URL_BASE = "https://idam-api.aat.platform.hmcts.net"
+env.IDAM_TESTING_SUPPORT_URL = "https://idam-testing-support-api.aat.platform.hmcts.net"
 env.IDAM_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
 env.BEFTA_S2S_CLIENT_ID = "am_org_role_mapping_service"
 env.OAUTH2_REDIRECT_URI = "http://am-role-assignment-service-aat.service.core-compute-aat.internal/oauth2redirect"

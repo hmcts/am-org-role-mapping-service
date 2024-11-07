@@ -144,13 +144,11 @@ amqp:
   host: ${AMQP_HOST:test}
   sharedAccessKeyName: ${AMQP_SHARED_ACCESS_KEY_NAME:test}
   crd:
-    newAsb: ${AMQP_CRD_NEW_ASB_ENABLED:false}
     enabled: ${AMQP_ENABLED:true}
     sharedAccessKeyValue: ${AMQP_CRD_SHARED_ACCESS_KEY_VALUE:test}
     topic: ${CRD_TOPIC_NAME:test}
     subscription: ${CRD_SUBSCRIPTION_NAME:test}
   jrd:
-    newAsb: ${AMQP_JRD_NEW_ASB_ENABLED:false}
     enabled: ${AMQP_ENABLED:true}
     sharedAccessKeyValue: ${AMQP_JRD_SHARED_ACCESS_KEY_VALUE:test}
     topic: ${JRD_TOPIC_NAME:test}
@@ -174,6 +172,8 @@ refresh:
     includeJudicialBookings: ${REFRESH_JOB_INCLUDE_BOOKINGS:false}
   BulkAssignment:
     includeJudicialBookings: ${REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS:false}
+  judicial:
+    filterSoftDeletedUsers: ${REFRESH_JUDICIAL_FILTER_SOFT_DELETED_USERS:false}
 
 testing:
   support:

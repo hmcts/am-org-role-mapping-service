@@ -41,7 +41,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "region": "2",
-            "workTypes": "hearing_work"
+            "workTypes": "hearing_work,multi_track_hearing_work,intermediate_track_hearing_work,routine_work"
           }
         },
         {

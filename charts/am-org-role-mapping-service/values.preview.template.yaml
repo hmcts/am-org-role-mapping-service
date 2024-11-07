@@ -41,8 +41,6 @@ java:
     LAUNCH_DARKLY_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
-    AMQP_JRD_NEW_ASB_ENABLED: true
-    AMQP_CRD_NEW_ASB_ENABLED: true
     CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-crd-topic"
     JRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-jrd-topic"
     CRD_TOPIC_NAME: "{{ .Release.Name}}-asb-crd-topic"
@@ -86,6 +84,14 @@ am-role-assignment-service:
     imagePullPolicy: Always
     ingressHost: ras-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-role-assignment-service"
+    
+    # overidding dev memory and cpu limits to make it match with standard limits
+    # https://github.com/hmcts/chart-java/blob/master/java/values.yaml
+    devmemoryRequests: 1024Mi
+    devcpuRequests: 250m
+    devmemoryLimits: 2048Mi
+    devcpuLimits: 1500m
+
     keyVaults:
       am:
         secrets:
@@ -132,9 +138,6 @@ am-judicial-booking-service:
             alias: JUDICIAL_BOOKING_IDAM_CLIENT_SECRET
           - name: judicial-booking-service-IDAM-ADMIN-SECRET
             alias: JUDICIAL_BOOKING_IDAM_ADMIN_PASSWORD
-          - name: role-assignment-service-LD-SDK-KEY
-            alias: LD_SDK_KEY
-
     environment:
       JUDICIAL_BOOKING_SERVICE_POSTGRES_HOST: "{{ .Release.Name }}-postgresql"
       JUDICIAL_BOOKING_SERVICE_POSTGRES_USER: "{{ .Values.postgresql.auth.username}}"
@@ -142,8 +145,7 @@ am-judicial-booking-service:
       JUDICIAL_BOOKING_SERVICE_DB_OPTIONS: "?stringtype=unspecified"
       IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
       IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
-      LAUNCH_DARKLY_ENV: pr
-      RUN_LD_ON_STARTUP: true
+      JBS_ENV: pr
 
 servicebus:
   releaseNameOverride: ${SERVICE_NAME}-asb
