@@ -54,7 +54,11 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
-        assertNull(r.getAttributes().get("bookable"));
+        if (r.getRoleName().equals("fee-paid-judge")) {
+            assertTrue(r.getAttributes().get("bookable").asBoolean());
+        } else {
+            assertNull(r.getAttributes().get("bookable"));
+        }
 
         String primaryLocation = null;
         if (r.getAttributes().get("primaryLocation") != null) {
@@ -137,18 +141,29 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
                 + "fee-paid-tribunal-member,hmcts-judiciary'",
         "ST_CIC Tribunal Member Financially Qualified-Fee Paid,'fee-paid-financial,hmcts-judiciary'"
     })
-    void verifyFeePaidRoles(String setOffice, String expectedRoles) throws IOException {
-        shouldReturnFeePaidRoles(setOffice, expectedRoles, false, "");
-        shouldReturnFeePaidRoles(setOffice, expectedRoles, true, "328");
-        shouldReturnFeePaidRoles(setOffice, expectedRoles, true, "");
+    void verifyFeePaidRolesWithoutBooking(String setOffice, String expectedRoles) throws IOException {
+        shouldReturnFeePaidRoles(setOffice, expectedRoles, false);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
+        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,'fee-paid-judge,"
+                + "hmcts-judiciary,judge'",
+        "ST_CIC Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
+        "ST_CIC Recorder-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
+        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'"
+    })
+    void verifyFeePaidRolesWithBooking(String setOffice, String expectedRoles) throws IOException {
+        shouldReturnFeePaidRoles(setOffice, expectedRoles, true);
     }
 
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles,
-                                  boolean withBooking, String ticketCode) throws IOException {
+                                  boolean withBooking) throws IOException {
 
         judicialOfficeHolders.forEach(joh -> {
             joh.setOffice(setOffice);
-            joh.setTicketCodes(List.of(ticketCode));
+            joh.setTicketCodes(List.of("328"));
         });
 
         if (withBooking) {
