@@ -51,6 +51,7 @@
           "attributes": {
             "substantive": "N",
             "contractType": "Fee-Paid",
+            "bookable": "true",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "ST_CIC",
             "workTypes": "decision_making_work"
