@@ -46,12 +46,12 @@ def versions = [
         springSecurity : '5.7.11',
         springHystrix  : '2.1.1.RELEASE',
         swagger2Version: '2.10.5',
-        tomcat         : '9.0.96',
+        tomcat         : '9.0.97',
         pact_version   : '4.1.41',
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
-        jacksondata    : '2.17.2',
+        jacksondata    : '2.18.1',
         drools         : '7.73.0.Final',
         log4JVersion   : '2.24.1',
         logbackVersion : '1.2.13',
@@ -354,7 +354,7 @@ dependencies {
     implementation group: 'org.springframework.security', name:'spring-security-oauth2-core', version: versions.springSecurity
     implementation group: 'org.springframework.security', name:'spring-security-oauth2-jose', version: versions.springSecurity
     implementation group: 'org.springframework.security', name:'spring-security-oauth2-resource-server', version: versions.springSecurity
-    implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.9'
+    implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.10'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.9'
     implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.5.6'
@@ -395,7 +395,7 @@ dependencies {
         exclude group: 'jakarta.el', module: 'jakarta.el-api'
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
     }
-    implementation group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.20'
+    implementation group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.21'
 
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.13'
     //Added for S2S and User Authentication
@@ -405,7 +405,7 @@ dependencies {
 
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
-    implementation group: 'com.azure', name: 'azure-core', version: '1.53.0'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.54.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.5'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
@@ -414,7 +414,7 @@ dependencies {
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.8'
     implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.4'
-    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.41.2'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.45'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.0.1'
     implementation 'commons-io:commons-io:20030203.000550'
