@@ -54,7 +54,7 @@
             "bookable": "true",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "ST_CIC",
-            "workTypes": "hearing_work,decision_making_work,routine_work,applications,priority"
+            "workTypes": "decision_making_work"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },

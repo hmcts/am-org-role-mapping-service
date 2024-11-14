@@ -68,8 +68,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                        + "applications,priority"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -101,8 +100,7 @@ when
                                         "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid",
                                         "ST_CIC Chairman-Fee Paid",
                                         "ST_CIC Recorder-Fee Paid",
-                                        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid"),
-                                        ticketCodes != null && ticketCodes.contains("328"))
+                                        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -110,8 +108,7 @@ then
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
       $bk.getLocationId():$joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                        + "applications,priority"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -338,11 +335,8 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                           + "applications,priority"));
-   if ($joh.getTicketCodes() != null && $joh.getTicketCodes().contains("328")) {
-     attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
-   }
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
+   attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -377,13 +371,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   if (List.of("ST_CIC Tribunal Member Disability-Fee Paid",
-               "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid").contains($joh.getOffice())) {
-    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
-   } else {
-    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                               + "applications,priority"));
-   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -415,8 +402,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                               + "priority"));
+
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -449,8 +435,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                               + "applications,priority"));
+
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -483,7 +468,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -515,7 +499,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,priority"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -548,8 +531,6 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Voluntary"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,"
-                                                                                  + "applications,priority"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
