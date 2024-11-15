@@ -103,7 +103,7 @@ when
   $joh: JudicialOfficeHolder(office in ("CIVIL Deputy District Judge-Fee-Paid",
                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                         "CIVIL District Judge (sitting in retirement)-Fee-Paid"))
-$bk: JudicialBooking(userId == $joh.userId)
+  $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
@@ -112,7 +112,6 @@ then
    $bk.getLocationId():$joh.getPrimaryLocation()));
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
-   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
                                                                      "Multi_Track_decision_making_work," +
                                                                      "Intermediate_Track_decision_making_work"));
@@ -132,7 +131,7 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : civil_deputy_district_judge_org_role_for_fee_paid_judge");
+      logMsg("Rule : civil_deputy_district_judge_org_role");
 end;
 
 /*
@@ -343,8 +342,9 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests,Multi_Track_decision_making_work," +
-                                                                     "Intermediate_Track_decision_making_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
+                                                                   "access_requests,Multi_Track_decision_making_work," +
+                                                                   "Intermediate_Track_decision_making_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -415,11 +415,7 @@ when
 
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   if($joh.getOffice().contains("Fee-Paid")) {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   } else {
-      attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
-   }
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
@@ -857,7 +853,8 @@ end;
 rule "v21_civil_circuit_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
-  $joh: JudicialOfficeHolder(office in ("CIVIL Deputy Circuit Judge-Fee-Paid"))
+  $joh: JudicialOfficeHolder(office in ("CIVIL Deputy Circuit Judge-Fee-Paid",
+                                        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
