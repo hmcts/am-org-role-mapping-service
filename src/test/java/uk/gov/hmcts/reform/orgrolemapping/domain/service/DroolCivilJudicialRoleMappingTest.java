@@ -154,7 +154,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         "CIVIL Recorder-Fee-Paid,'judge,recorder,fee-paid-judge,hmcts-judiciary',1,false",
         "CIVIL District Judge (sitting in retirement)-Fee-Paid,'judge,deputy-district-judge,fee-paid-judge,"
              + "hmcts-judiciary',1,false",
-        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary,circuit-judge',1,false",
+        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary,circuit-judge'"
+            + ",1,false",
         "CIVIL Tribunal Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
 
         "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,true",
