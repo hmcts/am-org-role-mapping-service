@@ -28,7 +28,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
 
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
-    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "specific-access-approver-judiciary", "fee-paid-judge");
+    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "specific-access-approver-judiciary", "fee-paid-judge",
+            "task-supervisor");
 
     List<String> judgeRoleNamesWithExtendedWorkTypes = List.of("circuit-judge", "district-judge", "district-judge",
             "deputy-district-judge", "recorder");
@@ -226,10 +227,6 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
                     assertEquals("decision_making_work,applications,access_requests,"
                             + "Multi_Track_decision_making_work,Intermediate_Track_decision_making_work",
-                            r.getAttributes().get("workTypes").asText());
-                } else if (r.getRoleName().contains("task-supervisor")) {
-                    assertEquals("LDN", r.getAttributes().get("region").asText());
-                    assertEquals("hearing_work,decision_making_work,applications",
                             r.getAttributes().get("workTypes").asText());
                 } else {
                     assertNull(r.getAttributes().get("workTypes"));
