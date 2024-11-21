@@ -1054,7 +1054,7 @@ end;
  */
 rule "civil_recorder_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office == "CIVIL Recorder-Fee-Paid")
   $bk: JudicialBooking(userId == $joh.userId)
 then

@@ -57,7 +57,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "[[ANYTHING_PRESENT]]"
+            "workTypes": "decision_making_work,applications,Multi_Track_decision_making_work,Intermediate_Track_decision_making_work"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
         },
@@ -79,7 +79,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "[[ANYTHING_PRESENT]]"
+            "workTypes": "decision_making_work,applications,Multi_Track_decision_making_work,Intermediate_Track_decision_making_work"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
         },
@@ -137,7 +137,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "[[ANYTHING_PRESENT]]"
+            "workTypes": "decision_making_work,applications"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
         },
@@ -159,7 +159,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "[[ANYTHING_PRESENT]]"
+            "workTypes": "decision_making_work,applications"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
         }
