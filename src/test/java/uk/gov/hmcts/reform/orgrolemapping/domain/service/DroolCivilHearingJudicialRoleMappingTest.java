@@ -31,7 +31,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
     List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "specific-access-approver-judiciary", "fee-paid-judge",
             "task-supervisor");
 
-    List<String> judgeRoleNamesWithExtendedWorkTypes = List.of("circuit-judge", "district-judge", "district-judge",
+    List<String> judgeRoleNamesWithExtendedWorkTypes = List.of("circuit-judge", "district-judge",
             "deputy-district-judge", "recorder");
 
     static Stream<Arguments> endToEndData() {

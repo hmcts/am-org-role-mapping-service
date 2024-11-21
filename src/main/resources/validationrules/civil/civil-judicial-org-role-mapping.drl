@@ -442,6 +442,7 @@ end;
 
 /*
  * CIVIL "task-supervisor" Org role mapping.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
  */
 rule "civil_task_supervisor_org_role"
 when
