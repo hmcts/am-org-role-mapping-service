@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -50,7 +49,6 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +67,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.OrgMappingController.CREATE_ORG_MAPPING_URI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_ORM;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.RAS_CREATE_ASSIGNMENTS_URL;
@@ -135,12 +134,6 @@ public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
     @ClassRule
     public static final WireMockRule crdClient = new WireMockRule(wireMockConfig().port(4099));
 
-    private static final MediaType JSON_CONTENT_TYPE = new MediaType(
-            MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype(),
-            StandardCharsets.UTF_8
-    );
-
     private static final String RAS_ONE_USER_ONE_ROLE = "RASOneUserOneRole";
     private static final String RAS_RESPONSE_TRIBUNAL_JUDGE_FEE_PAID = "RASTribunalJudgeFeePaid";
     private static final String RAS_RESPONSE_TRIBUNAL_JUDGE_SALARIED_PAID = "RASTribunalJudgeSalaried";
@@ -155,7 +148,7 @@ public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
     private static final String ROLE_NAME_HMCTS_JUD = "hmcts-judiciary";
     private static final String USERID_74 = "123e4567-e89b-42d3-a456-556642445674";
     private static final String USERID_9c = "21334a2b-79ce-44eb-9168-2d49a744be9c";
-    private static final String CREATE_ORG_MAPPING_URI = "/am/testing-support/createOrgMapping";
+
     UserRequest userRequest;
     List<JudicialProfileV2> judicialProfiles;
 
