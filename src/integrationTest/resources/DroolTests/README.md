@@ -3,64 +3,6 @@
 
 ## Test Sceanrios in: BaseJudicialDroolTestIntegration
 
-### .assertCreateOrmMappingApiWithBooking
-
-```mermaid
----
-title: "Access Management: ORM: Drool Integration Tests: Judicial Mapping with Booking"
----
-stateDiagram-v2
-
-    MappingTests ::: test : Judicial Mapping with Booking
-
-    RunHappyPaths ::: testRun : Run happy path tests
-    RunBasicTest ::: testRun : Run single basic test
-
-    HappyPath1 ::: scenario : HappyPath - all dates supplied 
-    HappyPath2 ::: scenario : HappyPath - no appointment end date
-    HappyPath3 ::: scenario : HappyPath - no authorisation end date
-    HappyPath4 ::: scenario : HappyPath - no additional role end date
-    HappyPath5 ::: scenario : HappyPath - no booking end date
-
-    HappyPathBasic ::: scenario : HappyPath - all dates supplied 
-
-    shouldMatchWithBookingOutput ::: result : Should match with booking output
-    shouldMatchWithoutBookingOutput ::: result : Should match without booking output
-
-    state using_booking <<choice>>
-    state is_booking_test <<choice>>
-    state is_additional_role_test <<choice>>
-
-    MappingTests --> using_booking
-
-    using_booking --> RunHappyPaths: Yes - testing booking
-    using_booking --> RunBasicTest: No - booking has no effect
-
-    RunBasicTest --> HappyPathBasic
-
-    RunHappyPaths --> HappyPath1
-    RunHappyPaths --> HappyPath2
-    RunHappyPaths --> HappyPath3
-    RunHappyPaths --> is_additional_role_test
-    is_additional_role_test --> HappyPath4: is additional role test?
-    RunHappyPaths --> is_booking_test
-    is_booking_test --> HappyPath5: is booking test?
-
-    HappyPath1 --> shouldMatchWithBookingOutput
-    HappyPath2 --> shouldMatchWithBookingOutput
-    HappyPath3 --> shouldMatchWithBookingOutput
-    HappyPath4 --> shouldMatchWithBookingOutput
-    HappyPath5 --> shouldMatchWithBookingOutput
-
-    HappyPathBasic --> shouldMatchWithoutBookingOutput
-
-    classDef testRun fill:orange
-    classDef test fill:white
-    classDef result fill:green,color:white
-    classDef scenario fill:navy,color:white
-```
-* ([mermaid live edit](https://mermaid.live/edit#pako:eNqVlm9r2zAQxr_K4dfxi6bJG1EyVjLYBllHWxgbhqDKciymSEZ_WkLpd99Jjp04tpMlL0Ls-z3PObo7ye8J0zlPSJKmaaaccJITyJLPjHFrYUUV3fAtV47Aw-OKwNJoLeGbcnxjqBNawTO3zhL47nPBBJUoqSqhNvAmXAn3Wv_FiyzJVPS3jjq-FBTF2_R1mqlMAX72mmgFhBBw-Asume7Fj159xfDuJ3XlQY130SB8lyEIFUZjwLaqe2oFe46ZeiKLCSSHl4DEUJOtTXUTVZZxRY3QKGsjkAKVEnL8qxasryopeA4n8uk5udKAV1ooF5YeuMqj24nF7SUL70pthK3rNGIyu2SS5yLosQhG44qM2Mwv2LzUNTuSnxjEYly9pLWJLbWX-Yo6Vv7CBtn3x4N3la9ra7j1MjTUUyRhG9C6mZoH05Ee9MPQNZaI91z3vqH7wYfeWjfE3R0rtWB8sThmhG2AdRyFUepQnnUoT58eGLA0XXQfoqG6TxawzmwR-I2rn8ZxCECrHtW2E0bgh0ZlEy6pDU3Bi4IzdzTHh4kMBt3eGB73DndzkZheJG7HiJHFrvGxSnSsZwS53kAF7tOZpMd90CbrNEcnyTwmaRZ6b97buoLk3NT0NqsrBbfXCmbXCub_IRjcYgZkpwPeKJmk1i550Z4NhZCSaEPVhg8QdfitFO40ut8sYnxjOFcTpqU2g2y7_UVa0dfdMZxMki03WypyPLLfgzRLXIkndJaEYzvnBcVM4bz9QBRPAP20Uywhzng-SYz2mzIhBZUWr3yVH07j9m5F1R-ttyfUF2xabRofHq9W9YtDfH_4-AfXE9_g))
-
 ### .assertCreateOrmMappingApiWithoutBooking
 
 ```mermaid
@@ -71,7 +13,7 @@ stateDiagram-v2
 
     MappingTests ::: test : Judicial Mapping without Booking
 
-    RunHappyPaths ::: testRun : Run happy path tests
+    RunHappyPaths ::: testRun : Run happy path tests (without a booking)
 
     HappyPath1 ::: scenario : HappyPath - all dates supplied 
     HappyPath2 ::: scenario : HappyPath - no appointment end date
@@ -100,7 +42,64 @@ stateDiagram-v2
     classDef result fill:green,color:white
     classDef scenario fill:navy,color:white
 ```
-* ([mermaid live edit](https://mermaid.live/edit#pako:eNqdVO9r2zAQ_VcOfY4_LMknUTI2MtgGoaMdDIYhaNLFFpMlox8tofR_30lOnTZ1lm7-YHy-956ke6d7YNIpZJxVVVXbqKNBDjX7ICWGABthRYMd2sjh-mbDYe2dM_DFRmy8iNpZ-I4hBg5fk9JSC0OUvte2gXsdW5cifHTuN8U1q21ZIkQRca0F8bvqbl7b2gI9B1pRA845RPqCN-ge-DfJfibE_puI7VGA_pJGfrc5CT1lSyI88UbSu0IKEq3w2hFrzEAFwhhQtO8AIfW90ajghD7_G906oMhpG3MpAa0qaicSi0sSiU7udRjqfkZkeUlEKZ35VFHvDD6TGYQCFdeojYiy_TFU-lDo6xR7KntW9xiSyebcFjB0GT0a82vAgyuEUTfbDjpsjxvY5g1si89XV7J1WuJqNdkPVbV6afC06xl29PMiYn4RsTiHOHOOAX7ukC-kl5xwr9zIuPcTrZmpF5x51Y__zln8B2f5Ns7AkkaEsMbdeDd32hjuvLANTiCG9H2r42n20IEl33hEO5POOD-JHe9CQVtxt38OZjPWoe-EVjQDHzK1ZrGlkVezPAcV7gStlKfXI0HpCrrbvZWMR59wxrxLTcv4TphAUerVcbaNf3thfzrXnaA-kfHOP-lgiTbDJC4D-fEPdGnzqw))
+* ([mermaid live edit](https://mermaid.live/edit#pako:eNqdlFFr2zAQx7_KoacN4ocleRIlYyODbRA62sFgGIImXWwxWTKS3BJKv_tOcuK0qTN384OxfP__z9bd6R6YdAoZZ0VRlDbqaJBDyT5IiSHARlhRYYM2cri-2XBYe-cMfLERKy-idha-Y4iBw9dOaamFIUvbalvBvY616yJ8dO43rUtW2vyJEEXEtRbkb4q7eWlLC3QdbJkGnHOI9ASv4B78N539TIr9NxHrE4DeEiPd6xSElqI5EODNESTgV496e2QNoHcZFCRa4bUj0hCBAoQxoGgvAULXtkajgjP7_G9264BWTtuY0gtoVaadIRZTiI424XXoa3EBspyCKKWTn7LsncEnmB4UKE9GbUSU9Y8-aYfkX3expQwmusfQmVSw2yyGJqmHYh0yDC4bBm5qBdBhe_qBbfqBba791ZWsnZa4Wo32SFGsnhd9vBOS7FTPScV8UrG4pLiwj15-aZPP0EtOuhfVSLr3I62ZrBOVedGP_-5Z_Idn-TpP75JGhLDG3XBed9oY7rywFY4o-vB9reN59NCBOV55RDuTzjg_qh3OQlZbcbd_KmYz1qBvhFY0Fx-StWSxpjFYsjQbFe4EfSlNtEeS0hF0t3srGY--wxnzrqtqxnfCBFp1rTrNu-FtK-xP55oz1ScqvPNHDubVpp_OeUg__gEom_q6))
+
+
+### .assertCreateOrmMappingApiWithBooking
+
+```mermaid
+---
+title: "Access Management: ORM: Drool Integration Tests: Judicial Mapping with Booking"
+---
+stateDiagram-v2
+
+    MappingTests ::: test : Judicial Mapping with Booking
+
+    RunHappyPaths ::: testRun : Run happy path tests (with a booking)
+    RunBasicTest ::: testRun : Run single basic test (with a booking)
+
+    HappyPath1 ::: scenario : HappyPath - all dates supplied 
+    HappyPath2 ::: scenario : HappyPath - no appointment end date
+    HappyPath3 ::: scenario : HappyPath - no authorisation end date
+    HappyPath4 ::: scenario : HappyPath - no additional role end date
+    HappyPath5 ::: scenario : HappyPath - no booking end date
+
+    HappyPathBasic ::: scenario : HappyPath - all dates supplied 
+
+    shouldMatchWithBookingOutput ::: result : Should match with booking output
+    shouldMatchWithoutBookingOutput ::: result : Should match without booking output
+
+    state using_booking <<choice>>
+    state is_additional_role_test <<choice>>
+
+    MappingTests --> using_booking
+
+    using_booking --> RunHappyPaths: Yes - testing booking
+    using_booking --> RunBasicTest: No - booking has no effect
+
+    RunBasicTest --> HappyPathBasic
+
+    RunHappyPaths --> HappyPath1
+    RunHappyPaths --> HappyPath2
+    RunHappyPaths --> HappyPath3
+    RunHappyPaths --> is_additional_role_test
+    is_additional_role_test --> HappyPath4: is additional role test?
+    RunHappyPaths --> HappyPath5
+
+    HappyPath1 --> shouldMatchWithBookingOutput
+    HappyPath2 --> shouldMatchWithBookingOutput
+    HappyPath3 --> shouldMatchWithBookingOutput
+    HappyPath4 --> shouldMatchWithBookingOutput
+    HappyPath5 --> shouldMatchWithBookingOutput
+
+    HappyPathBasic --> shouldMatchWithoutBookingOutput
+
+    classDef testRun fill:orange
+    classDef test fill:white
+    classDef result fill:green,color:white
+    classDef scenario fill:navy,color:white
+```
+* ([mermaid live edit](https://mermaid.live/edit#pako:eNqVll1r2zAUhv_KwVcbxBfNx40oHSsZbIOsoy2MDUNQZdkWkyUjyS2h9L_vSE6c2LHrJRch8nnfx-J8SHmNmE55RKI4jhPlhJOcQBJ9ZoxbCxuqaM5LrhyBu_sNgbXRWsI35XhuqBNawSO3zhL4XqeCCSrRUlVC5fAiXAG3Wv_FRRIlKvCto46vBUVzGT_PE5UowM_eE1BACAGHv2AKujff1-orhnc_qSuObnyKAP9d-CBUGA0BCx8ChcJTw_nYYm6pFewxvPqMYlEpOTx5SbO9c0wDajdzFTCWcUWN0MhpIxADlRJSTIYFW1eVFDyFnn3-nl1pwJUWyvniAFdpoPUQiylE7QpthG0qOQJZTkHSVHg_lsloTNEIZjWB2afxxN4DhOpcnNIGYgtdy3RDHSt-YdX2HXRXu6puim24raVvuYeghNJLm3Y7bEwH9SAPQ5cgUX5G3XP9fEDtm217UFxfs0ILxm9uTjXCbo-J3_rEb0NXnqoHhiuOb7r4g6r7Ti_rzBWB35jXOHS-F7TuUW87TAR-aHQewgW1vtw8yzhzJzN8HD4P6FZ9eNQ7uqtJxXxSsRhTjCS7kY9VooNeEtSdjYrXfZrc1mrgZPGC95r67Cy50LC41LC81LD6D8PgCTBg68_fwckktXbNs_Ysz4SURBuqcj6gaMIvhXD96H6WQzw3nKsZ01KbQW17OgW1os-7U3E0i0puSipSvHNfvTWJXIFXbBL5ezflGcU3-QvzDaV4QOuHnWIRcabms8joOi8iklFpcVVX6fE6bZ9WVP3RuuypvmDnaXPg8LDaNDd_-APw9g8yBMj7))
 
 
 ### .assertCreateOrmMappingApiWithExpiredDates
@@ -113,7 +112,7 @@ stateDiagram-v2
 
     MappingTests ::: test : Judicial Mapping Negative Tests
 
-    RunNegativePaths ::: testRun : Run negative path tests
+    RunNegativePaths ::: testRun : Run negative path tests (with a booking)
 
     NegativeTest1 ::: scenario : NegativeTest - appointment end date expired
     NegativeTest2 ::: scenario : NegativeTest - authorisation end date expired
@@ -144,4 +143,4 @@ stateDiagram-v2
     classDef result fill:green,color:white
     classDef scenario fill:navy,color:white
 ```
-* ([mermaid live edit](https://mermaid.live/edit#pako:eNqdlU2P2jAQhv_KyGdyKMspWlFtBYeuxHYFe2kVCbnJJLHqeFLboUWr_e-1HRJYCA1aDhHxPO_rjxlPXllKGbKYRVGUKCusxBgS9pCmaAysuOIFVqhsDN_WqxgWmkjCV2Wx0NwKUvCCxpoYHptMpIJLJ6lroQp4wsIBO2yBhCUqzGAst7gQ3MmraDdNVKLA_Q6qwEIcx2DdPxi3PcjXjeoCz9yWRwsXcC7-qTph7YAQ69Wd1Ft-ClKTouJakNOeBiECtwwSyvojAVQZZG47gH9roTG7dJuOuTW2JC1Me5TjfndjflkmvJU7ME0Sb3CcjTgayi1kKNGZ5JIXYNB256bIDWpRlBYoH8gBPFE3Mfwk-uXzF_Kq8XcTRrmBxy8bICX3btA2WhnYcSl6vs-RKamR2YrbtFxWtd2v3fYejBGF8qloE67RNNJXzSbAUHkalqvnl-_geTgR9L6-HkGY7fHotv7otmGh9_dpSSLF-XywUKNofrHtqyXp4XeVdiM3_Q93Zd2t4tqmzie4ix16UToe_XzjEmfDN8ljI3kbujIfkt19TDa7TdYKU8mNWWDed5ZcSBmT5qrAAaIN_ymFPY8eCjXEC42oJilJ0oNsfzUDrfhufwqzCatQV1xkroW_emnCbOk6dsJ8G88w524m333fHOraDW32KmWx1Q1OmKamKFmcc2ncW1Nnx97cj9Zc_SCqzqilKxbSnQ-Gt1X7IQnfk7d_koQ7CQ))
+* ([mermaid live edit](https://mermaid.live/edit#pako:eNqdlcGO2jAQhl9llFMrkUOBU7Si2goOXYntCvbSKhJyk0li1fGktsMWrfbdO05IoBAKWg4o8Xz_b3s8nrwGCaUYREEYhrF20imMIA7ukwSthaXQIscStYvg22oZwdwQKfiqHeZGOEkantE6G8FDncpECsWSqpI6h0fMGdhiC8RBrJsZrBMO51KwvAy341jHGvi3VzUsRFEEjp_guu1evqp1F3gSrjhYcIBd_L_uhBUDTczChxfJzwJ-Ev1i84-dXefl5_jUeNkEtTCS2Ow4CCHwukhq53MEqFNIeX-AfyppMD13G19zq11BRto2t9f9Jtf80lR6K86gIYU3OE6vOFrKHKSokE0yJXKw6Lq8aeJBI_PCAWUDhwKP1E3c5bw9aIO_62ZUWHj4sgbSaseDrjbawlYo2fP9kduCapUuhUuKRVm53Yq3d2-tzLU_irYCDNpa-TJaNzCUnobF8un5O3gejgS9ry9QkHZzSN3Gp27TLPTuLilIJjibDVZuGM7Otn2xRj38T6XdyI3_w11Yd6u4tKnTCSYRo2el49HPNy5xOnyTPHbl3IauzLtkk_fJprfJWmGihLVzzPpWk0mlIjJC5zhAtOGXQrrT6L5Qm3huEPUoIUVmkO2vZkNrsd0dw8EoKNGUQqbc01-9NA5cwS08DnxfTzETPJNvx2-Mcruh9U4nQeRMjaPAUJ0XQZQJZfmtrtJDs-5HK6F_EJUn1IKLhUzng83bsv2yNB-Yt781GUDA))
