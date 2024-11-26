@@ -68,7 +68,7 @@ class CivilJudicialIT extends BaseJudicialDroolTestIntegration implements Judici
             ),
 
             Arguments.arguments(
-                "Civil/005.1_Deputy_District_Judge_Sitting_in_Retirement__FeePaid__JrdResponse",
+                "Civil/005.1_Deputy_District_Judge_Sitting_in_Retirement__FeePaid__jrdResponse",
                 "Civil/005_Deputy_District_Judge_Sitting_in_Retirement__FeePaid__RasAssignmentRequest__withoutBooking",
                 "Civil/005_Deputy_District_Judge_Sitting_in_Retirement__FeePaid__RasAssignmentRequest__withBooking",
                 false,
