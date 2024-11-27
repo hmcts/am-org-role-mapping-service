@@ -58,6 +58,8 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
 
     static final String TEST_ENVIRONMENT = "local";
 
+    static final String EMPTY_ROLE_ASSIGNMENT_TEMPLATE = "Common/Empty__RasAssignmentRequest";
+
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
     protected final ObjectMapper mapper = JacksonUtils.MAPPER;

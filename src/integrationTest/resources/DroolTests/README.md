@@ -1,7 +1,7 @@
 
 # Integration Test for Drool mappings
 
-## Test Sceanrios in: BaseJudicialDroolTestIntegration
+## Test Scenarios in: BaseJudicialDroolTestIntegration
 
 ### .assertCreateOrmMappingApiWithoutBooking
 
@@ -20,7 +20,7 @@ stateDiagram-v2
     HappyPath3 ::: scenario : HappyPath - no authorisation end date
     HappyPath4 ::: scenario : HappyPath - no additional role end date
 
-    shouldMatchWithoutBookingOutput ::: result : Should match without booking output
+    shouldMatchWithoutBookingOutput ::: result : Should match 'withoutBooking' output
 
     state is_additional_role_test <<choice>>
 
@@ -42,7 +42,7 @@ stateDiagram-v2
     classDef result fill:green,color:white
     classDef scenario fill:navy,color:white
 ```
-* ([mermaid live edit](https://mermaid.live/edit#pako:eNqdlFFr2zAQx7_KoacN4ocleRIlYyODbRA62sFgGIImXWwxWTKS3BJKv_tOcuK0qTN384OxfP__z9bd6R6YdAoZZ0VRlDbqaJBDyT5IiSHARlhRYYM2cri-2XBYe-cMfLERKy-idha-Y4iBw9dOaamFIUvbalvBvY616yJ8dO43rUtW2vyJEEXEtRbkb4q7eWlLC3QdbJkGnHOI9ASv4B78N539TIr9NxHrE4DeEiPd6xSElqI5EODNESTgV496e2QNoHcZFCRa4bUj0hCBAoQxoGgvAULXtkajgjP7_G9264BWTtuY0gtoVaadIRZTiI424XXoa3EBspyCKKWTn7LsncEnmB4UKE9GbUSU9Y8-aYfkX3expQwmusfQmVSw2yyGJqmHYh0yDC4bBm5qBdBhe_qBbfqBba791ZWsnZa4Wo32SFGsnhd9vBOS7FTPScV8UrG4pLiwj15-aZPP0EtOuhfVSLr3I62ZrBOVedGP_-5Z_Idn-TpP75JGhLDG3XBed9oY7rywFY4o-vB9reN59NCBOV55RDuTzjg_qh3OQlZbcbd_KmYz1qBvhFY0Fx-StWSxpjFYsjQbFe4EfSlNtEeS0hF0t3srGY--wxnzrqtqxnfCBFp1rTrNu-FtK-xP55oz1ScqvPNHDubVpp_OeUg__gEom_q6))
+* ([mermaid live edit](https://mermaid.live/edit#pako:eNqdlFFr2zAQx7_KoZduED8syZMoGRsZbIPQ0Q4GwxA06WKLyZKR5IZQ-t13khOnSZOmnR-M5fv_f7buTvfApFPIOCuKorRRR4McSvZJSgwBFsKKChu0kcPN7YLD3Dtn4JuNWHkRtbPwE0MMHL53SkstDFnaVtsK1jrWrovw2bm_tC5ZafMnQhQR51qQvynux6UtLdC1tWUacM4h0hO8grv133b2Kyk2P0Ss9wB6S4x0r1MQWormQIB3O5CAPz3q_Y41gD5kUJBohdeOSEMEChDGgKK9BAhd2xqNCo7s45fs1gGtnLYxpRfQqkw7QkwuITrahNehr8UZyPQSRCmd_JRl7ww-wfSgQHkyaiGirH_1Sdsm_6aLLWUw0T2GzqSC3WUxNEkNV-sD_RW47BjAqRdAh-X-D5bpD5a5-NfXsnZa4mx2skmKYnZY9dOtkGT7gl5UjC8qJucUZ_bRy89t8gA95aR7Vo6k-3iiN5P1QmmeNeTbPZP_8Exf5-ld0ogQ5rgaDuxKG8OdF7bCE4o-vK51PI5uWzDHK49oR9IZ509qh8OQ1Vbcb56K2Yg16BuhFQ3Gh2QtWaxpDpYsDUeFK0FfSiPtkaR0Bt3dxkrGo-9wxLzrqprxlTCBVl2r9gNveNsK-9u55kj1hQrv_I6DebXox3Oe0o__ACna-sg))
 
 
 ### .assertCreateOrmMappingApiWithBooking
@@ -56,7 +56,6 @@ stateDiagram-v2
     MappingTests ::: test : Judicial Mapping with Booking
 
     RunHappyPaths ::: testRun : Run happy path tests (with a booking)
-    RunBasicTest ::: testRun : Run single basic test (with a booking)
 
     HappyPath1 ::: scenario : HappyPath - all dates supplied 
     HappyPath2 ::: scenario : HappyPath - no appointment end date
@@ -64,20 +63,11 @@ stateDiagram-v2
     HappyPath4 ::: scenario : HappyPath - no additional role end date
     HappyPath5 ::: scenario : HappyPath - no booking end date
 
-    HappyPathBasic ::: scenario : HappyPath - all dates supplied 
+    shouldMatchWithBookingOutput ::: result : Should match 'withBooking' output
 
-    shouldMatchWithBookingOutput ::: result : Should match with booking output
-    shouldMatchWithoutBookingOutput ::: result : Should match without booking output
-
-    state using_booking <<choice>>
     state is_additional_role_test <<choice>>
 
-    MappingTests --> using_booking
-
-    using_booking --> RunHappyPaths: Yes - testing booking
-    using_booking --> RunBasicTest: No - booking has no effect
-
-    RunBasicTest --> HappyPathBasic
+    MappingTests --> RunHappyPaths
 
     RunHappyPaths --> HappyPath1
     RunHappyPaths --> HappyPath2
@@ -92,14 +82,12 @@ stateDiagram-v2
     HappyPath4 --> shouldMatchWithBookingOutput
     HappyPath5 --> shouldMatchWithBookingOutput
 
-    HappyPathBasic --> shouldMatchWithoutBookingOutput
-
     classDef testRun fill:orange
     classDef test fill:white
     classDef result fill:green,color:white
     classDef scenario fill:navy,color:white
 ```
-* ([mermaid live edit](https://mermaid.live/edit#pako:eNqVll1r2zAUhv_KwVcbxBfNx40oHSsZbIOsoy2MDUNQZdkWkyUjyS2h9L_vSE6c2LHrJRch8nnfx-J8SHmNmE55RKI4jhPlhJOcQBJ9ZoxbCxuqaM5LrhyBu_sNgbXRWsI35XhuqBNawSO3zhL4XqeCCSrRUlVC5fAiXAG3Wv_FRRIlKvCto46vBUVzGT_PE5UowM_eE1BACAGHv2AKujff1-orhnc_qSuObnyKAP9d-CBUGA0BCx8ChcJTw_nYYm6pFewxvPqMYlEpOTx5SbO9c0wDajdzFTCWcUWN0MhpIxADlRJSTIYFW1eVFDyFnn3-nl1pwJUWyvniAFdpoPUQiylE7QpthG0qOQJZTkHSVHg_lsloTNEIZjWB2afxxN4DhOpcnNIGYgtdy3RDHSt-YdX2HXRXu6puim24raVvuYeghNJLm3Y7bEwH9SAPQ5cgUX5G3XP9fEDtm217UFxfs0ILxm9uTjXCbo-J3_rEb0NXnqoHhiuOb7r4g6r7Ti_rzBWB35jXOHS-F7TuUW87TAR-aHQewgW1vtw8yzhzJzN8HD4P6FZ9eNQ7uqtJxXxSsRhTjCS7kY9VooNeEtSdjYrXfZrc1mrgZPGC95r67Cy50LC41LC81LD6D8PgCTBg68_fwckktXbNs_Ysz4SURBuqcj6gaMIvhXD96H6WQzw3nKsZ01KbQW17OgW1os-7U3E0i0puSipSvHNfvTWJXIFXbBL5ezflGcU3-QvzDaV4QOuHnWIRcabms8joOi8iklFpcVVX6fE6bZ9WVP3RuuypvmDnaXPg8LDaNDd_-APw9g8yBMj7))
+* ([mermaid live edit](https://mermaid.live/edit#pako:eNqVlV1r2zAUhv_KQTfdIL5YPm5EydjIYBuEjnYwGIagSSe2mCwZfTSE0v8-SXadNk3qxRfB8nnfJ_p4ffxAuBFIKCmKotReeoUUSvKJc3QO1kyzChvUnsLN7ZrCyhqj4Jv2WFnmpdHwE513FL4HIblkKlraVuoKdtLX8NmYv3FQklJnvvPM40qyaG6K-2mpSw3x6j0ZBZRS8PEOxqC9-Tbor7G8_8F8fXDHpxGQfutUhDZWc8HBu0xh8KfjvH8CDZQPmeI4amaliZihAgUwpUDEVThwoW2VRAFH9ulbdm0gjozUPu0qoBaZdoSYjSGCr42VrjuCM5D5GEQImfxxf61ReA6zGMH02_jM3gFcbYISa-Z5_StueH9qN8G3wWekRRdUOua7rIQmSeFqdxBfgcnyAZniA9JtDlPfpKlvcl6ur3ltJMfl8mSuimL5MiunA5RkhySMKqajitk5xZl1dPJzi3yBntOoe3WOSfdxdFqLE7FPgreO7VXQLzTMLjXMLzUs_sPQWbhizq1wO3SLrVSKGst0hScUXXlXS39c7WOc65VF1BNulLEntcNblNWa3e-fi8mENGgbJkXsxw_JWhJfx_ZbktSTBW5Z_KfUTB-jNPYAc7fXnFBvA06INaGqCd0y5eIotOLQaoenLdO_jWmOVF9ifox94mAerbuvQv44PP4Dz8sf9Q))
 
 
 ### .assertCreateOrmMappingApiWithExpiredDates
@@ -121,7 +109,7 @@ stateDiagram-v2
 
     note right of RunNegativePaths : No expired booking test required as JBS only returns valid bookings
 
-    shouldMatchEmptyRoleAssignments ::: result : Should match EMPTY Role Assignments
+    shouldMatchEmptyRoleAssignments ::: result : Should match 'EMPTY Role Assignments' output
 
     state is_additional_role_test <<choice>>
 
@@ -143,4 +131,4 @@ stateDiagram-v2
     classDef result fill:green,color:white
     classDef scenario fill:navy,color:white
 ```
-* ([mermaid live edit](https://mermaid.live/edit#pako:eNqdlcGO2jAQhl9llFMrkUOBU7Si2goOXYntCvbSKhJyk0li1fGktsMWrfbdO05IoBAKWg4o8Xz_b3s8nrwGCaUYREEYhrF20imMIA7ukwSthaXQIscStYvg22oZwdwQKfiqHeZGOEkantE6G8FDncpECsWSqpI6h0fMGdhiC8RBrJsZrBMO51KwvAy341jHGvi3VzUsRFEEjp_guu1evqp1F3gSrjhYcIBd_L_uhBUDTczChxfJzwJ-Ev1i84-dXefl5_jUeNkEtTCS2Ow4CCHwukhq53MEqFNIeX-AfyppMD13G19zq11BRto2t9f9Jtf80lR6K86gIYU3OE6vOFrKHKSokE0yJXKw6Lq8aeJBI_PCAWUDhwKP1E3c5bw9aIO_62ZUWHj4sgbSaseDrjbawlYo2fP9kduCapUuhUuKRVm53Yq3d2-tzLU_irYCDNpa-TJaNzCUnobF8un5O3gejgS9ry9QkHZzSN3Gp27TLPTuLilIJjibDVZuGM7Otn2xRj38T6XdyI3_w11Yd6u4tKnTCSYRo2el49HPNy5xOnyTPHbl3IauzLtkk_fJprfJWmGihLVzzPpWk0mlIjJC5zhAtOGXQrrT6L5Qm3huEPUoIUVmkO2vZkNrsd0dw8EoKNGUQqbc01-9NA5cwS08DnxfTzETPJNvx2-Mcruh9U4nQeRMjaPAUJ0XQZQJZfmtrtJDs-5HK6F_EJUn1IKLhUzng83bsv2yNB-Yt781GUDA))
+* ([mermaid live edit](https://mermaid.live/edit#pako:eNqdVU2PmzAQ_SsjLttK4dAkJ7RKtVVy6ErZrpK9tEKKXBjAqvFQ22Qbrfa_dwwLSRPSRMsBgee9N54Pj1-ChFIMoiAMw1g76RRGEAd3SYLWwlJokWOJ2kXwbbWMYG6IFHzVDnMjnCQNT2idjeC-TmUihWJKVUmdwwPmDNhiC4iDWDcerBMO51IwvQy341jHGvh5YzVYiKIIHH_BZdk3-qrWneFRuGIvwQZW8W_dESsGNDYLH54lfwv4SfSLxT92cp2W9_Gp0bIJamEksdihEULgfZHUzucIUKeQcnyAfyppMD1VG19Sq11BRto2t5f1Jpf00lR6Kc6gIYVXKE4vKFrKHKSokEUyJXKw6Lq8aeJFI_PCAWUDRYEH6hx3OW8LbfB33awKC_df1kBa7XjR1UZb2Aole3xfcltQrdKlcEmxKCu3W3F4d9bKXPtStB1g0NbKt9G6AUPp0XCzWD4-fQdPgAPGDVDtqroPpulUkHazz-HG53DT7Pj2NilIJjibDbZwGM5O4j_brB78T8tdiRv_B3dm3y3jXFDHDiYRQ096yEM_X7nF6fCR8rALBRw6O--iTd5Hm15Ha4mJEtbOMetnTiaVisgIneMAojU_F9IdW986trHnBlGPElJkBrH9GW3QWmx3h-BgFJRoSiFTHu4vnhoHruBZHgd-wKeYCfbk5_IrQ3nu0HqnkyBypsZRYKjOiyDKhLL8V1fpfmr3q5XQP4jKI9SCm4VMp4PN37K9Ypqb5vUvUs5D3w))

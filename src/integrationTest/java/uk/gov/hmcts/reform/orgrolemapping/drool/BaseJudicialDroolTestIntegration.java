@@ -61,39 +61,19 @@ public class BaseJudicialDroolTestIntegration extends BaseDroolTestIntegration {
                                                      Map<String, String> overrideMapValues,
                                                      List<FeatureFlagEnum> turnOffFlags) throws Exception {
 
-        // GIVEN
-        List<TestScenario> testScenarios;
-        String rasRequestFileName = rasRequestFileNameWithBooking;
+        List<TestScenario> testScenarios = TestScenarioIntegrationHelper.generateJudicialHappyPathScenarios(
+            additionalRoleTest,
+            true,
+            overrideMapValues
+        );
 
-        if (rasRequestFileNameWithBooking == null) {
-            // only generate one scenario as booking should have no effect
-            rasRequestFileName = rasRequestFileNameWithoutBooking;
-            testScenarios = List.of(TestScenario.builder()
-                .description("HappyPath - booking has no effect")
-                .replaceMap(TestScenarioIntegrationHelper.createDefaultJudicialReplaceMap(overrideMapValues))
-                .build()
-            );
-        } else {
-            testScenarios = TestScenarioIntegrationHelper.generateJudicialHappyPathScenarios(
-                additionalRoleTest,
-                true,
-                overrideMapValues
-            );
-        }
-
-        setAllFlags(turnOffFlags);
-
-        stubGetJudicialDetailsById(jrdResponseFileName, testScenarios);
-        stubGetJudicialBookingByUserIds(testScenarios, false);
-        wiremockFixtures.stubRoleAssignmentsBasicResponse(HttpStatus.CREATED);
-
-        var expectedAssignmentRequests = getAssignmentRequestsFromFile(rasRequestFileName, testScenarios);
-
-        // WHEN
-        triggerCreateOrmMappingApi(UserType.JUDICIAL, testScenarios);
-
-        // THEN
-        assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios);
+        assertCreateOrmMappingApiForTestScenarios(
+            testScenarios,
+            jrdResponseFileName,
+            rasRequestFileNameWithBooking,
+            true,
+            turnOffFlags
+        );
 
     }
 
@@ -105,27 +85,19 @@ public class BaseJudicialDroolTestIntegration extends BaseDroolTestIntegration {
                                                         Map<String, String> overrideMapValues,
                                                         List<FeatureFlagEnum> turnOffFlags) throws Exception {
 
-        // GIVEN
         var testScenarios = TestScenarioIntegrationHelper.generateJudicialHappyPathScenarios(
             additionalRoleTest,
             false,
             overrideMapValues
         );
 
-        setAllFlags(turnOffFlags);
-
-        stubGetJudicialDetailsById(jrdResponseFileName, testScenarios);
-        stubGetJudicialBookingByUserIds(testScenarios, true);
-        wiremockFixtures.stubRoleAssignmentsBasicResponse(HttpStatus.CREATED);
-
-        var expectedAssignmentRequests
-            = getAssignmentRequestsFromFile(rasRequestFileNameWithoutBooking, testScenarios);
-
-        // WHEN
-        triggerCreateOrmMappingApi(UserType.JUDICIAL, testScenarios);
-
-        // THEN
-        assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios);
+        assertCreateOrmMappingApiForTestScenarios(
+            testScenarios,
+            jrdResponseFileName,
+            rasRequestFileNameWithoutBooking,
+            false,
+            turnOffFlags
+        );
 
     }
 
@@ -137,21 +109,33 @@ public class BaseJudicialDroolTestIntegration extends BaseDroolTestIntegration {
                                                           Map<String, String> overrideMapValues,
                                                           List<FeatureFlagEnum> turnOffFlags) throws Exception {
 
-        // GIVEN
         var testScenarios = TestScenarioIntegrationHelper.generateJudicialNegativePathScenarios(
             additionalRoleTest,
             overrideMapValues
         );
 
+        assertCreateOrmMappingApiForTestScenarios(
+            testScenarios,
+            jrdResponseFileName,
+            EMPTY_ROLE_ASSIGNMENT_TEMPLATE,
+            true, // NB: include valid booking to prove it is ignored when other values are expired
+            turnOffFlags
+        );
+    }
+
+    private void assertCreateOrmMappingApiForTestScenarios(List<TestScenario> testScenarios,
+                                                           String jrdResponseFileName,
+                                                           String rasRequestFileName,
+                                                           boolean includeBookings,
+                                                           List<FeatureFlagEnum> turnOffFlags) throws Exception {
+        // GIVEN
         setAllFlags(turnOffFlags);
 
         stubGetJudicialDetailsById(jrdResponseFileName, testScenarios);
-        // NB: include valid booking to prove it is ignored when other values are expired
-        stubGetJudicialBookingByUserIds(testScenarios, false);
+        stubGetJudicialBookingByUserIds(testScenarios, includeBookings);
         wiremockFixtures.stubRoleAssignmentsBasicResponse(HttpStatus.CREATED);
 
-        var expectedAssignmentRequests
-            = getAssignmentRequestsFromFile("Common/Empty__RasAssignmentRequest", testScenarios);
+        var expectedAssignmentRequests = getAssignmentRequestsFromFile(rasRequestFileName, testScenarios);
 
         // WHEN
         triggerCreateOrmMappingApi(UserType.JUDICIAL, testScenarios);
@@ -186,8 +170,8 @@ public class BaseJudicialDroolTestIntegration extends BaseDroolTestIntegration {
     }
 
     private void stubGetJudicialBookingByUserIds(List<TestScenario> testScenarios,
-                                                 boolean emptyResults) {
-        String fileName = emptyResults ? null : "DroolTests/Judicial/Common/JudicialBooking";
+                                                 boolean includeBookings) {
+        String fileName = includeBookings ? "DroolTests/Judicial/Common/JudicialBooking" : null;
         wiremockFixtures.stubGetJudicialBookingByUserIds(
             JudicialBookingRequest.builder()
                 .queryRequest(UserRequest.builder().userIds(getSidamIdsList(testScenarios)).build())
