@@ -21,63 +21,72 @@ class CivilJudicialIT extends BaseJudicialDroolTestIntegration implements Judici
 
     public static final String SERVICE_CODES = "[[SERVICE_CODES]]";
 
-    @SuppressWarnings("LineLength")
+    /** Parameterized test arguments are.
+     * * @param jrdResponseFileName - JRD response file name
+     * * @param rasRequestFileNameWithoutBooking - RAS request file name without booking
+     * * @param rasRequestFileNameWithBooking - RAS request file name with booking
+     * * @param additionalRoleTest - boolean flag to indicate if additional role test is required
+     * * @param overrideMapValues - map of values to override in the test scenario
+     */
     static Stream<Arguments> getTestArguments() {
+
         return Stream.of(
+            // 001 Circuit Judge - Salaried
             Arguments.arguments(
-                "Civil/001_Circuit Judge__Salaried__jrdResponse",
-                "Civil/001_Circuit Judge__Salaried__RasAssignmentRequest__singleRegion",
-                null, // no bookings
+                "001_Circuit_Judge__Salaried",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__singleRegion",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__singleRegion", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(AppointmentType.SALARIED, REGION_02_MIDLANDS)
             ),
             Arguments.arguments(
-                "Civil/001_Circuit Judge__Salaried__jrdResponse",
-                "Civil/001_Circuit Judge__Salaried__RasAssignmentRequest__multiRegion_1_5",
-                null, // no bookings
+                "001_Circuit_Judge__Salaried",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(AppointmentType.SALARIED, REGION_01_LONDON)
             ),
             Arguments.arguments(
-                "Civil/001_Circuit Judge__Salaried__jrdResponse",
-                "Civil/001_Circuit Judge__Salaried__RasAssignmentRequest__multiRegion_1_5",
-                null, // no bookings
+                "001_Circuit_Judge__Salaried",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(AppointmentType.SALARIED, REGION_05_SOUTH_EAST)
             ),
             Arguments.arguments(
-                "Civil/001_Circuit Judge__Salaried__jrdResponse",
-                "Civil/001_Circuit Judge__Salaried__RasAssignmentRequest__singleRegion",
-                null, // no bookings
+                "001_Circuit_Judge__Salaried",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__singleRegion",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__singleRegion", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(AppointmentType.SPTW, REGION_02_MIDLANDS)
             ),
             Arguments.arguments(
-                "Civil/001_Circuit Judge__Salaried__jrdResponse",
-                "Civil/001_Circuit Judge__Salaried__RasAssignmentRequest__multiRegion_1_5",
-                null, // no bookings
+                "001_Circuit_Judge__Salaried",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(AppointmentType.SPTW, REGION_01_LONDON)
             ),
             Arguments.arguments(
-                "Civil/001_Circuit Judge__Salaried__jrdResponse",
-                "Civil/001_Circuit Judge__Salaried__RasAssignmentRequest__multiRegion_1_5",
-                null, // no bookings
+                "001_Circuit_Judge__Salaried",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(AppointmentType.SPTW, REGION_05_SOUTH_EAST)
             ),
 
+            // 005 Deputy District Judge - Sitting in Retirement - Fee Paid
             Arguments.arguments(
-                "Civil/005.1_Deputy_District_Judge_Sitting_in_Retirement__FeePaid__jrdResponse",
-                "Civil/005_Deputy_District_Judge_Sitting_in_Retirement__FeePaid__RasAssignmentRequest__withoutBooking",
-                "Civil/005_Deputy_District_Judge_Sitting_in_Retirement__FeePaid__RasAssignmentRequest__withBooking",
+                "005.1_Deputy_District_Judge_Sitting_in_Retirement__FeePaid",
+                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ__withoutBooking",
+                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ__withBooking",
                 false,
                 null
             ),
             Arguments.arguments(
-                "Civil/005.2_Deputy_District_Judge_(sitting_in_retirement)__FeePaid__jrdResponse",
-                "Civil/005_Deputy_District_Judge_Sitting_in_Retirement__FeePaid__RasAssignmentRequest__withoutBooking",
-                "Civil/005_Deputy_District_Judge_Sitting_in_Retirement__FeePaid__RasAssignmentRequest__withBooking",
+                "005.2_Deputy_District_Judge_(sitting_in_retirement)__FeePaid",
+                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ__withoutBooking",
+                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ__withBooking",
                 false,
                 null
             )
@@ -93,9 +102,9 @@ class CivilJudicialIT extends BaseJudicialDroolTestIntegration implements Judici
                                                    boolean additionalRoleTest,
                                                    Map<String, String> overrideMapValues) throws Exception {
         assertCreateOrmMappingApiWithBooking(
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            rasRequestFileNameWithBooking,
+            "Civil/InputFromJrd/" + jrdResponseFileName,
+            "Civil/OutputToRas/" + rasRequestFileNameWithoutBooking,
+            "Civil/OutputToRas/" + rasRequestFileNameWithBooking,
             additionalRoleTest,
             overrideMapValues,
             List.of() // default is all flags on
@@ -111,9 +120,9 @@ class CivilJudicialIT extends BaseJudicialDroolTestIntegration implements Judici
                                                       boolean additionalRoleTest,
                                                       Map<String, String> overrideMapValues) throws Exception {
         assertCreateOrmMappingApiWithoutBooking(
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            rasRequestFileNameWithBooking,
+            "Civil/InputFromJrd/" + jrdResponseFileName,
+            "Civil/OutputToRas/" + rasRequestFileNameWithoutBooking,
+            "Civil/OutputToRas/" + rasRequestFileNameWithBooking,
             additionalRoleTest,
             overrideMapValues,
             List.of() // default is all flags on
@@ -129,9 +138,9 @@ class CivilJudicialIT extends BaseJudicialDroolTestIntegration implements Judici
                                                         boolean additionalRoleTest,
                                                         Map<String, String> overrideMapValues) throws Exception {
         assertCreateOrmMappingApiWithExpiredDates(
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            rasRequestFileNameWithBooking,
+            "Civil/InputFromJrd/" + jrdResponseFileName,
+            "Civil/OutputToRas/" + rasRequestFileNameWithoutBooking,
+            "Civil/OutputToRas/" + rasRequestFileNameWithBooking,
             additionalRoleTest,
             overrideMapValues,
             List.of() // default is all flags on
