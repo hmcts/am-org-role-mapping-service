@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
