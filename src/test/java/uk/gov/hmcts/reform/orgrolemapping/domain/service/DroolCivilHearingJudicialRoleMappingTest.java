@@ -94,6 +94,16 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         true,
                         List.of(""),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Deputy District Judge",
+                        "Fee Paid",
+                        true,
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Deputy District Judge",
+                        "Fee Paid",
+                        false,
+                        List.of(""),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
                 Arguments.of("Deputy District Judge- Sitting in Retirement",
                         "Fee Paid",
                         true,
@@ -137,6 +147,17 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
     void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
             String appointment, String appointmentType, boolean addBooking,
             List<String> assignedRoles, List<String> expectedRoleNames) {
+        // As CIVIL has 2 service codes AAA6 and AAA7 and the JudicialAccessProfile has only one service code we run
+        // the test method twice, once with each service code
+        shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
+                appointment, appointmentType, addBooking, assignedRoles, expectedRoleNames, "AAA6");
+        shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
+                appointment, appointmentType, addBooking, assignedRoles, expectedRoleNames, "AAA7");
+    }
+
+    void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
+            String appointment, String appointmentType, boolean addBooking,
+            List<String> assignedRoles, List<String> expectedRoleNames, String serviceCode) {
 
         allProfiles.clear();
         judicialAccessProfiles.clear();
@@ -157,10 +178,10 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         .roles(assignedRoles)
                         .regionId("LDN")
                         .primaryLocationId("London")
-                        .ticketCodes(List.of("AAA6"))
+                        .ticketCodes(List.of(serviceCode))
                         .authorisations(List.of(
                                 Authorisation.builder()
-                                        .serviceCodes(List.of("AAA6"))
+                                        .serviceCodes(List.of(serviceCode))
                                         .jurisdiction("CIVIL")
                                         .endDate(LocalDateTime.now().plusYears(1L))
                                         .build()
@@ -183,7 +204,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
             if (!r.getRoleName().contains("hmcts-judiciary")) {
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
-                assertEquals("AAA6", r.getAuthorisations().get(0));
+                assertEquals(serviceCode, r.getAuthorisations().get(0));
                 if (!addBooking) {
                     assertEquals("London", r.getAttributes().get("primaryLocation").asText());
                 }
@@ -204,7 +225,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
             if (r.getRoleName().contains("magistrate")) {
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
-                assertEquals("AAA6", r.getAuthorisations().get(0));
+                assertEquals(serviceCode, r.getAuthorisations().get(0));
                 assertEquals("LDN", r.getAttributes().get("region").asText());
                 assertEquals("London", r.getAttributes().get("primaryLocation").asText());
             }
