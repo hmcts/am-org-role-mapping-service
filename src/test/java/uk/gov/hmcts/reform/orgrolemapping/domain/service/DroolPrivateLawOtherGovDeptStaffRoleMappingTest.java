@@ -25,8 +25,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUse
 @RunWith(MockitoJUnitRunner.class)
 class DroolPrivateLawOtherGovDeptStaffRoleMappingTest extends DroolBase {
 
-    static final String LD_FLAG = "privatelaw_wa_1_2";
-
     @ParameterizedTest
     @CsvSource({
         "18,ABA5,PRIVATELAW,caseworker-privatelaw-externaluser-viewonly"
