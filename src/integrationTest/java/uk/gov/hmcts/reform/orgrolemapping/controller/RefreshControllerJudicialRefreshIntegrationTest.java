@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -39,7 +38,6 @@ import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -105,12 +103,6 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseTestInt
 
     @Captor
     private ArgumentCaptor<Map<String, Set<UserAccessProfile>>> usersAccessProfilesCaptor;
-
-    private static final MediaType JSON_CONTENT_TYPE = new MediaType(
-            MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype(),
-            StandardCharsets.UTF_8
-    );
 
     @BeforeEach
     public void setUp() throws Exception {
