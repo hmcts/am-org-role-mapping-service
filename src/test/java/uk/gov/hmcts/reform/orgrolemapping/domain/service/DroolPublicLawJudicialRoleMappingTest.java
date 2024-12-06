@@ -111,11 +111,8 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                                     String region, boolean expectMultiRegion) {
         shouldReturnSalariedRolesFromJudicialAccessProfile(
                 appointment, "Salaried", assignedRoles, expectedRoleNames, region, expectMultiRegion);
-        if (List.of("Circuit Judge", "District Judge", "District Judge (MC)").contains(appointment)
-            || assignedRoles.equals("Designated Family Judge")) {
-            shouldReturnSalariedRolesFromJudicialAccessProfile(
-                    appointment, "SPTW", assignedRoles, expectedRoleNames, region, expectMultiRegion);
-        }
+        shouldReturnSalariedRolesFromJudicialAccessProfile(
+                appointment, "SPTW", assignedRoles, expectedRoleNames, region, expectMultiRegion);
     }
 
     void shouldReturnSalariedRolesFromJudicialAccessProfile(
