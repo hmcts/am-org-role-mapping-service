@@ -124,6 +124,8 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 "hearing-centre-team-leader"), 3, RoleCategory.ADMIN, "N", "N"),
             Arguments.of("3", Arrays.asList("hearing-centre-admin", "hmcts-admin",
                 "hearing-centre-team-leader", "task-supervisor"), 4, RoleCategory.ADMIN, "Y", "N"),
+            Arguments.of("3", Arrays.asList("hearing-centre-admin", "hmcts-admin",
+                "hearing-centre-team-leader", "case-allocator"), 4, RoleCategory.ADMIN, "N", "Y"),
             Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin"), 2, RoleCategory.ADMIN,
                 "N", "N"),
             Arguments.of("2", Arrays.asList("tribunal-caseworker", "hmcts-legal-operations"), 2,
