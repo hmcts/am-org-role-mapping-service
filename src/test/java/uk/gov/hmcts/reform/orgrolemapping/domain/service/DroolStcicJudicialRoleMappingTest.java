@@ -95,13 +95,13 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
                 + "hmcts-judiciary,specific-access-approver-judiciary'",
         "ST_CIC Principal Judge-Salaried,'leadership-judge,senior-judge,judge,case-allocator,task-supervisor,"
                 + "hmcts-judiciary,specific-access-approver-judiciary'",
-        "ST_CIC Tribunal Judge-Salaried,'judge,hmcts-judiciary,case-allocator,task-supervisor,"
+        "ST_CIC Tribunal Judge-Salaried,'judge,hmcts-judiciary,case-allocator,"
                 + "specific-access-approver-judiciary'",
-        "ST_CIC Judge of the First-tier Tribunal-Salaried,'judge,hmcts-judiciary,case-allocator,task-supervisor,"
+        "ST_CIC Judge of the First-tier Tribunal-Salaried,'judge,hmcts-judiciary,case-allocator,"
                 + "specific-access-approver-judiciary'",
-        "ST_CIC Circuit Judge-Salaried,'judge,hmcts-judiciary,case-allocator,task-supervisor,"
+        "ST_CIC Circuit Judge-Salaried,'judge,hmcts-judiciary,case-allocator,"
                 + "specific-access-approver-judiciary'",
-        "ST_CIC Regional Tribunal Judge-Salaried,'judge,hmcts-judiciary,case-allocator,task-supervisor,"
+        "ST_CIC Regional Tribunal Judge-Salaried,'judge,hmcts-judiciary,case-allocator,"
                 + "specific-access-approver-judiciary'",
         "ST_CIC Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'"
     })
@@ -111,7 +111,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("ST_CIC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -176,7 +176,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("ST_CIC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -204,7 +204,7 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("ST_CIC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
