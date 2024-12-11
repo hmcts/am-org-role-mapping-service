@@ -36,7 +36,7 @@ ext['snakeyaml.version'] = '2.0'
 
 def versions = [
         junit          : '5.9.0',
-        lombok         : '1.18.34',
+        lombok         : '1.18.36',
         pitest         : '1.17.0',
         reformLogging  : '6.1.7',
         reformS2sClient: '4.0.2',
@@ -51,12 +51,12 @@ def versions = [
         rest_assured   : '3.3.0',
         cucumber       : '5.7.0',
         feign_jackson  : '9.7.0',
-        jacksondata    : '2.18.1',
+        jacksondata    : '2.18.2',
         drools         : '7.73.0.Final',
-        log4JVersion   : '2.24.1',
+        log4JVersion   : '2.24.2',
         logbackVersion : '1.2.13',
         launchDarklySdk: '5.10.9',
-        netty_version  : '4.1.114.Final',
+        netty_version  : '4.1.115.Final',
         poi  : '5.2.5'
 
 ]
@@ -406,7 +406,7 @@ dependencies {
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
     implementation group: 'com.azure', name: 'azure-core', version: '1.54.1'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.5'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.6'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
