@@ -423,10 +423,10 @@ then
 end;
 
 /*
- * CIVIL admin and hearing centre team leader "case-allocator" Org role mapping.
+ * CIVIL admin "case-allocator" Org role mapping. V2.1.
  */
 
-rule "civil_case_allocator_admin_hearing_centre_team_leader_org_role"
+rule "v2_1_civil_case_allocator_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("3","6"), serviceCode in ("AAA6", "AAA7"),
@@ -449,7 +449,7 @@ then
       .attributes(attribute)
       .authorisations($cap.getSkillCodes())
       .build());
-      logMsg("Rule : civil_case_allocator_admin_hearing_centre_team_leader_org_role");
+      logMsg("Rule : v2_1_civil_case_allocator_admin_org_role");
 end;
 
 
