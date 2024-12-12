@@ -80,7 +80,7 @@ orm:
 
 am-role-assignment-service:
   java:
-    image: 'hmctspublic.azurecr.io/am/role-assignment-service:pr-2371'
+    image: 'hmctspublic.azurecr.io/am/role-assignment-service:latest'
     imagePullPolicy: Always
     ingressHost: ras-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-role-assignment-service"
