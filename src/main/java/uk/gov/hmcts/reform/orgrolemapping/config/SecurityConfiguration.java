@@ -23,7 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -69,7 +69,7 @@ public class SecurityConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().antMatchers(anonymousPaths.toArray(String[]::new));
+        return web -> web.ignoring().requestMatchers(anonymousPaths.toArray(String[]::new));
     }
 
     @Bean
@@ -82,7 +82,7 @@ public class SecurityConfiguration {
                 .formLogin().disable()
                 .logout().disable()
                 .authorizeRequests()
-                .antMatchers("/error").permitAll()
+                .requestMatchers("/error").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
