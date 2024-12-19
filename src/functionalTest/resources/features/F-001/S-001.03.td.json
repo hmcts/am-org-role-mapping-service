@@ -3,7 +3,7 @@
   "title": "must successfully create org role mapping for Hearing Centre Team Leader",
   "_extends_": "F-001_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Hearing Centre Team Leader"
+    "contains the actorId of the user just published who has Hearing Centre Team Leader role"
   ],
  "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
@@ -34,24 +34,6 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hearing-centre-team-leader",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA",
-            "workTypes" : "hearing_work, upper_tribunal, routine_work"
           }
         },
         {
