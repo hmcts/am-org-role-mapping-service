@@ -101,7 +101,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [F-001_PushMessageToCRDService],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role (AAA6)],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
@@ -114,7 +114,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [F-001_PushMessageToCRDService],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role (AAA7)],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
@@ -127,7 +127,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [F-001_PushMessageToCRDService],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role + Task Supervisor (AAA6)],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
@@ -140,7 +140,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [F-001_PushMessageToCRDService],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role + Task Supervisor (AAA7)],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
@@ -153,7 +153,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [F-001_PushMessageToCRDService],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role (AAA6)],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
@@ -166,7 +166,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [F-001_PushMessageToCRDService],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role (AAA7)],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
