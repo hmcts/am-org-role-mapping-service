@@ -51,7 +51,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "IA",
-            "workTypes" : "hearing_work, upper_tribunal, routine_work"
+            "workTypes" : "hearing_work, upper_tribunal, routine_work, review_case"
           }
         },{
           "id" : "[[ANYTHING_PRESENT]]",
