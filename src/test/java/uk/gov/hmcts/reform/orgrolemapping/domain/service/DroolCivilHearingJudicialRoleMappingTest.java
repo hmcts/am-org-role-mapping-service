@@ -220,13 +220,13 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                     assertEquals("decision_making_work,applications",
                             r.getAttributes().get("workTypes").asText());
                 } else if (judgeRoleNamesWithExtendedWorkTypes.contains(r.getRoleName())) {
-                    assertEquals("decision_making_work,applications,Multi_Track_decision_making_work,"
-                                   + "Intermediate_Track_decision_making_work",
+                    assertEquals("decision_making_work,applications,multi_track_decision_making_work,"
+                                   + "intermediate_track_decision_making_work",
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
                     assertEquals("LDN", r.getAttributes().get("region").asText());
                     assertEquals("decision_making_work,applications,access_requests,"
-                            + "Multi_Track_decision_making_work,Intermediate_Track_decision_making_work",
+                            + "multi_track_decision_making_work,intermediate_track_decision_making_work",
                             r.getAttributes().get("workTypes").asText());
                 } else {
                     assertNull(r.getAttributes().get("workTypes"));
