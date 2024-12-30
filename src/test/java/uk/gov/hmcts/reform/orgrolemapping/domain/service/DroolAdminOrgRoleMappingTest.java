@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -26,27 +28,37 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 @RunWith(MockitoJUnitRunner.class)
 class DroolAdminOrgRoleMappingTest extends DroolBase {
 
-    private static final String workTypes = "hearing_work, upper_tribunal, routine_work";
+    static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
+
+    static {
+        expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
+        expectedRoleNameWorkTypesMap.put("hearing-centre-admin", "hearing_work, upper_tribunal, routine_work, "
+                + "review_case");
+        expectedRoleNameWorkTypesMap.put("national-business-centre", "hearing_work, upper_tribunal, routine_work");
+        expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("task-supervisor", null);
+    }
 
     static Stream<Arguments> generateData() {
         return Stream.of(
-                Arguments.of("3", Arrays.asList("hmcts-admin", "hearing-centre-admin"), workTypes),
-                Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin"), workTypes),
-                Arguments.of("5", Arrays.asList("hmcts-admin", "hearing-centre-admin"), workTypes),
-                Arguments.of("6", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes),
-                Arguments.of("7", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes),
-                Arguments.of("8", Arrays.asList("hmcts-admin", "national-business-centre"), workTypes)
+                Arguments.of("3", Arrays.asList("hmcts-admin", "hearing-centre-admin")),
+                Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin")),
+                Arguments.of("5", Arrays.asList("hmcts-admin", "hearing-centre-admin")),
+                Arguments.of("6", Arrays.asList("hmcts-admin", "national-business-centre")),
+                Arguments.of("7", Arrays.asList("hmcts-admin", "national-business-centre")),
+                Arguments.of("8", Arrays.asList("hmcts-admin", "national-business-centre"))
         );
     }
 
     @ParameterizedTest
     @MethodSource("generateData")
-    void verifyIacAdminProfileRoleCreation(String roleId, List<String> roleNames, String workTypes) {
+    void verifyIacAdminProfileRoleCreation(String roleId, List<String> roleNames) {
         allProfiles.clear();
         allProfiles.add(TestDataBuilder.buildUserAccessProfile(roleId, false));
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -57,9 +69,15 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         assertEquals(RoleCategory.ADMIN,roleAssignments.get(1).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
-        assertThat(roleAssignments.stream().filter(w -> w.getAttributes().get("workTypes") != null)
-                        .map(w -> w.getAttributes().get("workTypes").asText()).toList(),
-                containsInAnyOrder(workTypes));
+
+        for (RoleAssignment r : roleAssignments) {
+            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+            String actualWorkTypes = null;
+            if (r.getAttributes().get("workTypes") != null) {
+                actualWorkTypes = r.getAttributes().get("workTypes").asText();
+            }
+            assertEquals(expectedWorkTypes, actualWorkTypes);
+        }
     }
 
     @Test
@@ -75,7 +93,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -106,10 +125,15 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
         assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
                 roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(2).getAttributes().get("workTypes").asText());
+
+        for (RoleAssignment r : roleAssignments) {
+            String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
+            String actualWorkTypes = null;
+            if (r.getAttributes().get("workTypes") != null) {
+                actualWorkTypes = r.getAttributes().get("workTypes").asText();
+            }
+            assertEquals(expectedWorkTypes, actualWorkTypes);
+        }
 
     }
 
@@ -123,7 +147,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -141,7 +166,8 @@ class DroolAdminOrgRoleMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
