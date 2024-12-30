@@ -391,11 +391,14 @@ end;
 
 /*
  * CIVIL admin "case-allocator" Org role mapping.
+ * Made obsolete in COT-932 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 
 rule "civil_case_allocator_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("6"), serviceCode in ("AAA6", "AAA7"),
                                 !suspended, caseAllocatorFlag == "Y")
 then
@@ -418,3 +421,38 @@ then
       .build());
       logMsg("Rule : civil_case_allocator_admin_org_role");
 end;
+
+/*
+ * CIVIL admin "case-allocator" Org role mapping. V2.1.
+ */
+
+rule "v2_1_civil_case_allocator_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("3","6"), serviceCode in ("AAA6", "AAA7"),
+                                !suspended, caseAllocatorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
+      .build());
+      logMsg("Rule : v2_1_civil_case_allocator_admin_org_role");
+end;
+
+
+
+
+
