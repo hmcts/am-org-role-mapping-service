@@ -53,10 +53,10 @@ def versions = [
         feign_jackson  : '9.7.0',
         jacksondata    : '2.18.2',
         drools         : '7.73.0.Final',
-        log4JVersion   : '2.24.2',
+        log4JVersion   : '2.24.3',
         logbackVersion : '1.2.13',
         launchDarklySdk: '5.10.9',
-        netty_version  : '4.1.115.Final',
+        netty_version  : '4.1.116.Final',
         poi  : '5.3.0'
 
 ]
@@ -354,7 +354,7 @@ dependencies {
     implementation group: 'org.springframework.security', name:'spring-security-oauth2-core', version: versions.springSecurity
     implementation group: 'org.springframework.security', name:'spring-security-oauth2-jose', version: versions.springSecurity
     implementation group: 'org.springframework.security', name:'spring-security-oauth2-resource-server', version: versions.springSecurity
-    implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.10'
+    implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.11'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.9'
     implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.5.6'
@@ -523,7 +523,7 @@ dependencies {
     testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
-    testImplementation 'com.github.hmcts:fortify-client:1.4.5:all'
+    testImplementation 'com.github.hmcts:fortify-client:1.4.6:all'
 
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
