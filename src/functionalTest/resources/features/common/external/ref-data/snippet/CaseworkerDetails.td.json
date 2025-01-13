@@ -9,7 +9,7 @@
   "last_name": "[[ANYTHING_PRESENT]]",
   "region_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
   "user_type": "[[ANYTHING_PRESENT]]",
-  "user_type_id": 2,
+  "user_type_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
   "suspended": "false",
   "staff_admin": "N",
   "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
