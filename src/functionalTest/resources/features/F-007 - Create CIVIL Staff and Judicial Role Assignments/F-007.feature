@@ -100,7 +100,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (AAA6)
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Hearing Centre Team Leader (AAA6)] as in [S-007.03_AAA6__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader (AAA6 Civil)] as in [S-007.03_AAA6__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role (AAA6)],
@@ -114,7 +114,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (AAA7)
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Hearing Centre Team Leader (AAA7)] as in [S-007.03_AAA7__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader (AAA7 Civil)] as in [S-007.03_AAA7__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role (AAA7)],
@@ -128,7 +128,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor (AAA6)
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA6)] as in [S-007.03a_AAA6__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA6 Civil)] as in [S-007.03a_AAA6__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role + Task Supervisor (AAA6)],
@@ -142,7 +142,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor (AAA7)
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA7)] as in [S-007.03a_AAA7__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA7 Civil)] as in [S-007.03a_AAA7__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role + Task Supervisor (AAA7)],
@@ -156,7 +156,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator (AAA6)
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA6)] as in [S-007.03b_AAA6__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA6 Civil)] as in [S-007.03b_AAA6__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role (AAA6)],
@@ -170,7 +170,7 @@ Feature: F-007 :Create Role Assignments for CIVIL Caseworker and Judicial Users
   @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator (AAA7)
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA7)] as in [S-007.03b_AAA7__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA7 Civil)] as in [S-007.03b_AAA7__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role (AAA7)],

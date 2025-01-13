@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA7)"
+    "to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA7 Civil)"
   ],
 
   "request": {

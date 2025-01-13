@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA6)"
+    "to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA6 Civil)"
   ],
 
   "request": {
