@@ -22,7 +22,7 @@
       "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
       "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
       "location_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
-      "location": "[[ANYTHING_PRESENT]",
+      "location": "[[ANYTHING_PRESENT]]",
       "is_primary": true
     }
   ],
