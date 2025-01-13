@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_04_HC_Admin",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "4",
+  "role": "Hearing Centre Administrator"
+}
