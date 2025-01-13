@@ -27,13 +27,13 @@
 
           "role": [
             {
-              "_extends_": "CaseworkerRole_03_HCTL"
+              "_extends_": "CaseworkerRole_03_HC_TL"
             }
           ],
 
           "work_area": [
             {
-              "_extends_": "WorkArea_AAA7"
+              "_extends_": "WorkArea_AAA7_Civil"
             }
           ]
         }
