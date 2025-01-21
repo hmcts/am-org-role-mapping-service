@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_14_DWP",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "14",
+  "role": "DWP Caseworker"
+}
