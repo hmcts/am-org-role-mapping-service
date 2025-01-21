@@ -105,11 +105,14 @@ end;
 
 /*
  * privatelaw admin "case-allocator" Org role mapping.
+ * Made obsolete in DTSAM-668 - disabled by PRIVATELAW_WA.1_5 flag.
+ * To be removed in DTSAM-TOBECONFIRMED.
  */
 
 rule "privatelaw_case_allocator_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_5.getValue())
   $cap: CaseWorkerAccessProfile(roleId =="3", serviceCode == "ABA5", !suspended,
                          caseAllocatorFlag == "Y")
 then
@@ -132,6 +135,37 @@ then
       .attributes(attribute)
       .build());
       logMsg("Rule : privatelaw_case_allocator_admin_org_role");
+end;
+
+/*
+ * privatelaw admin "case-allocator" Org role mapping. v1_5
+ */
+
+rule "v1_5_privatelaw_case_allocator_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_5.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("3","4"), serviceCode == "ABA5", !suspended,
+                         caseAllocatorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .authorisations($cap.getSkillCodes())
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : v1_5_privatelaw_case_allocator_admin_org_role");
 end;
 
 /*
