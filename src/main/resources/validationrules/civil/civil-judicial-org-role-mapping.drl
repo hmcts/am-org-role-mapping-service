@@ -21,10 +21,13 @@ import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuild
 
 /*
  * CIVIL "judge" Org role mapping.
+  * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+  * To be removed in DTSAM-591.
  */
 rule "civil_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL District Judge-Salaried", "CIVIL Presiding Judge-Salaried",
                                         "CIVIL Resident Judge-Salaried", "CIVIL Tribunal Judge-Salaried"))
 then
@@ -57,11 +60,89 @@ then
 end;
 
 /*
+ * CIVIL "district-judge" Org role mapping.
+ */
+rule "civil_district_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office == "CIVIL District Judge-Salaried")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
+                                                                     "multi_track_decision_making_work," +
+                                                                     "intermediate_track_decision_making_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("district-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : civil_district_judge_org_role");
+end;
+
+/*
+ * CIVIL "deputy-district-judge" Org role mapping.
+ */
+rule "civil_deputy_district_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office in ("CIVIL Deputy District Judge-Fee-Paid",
+                                        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
+                                        "CIVIL District Judge (sitting in retirement)-Fee-Paid"))
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+   $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
+                                                                     "multi_track_decision_making_work," +
+                                                                     "intermediate_track_decision_making_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("deputy-district-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($bk.getBeginTime())
+      .endTime($bk.getEndTime())
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : civil_deputy_district_judge_org_role");
+end;
+
+/*
  * CIVIL "judge" Org role mapping.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "v11_civil_judge_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_1.getValue())
+  $f: FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_1.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried","CIVIL Circuit Judge-Salaried",
                                         "CIVIL Specialist Circuit Judge-Salaried","CIVIL Senior Circuit Judge-Salaried",
                                          "CIVIL High Court Judge-Salaried"))
@@ -91,10 +172,49 @@ then
 end;
 
 /*
+ * CIVIL "judge" Org role mapping.
+ */
+rule "v21_civil_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried","CIVIL Circuit Judge-Salaried",
+                                         "CIVIL Specialist Circuit Judge-Salaried","CIVIL Senior Circuit Judge-Salaried",
+                                         "CIVIL High Court Judge-Salaried", "CIVIL District Judge-Salaried",
+                                         "CIVIL Presiding Judge-Salaried", "CIVIL Resident Judge-Salaried",
+                                         "CIVIL Tribunal Judge-Salaried"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v21_civil_judge_org_role");
+end;
+
+/*
  * CIVIL "judge" Org role mapping (multi region - see DTSAM-353).
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "civil_judge_org_role_multi_region"
 when
+  $f: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office == "CIVIL Employment Judge-Salaried")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -132,11 +252,57 @@ then
 end;
 
 /*
+ * CIVIL "judge" Org role mapping (multi region - see DTSAM-353).
+ */
+rule "v21_civil_judge_org_role_multi_region"
+when
+  $f: FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office == "CIVIL Employment Judge-Salaried")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications"));
+
+   RoleAssignment ra = RoleAssignment.builder()
+                             .actorIdType(ActorIdType.IDAM)
+                             .actorId($joh.getUserId())
+                             .roleCategory(RoleCategory.JUDICIAL)
+                             .roleType(RoleType.ORGANISATION)
+                             .roleName("judge")
+                             .grantType(GrantType.STANDARD)
+                             .classification(Classification.PUBLIC)
+                             .readOnly(false)
+                             .beginTime($joh.getBeginTime())
+                             .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+                             .attributes(attribute)
+                             .authorisations($joh.getTicketCodes())
+                             .build();
+
+   // For users with any England/Wales region, create a role assignment for each England/Wales region.
+   List<String> englandWalesRegions = List.of("1", "2", "3", "4", "5", "6", "7");
+   if (englandWalesRegions.contains($joh.getRegionId())) {
+       for (String regionId : englandWalesRegions) {
+           insert(cloneNewRoleAssignmentAndChangeRegion(ra, regionId));
+       }
+   } else {
+       insert(ra);
+   }
+   logMsg("Rule : v21_civil_judge_org_role_multi_region");
+end;
+
+
+/*
  * CIVIL "leadership-judge" Org role mapping.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "civil_leadership_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -164,11 +330,48 @@ then
 end;
 
 /*
+ * CIVIL "leadership-judge" Org role mapping.
+ */
+rule "v21_civil_leadership_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
+                                                                   "access_requests,multi_track_decision_making_work," +
+                                                                   "intermediate_track_decision_making_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("leadership-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v21_civil_leadership_judge_org_role");
+end;
+
+/*
  * CIVIL "circuit-judge" Org role mapping.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "civil_circuit_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL Circuit Judge-Salaried", "CIVIL Specialist Circuit Judge-Salaried",
                                          "CIVIL Senior Circuit Judge-Salaried", "CIVIL High Court Judge-Salaried"))
 
@@ -202,11 +405,49 @@ then
 end;
 
 /*
+ * CIVIL "circuit-judge" Org role mapping.
+ */
+rule "v21_civil_circuit_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office in ( "CIVIL Circuit Judge-Salaried", "CIVIL Specialist Circuit Judge-Salaried",
+                                         "CIVIL Senior Circuit Judge-Salaried", "CIVIL High Court Judge-Salaried"))
+
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
+                                                                     "multi_track_decision_making_work," +
+                                                                     "intermediate_track_decision_making_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("circuit-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v21_civil_circuit_judge_org_role");
+end;
+
+/*
  * CIVIL "task-supervisor" Org role mapping.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
  */
 rule "civil_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -231,6 +472,38 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : civil_task_supervisor_org_role");
+end;
+
+/*
+ * CIVIL "task-supervisor" Org role mapping.
+ */
+rule "v21_civil_task_supervisor_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v21_civil_task_supervisor_org_role");
 end;
 
 /*
@@ -266,10 +539,13 @@ end;
 
 /*
  * CIVIL "fee-paid-judge" Org role mapping.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "civil_fee_paid_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ("CIVIL Deputy Circuit Judge-Fee-Paid",
                                         "CIVIL Deputy District Judge-Fee-Paid",
                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
@@ -304,10 +580,52 @@ then
 end;
 
 /*
+ * CIVIL "fee-paid-judge" Org role mapping.
+ */
+rule "v21_civil_fee_paid_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office in ("CIVIL Deputy Circuit Judge-Fee-Paid",
+                                        "CIVIL Deputy District Judge-Fee-Paid",
+                                        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
+                                        "CIVIL Recorder-Fee-Paid",
+                                        "CIVIL District Judge (sitting in retirement)-Fee-Paid",
+                                        "CIVIL Tribunal Judge-Fee-Paid",
+                                        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications"));
+   attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("fee-paid-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v21_civil_fee_paid_judge_org_role");
+end;
+
+/*
  * CIVIL "fee-paid-judge" Org role mapping (multi region - see DTSAM-353).
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "civil_fee_paid_judge_org_role_multi_region"
 when
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office == "CIVIL Employment Judge-Fee-Paid")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -346,11 +664,58 @@ then
 end;
 
 /*
+ * CIVIL "fee-paid-judge" Org role mapping (multi region - see DTSAM-353).
+ */
+rule "v21_civil_fee_paid_judge_org_role_multi_region"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office == "CIVIL Employment Judge-Fee-Paid")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications"));
+   attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+
+   RoleAssignment ra = RoleAssignment.builder()
+                             .actorIdType(ActorIdType.IDAM)
+                             .actorId($joh.getUserId())
+                             .roleCategory(RoleCategory.JUDICIAL)
+                             .roleType(RoleType.ORGANISATION)
+                             .roleName("fee-paid-judge")
+                             .grantType(GrantType.STANDARD)
+                             .classification(Classification.PUBLIC)
+                             .readOnly(false)
+                             .beginTime($joh.getBeginTime())
+                             .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+                             .attributes(attribute)
+                             .authorisations($joh.getTicketCodes())
+                             .build();
+
+   // For users with any England/Wales region, create a role assignment for each England/Wales region.
+   List<String> englandWalesRegions = List.of("1", "2", "3", "4", "5", "6", "7");
+   if (englandWalesRegions.contains($joh.getRegionId())) {
+       for (String regionId : englandWalesRegions) {
+           insert(cloneNewRoleAssignmentAndChangeRegion(ra, regionId));
+       }
+   } else {
+       insert(ra);
+   }
+   logMsg("Rule : v21_civil_fee_paid_judge_org_role_multi_region");
+end;
+
+
+/*
  * CIVIL "judge" org role (multi region - see DTSAM-353) is created if judicial office holder
  * is a "CIVIL Employment Judge-Fee-Paid" and has a booking.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "civil_judge_org_role_for_fee_paid_judge_multi_region"
 when
+  $f: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office == "CIVIL Employment Judge-Fee-Paid")
   $bk: JudicialBooking(userId == $joh.userId)
 then
@@ -388,6 +753,52 @@ then
        insert(ra);
    }
    logMsg("Rule : civil_judge_org_role_for_fee_paid_judge_multi_region");
+end;
+
+/*
+ * CIVIL "judge" org role (multi region - see DTSAM-353) is created if judicial office holder
+ * is a "CIVIL Employment Judge-Fee-Paid" and has a booking.
+ */
+rule "v21_civil_judge_org_role_for_fee_paid_judge_multi_region"
+when
+  $f: FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office == "CIVIL Employment Judge-Fee-Paid")
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+   $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications"));
+
+   RoleAssignment ra = RoleAssignment.builder()
+                             .actorIdType(ActorIdType.IDAM)
+                             .actorId($joh.getUserId())
+                             .roleCategory(RoleCategory.JUDICIAL)
+                             .roleType(RoleType.ORGANISATION)
+                             .roleName("judge")
+                             .grantType(GrantType.STANDARD)
+                             .classification(Classification.PUBLIC)
+                             .readOnly(false)
+                             .beginTime($bk.getBeginTime())
+                             .endTime($bk.getEndTime())
+                             .attributes(attribute)
+                             .authorisations($joh.getTicketCodes())
+                             .build();
+
+   // For users with any England/Wales region, create a role assignment for each England/Wales region.
+   List<String> englandWalesRegions = List.of("1", "2", "3", "4", "5", "6", "7");
+   if (englandWalesRegions.contains($joh.getRegionId())) {
+       for (String regionId : englandWalesRegions) {
+           insert(cloneNewRoleAssignmentAndChangeRegion(ra, regionId));
+       }
+   } else {
+       insert(ra);
+   }
+   logMsg("Rule : v21_civil_judge_org_role_for_fee_paid_judge_multi_region");
 end;
 
 /*
@@ -433,10 +844,13 @@ end;
 /*
  * CIVIL "circuit-judge" org role can be created by any existing judicial office holder having
  * "CIVIL Deputy Circuit Judge-Fee-Paid" business role.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "civil_circuit_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ("CIVIL Deputy Circuit Judge-Fee-Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
@@ -467,12 +881,55 @@ then
       logMsg("Rule : civil_circuit_judge_org_role_for_fee_paid_judge");
 end;
 /*
+ * CIVIL "circuit-judge" org role can be created by any existing judicial office holder having
+ * "CIVIL Deputy Circuit Judge-Fee-Paid" business role.
+ */
+rule "v21_civil_circuit_judge_org_role_for_fee_paid_judge"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office in ("CIVIL Deputy Circuit Judge-Fee-Paid",
+                                        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid"))
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+   $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
+                                                                     "multi_track_decision_making_work," +
+                                                                     "intermediate_track_decision_making_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("circuit-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($bk.getBeginTime())
+      .endTime($bk.getEndTime())
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v21_civil_circuit_judge_org_role_for_fee_paid_judge");
+end;
+
+/*
  * CIVIL "judge" org role can be created by any existing judicial office holder having
  * "CIVIL Deputy Circuit Judge-Fee-Paid" business role.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "v11_civil_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_1.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ("CIVIL Deputy Circuit Judge-Fee-Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
@@ -506,10 +963,13 @@ end;
 /*
  * CIVIL "judge" org role can be created by any existing judicial office holder having
  * "CIVIL Deputy Judge-Fee-Paid, CIVIL Recorder-Fee-Paid,CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid" business role.
+ * Made obsolete in COT-905 - disabled by CIVIL_WA_2_1 flag.
+ * To be removed in DTSAM-591.
  */
 rule "civil_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ("CIVIL Deputy District Judge-Fee-Paid", "CIVIL Recorder-Fee-Paid",
                                         "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                         "CIVIL District Judge (sitting in retirement)-Fee-Paid",
@@ -542,4 +1002,87 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : civil_judge_org_role_for_fee_paid_judge");
+end;
+
+/*
+ * CIVIL "judge" org role can be created by any existing judicial office holder having
+ * "CIVIL Deputy Judge-Fee-Paid, CIVIL Recorder-Fee-Paid,CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid" business role.
+ * Added in CIVIL Deputy Circuit Judge-Fee-Paid from v11
+ */
+rule "v21_civil_judge_org_role_for_fee_paid_judge"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office in ("CIVIL Deputy District Judge-Fee-Paid", "CIVIL Recorder-Fee-Paid",
+                                        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid",
+                                        "CIVIL District Judge (sitting in retirement)-Fee-Paid",
+                                        "CIVIL Tribunal Judge-Fee-Paid",
+                                        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid",
+                                        "CIVIL Deputy Circuit Judge-Fee-Paid"))
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+   $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($bk.getBeginTime())
+      .endTime($bk.getEndTime())
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v21_civil_judge_org_role_for_fee_paid_judge");
+end;
+
+
+/*
+ * CIVIL "recorder" org role can be created by any existing judicial office holder having
+ * "CIVIL Recorder-Fee-Paid business role.
+ */
+rule "civil_recorder_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $joh: JudicialOfficeHolder(office == "CIVIL Recorder-Fee-Paid")
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+   $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
+                                                                     "multi_track_decision_making_work," +
+                                                                     "intermediate_track_decision_making_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("recorder")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($bk.getBeginTime())
+      .endTime($bk.getEndTime())
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : civil_recorder_org_role");
 end;
