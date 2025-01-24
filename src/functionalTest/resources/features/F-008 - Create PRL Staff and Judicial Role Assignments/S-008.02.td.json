@@ -1,15 +1,15 @@
 {
-  "_guid_": "S-008.04",
-  "title": "must successfully create org role mapping for Hearing Centre Administrator",
+  "_guid_": "S-008.02",
+  "title": "must successfully create org role mapping for Legal Caseworker",
   "_extends_": "F-008_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Hearing Centre Administrator role"
+    "contains the actorId of the user just published who has Legal Caseworker role"
   ],
   "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "47fc96dd-0723-4a5d-9ab6-bebbf7e825da"
+      "actorId": "fc6511de-da6d-46d7-987a-49d5e7cd3ed2"
     }
   },
   "expectedResponse": {
@@ -25,10 +25,10 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
+          "roleName": "hmcts-legal-operations",
           "classification": "PRIVATE",
           "grantType": "BASIC",
-          "roleCategory": "ADMIN",
+          "roleCategory": "LEGAL_OPERATIONS",
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -40,10 +40,10 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-centre-admin",
+          "roleName": "tribunal-caseworker",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "LEGAL_OPERATIONS",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -51,7 +51,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work,hearing_work,applications"
+            "workTypes": "routine_work,hearing_work,applications,decision_making_work"
           }
         },
         {

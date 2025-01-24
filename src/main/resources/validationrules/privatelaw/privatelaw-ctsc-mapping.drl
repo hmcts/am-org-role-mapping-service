@@ -137,7 +137,7 @@ end;
 /*
  * privatelaw ctsc "case-allocator" Org role mapping. V1.5
  * Made obsolete in DTSAM-668 - disabled by PRIVATELAW_WA.1_5 flag.
- * To be removed in DTSAM-TOBECONFIRMED.
+ * To be removed in DTSAM-671.
  */
 
 rule "privatelaw_ctsc_case_allocator_role"
@@ -170,7 +170,7 @@ end;
  * privatelaw ctsc "case-allocator" Org role mapping. V1.5
  */
 
-rule "v1_5_privatelaw_ctsc_case_allocator_role"
+rule "privatelaw_ctsc_case_allocator_role_v1_5"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_5.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("9","10") , serviceCode == "ABA5", !suspended,
@@ -192,7 +192,7 @@ then
       .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
-      logMsg("Rule : v1_5_privatelaw_ctsc_case_allocator_role");
+      logMsg("Rule : privatelaw_ctsc_case_allocator_role_v1_5");
 end;
 
 /*

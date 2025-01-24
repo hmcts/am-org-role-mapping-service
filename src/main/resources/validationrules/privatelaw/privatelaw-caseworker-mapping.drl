@@ -104,7 +104,7 @@ end;
 /*
  * privatelaw staff "case-allocator" Org role mapping.
  * Made obsolete in DTSAM-668 - disabled by PRIVATELAW_WA.1_5 flag.
- * To be removed in DTSAM-TOBECONFIRMED.
+ * To be removed in DTSAM-671.
  */
 
 rule "privatelaw_case_allocator_staff_org_role"
@@ -138,7 +138,7 @@ end;
  * privatelaw staff "case-allocator" Org role mapping. v1_5
  */
 
-rule "v1_5_privatelaw_case_allocator_staff_org_role"
+rule "privatelaw_case_allocator_staff_org_role_v1_5"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_5.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ( "1","2"), serviceCode == "ABA5",
@@ -161,7 +161,7 @@ then
       .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
-      logMsg("Rule : v1_5_privatelaw_case_allocator_staff_org_role");
+      logMsg("Rule : privatelaw_case_allocator_staff_org_role_v1_5");
 end;
 
 /*

@@ -1,15 +1,15 @@
 {
-  "_guid_": "S-008.04",
-  "title": "must successfully create org role mapping for Hearing Centre Administrator",
+  "_guid_": "S-008.10",
+  "title": "must successfully create org role mapping for CTSC Admin",
   "_extends_": "F-008_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Hearing Centre Administrator role"
+    "contains the actorId of the user just published who has CTSC Admin role"
   ],
   "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "47fc96dd-0723-4a5d-9ab6-bebbf7e825da"
+      "actorId": "8ae80d09-9160-49c0-8aab-95f9405ea739"
     }
   },
   "expectedResponse": {
@@ -25,10 +25,10 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
+          "roleName": "hmcts-ctsc",
           "classification": "PRIVATE",
           "grantType": "BASIC",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -40,10 +40,10 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-centre-admin",
+          "roleName": "ctsc",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
