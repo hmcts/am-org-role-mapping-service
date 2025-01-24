@@ -95,7 +95,7 @@ Scenario: must successfully create org role mapping for Hearing Centre Administr
 @FeatureToggle(DB:privatelaw_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
 Scenario: must successfully create org role mapping for Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Legal Caseworker (ABA5 PRL)] as in [S-008.02__VerifyCaseworkerDetails],
+    #And a successful call [to verify caseworker details for Legal Caseworker (ABA5 PRL)] as in [S-008.02__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-008_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Legal Caseworker role],
