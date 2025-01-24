@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Legal Caseworker (ABA5 PRL)"
+    "to verify caseworker details for Legal Caseworker + Case allocator (ABA5 PRL)"
   ],
 
   "request": {

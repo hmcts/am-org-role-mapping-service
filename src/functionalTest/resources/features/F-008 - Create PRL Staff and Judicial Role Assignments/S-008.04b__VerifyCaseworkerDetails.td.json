@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Hearing Centre Administrator (ABA5 PRL)"
+    "to verify caseworker details for Hearing Centre Administrator + Case allocator (ABA5 PRL)"
   ],
 
   "request": {

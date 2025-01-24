@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for CTSC Admin (ABA5 PRL)"
+    "to verify caseworker details for CTSC Admin + Case allocator (ABA5 PRL)"
   ],
 
   "request": {
