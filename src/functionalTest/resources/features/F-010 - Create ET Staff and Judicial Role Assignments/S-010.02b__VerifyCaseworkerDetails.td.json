@@ -22,8 +22,8 @@
 
           "id": "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}",
 
-          "case_allocator": "N",
-          "task_supervisor": "Y",
+          "case_allocator": "Y",
+          "task_supervisor": "N",
 
           "role": [
             {
