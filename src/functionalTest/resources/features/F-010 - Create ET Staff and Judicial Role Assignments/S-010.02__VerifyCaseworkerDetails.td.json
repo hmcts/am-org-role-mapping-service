@@ -27,7 +27,7 @@
 
           "role": [
             {
-              "_extends_": "CaseworkerRole_01_SLC"
+              "_extends_": "CaseworkerRole_02_LC"
             }
           ],
 
