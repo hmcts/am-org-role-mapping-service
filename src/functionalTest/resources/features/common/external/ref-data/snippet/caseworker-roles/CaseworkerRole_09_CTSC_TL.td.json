@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_09_CTSC_TL",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "9",
+  "role": "CTSC Team Leader"
+}

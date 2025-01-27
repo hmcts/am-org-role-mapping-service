@@ -1,0 +1,20 @@
+{
+  "_guid_": "FetchCaseworkersById__Base",
+
+  "productName": "Caseworker Reference Data",
+  "operationName": "Fetch Caseworkers By ID",
+
+  "specs": [],
+
+  "method": "POST",
+  "uri": "{{CRD_URL}}/refdata/case-worker/users/fetchUsersById",
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "body": {
+      "userIds": []
+    }
+  }
+}
