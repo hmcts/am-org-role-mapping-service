@@ -18,7 +18,7 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "task-supervisor",
+          "roleName": "case-allocator",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "LEGAL_OPERATIONS",
