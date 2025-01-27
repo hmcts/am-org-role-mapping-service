@@ -1,13 +1,13 @@
 {
-  "_guid_": "S-010.01a",
-  "title": "must successfully create org role mapping for Senior Legal Caseworker + Task Supervisor",
-  "_extends_": "S-010.01",
+  "_guid_": "S-010.02b",
+  "title": "must successfully create org role mapping for Legal Caseworker + Case allocator",
+  "_extends_": "S-010.02",
   "specs": [
-    "contains the actorId of the user just published who has Senior Legal Caseworker role + Task Supervisor"
+    "contains the actorId of the user just published who has Legal Caseworker role + Case allocator"
   ],
   "request": {
     "pathVariables": {
-      "actorId": "4e6c500b-5fff-4929-8e8d-16259185d823"
+      "actorId": "12ff3c59-ef07-44b7-b946-7133b38d3f89"
     }
   },
   "expectedResponse": {
