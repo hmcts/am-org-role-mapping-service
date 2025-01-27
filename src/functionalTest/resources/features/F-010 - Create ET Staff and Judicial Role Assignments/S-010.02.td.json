@@ -40,7 +40,7 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "senior-tribunal-caseworker",
+          "roleName": "tribunal-caseworker",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "LEGAL_OPERATIONS",
