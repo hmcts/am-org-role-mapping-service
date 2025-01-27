@@ -89,10 +89,6 @@
             "workTypes": "access_requests"
           }
         },
-
-
-
-
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
