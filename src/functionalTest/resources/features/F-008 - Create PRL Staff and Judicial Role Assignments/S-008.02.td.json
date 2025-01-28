@@ -9,7 +9,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "fc6511de-da6d-46d7-987a-49d5e7cd3ed2"
+      "actorId": "9e90e09e-8671-495f-a2c1-25edd7537297"
     }
   },
   "expectedResponse": {
