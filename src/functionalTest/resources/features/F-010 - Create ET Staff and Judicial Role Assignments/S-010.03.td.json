@@ -68,7 +68,8 @@
           "attributes": {
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "EMPLOYMENT"
+            "jurisdiction": "EMPLOYMENT",
+            "region": "[[ANYTHING_PRESENT]]"
           }
         },
         {
@@ -86,6 +87,7 @@
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "EMPLOYMENT",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "access_requests"
           }
         },
