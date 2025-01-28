@@ -1,0 +1,94 @@
+{
+  "_guid_": "S-010.05",
+  "title": "must successfully create org role mapping for Court Clerk",
+  "_extends_": "F-001_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has Court Clerk role"
+  ],
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "f5c7de97-3289-4b61-912a-846c211e138e"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-admin",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "ADMIN",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "clerk",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "EMPLOYMENT",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "hearing_work,routine_work,applications,amendments"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hearing-viewer",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "ADMIN",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "EMPLOYMENT"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "EMPLOYMENT"
+          }
+        }
+      ]
+    }
+  }
+}
