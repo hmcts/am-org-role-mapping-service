@@ -32,7 +32,8 @@
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N"
+            "substantive": "N",
+            "region": "[[ANYTHING_PRESENT]]"
           }
         },
         {
