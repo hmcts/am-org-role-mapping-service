@@ -32,8 +32,7 @@
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N",
-            "region": "[[ANYTHING_PRESENT]]"
+            "substantive": "N"
           }
         },
         {
@@ -51,7 +50,6 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
-            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "routine_work,hearing_work,applications"
           }
         },
