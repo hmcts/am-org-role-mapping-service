@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-010.05b",
+  "_guid_": "S-010.12b",
   "title": "must successfully create org role mapping for Regional Centre Team Leader + Case allocator",
-  "_extends_": "S-010.05",
+  "_extends_": "S-010.12",
   "specs": [
     "contains the actorId of the user just published who has Regional Centre Team Leader role + Case allocator"
   ],
