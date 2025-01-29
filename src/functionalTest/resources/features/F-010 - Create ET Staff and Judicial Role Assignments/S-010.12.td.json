@@ -84,7 +84,7 @@
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
+            "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "EMPLOYMENT",
             "region": "[[ANYTHING_PRESENT]]",
