@@ -25,10 +25,10 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
+          "roleName": "hmcts-ctsc",
           "classification": "PRIVATE",
           "grantType": "BASIC",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -57,7 +57,7 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "regional-centre-admin",
+          "roleName": "ctsc",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",
@@ -67,8 +67,26 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "EMPLOYMENT",
-            "region": "[[ANYTHING_PRESENT]]",
+            "skillcode": "[[ANYTHING_PRESENT]]",
             "workTypes": "hearing_work,routine_work,applications,amendments"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "specific-access-approver-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "EMPLOYMENT",
+            "workTypes": "access_requests"
           }
         },
         {
@@ -79,7 +97,7 @@
           "roleName" : "hearing-viewer",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "ADMIN",
+          "roleCategory" : "CTSC",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
@@ -96,7 +114,7 @@
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
