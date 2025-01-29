@@ -3,7 +3,7 @@
   "title": "must successfully create org role mapping for Regional Centre Team Leader + Task Supervisor",
   "_extends_": "S-010.12",
   "specs": [
-    "contains the actorId of the user just published who has Regional Centre Team Leader + Task Supervisor"
+    "contains the actorId of the user just published who has Regional Centre Team Leader role + Task Supervisor"
   ],
   "request": {
     "pathVariables": {
