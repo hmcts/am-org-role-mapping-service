@@ -35,6 +35,12 @@
             {
               "_extends_": "WorkArea_BHA1_ET"
             }
+          ],
+
+          "skills": [
+            {
+              "_extends_": "Skill__Base"
+            }
           ]
         }
       ]
