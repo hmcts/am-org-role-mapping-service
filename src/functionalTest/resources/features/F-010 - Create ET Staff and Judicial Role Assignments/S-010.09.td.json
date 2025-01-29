@@ -75,7 +75,7 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "specific-access-approver-admin",
+          "roleName": "specific-access-approver-ctsc",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",
