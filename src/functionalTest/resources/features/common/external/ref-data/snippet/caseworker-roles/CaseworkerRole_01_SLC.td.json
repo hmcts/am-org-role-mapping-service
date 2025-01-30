@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_01_SLC",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "1",
+  "role": "Senior Legal Caseworker"
+}
