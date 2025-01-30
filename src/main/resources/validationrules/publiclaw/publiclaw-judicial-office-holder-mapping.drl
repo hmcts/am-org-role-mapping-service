@@ -253,10 +253,13 @@ end;
 
 /*
  * 8: "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid" business role mapping to JOH.
+ * Made obsolete in DTSAM-625 - rule will be disabled when PUBLICLAW_WA_1_6 is enabled.
+ * To be removed in DTSAM-618.
  */
 rule "publiclaw_deputy_district_judge_in_retirement_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_6.getValue())
    $jap: JudicialAccessProfile(appointment == "Deputy District Judge- Sitting in Retirement",
                                appointmentType in ("Fee Paid"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
@@ -276,6 +279,36 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : publiclaw_deputy_district_judge_in_retirement_joh");
+end;
+
+/*
+ * 8: "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid" business role mapping to JOH. v1.6
+ * The creation of the JOH object accommodates for both 'Deputy District Judge- Sitting in Retirement'
+ * and 'Deputy District Judge (sitting in retirement)' appointments. See DTSAM-625.
+ */
+rule "v1_6_publiclaw_deputy_district_judge_in_retirement_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_6.getValue())
+   $jap: JudicialAccessProfile(appointment in ("Deputy District Judge- Sitting in Retirement",
+                                               "Deputy District Judge (sitting in retirement)"),
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v1_6_publiclaw_deputy_district_judge_in_retirement_joh");
 end;
 
 /*
