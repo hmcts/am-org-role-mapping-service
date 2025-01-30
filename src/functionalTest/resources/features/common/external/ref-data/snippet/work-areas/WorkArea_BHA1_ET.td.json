@@ -1,0 +1,7 @@
+{
+  "_guid_": "WorkArea_BHA1_ET",
+  "_extends_": "WorkArea__Base",
+
+  "service_code": "BHA1",
+  "area_of_work": "Employment Claims"
+}

@@ -107,13 +107,21 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "Senior Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer',5,true",
         "Senior Circuit Judge,'','judge,hmcts-judiciary,hearing-viewer',11,false"
     })
+    void verifySalariedAndSptwRoles(String appointment, String assignedRoles, String expectedRoleNames,
+                                    String region, boolean expectMultiRegion) {
+        shouldReturnSalariedRolesFromJudicialAccessProfile(
+                appointment, "Salaried", assignedRoles, expectedRoleNames, region, expectMultiRegion);
+        shouldReturnSalariedRolesFromJudicialAccessProfile(
+                appointment, "SPTW", assignedRoles, expectedRoleNames, region, expectMultiRegion);
+    }
+
     void shouldReturnSalariedRolesFromJudicialAccessProfile(
-            String appointment, String assignedRoles, String expectedRoleNames,
-            String region, boolean expectMultiRegion) {
+            String appointment, String appointmentType, String assignedRoles,
+            String expectedRoleNames, String region, boolean expectMultiRegion) {
 
         clearAndPrepareProfilesForDroolSession(
                 appointment,
-                "Salaried",
+                appointmentType,
                 Arrays.stream(assignedRoles.split(",")).toList(),
                 region,
                 false
@@ -203,7 +211,9 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "Deputy District Judge (MC)- Fee paid,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy District Judge (MC)- Sitting in Retirement,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy District Judge- Fee-Paid,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
+        "Deputy District Judge,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy District Judge- Sitting in Retirement,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
+        "Deputy District Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy High Court Judge,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "High Court Judge- Sitting in Retirement,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Circuit Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
@@ -224,7 +234,9 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "Deputy District Judge (MC)- Fee paid,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy District Judge (MC)- Sitting in Retirement,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy District Judge- Fee-Paid,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
+        "Deputy District Judge,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy District Judge- Sitting in Retirement,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
+        "Deputy District Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy High Court Judge,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "High Court Judge- Sitting in Retirement,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Circuit Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",

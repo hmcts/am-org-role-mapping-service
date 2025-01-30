@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_16_Registrar",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "16",
+  "role": "Registrar"
+}

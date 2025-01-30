@@ -1,5 +1,5 @@
 @F-002
-Feature:F-002: Refresh Role Assignments for CRD and JRD users
+Feature: F-002 : Refresh Role Assignments for CRD and JRD users
 
   Background:
     Given an appropriate test context as detailed in the test data source
