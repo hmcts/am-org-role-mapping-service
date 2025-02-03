@@ -45,9 +45,9 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "CIVIL District Judge-Salaried,'judge,hmcts-judiciary',1,true",
-        "CIVIL District Judge-Salaried,'judge,hmcts-judiciary',5,true",
-        "CIVIL District Judge-Salaried,'judge,hmcts-judiciary',2,false",
+        "CIVIL District Judge-Salaried,'judge,district-judge,hmcts-judiciary',1,true",
+        "CIVIL District Judge-Salaried,'judge,district-judge,hmcts-judiciary',5,true",
+        "CIVIL District Judge-Salaried,'judge,district-judge,hmcts-judiciary',2,false",
 
         "CIVIL Presiding Judge-Salaried,'judge,hmcts-judiciary',1,true",
         "CIVIL Presiding Judge-Salaried,'judge,hmcts-judiciary',5,true",
@@ -105,7 +105,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
 
         List<String> rolesThatRequireRegions = List.of(
-                "judge", "leadership-judge", "task-supervisor", "case-allocator", "circuit-judge"
+                "judge", "leadership-judge", "task-supervisor", "case-allocator", "circuit-judge", "district-judge"
         );
 
         //assertion
@@ -148,11 +148,14 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "CIVIL Deputy Circuit Judge-Fee-Paid,'judge,circuit-judge,fee-paid-judge,hmcts-judiciary',1,false",
-        "CIVIL Deputy District Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
-        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
-        "CIVIL Recorder-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
-        "CIVIL District Judge (sitting in retirement)-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
-        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Deputy District Judge-Fee-Paid,'judge,deputy-district-judge,fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL Deputy District Judge - Sitting in Retirement-Fee-Paid,'judge,deputy-district-judge,fee-paid-judge,"
+             + "hmcts-judiciary',1,false",
+        "CIVIL Recorder-Fee-Paid,'judge,recorder,fee-paid-judge,hmcts-judiciary',1,false",
+        "CIVIL District Judge (sitting in retirement)-Fee-Paid,'judge,deputy-district-judge,fee-paid-judge,"
+             + "hmcts-judiciary',1,false",
+        "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary,circuit-judge'"
+            + ",1,false",
         "CIVIL Tribunal Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,false",
 
         "CIVIL Employment Judge-Fee-Paid,'judge,fee-paid-judge,hmcts-judiciary',1,true",
@@ -216,7 +219,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
 
         List<String> rolesThatRequireRegions = new ArrayList<>(List.of(
-                "judge", "circuit-judge"
+                "judge", "circuit-judge", "deputy-district-judge", "recorder"
         ));
         if (setOffice.equals("CIVIL Employment Judge-Fee-Paid")) {
             rolesThatRequireRegions.add("fee-paid-judge");
@@ -526,51 +529,6 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
             assertEquals(appointmentList.get(0).getStartDate().getDayOfYear(), r.getBeginTime().getDayOfYear());
             assertNull(r.getEndTime());
         });
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "CIVIL Designated Civil Judge-Salaried,Salaried",
-        "CIVIL Circuit Judge-Salaried,Salaried",
-        "CIVIL Specialist Circuit Judge-Salaried,Salaried",
-        "CIVIL Senior Circuit Judge-Salaried,Salaried",
-        "CIVIL High Court Judge-Salaried,Salaried",
-        "CIVIL Deputy Circuit Judge-Fee-Paid,Fee-Paid"
-    })
-    void shouldReturnJudgeRolesV11(String setOffice,String contractType) throws IOException {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
-
-        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
-        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
-                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
-        judicialBooking.setLocationId("location1");
-        judicialBooking.setRegionId("1");
-        judicialBookings = Set.of(judicialBooking);
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("civil_wa_1_1", true));
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-
-        assertEquals(1, roleAssignments.size());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals("judge", roleAssignments.get(0).getRoleName());
-
-        roleAssignments.forEach(r -> assertEquals(contractType, r.getAttributes().get("contractType").asText()));
-
-        RoleAssignment role = roleAssignments.stream().filter(r -> "judge".equals(r.getRoleName())).findFirst()
-                .get();
-
-        if (setOffice.equals("CIVIL Deputy Circuit Judge-Fee-Paid")) {
-            assertNotNull(role.getAttributes().get("baseLocation"));
-        } else {
-            assertNull(role.getAttributes().get("baseLocation"));
-        }
-
-        assertNotNull(role.getAttributes().get("region"));
     }
 }
 
