@@ -19,11 +19,16 @@ import uk.gov.hmcts.reform.orgrolemapping.util.PersistenceUtil;
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
 public class FeatureFlagController {
 
-    @Autowired
-    PersistenceService persistenceService;
+    private final PersistenceService persistenceService;
+    private final PersistenceUtil persistenceUtil;
 
     @Autowired
-    PersistenceUtil persistenceUtil;
+    public FeatureFlagController(PersistenceService persistenceService,
+                                 PersistenceUtil persistenceUtil) {
+        this.persistenceService = persistenceService;
+        this.persistenceUtil = persistenceUtil;
+    }
+
 
     @GetMapping(value = "/am/role-mapping/fetchFlagStatus")
     public ResponseEntity<Object> getFeatureFlag(@RequestParam(value = "flagName") String flagName,
@@ -43,4 +48,5 @@ public class FeatureFlagController {
         return ResponseEntity.ok(persistenceService.persistFlagConfig(flagConfig));
 
     }
+
 }

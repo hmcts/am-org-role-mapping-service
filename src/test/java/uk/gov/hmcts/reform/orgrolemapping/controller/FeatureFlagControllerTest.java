@@ -1,14 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -19,6 +12,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FlagRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import uk.gov.hmcts.reform.orgrolemapping.util.PersistenceUtil;
 
+import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class FeatureFlagControllerTest {
 
     @Mock
@@ -27,12 +26,12 @@ class FeatureFlagControllerTest {
     @Mock
     private PersistenceUtil persistenceUtil;
 
-    @InjectMocks
-    private final FeatureFlagController sut = new FeatureFlagController();
+    private FeatureFlagController sut;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        sut = new FeatureFlagController(persistenceService, persistenceUtil);
     }
 
     @Test
@@ -74,4 +73,5 @@ class FeatureFlagControllerTest {
         assertNotNull(responseEntity.getBody());
 
     }
+
 }

@@ -1,24 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctRoleAssignments;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import feign.FeignException;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
@@ -45,16 +29,24 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctRoleAssignments;
+
 @Service
 @Slf4j
-@AllArgsConstructor
-@NoArgsConstructor
 public class RequestMappingService<T> {
-    @Autowired
-    private PersistenceService persistenceService;
-
-    @Autowired
-    private EnvironmentConfiguration environmentConfiguration;
 
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
     public static final String JUDICIAL_ORGANISATIONAL_ROLE_MAPPING = "judicial-organisational-role-mapping";
@@ -62,15 +54,24 @@ public class RequestMappingService<T> {
     public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
     public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
 
-    @Autowired
-    private RoleAssignmentService roleAssignmentService;
+    private final PersistenceService persistenceService;
+    private final EnvironmentConfiguration environmentConfiguration;
+    private final RoleAssignmentService roleAssignmentService;
+    private final StatelessKieSession kieSession;
+    private final SecurityUtils securityUtils;
 
     @Autowired
-    private StatelessKieSession kieSession;
-
-    @Autowired
-    private SecurityUtils securityUtils;
-
+    public RequestMappingService(PersistenceService persistenceService,
+                                 EnvironmentConfiguration environmentConfiguration,
+                                 RoleAssignmentService roleAssignmentService,
+                                 StatelessKieSession kieSession,
+                                 SecurityUtils securityUtils) {
+        this.persistenceService = persistenceService;
+        this.environmentConfiguration = environmentConfiguration;
+        this.roleAssignmentService = roleAssignmentService;
+        this.kieSession = kieSession;
+        this.securityUtils = securityUtils;
+    }
 
     public ResponseEntity<Object> createCaseworkerAssignments(Map<String, Set<T>> usersAccessProfiles) {
         return createAssignments(usersAccessProfiles, Collections.emptyList(), UserType.CASEWORKER);
