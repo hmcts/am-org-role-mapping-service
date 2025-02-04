@@ -96,6 +96,90 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-084_DeleteDataForRoleAssignments].
 
+  @S-007.01_AAA6
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker (AAA6)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for Senior Legal Caseworker (AAA6 Civil)] as in [S-007.01_AAA6__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Senior Legal Caseworker role (AAA6)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-007.01_AAA7
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker (AAA7)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for Senior Legal Caseworker (AAA7 Civil)] as in [S-007.01_AAA7__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Senior Legal Caseworker role (AAA7)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-007.01a_AAA6
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker + Task Supervisor (AAA6)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for Senior Legal Caseworker + Task Supervisor (AAA6 Civil)] as in [S-007.01a_AAA6__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Senior Legal Caseworker role + Task Supervisor (AAA6)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-007.01a_AAA7
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker + Task Supervisor (AAA7)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for Senior Legal Caseworker + Task Supervisor (AAA7 Civil)] as in [S-007.01a_AAA7__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Senior Legal Caseworker role + Task Supervisor (AAA7)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-007.01b_AAA6
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker + Case allocator (AAA6)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for Senior Legal Caseworker + Case allocator (AAA6 Civil)] as in [S-007.01b_AAA6__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Senior Legal Caseworker role (AAA6)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-007.01b_AAA7
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker + Case allocator (AAA7)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for Senior Legal Caseworker + Case allocator (AAA7 Civil)] as in [S-007.01b_AAA7__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Senior Legal Caseworker role (AAA7)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
   @S-007.03_AAA6
   @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (AAA6)
