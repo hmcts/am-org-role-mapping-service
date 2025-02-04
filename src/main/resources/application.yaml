@@ -154,6 +154,7 @@ amqp:
     topic: ${JRD_TOPIC_NAME:test}
     subscription: ${JRD_SUBSCRIPTION_NAME:test}
 
+# NB: LD is not used but legacy configuration is retained, see /config/EnvironmentConfiguration.java
 launchdarkly:
   sdk:
     environment: ${LAUNCH_DARKLY_ENV:local}

@@ -27,12 +27,6 @@ Feature: F-000 : Access Organisation Role Mapping API
     Given a user with [an active caseworker profile],
 
 
-  @S-113
-  @FeatureToggle(DB:iac_1_1=on)
-  Scenario: must access Role Assignment API
-    Given a user with [an active caseworker profile],
-
-
   @S-201
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on)
   Scenario: must access Role Assignment API
