@@ -67,9 +67,11 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "EMPLOYMENT",
-            "skillCode": "[[ANYTHING_PRESENT]]",
             "workTypes": "hearing_work,routine_work,applications,amendments"
-          }
+          },
+          "authorisations": [
+            "[[ANYTHING_PRESENT]]"
+          ]
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
