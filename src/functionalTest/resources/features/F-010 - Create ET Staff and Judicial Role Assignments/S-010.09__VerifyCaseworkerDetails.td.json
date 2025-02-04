@@ -40,7 +40,7 @@
           "skills": [
             {
               "__ordering__": "UNORDERED",
-              "__elementId__": "skill_id"
+              "__elementId__": "skill_code"
             },
             {
               "_extends_": "Skill__Base"
