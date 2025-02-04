@@ -70,7 +70,7 @@
             "workTypes": "hearing_work,routine_work,applications,amendments"
           },
           "authorisations": [
-            "[[ANYTHING_PRESENT]]"
+            "SKILL:BHA1:ET1Vetting"
           ]
         },
         {

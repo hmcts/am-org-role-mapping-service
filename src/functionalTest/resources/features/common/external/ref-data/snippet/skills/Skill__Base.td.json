@@ -2,6 +2,6 @@
   "_guid_": "Skill__Base",
 
   "skill_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
-  "skill_code": "[[ANYTHING_PRESENT]]",
+  "skill_code": "OVERRIDE",
   "description": "[[ANYTHING_PRESENT]]"
 }

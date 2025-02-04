@@ -39,11 +39,10 @@
 
           "skills": [
             {
-              "__ordering__": "UNORDERED",
-              "__elementId__": "skill_code"
+              "__ordering__": "ORDERED"
             },
             {
-              "_extends_": "Skill__Base"
+              "_extends_": "Skill_BHA1_ET"
             }
           ]
         }
