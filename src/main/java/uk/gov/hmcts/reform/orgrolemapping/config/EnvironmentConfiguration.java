@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Getter
 public class EnvironmentConfiguration {
-    private String environment;
+
+    private final String environment;
 
     @Autowired
     public EnvironmentConfiguration(@Value("${launchdarkly.sdk.environment}") String launchDarklyEnvironment,
