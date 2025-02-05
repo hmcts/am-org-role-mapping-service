@@ -157,10 +157,10 @@ amqp:
 # NB: LD is not used but legacy configuration is retained, see /config/EnvironmentConfiguration.java
 launchdarkly:
   sdk:
-    environment: ${LAUNCH_DARKLY_ENV:local}
+    environment: ${LAUNCH_DARKLY_ENV:}
 
 orm:
-  environment: ${ORM_ENV:}
+  environment: ${ORM_ENV:local}
 
 refresh:
   Job:

@@ -17,12 +17,15 @@ public class EnvironmentConfiguration {
     @Autowired
     public EnvironmentConfiguration(@Value("${launchdarkly.sdk.environment}") String launchDarklyEnvironment,
                                     @Value("${orm.environment}") String ormEnvironment) {
-        if (StringUtils.isNotEmpty(ormEnvironment)) {
+
+        // NB: use legacy LD value if still supplied: but raise a warning
+        if (StringUtils.isNotEmpty(launchDarklyEnvironment)) {
+            this.environment =  launchDarklyEnvironment;
+            log.warn("launchdarkly.sdk.environment used value: " + launchDarklyEnvironment
+                + ".  Please switch to `ORM_ENV` environment variable instead of `LAUNCH_DARKLY_ENV`.");
+        } else {
             this.environment = ormEnvironment;
             log.info("orm.environment used value: " + ormEnvironment);
-        } else {
-            this.environment =  launchDarklyEnvironment;
-            log.info("launchdarkly.sdk.environment used value: " + launchDarklyEnvironment);
         }
 
     }
