@@ -54,6 +54,8 @@ java:
     REFRESH_JOB_INCLUDE_BOOKINGS: false
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
+    # TEST the create Job Configuration process that runs at start up
+    REFRESH_JOB: LEGAL_OPERATIONS-CIVIL-NEW-0-1
   postgresql:
     enabled: true
     primary:
