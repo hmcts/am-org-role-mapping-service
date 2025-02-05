@@ -53,7 +53,8 @@ java:
     ORG_ROLE_MAPPING_DB_OPTIONS: "?stringtype=unspecified"
     REFRESH_JOB_INCLUDE_BOOKINGS: false
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
-    TESTING_SUPPORT_ENABLED: true
+    # TEST with TESTING_SUPPORT_ENABLED set to false
+    TESTING_SUPPORT_ENABLED: false
   postgresql:
     enabled: true
     primary:
