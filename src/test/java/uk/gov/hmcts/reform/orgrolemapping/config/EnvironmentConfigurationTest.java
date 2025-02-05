@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EnvironmentConfigurationTest {
 
     @Test
-    void testEnvironmentConfiguration_shouldReturnOrmValueWhenBothSupplied() {
+    void testGetEnvironment_shouldReturnLaunchDarklyValueWhenBothSupplied() {
 
         // GIVEN
         String launchDarklyEnvironment = "launchDarklyEnvironment";
@@ -19,22 +19,22 @@ class EnvironmentConfigurationTest {
         var cut = new EnvironmentConfiguration(launchDarklyEnvironment, ormEnvironment);
 
         // THEN
-        assertEquals(ormEnvironment, cut.getEnvironment());
+        assertEquals(launchDarklyEnvironment, cut.getEnvironment());
 
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    void testEnvironmentConfiguration_shouldReturnLaunchDarklyValueWhenOrmValueIsNotSupplied(String ormEnvironment) {
+    void testGetEnvironment_shouldReturnOrmValueWhenLaunchDarklyValueNotSupplied(String launchDarklyEnvironment) {
 
         // GIVEN
-        String launchDarklyEnvironment = "launchDarklyEnvironment";
+        String ormEnvironment = "ormEnvironment";
 
         // WHEN
         var cut = new EnvironmentConfiguration(launchDarklyEnvironment, ormEnvironment);
 
         // THEN
-        assertEquals(launchDarklyEnvironment, cut.getEnvironment());
+        assertEquals(ormEnvironment, cut.getEnvironment());
 
     }
 
