@@ -54,8 +54,8 @@
             "workTypes": "decision_making_work,access_requests"
           },
           "authorisations": [
-            "SKILL:AAA6:SPECIFIED_MULTI_TRACK_TRIAL_MANAGEMENT",
-            "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT"
+            "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT",
+            "SKILL:AAA6:SPECIFIED_MULTI_TRACK_TRIAL_MANAGEMENT"
           ]
         },
         {
@@ -77,8 +77,8 @@
             "workTypes": "decision_making_work"
           },
           "authorisations": [
-            "SKILL:AAA6:SPECIFIED_MULTI_TRACK_TRIAL_MANAGEMENT",
-            "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT"
+            "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT",
+            "SKILL:AAA6:SPECIFIED_MULTI_TRACK_TRIAL_MANAGEMENT"
           ]
         },
         {
