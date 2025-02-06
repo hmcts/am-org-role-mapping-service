@@ -50,7 +50,6 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "decision_making_work,access_requests"
           },
           "authorisations": [
