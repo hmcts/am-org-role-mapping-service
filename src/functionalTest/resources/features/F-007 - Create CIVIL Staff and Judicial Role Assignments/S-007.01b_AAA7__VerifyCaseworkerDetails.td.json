@@ -35,6 +35,15 @@
             {
               "_extends_": "WorkArea_AAA7_Civil"
             }
+          ],
+
+          "skills": [
+            {
+              "__ordering__": "ORDERED"
+            },
+            {
+              "_extends_": "Skill_AAA7_CIVIL"
+            }
           ]
         }
       ]
