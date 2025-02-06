@@ -1,9 +1,9 @@
 {
-  "_guid_": "S-007.02_AAA6__VerifyCaseworkerDetails",
+  "_guid_": "S-007.04_AAA6__VerifyCaseworkerDetails",
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Legal Caseworker (AAA6 Civil)"
+    "to verify caseworker details for Hearing Center Administrator (AAA6 Civil)"
   ],
 
   "request": {
@@ -27,7 +27,7 @@
 
           "role": [
             {
-              "_extends_": "CaseworkerRole_02_LC"
+              "_extends_": "CaseworkerRole_04_HC_Admin"
             }
           ],
 
