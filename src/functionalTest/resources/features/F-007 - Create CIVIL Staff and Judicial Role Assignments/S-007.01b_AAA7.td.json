@@ -27,8 +27,7 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "substantive": "N",
-            "region": "[[ANYTHING_PRESENT]]"
+            "substantive": "N"
           },
           "authorisations": [
             "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT",
