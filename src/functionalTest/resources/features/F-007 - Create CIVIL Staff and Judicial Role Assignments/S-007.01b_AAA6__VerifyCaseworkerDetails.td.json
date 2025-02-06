@@ -39,10 +39,14 @@
 
           "skills": [
             {
-              "__ordering__": "ORDERED"
+              "__ordering__": "UNORDERED",
+              "__elementId__": "skill_code"
             },
             {
-              "_extends_": "Skill_AAA6_CIVIL"
+              "_extends_": "Skill_AAA6_CIVIL_CCMC"
+            },
+            {
+              "_extends_": "Skill_AAA7_CIVIL_CCMC"
             }
           ]
         }

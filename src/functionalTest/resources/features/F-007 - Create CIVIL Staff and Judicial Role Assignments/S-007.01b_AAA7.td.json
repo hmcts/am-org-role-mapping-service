@@ -31,7 +31,8 @@
             "region": "[[ANYTHING_PRESENT]]"
           },
           "authorisations": [
-            "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT"
+            "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT",
+            "SKILL:AAA6:SPECIFIED_MULTI_TRACK_TRIAL_MANAGEMENT"
           ]
         }
       ]
