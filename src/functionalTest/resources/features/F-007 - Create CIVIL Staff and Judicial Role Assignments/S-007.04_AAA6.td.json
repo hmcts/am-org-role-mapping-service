@@ -25,10 +25,10 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-legal-operations",
+          "roleName": "hmcts-admin",
           "classification": "PRIVATE",
           "grantType": "BASIC",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "ADMIN",
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -40,17 +40,18 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "tribunal-caseworker",
+          "roleName": "hearing-centre-admin",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "ADMIN",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "workTypes": "decision_making_work"
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "hearing_work,multi_track_hearing_work,intermediate_track_hearing_work,routine_work"
           },
           "authorisations": [
             "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
@@ -65,7 +66,7 @@
           "roleName" : "hearing-viewer",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
+          "roleCategory" : "ADMIN",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
@@ -82,7 +83,7 @@
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
+          "roleCategory": "ADMIN",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {

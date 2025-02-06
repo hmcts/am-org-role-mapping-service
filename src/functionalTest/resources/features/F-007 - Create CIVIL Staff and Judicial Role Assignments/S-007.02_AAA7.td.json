@@ -40,28 +40,6 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "senior-tribunal-caseworker",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "CIVIL",
-            "workTypes": "decision_making_work,access_requests"
-          },
-          "authorisations": [
-            "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT",
-            "SKILL:AAA6:SPECIFIED_MULTI_TRACK_TRIAL_MANAGEMENT"
-          ]
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
           "roleName": "tribunal-caseworker",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
