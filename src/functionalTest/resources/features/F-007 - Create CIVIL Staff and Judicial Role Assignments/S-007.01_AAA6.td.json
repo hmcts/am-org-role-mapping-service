@@ -76,7 +76,8 @@
             "workTypes": "decision_making_work"
           },
           "authorisations": [
-            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT",
+            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT"
           ]
         },
         {
