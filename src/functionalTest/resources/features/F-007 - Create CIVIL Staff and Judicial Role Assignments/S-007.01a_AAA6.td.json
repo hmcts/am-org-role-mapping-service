@@ -21,7 +21,7 @@
           "roleName": "task-supervisor",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "LEGAL_OPERATIONS",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -29,8 +29,11 @@
             "jurisdiction": "CIVIL",
             "substantive": "N",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work,hearing_work,access_requests"
-          }
+            "workTypes": "decision_making_work,access_requests"
+          },
+          "authorisations": [
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
         }
       ]
     }

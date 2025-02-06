@@ -51,7 +51,29 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,multi_track_hearing_work,intermediate_track_hearing_work,routine_work"
+            "workTypes": "decision_making_work,access_requests"
+          },
+          "authorisations": [
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "tribunal-caseworker",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "decision_making_work"
           },
           "authorisations": [
             "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
@@ -65,7 +87,7 @@
           "roleName" : "hearing-viewer",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "ADMIN",
+          "roleCategory" : "LEGAL_OPERATIONS",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
