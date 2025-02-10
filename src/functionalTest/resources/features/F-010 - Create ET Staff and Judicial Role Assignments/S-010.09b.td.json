@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-010.09b",
+  "title": "must successfully create org role mapping for CTSC Team Leader + Case allocator",
+  "_extends_": "S-010.09",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Team Leader role + Case allocator"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "08af807a-0ce9-4623-b12d-97987a833621"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "EMPLOYMENT",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
