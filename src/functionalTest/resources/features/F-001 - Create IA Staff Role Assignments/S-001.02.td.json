@@ -57,28 +57,13 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-legal-operations",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": true,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-legal-operations",
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
+          "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",

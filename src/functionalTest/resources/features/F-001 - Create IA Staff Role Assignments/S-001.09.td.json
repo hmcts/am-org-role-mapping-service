@@ -54,7 +54,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "IA",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,upper_tribunal,routine_work"
+            "workTypes": "hearing_work, upper_tribunal, routine_work"
           }
         },
         {
