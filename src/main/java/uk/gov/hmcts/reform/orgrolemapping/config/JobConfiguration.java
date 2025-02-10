@@ -25,8 +25,7 @@ public class JobConfiguration implements CommandLineRunner {
     @Autowired
     public JobConfiguration(RefreshJobConfigService refreshJobConfigService,
                             @Value("${refresh.job.update}") String jobDetail,
-                            @Value("${refresh.Job.updateOverride}") Boolean  jobDetailAllowUpdate
-                            ) {
+                            @Value("${refresh.Job.updateOverride}") Boolean jobDetailAllowUpdate) {
         this.refreshJobConfigService = refreshJobConfigService;
         this.jobDetail = jobDetail;
         this.jobDetailAllowUpdate = BooleanUtils.isTrue(jobDetailAllowUpdate);
