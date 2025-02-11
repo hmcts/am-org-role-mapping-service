@@ -32,7 +32,7 @@
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
+            "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]"
           }
         },
@@ -50,8 +50,7 @@
           "attributes" : {
             "substantive" : "Y",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "IA",
-            "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
+            "jurisdiction" : "IA"
           }
         },
         {
