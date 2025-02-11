@@ -1,0 +1,42 @@
+{
+  "_guid_": "S-007.09a_AAA6",
+  "title": "must successfully create org role mapping for CTSC Team Leader + Task Supervisor (AAA6)",
+  "_extends_": "S-007.09_AAA6",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Team Leader role + Task Supervisor (AAA6)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "d11c136a-22b7-468c-9624-0f7dd0ce6129"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "substantive": "N",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "routine_work,hearing_work,access_requests"
+          },
+          "authorisations": [
+            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
+        }
+      ]
+    }
+  }
+}

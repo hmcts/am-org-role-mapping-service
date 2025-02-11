@@ -1,0 +1,42 @@
+{
+  "_guid_": "S-007.09a_AAA7",
+  "title": "must successfully create org role mapping for CTSC Team Leader + Task Supervisor (AAA7)",
+  "_extends_": "S-007.09_AAA7",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Team Leader role + Task Supervisor (AAA7)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "b9c93c02-e4ef-4a3e-91e1-d04b4cbb0966"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "substantive": "N",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "routine_work,hearing_work,access_requests"
+          },
+          "authorisations": [
+            "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT",
+            "SKILL:AAA6:SPECIFIED_MULTI_TRACK_TRIAL_MANAGEMENT"
+          ]
+        }
+      ]
+    }
+  }
+}
