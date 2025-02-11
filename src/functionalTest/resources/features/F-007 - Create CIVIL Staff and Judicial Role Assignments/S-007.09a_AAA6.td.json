@@ -28,7 +28,6 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "substantive": "N",
-            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "routine_work,hearing_work,access_requests"
           },
           "authorisations": [

@@ -27,7 +27,6 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "region": "[[ANYTHING_PRESENT]]",
             "substantive": "N"
           },
           "authorisations": [
