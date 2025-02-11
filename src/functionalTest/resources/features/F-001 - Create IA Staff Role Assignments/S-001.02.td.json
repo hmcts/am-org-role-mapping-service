@@ -21,9 +21,27 @@
           "__elementId__": "roleName"
         },
         {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "[[ANYTHING_PRESENT]]",
+          "roleType" : "ORGANISATION",
+          "roleName" : "tribunal-caseworker",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "IA",
+            "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
+          }
+        },
+        {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "actorId": "[[ANYTHING_PRESENT]]",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
@@ -40,7 +58,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "actorId": "[[ANYTHING_PRESENT]]",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -66,9 +84,8 @@
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA"
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]"
           }
         }
       ]
