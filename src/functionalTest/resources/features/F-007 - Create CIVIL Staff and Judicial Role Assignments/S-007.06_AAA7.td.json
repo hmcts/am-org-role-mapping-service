@@ -77,8 +77,8 @@
             "workTypes": "routine_work,access_requests"
           },
           "authorisations": [
-            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
-            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+            "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT",
+            "SKILL:AAA6:SPECIFIED_MULTI_TRACK_TRIAL_MANAGEMENT"
           ]
         },
         {
