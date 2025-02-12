@@ -173,7 +173,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
   insert(
       RoleAssignment.builder()
