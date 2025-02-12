@@ -213,7 +213,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                         assertEquals("hearing_work,decision_making_work,applications,routine_work",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (Objects.equals("task-supervisor", r.getRoleName())) {
-                        assertEquals("routine_work,access_requests",
+                        assertEquals("access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (Objects.equals("case-allocator", r.getRoleName())) {
                         assertEquals("routine_work",
