@@ -36,7 +36,8 @@ java:
     JUDICIAL_BOOKING_APP_URL: "http://{{ .Release.Name }}-am-judicial-booking-service"
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
-    ORM_ENV: pr
+    # TEST with different value for ORM_ENV variable to test change in behaviour
+    ORM_ENV: aat
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
     CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-crd-topic"
