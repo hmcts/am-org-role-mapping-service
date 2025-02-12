@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
@@ -26,6 +27,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "10,ABA3,'ctsc,hmcts-ctsc',N,N",
+        "10,ABA3,'ctsc,hmcts-ctsc,task-supervisor',Y,N",
         "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N",
         "9,ABA3,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor,"
                 + "case-allocator',Y,Y",
@@ -50,7 +52,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("publiclaw_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -83,6 +85,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "4,ABA3,'hearing-centre-admin,hmcts-admin',N,N",
+        "4,ABA3,'hearing-centre-admin,hmcts-admin,task-supervisor',Y,N",
         "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin',N,N",
         "3,ABA3,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin,"
                 + "task-supervisor,case-allocator',Y,Y",
@@ -110,7 +113,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("publiclaw_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -149,6 +152,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "2,ABA3,'tribunal-caseworker,hmcts-legal-operations',N,N",
+        "2,ABA3,'tribunal-caseworker,hmcts-legal-operations,task-supervisor',Y,N",
         "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
                 + "specific-access-approver-legal-ops',N,N",
         "1,ABA3,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
@@ -177,7 +181,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("publiclaw_wa_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -235,12 +239,14 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("publiclaw_wa_1_0", false));
+                buildExecuteKieSession(getFeatureFlags(false));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
 
-
+    List<FeatureFlag> getFeatureFlags(Boolean status) {
+        return getAllFeatureFlagsToggleByJurisdiction("PUBLICLAW", status);
+    }
 
 }
