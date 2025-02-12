@@ -1,9 +1,9 @@
 {
   "_guid_": "S-007.04_AAA7",
-  "title": "must successfully create org role mapping for Hearing Center Administrator (AAA7)",
+  "title": "must successfully create org role mapping for Hearing Centre Administrator (AAA7)",
   "_extends_": "F-001_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Hearing Center Administrator role (AAA7)"
+    "contains the actorId of the user just published who has Hearing Centre Administrator role (AAA7)"
   ],
   "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",

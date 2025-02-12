@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Hearing Center Administrator (AAA7 Civil)"
+    "to verify caseworker details for Hearing Centre Administrator (AAA7 Civil)"
   ],
 
   "request": {
