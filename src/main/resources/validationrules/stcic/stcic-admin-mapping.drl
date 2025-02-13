@@ -244,3 +244,32 @@ then
       .build());
       logMsg("Rule : st_cic_regional_centre_admin_org_role");
 end;
+
+/*
+ * 9: ST_CIC admin "specific-access-approver-ctsc" Org role mapping.
+ */
+
+rule "st_cic_specific_access_approver_ctsc_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_2.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("3","12"), serviceCode == "BBA2", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-ctsc")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : st_cic_specific_access_approver_ctsc_admin_org_role");
+end;
