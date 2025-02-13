@@ -1,6 +1,6 @@
 {
   "_guid_": "S-012.12a",
-  "title": "must successfully create judicial role mapping for Regional Centre Team Leader",
+  "title": "must successfully create org role mapping for Regional Centre Team Leader",
   "_extends_": "S-012.12",
   "specs": [
     "contains the actorId of the user just published who has Regional Centre Team Leader role + Task Supervisor"

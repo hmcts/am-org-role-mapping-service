@@ -1,6 +1,6 @@
 {
   "_guid_": "S-012.03b",
-  "title": "must successfully create judicial role mapping for Hearing Centre Team Leader",
+  "title": "must successfully create org role mapping for Hearing Centre Team Leader",
   "_extends_": "S-012.03",
   "specs": [
     "contains the actorId of the user just published who has Hearing Centre Team Leader role + Case Allocator"

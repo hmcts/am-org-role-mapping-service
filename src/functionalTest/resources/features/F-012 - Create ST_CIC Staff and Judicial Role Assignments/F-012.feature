@@ -144,8 +144,8 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-130_DeleteDataForRoleAssignments].
 
   @S-012.03
-  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping for Hearing Centre Team Leader
+  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Hearing Centre Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader (BBA2 ST_CIC)] as in [S-012.03__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -158,8 +158,8 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-012.03a
-  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping for Hearing Centre Team Leader + Task Supervisor
+  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (BBA2 ST_CIC)] as in [S-012.03a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -172,8 +172,8 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-012.03b
-  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping for Hearing Centre Team Leader + Case Allocator
+  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case Allocator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case Allocator (BBA2 ST_CIC)] as in [S-012.03b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -186,8 +186,8 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-012.12
-  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping for Regional Centre Team Leader
+  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Regional Centre Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Regional Centre Team Leader (BBA2 ST_CIC)] as in [S-012.12__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -200,8 +200,8 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-012.12a
-  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping for Regional Centre Team Leader + Task Supervisor
+  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Regional Centre Team Leader + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Regional Centre Team Leader + Task Supervisor (BBA2 ST_CIC)] as in [S-012.12a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -214,8 +214,8 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-012.12b
-  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping for Regional Centre Team Leader + Case Allocator
+  @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Regional Centre Team Leader + Case Allocator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Regional Centre Team Leader + Case Allocator (BBA2 ST_CIC)] as in [S-012.12b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
