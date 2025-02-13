@@ -23,8 +23,6 @@ java:
           alias: app-insights-connection-string
         - name: am-org-role-mapping-service-s2s-secret
           alias: AM_ORG_ROLE_MAPPING_SERVICE_SECRET
-        - name: role-assignment-service-LD-SDK-KEY
-          alias: LD_SDK_KEY
         - name: orm-IDAM-CLIENT-ID
           alias: ORM_IDAM_CLIENT_ID
         - name: orm-IDAM-CLIENT-SECRET
@@ -38,7 +36,7 @@ java:
     JUDICIAL_BOOKING_APP_URL: "http://{{ .Release.Name }}-am-judicial-booking-service"
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
-    LAUNCH_DARKLY_ENV: pr
+    ORM_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
     CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-crd-topic"
@@ -56,7 +54,6 @@ java:
     REFRESH_JOB_INCLUDE_BOOKINGS: false
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
-    RUN_LD_ON_STARTUP: true
   postgresql:
     enabled: true
     primary:
@@ -116,6 +113,7 @@ am-role-assignment-service:
       ROLE_ASSIGNMENT_IDAM_ADMIN_USERID: "ras-validation-system@hmcts.net"
       APPLICATION_LOGGING_LEVEL: INFO
       BYPASS_ORG_DROOL_RULE: true
+      # TODO: switch over from `LAUNCH_DARKLY_ENV` to `RAS_ENV` after DTSAM-492 hmcts/am-role-assignment-service#2334
       LAUNCH_DARKLY_ENV: pr
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
