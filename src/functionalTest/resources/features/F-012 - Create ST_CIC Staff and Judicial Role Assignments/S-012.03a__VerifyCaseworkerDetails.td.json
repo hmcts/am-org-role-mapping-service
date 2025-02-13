@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Hearing Centre Team Leader (BBA2 ST_CIC)"
+    "to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (BBA2 ST_CIC)"
   ],
 
   "request": {
