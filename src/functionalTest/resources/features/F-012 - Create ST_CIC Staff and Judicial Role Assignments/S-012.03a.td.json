@@ -32,7 +32,7 @@
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N",
+            "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "ST_CIC",
             "workTypes": "applications,hearing_work,routine_work,priority"
@@ -50,7 +50,7 @@
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N",
+            "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "ST_CIC",
             "workTypes": "applications,hearing_work,routine_work,priority"
