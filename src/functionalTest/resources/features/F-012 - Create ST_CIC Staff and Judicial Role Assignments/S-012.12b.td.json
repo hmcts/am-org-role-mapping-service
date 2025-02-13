@@ -1,9 +1,9 @@
 {
   "_guid_": "S-012.12b",
-  "title": "must successfully create judicial role mapping for Hearing Centre Team Leader",
+  "title": "must successfully create judicial role mapping for Regional Centre Team Leader",
   "_extends_": "F-012_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Hearing Centre Team Leader role + Case Allocator"
+    "contains the actorId of the user just published who has Regional Centre Team Leader role + Case Allocator"
   ],
   "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
