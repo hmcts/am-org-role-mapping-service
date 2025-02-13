@@ -33,7 +33,7 @@
 
           "work_area": [
             {
-              "_extends_": "WorkArea_ABA_FPL"
+              "_extends_": "WorkArea_ABA3_FPL"
             }
           ]
         }
