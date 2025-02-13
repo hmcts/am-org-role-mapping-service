@@ -44,6 +44,7 @@ public enum FeatureFlagEnum {
     PUBLICLAW_WA_1_4("publiclaw_wa_1_4"),
     PUBLICLAW_WA_1_5("publiclaw_wa_1_5"),
     PUBLICLAW_WA_1_6("publiclaw_wa_1_6"),
+    PUBLICLAW_WA_1_7("publiclaw_wa_1_7"),
     IAC_JRD_1_1("iac_jrd_1_1"),
     PUBLICLAW_HEARING_1_0("publiclaw_hearing_1_0");
 
