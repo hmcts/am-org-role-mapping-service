@@ -50,7 +50,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
@@ -149,9 +148,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private RequestMappingService<UserAccessProfile> requestMappingService;
 
     @MockBean
-    private FeatureConditionEvaluator featureConditionEvaluation;
-
-    @MockBean
     private SecurityUtils securityUtils;
 
     @Mock
@@ -178,7 +174,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
-        doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
     }
