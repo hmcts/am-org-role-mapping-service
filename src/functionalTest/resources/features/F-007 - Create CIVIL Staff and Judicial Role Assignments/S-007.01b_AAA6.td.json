@@ -1,0 +1,40 @@
+{
+  "_guid_": "S-007.01b_AAA6",
+  "title": "must successfully create org role mapping for Senior Legal Caseworker + Case allocator (AAA6)",
+  "_extends_": "S-007.01_AAA6",
+  "specs": [
+    "contains the actorId of the user just published who has Senior Legal Caseworker role + Case allocator (AAA6)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "e83707b3-c7b4-4697-9649-ee0c582b83e5"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "substantive": "N"
+          },
+          "authorisations": [
+            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
+        }
+      ]
+    }
+  }
+}
