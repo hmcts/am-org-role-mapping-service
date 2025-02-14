@@ -23,7 +23,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
