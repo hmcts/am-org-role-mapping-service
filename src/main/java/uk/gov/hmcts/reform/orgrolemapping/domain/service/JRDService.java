@@ -21,4 +21,17 @@ public class JRDService {
     public <T> ResponseEntity<List<T>> fetchJudicialProfiles(JRDUserRequest userRequest) {
         return jrdFeignClient.getJudicialDetailsById(userRequest, userRequest.getSidamIds().size() * 5);
     }
+
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 3))
+    public <T> ResponseEntity<List<T>> fetchJudicialDetailsByServiceName(String serviceName,
+                                                                           Integer pageSize,
+                                                                           Integer pageNumber,
+                                                                           String sortDirection,
+                                                                           String sortColumn) {
+        JRDUserRequest userRequest = JRDUserRequest.builder().ccdServiceNames(serviceName).build();
+        return jrdFeignClient.getJudicialDetailsByServiceName(userRequest, pageSize,
+                pageNumber, sortDirection, sortColumn);
+
+    }
+
 }
