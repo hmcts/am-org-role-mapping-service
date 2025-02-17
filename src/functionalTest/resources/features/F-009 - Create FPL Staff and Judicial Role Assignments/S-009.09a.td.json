@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-009.09a",
+  "title": "must successfully create org role mapping for CTSC Team Leader + Task Supervisor",
+  "_extends_": "S-009.09",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Team Leader role + Task Supervisor"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "d93cf8e6-a54c-4bef-b0c9-b7e4b635188f\t\n"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PUBLICLAW",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
