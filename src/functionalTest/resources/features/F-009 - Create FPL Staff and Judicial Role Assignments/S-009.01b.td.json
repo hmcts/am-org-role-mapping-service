@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-010.01b",
+  "_guid_": "S-009.01b",
   "title": "must successfully create org role mapping for Senior Legal Caseworker + Case allocator",
-  "_extends_": "S-010.01",
+  "_extends_": "S-009.01",
   "specs": [
     "contains the actorId of the user just published who has Senior Legal Caseworker role + Case allocator"
   ],
