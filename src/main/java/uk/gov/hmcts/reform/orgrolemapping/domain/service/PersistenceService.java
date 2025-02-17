@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfig;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
@@ -14,12 +14,16 @@ import java.util.Optional;
 public class PersistenceService {
 
 
-    private RefreshJobsRepository refreshJobsRepository;
-    private FlagConfigRepository flagConfigRepository;
+    private final RefreshJobsRepository refreshJobsRepository;
+    private final FlagConfigRepository flagConfigRepository;
+    private final EnvironmentConfiguration environmentConfiguration;
 
-    public PersistenceService(RefreshJobsRepository refreshJobsRepository, FlagConfigRepository flagConfigRepository) {
+    public PersistenceService(RefreshJobsRepository refreshJobsRepository,
+                              FlagConfigRepository flagConfigRepository,
+                              EnvironmentConfiguration environmentConfiguration) {
         this.refreshJobsRepository = refreshJobsRepository;
         this.flagConfigRepository = flagConfigRepository;
+        this.environmentConfiguration = environmentConfiguration;
     }
 
 
@@ -37,7 +41,7 @@ public class PersistenceService {
 
     public boolean getStatusByParam(String flagName, String envName) {
         if (StringUtils.isEmpty(envName)) {
-            envName = System.getenv(Constants.LAUNCH_DARKLY_ENV);
+            envName = environmentConfiguration.getEnvironment();
         }
         return flagConfigRepository.findByFlagNameAndEnv(flagName, envName).getStatus();
     }
@@ -46,4 +50,5 @@ public class PersistenceService {
         return flagConfigRepository.save(flagConfig);
 
     }
+
 }
