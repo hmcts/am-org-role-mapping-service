@@ -49,7 +49,9 @@
           "attributes": {
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PUBLICLAW"
+            "jurisdiction": "PUBLICLAW",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "hearing_work,routine_work,decision_making_work,applications,access_requests"
           }
         },
         {
@@ -68,7 +70,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,routine_work,applications,amendments,decision_making_work"
+            "workTypes": "hearing_work,decision_making_work,applications,routine_work"
           }
         },
         {
