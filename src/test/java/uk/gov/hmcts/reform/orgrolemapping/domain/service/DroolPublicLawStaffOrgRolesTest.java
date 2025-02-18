@@ -78,6 +78,14 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                     } else if (("ctsc-team-leader").equals(r.getRoleName())) {
                         assertEquals("routine_work,applications,decision_making_work,access_requests,error_management",
                                 r.getAttributes().get("workTypes").asText());
+
+                    } else if (Objects.equals("task-supervisor", r.getRoleName())) {
+                        assertEquals("access_requests",
+                                r.getAttributes().get("workTypes").asText());
+
+                    } else if (Objects.equals("case-allocator", r.getRoleName())) {
+                        assertEquals("routine_work",
+                                r.getAttributes().get("workTypes").asText());
                     }
                 });
     }
@@ -141,6 +149,12 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                         assertEquals("routine_work,access_requests",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (("hearing-centre-admin").equals(r.getRoleName())) {
+                        assertEquals("routine_work",
+                                r.getAttributes().get("workTypes").asText());
+                    } else if (Objects.equals("task-supervisor", r.getRoleName())) {
+                        assertEquals("access_requests",
+                                r.getAttributes().get("workTypes").asText());
+                    } else if (Objects.equals("case-allocator", r.getRoleName())) {
                         assertEquals("routine_work",
                                 r.getAttributes().get("workTypes").asText());
                     }
