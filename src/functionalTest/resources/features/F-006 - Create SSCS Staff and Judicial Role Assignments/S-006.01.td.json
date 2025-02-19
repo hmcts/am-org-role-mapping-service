@@ -50,7 +50,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "workTypes": "decision_making_work,access_requests"
+            "region": "[[ANYTHING_PRESENT]]"
           }
         },
         {
@@ -68,7 +68,8 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "workTypes": "decision_making_work"
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
           }
         },
         {
@@ -86,6 +87,7 @@
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "access_requests"
           }
         },
