@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-006.02b",
+  "title": "must successfully create org role mapping for Tribunal Caseworker + Case allocator (BBA3)",
+  "_extends_": "S-006.02",
+  "specs": [
+    "contains the actorId of the user just published who has Tribunal Caseworker role + Case allocator (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "040cc9d6-4f74-412f-937c-20e509f5fd15"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}

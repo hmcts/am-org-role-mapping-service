@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-006.02a",
+  "title": "must successfully create org role mapping for Tribunal Caseworker + Task Supervisor (BBA3)",
+  "_extends_": "S-006.02",
+  "specs": [
+    "contains the actorId of the user just published who has Tribunal Caseworker role + Task Supervisor (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "566f2813-b394-4a0f-8000-30bb90eb5afd"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
