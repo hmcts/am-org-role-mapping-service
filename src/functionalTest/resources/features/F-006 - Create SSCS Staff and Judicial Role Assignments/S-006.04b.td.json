@@ -7,7 +7,7 @@
   ],
   "request": {
     "pathVariables": {
-      "actorId": "876c6336-8309-4e4b-aa28-df79b750a5a6\t\n"
+      "actorId": "876c6336-8309-4e4b-aa28-df79b750a5a6"
     }
   },
   "expectedResponse": {
