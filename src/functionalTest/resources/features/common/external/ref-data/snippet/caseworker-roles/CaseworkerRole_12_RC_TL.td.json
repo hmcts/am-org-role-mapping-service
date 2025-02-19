@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_12_RC_TL",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "12",
+  "role": "Regional Centre Team Leader"
+}

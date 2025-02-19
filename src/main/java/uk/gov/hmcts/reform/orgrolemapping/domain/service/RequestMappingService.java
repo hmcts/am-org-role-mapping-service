@@ -1,5 +1,34 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
+import org.kie.internal.command.CommandFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
+import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,48 +43,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctRoleAssignments;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
-import feign.FeignException;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.kie.api.command.Command;
-import org.kie.api.runtime.ExecutionResults;
-import org.kie.api.runtime.StatelessKieSession;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.internal.command.CommandFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.config.DBFlagConfigurtion;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
-import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 @Service
 @Slf4j
-@AllArgsConstructor
-@NoArgsConstructor
 public class RequestMappingService<T> {
-
-    @Value("${launchdarkly.sdk.environment}")
-    private String environment;
-
-    @Autowired
-    private PersistenceService persistenceService;
 
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
     public static final String JUDICIAL_ORGANISATIONAL_ROLE_MAPPING = "judicial-organisational-role-mapping";
@@ -63,15 +54,24 @@ public class RequestMappingService<T> {
     public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
     public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
 
-    @Autowired
-    private RoleAssignmentService roleAssignmentService;
+    private final PersistenceService persistenceService;
+    private final EnvironmentConfiguration environmentConfiguration;
+    private final RoleAssignmentService roleAssignmentService;
+    private final StatelessKieSession kieSession;
+    private final SecurityUtils securityUtils;
 
     @Autowired
-    private StatelessKieSession kieSession;
-
-    @Autowired
-    private SecurityUtils securityUtils;
-
+    public RequestMappingService(PersistenceService persistenceService,
+                                 EnvironmentConfiguration environmentConfiguration,
+                                 RoleAssignmentService roleAssignmentService,
+                                 StatelessKieSession kieSession,
+                                 SecurityUtils securityUtils) {
+        this.persistenceService = persistenceService;
+        this.environmentConfiguration = environmentConfiguration;
+        this.roleAssignmentService = roleAssignmentService;
+        this.kieSession = kieSession;
+        this.securityUtils = securityUtils;
+    }
 
     public ResponseEntity<Object> createCaseworkerAssignments(Map<String, Set<T>> usersAccessProfiles) {
         return createAssignments(usersAccessProfiles, Collections.emptyList(), UserType.CASEWORKER);
@@ -218,8 +218,8 @@ public class RequestMappingService<T> {
     private List<FeatureFlag> getDBFeatureFlags() {
         List<FeatureFlag> featureFlags = new ArrayList<>();
         Map<String, Boolean> droolFlagStates = new ConcurrentHashMap<>();
-        // building the LDFeature Flag
-        if (environment.equals("prod")) {
+        // building the Feature Flag
+        if (environmentConfiguration.getEnvironment().equals("prod")) {
             droolFlagStates = DBFlagConfigurtion.getDroolFlagStates();
         } else {
             // fetch the latest value from db for lower env
@@ -350,7 +350,8 @@ public class RequestMappingService<T> {
 
     private void getFlagValuesFromDB(Map<String, Boolean> droolFlagStates) {
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
-            var status = persistenceService.getStatusByParam(featureFlagEnum.getValue(), environment);
+            var status = persistenceService.getStatusByParam(featureFlagEnum.getValue(),
+                    environmentConfiguration.getEnvironment());
             droolFlagStates.put(featureFlagEnum.getValue(), status);
         }
     }
