@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-006.01a__VerifyCaseworkerDetails",
+  "_guid_": "S-006.02a__VerifyCaseworkerDetails",
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
