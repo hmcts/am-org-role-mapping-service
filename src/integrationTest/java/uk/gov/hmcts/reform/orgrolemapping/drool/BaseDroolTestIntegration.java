@@ -21,7 +21,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -32,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,9 +79,6 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
     @Mock
     private SecurityContext securityContext;
 
-    @MockBean
-    private FeatureConditionEvaluator featureConditionEvaluation;
-
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -92,8 +87,6 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
-
-        doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
 
         wiremockFixtures.resetRequests();
         wiremockFixtures.stubIdamSystemUser();
