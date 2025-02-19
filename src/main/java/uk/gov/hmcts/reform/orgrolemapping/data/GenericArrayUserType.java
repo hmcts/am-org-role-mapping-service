@@ -54,7 +54,6 @@ public class GenericArrayUserType<T extends Serializable> implements UserType {
         return true;
     }
 
-    @Override
     public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor session,
                               Object owner)
             throws HibernateException, SQLException {
@@ -69,6 +68,16 @@ public class GenericArrayUserType<T extends Serializable> implements UserType {
         @SuppressWarnings("unchecked")
         T javaArray = (T) arr.getArray();
         return javaArray;
+    }
+
+    @Override
+    public Object nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner)
+            throws SQLException {
+        java.sql.Array sqlArray = rs.getArray(position);
+        if (sqlArray == null || rs.wasNull()) {
+            return null;
+        }
+        return sqlArray.getArray();
     }
 
     @Override
@@ -96,9 +105,13 @@ public class GenericArrayUserType<T extends Serializable> implements UserType {
         return typeParameterClass;
     }
 
-    @Override
     public int[] sqlTypes() {
         return new int[]{Types.ARRAY};
+    }
+
+    @Override
+    public int getSqlType() {
+        return Types.ARRAY;
     }
 
 
