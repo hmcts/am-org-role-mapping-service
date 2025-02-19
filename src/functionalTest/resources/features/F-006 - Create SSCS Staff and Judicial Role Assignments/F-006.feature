@@ -246,3 +246,45 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     Then a positive response is received,
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-006.03
+  @FeatureToggle(DB:sscs_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Hearing Centre Team Leader
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader (BBA3 SSCS)] as in [S-006.03__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-006_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role (BBA3)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-006.03a
+  @FeatureToggle(DB:sscs_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (BBA3 SSCS)] as in [S-006.03a__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-006_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role + Task Supervisor (BBA3)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-006.03b
+  @FeatureToggle(DB:sscs_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (BBA3 SSCS)] as in [S-006.03b__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-006_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role + Case allocator (BBA3)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
