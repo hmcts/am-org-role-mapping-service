@@ -51,7 +51,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
+            "workTypes": "pre_hearing,post_hearing,decision_making_work,applications,hearing_work,routine_work,priority"
           }
         },
         {
@@ -67,7 +67,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",
-            "primaryLocation": "20262",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region": "[[ANYTHING_PRESENT]]"
           }
