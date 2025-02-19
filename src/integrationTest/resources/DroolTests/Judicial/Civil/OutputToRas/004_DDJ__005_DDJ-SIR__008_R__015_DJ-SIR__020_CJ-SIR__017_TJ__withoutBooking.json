@@ -25,7 +25,7 @@
         "contractType": "Fee-Paid",
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
-        "workTypes": "hearing_work,decision_making_work,applications"
+        "workTypes": "decision_making_work,applications"
       },
       "authorisations": [
         "294"

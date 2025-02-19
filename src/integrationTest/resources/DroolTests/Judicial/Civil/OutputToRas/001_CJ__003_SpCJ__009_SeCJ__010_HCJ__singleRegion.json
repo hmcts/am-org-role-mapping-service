@@ -25,7 +25,7 @@
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
         "region": "[[REGION_ID]]",
-        "workTypes": "hearing_work,decision_making_work,applications"
+        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
       },
       "authorisations": [
         "294"
@@ -87,7 +87,7 @@
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
         "region": "[[REGION_ID]]",
-        "workTypes": "hearing_work,decision_making_work,applications"
+        "workTypes": "decision_making_work,applications"
       },
       "authorisations": [
         "294"

@@ -12,6 +12,31 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
+      "roleName": "deputy-district-judge",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[JBS_BEGIN_TIME]]",
+      "endTime": "[[JBS_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "baseLocation": "location_jbs",
+        "contractType": "Fee-Paid",
+        "primaryLocation": "location_jbs",
+        "jurisdiction": "CIVIL",
+        "region": "region_jbs",
+        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
+      },
+      "authorisations": [
+        "294"
+      ]
+    },
+    {
+      "id": "[[ANY_UUID]]",
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
       "roleName": "fee-paid-judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
@@ -25,7 +50,7 @@
         "contractType": "Fee-Paid",
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
-        "workTypes": "hearing_work,decision_making_work,applications"
+        "workTypes": "decision_making_work,applications"
       },
       "authorisations": [
         "294"
@@ -88,7 +113,7 @@
         "primaryLocation": "location_jbs",
         "jurisdiction": "CIVIL",
         "region": "region_jbs",
-        "workTypes": "hearing_work,decision_making_work,applications"
+        "workTypes": "decision_making_work,applications"
       },
       "authorisations": [
         "294"
