@@ -17,8 +17,8 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.reform.authorisation.generators.ServiceAuthTokenGenerator;
 
-import javax.annotation.PreDestroy;
-import javax.sql.DataSource;
+import jakarta.annotation.PreDestroy;
+import jakarta.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -258,7 +258,7 @@ public class RefreshOrchestrator {
                         .convertRoleAssignmentResource(entity.getBody());
 
                     responseCodeWithUserId.put(resource.getRoleAssignmentRequest()
-                        .getRequest().getReference(), entity.getStatusCode()
+                        .getRequest().getReference(),  HttpStatus.valueOf(entity.getStatusCode().value())
                     );
                 });
 
