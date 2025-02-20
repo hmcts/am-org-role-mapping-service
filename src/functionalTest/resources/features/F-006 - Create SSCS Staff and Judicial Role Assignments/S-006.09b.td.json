@@ -27,7 +27,7 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region": "[[ANYTHING_PRESENT]]",
+            "region": "11",
             "substantive": "N"
           }
         }
