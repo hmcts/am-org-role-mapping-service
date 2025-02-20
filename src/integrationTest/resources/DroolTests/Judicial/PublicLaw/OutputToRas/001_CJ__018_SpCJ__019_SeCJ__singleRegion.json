@@ -1,0 +1,73 @@
+{
+  "roleRequest": {
+    "clientId": "am_org_role_mapping_service",
+    "requestType": "CREATE",
+    "process": "judicial-organisational-role-mapping",
+    "reference": "[[IDAM_ID]]",
+    "replaceExisting": true
+  },
+  "requestedRoles": [
+    {
+      "id": "[[ANY_UUID]]",
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "hearing-viewer",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "primaryLocation": "123456",
+        "jurisdiction": "PUBLICLAW"
+      },
+      "authorisations": [
+        "316"
+      ]
+    },
+    {
+      "id": "[[ANY_UUID]]",
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "hmcts-judiciary",
+      "classification": "PRIVATE",
+      "grantType": "BASIC",
+      "roleCategory": "JUDICIAL",
+      "readOnly": true,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried"
+      }
+    },
+    {
+      "id": "[[ANY_UUID]]",
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "judge",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "PUBLICLAW",
+        "region": "[[REGION_ID]]",
+        "workTypes": "hearing_work,routine_work,decision_making_work,applications"
+      },
+      "authorisations": [
+        "316"
+      ]
+    }
+  ]
+}
