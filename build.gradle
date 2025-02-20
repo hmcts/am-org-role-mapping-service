@@ -36,7 +36,7 @@ ext['snakeyaml.version'] = '2.0'
 
 def versions = [
         junit          : '5.11.3',
-        junitPlatform   : '1.11.3',
+        junitPlatform  : '1.11.3',
         lombok         : '1.18.36',
         pitest         : '1.17.0',
         reformLogging  : '6.1.7',
@@ -53,7 +53,6 @@ def versions = [
         jacksondata    : '2.18.2',
         drools         : '10.0.0',
         log4JVersion   : '2.24.3',
-        logbackVersion : '1.2.13',
         launchDarklySdk: '5.10.9',
         netty_version  : '4.1.117.Final',
         poi            : '5.4.0'
@@ -487,14 +486,12 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-transport-classes-kqueue', version: versions.netty_version
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.0')
-    testImplementation('com.github.tomakehurst:wiremock-jre8-standalone:2.35.2')
-    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
+    testImplementation group: 'org.wiremock', name: 'wiremock', version: '3.10.0'
 
     pitest 'org.pitest:pitest-junit5-plugin:1.2.1'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.4.0'
-    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.4.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.15.2'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.9.2'
@@ -511,7 +508,7 @@ dependencies {
     }
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
-    testImplementation 'com.github.hmcts:befta-fw:8.7.11'
+    testImplementation 'com.github.hmcts:befta-fw:9.0.2'
 
     testImplementation(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
         exclude group: 'javascript', module: 'jquery'
@@ -521,20 +518,20 @@ dependencies {
     testImplementation group: 'io.github.openfeign', name: 'feign-jackson', version: versions.feign_jackson
 
     testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-    testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+    testImplementation group: 'net.serenity-bdd', name: 'serenity-junit5', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     testImplementation 'com.github.hmcts:fortify-client:1.4.6:all'
 
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-    smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+    smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit5', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     smokeTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
     smokeTestImplementation group: 'commons-io', name: 'commons-io', version: '20030203.000550'
     // AM-467-Serenity report for Integration test
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-    integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+    integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit5', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
@@ -572,14 +569,6 @@ dependencies {
 
 dependencyManagement {
     dependencies {
-        dependencySet(group: 'org.apache.logging.log4j', version: versions.log4JVersion) {
-            entry 'log4j-api'
-            entry 'log4j-to-slf4j'
-        }
-        dependencySet(group: 'ch.qos.logback', version: versions.logbackVersion) {
-            entry 'logback-classic'
-            entry 'logback-core'
-        }
         dependencySet(group: 'com.fasterxml.jackson.core', version: versions.jacksondata) {
             entry 'jackson-databind'
             entry 'jackson-core'
