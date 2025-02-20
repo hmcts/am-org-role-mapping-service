@@ -4,8 +4,7 @@ Feature: F-003 : Create Role Assignments for Judicial Users
   Background:
     Given an appropriate test context as detailed in the test data source
 
-  # Temp disable for DTSAM-786
-  @S-022 @Ignore
+  @S-022
   @FeatureToggle(DB:sscs_hearing_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   @Retryable(maxAttempts=3,delay=500,statusCodes={502,503,504})
   Scenario: must successfully create judicial role mapping for Tribunal Judge - fee paid appointment.
