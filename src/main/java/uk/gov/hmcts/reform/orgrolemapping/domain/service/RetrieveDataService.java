@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

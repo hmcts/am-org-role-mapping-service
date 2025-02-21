@@ -11,11 +11,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.Serializable;
-import java.sql.Array;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.orgrolemapping.data.GenericArrayUserType.SQL_TYPES;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GenericArrayUserTypeTest {
@@ -51,8 +46,7 @@ public class GenericArrayUserTypeTest {
 
     @Test
     public void getStringArrayForNullSafeGet() throws SQLException {
-        String[] str = new String[1];
-        Object response = sut.nullSafeGet(resultSet, str, sharedSessionContractImplementor, new Object());
+        Object response = sut.nullSafeGet(resultSet, 0, sharedSessionContractImplementor, new Object());
         assertNotNull(response);
 
 
@@ -60,13 +54,12 @@ public class GenericArrayUserTypeTest {
 
     @Test
     public void getJavaArrayForNullSafeGet() throws SQLException, IllegalAccessException, InstantiationException {
-        String[] str = {"abc"};
 
         Array arr = getSqlArray();
 
-        when(resultSet.getArray(str[0])).thenReturn(arr);
+        when(resultSet.getArray(1)).thenReturn(arr);
 
-        Object response = sut.nullSafeGet(resultSet, str, sharedSessionContractImplementor, new Object());
+        Object response = sut.nullSafeGet(resultSet, 1, sharedSessionContractImplementor, new Object());
         assertNotNull(response);
         assertEquals("Success Response", response);
 
@@ -78,7 +71,7 @@ public class GenericArrayUserTypeTest {
 
         Object obj = null;
         sut.nullSafeSet(ps, obj, 0, sharedSessionContractImplementor);
-        verify(ps).setNull(0, SQL_TYPES[0]);
+        verify(ps).setNull(0, Types.ARRAY);
 
 
     }
@@ -180,9 +173,9 @@ public class GenericArrayUserTypeTest {
     public void executeSqlTypes() {
 
 
-        int[] response = sut.sqlTypes();
+        int response = sut.getSqlType();
         assertNotNull(response);
-        assertEquals(2003, response[0]);
+        assertEquals(2003, response);
 
     }
 

@@ -25,3 +25,4 @@ target/
 
 lib/applicationinsights-agent-*.jar
 lib/applicationinsights.log
+.vscode/settings.json
