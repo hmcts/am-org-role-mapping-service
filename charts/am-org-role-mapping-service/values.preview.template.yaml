@@ -77,7 +77,8 @@ orm:
 
 am-role-assignment-service:
   java:
-    image: 'hmctspublic.azurecr.io/am/role-assignment-service:latest'
+    # Test with RAS image from DTSAM-492 hmcts/am-role-assignment-service#2334
+    image: 'hmctspublic.azurecr.io/am/role-assignment-service:pr-2334'
     imagePullPolicy: Always
     ingressHost: ras-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-role-assignment-service"
