@@ -73,6 +73,25 @@
           }
         },
         {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "specific-access-approver-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "access_requests"
+          }
+        },
+        {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
