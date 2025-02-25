@@ -554,3 +554,31 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     Then a positive response is received,
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-006.15
+  @FeatureToggle(DB:sscs_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for HMRC Caseworker
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for HMRC Caseworker (BBA3 SSCS)] as in [S-006.15__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-006_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has HMRC Caseworker role (BBA3)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-006.19
+  @FeatureToggle(DB:sscs_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for IBCA Caseworker
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for IBCA Caseworker (BBA3 SSCS)] as in [S-006.19__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-006_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has IBCA Caseworker role (BBA3)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
