@@ -146,7 +146,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.06
-  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for National Business Centre Team leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for National Business Centre Team leader (BFA1 IA)] as in [S-001.06__VerifyCaseworkerDetails],
@@ -160,7 +160,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.07
-  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for National Business Centre Listing team
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for National Business Centre Listing team (BFA1 IA)] as in [S-001.07__VerifyCaseworkerDetails],
@@ -174,7 +174,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.08
-  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for National Business Centre Payments Team
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for National Business Centre Payments Team (BFA1 IA)] as in [S-001.08__VerifyCaseworkerDetails],
@@ -188,7 +188,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.09
-  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC team leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC team leader (BFA1 IA)] as in [S-001.09__VerifyCaseworkerDetails],
@@ -202,7 +202,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.10
-  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Administrator (BFA1 IA)] as in [S-001.10__VerifyCaseworkerDetails],
