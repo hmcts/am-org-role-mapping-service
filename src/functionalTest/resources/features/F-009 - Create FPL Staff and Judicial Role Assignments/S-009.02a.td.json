@@ -1,0 +1,38 @@
+{
+  "_guid_": "S-009.02a",
+  "title": "must successfully create org role mapping for Legal Caseworker + Task Supervisor",
+  "_extends_": "S-009.02",
+  "specs": [
+    "contains the actorId of the user just published who has Legal Caseworker role + Task Supervisor"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "f95f5451-c309-4999-859e-624585424916"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PUBLICLAW",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "access_requests"
+          }
+        }
+      ]
+    }
+  }
+}
