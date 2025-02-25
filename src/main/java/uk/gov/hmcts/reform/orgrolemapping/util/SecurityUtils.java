@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
 
-import com.auth0.jwt.JWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.GrantedAuthority;
@@ -101,7 +100,7 @@ public class SecurityUtils {
 
         if (servletRequestAttributes != null
                 && servletRequestAttributes.getRequest().getHeader(SERVICE_AUTHORIZATION) != null) {
-            return JWT.decode(removeBearerFromToken(servletRequestAttributes.getRequest().getHeader(
+            return com.auth0.jwt.JWT.decode(removeBearerFromToken(servletRequestAttributes.getRequest().getHeader(
                     SERVICE_AUTHORIZATION))).getSubject();
         }
         return null;
