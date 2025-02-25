@@ -76,7 +76,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-010_DeleteDataForRoleAssignments01].
 
   @S-001.01
-  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Senior Tribunal Case Worker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Senior Tribunal Case Worker (BFA1 IA)] as in [S-001.01__VerifyCaseworkerDetails],
@@ -90,7 +90,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.02
-  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Tribunal Case Worker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Tribunal Case Worker (BFA1 IA)] as in [S-001.02__VerifyCaseworkerDetails],
