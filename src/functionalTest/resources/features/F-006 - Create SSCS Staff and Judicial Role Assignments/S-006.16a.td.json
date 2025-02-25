@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-006.16a",
+  "title": "must successfully create org role mapping for Registrar + Task Supervisor (BBA3)",
+  "_extends_": "S-006.16",
+  "specs": [
+    "contains the actorId of the user just published who has Registrar role + Task Supervisor (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "53b0478b-6eff-4b33-88fb-4f0a437376bc"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}

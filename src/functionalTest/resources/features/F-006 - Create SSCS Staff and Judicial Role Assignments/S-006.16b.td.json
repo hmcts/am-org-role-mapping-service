@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-006.16b",
+  "title": "must successfully create org role mapping for Registrar + Case allocator (BBA3)",
+  "_extends_": "S-006.16",
+  "specs": [
+    "contains the actorId of the user just published who has Registrar role + Case allocator (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "91cf0862-b739-49cf-b171-076e7cdf585f"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
