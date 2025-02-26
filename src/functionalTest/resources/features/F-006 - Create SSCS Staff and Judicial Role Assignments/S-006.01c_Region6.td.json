@@ -18,7 +18,7 @@
       "roleAssignmentResponse": [
         {
           "__ordering__": "UNORDERED",
-          "__elementId__": "roleName, attributes.region"
+          "__elementId__": "roleName,attributes.region"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
