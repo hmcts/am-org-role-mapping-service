@@ -166,7 +166,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work"
+            "workTypes": "access_requests"
           }
         }
       ]
