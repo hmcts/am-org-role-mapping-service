@@ -1,0 +1,44 @@
+{
+  "_guid_": "S-006.09c_Region5__VerifyCaseworkerDetails",
+  "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
+
+  "specs": [
+    "to verify caseworker details for CTSC Team Leader + Region 5 (BBA3 SSCS)"
+  ],
+
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "arrayInMap": [
+        {
+          "_extends_": "CaseworkerDetails",
+
+          "id": "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}",
+
+          "case_allocator": "Y",
+          "task_supervisor": "Y",
+
+          "role": [
+            {
+              "_extends_": "CaseworkerRole_09_CTSC_TL"
+            }
+          ],
+
+          "work_area": [
+            {
+              "_extends_": "WorkArea_BBA3_SSCS"
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+}
