@@ -316,13 +316,6 @@ tasks.named('integration') {
 }
 
 dependencies {
-        configurations.all {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'org.bouncycastle' && details.requested.name.contains('jdk15on')) {
-                details.useTarget 'org.bouncycastle:bcprov-jdk18on:1.80'
-            }
-        }
-    }
     implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web', version: versions.springBoot)
@@ -474,6 +467,10 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+    dependencies {
+        dependency("org.bouncycastle:bcprov-jdk18on:1.80")
+        dependency("org.bouncycastle:bcpkix-jdk18on:1.80")
     }
 }
 
