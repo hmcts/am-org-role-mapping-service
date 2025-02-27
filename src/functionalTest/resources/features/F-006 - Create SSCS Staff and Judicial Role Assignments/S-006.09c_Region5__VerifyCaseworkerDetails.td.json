@@ -24,6 +24,7 @@
 
           "case_allocator": "Y",
           "task_supervisor": "Y",
+          "region_id": "5",
 
           "role": [
             {
