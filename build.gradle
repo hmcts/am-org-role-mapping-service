@@ -17,7 +17,7 @@ plugins {
     id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.16'
 }
 
-ext['snakeyaml.version'] = '2.0'
+ext['snakeyaml.version'] = '2.4'
 
 def versions = [
         junit          : '5.11.3',
@@ -328,6 +328,9 @@ dependencies {
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-resource-server', version: versions.springBoot)
 
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.11'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.80'
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.80'
     implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.5.6'
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.8.0'
@@ -372,6 +375,7 @@ dependencies {
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.27.1'
+    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: versions.tomcat
     implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: versions.tomcat
 
