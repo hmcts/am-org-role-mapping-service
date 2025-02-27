@@ -3,8 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.befta;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
-import jakarta.crypto.Mac;
-import jakarta.crypto.spec.SecretKeySpec;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
