@@ -10,7 +10,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.retry.annotation.EnableRetry;
-import org.springframework.scheduling.annotation.EnableAsync;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.reform.authorisation.generators.ServiceAuthTokenGenerator;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
@@ -18,7 +17,6 @@ import uk.gov.hmcts.reform.idam.client.IdamApi;
 @EnableCaching
 @SpringBootApplication(scanBasePackages = {"uk.gov.hmcts.reform.orgrolemapping", "uk.gov.hmcts.reform.idam"})
 @EnableRetry
-@EnableAsync
 @EnableFeignClients(basePackages = {
     "uk.gov.hmcts.reform.orgrolemapping"}, basePackageClasses = {IdamApi.class, ServiceAuthorisationApi.class})
 public class OrgRoleMappingApplication {

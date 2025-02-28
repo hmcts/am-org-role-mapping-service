@@ -30,7 +30,6 @@ def versions = [
         springBoot     : '3.3.9',
         spring         : '6.1.3',
         springSecurity : '6.4.3',
-        tomcat         : '9.0.100',
         pact_version   : '4.1.41',
         rest_assured   : '5.5.0',
         cucumber       : '7.20.1',
@@ -209,7 +208,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = "0.8.12"
 }
 
 task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
@@ -316,7 +315,6 @@ tasks.named('integration') {
 }
 
 dependencies {
-    implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web', version: versions.springBoot)
     implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
