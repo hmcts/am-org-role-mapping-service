@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-010.05a",
+  "title": "must successfully create org role mapping for Court Clerk + Task Supervisor",
+  "_extends_": "S-010.05",
+  "specs": [
+    "contains the actorId of the user just published who has Court Clerk role + Task Supervisor"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "0bee2762-a25b-479f-a890-efd4dddc080d"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "EMPLOYMENT",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}

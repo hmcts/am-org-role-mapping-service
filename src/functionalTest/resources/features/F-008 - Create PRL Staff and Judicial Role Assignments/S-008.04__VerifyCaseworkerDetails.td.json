@@ -1,0 +1,44 @@
+{
+  "_guid_": "S-008.04__VerifyCaseworkerDetails",
+  "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
+
+  "specs": [
+    "to verify caseworker details for Hearing Centre Administrator (ABA5 PRL)"
+  ],
+
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "arrayInMap": [
+        {
+          "_extends_": "CaseworkerDetails",
+
+          "id": "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}",
+
+          "case_allocator": "N",
+          "task_supervisor": "N",
+
+          "role": [
+            {
+              "_extends_": "CaseworkerRole_04_HC_Admin"
+            }
+          ],
+
+          "work_area": [
+            {
+              "_extends_": "WorkArea_ABA5_PRL"
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+}
