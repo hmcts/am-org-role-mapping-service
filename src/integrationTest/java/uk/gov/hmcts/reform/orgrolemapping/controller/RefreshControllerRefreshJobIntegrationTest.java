@@ -454,7 +454,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(200));
+                .andExpect(status().is(400));
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
                 .timeout(WAIT_FOR_ASYNC_TO_TIMEOUT, TimeUnit.SECONDS)
                 .untilAsserted(() ->
