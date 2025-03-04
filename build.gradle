@@ -317,6 +317,7 @@ tasks.named('integration') {
 dependencies {
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web', version: versions.springBoot)
+    implementation(group: 'org.springframework.boot', name:'spring-boot-starter-validation', version: versions.springBoot)
     implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
     implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot)
     implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot)

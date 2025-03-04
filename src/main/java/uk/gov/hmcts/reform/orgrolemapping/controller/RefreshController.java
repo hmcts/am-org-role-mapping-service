@@ -57,7 +57,7 @@ public class RefreshController {
                 @SecurityRequirement(name = AUTHORIZATION),
                 @SecurityRequirement(name = SERVICE_AUTHORIZATION)
             })
-    @ResponseStatus(code = HttpStatus.ACCEPTED)
+    @ResponseStatus(code = HttpStatus.OK)
     @ApiResponse(
             responseCode = "202",
             description = "Accepted",
@@ -87,7 +87,6 @@ public class RefreshController {
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
         return refreshOrchestrator.refresh(jobId, userRequest);
-
     }
 
     @PostMapping(

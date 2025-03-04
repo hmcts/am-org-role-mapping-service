@@ -69,6 +69,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -198,7 +199,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -208,7 +209,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -227,7 +228,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -256,7 +257,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -285,7 +286,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -321,7 +322,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest()))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -331,7 +332,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -452,7 +453,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -483,7 +484,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -493,7 +494,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -521,7 +522,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString())
                         .content(mapper.writeValueAsBytes(userRequest)))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -557,7 +558,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString())
                         .content(mapper.writeValueAsBytes(userRequest)))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -595,7 +596,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString())
                         .content(mapper.writeValueAsBytes(userRequest)))
-                .andExpect(status().is(202))
+                .andExpect(status().is(200))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
