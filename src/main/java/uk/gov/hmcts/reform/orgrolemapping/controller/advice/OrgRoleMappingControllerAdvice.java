@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller.advice;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidReq
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -112,8 +113,8 @@ public class OrgRoleMappingControllerAdvice {
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public void handleUncaughtException(RuntimeException ex) {
+    @ExceptionHandler(ServletException.class)
+    public void handleUncaughtException(ServletException ex) {
         logger.error("Unexpected exception occurred: ", ex);
     }
 
