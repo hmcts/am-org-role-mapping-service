@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller.advice;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.FeignClientException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
@@ -113,8 +113,8 @@ public class OrgRoleMappingControllerAdvice {
         );
     }
 
-    @ExceptionHandler(ServletException.class)
-    public void handleUncaughtException(ServletException ex) {
+    @ExceptionHandler(FeignClientException.class)
+    public void handleUncaughtException(FeignClientException ex) {
         logger.error("Unexpected exception occurred: ", ex);
     }
 
