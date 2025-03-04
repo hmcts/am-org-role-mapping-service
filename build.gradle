@@ -536,6 +536,10 @@ pact {
     }
 }
 
+pactPublish {
+    pactPublish = project.pact.publish
+}
+
 test {
     jacoco{
         excludes = ['org/drools/**/*']
