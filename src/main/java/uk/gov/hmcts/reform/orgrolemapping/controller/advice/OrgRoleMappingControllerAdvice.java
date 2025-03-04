@@ -112,6 +112,11 @@ public class OrgRoleMappingControllerAdvice {
         );
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public void handleUncaughtException(RuntimeException ex) {
+        logger.error("Unexpected exception occurred: ", ex);
+    }
+
     public String getTimeStamp() {
         return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS", Locale.ENGLISH).format(new Date());
     }
