@@ -179,9 +179,7 @@ public class GenericArrayUserTypeTest {
 
 
         int response = sut.getSqlType();
-        assertNotNull(response);
         assertEquals(2003, response);
-
     }
 
 
