@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
+import jakarta.inject.Inject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
-import jakarta.inject.Inject;
 import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -44,10 +44,6 @@ public class SecurityConfiguration {
 
     List<String> anonymousPaths;
     private final JwtAuthenticationConverter jwtAuthenticationConverter;
-
-    public List<String> getAnonymousPaths() {
-        return anonymousPaths;
-    }
 
     public void setAnonymousPaths(List<String> anonymousPaths) {
         this.anonymousPaths = anonymousPaths;
