@@ -84,8 +84,9 @@ public class SecurityConfiguration {
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter)
                         )
                 )
-                .oauth2Client(oauth2Client -> {});
-        
+                .oauth2Client(oauth2Client -> {
+                });
+
         return http.build();
     }
 

@@ -11,7 +11,12 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.Serializable;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
