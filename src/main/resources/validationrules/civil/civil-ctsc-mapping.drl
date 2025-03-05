@@ -45,11 +45,14 @@ end;
 
 /*
  * CIVIL admin "ctsc" Org role mapping.
+ * Made obsolete in COT-945 - disabled by CIVIL_WA_2_2 flag.
+ * To be removed in DTSAM-792.
  */
 
 rule "civil_ctsc_ctsc_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("10"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -73,12 +76,44 @@ then
 end;
 
 /*
+ * CIVIL admin "ctsc" V22 Org role mapping.
+ */
+
+rule "civil_ctsc_ctsc_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("10"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work","query_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("ctsc")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
+      .build());
+      logMsg("Rule : civil_ctsc_ctsc_org_role");
+end;
+
+/*
  * CIVIL admin "ctsc" v11 Org role mapping.
+ * Made obsolete in COT-945 - disabled by CIVIL_WA_2_2 flag.
+ * To be removed in DTSAM-792.
  */
 
 rule "v11_civil_ctsc_ctsc_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_1.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("9"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -100,19 +135,81 @@ then
       .build());
       logMsg("Rule : v11_civil_ctsc_ctsc_org_role");
 end;
+
+/*
+ * CIVIL admin "ctsc" v22 Org role mapping.
+ */
+
+rule "v22_civil_ctsc_ctsc_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("9"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work","query_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("ctsc")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
+      .build());
+      logMsg("Rule : v11_civil_ctsc_ctsc_org_role");
+end;
+
 /*
  * CIVIL admin "ctsc-team-leader" Org role mapping.
+ * Made obsolete in COT-945 - disabled by CIVIL_WA_2_2 flag.
+ * To be removed in DTSAM-792.
  */
 
 rule "civil_ctsc_team_leader_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("9"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("ctsc-team-leader")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
+      .build());
+      logMsg("Rule : civil_ctsc_team_leader_org_role");
+end;
+
+/*
+ * CIVIL admin "ctsc-team-leader" V22 Org role mapping.
+ */
+
+rule "civil_ctsc_team_leader_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("9"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,access_requests","query_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
