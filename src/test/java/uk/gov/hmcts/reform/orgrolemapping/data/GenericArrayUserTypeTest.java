@@ -51,10 +51,10 @@ public class GenericArrayUserTypeTest {
 
     @Test
     public void getStringArrayForNullSafeGet() throws SQLException {
+        Array arr = getSqlArray();
+        when(resultSet.getArray(0)).thenReturn(arr);
         Object response = sut.nullSafeGet(resultSet, 0, sharedSessionContractImplementor, new Object());
         assertNotNull(response);
-
-
     }
 
     @Test
