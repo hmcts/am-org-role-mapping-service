@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.util.Timeout;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,10 +47,9 @@ public class ApplicationConfiguration {
     private CloseableHttpClient getHttpClient() {
         var timeout = 10000;
         RequestConfig config = RequestConfig.custom()
-                                            .setConnectTimeout(timeout)
-                                            .setConnectionRequestTimeout(timeout)
-                                            .setSocketTimeout(timeout)
-                                            .build();
+                .setConnectTimeout(Timeout.ofMilliseconds(timeout))
+                .setResponseTimeout(Timeout.ofMilliseconds(timeout))
+                .build();
 
         return HttpClientBuilder
             .create()
