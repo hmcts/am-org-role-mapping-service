@@ -9,10 +9,10 @@ maintainers:
 dependencies:
   - name: java
     version: 5.3.0
-    repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
+    repository: 'oci://hmctspublic.azurecr.io/helm/v1/repo/'
   - name: servicebus
     version: 1.1.0
-    repository: https://hmctspublic.azurecr.io/helm/v1/repo/
+    repository: oci://hmctspublic.azurecr.io/helm/v1/repo/
     condition: orm.servicebus.enabled
   - name: am-role-assignment-service
     version: 0.0.80
