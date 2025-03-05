@@ -2,7 +2,7 @@ plugins {
     id 'idea'
     id 'java'
     id 'application'
-    id 'uk.gov.hmcts.java' version '0.12.64'
+    id 'uk.gov.hmcts.java' version '0.12.65'
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.7'
@@ -36,7 +36,7 @@ def versions = [
         drools         : '10.0.0',
         log4JVersion   : '2.24.3',
         launchDarklySdk: '5.10.9',
-        netty_version  : '4.1.117.Final',
+        netty_version  : '4.1.119.Final',
         poi            : '5.4.0'
 ]
 
@@ -386,7 +386,7 @@ dependencies {
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.0')
 
-    pitest 'org.pitest:pitest-junit5-plugin:1.2.1'
+    pitest 'org.pitest:pitest-junit5-plugin:1.2.2'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.15.2'
