@@ -50,7 +50,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "workTypes": "routine_work"
+            "workTypes": "routine_work,query_work"
           },
           "authorisations": [
             "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
