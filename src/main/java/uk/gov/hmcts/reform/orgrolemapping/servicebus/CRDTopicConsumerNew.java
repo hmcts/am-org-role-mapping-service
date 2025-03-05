@@ -26,7 +26,7 @@ public class CRDTopicConsumerNew {
 
     @Bean
     @Qualifier("crdConsumer")
-    @ConditionalOnExpression("${amqp.crd.enabled} && ${amqp.crd.newAsb}")
+    @ConditionalOnExpression("${amqp.crd.enabled}")
     CompletableFuture<Void> startCRDProcessorClient()
             throws InterruptedException {
 

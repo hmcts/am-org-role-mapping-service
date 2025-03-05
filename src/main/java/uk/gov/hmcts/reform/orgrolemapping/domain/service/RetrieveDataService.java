@@ -4,7 +4,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.Unprocessa
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -32,10 +30,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.convertProfileToJudicialAccessProfileV2;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
-import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfileV2;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInCaseWorkerProfileResponse;
 
@@ -61,21 +57,16 @@ public class RetrieveDataService {
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
     private final JRDService jrdService;
-    private final boolean v2Active;
-    private final boolean v2FilterAuthorisationsByAppointmentId;
+    private final boolean filterSoftDeletedUsers;
 
     public RetrieveDataService(ParseRequestService parseRequestService,
                                CRDService crdService,
                                JRDService jrdService,
-                               @Value("${feign.client.config.jrdClient.v2Active:false}")
-                               Boolean v2Active,
-                               @Value("${feign.client.config.jrdClient.v2FilterAuthorisationsByAppointmentId:false}")
-                               Boolean v2FilterAuthorisationsByAppointmentId) {
+                               @Value("${refresh.judicial.filterSoftDeletedUsers}") boolean filterSoftDeletedUsers) {
         this.parseRequestService = parseRequestService;
         this.crdService = crdService;
         this.jrdService = jrdService;
-        this.v2Active = BooleanUtils.isTrue(v2Active);
-        this.v2FilterAuthorisationsByAppointmentId = BooleanUtils.isTrue(v2FilterAuthorisationsByAppointmentId);
+        this.filterSoftDeletedUsers = filterSoftDeletedUsers;
     }
 
     public Map<String, Set<UserAccessProfile>> retrieveProfiles(UserRequest userRequest, UserType userType)
@@ -109,13 +100,8 @@ public class RetrieveDataService {
                         (Math.subtractExact(System.currentTimeMillis(), startTime))
                 );
                 if (response.getStatusCode().is2xxSuccessful()) {
-                    if (this.v2Active) {
-                        Objects.requireNonNull(response.getBody()).forEach(o ->
-                                profiles.add(convertInJudicialProfileV2(o)));
-                    } else {
-                        Objects.requireNonNull(response.getBody()).forEach(o ->
-                                profiles.add(convertInJudicialProfile(o)));
-                    }
+                    Objects.requireNonNull(response.getBody()).forEach(o ->
+                            profiles.add(convertInJudicialProfileV2(o)));
                 } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
                     uniqueUsers.forEach(o -> usersAccessProfiles.put(o, Collections.emptySet()));
                 } else {
@@ -189,28 +175,7 @@ public class RetrieveDataService {
                 caseWorkerProfiles.forEach(userProfile -> usersAccessProfiles.put(userProfile.getId(),
                         AssignmentRequestBuilder.convertUserProfileToCaseworkerAccessProfile(userProfile)));
             } else if (!CollectionUtils.isEmpty(validProfiles) && userType.equals(UserType.JUDICIAL)) {
-                if (this.v2Active) {
-                    validProfiles.forEach(userProfile -> {
-                        JudicialProfileV2 judicialProfile = (JudicialProfileV2) userProfile;
-                        usersAccessProfiles.put(judicialProfile.getSidamId(),
-                                convertProfileToJudicialAccessProfileV2(
-                                    judicialProfile,
-                                    v2FilterAuthorisationsByAppointmentId
-                                ));
-                    });
-                    Set<JudicialProfileV2> invalidJProfiles = (Set<JudicialProfileV2>)(Set<?>) invalidProfiles;
-                    invalidJProfiles.forEach(profile ->
-                            usersAccessProfiles.put(profile.getSidamId(), Collections.emptySet()));
-                } else {
-                    validProfiles.forEach(userProfile -> {
-                        JudicialProfile judicialProfile = (JudicialProfile) userProfile;
-                        usersAccessProfiles.put(judicialProfile.getSidamId(),
-                                convertProfileToJudicialAccessProfile(judicialProfile));
-                    });
-                    Set<JudicialProfile> invalidJProfiles = (Set<JudicialProfile>)(Set<?>) invalidProfiles;
-                    invalidJProfiles.forEach(profile ->
-                            usersAccessProfiles.put(profile.getSidamId(), Collections.emptySet()));
-                }
+                addJudicialProfilesToUsersAccessProfiles(validProfiles, usersAccessProfiles, invalidProfiles);
             }
             Map<String, Integer> userAccessProfileCount = new HashMap<>();
             usersAccessProfiles.forEach((k, v) -> {
@@ -228,6 +193,37 @@ public class RetrieveDataService {
         } else {
             log.error("No UserProfile received from RD");
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addJudicialProfilesToUsersAccessProfiles(List<Object> validProfiles,
+                                                          Map<String, Set<UserAccessProfile>> usersAccessProfiles,
+                                                          Set<Object> invalidProfiles) {
+        List<String> softDeletedUsers = new ArrayList<>();
+
+        validProfiles.forEach(userProfile -> {
+            JudicialProfileV2 judicialProfile = (JudicialProfileV2) userProfile;
+            boolean isJudicialUserSoftDeleted = Boolean.parseBoolean(judicialProfile.getDeletedFlag());
+
+            if (isJudicialUserSoftDeleted) {
+                softDeletedUsers.add(judicialProfile.getSidamId());
+            }
+
+            if (filterSoftDeletedUsers && isJudicialUserSoftDeleted) {
+                usersAccessProfiles.put(judicialProfile.getSidamId(), Collections.emptySet());
+            } else {
+                usersAccessProfiles.put(judicialProfile.getSidamId(),
+                        convertProfileToJudicialAccessProfileV2(judicialProfile));
+            }
+        });
+
+        if (!softDeletedUsers.isEmpty()) {
+            log.info("Soft deleted JRD users :: {}", softDeletedUsers);
+        }
+
+        Set<JudicialProfileV2> invalidJProfiles = (Set<JudicialProfileV2>)(Set<?>) invalidProfiles;
+        invalidJProfiles.forEach(profile ->
+                usersAccessProfiles.put(profile.getSidamId(), Collections.emptySet()));
     }
 
 }
