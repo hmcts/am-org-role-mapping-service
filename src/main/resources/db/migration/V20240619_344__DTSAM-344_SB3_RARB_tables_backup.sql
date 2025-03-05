@@ -115,6 +115,7 @@ DO $$
                     ))
                 THEN
                     drop table batch_step_execution;
+                    drop sequence if exists BATCH_STEP_EXECUTION_SEQ;
                 END IF ;
 
                IF (EXISTS
@@ -147,6 +148,7 @@ DO $$
                     ))
                 THEN
                     drop table batch_job_execution;
+                    drop sequence if exists BATCH_JOB_EXECUTION_SEQ;
                 END IF ;
 
                IF (EXISTS
@@ -163,6 +165,8 @@ DO $$
                     ))
                 THEN
                     drop table batch_job_instance;
+                    drop sequence if exists BATCH_JOB_SEQ;
+
                 END IF ;
     END
 $$ ;
