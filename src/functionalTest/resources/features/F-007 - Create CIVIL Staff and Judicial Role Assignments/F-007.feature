@@ -322,7 +322,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.06_AAA6
-  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Team Leader (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader (AAA6 Civil)] as in [S-007.06_AAA6__VerifyCaseworkerDetails],
@@ -336,7 +336,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.06_AAA7
-  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Team Leader (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader (AAA7 Civil)] as in [S-007.06_AAA7__VerifyCaseworkerDetails],
@@ -350,7 +350,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.06a_AAA6
-  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Team Leader + Task Supervisor (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader + Task Supervisor (AAA6 Civil)] as in [S-007.06a_AAA6__VerifyCaseworkerDetails],
@@ -364,7 +364,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.06a_AAA7
-  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Team Leader + Task Supervisor (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader + Task Supervisor (AAA7 Civil)] as in [S-007.06a_AAA7__VerifyCaseworkerDetails],
@@ -378,7 +378,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.06b_AAA6
-  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Team Leader + Case allocator (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader + Case allocator (AAA6 Civil)] as in [S-007.06b_AAA6__VerifyCaseworkerDetails],
@@ -392,7 +392,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.06b_AAA7
-  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Team Leader + Case allocator (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader + Case allocator (AAA7 Civil)] as in [S-007.06b_AAA7__VerifyCaseworkerDetails],
