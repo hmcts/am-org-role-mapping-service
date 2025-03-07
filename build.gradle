@@ -33,7 +33,7 @@ def versions = [
         cucumber       : '7.20.1',
         feign_jackson  : '13.5',
         jacksondata    : '2.18.2',
-        drools         : '10.0.0',
+        drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
         launchDarklySdk: '5.10.9',
         netty_version  : '4.1.119.Final',
