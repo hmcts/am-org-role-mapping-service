@@ -181,6 +181,7 @@ task integration(type: Test, description: 'Runs the integration tests.', group: 
 check.dependsOn integration
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
+    useJUnitPlatform()
     testClassesDirs = sourceSets.smokeTest.output.classesDirs
     classpath = sourceSets.smokeTest.runtimeClasspath
     finalizedBy aggregate
