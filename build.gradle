@@ -344,7 +344,7 @@ dependencies {
     implementation group: 'org.drools', name: 'drools-compiler', version: versions.drools
     implementation group: 'org.drools', name: 'drools-xml-support', version: versions.drools
     implementation group: 'org.drools', name: 'drools-decisiontables', version: versions.drools
-    implementation 'org.mvel:mvel2:2.4.15.Final'
+    implementation group: 'org.mvel', name: 'mvel2', version: '2.5.2.Final'
     implementation(group: 'org.kie', name: 'kie-ci', version: versions.drools) {
         exclude group: 'org.jsoup', module: 'jsoup'
         exclude group: 'org.apache.ant', module: 'ant'
