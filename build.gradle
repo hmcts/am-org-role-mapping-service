@@ -512,6 +512,22 @@ task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test 
     systemProperty 'pact.rootDir', "pacts"
 }
 
+pact {
+    broker {
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
+    }
+    publish {
+        pactDirectory = 'pacts'
+        version = project.pacticipantVersion
+        tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
+    }
+}
+
+pactPublish {
+    pactPublish = project.pact.publish
+}
+
 runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 task runProviderPactVerification(type: Test) {
@@ -527,22 +543,6 @@ task runProviderPactVerification(type: Test) {
 }
 
 runProviderPactVerification.finalizedBy pactVerify
-
-pact {
-    broker {
-     pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
-    }
-    publish {
-        pactDirectory = 'pacts'
-        version = project.pacticipantVersion
-        tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
-        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
-    }
-}
-
-pactPublish {
-    pactPublish = project.pact.publish
-}
 
 test {
     jacoco{
