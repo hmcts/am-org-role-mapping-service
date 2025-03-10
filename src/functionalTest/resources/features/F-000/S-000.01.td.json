@@ -1,0 +1,31 @@
+{
+  "_guid_": "S-000.01",
+  "title": "Verify a particular flag status",
+
+  "productName": "Organisation Role Mapping API",
+  "operationName": "Get Feature Flag Status API",
+
+  "method": "GET",
+  "uri": "/am/role-mapping/fetchFlagStatus",
+
+  "specs": [
+    "an active caseworker profile"
+  ],
+
+  "request": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+		"queryParams": {
+			"flagName": "civil_wa_2_2"
+		}
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "__plainTextValue__": "false"
+    }
+  }
+
+}

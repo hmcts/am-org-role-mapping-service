@@ -10,6 +10,15 @@ Feature: F-000 : Access Organisation Role Mapping API
     Given a user with [an active caseworker profile],
 
 
+  @S-000.01
+  Scenario: Verify a particular flag status
+    Given a user with [an active caseworker profile],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Get Feature Flag Status API] operation of [Organisation Role Mapping API],
+    Then a positive response is received,
+    And the response has all other details as expected
+
+
   @S-110
   Scenario: must access Role Assignment API
     Given a user with [an active caseworker profile],
