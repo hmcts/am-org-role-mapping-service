@@ -407,11 +407,12 @@ dependencies {
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
     testImplementation 'com.github.hmcts:befta-fw:9.0.2'
 
-    testImplementation(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
-        exclude group: 'javascript', module: 'jquery'
-    }
-    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
+    testImplementation group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber
     testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: versions.cucumber
+    testImplementation group: 'io.cucumber', name: 'cucumber-core', version: versions.cucumber
+    testImplementation group: 'io.cucumber', name: 'cucumber-spring', version: versions.cucumber
+    testImplementation group: 'io.cucumber', name: 'cucumber-junit-platform-engine', version: versions.cucumber
+    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
     testImplementation group: 'io.github.openfeign', name: 'feign-jackson', version: versions.feign_jackson
 
     testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
