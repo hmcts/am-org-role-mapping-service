@@ -16,6 +16,9 @@
   },
   "expectedResponse": {
     "_extends_": "Common_200_Response",
-    "body" : null
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    }
   }
 }
