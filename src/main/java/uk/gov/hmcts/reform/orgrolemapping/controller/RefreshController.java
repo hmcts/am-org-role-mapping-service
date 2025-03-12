@@ -87,7 +87,7 @@ public class RefreshController {
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
         refreshOrchestrator.refresh(jobId, userRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PostMapping(
