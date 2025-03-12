@@ -1,11 +1,10 @@
--- PK/FK relationships in table batch_last_run_timestamp
--- batch_last_run_timestamp pk column = id
--- automatically creates when creating bigserial:
---   batch_last_run_timestamp_id_seq (Sequence)
---   nextval('batch_last_run_timestamp_id_seq') NOT null
--- timestamp - without time zone
 CREATE TABLE batch_last_run_timestamp (
     id bigserial PRIMARY KEY,
-    last_user_run_date_time timestamp not null default NOW(),
-    last_organisation_run_date_time timestamp not null default NOW()
+    last_user_run_date_time timestamp without time zone not null,
+    last_organisation_run_date_time timestamp without time zone not null
 );
+
+-- default to a date earlier than any last_updated value for users or organisations in PRD
+-- ensures that on the first run of process 3 & 5, all PRD users/organisations will be retrieved and processed
+insert into batch_last_run_timestamp (id, last_user_run_date_time, last_organisation_run_date_time)
+values (1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
