@@ -42,8 +42,7 @@ class RefreshControllerTest {
     void refreshRoleAssignmentRecords() {
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
-        ResponseEntity<Object> response =
-                ResponseEntity.status(HttpStatus.CREATED).body(userRequest);
+        ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.ACCEPTED).build();
 
         Mockito.when(refreshOrchestrator.refresh(any(),any()))
                 .thenReturn(response);
