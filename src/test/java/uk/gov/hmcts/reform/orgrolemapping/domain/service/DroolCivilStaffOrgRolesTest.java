@@ -41,12 +41,12 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
 
     static {
         expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
-        expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "hearing_work,access_requests");
+        expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "hearing_work,access_requests,query_work");
         expectedRoleNameWorkTypesMap.put("hmcts-ctsc", null);
-        expectedRoleNameWorkTypesMap.put("ctsc", "routine_work");
-        expectedRoleNameWorkTypesMap.put("ctsc-team-leader", "routine_work,access_requests");
+        expectedRoleNameWorkTypesMap.put("ctsc", "routine_work,query_work");
+        expectedRoleNameWorkTypesMap.put("ctsc-team-leader", "routine_work,access_requests,query_work");
         expectedRoleNameWorkTypesMap.put("hearing-centre-admin",
-                "hearing_work,multi_track_hearing_work,intermediate_track_hearing_work,routine_work");
+                "hearing_work,multi_track_hearing_work,intermediate_track_hearing_work,routine_work,query_work");
         expectedRoleNameWorkTypesMap.put("senior-tribunal-caseworker", "decision_making_work,access_requests");
         expectedRoleNameWorkTypesMap.put("tribunal-caseworker", "decision_making_work");
         expectedRoleNameWorkTypesMap.put("hmcts-legal-operations", null);
