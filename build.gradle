@@ -32,7 +32,7 @@ def versions = [
         rest_assured   : '5.5.0',
         cucumber       : '5.7.0',
         feign_jackson  : '13.5',
-        jacksondata    : '2.18.2',
+        jacksondata    : '2.18.3',
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
         launchDarklySdk: '5.10.9',
@@ -363,8 +363,8 @@ dependencies {
 
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
-    implementation group: 'com.azure', name: 'azure-core', version: '1.54.1'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.8'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.55.2'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.9'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.7.3'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
