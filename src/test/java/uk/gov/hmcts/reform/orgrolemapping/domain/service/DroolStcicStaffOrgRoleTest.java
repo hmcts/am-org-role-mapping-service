@@ -1,9 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolStcicStaffOrgRoleTest extends DroolBase {
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
@@ -48,25 +49,26 @@ class DroolStcicStaffOrgRoleTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,specific-access-approver-admin',N,N",
+        "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,"
+                + "specific-access-approver-admin,specific-access-approver-ctsc',N,N",
         "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
-                + "specific-access-approver-admin',Y,N",
+                + "specific-access-approver-admin,specific-access-approver-ctsc',Y,N",
         "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,case-allocator,"
-                + "specific-access-approver-admin',N,Y",
+                + "specific-access-approver-admin,specific-access-approver-ctsc',N,Y",
         "3,BBA2,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
-                + "case-allocator,specific-access-approver-admin',Y,Y",
+                + "case-allocator,specific-access-approver-admin,specific-access-approver-ctsc',Y,Y",
         "4,BBA2,'hearing-centre-admin,hmcts-admin',N,N",
         "4,BBA2,'hearing-centre-admin,hmcts-admin,task-supervisor',Y,N",
         "4,BBA2,'hearing-centre-admin,hmcts-admin,case-allocator',N,Y",
         "4,BBA2,'hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator',Y,Y",
         "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,"
-                + "specific-access-approver-admin',N,N",
+                + "specific-access-approver-admin,specific-access-approver-ctsc',N,N",
         "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,task-supervisor,"
-                + "specific-access-approver-admin',Y,N",
+                + "specific-access-approver-admin,specific-access-approver-ctsc',Y,N",
         "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,"
-                + "case-allocator,specific-access-approver-admin',N,Y",
+                + "case-allocator,specific-access-approver-admin,specific-access-approver-ctsc',N,Y",
         "12,BBA2,'regional-centre-team-leader,regional-centre-admin,hmcts-admin,task-supervisor,"
-                + "case-allocator,specific-access-approver-admin',Y,Y",
+                + "case-allocator,specific-access-approver-admin,specific-access-approver-ctsc',Y,Y",
         "13,BBA2,'regional-centre-admin,hmcts-admin',N,N",
         "13,BBA2,'regional-centre-admin,hmcts-admin,task-supervisor',Y,N",
         "13,BBA2,'regional-centre-admin,hmcts-admin,case-allocator',N,Y",
@@ -91,7 +93,7 @@ class DroolStcicStaffOrgRoleTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("ST_CIC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -122,9 +124,10 @@ class DroolStcicStaffOrgRoleTest extends DroolBase {
             assertEquals(expectedWorkTypes, actualWorkTypes);
             //assert classification
             List<String> rolesWithPublicClassification = List.of("hearing-centre-team-leader", "hearing-centre-admin",
-                                                                "task-supervisor", "case-allocator",
-                                                                "regional-centre-team-leader", "regional-centre-admin",
-                                                                "specific-access-approver-admin");
+                                                                 "task-supervisor", "case-allocator",
+                                                                 "regional-centre-team-leader", "regional-centre-admin",
+                                                                 "specific-access-approver-admin",
+                                                                 "specific-access-approver-ctsc");
             if (rolesWithPublicClassification.contains(r.getRoleName())) {
                 assertEquals(r.getClassification().toString(), "PUBLIC");
             } else {
@@ -132,8 +135,10 @@ class DroolStcicStaffOrgRoleTest extends DroolBase {
             }
             //assert grant type
             List<String> rolesWithStandardGrantType = List.of("hearing-centre-team-leader", "hearing-centre-admin",
-                    "task-supervisor", "case-allocator", "specific-access-approver-admin",
-                    "regional-centre-team-leader", "regional-centre-admin");
+                                                              "task-supervisor", "case-allocator",
+                                                              "regional-centre-team-leader", "regional-centre-admin",
+                                                              "specific-access-approver-admin",
+                                                              "specific-access-approver-ctsc");
             if (rolesWithStandardGrantType.contains(r.getRoleName())) {
                 assertEquals(r.getGrantType().toString(), "STANDARD");
             } else {

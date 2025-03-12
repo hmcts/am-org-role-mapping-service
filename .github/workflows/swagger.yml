@@ -13,4 +13,4 @@ jobs:
       SWAGGER_PUBLISHER_API_TOKEN: ${{ secrets.SWAGGER_PUBLISHER_API_TOKEN }}
     with:
       test_to_run: 'uk.gov.hmcts.reform.orgrolemapping.config.SwaggerPublisher'
-      java_version: 17
+      java_version: 21

@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -258,7 +258,7 @@ public class RefreshOrchestrator {
                         .convertRoleAssignmentResource(entity.getBody());
 
                     responseCodeWithUserId.put(resource.getRoleAssignmentRequest()
-                        .getRequest().getReference(), entity.getStatusCode()
+                        .getRequest().getReference(),  HttpStatus.valueOf(entity.getStatusCode().value())
                     );
                 });
 

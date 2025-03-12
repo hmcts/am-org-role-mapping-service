@@ -7,12 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.FeignClientException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -110,4 +111,11 @@ class OrgRoleMappingControllerAdviceTest {
         assertEquals(exception.getCause(), cause);
     }
 
+    @Test
+    void handleUncaughtException() {
+        FeignClientException invalidRequestException = mock(FeignClientException.class);
+        ResponseEntity<Object> responseEntity = csda.handleUncaughtException(invalidRequestException);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
+    }
 }

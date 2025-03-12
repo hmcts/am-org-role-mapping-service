@@ -3,15 +3,16 @@ package uk.gov.hmcts.reform.orgrolemapping;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lombok.NoArgsConstructor;
-import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.serenitybdd.annotations.WithTag;
+import net.serenitybdd.annotations.WithTags;
+import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.serenitybdd.rest.SerenityRest;
-import net.thucydides.core.annotations.WithTag;
-import net.thucydides.core.annotations.WithTags;
-import org.junit.Before;
+
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,11 +25,11 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
-@RunWith(SpringIntegrationSerenityRunner.class)
+@ExtendWith(SerenityJUnit5Extension.class)
 @NoArgsConstructor
 @WithTags({@WithTag("testType:Smoke")})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SmokeTest {
+class SmokeTest {
     @Autowired
     private EnvironmentConfiguration environmentConfiguration;
 
@@ -46,7 +47,6 @@ public class SmokeTest {
     @MockBean
     private JRDTopicPublisher jrdTopicPublisher;
 
-
     @MockBean
     private CRDMessagingConfiguration crdMessagingConfiguration;
 
@@ -56,16 +56,14 @@ public class SmokeTest {
     @Rule
     public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator(this);
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         config = new UserTokenProviderConfig();
     }
 
-
     @Tag("smoke")
     @Test
-    public void should_receive_response_for_welcomeAPI() {
-
+    void should_receive_response_for_welcomeAPI() {
         var targetInstance = config.getOrgRoleMappingUrl();
         RestAssured.useRelaxedHTTPSValidation();
 
@@ -81,5 +79,4 @@ public class SmokeTest {
     public String getEnvironment() {
         return environmentConfiguration.getEnvironment();
     }
-
 }

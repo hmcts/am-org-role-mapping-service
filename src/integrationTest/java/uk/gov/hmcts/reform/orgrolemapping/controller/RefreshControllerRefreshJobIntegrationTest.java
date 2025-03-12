@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.BooleanUtils;
+import jakarta.inject.Inject;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -33,6 +34,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.FeignClientException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.domain.RefreshJob;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
@@ -52,7 +54,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import javax.inject.Inject;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -69,6 +70,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -208,7 +210,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -331,7 +333,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -445,16 +447,14 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" RefreshJob record With Only JobId to process fail");
         Long jobId = createRefreshJobLegalOperations(NEW, null, null);
 
-        doThrow(RuntimeException.class).when(crdFeignClient).getCaseworkerDetailsByServiceName(
+        doThrow(FeignClientException.class).when(crdFeignClient).getCaseworkerDetailsByServiceName(
                 anyString(), anyInt(), anyInt(), anyString(), anyString());
 
         mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
-                .andReturn();
-
+                .andExpect(status().is(400));
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
                 .timeout(WAIT_FOR_ASYNC_TO_TIMEOUT, TimeUnit.SECONDS)
                 .untilAsserted(() ->
@@ -493,7 +493,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
