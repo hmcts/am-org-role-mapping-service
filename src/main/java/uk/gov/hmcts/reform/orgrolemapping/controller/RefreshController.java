@@ -83,11 +83,11 @@ public class RefreshController {
             description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED,
             content = @Content()
     )
-    public Object refresh(@RequestParam Long jobId,
+    public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
-        ResponseEntity<Object> responseEntity = refreshOrchestrator.refresh(jobId, userRequest);
-        return responseEntity == null ? null : responseEntity.getBody();
+        refreshOrchestrator.refresh(jobId, userRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping(
