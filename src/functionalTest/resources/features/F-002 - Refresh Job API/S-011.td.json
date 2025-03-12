@@ -16,6 +16,6 @@
   },
   "expectedResponse": {
     "_extends_": "Common_202_Response",
-    "body" : null
+    "body" : "[[ANYTHING_PRESENT]]"
   }
 }
