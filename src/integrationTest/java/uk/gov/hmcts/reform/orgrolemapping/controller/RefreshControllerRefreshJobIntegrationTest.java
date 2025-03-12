@@ -200,7 +200,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(200))
+                .andExpect(status().is(202))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -229,7 +229,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(200))
+                .andExpect(status().is(202))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -258,7 +258,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(200))
+                .andExpect(status().is(202))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -287,7 +287,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(200))
+                .andExpect(status().is(202))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -323,7 +323,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .content(mapper.writeValueAsBytes(IntTestDataBuilder.buildUserRequest()))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(200))
+                .andExpect(status().is(202))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -483,7 +483,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(200))
+                .andExpect(status().is(202))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -521,7 +521,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString())
                         .content(mapper.writeValueAsBytes(userRequest)))
-                .andExpect(status().is(200))
+                .andExpect(status().is(202))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -557,7 +557,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString())
                         .content(mapper.writeValueAsBytes(userRequest)))
-                .andExpect(status().is(200))
+                .andExpect(status().is(202))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -595,7 +595,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString())
                         .content(mapper.writeValueAsBytes(userRequest)))
-                .andExpect(status().is(200))
+                .andExpect(status().is(202))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)

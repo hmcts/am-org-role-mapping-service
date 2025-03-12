@@ -57,7 +57,7 @@ public class RefreshController {
                 @SecurityRequirement(name = AUTHORIZATION),
                 @SecurityRequirement(name = SERVICE_AUTHORIZATION)
             })
-    @ResponseStatus(code = HttpStatus.OK)
+    @ResponseStatus(code = HttpStatus.ACCEPTED)
     @ApiResponse(
             responseCode = "202",
             description = "Accepted",
@@ -83,10 +83,11 @@ public class RefreshController {
             description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED,
             content = @Content()
     )
-    public ResponseEntity<Object> refresh(@RequestParam Long jobId,
+    public Object refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
-        return refreshOrchestrator.refresh(jobId, userRequest);
+        ResponseEntity<Object> responseEntity = refreshOrchestrator.refresh(jobId, userRequest);
+        return responseEntity == null ? null : responseEntity.getBody();
     }
 
     @PostMapping(
