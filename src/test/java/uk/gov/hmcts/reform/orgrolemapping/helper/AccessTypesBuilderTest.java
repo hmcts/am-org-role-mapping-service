@@ -152,6 +152,7 @@ public class AccessTypesBuilderTest {
                 case "SOLICITOR_ORG" -> assertEquals(2, organisationProfile.getJurisdictions().size());
                 case "DWP_GOV_ORG" -> assertEquals(2, organisationProfile.getJurisdictions().size());
                 case "HMRC_GOV_ORG" -> assertEquals(1, organisationProfile.getJurisdictions().size());
+                default -> throw new IllegalArgumentException("Unexpected organisation profile id");
             }
         });
     }
