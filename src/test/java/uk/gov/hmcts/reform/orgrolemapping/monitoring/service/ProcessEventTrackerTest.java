@@ -28,7 +28,7 @@ class ProcessEventTrackerTest {
     private ProcessEventTracker processEventTracker;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
         processEventTracker = new ProcessEventTracker(telemetryClient);
     }

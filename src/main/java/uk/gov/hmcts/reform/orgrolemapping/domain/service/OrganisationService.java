@@ -152,6 +152,10 @@ public class OrganisationService {
 
             OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
+            if (maxVersion.isEmpty()) {
+                return;
+            }
+
             retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get());
 
             updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());

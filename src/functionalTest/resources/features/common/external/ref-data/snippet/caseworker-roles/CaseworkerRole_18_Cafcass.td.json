@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_18_Cafcass",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "18",
+  "role": "Cafcass Cymru Caseworker"
+}

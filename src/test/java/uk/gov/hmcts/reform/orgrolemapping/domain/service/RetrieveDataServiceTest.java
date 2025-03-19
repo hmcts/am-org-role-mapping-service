@@ -21,7 +21,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_STCW;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildJudicialProfileV2;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.buildUserRequest;
@@ -29,7 +28,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -40,7 +39,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -55,10 +53,7 @@ class RetrieveDataServiceTest {
     private final JRDService jrdService = Mockito.mock(JRDService.class);
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
 
-
-    RetrieveDataService sutJrdV1 = new RetrieveDataService(parseRequestService, crdService, jrdService, false, false);
-    RetrieveDataService sutJrdV2 = new RetrieveDataService(parseRequestService, crdService, jrdService, true, true);
-
+    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdService, jrdService, true);
 
     @Test
     void retrieveCaseWorkerProfilesTest() {
@@ -70,7 +65,7 @@ class RetrieveDataServiceTest {
                 .when(crdService).fetchCaseworkerProfiles(any());
 
         Map<String, Set<UserAccessProfile>> result
-                = sutJrdV1.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
         assertEquals(1, result.size());
 
@@ -91,7 +86,7 @@ class RetrieveDataServiceTest {
 
         doCallRealMethod().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
         Map<String, Set<UserAccessProfile>> result
-                = sutJrdV1.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.CASEWORKER);
 
         assertEquals(0, result.size());
 
@@ -106,7 +101,7 @@ class RetrieveDataServiceTest {
 
 
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
-        Map<String, Set<UserAccessProfile>> response = sutJrdV1.retrieveProfiles(buildUserRequest(),
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(),
                 UserType.CASEWORKER);
         assertNotNull(response);
         response.forEach((k, v) -> {
@@ -128,29 +123,10 @@ class RetrieveDataServiceTest {
         List<CaseWorkerProfile> caseWorkerProfiles = Collections.emptyList();
         doReturn(ResponseEntity
                 .ok(caseWorkerProfiles)).when(crdService).fetchCaseworkerProfiles(any());
-        Map<String, Set<UserAccessProfile>> response = sutJrdV1.retrieveProfiles(buildUserRequest(),
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(),
                 UserType.CASEWORKER);
         assertNotNull(response);
         assertTrue(response.isEmpty());
-    }
-
-    @Test
-    void retrieveJudicialProfilesTest() throws IOException {
-        JudicialProfile profile = TestDataBuilder.buildJudicialProfile();
-
-        doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
-                .when(jrdService).fetchJudicialProfiles(TestDataBuilder.buildRefreshRoleRequest());
-
-
-        Map<String, Set<UserAccessProfile>> result
-                = sutJrdV1.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
-
-        assertEquals(1, result.size());
-
-        Mockito.verify(jrdService, Mockito.times(1))
-                .fetchJudicialProfiles(any(JRDUserRequest.class));
-        Mockito.verify(parseRequestService, Mockito.times(1))
-                .validateUserProfiles(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -162,7 +138,7 @@ class RetrieveDataServiceTest {
 
 
         Map<String, Set<UserAccessProfile>> result
-                = sutJrdV2.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
 
         assertEquals(1, result.size());
 
@@ -170,25 +146,6 @@ class RetrieveDataServiceTest {
                 .fetchJudicialProfiles(any(JRDUserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any(), any(), any());
-    }
-
-    @Test
-    void retrieveJudicialProfilesTestWithInvalid() throws IOException {
-        JudicialProfile profile = TestDataBuilder.buildJudicialProfile();
-
-        doReturn(ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonList(profile)))
-            .when(jrdService).fetchJudicialProfiles(TestDataBuilder.buildRefreshRoleRequest());
-
-
-        Map<String, Set<UserAccessProfile>> result
-            = sutJrdV1.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
-
-        assertEquals(1, result.size());
-
-        Mockito.verify(jrdService, Mockito.times(1))
-            .fetchJudicialProfiles(any(JRDUserRequest.class));
-        Mockito.verify(parseRequestService, Mockito.times(1))
-            .validateUserProfiles(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -200,7 +157,7 @@ class RetrieveDataServiceTest {
 
 
         Map<String, Set<UserAccessProfile>> result
-                = sutJrdV2.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
 
         assertEquals(1, result.size());
 
@@ -208,26 +165,6 @@ class RetrieveDataServiceTest {
                 .fetchJudicialProfiles(any(JRDUserRequest.class));
         Mockito.verify(parseRequestService, Mockito.times(1))
                 .validateUserProfiles(any(), any(), any(), any(), any());
-    }
-
-    @Test
-    void shouldReturnJudicialProfile() {
-
-        doReturn(ResponseEntity
-                .ok(buildJudicialProfile(TestDataBuilder.buildRefreshRoleRequest(),
-                        "judicialProfileSample.json"))).when(jrdService).fetchJudicialProfiles(any());
-
-
-        doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
-        Map<String, Set<UserAccessProfile>> response = sutJrdV1.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
-        assertNotNull(response);
-        response.forEach((k, v) -> {
-                assertNotNull(k);
-                assertNotNull(v);
-                v.forEach(userAccessProfile ->
-                        assertEquals(k, ((JudicialAccessProfile) userAccessProfile).getUserId()));
-            }
-        );
     }
 
     @Test
@@ -239,7 +176,7 @@ class RetrieveDataServiceTest {
 
 
         doNothing().when(parseRequestService).validateUserProfiles(any(), any(), any(), any(), any());
-        Map<String, Set<UserAccessProfile>> response = sutJrdV2.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
         assertNotNull(response);
         response.forEach((k, v) -> {
                 assertNotNull(k);
@@ -250,19 +187,8 @@ class RetrieveDataServiceTest {
         );
     }
 
-    @ParameterizedTest()
-    @ValueSource(booleans = {true, false})
-    void shouldReturnJudicialProfileV2_withAppointmentsFlag(boolean v2FilterAuthorisationsByAppointmentId) {
-
-        // GIVEN
-        // NB: use local SUT instance, so we can override filter flag.
-        var sut = new RetrieveDataService(
-            parseRequestService,
-            crdService,
-            jrdService,
-            true,
-            v2FilterAuthorisationsByAppointmentId
-        );
+    @Test
+    void shouldReturnJudicialProfileV2_withAppointmentsFlag() {
 
         doReturn(ResponseEntity
                 .ok(buildJudicialProfileV2(TestDataBuilder.buildRefreshRoleRequest(),
@@ -278,27 +204,34 @@ class RetrieveDataServiceTest {
             assertNotNull(k);
             assertNotNull(v);
             v.forEach(userAccessProfile -> {
-                if (v2FilterAuthorisationsByAppointmentId) {
-                    // FILTERED: only 2 authorisations from "judicialProfileSampleV2.json" attached to each appointment
-                    assertEquals(2, ((JudicialAccessProfile) userAccessProfile).getAuthorisations().size());
-                } else {
-                    // UNFILTERED: all 3 authorisations from "judicialProfileSampleV2.json" attached to each appointment
-                    assertEquals(3, ((JudicialAccessProfile) userAccessProfile).getAuthorisations().size());
-                }
+                // FILTERED: only 2 authorisations from "judicialProfileSampleV2.json" attached to each appointment
+                assertEquals(2, ((JudicialAccessProfile) userAccessProfile).getAuthorisations().size());
             });
         });
     }
 
-    @Test
-    void shouldReturnZeroJudicialProfile() {
-        List<JudicialProfile> judicialProfiles = Collections.emptyList();
-        doReturn(ResponseEntity
-                .ok(judicialProfiles)).when(jrdService).fetchJudicialProfiles(any());
+    @ParameterizedTest
+    @CsvSource({
+        "true,true,0",
+        "true,false,2",
+        "false,true,2",
+        "false,false,2"
+    })
+    void shouldReturnJudicialProfileV2_deletedFlag(Boolean filterSoftDeletedUsersEnabled,
+                                                   Boolean deletedFlagStatus,
+                                                   int expectedUserAccessProfileCount) throws IOException {
+        sut = new RetrieveDataService(parseRequestService, crdService, jrdService, filterSoftDeletedUsersEnabled);
 
-        Map<String, Set<UserAccessProfile>> response = sutJrdV1.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
+        JudicialProfileV2 profile = TestDataBuilder.buildJudicialProfileV2();
+        profile.setDeletedFlag(deletedFlagStatus.toString());
+
+        doReturn(ResponseEntity.ok(List.of(profile))).when(jrdService).fetchJudicialProfiles(any());
+
+        Map<String, Set<UserAccessProfile>> response
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
 
         assertNotNull(response);
-        assertTrue(response.isEmpty());
+        assertEquals(expectedUserAccessProfileCount, response.get(profile.getSidamId()).size());
     }
 
     @Test
@@ -307,21 +240,10 @@ class RetrieveDataServiceTest {
         doReturn(ResponseEntity
                 .ok(judicialProfiles)).when(jrdService).fetchJudicialProfiles(any());
 
-        Map<String, Set<UserAccessProfile>> response = sutJrdV2.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(buildUserRequest(), UserType.JUDICIAL);
 
         assertNotNull(response);
         assertTrue(response.isEmpty());
-    }
-
-    @Test
-    void shouldThrowNotFoundOnInvalidJudicialProfile() {
-        UserRequest request = buildUserRequest();
-        doReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("errorDescription",
-                "The User Profile data could not be found"))).when(jrdService).fetchJudicialProfiles(any());
-
-        Map<String, Set<UserAccessProfile>> response = sutJrdV1.retrieveProfiles(request, UserType.JUDICIAL);
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
     }
 
     @Test
@@ -330,18 +252,7 @@ class RetrieveDataServiceTest {
         doReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("errorDescription",
                 "The User Profile data could not be found"))).when(jrdService).fetchJudicialProfiles(any());
 
-        Map<String, Set<UserAccessProfile>> response = sutJrdV2.retrieveProfiles(request, UserType.JUDICIAL);
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
-    }
-
-    @Test
-    void shouldThrowFeignExceptionNotFoundOnInvalidJudicialProfile() {
-        UserRequest request = buildUserRequest();
-        FeignException.NotFound notFound = mock(FeignException.NotFound.class);
-        doThrow(notFound).when(jrdService).fetchJudicialProfiles(any());
-
-        Map<String, Set<UserAccessProfile>> response = sutJrdV1.retrieveProfiles(request, UserType.JUDICIAL);
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(request, UserType.JUDICIAL);
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }
@@ -352,18 +263,9 @@ class RetrieveDataServiceTest {
         FeignException.NotFound notFound = mock(FeignException.NotFound.class);
         doThrow(notFound).when(jrdService).fetchJudicialProfiles(any());
 
-        Map<String, Set<UserAccessProfile>> response = sutJrdV2.retrieveProfiles(request, UserType.JUDICIAL);
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfiles(request, UserType.JUDICIAL);
         assertNotNull(response);
         assertFalse(response.isEmpty());
-    }
-
-    @Test
-    void shouldThrowUnprocessableOnInvalidJudicialProfile() {
-        UserRequest request = buildUserRequest();
-        doReturn(ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(Map.of("errorDescription",
-                "server have some problem"))).when(jrdService).fetchJudicialProfiles(any());
-
-        assertThrows(UnprocessableEntityException.class, () -> sutJrdV1.retrieveProfiles(request, UserType.JUDICIAL));
     }
 
     @Test
@@ -372,7 +274,7 @@ class RetrieveDataServiceTest {
         doReturn(ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(Map.of("errorDescription",
                 "server have some problem"))).when(jrdService).fetchJudicialProfiles(any());
 
-        assertThrows(UnprocessableEntityException.class, () -> sutJrdV1.retrieveProfiles(request, UserType.JUDICIAL));
+        assertThrows(UnprocessableEntityException.class, () -> sut.retrieveProfiles(request, UserType.JUDICIAL));
     }
 
     @Test
@@ -383,7 +285,7 @@ class RetrieveDataServiceTest {
         ResponseEntity<List<Object>> responseEntity
                 = new ResponseEntity<>(userProfilesResponses, HttpStatus.CREATED);
 
-        Map<String, Set<UserAccessProfile>> response = sutJrdV1.retrieveProfilesByServiceName(responseEntity,
+        Map<String, Set<UserAccessProfile>> response = sut.retrieveProfilesByServiceName(responseEntity,
                 UserType.CASEWORKER);
         assertNotNull(response);
         assertEquals(4, response.get("1").size());

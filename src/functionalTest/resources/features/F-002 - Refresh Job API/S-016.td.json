@@ -1,0 +1,23 @@
+{
+  "_guid_": "S-016",
+  "title": "must reject refresh job request if job status is COMPLETED",
+  "_extends_": "F-002_Test_Data_Base",
+
+  "specs": [
+    "contains an existing job details"
+  ],
+  "request": {
+    "queryParams": {
+      "jobId": "${[scenarioContext][childContexts][S-016_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+    },
+    "body": {
+      "userIds" : ["b878398b-c7ae-4f4c-95cc-298ca2d287ac"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "ORM_422_Response",
+    "body" : {
+      "errorDescription": "Provided refresh job is in an invalid state."
+    }
+  }
+}
