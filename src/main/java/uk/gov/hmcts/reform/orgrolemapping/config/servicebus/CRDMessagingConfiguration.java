@@ -11,12 +11,14 @@ import com.azure.messaging.servicebus.models.ServiceBusReceiveMode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 
 import java.time.Duration;
 import java.util.function.Consumer;
@@ -37,8 +39,9 @@ public class CRDMessagingConfiguration {
     String sharedAccessKeyValue;
     @Value("${amqp.crd.subscription}")
     String subscription;
-    @Value("${launchdarkly.sdk.environment}")
-    String environment;
+
+    @Autowired
+    private EnvironmentConfiguration environmentConfiguration;
 
     @Bean("crdPublisher")
     @ConditionalOnExpression("${testing.support.enabled} && ${amqp.crd.enabled}")
@@ -62,34 +65,36 @@ public class CRDMessagingConfiguration {
             Consumer<ServiceBusReceivedMessageContext> processMessage,
             Consumer<ServiceBusErrorContext> processError) {
 
-        var connectionString = "Endpoint=sb://"
-                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
-
         AmqpRetryOptions amqpRetryOptions = new AmqpRetryOptions();
         amqpRetryOptions.setDelay(Duration.ofMinutes(1));
         amqpRetryOptions.setMaxRetries(10);
         amqpRetryOptions.setMode(AmqpRetryMode.FIXED);
 
-        ServiceBusProcessorClient processorClient = new ServiceBusClientBuilder()
+        var connectionString = "Endpoint=sb://"
+                + host + ";SharedAccessKeyName=" + sharedAccessKeyName + ";SharedAccessKey=" + sharedAccessKeyValue;
+
+        return new ServiceBusClientBuilder()
                 .connectionString(connectionString)
                 .retryOptions(amqpRetryOptions)
                 .processor()
                 .topicName(topic)
                 .subscriptionName(subscription)
+                .receiveMode(ServiceBusReceiveMode.PEEK_LOCK)
+                .disableAutoComplete()
                 .processMessage(processMessage)
                 .processError(processError)
-                .receiveMode(ServiceBusReceiveMode.PEEK_LOCK)
                 .buildProcessorClient();
-        return processorClient;
     }
 
     public void logServiceBusVariables() {
-        log.debug("Env is: " + environment);
-        if (environment.equalsIgnoreCase("pr")) {
+        log.debug("Env is: " + environmentConfiguration.getEnvironment());
+        if (environmentConfiguration.getEnvironment().equalsIgnoreCase("pr")) {
             sharedAccessKeyValue = System.getenv("AMQP_CRD_SHARED_ACCESS_KEY_VALUE");
             subscription = System.getenv("CRD_SUBSCRIPTION_NAME");
+
             log.debug("sharedAccessKeyName : " + sharedAccessKeyName);
             log.debug("subscription Name is :" + subscription);
+
             log.debug("Topic Name is :" + topic);
             log.debug("subscription Name is :" + subscription);
 

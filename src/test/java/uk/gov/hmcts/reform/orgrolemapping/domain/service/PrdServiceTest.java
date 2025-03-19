@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public class PrdServiceTest {
+class PrdServiceTest {
 
     PRDFeignClient prdFeignClient = mock(PRDFeignClient.class);
 

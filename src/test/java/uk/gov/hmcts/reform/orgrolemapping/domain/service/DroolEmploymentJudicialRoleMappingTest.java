@@ -105,7 +105,9 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
-                + "hmcts-judiciary,specific-access-approver-judiciary"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
+        "EMPLOYMENT Acting Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
     })
     void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRoles(String setOffice,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -201,7 +203,6 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         });
     }
 
-    @SuppressWarnings("deprecation")
     @ParameterizedTest
     @CsvSource(delimiter = ';',  textBlock = """ 
         President of Tribunal;Salaried;12;11;
@@ -215,16 +216,13 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         Tribunal Member;Fee Paid;11;11;
         """)
 
-    void shouldReturnCftRegionIdV1FromJapAsRegion(String appointment, String appointmentType,
+    void shouldReturnRegionIdFromJapAsRegion(String appointment, String appointmentType,
                                                   String regionIn, String regionOut) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BHA1")));
-            judicialAccessProfile.setCftRegionIdV1(regionIn);
-            // since migration to e-links CftRegionIdV1 and RegionId will be the same value,
-            // CftRegionIdV1 will be removed at some point in the future.
             judicialAccessProfile.setRegionId(regionIn);
         });
 
@@ -238,11 +236,8 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         });
     }
 
-    private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_1").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_2").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_3").status(true).build());
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("EMPLOYMENT", true);
     }
 
 }

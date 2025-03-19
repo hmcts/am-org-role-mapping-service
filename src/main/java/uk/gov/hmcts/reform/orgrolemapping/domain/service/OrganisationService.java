@@ -153,6 +153,10 @@ public class OrganisationService {
 
             OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
+            if (maxVersion.isEmpty()) {
+                return;
+            }
+
             retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get(), processMonitorDto);
 
             updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());

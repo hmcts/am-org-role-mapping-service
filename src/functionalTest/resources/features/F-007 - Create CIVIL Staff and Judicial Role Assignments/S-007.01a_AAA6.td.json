@@ -1,0 +1,41 @@
+{
+  "_guid_": "S-007.01a_AAA6",
+  "title": "must successfully create org role mapping for Senior Legal Caseworker + Task Supervisor (AAA6)",
+  "_extends_": "S-007.01_AAA6",
+  "specs": [
+    "contains the actorId of the user just published who has Senior Legal Caseworker role + Task Supervisor (AAA6)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "e934a0ba-be48-4363-b24a-a82b1a56233e"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "substantive": "N",
+            "workTypes": "decision_making_work,access_requests"
+          },
+          "authorisations": [
+            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
+        }
+      ]
+    }
+  }
+}

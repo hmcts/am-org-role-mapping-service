@@ -1,0 +1,75 @@
+{
+  "_guid_": "S-012_FetchRoleAssignments",
+  "title": "must successfully fetch role assignments from Role Assignment Service",
+  "_extends_": "F-002_Test_Data_Base",
+
+  "specs": [
+    "to fetch role assignments from Role Assignment Service"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+    },
+    "body": {
+      "queryRequests":[
+        {
+          "actorId": "${[scenarioContext][parentContext][testData][request][body][userIds]}",
+          "attributes": {
+            "jurisdiction": ["EMPLOYMENT"]
+          }
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [{
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "roleType" : "ORGANISATION",
+        "roleName" : "hearing-viewer",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "JUDICIAL",
+        "readOnly" : false,
+        "beginTime" : "[[ANYTHING_PRESENT]]",
+        "endTime" : "[[ANYTHING_PRESENT]]",
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "N",
+          "primaryLocation" : "[[ANYTHING_PRESENT]]",
+          "jurisdiction" : "EMPLOYMENT"
+        },
+        "authorisations" : "[[ANYTHING_PRESENT]]"
+      }, {
+        "id" : "[[ANYTHING_PRESENT]]",
+        "actorIdType" : "IDAM",
+        "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "roleType" : "ORGANISATION",
+        "roleName" : "tribunal-member",
+        "classification" : "PUBLIC",
+        "grantType" : "STANDARD",
+        "roleCategory" : "JUDICIAL",
+        "readOnly" : false,
+        "beginTime" : "[[ANYTHING_PRESENT]]",
+        "endTime" : "[[ANYTHING_PRESENT]]",
+        "created" : "[[ANYTHING_PRESENT]]",
+        "attributes" : {
+          "substantive" : "Y",
+          "contractType" : "Fee-Paid",
+          "primaryLocation" : "[[ANYTHING_PRESENT]]",
+          "jurisdiction" : "EMPLOYMENT",
+          "workTypes" : "[[ANYTHING_PRESENT]]"
+        },
+        "authorisations" : "[[ANYTHING_PRESENT]]"
+      }
+      ]
+    }
+  }
+}
