@@ -1,0 +1,9 @@
+{
+  "id" : "[[ANY_UUID]]",
+  "userId" : "[[IDAM_ID]]",
+  "regionId" : "region_jbs",
+  "locationId" : "location_jbs",
+  "created": "[[ANY_DATE_TIME]]",
+  "beginTime" : "[[JBS_BEGIN_TIME]]",
+  "endTime" : "[[JBS_END_TIME]]"
+}
