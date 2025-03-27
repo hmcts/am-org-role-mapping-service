@@ -1,0 +1,24 @@
+{
+  "_guid_": "S-013.01",
+  "title": "trigger PRM scheduler process 1 - Find And Update Case Definition Changes",
+  "_extends_": "F-013-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+  "method": "GET",
+  "uri": "/am/testing-support/prm/findAndUpdateCaseDefinitionChanges",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Find And Update Case Definition Changes",
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "processType": "PRM Process 1 - Find Case Definition Changes",
+      "id": "[[ANYTHING_PRESENT]]",
+      "startTime": "[[ANYTHING_PRESENT]]",
+      "endTime": "[[ANYTHING_PRESENT]]",
+      "endStatus": "SUCCESS",
+      "processSteps": []
+    }
+  }
+}
