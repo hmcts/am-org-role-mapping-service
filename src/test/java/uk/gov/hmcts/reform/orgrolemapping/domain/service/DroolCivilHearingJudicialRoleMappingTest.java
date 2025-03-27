@@ -146,7 +146,12 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         "Fee Paid",
                         true,
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer", "circuit-judge"))
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer", "circuit-judge")),
+                Arguments.of("",
+                        "Salaried",
+                        false,
+                        List.of("Designated Civil Online Judge"),
+                        List.of("judge", "leadership-judge", "hmcts-judiciary", "hearing-viewer"))
         );
     }
 
@@ -224,7 +229,11 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                                    + "intermediate_track_decision_making_work",
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
-                    assertEquals("LDN", r.getAttributes().get("region").asText());
+                    if (assignedRoles.contains("Designated Civil Online Judge")) {
+                        assertNull(r.getAttributes().get("region")); // NB: no region required for this JOH
+                    } else {
+                        assertEquals("LDN", r.getAttributes().get("region").asText());
+                    }
                     assertEquals("decision_making_work,applications,access_requests,"
                             + "multi_track_decision_making_work,intermediate_track_decision_making_work",
                             r.getAttributes().get("workTypes").asText());
