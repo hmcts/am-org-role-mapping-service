@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.Scheduler;
-import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
 @RestController
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
