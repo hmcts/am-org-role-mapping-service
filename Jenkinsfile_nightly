@@ -89,6 +89,9 @@ env.JUDICIAL_FTA_ENABLED = "true"
 // Var to turn on JBS FTAs (NB: only disable temporarily if JBS service is unavailable)
 env.BOOKING_FTA_ENABLED = "true"
 
+// Don't run PRM FTAs on AAT
+env.PRM_FTA_ENABLED = "false"
+
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
 env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
 
