@@ -1,0 +1,43 @@
+{
+  "sidam_id": "[[IDAM_ID]]",
+  "object_id": "[[RANDOM_ID]]",
+  "personal_code": "[[RANDOM_ID]]",
+  "active_flag": "true",
+  "deleted_flag": "[[DELETED_FLAG]]",
+  "appointments": [
+    {
+      "base_location_id": "843",
+      "epimms_id": "123456",
+      "cft_region_id": "4",
+      "cft_region": "North West",
+      "is_principal_appointment": "true",
+      "appointment": "Deputy District Judge (sitting in retirement)",
+      "appointment_type": "Fee-paid",
+      "contract_type_id": "1",
+      "service_codes": [
+        "ABA3"
+      ],
+      "start_date": "[[APPOINTMENT_BEGIN_TIME]]",
+      "end_date": "[[APPOINTMENT_END_TIME]]",
+      "appointment_id": "1234",
+      "role_name_id": "202",
+      "type": "Courts"
+    }
+  ],
+  "authorisations": [
+    {
+      "appointment_id": "1234",
+      "authorisation_id": "9876",
+      "jurisdiction_id": "33",
+      "jurisdiction": "Family",
+      "ticket_description": "Public Law",
+      "ticket_code": "316",
+      "service_codes": [
+        "ABA3"
+      ],
+      "start_date": "[[AUTHORISATION_BEGIN_TIME]]",
+      "end_date": "[[AUTHORISATION_END_TIME]]"
+    }
+  ],
+  "roles": []
+}
