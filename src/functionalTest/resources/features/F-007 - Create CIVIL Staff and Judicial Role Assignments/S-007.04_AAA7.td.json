@@ -51,7 +51,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "hearing_work,multi_track_hearing_work,intermediate_track_hearing_work,routine_work"
+            "workTypes": "hearing_work,multi_track_hearing_work,intermediate_track_hearing_work,routine_work,query_work"
           },
           "authorisations": [
             "SKILL:AAA7:DAMAGES_MULTI_TRACK_TRIAL_MANAGEMENT",
