@@ -96,8 +96,7 @@ env.JUDICIAL_FTA_ENABLED = "true"
 env.BOOKING_FTA_ENABLED = "true"
 
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
-//Temporarily disabled will be enabled in DTSAM-815 https://tools.hmcts.net/jira/browse/DTSAM-815
-env.AZURE_SERVICE_BUS_FTA_ENABLED = "false"
+env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
 env.REFRESH_FTA_ENABLED = "true"
 
 // Vars for Azure Container Registries DTSAM-370
