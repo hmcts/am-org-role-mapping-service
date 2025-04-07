@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.Scheduler;
 
 @RestController
+@Slf4j
 @NoArgsConstructor
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
 public class PrmSchedulerController {
@@ -45,9 +47,10 @@ public class PrmSchedulerController {
     @ApiResponse(
             responseCode = "200",
             description = "OK",
-            content = @Content(schema = @Schema(implementation = ProcessMonitorDto.class))
+            content = @Content(schema = @Schema(implementation = Object.class))
     )
     public ResponseEntity<Object> findAndUpdateCaseDefinitionChanges() {
+        log.debug("findAndUpdateCaseDefinitionChanges");
         ProcessMonitorDto processMonitorDto = scheduler.findAndUpdateCaseDefinitionChanges();
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
