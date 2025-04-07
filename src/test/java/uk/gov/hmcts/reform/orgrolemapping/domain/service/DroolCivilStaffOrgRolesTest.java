@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("national-business-centre", "routine_work");
         expectedRoleNameWorkTypesMap.put("task-supervisor", "routine_work,hearing_work,access_requests");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("wlu-admin", "routine_work,query_work,welsh_translation_work");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String roleId,
@@ -72,7 +74,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 r.getRoleName())) {
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
-            assertEquals(null, r.getAttributes().get("jurisdiction"));
+            assertNull(r.getAttributes().get("jurisdiction"));
             assertTrue(r.isReadOnly());
             assertNull(primaryLocation);
             assertNull(r.getAttributes().get("region"));
@@ -134,7 +136,9 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 "hmcts-legal-operations"), 3, RoleCategory.LEGAL_OPERATIONS, "N", "N"),
             Arguments.of("1", Arrays.asList("tribunal-caseworker", "senior-tribunal-caseworker",
                 "hmcts-legal-operations", "task-supervisor", "case-allocator"), 5, RoleCategory.LEGAL_OPERATIONS, "Y",
-                "Y")
+                "Y"),
+            Arguments.of("20", Collections.singletonList("wlu-admin"), 1, RoleCategory.ADMIN,
+                "N", "N")
         );
     }
 
