@@ -18,7 +18,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-061_DeleteDataForRoleAssignments].
 
   @S-062
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader and Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-062_DeleteDataForRoleAssignments],
@@ -45,7 +45,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-063_DeleteDataForRoleAssignments].
 
   @S-064
-  @FeatureToggle(DB:civil_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-061_DeleteDataForRoleAssignments],
@@ -209,7 +209,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.03_AAA6
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader (AAA6 Civil)] as in [S-007.03_AAA6__VerifyCaseworkerDetails],
@@ -223,7 +223,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.03_AAA7
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader (AAA7 Civil)] as in [S-007.03_AAA7__VerifyCaseworkerDetails],
@@ -237,7 +237,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.03a_AAA6
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA6 Civil)] as in [S-007.03a_AAA6__VerifyCaseworkerDetails],
@@ -251,7 +251,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.03a_AAA7
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA7 Civil)] as in [S-007.03a_AAA7__VerifyCaseworkerDetails],
@@ -265,7 +265,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.03b_AAA6
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA6 Civil)] as in [S-007.03b_AAA6__VerifyCaseworkerDetails],
@@ -279,7 +279,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.03b_AAA7
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA7 Civil)] as in [S-007.03b_AAA7__VerifyCaseworkerDetails],
@@ -294,7 +294,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
 
 
   @S-007.04_AAA6
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator (AAA6 Civil)] as in [S-007.04_AAA6__VerifyCaseworkerDetails],
@@ -308,7 +308,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.04_AAA7
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator (AAA7 Civil)] as in [S-007.04_AAA7__VerifyCaseworkerDetails],
@@ -406,7 +406,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.09_AAA6
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Team Leader (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader (AAA6 Civil)] as in [S-007.09_AAA6__VerifyCaseworkerDetails],
@@ -420,7 +420,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.09_AAA7
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Team Leader (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader (AAA7 Civil)] as in [S-007.09_AAA7__VerifyCaseworkerDetails],
@@ -434,7 +434,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.09a_AAA6
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Team Leader + Task Supervisor (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader + Task Supervisor (AAA6 Civil)] as in [S-007.09a_AAA6__VerifyCaseworkerDetails],
@@ -448,7 +448,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.09a_AAA7
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Team Leader + Task Supervisor (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader + Task Supervisor (AAA7 Civil)] as in [S-007.09a_AAA7__VerifyCaseworkerDetails],
@@ -462,7 +462,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.09b_AAA6
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Team Leader + Case allocator (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader + Case allocator (AAA6 Civil)] as in [S-007.09b_AAA6__VerifyCaseworkerDetails],
@@ -476,7 +476,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.09b_AAA7
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Team Leader + Case allocator (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader + Case allocator (AAA7 Civil)] as in [S-007.09b_AAA7__VerifyCaseworkerDetails],
@@ -490,7 +490,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.10_AAA6
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Admin (AAA6)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Admin (AAA6 Civil)] as in [S-007.10_AAA6__VerifyCaseworkerDetails],
@@ -504,7 +504,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-007.10_AAA7
-  @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:civil_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Admin (AAA7)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Admin (AAA7 Civil)] as in [S-007.10_AAA7__VerifyCaseworkerDetails],
