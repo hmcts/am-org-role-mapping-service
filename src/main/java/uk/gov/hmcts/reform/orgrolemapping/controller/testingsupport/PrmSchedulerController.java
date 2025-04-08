@@ -50,7 +50,7 @@ public class PrmSchedulerController {
             content = @Content(schema = @Schema(implementation = Object.class))
     )
     public ResponseEntity<Object> findAndUpdateCaseDefinitionChanges() {
-        log.debug("findAndUpdateCaseDefinitionChanges");
+        log.info("findAndUpdateCaseDefinitionChanges");
         ProcessMonitorDto processMonitorDto = scheduler.findAndUpdateCaseDefinitionChanges();
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
