@@ -16,8 +16,6 @@
       "processType": "PRM Process 2 - Find Organisations with Stale Profiles",
       "id": "[[ANYTHING_PRESENT]]",
       "startTime": "[[ANYTHING_PRESENT]]",
-      "endTime": "[[ANYTHING_PRESENT]]",
-      "endStatus": "SUCCESS",
       "processSteps" : [ ]
     }
   }
