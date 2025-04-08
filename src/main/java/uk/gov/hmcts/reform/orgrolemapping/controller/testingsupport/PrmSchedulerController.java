@@ -59,7 +59,7 @@ public class PrmSchedulerController {
     )
     @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "PRM Process 2 findOrganisationsWithStaleProfiles",
-        security =
+            security =
             {
                 @SecurityRequirement(name = AUTHORIZATION),
                 @SecurityRequirement(name = SERVICE_AUTHORIZATION)
