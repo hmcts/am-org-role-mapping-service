@@ -1,0 +1,22 @@
+{
+  "_guid_": "S-013.03",
+  "title": "trigger PRM scheduler process 3 - Find Organisation Changes",
+  "_extends_": "F-013-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+  "method": "GET",
+  "uri": "/am/testing-support/prm/findOrganisationChanges",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Find Organisation Changes",
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "processType": "PRM Process 3 - Find organisation changes",
+      "id": "[[ANYTHING_PRESENT]]",
+      "startTime": "[[ANYTHING_PRESENT]]",
+      "processSteps" : [ ]
+    }
+  }
+}

@@ -72,7 +72,7 @@ public class OrganisationService {
     }
 
     @Transactional
-    public void findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
+    public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
         log.info("findOrganisationChangesAndInsertIntoOrganisationRefreshQueue started...");
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 3 - Find organisation changes");
         processEventTracker.trackEventStarted(processMonitorDto);
@@ -126,6 +126,7 @@ public class OrganisationService {
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
+        return processMonitorDto;
     }
 
     @Transactional

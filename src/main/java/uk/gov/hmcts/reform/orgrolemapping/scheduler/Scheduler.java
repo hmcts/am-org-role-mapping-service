@@ -40,7 +40,10 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationChanges.cron}")
-    void findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess() {
-        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
+    public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess() {
+        ProcessMonitorDto processMonitorDto = organisationService
+            .findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
+        logAsJson(processMonitorDto);
+        return processMonitorDto;
     }
 }
