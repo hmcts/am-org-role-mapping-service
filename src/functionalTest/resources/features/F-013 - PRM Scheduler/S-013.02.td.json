@@ -1,6 +1,6 @@
 {
   "_guid_": "S-013.02",
-  "title": "trigger PRM scheduler process 2 - Find Organisations With Stale Profiles",
+  "title": "trigger PRM scheduler process 2 - Find Organisations with Stale Profiles",
   "_extends_": "F-013-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
@@ -8,12 +8,12 @@
   "method": "GET",
   "uri": "/am/testing-support/prm/findOrganisationsWithStaleProfiles",
   "productName": "Organisation Role Mapping",
-  "operationName": "Find Organisations With Stale Profiles",
+  "operationName": "Find Organisations with Stale Profiles",
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "processType": "PRM Process 2 - Find Organisations With Stale Profiles",
+      "processType": "PRM Process 2 - Find Organisations with Stale Profiles",
       "id": "[[ANYTHING_PRESENT]]",
       "startTime": "[[ANYTHING_PRESENT]]",
       "endTime": "[[ANYTHING_PRESENT]]",
