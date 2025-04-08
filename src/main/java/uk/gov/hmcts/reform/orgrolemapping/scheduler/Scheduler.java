@@ -33,8 +33,10 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.cron}")
-    void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess() {
-        organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
+    public ProcessMonitorDto findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess() {
+        ProcessMonitorDto processMonitorDto = organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
+        logAsJson(processMonitorDto);
+        return processMonitorDto;
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationChanges.cron}")

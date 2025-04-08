@@ -129,7 +129,7 @@ public class OrganisationService {
     }
 
     @Transactional
-    public void findAndInsertStaleOrganisationsIntoRefreshQueue() {
+    public ProcessMonitorDto findAndInsertStaleOrganisationsIntoRefreshQueue() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
                 "PRM Process 2 - Find Organisations with Stale Profiles");
         processEventTracker.trackEventStarted(processMonitorDto);
@@ -139,7 +139,7 @@ public class OrganisationService {
                 = profileRefreshQueueRepository.getActiveProfileEntities();
 
             if (profileRefreshQueueEntities.isEmpty()) {
-                return;
+                return processMonitorDto;
             }
 
             List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
@@ -154,7 +154,7 @@ public class OrganisationService {
             OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
             if (maxVersion.isEmpty()) {
-                return;
+                return processMonitorDto;
             }
 
             retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get(), processMonitorDto);
@@ -167,6 +167,7 @@ public class OrganisationService {
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     private void retrieveOrganisationsByProfileIdsAndUpsert(OrganisationByProfileIdsRequest request,

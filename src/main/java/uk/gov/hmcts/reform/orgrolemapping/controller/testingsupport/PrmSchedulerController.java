@@ -50,8 +50,28 @@ public class PrmSchedulerController {
             content = @Content(schema = @Schema(implementation = Object.class))
     )
     public ResponseEntity<Object> findAndUpdateCaseDefinitionChanges() {
-        log.info("findAndUpdateCaseDefinitionChanges");
         ProcessMonitorDto processMonitorDto = scheduler.findAndUpdateCaseDefinitionChanges();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
+
+    @GetMapping(
+        path = "/am/testing-support/prm/findOrganisationsWithStaleProfiles"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "PRM Process 2 findOrganisationsWithStaleProfiles",
+        security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> findOrganisationsWithStaleProfiles() {
+        ProcessMonitorDto processMonitorDto = scheduler
+            .findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess();
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 
