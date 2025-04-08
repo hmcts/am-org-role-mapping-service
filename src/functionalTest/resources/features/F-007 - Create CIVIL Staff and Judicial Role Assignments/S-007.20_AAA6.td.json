@@ -9,7 +9,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "PUT USER ID HERE"
+      "actorId": "80016c18-920a-4841-8ae9-c1bfb4c1b2aa"
     }
   },
   "expectedResponse": {
@@ -32,6 +32,8 @@
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
             "substantive": "Y",
             "workTypes": "routine_work, query_work, welsh_translation_work"
           }
