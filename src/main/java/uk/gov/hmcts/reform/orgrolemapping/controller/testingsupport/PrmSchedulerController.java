@@ -92,7 +92,7 @@ public class PrmSchedulerController {
     )
     public ResponseEntity<Object> findOrganisationChanges() {
         ProcessMonitorDto processMonitorDto = scheduler
-            .findAndUpdateCaseDefinitionChanges();
+            .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 
