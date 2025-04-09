@@ -3,13 +3,13 @@
   "title": "must successfully create org role mapping for WLU Administrator (AAA7)",
   "_extends_": "F-001_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has WLU Administrator (AAA7)"
+    "contains the actorId of the user just published who has WLU Administrator role (AAA7)"
   ],
   "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "PUT USER ID HERE"
+      "actorId": "c976456b-d960-44e2-ad1f-99b6c4b44a2e"
     }
   },
   "expectedResponse": {
@@ -32,9 +32,16 @@
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
             "substantive": "Y",
-            "workTypes": "routine_work, query_work, welsh_translation_work"
-          }
+            "workTypes": "routine_work,query_work,welsh_translation_work"
+          },
+          "authorisations": [
+            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
         }
       ]
     }
