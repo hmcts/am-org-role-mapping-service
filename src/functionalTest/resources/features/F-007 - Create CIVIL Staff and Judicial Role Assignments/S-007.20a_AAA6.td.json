@@ -30,8 +30,8 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
-            "substantive": "Y",
-            "workTypes": "routine_work, query_work, welsh_translation_work"
+            "substantive": "N",
+            "workTypes": "routine_work,query_work,welsh_translation_work"
           }
         }
       ]

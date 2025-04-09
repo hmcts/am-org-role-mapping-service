@@ -35,8 +35,12 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "substantive": "Y",
-            "workTypes": "routine_work, query_work, welsh_translation_work"
-          }
+            "workTypes": "routine_work,query_work,welsh_translation_work"
+          },
+          "authorisations": [
+            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
         }
       ]
     }
