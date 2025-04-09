@@ -23,7 +23,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "case-allocator",
           "classification": "PUBLIC",
@@ -40,7 +40,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
@@ -57,7 +57,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
@@ -74,7 +74,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType" : "ORGANISATION",
           "roleName" : "hmcts-legal-operations",
           "classification" : "PRIVATE",
@@ -90,7 +90,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "senior-tribunal-caseworker",
           "classification": "PUBLIC",
@@ -108,7 +108,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "task-supervisor",
           "classification": "PUBLIC",
@@ -125,7 +125,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "[[ANYTHING_PRESENT]]",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "tribunal-caseworker",
           "classification": "PUBLIC",
