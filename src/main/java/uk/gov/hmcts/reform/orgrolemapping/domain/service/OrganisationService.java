@@ -73,7 +73,7 @@ public class OrganisationService {
 
     @Transactional
     public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
-        // log.info("findOrganisationChangesAndInsertIntoOrganisationRefreshQueue started...");
+        log.info("findOrganisationChangesAndInsertIntoOrganisationRefreshQueue started...");
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 3 - Find organisation changes");
         processEventTracker.trackEventStarted(processMonitorDto);
 
@@ -82,13 +82,15 @@ public class OrganisationService {
             final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
             List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
             if (allAccessTypes.size() != 1) {
-                throw new ServiceException("Single AccessTypesEntity not found");
+                return processMonitorDto;
+                // throw new ServiceException("Single AccessTypesEntity not found");
             }
             AccessTypesEntity accessTypesEntity = allAccessTypes.get(0);
             List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
                     .findAll();
             if (allBatchLastRunTimestampEntities.size() != 1) {
-                throw new ServiceException("Single BatchLastRunTimestampEntity not found");
+                return processMonitorDto;
+                // throw new ServiceException("Single BatchLastRunTimestampEntity not found");
             }
             BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
             LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
@@ -125,7 +127,7 @@ public class OrganisationService {
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
-        // log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
+        log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
         return processMonitorDto;
     }
 
