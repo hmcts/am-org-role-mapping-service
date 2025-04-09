@@ -33,6 +33,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "substantive": "Y",
             "workTypes": "routine_work,query_work,welsh_translation_work"
