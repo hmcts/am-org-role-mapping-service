@@ -3,7 +3,7 @@
   "title": "must successfully create org role mapping for WLU Administrator (AAA7)",
   "_extends_": "F-001_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has WLU Administrator (AAA7)"
+    "contains the actorId of the user just published who has WLU Administrator role (AAA7)"
   ],
   "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",

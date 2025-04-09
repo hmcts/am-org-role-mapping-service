@@ -3,7 +3,7 @@
   "title": "must successfully create org role mapping for WLU Administrator + Task Supervisor (AAA6)",
   "_extends_": "S-007.20_AAA6",
   "specs": [
-    "contains the actorId of the user just published who has WLU Administrator + Task Supervisor (AAA6)"
+    "contains the actorId of the user just published who has WLU Administrator role + Task Supervisor (AAA6)"
   ],
   "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
