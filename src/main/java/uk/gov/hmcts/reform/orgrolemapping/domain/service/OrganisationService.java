@@ -82,15 +82,13 @@ public class OrganisationService {
             final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
             List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
             if (allAccessTypes.size() != 1) {
-                return processMonitorDto;
-                // throw new ServiceException("Single AccessTypesEntity not found");
+                throw new ServiceException("Single AccessTypesEntity not found");
             }
             AccessTypesEntity accessTypesEntity = allAccessTypes.get(0);
             List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
                     .findAll();
             if (allBatchLastRunTimestampEntities.size() != 1) {
-                return processMonitorDto;
-                // throw new ServiceException("Single BatchLastRunTimestampEntity not found");
+                throw new ServiceException("Single BatchLastRunTimestampEntity not found");
             }
             BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
             LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
@@ -123,7 +121,7 @@ public class OrganisationService {
             String pageFailMessage = (page == 0 ? "" : ", failed at page " + page);
             processMonitorDto.markAsFailed(exception.getMessage() + pageFailMessage);
             processEventTracker.trackEventCompleted(processMonitorDto);
-            throw exception;
+            return processMonitorDto;
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);

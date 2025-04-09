@@ -223,9 +223,7 @@ class OrganisationServiceTest {
         doThrow(new ServiceException("Insert exception")).when(organisationRefreshQueueRepository)
                 .upsertToOrganisationRefreshQueue(any(), any(), any(), eq("P3"));
 
-        Assertions.assertThrows(ServiceException.class, () ->
-                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
-        );
+        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
@@ -270,9 +268,7 @@ class OrganisationServiceTest {
         doThrow(new ServiceException("Retrieve exception")).when(prdService)
                 .retrieveOrganisations(anyString(), anyInt(), anyInt());
 
-        Assertions.assertThrows(ServiceException.class, () ->
-                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
-        );
+        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
@@ -295,9 +291,7 @@ class OrganisationServiceTest {
                 LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
         when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
-        Assertions.assertThrows(ServiceException.class, () ->
-                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
-        );
+        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
@@ -313,9 +307,7 @@ class OrganisationServiceTest {
         allAccessTypes.add(new AccessTypesEntity(2L, "some json"));
         when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
 
-        Assertions.assertThrows(ServiceException.class, () ->
-                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
-        );
+        organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
