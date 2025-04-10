@@ -72,7 +72,7 @@ public class OrganisationService {
     }
 
     @Transactional
-    public void findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
+    public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
         log.info("findOrganisationChangesAndInsertIntoOrganisationRefreshQueue started...");
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 3 - Find organisation changes");
         processEventTracker.trackEventStarted(processMonitorDto);
@@ -100,7 +100,7 @@ public class OrganisationService {
             page = 1;
             Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
             OrganisationsResponse organisationsResponse = prdService
-                    .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
+                    .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
             writeAllToOrganisationRefreshQueue(organisationsResponse.getOrganisations(),
                     accessTypeMinVersion, P3, processMonitorDto);
 
@@ -121,15 +121,16 @@ public class OrganisationService {
             String pageFailMessage = (page == 0 ? "" : ", failed at page " + page);
             processMonitorDto.markAsFailed(exception.getMessage() + pageFailMessage);
             processEventTracker.trackEventCompleted(processMonitorDto);
-            throw exception;
+            return processMonitorDto;
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
+        return processMonitorDto;
     }
 
     @Transactional
-    public void findAndInsertStaleOrganisationsIntoRefreshQueue() {
+    public ProcessMonitorDto findAndInsertStaleOrganisationsIntoRefreshQueue() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
                 "PRM Process 2 - Find Organisations with Stale Profiles");
         processEventTracker.trackEventStarted(processMonitorDto);
@@ -139,7 +140,7 @@ public class OrganisationService {
                 = profileRefreshQueueRepository.getActiveProfileEntities();
 
             if (profileRefreshQueueEntities.isEmpty()) {
-                return;
+                return processMonitorDto;
             }
 
             List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
@@ -154,7 +155,7 @@ public class OrganisationService {
             OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
             if (maxVersion.isEmpty()) {
-                return;
+                return processMonitorDto;
             }
 
             retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get(), processMonitorDto);
@@ -167,6 +168,7 @@ public class OrganisationService {
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     private void retrieveOrganisationsByProfileIdsAndUpsert(OrganisationByProfileIdsRequest request,

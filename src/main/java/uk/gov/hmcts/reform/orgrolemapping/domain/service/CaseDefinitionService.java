@@ -46,7 +46,7 @@ public class CaseDefinitionService {
     }
 
     @Transactional
-    public void findAndUpdateCaseDefinitionChanges() {
+    public ProcessMonitorDto findAndUpdateCaseDefinitionChanges() {
 
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
                 "PRM Process 1 - Find Case Definition Changes");
@@ -68,6 +68,7 @@ public class CaseDefinitionService {
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     private RestructuredAccessTypes restructureLocalAccessTypes(String localAccessTypes) {
