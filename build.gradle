@@ -57,7 +57,7 @@ def versions = [
         logbackVersion : '1.2.13',
         launchDarklySdk: '5.10.9',
         netty_version  : '4.1.119.Final',
-        poi  : '5.4.0'
+        poi  : '5.4.1'
 
 ]
 
