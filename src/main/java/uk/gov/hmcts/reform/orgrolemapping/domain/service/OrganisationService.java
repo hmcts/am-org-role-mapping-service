@@ -77,7 +77,7 @@ public class OrganisationService {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 3 - Find organisation changes");
         processEventTracker.trackEventStarted(processMonitorDto);
 
-        int page = 0;
+        int page = -1;
         try {
             final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
             List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
@@ -97,14 +97,14 @@ public class OrganisationService {
             LocalDateTime sinceTime = orgLastBatchRunTime.minusSeconds(toleranceSeconds);
             String formattedSince = ISO_DATE_TIME_FORMATTER.format(sinceTime);
 
-            page = 1;
+            page = 0;
             Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
             OrganisationsResponse organisationsResponse = prdService
-                    .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
+                    .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
             writeAllToOrganisationRefreshQueue(organisationsResponse.getOrganisations(),
                     accessTypeMinVersion, P3, processMonitorDto);
 
-            page = 2;
+            page = 1;
             boolean moreAvailable = organisationsResponse.getMoreAvailable();
             while (moreAvailable) {
                 organisationsResponse = prdService
@@ -118,7 +118,7 @@ public class OrganisationService {
                     .ofInstant(batchRunStartTime.getDate(), ZoneOffset.systemDefault()));
             batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
         } catch (Exception exception) {
-            String pageFailMessage = (page == 0 ? "" : ", failed at page " + page);
+            String pageFailMessage = (page == -1 ? "" : ", failed at page " + page);
             processMonitorDto.markAsFailed(exception.getMessage() + pageFailMessage);
             processEventTracker.trackEventCompleted(processMonitorDto);
             return processMonitorDto;
