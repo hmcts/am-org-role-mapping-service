@@ -228,7 +228,7 @@ class OrganisationServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
-                .isEqualTo("Insert exception, failed at page 0");
+                .isEqualTo("Insert exception, failed at page 1");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps()).hasSize(1);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
                 .isEqualTo("attempting upsertToOrganisationRefreshQueue "
@@ -273,7 +273,7 @@ class OrganisationServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
-                .isEqualTo("Retrieve exception, failed at page 0");
+                .isEqualTo("Retrieve exception, failed at page 1");
         assertTrue(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().isEmpty());
 
     }

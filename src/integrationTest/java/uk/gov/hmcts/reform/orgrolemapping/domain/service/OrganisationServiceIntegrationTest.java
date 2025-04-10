@@ -68,18 +68,18 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
             scripts = {"classpath:sql/insert_profile_refresh_queue.sql"})
     void shouldInsertTwoOrganisationIntoOrganisationRefreshQueue_AndClearProfileRefreshQueue_WithPagination() {
         OrganisationInfo organisationInfo = buildOrganisationInfo(1);
-        OrganisationByProfileIdsResponse page0
+        OrganisationByProfileIdsResponse page1
                 = buildOrganisationByProfileIdsResponse(organisationInfo, "123", true);
 
         when(prdService.fetchOrganisationsByProfileIds(any(), eq(null), any()))
-                .thenReturn(ResponseEntity.ok(page0));
+                .thenReturn(ResponseEntity.ok(page1));
 
         OrganisationInfo organisationInfo2 = buildOrganisationInfo(2);
-        OrganisationByProfileIdsResponse page1
+        OrganisationByProfileIdsResponse page2
                 = buildOrganisationByProfileIdsResponse(organisationInfo2, "456", false);
 
         when(prdService.fetchOrganisationsByProfileIds(any(), any(String.class), any()))
-                .thenReturn(ResponseEntity.ok(page1));
+                .thenReturn(ResponseEntity.ok(page2));
 
         organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
 
