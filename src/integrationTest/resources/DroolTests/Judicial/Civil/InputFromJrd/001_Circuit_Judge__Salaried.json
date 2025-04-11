@@ -1,0 +1,43 @@
+{
+  "sidam_id": "[[IDAM_ID]]",
+  "object_id": "[[RANDOM_ID]]",
+  "personal_code": "[[RANDOM_ID]]",
+  "active_flag": "true",
+  "deleted_flag": "[[DELETED_FLAG]]",
+  "appointments": [
+    {
+      "base_location_id": "843",
+      "epimms_id": "123456",
+      "cft_region_id": "[[REGION_ID]]",
+      "cft_region": "[[REGION_NAME]]",
+      "is_principal_appointment": "true",
+      "appointment": "Circuit Judge",
+      "appointment_type": "[[APPOINTMENT_TYPE]]",
+      "contract_type_id": "[[CONTRACT_TYPE_ID]]",
+      "service_codes": [
+        "[[SERVICE_CODES]]"
+      ],
+      "start_date": "[[APPOINTMENT_BEGIN_TIME]]",
+      "end_date": "[[APPOINTMENT_END_TIME]]",
+      "appointment_id": "1234",
+      "role_name_id": "19",
+      "type": "Courts"
+    }
+  ],
+  "authorisations": [
+    {
+      "appointment_id": "1234",
+      "authorisation_id": "9876",
+      "jurisdiction_id": "31",
+      "jurisdiction": "Civil",
+      "ticket_description": "Civil Authorisation",
+      "ticket_code": "294",
+      "service_codes": [
+        "[[SERVICE_CODES]]"
+      ],
+      "start_date": "[[AUTHORISATION_BEGIN_TIME]]",
+      "end_date": "[[AUTHORISATION_END_TIME]]"
+    }
+  ],
+  "roles": []
+}
