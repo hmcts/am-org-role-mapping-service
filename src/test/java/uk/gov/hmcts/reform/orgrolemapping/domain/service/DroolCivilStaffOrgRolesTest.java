@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("national-business-centre", "routine_work");
         expectedRoleNameWorkTypesMap.put("task-supervisor", "routine_work,hearing_work,access_requests");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("wlu-admin", "routine_work,query_work,welsh_translation_work");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String roleId,
@@ -72,7 +74,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 r.getRoleName())) {
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
-            assertEquals(null, r.getAttributes().get("jurisdiction"));
+            assertNull(r.getAttributes().get("jurisdiction"));
             assertTrue(r.isReadOnly());
             assertNull(primaryLocation);
             assertNull(r.getAttributes().get("region"));
@@ -93,6 +95,8 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         String expectedWorkTypes;
         if (roleId.equals("1") && r.getRoleName().equals("task-supervisor")) {
             expectedWorkTypes = "decision_making_work,access_requests";
+        } else if (roleId.equals("20") && r.getRoleName().equals("task-supervisor")) {
+            expectedWorkTypes = "routine_work,query_work,welsh_translation_work";
         } else {
             expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
         }
@@ -105,7 +109,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
     }
 
     /* test parameters
-     * roleId,expectedRoleNames,expectedRoleCount,expectedRoleCategory,taskSupervisorFlag,taskAllocatorFlag
+     * roleId,expectedRoleNames,expectedRoleCount,expectedRoleCategory,taskSupervisorFlag,caseAllocatorFlag
      */
     static Stream<Arguments> generateDatav14() {
         return Stream.of(
@@ -134,7 +138,11 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 "hmcts-legal-operations"), 3, RoleCategory.LEGAL_OPERATIONS, "N", "N"),
             Arguments.of("1", Arrays.asList("tribunal-caseworker", "senior-tribunal-caseworker",
                 "hmcts-legal-operations", "task-supervisor", "case-allocator"), 5, RoleCategory.LEGAL_OPERATIONS, "Y",
-                "Y")
+                "Y"),
+            Arguments.of("20", Collections.singletonList("wlu-admin"), 1, RoleCategory.ADMIN,
+                "N", "N"),
+            Arguments.of("20", Arrays.asList("wlu-admin", "task-supervisor"), 2, RoleCategory.ADMIN,
+                    "Y", "N")
         );
     }
 
@@ -145,13 +153,13 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                                             int roleCount,
                                             RoleCategory expectedRoleCategory,
                                             String taskSupervisorFlag,
-                                            String taskAllocatorFlag) {
+                                            String caseAllocatorFlag) {
         // As CIVIL has 2 service codes AAA6 and AAA7 and the CaseWorkerAccessProfile has one service code we run
         // the test method twice, once with each service code
         shouldReturnCivilAdminMappings_v14(roleId, roleNames, roleCount, expectedRoleCategory, taskSupervisorFlag,
-            taskAllocatorFlag, SERVICE_CODE_1);
+                caseAllocatorFlag, SERVICE_CODE_1);
         shouldReturnCivilAdminMappings_v14(roleId, roleNames, roleCount, expectedRoleCategory, taskSupervisorFlag,
-                taskAllocatorFlag, SERVICE_CODE_2);
+                caseAllocatorFlag, SERVICE_CODE_2);
     }
 
     void shouldReturnCivilAdminMappings_v14(String roleId,
@@ -159,7 +167,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                                             int roleCount,
                                             RoleCategory expectedRoleCategory,
                                             String taskSupervisorFlag,
-                                            String taskAllocatorFlag,
+                                            String caseAllocatorFlag,
                                             String serviceCode) {
 
         judicialAccessProfiles.clear();
@@ -173,7 +181,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         cap.setRegionId(REGION_ID);
         cap.setSkillCodes(skillCodes);
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
-        cap.setCaseAllocatorFlag(taskAllocatorFlag);
+        cap.setCaseAllocatorFlag(caseAllocatorFlag);
 
         allProfiles.add(cap);
 

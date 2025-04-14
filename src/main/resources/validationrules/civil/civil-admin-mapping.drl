@@ -519,6 +519,59 @@ then
       logMsg("Rule : v2_1_civil_case_allocator_admin_org_role");
 end;
 
+rule "v23_civil_wlu_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_3.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("20"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,query_work,welsh_translation_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("wlu-admin")
+      .grantType(GrantType.STANDARD)
+      .authorisations($cap.getSkillCodes())
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : v23_civil_wlu_admin_org_role");
+end;
+
+rule "v23_civil_task_supervisor_wlu_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_3.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("20"), serviceCode in ("AAA6", "AAA7"),
+                                !suspended, taskSupervisorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,query_work,welsh_translation_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .authorisations($cap.getSkillCodes())
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : v23_civil_task_supervisor_wlu_admin_org_role");
+end;
+
 
 
 
