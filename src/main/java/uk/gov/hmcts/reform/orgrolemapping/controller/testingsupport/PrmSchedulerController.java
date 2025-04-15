@@ -4,10 +4,13 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATI
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.Scheduler;
+import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
 @RestController
 @Slf4j
@@ -90,7 +95,14 @@ public class PrmSchedulerController {
         description = "OK",
         content = @Content(schema = @Schema(implementation = Object.class))
     )
-    public ResponseEntity<Object> findOrganisationChanges() {
+    public ResponseEntity<Object> findOrganisationChanges(
+        @Parameter(name = "since",
+            description = "Timestamp to fetch organisations with last updated date/time >= since, "
+            + "expected format: " + Constants.SINCE_TIMESTAMP_FORMAT) String since
+    ) {
+        if (since != null) {
+            ValidationUtil.validateDateTimeFormat(Constants.SINCE_TIMESTAMP_FORMAT, since);
+        }
         ProcessMonitorDto processMonitorDto = scheduler
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
