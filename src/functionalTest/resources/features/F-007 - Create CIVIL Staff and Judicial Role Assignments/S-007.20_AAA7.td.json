@@ -1,0 +1,49 @@
+{
+  "_guid_": "S-007.20_AAA7",
+  "title": "must successfully create org role mapping for WLU Administrator (AAA7)",
+  "_extends_": "F-001_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has WLU Administrator role (AAA7)"
+  ],
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "c976456b-d960-44e2-ad1f-99b6c4b44a2e"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "wlu-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "substantive": "Y",
+            "workTypes": "routine_work,query_work,welsh_translation_work"
+          },
+          "authorisations": [
+            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
+        }
+      ]
+    }
+  }
+}
