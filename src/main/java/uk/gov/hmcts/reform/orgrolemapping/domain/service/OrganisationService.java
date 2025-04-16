@@ -85,12 +85,7 @@ public class OrganisationService {
                 throw new ServiceException("Single AccessTypesEntity not found");
             }
             AccessTypesEntity accessTypesEntity = allAccessTypes.get(0);
-            List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
-                    .findAll();
-            if (allBatchLastRunTimestampEntities.size() != 1) {
-                throw new ServiceException("Single BatchLastRunTimestampEntity not found");
-            }
-            BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
+            BatchLastRunTimestampEntity batchLastRunTimestampEntity = getBatchLastRunTimestampEntity();
             LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
 
             int toleranceSeconds = Integer.parseInt(tolerance);
@@ -169,6 +164,15 @@ public class OrganisationService {
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
+    }
+
+    public BatchLastRunTimestampEntity getBatchLastRunTimestampEntity() {
+        List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
+            .findAll();
+        if (allBatchLastRunTimestampEntities.size() != 1) {
+            throw new ServiceException("Single BatchLastRunTimestampEntity not found");
+        }
+        return allBatchLastRunTimestampEntities.get(0);
     }
 
     private void retrieveOrganisationsByProfileIdsAndUpsert(OrganisationByProfileIdsRequest request,

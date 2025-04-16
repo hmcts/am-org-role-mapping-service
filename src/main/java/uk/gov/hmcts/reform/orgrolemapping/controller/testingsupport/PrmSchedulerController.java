@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.Scheduler;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
@@ -31,11 +36,17 @@ import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 public class PrmSchedulerController {
 
     private Scheduler scheduler;
+    private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
+    private OrganisationService organisationService;
 
 
     @Autowired
-    public PrmSchedulerController(Scheduler scheduler) {
+    public PrmSchedulerController(Scheduler scheduler,
+        BatchLastRunTimestampRepository batchLastRunTimestampRepository,
+        OrganisationService organisationService) {
         this.scheduler = scheduler;
+        this.batchLastRunTimestampRepository = batchLastRunTimestampRepository;
+        this.organisationService = organisationService;
     }
 
     @GetMapping(
@@ -99,9 +110,21 @@ public class PrmSchedulerController {
             + "expected format: " + Constants.SINCE_TIMESTAMP_FORMAT)
         @RequestParam(required = false) String since
     ) {
+        // Fetch / validate the last run timestamp entity
+        BatchLastRunTimestampEntity batchLastRunTimestampEntity = organisationService.getBatchLastRunTimestampEntity();
+
         if (since != null) {
+            // Validate the datetime format
             ValidationUtil.validateDateTimeFormat(Constants.SINCE_TIMESTAMP_FORMAT, since);
+
+            // Set the last run timestamp
+            batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime.parse(since,
+                DateTimeFormatter.ofPattern(Constants.SINCE_TIMESTAMP_FORMAT)));
+
+            // Update the last run timestamp entity
+            batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
         }
+
         ProcessMonitorDto processMonitorDto = scheduler
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
