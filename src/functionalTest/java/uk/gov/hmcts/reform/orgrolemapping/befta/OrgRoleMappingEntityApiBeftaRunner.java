@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.befta;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.befta.BeftaMain;
 import uk.gov.hmcts.befta.TestAutomationConfig;
@@ -18,15 +18,14 @@ public class OrgRoleMappingEntityApiBeftaRunner {
     private OrgRoleMappingEntityApiBeftaRunner() {
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         BeftaMain.setUp(TestAutomationConfig.INSTANCE, new OrgRoleMappingAmTestAutomationAdapter(),
                 new OrmDefaultMultiSourceFeatureToggleService());
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         BeftaMain.tearDown();
     }
-
 }
