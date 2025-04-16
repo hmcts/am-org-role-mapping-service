@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
@@ -96,7 +97,8 @@ public class PrmSchedulerController {
     public ResponseEntity<Object> findOrganisationChanges(
         @Parameter(name = "since",
             description = "Timestamp to fetch organisations with last updated date/time >= since, "
-            + "expected format: " + Constants.SINCE_TIMESTAMP_FORMAT) String since
+            + "expected format: " + Constants.SINCE_TIMESTAMP_FORMAT)
+        @RequestParam String since
     ) {
         if (since != null) {
             ValidationUtil.validateDateTimeFormat(Constants.SINCE_TIMESTAMP_FORMAT, since);
