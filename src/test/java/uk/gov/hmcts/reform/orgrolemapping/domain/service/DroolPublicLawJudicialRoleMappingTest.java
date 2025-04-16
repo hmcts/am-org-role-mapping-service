@@ -85,6 +85,10 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "High Court Judge,'','judge,hmcts-judiciary,hearing-viewer',5,true",
         "High Court Judge,'','judge,hmcts-judiciary,hearing-viewer',6,false",
 
+        "President of the Family Division,'','judge,hmcts-judiciary,hearing-viewer',1,true",
+        "President of the Family Division,'','judge,hmcts-judiciary,hearing-viewer',5,true",
+        "President of the Family Division,'','judge,hmcts-judiciary,hearing-viewer',6,false",
+
         "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer',1,true",
         "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
@@ -217,6 +221,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "Deputy District Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy High Court Judge,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "High Court Judge- Sitting in Retirement,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
+        "High Court Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Circuit Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Recorder (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy Upper Tribunal Judge,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
@@ -240,6 +245,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "Deputy District Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy High Court Judge,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "High Court Judge- Sitting in Retirement,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
+        "High Court Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Circuit Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Recorder (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy Upper Tribunal Judge,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",

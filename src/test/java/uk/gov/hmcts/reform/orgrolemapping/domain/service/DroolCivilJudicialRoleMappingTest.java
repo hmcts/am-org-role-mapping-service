@@ -92,7 +92,9 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
         "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',1,true",
         "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',5,true",
-        "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',11,false"
+        "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',11,false",
+
+        "CIVIL Designated Civil Online Judge-Salaried,'judge,leadership-judge,hmcts-judiciary',1,false",
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles, String region, boolean expectMultiRegion) {
 
@@ -108,6 +110,10 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         List<String> rolesThatRequireRegions = List.of(
                 "judge", "leadership-judge", "task-supervisor", "case-allocator", "circuit-judge", "district-judge"
         );
+
+        if (setOffice.equals("CIVIL Designated Civil Online Judge-Salaried")) {
+            rolesThatRequireRegions = List.of(); // NB: no region required for this JOH
+        }
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
