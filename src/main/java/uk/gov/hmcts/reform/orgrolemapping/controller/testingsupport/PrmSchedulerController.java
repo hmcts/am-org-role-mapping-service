@@ -110,6 +110,7 @@ public class PrmSchedulerController {
             + "expected format: " + Constants.SINCE_TIMESTAMP_FORMAT)
         @RequestParam(required = false) String since
     ) {
+        log.info("findOrganisationChanges called with since: {}", since);
         // Fetch / validate the last run timestamp entity
         BatchLastRunTimestampEntity batchLastRunTimestampEntity = organisationService.getBatchLastRunTimestampEntity();
 
