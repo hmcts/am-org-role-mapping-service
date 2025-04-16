@@ -35,7 +35,6 @@ def versions = [
         jacksondata    : '2.18.3',
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
-        launchDarklySdk: '5.10.9',
         netty_version  : '4.1.119.Final',
         poi            : '5.4.0'
 ]
@@ -367,7 +366,6 @@ dependencies {
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.10'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.7.4'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
-    implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '32.1.3-jre'
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.5'
