@@ -95,10 +95,9 @@ public class PrmSchedulerController {
         content = @Content(schema = @Schema(implementation = Object.class))
     )
     public ResponseEntity<Object> findOrganisationChanges(
-        @Parameter(name = "since",
-            description = "Timestamp to fetch organisations with last updated date/time >= since, "
+        @Parameter(description = "Timestamp to fetch organisations with last updated date/time >= since, "
             + "expected format: " + Constants.SINCE_TIMESTAMP_FORMAT)
-        @RequestParam String since
+        @RequestParam(required = false) String since
     ) {
         if (since != null) {
             ValidationUtil.validateDateTimeFormat(Constants.SINCE_TIMESTAMP_FORMAT, since);

@@ -17,7 +17,7 @@
       "id": "[[ANYTHING_PRESENT]]",
       "startTime": "[[ANYTHING_PRESENT]]",
       "endTime": "[[ANYTHING_PRESENT]]",
-      "endStatus": "SUCCESS",
+      "endStatus": "FAILURE",
       "endDetail": "[[ANYTHING_PRESENT]]",
       "processSteps" : [ ]
     }
