@@ -128,6 +128,7 @@ public class PrmSchedulerController {
 
         ProcessMonitorDto processMonitorDto = scheduler
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
+        processMonitorDto.markAsFailed("After scheduler");
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 
