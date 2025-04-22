@@ -15,7 +15,7 @@
     "body": {
       "processType": "PRM Process 3 - Find organisation changes",
       "id": "[[ANYTHING_PRESENT]]",
-      "startTime": "[[yesterday]]",
+      "startTime": "${[scenarioContext][customValues][yesterday]}",
       "endTime": "[[ANYTHING_PRESENT]]",
       "endStatus": "FAILED",
       "endDetail": "[[ANYTHING_PRESENT]]",
