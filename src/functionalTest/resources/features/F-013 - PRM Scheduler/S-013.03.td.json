@@ -9,15 +9,20 @@
   "uri": "/am/testing-support/prm/findOrganisationChanges",
   "productName": "Organisation Role Mapping",
   "operationName": "Find Organisation Changes",
+  "request": {
+    "queryParams": {
+      "since": "${[scenarioContext][customValues][yesterday]}"
+    }
+  },
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
       "processType": "PRM Process 3 - Find organisation changes",
       "id": "[[ANYTHING_PRESENT]]",
-      "startTime": "${[scenarioContext][customValues][yesterday]}",
-      "endTime": "[[ANYTHING_PRESENT]]",
-      "endStatus": "FAILED",
+      "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endStatus": "SUCCESS",
       "endDetail": "[[ANYTHING_PRESENT]]",
       "processSteps" : [ ]
     }
