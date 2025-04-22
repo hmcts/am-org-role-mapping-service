@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.befta;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.befta.BeftaTestDataLoader;
@@ -77,7 +75,7 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
             case ("tomorrow"):
                 return LocalDate.now().plusDays(1);
             case ("yesterday"):
-                return LocalDateTime.now().minusDays(1).truncatedTo(ChronoUnit.MINUTES);
+                return LocalDate.now().minusDays(1);
             case ("generateS2STokenForOrm"):
                 return new TokenUtils().generateServiceToken(buildOrmSpecificConfig());
             case ("generateS2STokenForXui"):
