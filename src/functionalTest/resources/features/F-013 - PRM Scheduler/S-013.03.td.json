@@ -24,7 +24,7 @@
       "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
       "endStatus": "SUCCESS",
       "endDetail": "[[ANYTHING_PRESENT]]",
-      "processSteps" : [ ]
+      "processSteps" : "[[ANYTHING_PRESENT]]"
     }
   }
 }
