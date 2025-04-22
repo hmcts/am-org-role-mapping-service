@@ -11,7 +11,7 @@
   "operationName": "Find Organisation Changes",
   "request": {
     "queryParams": {
-      "since": "${[scenarioContext][customValues][yesterday]}"
+      "since": "${[scenarioContext][customValues][yesterday]}T00:00:00"
     }
   },
 
