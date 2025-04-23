@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CCDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClientInterceptor;
 
 @FeignClient(value = "ccdClient", url = "${feign.client.config.ccdClient.url}",
-        configuration = {FeignClientConfiguration.class, FeignClientInterceptor.class},
+        configuration = {FeignClientConfiguration.class, RdFeignClientInterceptor.class},
         fallback = CCDFeignClientFallback.class)
 public interface CCDFeignClient {
 
