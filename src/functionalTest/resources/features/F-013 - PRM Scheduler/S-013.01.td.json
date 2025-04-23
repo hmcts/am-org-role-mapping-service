@@ -15,8 +15,8 @@
     "body": {
       "processType": "PRM Process 1 - Find Case Definition Changes",
       "id": "[[ANYTHING_PRESENT]]",
-      "startTime": "[[ANYTHING_PRESENT]]",
-      "endTime": "[[ANYTHING_PRESENT]]",
+      "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
       "endStatus": "SUCCESS",
       "processSteps" : [ ]
     }
