@@ -23,7 +23,7 @@
       "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
       "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
       "endStatus": "SUCCESS",
-      "processSteps" : ["[[ANYTHING_PRESENT]]"]
+      "processSteps" : ["[[ANY_OBJECT_NOT_NULLABLE]]"]
     }
   }
 }
