@@ -34,6 +34,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     @Autowired
     private Scheduler prmScheduler;
 
+
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/init_access_types.sql",
@@ -62,6 +63,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the ProfileRefreshQueue is empty
         assertActiveProfileRefreshQueueEntitiesInDb(0);
     }
+
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -103,6 +105,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
         assertProfileRefreshQueueEntityInDb("SOLICITOR_PROFILE", 1, true);
     }
+
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -150,6 +153,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
         assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, 1, true);
     }
+
 
     //#region Assertion Helpers: DB Checks
 
