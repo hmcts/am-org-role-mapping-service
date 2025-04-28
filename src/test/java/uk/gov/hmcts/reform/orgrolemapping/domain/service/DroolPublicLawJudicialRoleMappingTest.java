@@ -84,6 +84,10 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "High Court Judge,'','judge,hmcts-judiciary,hearing-viewer',5,true",
         "High Court Judge,'','judge,hmcts-judiciary,hearing-viewer',6,false",
 
+        "President of the Family Division,'','judge,hmcts-judiciary,hearing-viewer',1,true",
+        "President of the Family Division,'','judge,hmcts-judiciary,hearing-viewer',5,true",
+        "President of the Family Division,'','judge,hmcts-judiciary,hearing-viewer',6,false",
+
         "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer',1,true",
         "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"

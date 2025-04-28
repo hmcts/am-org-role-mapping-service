@@ -42,6 +42,7 @@ public enum FeatureFlagEnum {
     CIVIL_WA_2_0("civil_wa_2_0"),
     CIVIL_WA_2_1("civil_wa_2_1"),
     CIVIL_WA_2_2("civil_wa_2_2"),
+    CIVIL_WA_2_3("civil_wa_2_3"),
     CIVIL_WA_2_4("civil_wa_2_4"),
     PUBLICLAW_WA_1_3("publiclaw_wa_1_3"),
     PUBLICLAW_WA_1_4("publiclaw_wa_1_4"),
@@ -49,6 +50,7 @@ public enum FeatureFlagEnum {
     PUBLICLAW_WA_1_6("publiclaw_wa_1_6"),
     PUBLICLAW_WA_1_7("publiclaw_wa_1_7"),
     PUBLICLAW_WA_1_8("publiclaw_wa_1_8"),
+    PUBLICLAW_WA_1_9("publiclaw_wa_1_9"),
     IAC_JRD_1_1("iac_jrd_1_1"),
     PUBLICLAW_HEARING_1_0("publiclaw_hearing_1_0");
 
