@@ -8,6 +8,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import static uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus.PARTIAL_SUCCESS;
 import static uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus.SUCCESS;
@@ -31,7 +32,8 @@ public class ProcessEventTracker {
     public void trackEventCompleted(ProcessMonitorDto processMonitorDto) {
         Map<String, String> properties = createPropertiesMap(processMonitorDto);
         String message = createMessage(processMonitorDto, "Completed");
-        log.info("trackEventCompleted - {}", message);
+        log.debug("trackEventCompleted - {} {}", message,
+            JacksonUtils.writeValueAsPrettyJson(processMonitorDto));
 
         telemetryClient.trackEvent(message, properties, null);
     }

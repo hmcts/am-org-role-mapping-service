@@ -134,7 +134,7 @@ public class OrganisationService {
                 = profileRefreshQueueRepository.getActiveProfileEntities();
 
             if (profileRefreshQueueEntities.isEmpty()) {
-                processMonitorDto.addProcessStep("No active organisations found");
+                processMonitorDto.addProcessStep("No active organisation profiles found");
                 processMonitorDto.markAsSuccess();
                 processEventTracker.trackEventCompleted(processMonitorDto);
                 return processMonitorDto;

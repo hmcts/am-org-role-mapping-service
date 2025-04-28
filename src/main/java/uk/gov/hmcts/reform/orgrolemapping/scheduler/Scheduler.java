@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
-import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 @Slf4j
 @Service
@@ -24,18 +23,12 @@ public class Scheduler {
     @Scheduled(cron = "${professional.role.mapping.scheduling.findAndUpdateCaseDefinitionChanges.cron}")
     public ProcessMonitorDto findAndUpdateCaseDefinitionChanges() {
         ProcessMonitorDto processMonitorDto = caseDefinitionService.findAndUpdateCaseDefinitionChanges();
-        logAsJson(processMonitorDto);
         return processMonitorDto;
-    }
-
-    private void logAsJson(ProcessMonitorDto processMonitorDto) {
-        log.debug("Process Monitor: {}", JacksonUtils.writeValueAsPrettyJson(processMonitorDto));
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.cron}")
     public ProcessMonitorDto findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess() {
         ProcessMonitorDto processMonitorDto = organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
-        logAsJson(processMonitorDto);
         return processMonitorDto;
     }
 
@@ -43,7 +36,6 @@ public class Scheduler {
     public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess() {
         ProcessMonitorDto processMonitorDto = organisationService
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
-        logAsJson(processMonitorDto);
         return processMonitorDto;
     }
 }
