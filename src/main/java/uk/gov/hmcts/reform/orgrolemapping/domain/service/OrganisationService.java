@@ -116,7 +116,7 @@ public class OrganisationService {
             String pageFailMessage = (page == 0 ? "" : ", failed at page " + page);
             processMonitorDto.markAsFailed(exception.getMessage() + pageFailMessage);
             processEventTracker.trackEventCompleted(processMonitorDto);
-            return processMonitorDto;
+            throw exception;
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
@@ -135,6 +135,8 @@ public class OrganisationService {
                 = profileRefreshQueueRepository.getActiveProfileEntities();
 
             if (profileRefreshQueueEntities.isEmpty()) {
+                processMonitorDto.addProcessStep("No active organisations found");
+                processMonitorDto.markAsSuccess();
                 return processMonitorDto;
             }
 
@@ -150,6 +152,8 @@ public class OrganisationService {
             OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
             if (maxVersion.isEmpty()) {
+                processMonitorDto.addProcessStep("No max version found");
+                processMonitorDto.markAsSuccess();
                 return processMonitorDto;
             }
 
