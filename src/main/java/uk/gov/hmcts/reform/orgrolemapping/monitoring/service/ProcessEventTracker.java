@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.monitoring.service;
 
 import com.microsoft.applicationinsights.TelemetryClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import static uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus.PARTIAL_SUCCESS;
 import static uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus.SUCCESS;
 
+@Slf4j
 @Component
 public class ProcessEventTracker {
     TelemetryClient telemetryClient;
@@ -29,6 +31,7 @@ public class ProcessEventTracker {
     public void trackEventCompleted(ProcessMonitorDto processMonitorDto) {
         Map<String, String> properties = createPropertiesMap(processMonitorDto);
         String message = createMessage(processMonitorDto, "Completed");
+        log.info("trackEventCompleted - {}", message);
 
         telemetryClient.trackEvent(message, properties, null);
     }

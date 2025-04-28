@@ -120,7 +120,6 @@ public class OrganisationService {
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
-        log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
         return processMonitorDto;
     }
 
@@ -137,6 +136,7 @@ public class OrganisationService {
             if (profileRefreshQueueEntities.isEmpty()) {
                 processMonitorDto.addProcessStep("No active organisations found");
                 processMonitorDto.markAsSuccess();
+                processEventTracker.trackEventCompleted(processMonitorDto);
                 return processMonitorDto;
             }
 
@@ -154,6 +154,7 @@ public class OrganisationService {
             if (maxVersion.isEmpty()) {
                 processMonitorDto.addProcessStep("No max version found");
                 processMonitorDto.markAsSuccess();
+                processEventTracker.trackEventCompleted(processMonitorDto);
                 return processMonitorDto;
             }
 
