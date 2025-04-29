@@ -34,7 +34,9 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     @Autowired
     private Scheduler prmScheduler;
 
-
+    /**
+     * Empty access types with no new access types.
+     */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/init_access_types.sql",
@@ -42,29 +44,13 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testPrmSchedulerProcess1_emptyCcdResponse() {
 
-        // GIVEN
-        logBeforeStatus();
-        // stub the CCD Def Store call with response for test scenario
-        stubCcdRetrieveAccessTypes(List.of()); // i.e. empty list for empty result
-
-        // WHEN
-        ProcessMonitorDto processMonitorDto = prmScheduler.findAndUpdateCaseDefinitionChanges();
-
-        // THEN
-        verifySingleCallToCcd();
-        logAfterStatus(processMonitorDto);
-
-        // verify that the process monitor reports success
-        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
-
         // verify that the Access Types are updated (i.e. version 1) and empty
-        assertAndExtractAccessTypesFromDb(1, 0);
-
-        // verify that the ProfileRefreshQueue is empty
-        assertActiveProfileRefreshQueueEntitiesInDb(0);
+        runTest(List.of(), 1, 0);
     }
 
-
+    /**
+     * Insert a single access type to an empty list.
+     */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/init_access_types.sql",
@@ -72,25 +58,12 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testPrmSchedulerProcess1_singleJurisdictionCcdResponse() {
 
-        // GIVEN
-        logBeforeStatus();
-        // stub the CCD Def Store call with response for test scenario
-        stubCcdRetrieveAccessTypes(List.of(
-            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json"
-        ));
-
-        // WHEN
-        ProcessMonitorDto processMonitorDto = prmScheduler.findAndUpdateCaseDefinitionChanges();
-
-        // THEN
-        verifySingleCallToCcd();
-        logAfterStatus(processMonitorDto);
-
-        // verify that the process monitor reports success
-        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
+        int expectedAccessTypesMinVersion = 1;
 
         // verify that the Access Types are updated (i.e. version 1) and has 1 organisation profile
-        var accessTypes = assertAndExtractAccessTypesFromDb(1, 1);
+        var accessTypes = runTest(List.of(
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json"
+        ), expectedAccessTypesMinVersion, 1);
 
         // verify that the OrganisationProfileId is as expected for civil 01
         assertCivilSolicitorProfile(
@@ -99,14 +72,13 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
             List.of("CIVIL_SOLICITOR_1")
         );
 
-        // verify that the ProfileRefreshQueue now has an active entry
-        assertActiveProfileRefreshQueueEntitiesInDb(1);
-
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
-        assertProfileRefreshQueueEntityInDb("SOLICITOR_PROFILE", 1, true);
+        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, expectedAccessTypesMinVersion, true);
     }
 
-
+    /**
+     * Insert a multiple access types to an empty list.
+     */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/init_access_types.sql",
@@ -114,26 +86,13 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testPrmSchedulerProcess1_multipleJurisdictionCcdResponse() {
 
-        // GIVEN
-        logBeforeStatus();
-        // stub the CCD Def Store call with response for test scenario
-        stubCcdRetrieveAccessTypes(List.of(
-            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json",
-            "/SchedulerTests/CcdAccessTypes/jurisdiction_publiclaw_scenario_01.json"
-        ));
-
-        // WHEN
-        ProcessMonitorDto processMonitorDto = prmScheduler.findAndUpdateCaseDefinitionChanges();
-
-        // THEN
-        verifySingleCallToCcd();
-        logAfterStatus(processMonitorDto);
-
-        // verify that the process monitor reports success
-        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
+        int expectedAccessTypesMinVersion = 1;
 
         // verify that the Access Types are updated (i.e. version 1) and has 1 organisation profile
-        var accessTypes = assertAndExtractAccessTypesFromDb(1, 1);
+        var accessTypes = runTest(List.of(
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json",
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_publiclaw_scenario_01.json"
+        ), expectedAccessTypesMinVersion, 1);
 
         // verify that the OrganisationProfileId is as expected for civil 01 & publiclaw 01
         assertCivilSolicitorProfile(
@@ -147,13 +106,77 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
             List.of("PUBLICLAW_SOLICITOR_1")
         );
 
-        // verify that the ProfileRefreshQueue now has an active entry
-        assertActiveProfileRefreshQueueEntitiesInDb(1);
-
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
-        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, 1, true);
+        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, expectedAccessTypesMinVersion, true);
     }
 
+    /**
+     * Insert a single access type to an already populated list.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
+    })
+    void testPrmSchedulerProcess1_updateJurisdictionCcdResponse() {
+
+        int expectedAccessTypesMinVersion = 2;
+
+        var accessTypes = runTest(List.of(
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json"
+        ), expectedAccessTypesMinVersion, 1);
+
+        // verify that the OrganisationProfileId is as expected for civil 01
+        assertCivilSolicitorProfile(
+            extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_CIVIL),
+            "jurisdiction_civil_scenario_01",
+            List.of("CIVIL_SOLICITOR_1")
+        );
+
+        // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
+        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, expectedAccessTypesMinVersion, true);
+    }
+
+    /**
+     * Delete a single access type from an already populated list.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
+    })
+    void testPrmSchedulerProcess1_deleteJurisdictionCcdResponse() {
+
+        runTest(List.of(), 2, 0);
+    }
+
+    private RestructuredAccessTypes runTest(List<String> jurisdictionFileNames, int expectedVersion,
+        int expectedOrganisationProfileCount) {
+
+        // GIVEN
+        logBeforeStatus();
+        // stub the CCD Def Store call with response for test scenario
+        stubCcdRetrieveAccessTypes(jurisdictionFileNames);
+
+        // WHEN
+        ProcessMonitorDto processMonitorDto = prmScheduler.findAndUpdateCaseDefinitionChanges();
+
+        // THEN
+        verifySingleCallToCcd();
+        logAfterStatus(processMonitorDto);
+
+        // verify that the process monitor reports success
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
+
+        // verify that the Access Types are updated (i.e. version 1) and has x organisation profile(s)
+        var accessTypes = assertAndExtractAccessTypesFromDb(expectedVersion,
+            expectedOrganisationProfileCount);
+
+        // verify that the ProfileRefreshQueue now has x active entries
+        assertActiveProfileRefreshQueueEntitiesInDb(expectedOrganisationProfileCount);
+
+        return accessTypes;
+    }
 
     //#region Assertion Helpers: DB Checks
 
