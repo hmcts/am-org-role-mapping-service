@@ -35,7 +35,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     private Scheduler prmScheduler;
 
     /**
-     * Empty access types with no new access types.
+     * No change - Empty access types with no new access types.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -49,7 +49,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * Insert a single access type to an empty list.
+     * New Casetype - Insert a single access type to an empty list.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -77,7 +77,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * Insert a multiple access types to an empty list.
+     * New Org Profile - Insert multiple access types to an empty list.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -111,7 +111,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * Insert a single access type to an already populated list.
+     * Existing Org Profile Updated - Insert a single access type to an already populated list.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -138,7 +138,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * Delete a single access type from an already populated list.
+     * Existing Org Profile Deleted - Delete a single access type from an already populated list.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
