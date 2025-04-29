@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_20_WLU_Admin",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "20",
+  "role": "WLU Administrator"
+}

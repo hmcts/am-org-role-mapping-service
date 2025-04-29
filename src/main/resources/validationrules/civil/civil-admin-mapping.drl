@@ -267,11 +267,14 @@ end;
 
 /*
  * CIVIL admin "hearing-centre-team-leader" Org role mapping. v2.1
+ * Made obsolete in COT-945 - disabled by CIVIL_WA_2_2 flag.
+ * To be removed in DTSAM-792.
  */
 
 rule "v2_1_civil_hearing_centre_team_leader_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("3"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -293,6 +296,36 @@ then
       .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : v2_1_civil_hearing_centre_team_leader_org_role");
+end;
+
+/*
+ * CIVIL admin "hearing-centre-team-leader" Org role mapping. v2.2
+ */
+
+rule "v2_2_civil_hearing_centre_team_leader_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("3"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,access_requests,query_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hearing-centre-team-leader")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
+      .build());
+      logMsg("Rule : v2_2_civil_hearing_centre_team_leader_org_role");
 end;
 
 /*
@@ -330,11 +363,14 @@ end;
 
 /*
  * CIVIL admin "hearing-centre-admin" Org role mapping. v2.1
+ * Made obsolete in COT-945 - disabled by CIVIL_WA_2_2 flag.
+ * To be removed in DTSAM-792.
  */
 
 rule "v2_1_civil_hearing_centre_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
+  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("3", "4"), serviceCode in ("AAA6", "AAA7"), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -357,6 +393,37 @@ then
       .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : v2_1_civil_hearing_centre_admin_org_role");
+end;
+
+/*
+ * CIVIL admin "hearing-centre-admin" Org role mapping. v2.2
+ */
+
+rule "v2_2_civil_hearing_centre_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_2.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("3", "4"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,multi_track_hearing_work,"
+                                                    + "intermediate_track_hearing_work,routine_work,query_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hearing-centre-admin")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($cap.getSkillCodes())
+      .build());
+      logMsg("Rule : v2_2_civil_hearing_centre_admin_org_role");
 end;
 
 /*
@@ -450,6 +517,59 @@ then
       .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : v2_1_civil_case_allocator_admin_org_role");
+end;
+
+rule "v23_civil_wlu_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_3.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("20"), serviceCode in ("AAA6", "AAA7"), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,query_work,welsh_translation_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("wlu-admin")
+      .grantType(GrantType.STANDARD)
+      .authorisations($cap.getSkillCodes())
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : v23_civil_wlu_admin_org_role");
+end;
+
+rule "v23_civil_task_supervisor_wlu_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_3.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("20"), serviceCode in ("AAA6", "AAA7"),
+                                !suspended, taskSupervisorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,query_work,welsh_translation_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .authorisations($cap.getSkillCodes())
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : v23_civil_task_supervisor_wlu_admin_org_role");
 end;
 
 

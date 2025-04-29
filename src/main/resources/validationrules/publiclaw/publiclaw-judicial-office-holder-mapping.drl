@@ -424,10 +424,13 @@ end;
 
 /*
  * 12: "PUBLICLAW High Court Judge - Salaried" business role mapping to JOH.
+ * Made obsolete in DTSAM-840 - disabled by PUBLICLAW_WA_1_9 flag.
+ * To be removed in DTSAM-836.
  */
 rule "v1_5_publiclaw_high_court_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_5.getValue())
+   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_9.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "High Court Judge",
                                appointmentType in ("Salaried", "SPTW"),
@@ -451,11 +454,43 @@ then
 end;
 
 /*
+ * 12: "PUBLICLAW High Court Judge - Salaried" business role mapping to JOH.
+ * Expand to include "President of the Family Division" in DTSAM-840
+ */
+rule "v1_9_publiclaw_high_court_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_9.getValue())
+   $jap: JudicialAccessProfile(appointment in ("High Court Judge",
+                                               "President of the Family Division"),
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW High Court Judge - Salaried")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v1_9_publiclaw_high_court_judge_salaried_joh");
+end;
+
+/*
  * 13: "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid" business role mapping to JOH.
+ * Made obsolete in DTSAM-828 - rule will be disabled when PUBLICLAW_WA_1_8 is enabled.
+ * To be removed in DTSAM-832.
  */
 rule "publiclaw_high_court_judge_in_retirement_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_8.getValue())
    $jap: JudicialAccessProfile(appointment == "High Court Judge- Sitting in Retirement",
                                appointmentType in ("Fee Paid"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
@@ -475,6 +510,36 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : publiclaw_high_court_judge_in_retirement_joh");
+end;
+
+/*
+ * 13: "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid" business role mapping to JOH. v1.8
+ * The creation of the JOH object accommodates for both 'High Court Judge- Sitting in Retirement'
+ * and 'High Court Judge (sitting in retirement)' appointments. See DTSAM-828.
+ */
+rule "v1_8_publiclaw_high_court_judge_in_retirement_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_8.getValue())
+   $jap: JudicialAccessProfile(appointment in ("High Court Judge- Sitting in Retirement",
+                                               "High Court Judge (sitting in retirement)"),
+                               appointmentType in ("Fee Paid"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v1_8_publiclaw_high_court_judge_in_retirement_joh");
 end;
 
 /*
