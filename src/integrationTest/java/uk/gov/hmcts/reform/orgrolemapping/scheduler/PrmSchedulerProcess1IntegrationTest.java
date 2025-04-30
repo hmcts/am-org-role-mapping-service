@@ -18,12 +18,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 
 class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
+
+    private static final String CIVIL_SOLICITOR_0 = "CIVIL_SOLICITOR_0";
+    private static final String CIVIL_SOLICITOR_1 = "CIVIL_SOLICITOR_1";
 
     @Autowired
     private AccessTypesRepository accessTypesRepository;
@@ -42,10 +46,37 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testPrmSchedulerProcess1_emptyCcdResponse() {
+    void testNoChange_emptyCcdResponse() {
 
         // verify that the Access Types are updated (i.e. version 1) and empty
         runTest(List.of(), 1, 0);
+    }
+
+    /**
+     * No change - No update to an already populated list.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
+    })
+    void testNoChange_existingJurisdictionCcdResponse() {
+
+        int expectedAccessTypesMinVersion = 2;
+
+        var accessTypes = runTest(List.of(
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_02.json"
+        ), expectedAccessTypesMinVersion, 1);
+
+        // verify that the OrganisationProfileId is as expected for civil 01
+        assertCivilSolicitorProfile(
+            extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_CIVIL),
+            "jurisdiction_civil_scenario_02",
+            List.of(CIVIL_SOLICITOR_0)
+        );
+
+        // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
+        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, expectedAccessTypesMinVersion, true);
     }
 
     /**
@@ -56,7 +87,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testPrmSchedulerProcess1_singleJurisdictionCcdResponse() {
+    void testNewCaseType_singleJurisdictionCcdResponse() {
 
         int expectedAccessTypesMinVersion = 1;
 
@@ -69,7 +100,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         assertCivilSolicitorProfile(
             extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_CIVIL),
             "jurisdiction_civil_scenario_01",
-            List.of("CIVIL_SOLICITOR_1")
+            List.of(CIVIL_SOLICITOR_1)
         );
 
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
@@ -84,7 +115,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testPrmSchedulerProcess1_multipleJurisdictionCcdResponse() {
+    void testNewOrgProfile_multipleJurisdictionCcdResponse() {
 
         int expectedAccessTypesMinVersion = 1;
 
@@ -98,7 +129,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         assertCivilSolicitorProfile(
             extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_CIVIL),
             "jurisdiction_civil_scenario_01",
-            List.of("CIVIL_SOLICITOR_1")
+            List.of(CIVIL_SOLICITOR_1)
         );
         assertPublicLawSolicitorProfile(
             extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_PUBLICLAW),
@@ -118,7 +149,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/insert_civil_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testPrmSchedulerProcess1_updateJurisdictionCcdResponse() {
+    void testUpdateOrgProfile_updateJurisdictionCcdResponse() {
 
         int expectedAccessTypesMinVersion = 2;
 
@@ -130,7 +161,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         assertCivilSolicitorProfile(
             extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_CIVIL),
             "jurisdiction_civil_scenario_01",
-            List.of("CIVIL_SOLICITOR_1")
+            List.of(CIVIL_SOLICITOR_1)
         );
 
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
@@ -145,7 +176,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/insert_civil_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testPrmSchedulerProcess1_deleteJurisdictionCcdResponse() {
+    void testDeleteOrgProfile_deleteJurisdictionCcdResponse() {
 
         runTest(List.of(), 2, 0);
     }
@@ -225,7 +256,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
 
         switch (scenarioId) {
             case "jurisdiction_civil_scenario_01" -> {
-                var accessType = organisationProfileAccessTypes.get("CIVIL_SOLICITOR_1");
+                var accessType = organisationProfileAccessTypes.get(CIVIL_SOLICITOR_1);
                 assertTrue(accessType.isAccessMandatory());
                 assertTrue(accessType.isAccessDefault());
 
@@ -240,7 +271,18 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
             }
 
             case "jurisdiction_civil_scenario_02" -> {
-                // TODO: assert scenario 02
+                var accessType = organisationProfileAccessTypes.get(CIVIL_SOLICITOR_0);
+                assertFalse(accessType.isAccessMandatory());
+                assertFalse(accessType.isAccessDefault());
+
+                var roles = accessType.getRoles().stream().toList();
+                assertEquals(1, roles.size());
+
+                assertEquals("civil_case_type_0", roles.get(0).getCaseTypeId());
+                assertEquals("orgRole1", roles.get(0).getOrganisationalRoleName());
+                assertEquals("groupRole1", roles.get(0).getGroupRoleName());
+                assertEquals("CIVIL:$ORGID$", roles.get(0).getCaseGroupIdTemplate());
+                assertTrue(roles.get(0).isGroupAccessEnabled());
             }
 
             default -> fail("Invalid scenario_id: " + scenarioId);
