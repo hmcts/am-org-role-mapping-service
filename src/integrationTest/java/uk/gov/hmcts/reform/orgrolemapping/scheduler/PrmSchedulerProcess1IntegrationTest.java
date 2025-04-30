@@ -28,6 +28,8 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
 
     private static final String CIVIL_SOLICITOR_0 = "CIVIL_SOLICITOR_0";
     private static final String CIVIL_SOLICITOR_1 = "CIVIL_SOLICITOR_1";
+    private static final String PUBLICLAW_SOLICITOR_1 = "PUBLICLAW_SOLICITOR_1";
+    private static final String PUBLICLAW_SOLICITOR_2 = "PUBLICLAW_SOLICITOR_2";
 
     @Autowired
     private AccessTypesRepository accessTypesRepository;
@@ -108,6 +110,40 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
+     * New Casetype - Insert access types to an existing list.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
+    })
+    void testNewCaseType_existingJurisdictionCcdResponse() {
+
+        int expectedAccessTypesMinVersion = 2;
+
+        // verify that the Access Types are updated (i.e. version 1) and has 1 organisation profile
+        var accessTypes = runTest(List.of(
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json",
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_publiclaw_scenario_02.json"
+        ), expectedAccessTypesMinVersion, 1);
+
+        // verify that the OrganisationProfileId is as expected for civil 01
+        assertCivilSolicitorProfile(
+            extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_CIVIL),
+            "jurisdiction_civil_scenario_01",
+            List.of(CIVIL_SOLICITOR_1)
+        );
+        assertPublicLawSolicitorProfile(
+            extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_PUBLICLAW),
+            "jurisdiction_publiclaw_scenario_02",
+            List.of(PUBLICLAW_SOLICITOR_2)
+        );
+
+        // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
+        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, expectedAccessTypesMinVersion, true);
+    }
+
+    /**
      * New Org Profile - Insert multiple access types to an empty list.
      */
     @Test
@@ -134,7 +170,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         assertPublicLawSolicitorProfile(
             extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_PUBLICLAW),
             "jurisdiction_publiclaw_scenario_01",
-            List.of("PUBLICLAW_SOLICITOR_1")
+            List.of(PUBLICLAW_SOLICITOR_1)
         );
 
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
@@ -304,7 +340,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
 
         switch (scenarioId) {
             case "jurisdiction_publiclaw_scenario_01" -> {
-                var accessType = organisationProfileAccessTypes.get("PUBLICLAW_SOLICITOR_1");
+                var accessType = organisationProfileAccessTypes.get(PUBLICLAW_SOLICITOR_1);
                 assertTrue(accessType.isAccessMandatory());
                 assertTrue(accessType.isAccessDefault());
 
@@ -319,7 +355,23 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
             }
 
             case "jurisdiction_publiclaw_scenario_02" -> {
-                // TODO: assert scenario 02
+                var accessType = organisationProfileAccessTypes.get(PUBLICLAW_SOLICITOR_2);
+                assertTrue(accessType.isAccessMandatory());
+                assertTrue(accessType.isAccessDefault());
+
+                var roles = accessType.getRoles().stream().toList();
+                assertEquals(2, roles.size());
+
+                assertEquals("publiclaw_case_type_1", roles.get(0).getCaseTypeId());
+                assertEquals("publiclaw_case_type_2", roles.get(1).getCaseTypeId());
+                assertEquals("orgRole1", roles.get(0).getOrganisationalRoleName());
+                assertEquals("orgRole1", roles.get(1).getOrganisationalRoleName());
+                assertEquals("groupRole1", roles.get(0).getGroupRoleName());
+                assertEquals("groupRole1", roles.get(1).getGroupRoleName());
+                assertEquals("PUBLICLAW:$ORGID$", roles.get(0).getCaseGroupIdTemplate());
+                assertEquals("PUBLICLAW:$ORGID$", roles.get(1).getCaseGroupIdTemplate());
+                assertTrue(roles.get(0).isGroupAccessEnabled());
+                assertTrue(roles.get(1).isGroupAccessEnabled());
             }
 
             default -> fail("Invalid scenario_id: " + scenarioId);
