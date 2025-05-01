@@ -205,16 +205,44 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * Existing Org Profile Deleted - Delete a single access type from an already populated list.
+     * Existing Org Profile Deleted - Delete a single access type leaving an empty list.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/insert_civil_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testDeleteOrgProfile_deleteJurisdictionCcdResponse() {
+    void testDeleteOrgProfile_emptyJurisdictionCcdResponse() {
 
         runTest(List.of(), 2, 0);
+    }
+
+    /**
+     * Existing Org Profile Deleted - Delete a single access type leaving a populated list.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
+    })
+    void testDeleteOrgProfile_existingJurisdictionCcdResponse() {
+
+        int expectedAccessTypesMinVersion = 2;
+
+        // verify that the Access Types are updated (i.e. version 1) and has 1 organisation profile
+        var accessTypes = runTest(List.of(
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_publiclaw_scenario_02.json"
+        ), expectedAccessTypesMinVersion, 1);
+
+        // verify that the OrganisationProfileId is as expected for publiclaw 01
+        assertPublicLawSolicitorProfile(
+            extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_PUBLICLAW),
+            "jurisdiction_publiclaw_scenario_02",
+            List.of(PUBLICLAW_SOLICITOR_2)
+        );
+
+        // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
+        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, expectedAccessTypesMinVersion, true);
     }
 
     private RestructuredAccessTypes runTest(List<String> jurisdictionFileNames, int expectedVersion,
