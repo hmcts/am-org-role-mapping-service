@@ -611,7 +611,7 @@ then
 end;
 
 /*
- * "PRIVATELAW District Judge (MC) (sitting in retirement)" business role business role mapping to JOH For v1.6.
+ * "PRIVATELAW District Judge (MC) (sitting in retirement)-Fee-Paid" business role mapping to JOH For v1.6.
  */
 rule "v1_6_privatelaw_district_judge_mc_sitting_in_retirement_fee_paid_joh"
 when
@@ -638,7 +638,7 @@ then
 end;
 
 /*
- * "PRIVATELAW District Judge (sitting in retirement)" business role business role mapping to JOH For v1.6.
+ * "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid" business role mapping to JOH For v1.6.
  */
 rule "v1_6_privatelaw_district_judge_sitting_in_retirement_fee_paid_joh"
 when

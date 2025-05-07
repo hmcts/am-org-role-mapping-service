@@ -262,7 +262,7 @@ end;
  */
 rule "v1_6_privatelaw_fee_paid_judge_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
   $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy Circuit Judge-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid",
@@ -434,7 +434,7 @@ end;
  */
 rule "v1_6_privatelaw_judge_org_role_for_fee_paid_judge"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_3.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
   $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy District Judge-Fee-Paid",
                                         "PRIVATELAW Recorder-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid",
