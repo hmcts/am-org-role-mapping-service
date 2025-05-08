@@ -2,8 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -75,19 +73,21 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         assertOrganisationRefreshQueueEntitiesInDb("3", 1, true, true);
     }
 
-    private void runTest(List<String> jurisdictionFileNames) {
+    private void runTest(List<String> fileNames) {
 
         // GIVEN
         logBeforeStatus();
         // stub the PRD service call with response for test scenario
-        stubPrdRetrieveOrganisations(jurisdictionFileNames);
+        stubPrdRetrieveOrganisations(fileNames);
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler
             .findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess();
 
         // THEN
-        verifySingleCallToPrd();
+        if (!fileNames.isEmpty()) {
+            verifySingleCallToPrd();
+        }
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports success
