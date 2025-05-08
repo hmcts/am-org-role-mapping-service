@@ -64,6 +64,9 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     public static final UUID STUB_ID_CCD_RETRIEVE_ACCESS_TYPES
         = UUID.fromString("72134798-eba8-4840-b769-6435bd2afb1c");
 
+    public static final UUID STUB_ID_PRD_RETRIEVE_ORGANISATIONS
+        = UUID.fromString("f4f89a01-39fb-48ca-9c2a-a49f749d07af");
+
     protected final JsonHelper jsonHelper = new JsonHelper();
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
@@ -173,6 +176,24 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/retrieve-access-types"))
             .withId(STUB_ID_CCD_RETRIEVE_ACCESS_TYPES)
             .withName("CCD Retrieve Access Types")
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .withBody(body)));
+    }
+
+    protected void stubPrdRetrieveOrganisations(List<String> fileNames) {
+        stubPrdRetrieveOrganisations(
+            //jsonHelper.readJsonFromFile(fileNames.get(0)));
+            "{ \"organisationInfo\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                + ", \"moreAvailable\": false }"
+        );
+    }
+
+    protected void stubPrdRetrieveOrganisations(String body) {
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+            "/refdata/internal/v1/organisations/getOrganisationsByProfile"))
+            .withId(STUB_ID_PRD_RETRIEVE_ORGANISATIONS)
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
