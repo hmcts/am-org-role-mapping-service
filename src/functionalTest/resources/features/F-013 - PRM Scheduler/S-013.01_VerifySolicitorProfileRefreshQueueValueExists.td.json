@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-013.01_VerifySolicitorProfileRefreshQueueValueExists",
+  "_extends_": "FindProfileRefreshQueue__PositiveResponse_Base",
+
+  "specs": [
+    "to verify the SOLICITOR_PROFILE exists in the refresh queue"
+  ],
+
+  "request": {
+    "queryParams": {
+      "organisationProfileId": "SOLICITOR_PROFILE"
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "active" : "[[ANY_NOT_NULLABLE]]"
+    }
+  }
+
+}
