@@ -19,13 +19,19 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 
 /*
  * PRIVATELAW "judge" Org role mapping.
+ * Made obsolete in DTSAM-853 - rule will be disabled when PRIVATELAW_WA_1_6 is enabled.
+ * To be removed in DTSAM-871.
  */
 rule "privatelaw_judge_org_role_v13"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_3.getValue())
-  $joh: JudicialOfficeHolder(office in ( "PRIVATELAW District Judge-Salaried", "PRIVATELAW Presiding Judge-Salaried",
-                                         "PRIVATELAW Resident Judge-Salaried", "PRIVATELAW Designated Family Judge-Salaried",
-                                         "PRIVATELAW District Judge (MC)-Salaried", "PRIVATELAW Circuit Judge-Salaried",
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
+  $joh: JudicialOfficeHolder(office in ( "PRIVATELAW District Judge-Salaried",
+                                         "PRIVATELAW Presiding Judge-Salaried",
+                                         "PRIVATELAW Resident Judge-Salaried",
+                                         "PRIVATELAW Designated Family Judge-Salaried",
+                                         "PRIVATELAW District Judge (MC)-Salaried",
+                                          "PRIVATELAW Circuit Judge-Salaried",
                                          "PRIVATELAW High Court Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -50,6 +56,44 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : privatelaw_judge_org_role_v13");
+end;
+
+/*
+ * PRIVATELAW "judge" Org role mapping for v1_6.
+ */
+rule "v1_6_privatelaw_judge_org_role_v13"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
+  $joh: JudicialOfficeHolder(office in ( "PRIVATELAW District Judge-Salaried",
+                                         "PRIVATELAW Presiding Judge-Salaried",
+                                         "PRIVATELAW Resident Judge-Salaried",
+                                         "PRIVATELAW Designated Family Judge-Salaried",
+                                         "PRIVATELAW District Judge (MC)-Salaried",
+                                         "PRIVATELAW Circuit Judge-Salaried",
+                                         "PRIVATELAW High Court Judge-Salaried"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,routine_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_6_privatelaw_judge_org_role_v13");
 end;
 
 /*
@@ -85,10 +129,13 @@ end;
 
 /*
  * PRIVATELAW "circuit-judge" Org role mapping.
+ * Made obsolete in DTSAM-853 - rule will be disabled when PRIVATELAW_WA_1_6 is enabled.
+ * To be removed in DTSAM-871.
  */
 rule "privatelaw_circuit_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
   $joh: JudicialOfficeHolder(office in ( "PRIVATELAW Circuit Judge-Salaried", "PRIVATELAW High Court Judge-Salaried"))
 
 then
@@ -115,6 +162,40 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : privatelaw_circuit_judge_org_role");
+end;
+
+/*
+ * PRIVATELAW "circuit-judge" Org role mapping for v1_6.
+ */
+rule "v1_6_privatelaw_circuit_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
+  $joh: JudicialOfficeHolder(office in ( "PRIVATELAW Circuit Judge-Salaried", "PRIVATELAW High Court Judge-Salaried"))
+
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,routine_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("circuit-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_6_privatelaw_circuit_judge_org_role");
 end;
 
 /*
@@ -281,7 +362,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,routine_work"));
    attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
 
   insert(
@@ -346,10 +427,13 @@ end;
 /*
  * PRIVATELAW "circuit-judge" org role can be created by any existing judicial office holder having
  * "PRIVATELAW Deputy Circuit Judge-Fee-Paid" business role.
+ * Made obsolete in DTSAM-853 - rule will be disabled when PRIVATELAW_WA_1_6 is enabled.
+ * To be removed in DTSAM-871.
  */
 rule "privatelaw_circuit_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
   $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy Circuit Judge-Fee-Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
@@ -378,6 +462,44 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : privatelaw_circuit_judge_org_role_for_fee_paid_judge");
+end;
+
+/*
+ * PRIVATELAW "circuit-judge" org role can be created by any existing judicial office holder having
+ * "PRIVATELAW Deputy Circuit Judge-Fee-Paid" business role.
+ * for v1_6
+ */
+rule "v1_6_privatelaw_circuit_judge_org_role_for_fee_paid_judge"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
+  $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy Circuit Judge-Fee-Paid"))
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+      $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,routine_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("circuit-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($bk.getBeginTime())
+      .endTime($bk.getEndTime())
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_6_privatelaw_circuit_judge_org_role_for_fee_paid_judge");
 end;
 
 /*
@@ -455,7 +577,7 @@ then
    attribute.put("baseLocation", JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,routine_work"));
 
   insert(
       RoleAssignment.builder()
@@ -477,10 +599,13 @@ end;
 
 /*
  * PRIVATELAW "magistrate" Org role mapping.
+ * Made obsolete in DTSAM-853 - rule will be disabled when PRIVATELAW_WA_1_6 is enabled.
+ * To be removed in DTSAM-871.
  */
 rule "privatelaw_magistrate_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
   $joh: JudicialOfficeHolder(office in ("PRIVATELAW Magistrates-Voluntary"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -505,4 +630,36 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : privatelaw_magistrate_org_role");
+end;
+
+/*
+ * PRIVATELAW "magistrate" Org role mapping for v1_6.
+ */
+rule "v1_6privatelaw_magistrate_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
+  $joh: JudicialOfficeHolder(office in ("PRIVATELAW Magistrates-Voluntary"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Voluntary"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, applications,routine_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("magistrate")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_6privatelaw_magistrate_org_role");
 end;
