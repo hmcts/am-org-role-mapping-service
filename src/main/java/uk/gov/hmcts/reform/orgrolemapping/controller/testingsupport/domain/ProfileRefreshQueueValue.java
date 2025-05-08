@@ -7,15 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Schema(description = "An entry from the PRM Profile Refresh Queue",
-    example = """
-     {
-         "organisationProfileId": "SOLICITOR_PROFILE",
-         "accessTypesMinVersion": 1,
-         "active": true
-     }
-     """
-)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,8 +14,10 @@ public class ProfileRefreshQueueValue {
 
     private String organisationProfileId;
 
+    @Schema(example = "1")
     private int accessTypesMinVersion;
 
+    @Schema(example = "true")
     private boolean active;
 
 }
