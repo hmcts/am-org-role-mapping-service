@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +15,14 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
-@Slf4j
 class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
+
+    private static final DateTimeFormatter DTF =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private static final LocalDateTime OLD_ORGANISATION_LAST_UPDATED =
+        LocalDateTime.parse("2020-01-01T13:20:01.046Z", DTF);
+    private static final LocalDateTime NEW_ORGANISATION_LAST_UPDATED =
+        LocalDateTime.parse("2023-11-20T15:51:33.046Z", DTF);
 
     @Autowired
     private ProfileRefreshQueueRepository profileRefreshQueueRepository;
@@ -48,16 +54,17 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * New Organisations - Insert three organisations to an empty list.
+     * New Organisations - Insert organisations to an empty list.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
         "classpath:sql/prm/profile_refresh_queue/insert_Solicitor_Profile.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
     })
     void testNewOrganisation_singlePrdResponse() {
 
-        // verify that the Organisations are updated (i.e. version 1) and has 1 organisation profile
+        // verify that the Organisations are updated
         runTest(List.of(
             "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json",
             "/SchedulerTests/PrdOrganisationInfo/organisation2_scenario_01.json",
@@ -68,10 +75,41 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, 1, false);
 
         // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
-        assertOrganisationRefreshQueueEntitiesInDb("1", 1, true, true);
-        assertOrganisationRefreshQueueEntitiesInDb("2", 1, true, true);
-        assertOrganisationRefreshQueueEntitiesInDb("3", 1, true, true);
+        assertOrganisationRefreshQueueEntitiesInDb("1", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("2", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("3", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
     }
+
+    /**
+     * New Organisations - Insert organisations to an already populated list.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
+        "classpath:sql/prm/profile_refresh_queue/insert_OGD_Profile.sql",
+        "classpath:sql/prm/profile_refresh_queue/insert_Solicitor_Profile.sql",
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation2.sql"
+    })
+    void testNewOrganisation_multiplePrdResponse() {
+
+        // verify that the Organisation 3 is updated
+        runTest(List.of(
+            "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_02.json",
+            "/SchedulerTests/PrdOrganisationInfo/organisation3_scenario_01.json"
+        ));
+
+        // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId and set to inactive
+        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, 1, false);
+        assertProfileRefreshQueueEntityInDb(OGD_PROFILE, 2, false);
+
+        // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
+        assertOrganisationRefreshQueueEntitiesInDb("1", 2, true, OLD_ORGANISATION_LAST_UPDATED, false);
+        assertOrganisationRefreshQueueEntitiesInDb("2", 2, true, OLD_ORGANISATION_LAST_UPDATED, false);
+        assertOrganisationRefreshQueueEntitiesInDb("3", 2, true, NEW_ORGANISATION_LAST_UPDATED, true);
+    }
+
 
     private void runTest(List<String> fileNames) {
 
@@ -122,15 +160,18 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
     private void assertOrganisationRefreshQueueEntitiesInDb(String organisationIdentifierId,
         int expectedAccessTypesMinVersion,
         boolean expectedActive,
-        boolean expectedOrganisationLastUpdatedNow) {
+        LocalDateTime expectedOrganisationLastUpdated,
+        boolean lastUpdatedNow) {
         var profileRefreshQueueEntity = organisationRefreshQueueRepository.findById(organisationIdentifierId);
         assertTrue(profileRefreshQueueEntity.isPresent(), "OrganisationRefreshQueueEntity not found");
         assertEquals(expectedAccessTypesMinVersion, profileRefreshQueueEntity.get().getAccessTypesMinVersion(),
             "OrganisationRefreshQueueEntity.AccessTypesMinVersion mismatch");
         assertEquals(expectedActive, profileRefreshQueueEntity.get().getActive(),
             "OrganisationRefreshQueueEntity.Active status mismatch");
-        assertEquals(expectedOrganisationLastUpdatedNow,
-            assertLastUpdatedNow(profileRefreshQueueEntity.get().getLastUpdated()),
+        assertEquals(expectedOrganisationLastUpdated,
+            profileRefreshQueueEntity.get().getOrganisationLastUpdated(),
+            "OrganisationRefreshQueueEntity.OrganisationLastUpdated mismatch");
+        assertEquals(lastUpdatedNow, assertLastUpdatedNow(profileRefreshQueueEntity.get().getLastUpdated()),
             "OrganisationRefreshQueueEntity.LastUpdated mismatch");
     }
 
