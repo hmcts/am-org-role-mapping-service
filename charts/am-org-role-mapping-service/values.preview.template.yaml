@@ -117,7 +117,8 @@ am-role-assignment-service:
 
 am-judicial-booking-service:
   java:
-    image: 'hmctspublic.azurecr.io/am/judicial-booking-service:latest'
+    # TODO revert override image after CME-58: image: 'hmctspublic.azurecr.io/am/judicial-booking-service:latest'
+    image: 'hmctspublic.azurecr.io/am/judicial-booking-service:pr-1058'
     imagePullPolicy: Always
     ingressHost: jbs-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-judicial-booking-service"
