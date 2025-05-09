@@ -46,15 +46,17 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     static {
-        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,applications");
+        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,applications,routine_work");
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("leadership-judge", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", "routine_work,hearing_work,applications");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        expectedRoleNameWorkTypesMap.put("circuit-judge", "hearing_work,decision_making_work,applications");
-        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,applications");
-        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work, applications");
+        expectedRoleNameWorkTypesMap.put("circuit-judge", "hearing_work,decision_making_work,applications,"
+                + "routine_work");
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,applications,"
+                + "routine_work");
+        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work,applications,routine_work");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String appointment) {
