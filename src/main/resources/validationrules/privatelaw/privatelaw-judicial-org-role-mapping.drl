@@ -61,7 +61,7 @@ end;
 /*
  * PRIVATELAW "judge" Org role mapping for v1_6.
  */
-rule "v1_6_privatelaw_judge_org_role_v13"
+rule "v1_6_privatelaw_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
   $joh: JudicialOfficeHolder(office in ( "PRIVATELAW District Judge-Salaried",
@@ -93,7 +93,7 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : v1_6_privatelaw_judge_org_role_v13");
+      logMsg("Rule : v1_6_privatelaw_judge_org_role");
 end;
 
 /*
@@ -635,7 +635,7 @@ end;
 /*
  * PRIVATELAW "magistrate" Org role mapping for v1_6.
  */
-rule "v1_6privatelaw_magistrate_org_role"
+rule "v1_6_privatelaw_magistrate_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
   $joh: JudicialOfficeHolder(office in ("PRIVATELAW Magistrates-Voluntary"))
@@ -645,7 +645,7 @@ then
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, applications,routine_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,applications,routine_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -661,5 +661,5 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : v1_6privatelaw_magistrate_org_role");
+      logMsg("Rule : v1_6_privatelaw_magistrate_org_role");
 end;

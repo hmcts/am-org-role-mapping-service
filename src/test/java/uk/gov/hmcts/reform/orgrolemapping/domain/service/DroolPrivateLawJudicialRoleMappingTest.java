@@ -56,7 +56,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 + "routine_work");
         expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,applications,"
                 + "routine_work");
-        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work, applications,routine_work");
+        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work,applications,routine_work");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String appointment) {
