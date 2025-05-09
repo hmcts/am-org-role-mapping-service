@@ -94,7 +94,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testNewOrganisation_multiplePrdResponse() {
 
-        // verify that the Organisation 3 is updated
+        // verify that the Organisation 3 is new and updated, 1 and 2 are existing and not updated
         runTest(List.of(
             "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_02.json",
             "/SchedulerTests/PrdOrganisationInfo/organisation3_scenario_01.json"
@@ -116,7 +116,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         // GIVEN
         logBeforeStatus();
         // stub the PRD service call with response for test scenario
-        stubPrdRetrieveOrganisations(fileNames);
+        stubPrdRetrieveOrganisations(fileNames, "false", null);
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler
@@ -203,6 +203,8 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         // verify response status
         assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
             "Response status mismatch");
+        assertEquals("false",event.getResponse().getHeaders().getHeader(MORE_AVAILABLE).firstValue(),
+            "Response moreAvilable mismatch");
     }
 
 }
