@@ -145,7 +145,8 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         // GIVEN
         logBeforeStatus();
         Integer numberOfPages = (fileNames.size() + pageSize) / pageSize;
-        String moreAvailable,  lastRecordInPage;
+        String moreAvailable;
+        String lastRecordInPage;
         // loop the stub calls
         for (int pageNo = 1; pageNo <= numberOfPages; pageNo++) {
             moreAvailable = pageNo == numberOfPages ? "false" : "true";
