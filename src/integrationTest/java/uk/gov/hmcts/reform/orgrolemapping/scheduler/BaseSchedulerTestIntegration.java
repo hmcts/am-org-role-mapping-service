@@ -213,7 +213,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
             "/refdata/internal/v1/organisations/getOrganisationsByProfile"))
             .withId(STUB_ID_PRD_RETRIEVE_ORGANISATIONS)
-            .withQueryParam("pageSize", equalTo(pageSize))
+            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeaders(headers)

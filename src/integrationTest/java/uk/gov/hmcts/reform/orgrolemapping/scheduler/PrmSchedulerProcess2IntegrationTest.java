@@ -81,6 +81,33 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
+     * New Organisations (PageSize 1) - Insert organisations to an empty list.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
+        "classpath:sql/prm/profile_refresh_queue/insert_Solicitor_Profile.sql",
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
+    })
+    void testNewOrganisationPageSize1_singlePrdResponse() {
+
+        // verify that the Organisations are updated
+        runTest(List.of(
+            "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json",
+            "/SchedulerTests/PrdOrganisationInfo/organisation2_scenario_01.json",
+            "/SchedulerTests/PrdOrganisationInfo/organisation3_scenario_01.json"
+        ), 1);
+
+        // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId and set to inactive
+        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, 1, false);
+
+        // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
+        assertOrganisationRefreshQueueEntitiesInDb("1", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("2", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("3", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
+    }
+
+    /**
      * New Organisations - Insert organisations to an already populated list.
      */
     @Test
@@ -111,7 +138,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * New Organisations - Insert organisations to an already populated list.
+     * New Organisations (PageSize=2) - Insert organisations to an already populated list.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -144,7 +171,8 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
 
         // GIVEN
         logBeforeStatus();
-        Integer numberOfPages = (fileNames.size() + pageSize) / pageSize;
+        int roundingOffSet = pageSize - 1;
+        Integer numberOfPages = (fileNames.size() + roundingOffSet) / pageSize;
         String moreAvailable;
         String lastRecordInPage;
         // loop the stub calls
@@ -235,6 +263,9 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(1, allCallEvents.size(),
             "Unexpected number of calls to PRD service");
         var event = allCallEvents.get(0);
+        // verify response status
+        assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
+            "Response pageSize mismatch");
         // verify response status
         assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
             "Response status mismatch");
