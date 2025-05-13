@@ -41,7 +41,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
     })
-    void testNoChange_emptyPrdResponse() {
+    void testNoOrgChangeNoExistingProfiles() {
 
         // verify that no organisations are updated
         runTest(List.of(), Integer.valueOf(TEST_PAGE_SIZE));
@@ -62,7 +62,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/profile_refresh_queue/insert_Solicitor_Profile.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
     })
-    void testNewOrganisation_singlePrdResponse() {
+    void testOrgChangeExistingProfile() {
 
         // verify that the Organisations are updated
         runTest(List.of(
@@ -89,7 +89,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/profile_refresh_queue/insert_Solicitor_Profile.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
     })
-    void testNewOrganisationPageSize1_singlePrdResponse() {
+    void testOrgChangeExistingProfilePageSize1() {
 
         // verify that the Organisations are updated
         runTest(List.of(
@@ -119,7 +119,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation2.sql"
     })
-    void testNewOrganisation_multiplePrdResponse() {
+    void testOrgChangeExistingMultipleProfileUpdate() {
 
         // verify that the Organisation 3 is new and updated, 1 and 2 are existing and not updated
         runTest(List.of(
@@ -149,7 +149,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation2.sql"
     })
-    void testNewOrganisationPageSize2_multiplePrdResponse() {
+    void testOrgChangeExistingProfileUpdatesPageSize2() {
 
         // verify that the Organisation 3 is new and updated, 1 and 2 are existing and not updated
         runTest(List.of(
