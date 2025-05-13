@@ -117,7 +117,9 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             "Deputy District Judge (MC)- Sitting in Retirement",
             "Deputy High Court Judge",
             "High Court Judge- Sitting in Retirement",
-            "Deputy Circuit Judge");
+            "Deputy Circuit Judge",
+            "District Judge (MC) (sitting in retirement)",
+            "District Judge (sitting in retirement)");
 
     static Stream<Arguments> endToEndData() {
         // Parameters String appointment, String appointmentType, List<String> assignedRoles,
@@ -200,10 +202,18 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                         "",
                         List.of("Senior Family Liaison Judge"),
                         List.of("judge", "hmcts-judiciary")),
-                Arguments.of("Magistrate", "Voluntary",
+                Arguments.of("Magistrate",
+                        "Voluntary",
                         List.of("Magistrates-Voluntary"),
-                        List.of("magistrate")
-                )
+                        List.of("magistrate")),
+                Arguments.of("District Judge (MC) (sitting in retirement)",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                Arguments.of("District Judge (sitting in retirement)",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"))
         );
     }
 

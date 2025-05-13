@@ -609,3 +609,57 @@ then
       .build());
       logMsg("Rule : privatelaw_magistrates_voluntary_joh");
 end;
+
+/*
+ * "PRIVATELAW District Judge (MC) (sitting in retirement)-Fee-Paid" business role mapping to JOH For v1.6.
+ */
+rule "v1_6_privatelaw_district_judge_mc_sitting_in_retirement_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge (MC) (sitting in retirement)",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA5"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PRIVATELAW District Judge (MC) (sitting in retirement)-Fee-Paid")
+      .jurisdiction("PRIVATELAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v1_6_privatelaw_district_judge_mc_sitting_in_retirement_fee_paid_joh");
+end;
+
+/*
+ * "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid" business role mapping to JOH For v1.6.
+ */
+rule "v1_6_privatelaw_district_judge_sitting_in_retirement_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge (sitting in retirement)",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA5"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PRIVATELAW District Judge (sitting in retirement)-Fee-Paid")
+      .jurisdiction("PRIVATELAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v1_6_privatelaw_district_judge_sitting_in_retirement_fee_paid_joh");
+end;
