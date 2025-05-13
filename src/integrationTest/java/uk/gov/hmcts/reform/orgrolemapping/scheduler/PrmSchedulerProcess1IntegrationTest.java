@@ -48,7 +48,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testNoChange_emptyCcdResponse() {
+    void testNoChange_NoExistingProfiles() {
 
         // verify that the Access Types are updated (i.e. version 1) and empty
         runTest(List.of(), 1, 0);
@@ -62,7 +62,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/insert_civil_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testNoChange_existingJurisdictionCcdResponse() {
+    void testNoChange_ExistingAccessType() {
 
         int expectedAccessTypesMinVersion = 2;
 
@@ -89,7 +89,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testNewCaseType_singleJurisdictionCcdResponse() {
+    void testNewCaseType_NoExistingProfiles() {
 
         int expectedAccessTypesMinVersion = 1;
 
@@ -117,7 +117,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/insert_civil_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testNewCaseType_existingJurisdictionCcdResponse() {
+    void testNewCaseType_ExistingProfile() {
 
         int expectedAccessTypesMinVersion = 2;
 
@@ -151,7 +151,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testNewOrgProfile_multipleJurisdictionCcdResponse() {
+    void testNewOrg_NoExistingProfiles() {
 
         int expectedAccessTypesMinVersion = 1;
 
@@ -185,7 +185,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/insert_civil_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testUpdateOrgProfile_updateJurisdictionCcdResponse() {
+    void testNewOrg_ExistingProfile() {
 
         int expectedAccessTypesMinVersion = 2;
 
@@ -212,7 +212,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/insert_civil_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testDeleteOrgProfile_emptyJurisdictionCcdResponse() {
+    void testDeleteOrgProfile_NoProfileRemains() {
 
         runTest(List.of(), 2, 0);
     }
@@ -225,7 +225,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/access_types/insert_civil_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testDeleteOrgProfile_existingJurisdictionCcdResponse() {
+    void testDeleteOrgProfile_ExistingProfileRemains() {
 
         int expectedAccessTypesMinVersion = 2;
 
