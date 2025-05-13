@@ -578,7 +578,7 @@ then
    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,routine_work"));
-
+   
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
