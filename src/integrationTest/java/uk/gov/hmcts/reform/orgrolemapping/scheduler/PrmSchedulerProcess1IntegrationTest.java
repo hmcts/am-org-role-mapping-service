@@ -223,6 +223,37 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
+     * Multiple Org Profile Updated - Insert a single access type to an already populated list.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
+    })
+    void testMultipleOrg_ExistingProfile() {
+
+        int expectedAccessTypesMinVersion = 2;
+
+        var accessTypes = runTest(List.of(
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_multiprofile_scenario_01.json"
+        ), expectedAccessTypesMinVersion, 2);
+
+        // verify that the ProfileRefreshQueue now has 2 active entries
+        assertActiveProfileRefreshQueueEntitiesInDb(2);
+
+        // verify that the OrganisationProfileId is as expected for civil 01
+        assertCivilSolicitorProfile(
+            extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_CIVIL),
+            "jurisdiction_civil_scenario_01",
+            List.of(CIVIL_SOLICITOR_1)
+        );
+
+        // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
+        assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, expectedAccessTypesMinVersion, true);
+        assertProfileRefreshQueueEntityInDb(OGD_PROFILE, expectedAccessTypesMinVersion, true);
+    }
+
+    /**
      * Existing Org Profile Deleted - Delete a single access type leaving an empty list.
      */
     @Test
