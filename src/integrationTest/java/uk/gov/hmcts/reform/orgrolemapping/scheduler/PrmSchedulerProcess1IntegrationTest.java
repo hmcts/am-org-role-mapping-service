@@ -227,8 +227,8 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
-        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
+        "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
     })
     void testDeleteOrgProfile_NoProfileRemains() {
 
