@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
@@ -23,8 +25,13 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
     private static final LocalDateTime NEW_ORGANISATION_LAST_UPDATED =
         LocalDateTime.parse("2023-11-20T15:51:33.046Z", DTF);
 
+    private static final Integer TOLERANCE_MINUTES = 1;
+
     @Autowired
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
+
+    @Autowired
+    private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
 
     @Autowired
     private Scheduler prmScheduler;
@@ -39,10 +46,31 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
     void testNoOrgChangeNoExistingProfiles() {
 
         // verify that no organisations are updated
-        runTest(List.of());
+        runTest(List.of(), 1);
 
         // verify that the OrganisationRefreshQueue remains empty
         assertTotalOrganisationRefreshQueueEntitiesInDb(0);
+    }
+
+    /**
+     * Add Organisation - Empty organisation list with a new organisation.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
+    })
+    void testNewOrgNoExistingProfile() {
+
+        // verify that the Organisations are updated
+        runTest(List.of(
+            "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json"
+        ), 1);
+
+        // verify that the OrganisationRefreshQueue contains 3 records
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1);
+
+        // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
+        assertOrganisationRefreshQueueEntitiesInDb("1", 2, true, NEW_ORGANISATION_LAST_UPDATED, true);
     }
 
     /**
@@ -60,7 +88,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the Organisations are updated
         runTest(List.of(
             "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json"
-        ));
+        ), 1);
 
         // verify that the OrganisationRefreshQueue contains 3 records
         assertTotalOrganisationRefreshQueueEntitiesInDb(3);
@@ -71,7 +99,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         assertOrganisationRefreshQueueEntitiesInDb("3", 1, false, OLD_ORGANISATION_LAST_UPDATED, false);
     }
 
-    private void runTest(List<String> fileNames) {
+    private void runTest(List<String> fileNames, int noOfBatchLastRunRecords) {
 
         // GIVEN
         logBeforeStatus();
@@ -90,9 +118,23 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the process monitor reports success
         assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus(),
             "Invalid process monitor end status");
+
+        // verify the last organisation run date time has been updated
+        assertBatchLastRunTimestampEntity(noOfBatchLastRunRecords);
     }
 
     //#region Assertion Helpers: DB Checks
+
+    private void assertBatchLastRunTimestampEntity(int noOfBatchLastRunRecords) {
+        List<BatchLastRunTimestampEntity> allBatches = batchLastRunTimestampRepository.findAll();
+        allBatches.sort(
+            (BatchLastRunTimestampEntity b1, BatchLastRunTimestampEntity b2)
+                -> b1.getLastOrganisationRunDatetime().compareTo(b2.getLastOrganisationRunDatetime()));
+        assertEquals(noOfBatchLastRunRecords, allBatches.size(),
+            "BatchLastRunTimestampEntity number of records mismatch");
+        assertTrue(assertLastUpdatedNow(allBatches.get(0).getLastOrganisationRunDatetime(),
+                TOLERANCE_MINUTES), "BatchLastRunTimestampEntity.LastOrganisationRunDatetime not updated");
+    }
 
     private void assertTotalOrganisationRefreshQueueEntitiesInDb(int expectedNumberOfRecords) {
         var organisationRefreshQueueEntities = organisationRefreshQueueRepository.findAll();
@@ -114,12 +156,12 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(expectedOrganisationLastUpdated,
             profileRefreshQueueEntity.get().getOrganisationLastUpdated(),
             "OrganisationRefreshQueueEntity.OrganisationLastUpdated mismatch");
-        assertEquals(lastUpdatedNow, assertLastUpdatedNow(profileRefreshQueueEntity.get().getLastUpdated()),
+        assertEquals(lastUpdatedNow, assertLastUpdatedNow(profileRefreshQueueEntity.get().getLastUpdated(), 1),
             "OrganisationRefreshQueueEntity.LastUpdated mismatch");
     }
 
-    private boolean assertLastUpdatedNow(LocalDateTime lastUpdated) {
-        return lastUpdated.isAfter(LocalDateTime.now().minusMinutes(1));
+    private boolean assertLastUpdatedNow(LocalDateTime lastUpdated, int minutes) {
+        return lastUpdated.isAfter(LocalDateTime.now().minusMinutes(minutes));
     }
 
     //#endregion
