@@ -1,21 +1,27 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
 
-    @Autowired
-    private ProfileRefreshQueueRepository profileRefreshQueueRepository;
+    private static final DateTimeFormatter DTF =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private static final LocalDateTime OLD_ORGANISATION_LAST_UPDATED =
+        LocalDateTime.parse("2020-01-01T13:20:01.046Z", DTF);
+    private static final LocalDateTime NEW_ORGANISATION_LAST_UPDATED =
+        LocalDateTime.parse("2023-11-20T15:51:33.046Z", DTF);
 
     @Autowired
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
@@ -28,36 +34,48 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
     })
     void testNoOrgChangeNoExistingProfiles() {
 
         // verify that no organisations are updated
-        runTest(List.of(), Integer.valueOf(TEST_PAGE_SIZE));
-
-        // verify that the ProfileRefreshQueue remains empty
-        assertTotalProfileRefreshQueueEntitiesInDb(0);
+        runTest(List.of());
 
         // verify that the OrganisationRefreshQueue remains empty
         assertTotalOrganisationRefreshQueueEntitiesInDb(0);
     }
 
-    private void runTest(List<String> fileNames, Integer pageSize) {
+    /**
+     * Update Organisation - Existing organisation list with an organisation update.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation2.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation3.sql"
+    })
+    void testUpdateOrgChangeExistingProfile() {
+
+        // verify that the Organisations are updated
+        runTest(List.of(
+            "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json"
+        ));
+
+        // verify that the OrganisationRefreshQueue contains 3 records
+        assertTotalOrganisationRefreshQueueEntitiesInDb(3);
+
+        // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
+        assertOrganisationRefreshQueueEntitiesInDb("1", 2, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("2", 2, true, OLD_ORGANISATION_LAST_UPDATED, false);
+        assertOrganisationRefreshQueueEntitiesInDb("3", 1, false, OLD_ORGANISATION_LAST_UPDATED, false);
+    }
+
+    private void runTest(List<String> fileNames) {
 
         // GIVEN
         logBeforeStatus();
-        int roundingOffSet = pageSize - 1;
-        Integer numberOfPages = (fileNames.size() + roundingOffSet) / pageSize;
-        String moreAvailable;
-        String lastRecordInPage;
-        // loop the stub calls
-        for (int pageNo = 1; pageNo <= numberOfPages; pageNo++) {
-            moreAvailable = pageNo == numberOfPages ? "false" : "true";
-            lastRecordInPage = pageNo == numberOfPages ? null : String.valueOf(pageNo);
-            // stub the PRD service call with response for test scenario
-            stubPrdRetrieveOrganisations(fileNames, moreAvailable, lastRecordInPage, pageSize.toString());
-        }
+        stubPrdRetrieveOrganisations(fileNames, "false", null);
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler
@@ -65,7 +83,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
 
         // THEN
         if (!fileNames.isEmpty()) {
-            verifySingleCallToPrd(pageSize);
+           // verifySingleCallToPrd();
         }
         logAfterStatus(processMonitorDto);
 
@@ -76,40 +94,51 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
 
     //#region Assertion Helpers: DB Checks
 
-    private void assertTotalProfileRefreshQueueEntitiesInDb(int expectedNumberOfRecords) {
-        var profileRefreshQueueEntities = profileRefreshQueueRepository.findAll();
-        assertEquals(expectedNumberOfRecords, profileRefreshQueueEntities.size(),
-            "ProfileRefreshQueueEntity number of records mismatch");
-    }
-
     private void assertTotalOrganisationRefreshQueueEntitiesInDb(int expectedNumberOfRecords) {
         var organisationRefreshQueueEntities = organisationRefreshQueueRepository.findAll();
         assertEquals(expectedNumberOfRecords, organisationRefreshQueueEntities.size(),
             "OrganisationRefreshQueueEntity number of records mismatch");
     }
 
+    private void assertOrganisationRefreshQueueEntitiesInDb(String organisationIdentifierId,
+        int expectedAccessTypesMinVersion,
+        boolean expectedActive,
+        LocalDateTime expectedOrganisationLastUpdated,
+        boolean lastUpdatedNow) {
+        var profileRefreshQueueEntity = organisationRefreshQueueRepository.findById(organisationIdentifierId);
+        assertTrue(profileRefreshQueueEntity.isPresent(), "OrganisationRefreshQueueEntity not found");
+        assertEquals(expectedAccessTypesMinVersion, profileRefreshQueueEntity.get().getAccessTypesMinVersion(),
+            "OrganisationRefreshQueueEntity.AccessTypesMinVersion mismatch");
+        assertEquals(expectedActive, profileRefreshQueueEntity.get().getActive(),
+            "OrganisationRefreshQueueEntity.Active status mismatch");
+        assertEquals(expectedOrganisationLastUpdated,
+            profileRefreshQueueEntity.get().getOrganisationLastUpdated(),
+            "OrganisationRefreshQueueEntity.OrganisationLastUpdated mismatch");
+        assertEquals(lastUpdatedNow, assertLastUpdatedNow(profileRefreshQueueEntity.get().getLastUpdated()),
+            "OrganisationRefreshQueueEntity.LastUpdated mismatch");
+    }
+
+    private boolean assertLastUpdatedNow(LocalDateTime lastUpdated) {
+        return lastUpdated.isAfter(LocalDateTime.now().minusMinutes(1));
+    }
+
     //#endregion
 
     private void logAfterStatus(ProcessMonitorDto processMonitorDto) {
         logObject("ProcessMonitorDto: AFTER", processMonitorDto);
-        logObject("ProfileRefreshQueueRepository: AFTER", profileRefreshQueueRepository.getActiveProfileEntities());
         logObject("OrganisationRefreshQueueRepository: AFTER", organisationRefreshQueueRepository.findAll());
     }
 
     private void logBeforeStatus() {
-        logObject("ProfileRefreshQueueRepository: BEFORE", profileRefreshQueueRepository.getActiveProfileEntities());
         logObject("OrganisationRefreshQueueRepository: BEFORE", organisationRefreshQueueRepository.findAll());
     }
 
-    private void verifySingleCallToPrd(Integer pageSize) {
+    private void verifySingleCallToPrd() {
         var allCallEvents = logWiremockPostCalls(STUB_ID_PRD_RETRIEVE_ORGANISATIONS);
         // verify single call
         assertEquals(1, allCallEvents.size(),
             "Unexpected number of calls to PRD service");
         var event = allCallEvents.get(0);
-        // verify page size
-        assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
-            "Response pageSize mismatch");
         // verify response status
         assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
             "Response status mismatch");

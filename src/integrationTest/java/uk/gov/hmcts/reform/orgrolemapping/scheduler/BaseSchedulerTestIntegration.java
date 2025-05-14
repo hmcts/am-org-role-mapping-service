@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.doReturn;
@@ -193,27 +193,21 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     }
 
     protected void stubPrdRetrieveOrganisations(List<String> fileNames,
-        String moreAvailable, String lastRecordInPage, String pageSize) {
+        String moreAvailable, String lastRecordInPage) {
         stubPrdRetrieveOrganisations(
-            "{ \"organisationInfo\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
-                + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable, lastRecordInPage,
-            pageSize
+            "{ \"organisations\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable
         );
     }
 
-    protected void stubPrdRetrieveOrganisations(String body, String moreAvailable,
-        String lastRecordInPage, String pageSize) {
+    protected void stubPrdRetrieveOrganisations(String body, String moreAvailable) {
         HttpHeaders headers = new HttpHeaders()
             .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
             .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
-        if (lastRecordInPage != null) {
-            headers.plus(new HttpHeader(LAST_RECORD_IN_PAGE, lastRecordInPage));
-        }
 
-        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
-            "/refdata/internal/v1/organisations/getOrganisationsByProfile"))
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching(
+            "/refdata/internal/v1/organisations"))
             .withId(STUB_ID_PRD_RETRIEVE_ORGANISATIONS)
-            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeaders(headers)
