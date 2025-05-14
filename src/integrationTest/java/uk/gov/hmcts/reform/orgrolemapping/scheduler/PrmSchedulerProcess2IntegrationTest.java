@@ -180,7 +180,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
             moreAvailable = pageNo == numberOfPages ? "false" : "true";
             lastRecordInPage = pageNo == numberOfPages ? null : String.valueOf(pageNo);
             // stub the PRD service call with response for test scenario
-            stubPrdRetrieveOrganisations(fileNames, moreAvailable, lastRecordInPage, pageSize.toString());
+            stubPrdRetrieveOrganisationsByProfile(fileNames, moreAvailable, lastRecordInPage, pageSize.toString());
         }
 
         // WHEN

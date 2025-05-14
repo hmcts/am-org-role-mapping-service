@@ -192,16 +192,16 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                 .withBody(body)));
     }
 
-    protected void stubPrdRetrieveOrganisations(List<String> fileNames,
+    protected void stubPrdRetrieveOrganisationsByProfile(List<String> fileNames,
         String moreAvailable, String lastRecordInPage, String pageSize) {
-        stubPrdRetrieveOrganisations(
+        stubPrdRetrieveOrganisationsByProfile(
             "{ \"organisationInfo\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
                 + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable, lastRecordInPage,
             pageSize
         );
     }
 
-    protected void stubPrdRetrieveOrganisations(String body, String moreAvailable,
+    protected void stubPrdRetrieveOrganisationsByProfile(String body, String moreAvailable,
         String lastRecordInPage, String pageSize) {
         HttpHeaders headers = new HttpHeaders()
             .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
