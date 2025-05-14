@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery;
+import com.github.tomakehurst.wiremock.http.HttpHeader;
+import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.LoggedResponse;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.doReturn;
@@ -36,6 +39,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.scheduler.BaseSchedulerTestIntegration.TEST_ENVIRONMENT;
+import static uk.gov.hmcts.reform.orgrolemapping.scheduler.BaseSchedulerTestIntegration.TEST_PAGE_SIZE;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.writeValueAsPrettyJson;
 
@@ -44,6 +48,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.writeValueAsP
     // turn off service bus
     "amqp.crd.enabled=false",
     "amqp.jrd.enabled=false",
+    // set environment for pagesize
+    "professional.refdata.pageSize=" + TEST_PAGE_SIZE,
     // set environment ready for flag checks
     "orm.environment=" + TEST_ENVIRONMENT,
     "testing.support.enabled=true"
@@ -51,6 +57,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.writeValueAsP
 public class BaseSchedulerTestIntegration extends BaseTestIntegration {
 
     static final String TEST_ENVIRONMENT = "local";
+    static final String TEST_PAGE_SIZE = "3";
 
     static final String DUMMY_AUTH_TOKEN = "DUMMY_AUTH_TOKEN";
     static final String DUMMY_S2S_TOKEN = "DUMMY_S2S_TOKEN";
@@ -63,6 +70,12 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
 
     public static final UUID STUB_ID_CCD_RETRIEVE_ACCESS_TYPES
         = UUID.fromString("72134798-eba8-4840-b769-6435bd2afb1c");
+
+    public static final UUID STUB_ID_PRD_RETRIEVE_ORGANISATIONS
+        = UUID.fromString("f4f89a01-39fb-48ca-9c2a-a49f749d07af");
+
+    protected static final String MORE_AVAILABLE = "moreAvailable";
+    protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
 
     protected final JsonHelper jsonHelper = new JsonHelper();
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
@@ -176,6 +189,34 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .withBody(body)));
+    }
+
+    protected void stubPrdRetrieveOrganisations(List<String> fileNames,
+        String moreAvailable, String lastRecordInPage, String pageSize) {
+        stubPrdRetrieveOrganisations(
+            "{ \"organisationInfo\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable, lastRecordInPage,
+            pageSize
+        );
+    }
+
+    protected void stubPrdRetrieveOrganisations(String body, String moreAvailable,
+        String lastRecordInPage, String pageSize) {
+        HttpHeaders headers = new HttpHeaders()
+            .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+            .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
+        if (lastRecordInPage != null) {
+            headers.plus(new HttpHeader(LAST_RECORD_IN_PAGE, lastRecordInPage));
+        }
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+            "/refdata/internal/v1/organisations/getOrganisationsByProfile"))
+            .withId(STUB_ID_PRD_RETRIEVE_ORGANISATIONS)
+            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeaders(headers)
                 .withBody(body)));
     }
 
