@@ -41,12 +41,13 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
     })
     void testNoOrgChangeNoExistingProfiles() {
 
         // verify that no organisations are updated
-        runTest(List.of(), 1);
+        runTest(List.of());
 
         // verify that the OrganisationRefreshQueue remains empty
         assertTotalOrganisationRefreshQueueEntitiesInDb(0);
@@ -57,6 +58,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
     })
     void testNewOrgNoExistingProfile() {
@@ -64,7 +66,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the Organisations are updated
         runTest(List.of(
             "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json"
-        ), 1);
+        ));
 
         // verify that the OrganisationRefreshQueue contains 3 records
         assertTotalOrganisationRefreshQueueEntitiesInDb(1);
@@ -78,6 +80,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation2.sql",
@@ -88,7 +91,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the Organisations are updated
         runTest(List.of(
             "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json"
-        ), 1);
+        ));
 
         // verify that the OrganisationRefreshQueue contains 3 records
         assertTotalOrganisationRefreshQueueEntitiesInDb(3);
@@ -99,7 +102,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         assertOrganisationRefreshQueueEntitiesInDb("3", 1, false, OLD_ORGANISATION_LAST_UPDATED, false);
     }
 
-    private void runTest(List<String> fileNames, int noOfBatchLastRunRecords) {
+    private void runTest(List<String> fileNames) {
 
         // GIVEN
         logBeforeStatus();
@@ -120,18 +123,16 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
             "Invalid process monitor end status");
 
         // verify the last organisation run date time has been updated
-        assertBatchLastRunTimestampEntity(noOfBatchLastRunRecords);
+        assertBatchLastRunTimestampEntity();
     }
 
     //#region Assertion Helpers: DB Checks
 
-    private void assertBatchLastRunTimestampEntity(int noOfBatchLastRunRecords) {
+    private void assertBatchLastRunTimestampEntity() {
         List<BatchLastRunTimestampEntity> allBatches = batchLastRunTimestampRepository.findAll();
-        allBatches.sort(
-            (BatchLastRunTimestampEntity b1, BatchLastRunTimestampEntity b2)
-                -> b1.getLastOrganisationRunDatetime().compareTo(b2.getLastOrganisationRunDatetime()));
-        assertEquals(noOfBatchLastRunRecords, allBatches.size(),
-            "BatchLastRunTimestampEntity number of records mismatch");
+        // verify that the BatchLastRunTimestampEntity contains a single record
+        assertEquals(1, allBatches.size(),
+            "BatchLastRunTimestampEntity single record not found");
         assertTrue(assertLastUpdatedNow(allBatches.get(0).getLastOrganisationRunDatetime(),
                 TOLERANCE_MINUTES), "BatchLastRunTimestampEntity.LastOrganisationRunDatetime not updated");
     }
