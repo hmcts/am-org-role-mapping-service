@@ -126,7 +126,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
             "/SchedulerTests/PrdOrganisationInfo/organisation4_scenario_01.json"
         ));
 
-        // verify that the OrganisationRefreshQueue contains 3 records
+        // verify that the OrganisationRefreshQueue contains 4 records
         assertTotalOrganisationRefreshQueueEntitiesInDb(4);
 
         // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
@@ -134,6 +134,52 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         assertOrganisationRefreshQueueEntitiesInDb("2", 0, true, NEW_ORGANISATION_LAST_UPDATED, true);
         assertOrganisationRefreshQueueEntitiesInDb("3", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
         assertOrganisationRefreshQueueEntitiesInDb("4", 0, true, NEW_ORGANISATION_LAST_UPDATED, true);
+    }
+
+    /**
+     * Add New Organisation - Test Higher AccessTypeMinVersion.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_highversion_access_type.sql",
+        "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
+    })
+    void testOrgHigherAccessTypesMinVersion() {
+
+        // verify that the Organisations are added
+        runTest(List.of(
+            "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json"
+        ));
+
+        // verify that the OrganisationRefreshQueue contains 1 record
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1);
+
+        // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
+        assertOrganisationRefreshQueueEntitiesInDb("1", 50, true, NEW_ORGANISATION_LAST_UPDATED, true);
+    }
+
+    /**
+     * Add New Organisation - Test Same AccessTypeMinVersion.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
+        "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
+    })
+    void testOrgSameAccessTypesMinVersion() {
+
+        // verify that the Organisations are added
+        runTest(List.of(
+            "/SchedulerTests/PrdOrganisationInfo/organisation3_scenario_01.json"
+        ));
+
+        // verify that the OrganisationRefreshQueue contains 1 record
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1);
+
+        // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
+        assertOrganisationRefreshQueueEntitiesInDb("3", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
     }
 
     private void runTest(List<String> fileNames) {
