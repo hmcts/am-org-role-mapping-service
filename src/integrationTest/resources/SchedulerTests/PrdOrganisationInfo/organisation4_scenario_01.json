@@ -1,8 +1,8 @@
 {
-  "organisationIdentifier": "1",
+  "organisationIdentifier": "4",
   "status": "ACTIVE",
   "lastUpdated": "2023-11-20T15:51:33.046Z",
   "organisationProfileIds": [
-    "SOLICITOR_PROFILE"
+    "SOLICITOR_PROFILE", "ODG_PROFILE"
   ]
 }

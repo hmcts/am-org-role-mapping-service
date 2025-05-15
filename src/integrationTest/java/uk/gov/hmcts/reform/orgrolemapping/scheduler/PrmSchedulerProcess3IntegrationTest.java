@@ -41,6 +41,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
     })
@@ -58,12 +59,13 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
     })
-    void testNewOrgNoExistingProfile() {
+    void testAddOrgNoExistingProfile() {
 
-        // verify that the Organisations are updated
+        // verify that the Organisation is added
         runTest(List.of(
             "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json"
         ));
@@ -72,7 +74,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         assertTotalOrganisationRefreshQueueEntitiesInDb(1);
 
         // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
-        assertOrganisationRefreshQueueEntitiesInDb("1", 2, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("1", 0, true, NEW_ORGANISATION_LAST_UPDATED, true);
     }
 
     /**
@@ -80,13 +82,14 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation2.sql",
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation3.sql"
     })
-    void testUpdateOrgChangeExistingProfile() {
+    void testUpdateOrgExistingProfile() {
 
         // verify that the Organisations are updated
         runTest(List.of(
@@ -100,6 +103,37 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         assertOrganisationRefreshQueueEntitiesInDb("1", 2, true, NEW_ORGANISATION_LAST_UPDATED, true);
         assertOrganisationRefreshQueueEntitiesInDb("2", 2, true, OLD_ORGANISATION_LAST_UPDATED, false);
         assertOrganisationRefreshQueueEntitiesInDb("3", 1, false, OLD_ORGANISATION_LAST_UPDATED, false);
+    }
+
+    /**
+     * Add and Update Organisations - Existing organisation list with an organisation added and another updated.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/init_access_types.sql",
+        "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation3.sql"
+    })
+    void testAddAndUpdateOrgExistingProfile() {
+
+        // verify that the Organisations are added/updated (plus pagination as pagesize=3)
+        runTest(List.of(
+            "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json",
+            "/SchedulerTests/PrdOrganisationInfo/organisation2_scenario_01.json",
+            "/SchedulerTests/PrdOrganisationInfo/organisation3_scenario_01.json",
+            "/SchedulerTests/PrdOrganisationInfo/organisation4_scenario_01.json"
+        ));
+
+        // verify that the OrganisationRefreshQueue contains 3 records
+        assertTotalOrganisationRefreshQueueEntitiesInDb(4);
+
+        // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
+        assertOrganisationRefreshQueueEntitiesInDb("1", 2, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("2", 0, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("3", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("4", 0, true, NEW_ORGANISATION_LAST_UPDATED, true);
     }
 
     private void runTest(List<String> fileNames) {
