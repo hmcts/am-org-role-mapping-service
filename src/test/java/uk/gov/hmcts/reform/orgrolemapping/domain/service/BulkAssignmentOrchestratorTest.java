@@ -1,14 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
@@ -25,6 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.mock;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_SJ;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class BulkAssignmentOrchestratorTest {
 
     private final ParseRequestService parseRequestService = mock(ParseRequestService.class);
@@ -180,7 +180,6 @@ class BulkAssignmentOrchestratorTest {
 
     @Test
     void createBulkAssignmentsRequestForJudicial_clientNotAvailable() {
-
         // GIVEN
         doThrow(FeignException.NotFound.class).when(retrieveDataService)
                 .retrieveProfiles(any(), any());
@@ -188,7 +187,7 @@ class BulkAssignmentOrchestratorTest {
         UserRequest request = TestDataBuilder.buildUserRequest();
 
         // WHEN / THEN
-        Assert.assertThrows(ResourceNotFoundException.class, () ->
+        assertThrows(ResourceNotFoundException.class, () ->
                 sut.createBulkAssignmentsRequest(request, UserType.JUDICIAL));
     }
 
