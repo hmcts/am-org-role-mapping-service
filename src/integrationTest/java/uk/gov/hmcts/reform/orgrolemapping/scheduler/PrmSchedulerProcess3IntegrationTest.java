@@ -72,7 +72,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
         assertTotalOrganisationRefreshQueueEntitiesInDb(1);
 
         // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
-        assertOrganisationRefreshQueueEntitiesInDb("1", 0, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("1", 2, true, NEW_ORGANISATION_LAST_UPDATED, true);
     }
 
     /**
