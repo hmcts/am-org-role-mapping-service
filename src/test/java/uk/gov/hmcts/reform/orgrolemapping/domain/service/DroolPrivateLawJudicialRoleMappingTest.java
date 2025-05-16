@@ -46,15 +46,17 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     static {
-        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,applications");
+        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,applications,routine_work");
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("leadership-judge", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", "routine_work,hearing_work,applications");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        expectedRoleNameWorkTypesMap.put("circuit-judge", "hearing_work,decision_making_work,applications");
-        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,applications");
-        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work, applications");
+        expectedRoleNameWorkTypesMap.put("circuit-judge", "hearing_work,decision_making_work,applications,"
+                + "routine_work");
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,applications,"
+                + "routine_work");
+        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work,applications,routine_work");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String appointment) {
@@ -108,13 +110,18 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "circuit-judge", "fee-paid-judge");
     static List<String> bookingLocationAppointments = List.of(
             "Deputy District Judge- Fee-Paid",
-            "Deputy District Judge- Sitting in Retirement", "Recorder",
+            "Deputy District Judge",
+            "Deputy District Judge- Sitting in Retirement",
+            "Deputy District Judge (sitting in retirement)",
+            "Recorder",
             "Deputy District Judge - PRFD",
             "Deputy District Judge (MC)- Fee paid",
             "Deputy District Judge (MC)- Sitting in Retirement",
             "Deputy High Court Judge",
             "High Court Judge- Sitting in Retirement",
-            "Deputy Circuit Judge");
+            "Deputy Circuit Judge",
+            "District Judge (MC) (sitting in retirement)",
+            "District Judge (sitting in retirement)");
 
     static Stream<Arguments> endToEndData() {
         // Parameters String appointment, String appointmentType, List<String> assignedRoles,
@@ -148,7 +155,15 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                         "Fee Paid",
                         List.of(""),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                Arguments.of("Deputy District Judge",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
                 Arguments.of("Deputy District Judge- Sitting in Retirement",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                Arguments.of("Deputy District Judge (sitting in retirement)",
                         "Fee Paid",
                         List.of(""),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
@@ -189,10 +204,18 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                         "",
                         List.of("Senior Family Liaison Judge"),
                         List.of("judge", "hmcts-judiciary")),
-                Arguments.of("Magistrate", "Voluntary",
+                Arguments.of("Magistrate",
+                        "Voluntary",
                         List.of("Magistrates-Voluntary"),
-                        List.of("magistrate")
-                )
+                        List.of("magistrate")),
+                Arguments.of("District Judge (MC) (sitting in retirement)",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                Arguments.of("District Judge (sitting in retirement)",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"))
         );
     }
 

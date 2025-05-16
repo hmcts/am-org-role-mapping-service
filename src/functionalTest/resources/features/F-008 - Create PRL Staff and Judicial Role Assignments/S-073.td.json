@@ -56,7 +56,7 @@
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes" : "[[ANYTHING_PRESENT]]"
+            "workTypes" : "hearing_work,decision_making_work,applications,routine_work"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
