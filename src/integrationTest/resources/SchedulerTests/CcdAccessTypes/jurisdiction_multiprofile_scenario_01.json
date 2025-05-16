@@ -1,0 +1,44 @@
+{
+  "jurisdictionId": "CIVIL",
+  "jurisdictionName": "Civil",
+  "accessTypes": [
+    {
+      "organisationProfileId": "SOLICITOR_PROFILE",
+      "accessTypeId": "CIVIL_SOLICITOR_1",
+      "accessMandatory": true,
+      "accessDefault": true,
+      "display": true,
+      "description": "Civil Solicitor 1 description",
+      "hint": "Civil Solicitor 1 hint",
+      "displayOrder": 1,
+      "roles": [
+        {
+          "caseTypeId": "civil_case_type_1",
+          "organisationalRoleName": "orgRole1",
+          "groupRoleName": "groupRole1",
+          "caseGroupIdTemplate": "CIVIL:$ORGID$",
+          "groupAccessEnabled": true
+        }
+      ]
+    },
+    {
+      "organisationProfileId": "OGD_PROFILE",
+      "accessTypeId": "CIVIL_SOLICITOR_2",
+      "accessMandatory": true,
+      "accessDefault": true,
+      "display": true,
+      "description": "Civil Solicitor 2 description",
+      "hint": "Civil Solicitor 2 hint",
+      "displayOrder": 1,
+      "roles": [
+        {
+          "caseTypeId": "civil_case_type_2",
+          "organisationalRoleName": "orgRole1",
+          "groupRoleName": "groupRole1",
+          "caseGroupIdTemplate": "CIVIL:$ORGID$",
+          "groupAccessEnabled": true
+        }
+      ]
+    }
+  ]
+}
