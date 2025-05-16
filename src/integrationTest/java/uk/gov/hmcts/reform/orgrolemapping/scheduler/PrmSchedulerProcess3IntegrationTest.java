@@ -194,7 +194,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
 
         // THEN
         if (!fileNames.isEmpty()) {
-           // verifySingleCallToPrd();
+            verifySingleCallToPrd();
         }
         logAfterStatus(processMonitorDto);
 
