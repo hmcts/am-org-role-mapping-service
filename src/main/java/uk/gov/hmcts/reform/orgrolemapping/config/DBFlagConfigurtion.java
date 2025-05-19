@@ -18,8 +18,8 @@ public class DBFlagConfigurtion implements CommandLineRunner {
     @Autowired
     FlagConfigRepository flagConfigRepository;
 
-    @Value("${launchdarkly.sdk.environment}")
-    private String environment;
+    @Autowired
+    private EnvironmentConfiguration environmentConfiguration;
 
     @Value("${dbFeature.flags.enable}")
     private String dbFeature2Enable;
@@ -44,7 +44,8 @@ public class DBFlagConfigurtion implements CommandLineRunner {
         }
         for (FeatureFlagEnum featureFlagEnum : FeatureFlagEnum.values()) {
             var status = flagConfigRepository
-                    .findByFlagNameAndEnv(featureFlagEnum.getValue(), environment).getStatus();
+                    .findByFlagNameAndEnv(featureFlagEnum.getValue(), environmentConfiguration.getEnvironment())
+                    .getStatus();
             droolFlagStates.put(featureFlagEnum.getValue(), status);
             log.info("The DB feature flag {} is set to: {}",featureFlagEnum.getValue(),status);
         }
@@ -53,7 +54,8 @@ public class DBFlagConfigurtion implements CommandLineRunner {
 
     private void updateFeatureFlag(String featureFlag, Boolean status) {
         log.info("updating DB feature flag {} to status {}", featureFlag, status);
-        FlagConfig flagConfig = flagConfigRepository.findByFlagNameAndEnv(featureFlag, environment);
+        FlagConfig flagConfig = flagConfigRepository.findByFlagNameAndEnv(featureFlag, environmentConfiguration
+                .getEnvironment());
         if (flagConfig != null) {
             flagConfig.setStatus(status);
             flagConfigRepository.save(flagConfig);

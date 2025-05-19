@@ -100,10 +100,14 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried,leadership-judge,judge,task-supervisor,"
                     + "case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
+        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried,leadership-judge,judge,task-supervisor,"
+                + "case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
-                + "hmcts-judiciary,specific-access-approver-judiciary"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
+        "EMPLOYMENT Acting Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
     })
     void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRoles(String setOffice,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -199,25 +203,27 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         });
     }
 
-    @SuppressWarnings("deprecation")
     @ParameterizedTest
-    @CsvSource({
-        "President of Tribunal,Salaried",
-        "President, Employment Tribunals (Scotland),Salaried",
-        "Vice President,Salaried",
-        "Regional Employment Judge,Salaried",
-        "Employment Judge,Salaried",
-        "Employment Judge,Fee Paid",
-        "Tribunal Member,Fee Paid"
-    })
-    void shouldReturnCftRegionIdV1FromJapAsRegion(String appointment, String appointmentType) {
+    @CsvSource(delimiter = ';',  textBlock = """ 
+        President of Tribunal;Salaried;12;11;
+        President, Employment Tribunals (Scotland);Salaried;12;11;
+        President, Employment Tribunals (Scotland);Salaried;11;11;
+        Vice President;Salaried;13;13;
+        Vice-President, Employment Tribunal (Scotland);Salaried;12;11;
+        Regional Employment Judge;Salaried;10;10;
+        Employment Judge;Salaried;11;11;
+        Employment Judge;Fee Paid;12;11;
+        Tribunal Member;Fee Paid;11;11;
+        """)
+
+    void shouldReturnRegionIdFromJapAsRegion(String appointment, String appointmentType,
+                                                  String regionIn, String regionOut) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
             judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BHA1")));
-            judicialAccessProfile.setCftRegionIdV1("cft_region_id_v1");
-            judicialAccessProfile.setRegionId("location_id");
+            judicialAccessProfile.setRegionId(regionIn);
         });
 
         //Execute Kie session
@@ -225,14 +231,13 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
         roleAssignments.forEach(r -> {
             if (r.getAttributes().get("region") != null) {
-                assertEquals("cft_region_id_v1", r.getAttributes().get("region").asText());
+                assertEquals(regionOut, r.getAttributes().get("region").asText());
             }
         });
     }
 
-    private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_1").status(true).build());
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("EMPLOYMENT", true);
     }
 
 }

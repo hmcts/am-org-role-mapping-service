@@ -1,0 +1,20 @@
+{
+  "password": "[[$TEST_AM_JRD_USER1_BEFTA_PASSWORD]]",
+  "user": {
+    "id": "ff076da7-9fca-492c-806f-b0c6115530a6",
+    "email": "[[$TEST_AM_JRD_USER1_BEFTA]]",
+    "forename": "AM-ORM",
+    "surname": "FTA",
+    "displayName": "AM-ORM FTA",
+    "roleNames": [
+      "caseworker",
+      "cwd-admin",
+      "cwd-system-user",
+      "jrd-system-user",
+      "org-role-cwd-system-user",
+      "judiciary"
+    ],
+    "accountStatus": "ACTIVE",
+    "recordType": "LIVE"
+  }
+}

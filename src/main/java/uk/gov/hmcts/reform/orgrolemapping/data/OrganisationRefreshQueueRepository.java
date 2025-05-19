@@ -23,9 +23,12 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
 
     default void upsertToOrganisationRefreshQueue(NamedParameterJdbcTemplate jdbcTemplate,
                                                   List<OrganisationInfo> rows,
-                                                  Integer accessTypeMinVersion) {
-        String sql =
-                "insert into organisation_refresh_queue "
+                                                  Integer accessTypeMinVersion,
+                                                  String process) {
+        String sql;
+
+        if (process.equals("P2")) {
+            sql = "insert into organisation_refresh_queue "
                 + "(organisation_id, organisation_last_updated, access_types_min_version, active) "
                 + "values (:organisationId, :organisationLastUpdated, :accessTypesMinVersion, true) "
                 + "on conflict (organisation_id) do update "
@@ -36,6 +39,19 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                 + "last_updated = now(), "
                 + "active = true "
                 + "where excluded.access_types_min_version > organisation_refresh_queue.access_types_min_version";
+        } else {
+            sql = "insert into organisation_refresh_queue "
+                + "(organisation_id, organisation_last_updated, access_types_min_version, active) "
+                + "values (:organisationId, :organisationLastUpdated, :accessTypesMinVersion, true) "
+                + "on conflict (organisation_id) do update "
+                + "set "
+                + "access_types_min_version = greatest(excluded.access_types_min_version, "
+                + "organisation_refresh_queue.access_types_min_version), "
+                + "organisation_last_updated = excluded.organisation_last_updated, "
+                + "last_updated = now(), "
+                + "active = true "
+                + "where excluded.organisation_last_updated > organisation_refresh_queue.organisation_last_updated";
+        }
 
         MapSqlParameterSource[] params = rows.stream().map(r -> {
             MapSqlParameterSource paramValues = new MapSqlParameterSource();

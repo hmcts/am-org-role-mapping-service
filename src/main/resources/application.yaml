@@ -125,8 +125,8 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        connectTimeout: 15000
+        readTimeout: 15000
         loggerLevel: BASIC
       crdclient:
         url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
@@ -134,8 +134,6 @@ feign:
         url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
       jrdClient:
         url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
-        v2Active: true
-        v2FilterAuthorisationsByAppointmentId: true
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
       prdClient:
@@ -160,20 +158,27 @@ amqp:
     topic: ${JRD_TOPIC_NAME:test}
     subscription: ${JRD_SUBSCRIPTION_NAME:test}
 
+# NB: LD is not used but legacy configuration is retained, see /config/EnvironmentConfiguration.java
 launchdarkly:
   sdk:
-    key: ${LD_SDK_KEY:}
-    environment: ${LAUNCH_DARKLY_ENV:local}
-    user: am-${LAUNCH_DARKLY_ENV:local}
-  runOnStartup: ${RUN_LD_ON_STARTUP:false}
+    environment: ${LAUNCH_DARKLY_ENV:}
+
+orm:
+  environment: ${ORM_ENV:local}
 
 refresh:
   Job:
     update: ${REFRESH_JOB:}
+    updateOverride: ${REFRESH_JOB_ALLOW_UPDATE:false}
     pageSize: ${REFRESH_JOB_PAGE_SIZE:400}
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
     authorisedServices: am_org_role_mapping_service,am_role_assignment_refresh_batch
+    includeJudicialBookings: ${REFRESH_JOB_INCLUDE_BOOKINGS:false}
+  BulkAssignment:
+    includeJudicialBookings: ${REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS:false}
+  judicial:
+    filterSoftDeletedUsers: ${REFRESH_JUDICIAL_FILTER_SOFT_DELETED_USERS:false}
 
 testing:
   support:

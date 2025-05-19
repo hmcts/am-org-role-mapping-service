@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
@@ -41,8 +42,9 @@ public class PrdService {
             if (feignException.status() != 404) {
                 throw feignException;
             } else {
+                List<OrganisationInfo> organisations = new ArrayList<>();
                 OrganisationsResponse emptyOrg = new OrganisationsResponse(
-                        new ArrayList<OrganisationInfo>(), false);
+                    organisations, false);
                 return ResponseEntity.of(Optional.of(emptyOrg));
             }
         }

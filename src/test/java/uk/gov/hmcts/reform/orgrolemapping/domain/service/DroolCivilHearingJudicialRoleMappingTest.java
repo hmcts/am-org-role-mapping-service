@@ -1,14 +1,15 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,98 +28,149 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
 
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
-    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "task-supervisor", "case-allocator",
-            "specific-access-approver-judiciary", "fee-paid-judge");
+    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "specific-access-approver-judiciary", "fee-paid-judge",
+            "task-supervisor");
+
+    List<String> judgeRoleNamesWithExtendedWorkTypes = List.of("circuit-judge", "district-judge",
+            "deputy-district-judge", "recorder");
 
     static Stream<Arguments> endToEndData() {
         return Stream.of(
-                Arguments.of("Circuit Judge",
-                        "Salaried",
-                        false,
-                        true,
-                        List.of(""),
-                        List.of("circuit-judge", "hmcts-judiciary", "hearing-viewer")),
-                Arguments.of("Deputy Circuit Judge",
-                        "Fee Paid",
-                        true,
-                        true,
-                        List.of("Deputy District Judge"),
-                        List.of("circuit-judge", "fee-paid-judge", "hmcts-judiciary",
-                                "hearing-viewer")),
-                Arguments.of("Deputy District Judge- Sitting in Retirement",
-                        "Fee Paid",
-                        true,
-                        true,
-                        List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary",
-                                "hearing-viewer")),
-                Arguments.of("Deputy District Judge- Fee-Paid",
-                        "Fee Paid",
-                        true,
-                        true,
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary",
-                                "hearing-viewer")),
                 Arguments.of("District Judge",
                         "Salaried",
                         true,
+                        List.of(""),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer", "district-judge")),
+                Arguments.of("",
+                        "Salaried",
+                        true,
+                        List.of("Presiding Judge"),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("",
+                        "Salaried",
+                        true,
+                        List.of("Resident Judge"),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Tribunal Judge",
+                        "Salaried",
+                        false,
+                        List.of(""),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Employment Judge",
+                        "Salaried",
+                        false,
+                        List.of(""),
+                        List.of("judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("",
+                        "Salaried",
+                        false,
+                        List.of("Designated Civil Judge"),
+                        List.of("judge", "leadership-judge", "task-supervisor", "hmcts-judiciary",
+                                "case-allocator", "hearing-viewer")),
+                Arguments.of("Circuit Judge",
+                        "Salaried",
+                        false,
+                        List.of(""),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Specialist Circuit Judge",
+                        "Salaried",
                         true,
                         List.of(""),
-                        List.of("judge", "hmcts-judiciary",
-                                "hearing-viewer")),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Senior Circuit Judge",
+                        "Salaried",
+                        true,
+                        List.of(""),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary", "hearing-viewer")),
                 Arguments.of("High Court Judge",
                         "Salaried",
                         true,
+                        List.of(""),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Deputy Circuit Judge",
+                        "Fee Paid",
+                        true,
+                        List.of("Deputy District Judge"),
+                        List.of("judge", "circuit-judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Deputy District Judge- Fee-Paid",
+                        "Fee Paid",
                         true,
                         List.of(""),
-                        List.of("circuit-judge", "hmcts-judiciary",
-                                "hearing-viewer")),
-            Arguments.of("Senior Circuit Judge",
-                "Salaried",
-                true,
-                true,
-                List.of(""),
-                List.of("circuit-judge", "hmcts-judiciary",
-                    "hearing-viewer")),
-            Arguments.of("Specialist Circuit Judge",
-                "Salaried",
-                true,
-                true,
-                List.of(""),
-                List.of("circuit-judge", "hmcts-judiciary",
-                    "hearing-viewer")),
-                Arguments.of("Recorder", "Fee Paid",
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer",
+                                "deputy-district-judge")),
+                Arguments.of("Deputy District Judge",
+                        "Fee Paid",
+                        true,
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer",
+                                "deputy-district-judge")),
+                Arguments.of("Deputy District Judge",
+                        "Fee Paid",
                         false,
+                        List.of(""),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Deputy District Judge- Sitting in Retirement",
+                        "Fee Paid",
+                        true,
+                        List.of("Deputy District Judge"),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer",
+                                "deputy-district-judge")),
+                Arguments.of("Deputy District Judge (sitting in retirement)",
+                        "Fee Paid",
+                        true,
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer",
+                                "deputy-district-judge")),
+                Arguments.of("Recorder",
+                        "Fee Paid",
                         true,
                         List.of("Recorder - Fee Paid"),
-                        List.of("fee-paid-judge","hmcts-judiciary",
-                                "hearing-viewer")),
+                        List.of("judge", "fee-paid-judge","hmcts-judiciary", "hearing-viewer", "recorder")),
                 Arguments.of("District Judge (sitting in retirement)",
                         "Fee Paid",
                         true,
-                        true,
                         List.of("District Judge (sitting in retirement)"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer",
+                                "deputy-district-judge")),
                 Arguments.of("Tribunal Judge",
                         "Fee Paid",
                         true,
-                        true,
                         List.of("Tribunal Judge"),
                         List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
-                Arguments.of("Tribunal Judge",
-                        "Salaried",
-                        false,
+                Arguments.of("Employment Judge",
+                        "Fee Paid",
                         true,
                         List.of(""),
-                        List.of("judge", "hmcts-judiciary", "hearing-viewer"))
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer")),
+                Arguments.of("Circuit Judge (sitting in retirement)",
+                        "Fee Paid",
+                        true,
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer", "circuit-judge")),
+                Arguments.of("",
+                        "Salaried",
+                        false,
+                        List.of("Designated Civil Online Judge"),
+                        List.of("judge", "leadership-judge", "hmcts-judiciary", "hearing-viewer"))
         );
     }
 
     @ParameterizedTest
     @MethodSource("endToEndData")
     void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
-            String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
+            String appointment, String appointmentType, boolean addBooking,
             List<String> assignedRoles, List<String> expectedRoleNames) {
+        // As CIVIL has 2 service codes AAA6 and AAA7 and the JudicialAccessProfile has only one service code we run
+        // the test method twice, once with each service code
+        shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
+                appointment, appointmentType, addBooking, assignedRoles, expectedRoleNames, "AAA6");
+        shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
+                appointment, appointmentType, addBooking, assignedRoles, expectedRoleNames, "AAA7");
+    }
+
+    void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
+            String appointment, String appointmentType, boolean addBooking,
+            List<String> assignedRoles, List<String> expectedRoleNames, String serviceCode) {
 
         allProfiles.clear();
         judicialAccessProfiles.clear();
@@ -139,10 +191,10 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         .roles(assignedRoles)
                         .regionId("LDN")
                         .primaryLocationId("London")
-                        .ticketCodes(List.of("AAA6"))
+                        .ticketCodes(List.of(serviceCode))
                         .authorisations(List.of(
                                 Authorisation.builder()
-                                        .serviceCodes(List.of("AAA6"))
+                                        .serviceCodes(List.of(serviceCode))
                                         .jurisdiction("CIVIL")
                                         .endDate(LocalDateTime.now().plusYears(1L))
                                         .build()
@@ -151,19 +203,13 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
         );
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build(),
-                                FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build(),
-                                FeatureFlag.builder().flagName("civil_wa_1_3").status(true).build())
-                );
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertions
         assertFalse(roleAssignments.isEmpty());
 
         List<String> roleNameResults =
-                roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
+                roleAssignments.stream().map(RoleAssignment::getRoleName).toList();
         assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
         roleAssignments.forEach(r -> {
@@ -171,17 +217,28 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
             if (!r.getRoleName().contains("hmcts-judiciary")) {
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
-                assertEquals("AAA6", r.getAuthorisations().get(0));
+                assertEquals(serviceCode, r.getAuthorisations().get(0));
                 if (!addBooking) {
                     assertEquals("London", r.getAttributes().get("primaryLocation").asText());
                 }
                 if (judgeRoleNamesWithWorkTypes.contains(r.getRoleName())) {
-                    assertEquals("hearing_work,decision_making_work,applications",
+                    assertEquals("decision_making_work,applications",
+                            r.getAttributes().get("workTypes").asText());
+                } else if (judgeRoleNamesWithExtendedWorkTypes.contains(r.getRoleName())) {
+                    assertEquals("decision_making_work,applications,multi_track_decision_making_work,"
+                                   + "intermediate_track_decision_making_work",
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
-                    assertEquals("LDN", r.getAttributes().get("region").asText());
-                    assertEquals("access_requests",
+                    if (assignedRoles.contains("Designated Civil Online Judge")) {
+                        assertNull(r.getAttributes().get("region")); // NB: no region required for this JOH
+                    } else {
+                        assertEquals("LDN", r.getAttributes().get("region").asText());
+                    }
+                    assertEquals("decision_making_work,applications,access_requests,"
+                            + "multi_track_decision_making_work,intermediate_track_decision_making_work",
                             r.getAttributes().get("workTypes").asText());
+                } else {
+                    assertNull(r.getAttributes().get("workTypes"));
                 }
             } else {
                 assertEquals(Classification.PRIVATE, r.getClassification());
@@ -190,11 +247,24 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
             if (r.getRoleName().contains("magistrate")) {
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
-                assertEquals("AAA6", r.getAuthorisations().get(0));
+                assertEquals(serviceCode, r.getAuthorisations().get(0));
                 assertEquals("LDN", r.getAttributes().get("region").asText());
                 assertEquals("London", r.getAttributes().get("primaryLocation").asText());
             }
         });
 
     }
+
+    private List<FeatureFlag> setFeatureFlags() {
+        List<FeatureFlag> featureFlags = new ArrayList<>(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
+
+        for (FeatureFlag flag : featureFlags) {
+            if (flag.getFlagName().contains("hearing")) {
+                flag.setStatus(true);
+            }
+        }
+
+        return featureFlags;
+    }
+
 }

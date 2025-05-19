@@ -45,8 +45,9 @@ public class OrganisationService {
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ProcessEventTracker processEventTracker;
-
     private String tolerance;
+    private static final String P2 = "P2";
+    private static final String P3 = "P3";
 
     public OrganisationService(PrdService prdService,
                                OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
@@ -57,8 +58,7 @@ public class OrganisationService {
                                BatchLastRunTimestampRepository batchLastRunTimestampRepository,
                                DatabaseDateTimeRepository databaseDateTimeRepository,
                                ProcessEventTracker processEventTracker,
-                               @Value("${groupAccess.lastRunTimeTolerance}") String tolerance
-                               ) {
+                               @Value("${groupAccess.lastRunTimeTolerance}") String tolerance) {
         this.prdService = prdService;
         this.profileRefreshQueueRepository = profileRefreshQueueRepository;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
@@ -101,15 +101,16 @@ public class OrganisationService {
             Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
             OrganisationsResponse organisationsResponse = prdService
                     .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
-            writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion, processMonitorDto);
+            writeAllToOrganisationRefreshQueue(organisationsResponse.getOrganisations(),
+                    accessTypeMinVersion, P3, processMonitorDto);
 
             page = 2;
             boolean moreAvailable = organisationsResponse.getMoreAvailable();
             while (moreAvailable) {
-
                 organisationsResponse = prdService
                         .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
-                writeAllToOrganisationRefreshQueue(organisationsResponse, accessTypeMinVersion, processMonitorDto);
+                writeAllToOrganisationRefreshQueue(organisationsResponse.getOrganisations(),
+                        accessTypeMinVersion, P3, processMonitorDto);
                 moreAvailable = organisationsResponse.getMoreAvailable();
                 page++;
             }
@@ -152,7 +153,11 @@ public class OrganisationService {
 
             OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
-            retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get());
+            if (maxVersion.isEmpty()) {
+                return;
+            }
+
+            retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get(), processMonitorDto);
 
             updateProfileRefreshQueueActiveStatus(activeOrganisationProfileIds, maxVersion.get());
         } catch (Exception e) {
@@ -165,7 +170,8 @@ public class OrganisationService {
     }
 
     private void retrieveOrganisationsByProfileIdsAndUpsert(OrganisationByProfileIdsRequest request,
-                                                            Integer accessTypesMinVersion) {
+                                                            Integer accessTypesMinVersion,
+                                                            ProcessMonitorDto processMonitorDto) {
         OrganisationByProfileIdsResponse response;
         response = Objects.requireNonNull(
                 prdService.fetchOrganisationsByProfileIds(Integer.valueOf(pageSize), null, request).getBody()
@@ -178,7 +184,8 @@ public class OrganisationService {
             moreAvailable = response.getMoreAvailable();
             lastRecordInPage = response.getLastRecordInPage();
 
-            writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), accessTypesMinVersion);
+            writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(),
+                    accessTypesMinVersion, P2, processMonitorDto);
 
             while (moreAvailable) {
                 response = Objects.requireNonNull(prdService.fetchOrganisationsByProfileIds(
@@ -188,7 +195,8 @@ public class OrganisationService {
                     moreAvailable = response.getMoreAvailable();
                     lastRecordInPage = response.getLastRecordInPage();
 
-                    writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(), accessTypesMinVersion);
+                    writeAllToOrganisationRefreshQueue(response.getOrganisationInfo(),
+                            accessTypesMinVersion, P2, processMonitorDto);
                 } else {
                     break;
                 }
@@ -197,22 +205,18 @@ public class OrganisationService {
     }
 
     private void writeAllToOrganisationRefreshQueue(List<OrganisationInfo> organisationInfo,
-                                                    Integer accessTypeMinVersion) {
-        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(
-                jdbcTemplate, organisationInfo, accessTypeMinVersion
-        );
-    }
-
-    private void writeAllToOrganisationRefreshQueue(OrganisationsResponse organisationsResponse,
-                                                    Integer accessTypeMinVersion, ProcessMonitorDto processMonitorDto) {
-
-        String processStep = "attempting insertIntoOrganisationRefreshQueueForLastUpdated for "
-                             + organisationsResponse.getOrganisations().size() + " organisations";
-        processStep = processStep + "=" + organisationsResponse.getOrganisations()
+                                                    Integer accessTypeMinVersion, String process,
+                                                    ProcessMonitorDto processMonitorDto) {
+        String processStep;
+        processStep = "attempting upsertToOrganisationRefreshQueue for " + organisationInfo.size() + " organisations";
+        processStep = processStep + "=" + organisationInfo
                 .stream().map(o -> o.getOrganisationIdentifier() + ",").collect(Collectors.joining());
         processMonitorDto.addProcessStep(processStep);
-        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(jdbcTemplate,
-                organisationsResponse.getOrganisations(), accessTypeMinVersion);
+
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(
+                jdbcTemplate, organisationInfo, accessTypeMinVersion, process
+        );
+
         processMonitorDto.getProcessSteps().remove(processMonitorDto.getProcessSteps().size() - 1);
         processMonitorDto.addProcessStep(processStep + " : COMPLETED");
     }
