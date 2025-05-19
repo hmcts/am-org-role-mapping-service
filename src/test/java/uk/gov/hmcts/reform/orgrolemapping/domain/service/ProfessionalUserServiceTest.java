@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -76,8 +77,10 @@ public class ProfessionalUserServiceTest {
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        ProcessMonitorDto processMonitorDto = professionalUserService
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
+        assertNotNull(processMonitorDto);
         verify(organisationRefreshQueueRepository, times(1))
                 .findAndLockSingleActiveOrganisationRecord();
         verify(userRefreshQueueRepository, times(1))
