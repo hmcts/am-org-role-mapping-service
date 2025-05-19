@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepositor
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 @Slf4j
 @Service
@@ -42,9 +45,12 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.cron}")
-    void findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
+    List<ProcessMonitorDto> findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
+        List<ProcessMonitorDto> processMonitorDtoList = new ArrayList<>();
         while (organisationRefreshQueueRepository.getActiveOrganisationRefreshQueueCount() >= 1) {
-            professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+            processMonitorDtoList.add(professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue());
         }
+        return processMonitorDtoList;
     }
 }

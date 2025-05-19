@@ -68,7 +68,7 @@ public class ProfessionalUserService {
         this.processEventTracker = processEventTracker;
     }
 
-    public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
+    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
         String processName = "PRM Process 4 - Find Users with Stale Organisations";
         log.info("Starting {}", processName);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
@@ -83,7 +83,7 @@ public class ProfessionalUserService {
                 processMonitorDto.markAsSuccess();
                 processEventTracker.trackEventCompleted(processMonitorDto);
                 log.info("Completed {}. No entities to process", processName);
-                return;
+                return processMonitorDto;
             }
 
             Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
@@ -134,6 +134,7 @@ public class ProfessionalUserService {
         processEventTracker.trackEventCompleted(processMonitorDto);
 
         log.info("Completed {}", processName);
+        return processMonitorDto;
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
