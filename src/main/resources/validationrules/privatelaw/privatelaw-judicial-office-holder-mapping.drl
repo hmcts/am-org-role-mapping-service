@@ -146,7 +146,7 @@ end;
  */
 rule "privatelaw_deputy_district_judge_sitting_in_retirement_fee_paid_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
    $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
    $jap: JudicialAccessProfile(appointment == "Deputy District Judge- Sitting in Retirement",
                                appointmentType == "Fee Paid",
