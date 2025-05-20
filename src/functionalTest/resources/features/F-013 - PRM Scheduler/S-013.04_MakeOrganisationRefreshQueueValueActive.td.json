@@ -1,0 +1,15 @@
+{
+  "_guid_": "S-013.04_MakeOrganisationRefreshQueueValueActive",
+  "_extends_": "MakeOrganisationRefreshQueueActive__PositiveResponse_Base",
+
+  "specs": [
+    "to make the ORGANISATION refresh queue value active"
+  ],
+
+  "request": {
+    "queryParams": {
+      "organisationId": "0Z64OR3"
+    }
+  }
+
+}
