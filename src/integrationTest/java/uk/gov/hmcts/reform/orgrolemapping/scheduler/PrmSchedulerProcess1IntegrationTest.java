@@ -227,16 +227,18 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
-        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
+        "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
+        "classpath:sql/prm/profile_refresh_queue/insert_SOLICITOR_Profile.sql",
+        "classpath:sql/prm/profile_refresh_queue/insert_OGD_Profile.sql"
     })
     void testMultipleOrg_ExistingProfile() {
 
         int expectedAccessTypesMinVersion = 2;
 
         var accessTypes = runTest(List.of(
-            "/SchedulerTests/CcdAccessTypes/jurisdiction_multiprofile_scenario_01.json"
-        ), expectedAccessTypesMinVersion, 2);
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json"
+        ), expectedAccessTypesMinVersion, 1);
 
         // verify that the ProfileRefreshQueue now has 2 active entries
         assertActiveProfileRefreshQueueEntitiesInDb(2);
@@ -250,7 +252,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
 
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
         assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, expectedAccessTypesMinVersion, true);
-        assertProfileRefreshQueueEntityInDb(OGD_PROFILE, expectedAccessTypesMinVersion, true);
+        assertProfileRefreshQueueEntityInDb(OGD_PROFILE, 1, true);
     }
 
     /**
@@ -259,7 +261,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
-        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
     void testDeleteOrgProfile_NoProfileRemains() {
 
@@ -275,10 +277,9 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/insert_civil_access_type.sql",
-        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
-        "classpath:sql/prm/profile_refresh_queue/insert_OGD_Profile.sql"
+        "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
-    void testDeleteOrgProfile_ExistingProfileRemains() {
+    void testDeleteOrgProfile_existingJurisdictionCcdResponse() {
 
         int expectedAccessTypesMinVersion = 2;
 
@@ -286,9 +287,6 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         var accessTypes = runTest(List.of(
             "/SchedulerTests/CcdAccessTypes/jurisdiction_publiclaw_scenario_02.json"
         ), expectedAccessTypesMinVersion, 1);
-
-        // verify that the ProfileRefreshQueue now has 2 active entries
-        assertActiveProfileRefreshQueueEntitiesInDb(2);
 
         // verify that the OrganisationProfileId is as expected for publiclaw 01
         assertPublicLawSolicitorProfile(
@@ -299,7 +297,6 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
 
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
         assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, expectedAccessTypesMinVersion, true);
-        assertProfileRefreshQueueEntityInDb(OGD_PROFILE, expectedAccessTypesMinVersion, true);
     }
 
     private RestructuredAccessTypes runTest(List<String> jurisdictionFileNames, int expectedVersion,
