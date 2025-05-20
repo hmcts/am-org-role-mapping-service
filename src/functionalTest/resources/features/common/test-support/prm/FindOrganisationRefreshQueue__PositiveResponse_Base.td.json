@@ -1,0 +1,24 @@
+{
+  "_guid_": "FindOrganisationRefreshQueue__PositiveResponse_Base",
+  "_extends_": "FindOrganisationRefreshQueue__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "organisationId": "${[scenarioContext][testData][request][queryParams][organisationId]}",
+      "organisationLastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "accessTypesMinVersion": "[[ANY_INTEGER_NOT_NULLABLE]]",
+      "active": "OVERRIDE",
+      "retry": "[[ANY_INTEGER_NOT_NULLABLE]]",
+      "retryAfter": "[[ANY_TIMESTAMP_NOT_NULLABLE]]"
+    }
+  }
+
+}
