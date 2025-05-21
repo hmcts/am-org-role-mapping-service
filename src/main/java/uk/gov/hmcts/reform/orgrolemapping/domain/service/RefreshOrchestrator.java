@@ -128,7 +128,11 @@ public class RefreshOrchestrator {
 
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
+    public void refreshAsync(Long jobId, UserRequest userRequest) {
+        refresh(jobId, userRequest);
+    }
+
+    protected ResponseEntity<Object> refresh(Long jobId, UserRequest userRequest) {
 
         var startTime = System.currentTimeMillis();
         Map<String, HttpStatus> responseCodeWithUserId = new HashMap<>();

@@ -86,7 +86,7 @@ public class RefreshController {
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
-        refreshOrchestrator.refresh(jobId, userRequest);
+        refreshOrchestrator.refreshAsync(jobId, userRequest);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
