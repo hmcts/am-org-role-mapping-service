@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.text.ParseException;
@@ -141,5 +144,14 @@ public class ValidationUtil {
                     .toList();
             return seen.putIfAbsent(keys, Boolean.TRUE) == null;
         };
+    }
+
+    public static void validateDateTimeFormat(String pattern, String strDate) {
+        try {
+            LocalDateTime.parse(strDate, DateTimeFormatter.ofPattern(pattern));
+        } catch (DateTimeParseException e) {
+            throw new BadRequestException(
+                String.format("Incorrect date format %s", pattern));
+        }
     }
 }

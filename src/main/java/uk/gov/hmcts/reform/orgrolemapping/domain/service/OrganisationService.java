@@ -72,7 +72,7 @@ public class OrganisationService {
     }
 
     @Transactional
-    public void findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
+    public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
         log.info("findOrganisationChangesAndInsertIntoOrganisationRefreshQueue started...");
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 3 - Find organisation changes");
         processEventTracker.trackEventStarted(processMonitorDto);
@@ -85,12 +85,7 @@ public class OrganisationService {
                 throw new ServiceException("Single AccessTypesEntity not found");
             }
             AccessTypesEntity accessTypesEntity = allAccessTypes.get(0);
-            List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
-                    .findAll();
-            if (allBatchLastRunTimestampEntities.size() != 1) {
-                throw new ServiceException("Single BatchLastRunTimestampEntity not found");
-            }
-            BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
+            BatchLastRunTimestampEntity batchLastRunTimestampEntity = getBatchLastRunTimestampEntity();
             LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastOrganisationRunDatetime();
 
             int toleranceSeconds = Integer.parseInt(tolerance);
@@ -100,7 +95,7 @@ public class OrganisationService {
             page = 1;
             Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
             OrganisationsResponse organisationsResponse = prdService
-                    .retrieveOrganisations(formattedSince, 1, Integer.valueOf(pageSize)).getBody();
+                    .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
             writeAllToOrganisationRefreshQueue(organisationsResponse.getOrganisations(),
                     accessTypeMinVersion, P3, processMonitorDto);
 
@@ -125,11 +120,11 @@ public class OrganisationService {
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
-        log.info("...findOrganisationChangesAndInsertIntoOrganisationRefreshQueue finished");
+        return processMonitorDto;
     }
 
     @Transactional
-    public void findAndInsertStaleOrganisationsIntoRefreshQueue() {
+    public ProcessMonitorDto findAndInsertStaleOrganisationsIntoRefreshQueue() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
                 "PRM Process 2 - Find Organisations with Stale Profiles");
         processEventTracker.trackEventStarted(processMonitorDto);
@@ -139,7 +134,10 @@ public class OrganisationService {
                 = profileRefreshQueueRepository.getActiveProfileEntities();
 
             if (profileRefreshQueueEntities.isEmpty()) {
-                return;
+                processMonitorDto.addProcessStep("No active organisation profiles found");
+                processMonitorDto.markAsSuccess();
+                processEventTracker.trackEventCompleted(processMonitorDto);
+                return processMonitorDto;
             }
 
             List<String> activeOrganisationProfileIds = profileRefreshQueueEntities.stream()
@@ -154,7 +152,10 @@ public class OrganisationService {
             OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(activeOrganisationProfileIds);
 
             if (maxVersion.isEmpty()) {
-                return;
+                processMonitorDto.addProcessStep("No max version found");
+                processMonitorDto.markAsSuccess();
+                processEventTracker.trackEventCompleted(processMonitorDto);
+                return processMonitorDto;
             }
 
             retrieveOrganisationsByProfileIdsAndUpsert(request, maxVersion.get(), processMonitorDto);
@@ -167,6 +168,16 @@ public class OrganisationService {
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
+    public BatchLastRunTimestampEntity getBatchLastRunTimestampEntity() {
+        List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
+            .findAll();
+        if (allBatchLastRunTimestampEntities.size() != 1) {
+            throw new ServiceException("Single BatchLastRunTimestampEntity not found");
+        }
+        return allBatchLastRunTimestampEntities.get(0);
     }
 
     private void retrieveOrganisationsByProfileIdsAndUpsert(OrganisationByProfileIdsRequest request,
