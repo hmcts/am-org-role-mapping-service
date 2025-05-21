@@ -97,10 +97,10 @@ public class PrmOrganisationRefreshQueueController {
         content = @Content()
     )
     public ResponseEntity<OrganisationRefreshQueueValue> makeOrganisationRefreshQueueActive(
-        @RequestParam() String organisationOrganisationId
+        @RequestParam() String organisationId
     ) {
         var organisationRefreshQueueEntityOptional = oranisationRefreshQueueRepository
-            .findById(organisationOrganisationId);
+            .findById(organisationId);
         if (organisationRefreshQueueEntityOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
