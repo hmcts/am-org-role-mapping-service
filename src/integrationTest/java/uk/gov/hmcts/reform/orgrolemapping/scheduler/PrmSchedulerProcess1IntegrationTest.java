@@ -283,11 +283,11 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testDeleteOrgProfile_existingJurisdictionCcdResponse() {
 
-        int expectedAccessTypesMinVersion = 2;
+        int expectedAccessTypesMinVersion = 1;
 
         // verify that the Access Types are updated (i.e. version 1) and has 1 organisation profile
         var accessTypes = runTest(List.of(
-            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_03.json"
+            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json"
         ), expectedAccessTypesMinVersion, 1);
 
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
