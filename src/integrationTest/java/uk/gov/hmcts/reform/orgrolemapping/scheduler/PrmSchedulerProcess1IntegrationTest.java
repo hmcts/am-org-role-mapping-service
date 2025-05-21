@@ -236,9 +236,10 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
 
         int expectedAccessTypesMinVersion = 2;
 
+        // verify that the SOLICITOR_PROFILE has been updated.
         var accessTypes = runTest(List.of(
-            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json"
-        ), expectedAccessTypesMinVersion, 1);
+            "/SchedulerTests/CcdAccessTypes/multiprofile_scenario_01.json"
+        ), expectedAccessTypesMinVersion, 2);
 
         // verify that the ProfileRefreshQueue now has 2 active entries
         assertActiveProfileRefreshQueueEntitiesInDb(2);
@@ -246,7 +247,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the OrganisationProfileId is as expected for civil 01
         assertCivilSolicitorProfile(
             extractJurisdictionsSolicitorProfileConfig(accessTypes, SOLICITOR_PROFILE, JURISDICTION_ID_CIVIL),
-            "jurisdiction_civil_scenario_01",
+            "multiprofile_scenario_01",
             List.of(CIVIL_SOLICITOR_1)
         );
 
@@ -260,7 +261,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
+        "classpath:sql/prm/access_types/insert_civil_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql"
     })
     void testDeleteOrgProfile_NoProfileRemains() {
@@ -283,11 +284,11 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testDeleteOrgProfile_existingJurisdictionCcdResponse() {
 
-        int expectedAccessTypesMinVersion = 1;
+        int expectedAccessTypesMinVersion = 2;
 
-        // verify that the Access Types are updated (i.e. version 1) and has 1 organisation profile
+        // verify that is no change on the SOLICITOR_PROFILE and no OGD_PROFILE (deleted)
         var accessTypes = runTest(List.of(
-            "/SchedulerTests/CcdAccessTypes/jurisdiction_civil_scenario_01.json"
+            "/SchedulerTests/CcdAccessTypes/multiprofile_scenario_02.json"
         ), expectedAccessTypesMinVersion, 1);
 
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId
@@ -383,6 +384,21 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
                 var accessType = organisationProfileAccessTypes.get(CIVIL_SOLICITOR_0);
                 assertFalse(accessType.isAccessMandatory());
                 assertFalse(accessType.isAccessDefault());
+
+                var roles = accessType.getRoles().stream().toList();
+                assertEquals(1, roles.size());
+
+                assertEquals("civil_case_type_0", roles.get(0).getCaseTypeId());
+                assertEquals("orgRole1", roles.get(0).getOrganisationalRoleName());
+                assertEquals("groupRole1", roles.get(0).getGroupRoleName());
+                assertEquals("CIVIL:$ORGID$", roles.get(0).getCaseGroupIdTemplate());
+                assertTrue(roles.get(0).isGroupAccessEnabled());
+            }
+
+            case "multiprofile_scenario_01" -> {
+                var accessType = organisationProfileAccessTypes.get(CIVIL_SOLICITOR_1);
+                assertTrue(accessType.isAccessMandatory());
+                assertTrue(accessType.isAccessDefault());
 
                 var roles = accessType.getRoles().stream().toList();
                 assertEquals(1, roles.size());
