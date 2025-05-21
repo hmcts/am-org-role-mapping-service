@@ -54,7 +54,6 @@ java:
     REFRESH_JOB_INCLUDE_BOOKINGS: false
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
-    PRM_FTA_ENABLED: true
   postgresql:
     enabled: true
     primary:
