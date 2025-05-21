@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.FeignClientException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
@@ -110,17 +109,6 @@ public class OrgRoleMappingControllerAdvice {
                 HttpStatus.FORBIDDEN,
                 ErrorConstants.ACCESS_DENIED.getErrorCode(),
                 ErrorConstants.ACCESS_DENIED.getErrorMessage()
-        );
-    }
-
-    @ExceptionHandler(FeignClientException.class)
-    public ResponseEntity<Object> handleUncaughtException(FeignClientException ex) {
-        logger.error("Unexpected exception occurred: ", ex);
-        return errorDetailsResponseEntity(
-                ex,
-                HttpStatus.BAD_REQUEST,
-                ErrorConstants.BAD_REQUEST.getErrorCode(),
-                ErrorConstants.BAD_REQUEST.getErrorMessage()
         );
     }
 
