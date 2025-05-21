@@ -224,7 +224,7 @@ class OrganisationServiceTest {
                 .upsertToOrganisationRefreshQueue(any(), any(), any(), eq("P3"));
 
         Assertions.assertThrows(ServiceException.class, () ->
-                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+            organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
         );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
@@ -271,7 +271,7 @@ class OrganisationServiceTest {
                 .retrieveOrganisations(anyString(), anyInt(), anyInt());
 
         Assertions.assertThrows(ServiceException.class, () ->
-                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+            organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
         );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
@@ -296,7 +296,7 @@ class OrganisationServiceTest {
         when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
         Assertions.assertThrows(ServiceException.class, () ->
-                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+            organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
         );
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
@@ -314,7 +314,7 @@ class OrganisationServiceTest {
         when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
 
         Assertions.assertThrows(ServiceException.class, () ->
-                organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
+            organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
         );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());

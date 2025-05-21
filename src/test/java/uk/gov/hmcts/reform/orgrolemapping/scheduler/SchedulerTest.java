@@ -77,4 +77,40 @@ class SchedulerTest {
         }
     }
 
+    @Test
+    void findAndUpdateCaseDefinitionChangesTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        when(caseDefinitionService.findAndUpdateCaseDefinitionChanges()).thenReturn(processMonitorDto);
+
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler.findAndUpdateCaseDefinitionChanges();
+        assertNotNull(returnedProcessMonitorDto);
+        verify(caseDefinitionService, times(1)).findAndUpdateCaseDefinitionChanges();
+    }
+
+    @Test
+    void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcessTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        when(organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler
+            .findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess();
+        assertNotNull(returnedProcessMonitorDto);
+        verify(organisationService, times(1)).findAndInsertStaleOrganisationsIntoRefreshQueue();
+    }
+
+    @Test
+    void findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcessTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        when(organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler
+            .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
+        assertNotNull(returnedProcessMonitorDto);
+    }
+
 }

@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.PRDFeignClientFallback;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClientInterceptor;
 
 @FeignClient(value = "prdClient", url = "${feign.client.config.prdClient.url}",
-        configuration = {FeignClientConfiguration.class, FeignClientInterceptor.class},
+        configuration = {FeignClientConfiguration.class, RdFeignClientInterceptor.class},
         fallback = PRDFeignClientFallback.class
 )
 public interface PRDFeignClient {
