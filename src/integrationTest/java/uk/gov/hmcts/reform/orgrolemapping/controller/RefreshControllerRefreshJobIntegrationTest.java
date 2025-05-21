@@ -34,7 +34,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.FeignClientException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.domain.RefreshJob;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
@@ -447,14 +446,16 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" RefreshJob record With Only JobId to process fail");
         Long jobId = createRefreshJobLegalOperations(NEW, null, null);
 
-        doThrow(FeignClientException.class).when(crdFeignClient).getCaseworkerDetailsByServiceName(
+        doThrow(RuntimeException.class).when(crdFeignClient).getCaseworkerDetailsByServiceName(
                 anyString(), anyInt(), anyInt(), anyString(), anyString());
 
         mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(400));
+                .andExpect(status().is(202)) // NB: no failure in refresh API as CRD call is in a background process
+                .andReturn();
+
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
                 .timeout(WAIT_FOR_ASYNC_TO_TIMEOUT, TimeUnit.SECONDS)
                 .untilAsserted(() ->

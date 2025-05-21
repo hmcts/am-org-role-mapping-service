@@ -114,7 +114,7 @@ public class RefreshJobConfigService {
 
             // validate Job-ID is numeric
             if (refreshJobAttributes.length == 5
-                    && (!NumberUtils.isNumber(refreshJobAttributes[ARGS_INDEX_4_JOB_ID]))) {
+                    && (!NumberUtils.isCreatable(refreshJobAttributes[ARGS_INDEX_4_JOB_ID]))) {
                 throw new UnprocessableEntityException(
                     String.format(
                         ERROR_MESSAGE,
@@ -125,7 +125,7 @@ public class RefreshJobConfigService {
             }
 
             // validate Linked Job-ID is numeric
-            if (!NumberUtils.isNumber(refreshJobAttributes[ARGS_INDEX_3_LINKED_JOB_ID])) {
+            if (!NumberUtils.isCreatable(refreshJobAttributes[ARGS_INDEX_3_LINKED_JOB_ID])) {
                 throw new UnprocessableEntityException(
                     String.format(
                         ERROR_MESSAGE,

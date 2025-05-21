@@ -4,7 +4,7 @@
 
   "request": {
     "pathVariables": {
-      "jobId": "${[scenarioContext][parentContext][childContexts][S-011_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+      "jobId": "${[scenarioContext][parentContext][childContexts][S-013_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
     }
   }
 }
