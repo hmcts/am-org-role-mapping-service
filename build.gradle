@@ -551,6 +551,8 @@ dependencies {
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     smokeTestImplementation sourceSets.main.runtimeClasspath
     smokeTestImplementation sourceSets.test.runtimeClasspath
     smokeTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
