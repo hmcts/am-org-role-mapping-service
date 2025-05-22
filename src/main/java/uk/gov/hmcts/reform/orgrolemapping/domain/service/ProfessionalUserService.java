@@ -102,6 +102,7 @@ public class ProfessionalUserService {
                             accessTypesMinVersion,
                             organisationRefreshQueueEntity.getLastUpdated()
                     );
+                    processMonitorDto.markAsSuccess();
 
                     return true;
                 } catch (Exception ex) {
@@ -109,6 +110,7 @@ public class ProfessionalUserService {
                                     + "%d. Rolling back.",
                             organisationIdentifier, organisationRefreshQueueEntity.getRetry());
                     processMonitorDto.addProcessStep(message);
+                    processMonitorDto.markAsFailed(ex.getMessage());
                     log.error(message, ex);
                     status.setRollbackOnly();
                     return false;
@@ -130,7 +132,6 @@ public class ProfessionalUserService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw e;
         }
-        processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
 
         log.info("Completed {}", processName);
