@@ -49,7 +49,7 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.cron}")
-    List<ProcessMonitorDto> findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
+    public List<ProcessMonitorDto> findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
         List<ProcessMonitorDto> processMonitorDtoList = new ArrayList<>();
         while (organisationRefreshQueueRepository.getActiveOrganisationRefreshQueueCount() >= 1) {
             processMonitorDtoList.add(professionalUserService

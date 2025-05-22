@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,6 +130,27 @@ public class PrmSchedulerController {
         ProcessMonitorDto processMonitorDto = scheduler
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
+
+    @GetMapping(
+        path = "/am/testing-support/prm/findUsersWithStaleOrganisations"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "PRM Process 4 findUsersWithStaleOrganisations",
+        security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> findUsersWithStaleOrganisations() {
+        List<ProcessMonitorDto> processMonitorDtoList = scheduler
+            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDtoList);
     }
 
 }
