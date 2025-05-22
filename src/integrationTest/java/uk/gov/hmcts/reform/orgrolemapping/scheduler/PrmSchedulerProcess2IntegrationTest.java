@@ -129,12 +129,12 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
 
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId and set to inactive
         assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, 1, false);
-        assertProfileRefreshQueueEntityInDb(OGD_PROFILE, 2, false);
+        assertProfileRefreshQueueEntityInDb(OGD_PROFILE, 1, false);
 
         // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
         assertOrganisationRefreshQueueEntitiesInDb("1", 2, true, OLD_ORGANISATION_LAST_UPDATED, false);
         assertOrganisationRefreshQueueEntitiesInDb("2", 2, true, OLD_ORGANISATION_LAST_UPDATED, false);
-        assertOrganisationRefreshQueueEntitiesInDb("3", 2, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("3", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
     }
 
     /**
@@ -159,12 +159,12 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
 
         // verify that the ProfileRefreshQueue contains the expected OrganisationProfileId and set to inactive
         assertProfileRefreshQueueEntityInDb(SOLICITOR_PROFILE, 1, false);
-        assertProfileRefreshQueueEntityInDb(OGD_PROFILE, 2, false);
+        assertProfileRefreshQueueEntityInDb(OGD_PROFILE, 1, false);
 
         // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active
         assertOrganisationRefreshQueueEntitiesInDb("1", 2, true, OLD_ORGANISATION_LAST_UPDATED, false);
         assertOrganisationRefreshQueueEntitiesInDb("2", 2, true, OLD_ORGANISATION_LAST_UPDATED, false);
-        assertOrganisationRefreshQueueEntitiesInDb("3", 2, true, NEW_ORGANISATION_LAST_UPDATED, true);
+        assertOrganisationRefreshQueueEntitiesInDb("3", 1, true, NEW_ORGANISATION_LAST_UPDATED, true);
     }
 
     private void runTest(List<String> fileNames, Integer pageSize) {
