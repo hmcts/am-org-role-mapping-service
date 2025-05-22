@@ -20,25 +20,6 @@
           "groupAccessEnabled": true
         }
       ]
-    },
-    {
-      "organisationProfileId": "OGD_PROFILE",
-      "accessTypeId": "CIVIL_SOLICITOR_2",
-      "accessMandatory": true,
-      "accessDefault": true,
-      "display": true,
-      "description": "Civil Solicitor 2 description",
-      "hint": "Civil Solicitor 2 hint",
-      "displayOrder": 1,
-      "roles": [
-        {
-          "caseTypeId": "civil_case_type_2",
-          "organisationalRoleName": "orgRole1",
-          "groupRoleName": "groupRole1",
-          "caseGroupIdTemplate": "CIVIL:$ORGID$",
-          "groupAccessEnabled": true
-        }
-      ]
     }
   ]
 }
