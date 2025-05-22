@@ -17,7 +17,7 @@
       "queryRequests":[
         {
           "actorId": "${[scenarioContext][childContexts][S-075_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-          "roleName": ["hmcts-judiciary"],
+          "roleName": ["fl401-judge"],
           "attributes": {
             "jurisdiction": ["PRIVATELAW"]
           }
