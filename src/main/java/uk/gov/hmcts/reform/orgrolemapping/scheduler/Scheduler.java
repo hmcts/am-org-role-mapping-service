@@ -52,9 +52,13 @@ public class Scheduler {
     public List<ProcessMonitorDto> findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
         List<ProcessMonitorDto> processMonitorDtoList = new ArrayList<>();
         while (organisationRefreshQueueRepository.getActiveOrganisationRefreshQueueCount() >= 1) {
-            processMonitorDtoList.add(professionalUserService
-                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue());
+            processMonitorDtoList.add(findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue());
         }
         return processMonitorDtoList;
+    }
+
+    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
+        return professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
     }
 }
