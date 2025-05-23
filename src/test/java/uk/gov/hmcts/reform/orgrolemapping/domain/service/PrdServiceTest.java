@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -80,5 +84,19 @@ class PrdServiceTest {
 
         Assert.assertThrows(FeignException.class, () ->
                 sut.retrieveOrganisations("2023-11-20T15:51:33.046Z", 1, 100));
+    }
+
+    @Test
+    void fetchUsersByOrganisation() throws IOException {
+        UsersByOrganisationResponse response = TestDataBuilder.buildUsersByOrganisationResponse();
+        UsersByOrganisationRequest request = new UsersByOrganisationRequest(List.of("1"));
+
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
+                .when(prdFeignClient).getUsersByOrganisation(any(), eq(null), eq(null), any());
+
+        ResponseEntity<UsersByOrganisationResponse> responseEntity =
+                sut.fetchUsersByOrganisation(1, null, null, request);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 }
