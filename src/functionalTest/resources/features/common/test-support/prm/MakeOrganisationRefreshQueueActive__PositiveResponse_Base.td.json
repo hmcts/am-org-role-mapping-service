@@ -1,0 +1,18 @@
+{
+  "_guid_": "MakeOrganisationRefreshQueueActive__PositiveResponse_Base",
+  "_extends_": "MakeOrganisationRefreshQueueActive__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+      "organisationId": "${[scenarioContext][testData][request][queryParams][organisationId]}",
+      "active": true
+    }
+  }
+
+}

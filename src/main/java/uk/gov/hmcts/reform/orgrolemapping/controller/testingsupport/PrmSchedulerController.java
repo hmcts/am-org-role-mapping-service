@@ -131,4 +131,25 @@ public class PrmSchedulerController {
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 
+    @GetMapping(
+        path = "/am/testing-support/prm/findUsersWithStaleOrganisations"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "PRM Process 4 findUsersWithStaleOrganisations",
+            security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> findUsersWithStaleOrganisations() {
+        ProcessMonitorDto processMonitorDto = scheduler
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
+
 }

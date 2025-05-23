@@ -93,4 +93,16 @@ class PrmSchedulerControllerTest {
         process3Test(null);
     }
 
+    @Test
+    void process4Test() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process4");
+
+        ResponseEntity<Object> response =
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+
+        when(scheduler.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        assertEquals(response, controller.findUsersWithStaleOrganisations());
+    }
 }

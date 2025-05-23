@@ -68,7 +68,7 @@ public class ProfessionalUserService {
         this.processEventTracker = processEventTracker;
     }
 
-    public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
+    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
         String processName = "PRM Process 4 - Find Users with Stale Organisations";
         log.info("Starting {}", processName);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
@@ -83,7 +83,7 @@ public class ProfessionalUserService {
                 processMonitorDto.markAsSuccess();
                 processEventTracker.trackEventCompleted(processMonitorDto);
                 log.info("Completed {}. No entities to process", processName);
-                return;
+                return processMonitorDto;
             }
 
             Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
@@ -102,6 +102,7 @@ public class ProfessionalUserService {
                             accessTypesMinVersion,
                             organisationRefreshQueueEntity.getLastUpdated()
                     );
+                    processMonitorDto.markAsSuccess();
 
                     return true;
                 } catch (Exception ex) {
@@ -109,6 +110,7 @@ public class ProfessionalUserService {
                                     + "%d. Rolling back.",
                             organisationIdentifier, organisationRefreshQueueEntity.getRetry());
                     processMonitorDto.addProcessStep(message);
+                    processMonitorDto.markAsFailed(ex.getMessage());
                     log.error(message, ex);
                     status.setRollbackOnly();
                     return false;
@@ -130,10 +132,10 @@ public class ProfessionalUserService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw e;
         }
-        processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
 
         log.info("Completed {}", processName);
+        return processMonitorDto;
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
