@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -95,13 +97,14 @@ class PrmSchedulerControllerTest {
 
     @Test
     void process4Test() {
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process4");
+        List<ProcessMonitorDto> processMonitorDtoList = new ArrayList<>();
+        processMonitorDtoList.add(new ProcessMonitorDto("Test Process4"));
 
         ResponseEntity<Object> response =
-            ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDtoList);
 
-        when(scheduler.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
-            .thenReturn(processMonitorDto);
+        when(scheduler.findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess())
+            .thenReturn(processMonitorDtoList);
 
         assertEquals(response, controller.findUsersWithStaleOrganisations());
     }

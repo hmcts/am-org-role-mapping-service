@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,9 +148,9 @@ public class PrmSchedulerController {
         content = @Content(schema = @Schema(implementation = Object.class))
     )
     public ResponseEntity<Object> findUsersWithStaleOrganisations() {
-        ProcessMonitorDto processMonitorDto = scheduler
-            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
-        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+        List<ProcessMonitorDto> processMonitorDtoList = scheduler
+            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDtoList);
     }
 
 }

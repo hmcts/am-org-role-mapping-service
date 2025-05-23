@@ -54,10 +54,15 @@ public class Scheduler {
         while (organisationRefreshQueueRepository.getActiveOrganisationRefreshQueueCount() >= 1) {
             processMonitorDtoList.add(findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue());
         }
+        // Check if the processMonitorDtoList is empty and populate with a default value
+        if (processMonitorDtoList.isEmpty()) {
+            log.info("No users with stale organisations found");
+            processMonitorDtoList.add(findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue());
+        }
         return processMonitorDtoList;
     }
 
-    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
+    private ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
         return professionalUserService
                 .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
     }
