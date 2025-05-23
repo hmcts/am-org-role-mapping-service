@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -49,20 +47,13 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.cron}")
-    public List<ProcessMonitorDto> findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
-        List<ProcessMonitorDto> processMonitorDtoList = new ArrayList<>();
+    public void findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
         while (organisationRefreshQueueRepository.getActiveOrganisationRefreshQueueCount() >= 1) {
-            processMonitorDtoList.add(findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue());
+            findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
         }
-        // Check if the processMonitorDtoList is empty and populate with a default value
-        if (processMonitorDtoList.isEmpty()) {
-            log.info("No users with stale organisations found");
-            processMonitorDtoList.add(findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue());
-        }
-        return processMonitorDtoList;
     }
 
-    private ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
+    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
         return professionalUserService
                 .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
     }

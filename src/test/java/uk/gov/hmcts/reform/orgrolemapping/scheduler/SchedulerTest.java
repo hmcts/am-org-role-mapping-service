@@ -47,7 +47,7 @@ class SchedulerTest {
     }
 
     @Test
-    void findUsersWithStaleOrganisationsTest() {
+    void findUsersWithStaleOrganisationProcessTest() {
         List<ProcessMonitorDto> expectedProcessMonitorDtoList = new ArrayList<>();
         expectedProcessMonitorDtoList.add(mock(ProcessMonitorDto.class));
         expectedProcessMonitorDtoList.add(mock(ProcessMonitorDto.class));
@@ -58,23 +58,28 @@ class SchedulerTest {
             .thenReturn(expectedProcessMonitorDtoList.get(0))
             .thenReturn(expectedProcessMonitorDtoList.get(1));
 
-        List<ProcessMonitorDto> returnedProcessMonitorDtoList = scheduler
+        scheduler
             .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
 
-        assertProcessMonitorDtoList(expectedProcessMonitorDtoList, returnedProcessMonitorDtoList);
         verify(organisationRefreshQueueRepository, times(expectedProcessMonitorDtoList.size() + 1))
             .getActiveOrganisationRefreshQueueCount();
         verify(professionalUserService, times(expectedProcessMonitorDtoList.size()))
             .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
     }
 
-    private void assertProcessMonitorDtoList(List<ProcessMonitorDto> expectedProcessMonitorDtoList,
-        List<ProcessMonitorDto> returnedProcessMonitorDtoList) {
-        assertNotNull(returnedProcessMonitorDtoList);
-        assertEquals(expectedProcessMonitorDtoList.size(), returnedProcessMonitorDtoList.size());
-        for (int i = 0; i < expectedProcessMonitorDtoList.size(); i++) {
-            assertEquals(expectedProcessMonitorDtoList.get(i), returnedProcessMonitorDtoList.get(i));
-        }
+    @Test
+    void findUsersWithStaleOrganisationTest() {
+        ProcessMonitorDto expectedProcessMonitorDto = mock(ProcessMonitorDto.class);
+
+        when(professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
+            .thenReturn(expectedProcessMonitorDto);
+
+        ProcessMonitorDto actualProcessMonitorDto = scheduler
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
+        assertEquals(expectedProcessMonitorDto, actualProcessMonitorDto);
+        verify(professionalUserService, times(1))
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
     }
 
     @Test
