@@ -663,3 +663,61 @@ then
       .build());
       logMsg("Rule : v1_6_privatelaw_district_judge_sitting_in_retirement_fee_paid_joh");
 end;
+
+/*
+ * "PRIVATELAW FL401-Judge–Fee-Paid" business role mapping to JOH.
+ */
+rule "v1_7_privatelaw_fl401_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_7.getValue())
+   $jap: JudicialAccessProfile(appointment in( "Deputy District Judge- Fee-Paid",
+                                            "Deputy District Judge",
+                                            "Deputy District Judge- Sitting in Retirement",
+                                            "Deputy District Judge (sitting in retirement)",
+                                            "Recorder"),
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PRIVATELAW FL401-Judge–Fee-Paid")
+      .jurisdiction("PRIVATELAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v1_7_privatelaw_fl401_judge_fee_paid_joh");
+end;
+
+/*
+ * "PRIVATELAW FL401-Judge–Salaried" business role mapping to JOH.
+ */
+rule "v1_7_privatelaw_fl401_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_7.getValue())
+   $jap: JudicialAccessProfile(appointment == "District Judge",
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PRIVATELAW FL401-Judge–Salaried")
+      .jurisdiction("PRIVATELAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v1_7_privatelaw_fl401_judge_salaried_joh");
+end;
