@@ -42,22 +42,24 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     static final String PRIMARY_LOCATION_ID = "London";
     static final String BOOKING_LOCATION_ID = "Scotland";
     static final String BOOKING_REGION_ID = "1";
-    static final String SERVICE_CODES = "ABA5";
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     static {
-        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,applications");
+        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,applications,routine_work");
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("leadership-judge", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", "routine_work,hearing_work,applications");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        expectedRoleNameWorkTypesMap.put("circuit-judge", "hearing_work,decision_making_work,applications");
-        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,applications");
-        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work, applications");
+        expectedRoleNameWorkTypesMap.put("circuit-judge", "hearing_work,decision_making_work,applications,"
+                + "routine_work");
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,applications,"
+                + "routine_work");
+        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work,applications,routine_work");
+        expectedRoleNameWorkTypesMap.put("fl401-judge", "hearing_work,decision_making_work,applications,routine_work");
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String appointment) {
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String appointment, String serviceCode) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(USER_ID, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
@@ -81,10 +83,10 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertEquals(JURISDICTION, r.getAttributes().get("jurisdiction").asText());
             assertFalse(r.isReadOnly());
-            assertEquals(SERVICE_CODES, r.getAuthorisations().get(0));
+            assertEquals(serviceCode, r.getAuthorisations().get(0));
 
             if (bookingLocationAppointments.contains(appointment)
-                    && List.of("circuit-judge", "judge").contains(r.getRoleName())) {
+                    && List.of("circuit-judge", "judge", "fl401-judge").contains(r.getRoleName())) {
                 assertEquals(BOOKING_LOCATION_ID, primaryLocation);
                 assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
                 assertEquals(BOOKING_LOCATION_ID, r.getAttributes().get("baseLocation").asText());
@@ -108,13 +110,18 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "circuit-judge", "fee-paid-judge");
     static List<String> bookingLocationAppointments = List.of(
             "Deputy District Judge- Fee-Paid",
-            "Deputy District Judge- Sitting in Retirement", "Recorder",
+            "Deputy District Judge",
+            "Deputy District Judge- Sitting in Retirement",
+            "Deputy District Judge (sitting in retirement)",
+            "Recorder",
             "Deputy District Judge - PRFD",
             "Deputy District Judge (MC)- Fee paid",
             "Deputy District Judge (MC)- Sitting in Retirement",
             "Deputy High Court Judge",
             "High Court Judge- Sitting in Retirement",
-            "Deputy Circuit Judge");
+            "Deputy Circuit Judge",
+            "District Judge (MC) (sitting in retirement)",
+            "District Judge (sitting in retirement)");
 
     static Stream<Arguments> endToEndData() {
         // Parameters String appointment, String appointmentType, List<String> assignedRoles,
@@ -123,83 +130,198 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("Circuit Judge",
                         "Salaried",
                         List.of(""),
-                        List.of("judge", "circuit-judge", "hmcts-judiciary")),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("Circuit Judge",
                         "SPTW",
                         List.of(""),
-                        List.of("judge", "circuit-judge", "hmcts-judiciary")),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("Deputy Circuit Judge",
                         "Fee Paid",
                         List.of(""),
-                        List.of("judge","circuit-judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge","circuit-judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("Deputy District Judge - PRFD",
                         "Fee Paid",
                         List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("Deputy District Judge (MC)- Fee paid",
                         "Fee Paid",
                         List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("Deputy District Judge (MC)- Sitting in Retirement",
                         "Fee Paid",
                         List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("Deputy District Judge- Fee-Paid",
                         "Fee Paid",
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
+                Arguments.of("Deputy District Judge",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("Deputy District Judge- Sitting in Retirement",
                         "Fee Paid",
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
+                Arguments.of("Deputy District Judge (sitting in retirement)",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("Deputy High Court Judge",
                         "Fee Paid",
                         List.of("Deputy High Court Judge"),
-                        List.of("judge","fee-paid-judge","hmcts-judiciary")),
+                        List.of("judge","fee-paid-judge","hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("District Judge",
                         "Salaried",
                         List.of(""),
-                        List.of("judge", "hmcts-judiciary")),
+                        List.of("judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("District Judge (MC)",
                         "SPTW",
                         List.of("District Judge"),
-                        List.of("judge","hmcts-judiciary")),
+                        List.of("judge","hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("High Court Judge",
                         "Salaried",
                         List.of(""),
-                        List.of("judge", "circuit-judge", "hmcts-judiciary")),
+                        List.of("judge", "circuit-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("High Court Judge- Sitting in Retirement",
                         "Fee Paid",
                         List.of("High Court Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("Recorder",
                         "Fee Paid",
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary")),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("",
                         "",
                         List.of("Designated Family Judge"),
                         List.of("leadership-judge","judge","task-supervisor","hmcts-judiciary","case-allocator",
-                                "specific-access-approver-judiciary")),
+                                "specific-access-approver-judiciary"),
+                        "ABA5"),
                 Arguments.of("",
                         "",
                         List.of("Family Division Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary")),
+                        List.of("judge", "hmcts-judiciary"),
+                        "ABA5"),
                 Arguments.of("",
                         "",
                         List.of("Senior Family Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary")),
-                Arguments.of("Magistrate", "Voluntary",
+                        List.of("judge", "hmcts-judiciary"),
+                        "ABA5"),
+                Arguments.of("Magistrate",
+                        "Voluntary",
                         List.of("Magistrates-Voluntary"),
-                        List.of("magistrate")
-                )
+                        List.of("magistrate"),
+                        "ABA5"),
+                Arguments.of("District Judge (MC) (sitting in retirement)",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
+                Arguments.of("District Judge (sitting in retirement)",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
+                //"Deputy District Judge- Fee-Paid",
+                //"Deputy District Judge",
+                //"Deputy District Judge- Sitting in Retirement",
+                //"Deputy District Judge (sitting in retirement)",
+                //"Recorder"
+                //AAA6 and AAA7 for civil
+                Arguments.of("Deputy District Judge- Fee-Paid",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA6"),
+                Arguments.of("Deputy District Judge- Fee-Paid",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA7"),
+                Arguments.of("Deputy District Judge",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA6"),
+                Arguments.of("Deputy District Judge",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA7"),
+                Arguments.of("Deputy District Judge- Sitting in Retirement",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA6"),
+                Arguments.of("Deputy District Judge- Sitting in Retirement",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA7"),
+                Arguments.of("Deputy District Judge (sitting in retirement)",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA6"),
+                Arguments.of("Deputy District Judge (sitting in retirement)",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA7"),
+                Arguments.of("Recorder",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA6"),
+                Arguments.of("Recorder",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA7"),
+                Arguments.of("District Judge",
+                        "Salaried",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA6"),
+                Arguments.of("District Judge",
+                        "Salaried",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA7"),
+                Arguments.of("District Judge",
+                        "SPTW",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA6"),
+                Arguments.of("District Judge",
+                        "SPTW",
+                        List.of(""),
+                        List.of("fl401-judge"),
+                        "AAA7")
         );
     }
 
     @ParameterizedTest
     @MethodSource("endToEndData")
     void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
-            String appointment, String appointmentType, List<String> assignedRoles, List<String> expectedRoleNames) {
+            String appointment, String appointmentType, List<String> assignedRoles,
+            List<String> expectedRoleNames, String serviceCode) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -215,10 +337,10 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                         .roles(assignedRoles)
                         .regionId(REGION_ID)
                         .primaryLocationId(PRIMARY_LOCATION_ID)
-                        .ticketCodes(List.of(SERVICE_CODES))
+                        .ticketCodes(List.of(serviceCode))
                         .authorisations(List.of(
                                 Authorisation.builder()
-                                        .serviceCodes(List.of(SERVICE_CODES))
+                                        .serviceCodes(List.of(serviceCode))
                                         .endDate(LocalDateTime.now().plusYears(1L))
                                         .build()
                         ))
@@ -236,7 +358,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
         assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
         for (RoleAssignment r : roleAssignments) {
-            assertCommonRoleAssignmentAttributes(r,appointment);
+            assertCommonRoleAssignmentAttributes(r,appointment,serviceCode);
         }
     }
 
@@ -255,10 +377,10 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                         .roles(List.of("District Judge"))
                         .regionId(REGION_ID)
                         .primaryLocationId(PRIMARY_LOCATION_ID)
-                        .ticketCodes(List.of(SERVICE_CODES))
+                        .ticketCodes(List.of("ABA5"))
                         .authorisations(List.of(
                                 Authorisation.builder()
-                                        .serviceCodes(List.of(SERVICE_CODES))
+                                        .serviceCodes(List.of("ABA5"))
                                         .endDate(LocalDateTime.now().plusYears(1L))
                                         .build()
                         ))
