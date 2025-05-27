@@ -69,16 +69,23 @@ class SchedulerTest {
 
     @Test
     void findUsersWithStaleOrganisationTest() {
-        ProcessMonitorDto expectedProcessMonitorDto = mock(ProcessMonitorDto.class);
+        List<ProcessMonitorDto> expectedProcessMonitorDtos = new ArrayList<>();
+        expectedProcessMonitorDtos.add(mock(ProcessMonitorDto.class));
+        expectedProcessMonitorDtos.add(mock(ProcessMonitorDto.class));
 
+        when(organisationRefreshQueueRepository.getActiveOrganisationRefreshQueueCount())
+            .thenReturn(2L, 1L, 0L);
         when(professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
-            .thenReturn(expectedProcessMonitorDto);
+            .thenReturn(expectedProcessMonitorDtos.get(0), expectedProcessMonitorDtos.get(1));
 
-        ProcessMonitorDto actualProcessMonitorDto = scheduler
-            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        List<ProcessMonitorDto> actualProcessMonitorDtos = scheduler
+            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
 
-        assertEquals(expectedProcessMonitorDto, actualProcessMonitorDto);
-        verify(professionalUserService, times(1))
+        assertEquals(expectedProcessMonitorDtos.size(), actualProcessMonitorDtos.size());
+        assertEquals(expectedProcessMonitorDtos, actualProcessMonitorDtos);
+        verify(organisationRefreshQueueRepository, times(expectedProcessMonitorDtos.size() + 1))
+            .getActiveOrganisationRefreshQueueCount();
+        verify(professionalUserService, times(expectedProcessMonitorDtos.size()))
             .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
     }
 
