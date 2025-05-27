@@ -130,7 +130,8 @@ public class ProfessionalUserService {
         } catch (Exception e) {
             processMonitorDto.markAsFailed(e.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
-            throw e;
+            log.error("Error occurred while processing {}: {}", processName, e.getMessage(), e);
+            return processMonitorDto;
         }
         processEventTracker.trackEventCompleted(processMonitorDto);
 
