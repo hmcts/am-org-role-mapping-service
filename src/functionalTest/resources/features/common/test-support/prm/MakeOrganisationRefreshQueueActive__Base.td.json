@@ -11,7 +11,7 @@
 
   "request": {
     "headers": {
-      "_extends_": "Common_Request_Headers"
+      "_extends_": "Common_200_Response"
     },
     "queryParams": {
       "organisationId": "OVERRIDE"
