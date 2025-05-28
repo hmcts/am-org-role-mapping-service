@@ -11,8 +11,7 @@
 
   "request": {
     "headers": {
-      "_extends_": "Common_Request_Headers",
-      "Transfer-Encoding": "chunked"
+      "_extends_": "Common_Request_Headers"
     },
     "queryParams": {
       "organisationId": "OVERRIDE"
