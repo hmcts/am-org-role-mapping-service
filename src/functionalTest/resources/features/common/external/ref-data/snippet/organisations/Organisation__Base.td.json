@@ -1,0 +1,6 @@
+{
+  "_guid_": "Organisation__Base",
+
+  "organisation_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
+  "active": "[[ANYTHING_PRESENT]]"
+}

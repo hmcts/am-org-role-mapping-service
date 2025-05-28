@@ -8,13 +8,13 @@
 
   "request": {
     "queryParams": {
-      "organisationId": "AKHH9RZ"
+      "organisationId": "AA1"
     }
   },
 
   "expectedResponse": {
     "body": {
-      "active" : "[[ANY_NOT_NULLABLE]]"
+      "active" : false
     }
   }
 
