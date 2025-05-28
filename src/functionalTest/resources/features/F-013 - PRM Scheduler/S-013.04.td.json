@@ -5,6 +5,9 @@
   "specs": [
     "an active IDAM profile with full permissions"
   ],
+  "organisations": {
+      "_extends_": "Organisation_AA1_PRD"
+  },
   "method": "GET",
   "uri": "/am/testing-support/prm/findUsersWithStaleOrganisations",
   "productName": "Organisation Role Mapping",
