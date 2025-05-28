@@ -10,7 +10,9 @@
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
+    "body": {
       "organisationId": "${[scenarioContext][testData][request][queryParams][organisationId]}",
+      "accessTypesMinVersion": "[[ANY_INTEGER_NOT_NULLABLE]]",
       "active": true
     }
   }
