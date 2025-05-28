@@ -2,5 +2,7 @@
   "_guid_": "Organisation_AA1_PRD",
   "_extends_": "Organisation__Base",
 
-  "organisation_id": "AA1"
+  "organisationIdentifier": "AA1",
+  "accessTypesMinVersion": 1,
+  "active": true
 }
