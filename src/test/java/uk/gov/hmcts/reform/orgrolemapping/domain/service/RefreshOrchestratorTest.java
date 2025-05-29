@@ -136,6 +136,49 @@ class RefreshOrchestratorTest {
     }
 
     @Test
+    void refreshRoleAssignmentRecords_async() {
+
+        // GIVEN
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
+        Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
+        userAccessProfileSet.add(CaseWorkerAccessProfile.builder()
+            .id("1")
+            .roleId("1")
+            .roleName("roleName")
+            .primaryLocationName("primary")
+            .primaryLocationId("1")
+            .areaOfWorkId("1")
+            .serviceCode("1")
+            .suspended(false)
+            .build());
+        userAccessProfiles.put("1", userAccessProfileSet);
+
+        Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
+            .thenReturn(userAccessProfiles);
+
+        List<ResponseEntity<Object>> responseEntities = List.of(
+            ResponseEntity.status(HttpStatus.CREATED).body(new RoleAssignmentRequestResource(AssignmentRequestBuilder
+                .buildAssignmentRequest(false))));
+        Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
+            .thenReturn((ResponseEntity.status(HttpStatus.OK)
+                .body(responseEntities)));
+
+        Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+
+        mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
+
+        // WHEN
+        // NB: not async when called from here
+        sut.refreshAsync(1L, TestDataBuilder.buildUserRequest());
+
+        // THEN
+        // verify has gone on to complete process
+        verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+    }
+
+    @Test
     void refreshRoleAssignmentRecords_profileNotFound() {
 
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
