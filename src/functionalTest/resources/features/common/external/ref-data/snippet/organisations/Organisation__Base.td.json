@@ -1,7 +1,0 @@
-{
-  "_guid_": "Organisation__Base",
-
-  "organisationIdentifier": "[[ANY_INTEGER_NOT_NULLABLE]]",
-  "accessTypesMinVersion": "[[ANYTHING_PRESENT]]",
-  "active": "[[ANYTHING_PRESENT]]"
-}
