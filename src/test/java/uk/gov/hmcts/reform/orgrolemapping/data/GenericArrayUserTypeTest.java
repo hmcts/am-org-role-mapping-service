@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GenericArrayUserTypeTest {
+class GenericArrayUserTypeTest {
 
     @InjectMocks
     @Spy
@@ -50,7 +50,7 @@ public class GenericArrayUserTypeTest {
     Serializable serializable;
 
     @Test
-    public void getStringArrayForNullSafeGet() throws SQLException {
+    void getStringArrayForNullSafeGet() throws SQLException {
         Array arr = getSqlArray();
         when(resultSet.getArray(0)).thenReturn(arr);
         Object response = sut.nullSafeGet(resultSet, 0, sharedSessionContractImplementor, new Object());
@@ -58,7 +58,7 @@ public class GenericArrayUserTypeTest {
     }
 
     @Test
-    public void getJavaArrayForNullSafeGet() throws SQLException, IllegalAccessException, InstantiationException {
+    void getJavaArrayForNullSafeGet() throws SQLException, IllegalAccessException, InstantiationException {
 
         Array arr = getSqlArray();
 
@@ -72,7 +72,7 @@ public class GenericArrayUserTypeTest {
     }
 
     @Test
-    public void verifyPreparedStatementInNullSafeGet() throws HibernateException, SQLException {
+    void verifyPreparedStatementInNullSafeGet() throws HibernateException, SQLException {
 
         Object obj = null;
         sut.nullSafeSet(ps, obj, 0, sharedSessionContractImplementor);
@@ -82,7 +82,7 @@ public class GenericArrayUserTypeTest {
     }
 
     @Test
-    public void setArrayInStatementInNullSafeGet() throws HibernateException, SQLException {
+    void setArrayInStatementInNullSafeGet() throws HibernateException, SQLException {
 
         Array arr = getSqlArray();
         String[] str = {"Success"};
@@ -96,21 +96,21 @@ public class GenericArrayUserTypeTest {
     }
 
     @Test
-    public void executeAssemble() throws HibernateException {
+    void executeAssemble() throws HibernateException {
 
         Object response = sut.assemble(serializable, new Object());
         assertNotNull(response);
     }
 
     @Test
-    public void executeDeepCopy() throws HibernateException {
+    void executeDeepCopy() throws HibernateException {
 
         Object response = sut.deepCopy(new Object());
         assertNotNull(response);
     }
 
     @Test
-    public void executeEquals() throws HibernateException {
+    void executeEquals() throws HibernateException {
 
         String str1 = "test";
         String str2 = "test";
@@ -125,7 +125,7 @@ public class GenericArrayUserTypeTest {
     }
 
     @Test
-    public void executeEquals_null() throws HibernateException {
+    void executeEquals_null() throws HibernateException {
         Object str1 = null;
         Object str2 = "Not Null";
         assertFalse(sut.equals(str1, str2));
@@ -134,7 +134,7 @@ public class GenericArrayUserTypeTest {
     }
 
     @Test
-    public void executeDissasenble() throws HibernateException {
+    void executeDissasenble() throws HibernateException {
 
         String str1 = "test";
         String str2 = "test";
@@ -143,13 +143,13 @@ public class GenericArrayUserTypeTest {
     }
 
     @Test
-    public void executeEqualsWithNull() throws HibernateException {
+    void executeEqualsWithNull() throws HibernateException {
 
         assertTrue(sut.equals(null, null));
     }
 
     @Test
-    public void executeHashCodel() throws HibernateException {
+    void executeHashCodel() throws HibernateException {
 
         String str1 = "test";
         Integer response = sut.hashCode(str1);
@@ -159,14 +159,14 @@ public class GenericArrayUserTypeTest {
     }
 
     @Test
-    public void executeMutable() throws HibernateException {
+    void executeMutable() throws HibernateException {
 
 
         assertTrue(sut.isMutable());
     }
 
     @Test
-    public void executeReplace() throws HibernateException {
+    void executeReplace() throws HibernateException {
 
         Object original = new Object();
         Object response = sut.replace(original, new Object(), new Object());
@@ -175,7 +175,7 @@ public class GenericArrayUserTypeTest {
     }
 
     @Test
-    public void executeSqlTypes() {
+    void executeSqlTypes() {
 
 
         int response = sut.getSqlType();
