@@ -5,9 +5,6 @@
   "specs": [
     "an active IDAM profile with full permissions"
   ],
-  "organisation": {
-      "_extends_": "OrganisationRefreshQueue_AA1"
-  },
   "method": "GET",
   "uri": "/am/testing-support/prm/findUsersWithStaleOrganisations",
   "productName": "Organisation Role Mapping",

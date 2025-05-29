@@ -5,10 +5,13 @@
   "specs": [
     "to make the ORGANISATION refresh queue value active"
   ],
-
+  
+  "organisation": {
+    "_extends_": "OrganisationRefreshQueue_AA1"
+  },
   "request": {
     "queryParams": {
-      "organisationId": "AA1"
+      "organisationId": "${[scenarioContext][testData][organisation][organisationId]}"
     }
   }
 
