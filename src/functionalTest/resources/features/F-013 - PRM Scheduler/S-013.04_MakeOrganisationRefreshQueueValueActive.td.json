@@ -11,7 +11,7 @@
   },
   "request": {
     "queryParams": {
-      "organisationId": "${[scenarioContext][testData][organisation][organisationId]}"
+      "organisationId": "${[scenarioContext][organisation][organisationId]}"
     }
   }
 
