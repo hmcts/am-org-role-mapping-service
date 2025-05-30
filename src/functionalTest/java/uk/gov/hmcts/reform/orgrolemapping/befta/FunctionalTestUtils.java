@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.befta;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.domain.OrganisationRefreshQueueValue;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
 import javax.crypto.Mac;
@@ -49,19 +48,6 @@ public class FunctionalTestUtils {
             throw new RuntimeException(e);
         }
 
-    }
-
-    public static String getOrganisationIdFromFile(String fileName) {
-        try (InputStream inputStream =
-            FunctionalTestUtils.class.getClassLoader().getResourceAsStream(fileName)) {
-            assert inputStream != null;
-            ObjectMapper objectMapper = new ObjectMapper();
-            OrganisationRefreshQueueValue value = objectMapper.readValue(inputStream,
-                OrganisationRefreshQueueValue.class);
-            return value.getOrganisationId();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }
