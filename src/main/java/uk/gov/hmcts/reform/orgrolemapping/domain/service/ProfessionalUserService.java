@@ -28,6 +28,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.
 @Slf4j
 public class ProfessionalUserService {
 
+    public static final String PROCESS4_NAME = "PRM Process 4 - Find Users with Stale Organisations";
     private final PrdService prdService;
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
@@ -68,10 +69,9 @@ public class ProfessionalUserService {
         this.processEventTracker = processEventTracker;
     }
 
-    public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
-        String processName = "PRM Process 4 - Find Users with Stale Organisations";
-        log.info("Starting {}", processName);
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
+    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
+        log.info("Starting {}", PROCESS4_NAME);
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS4_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
 
         try {
@@ -82,8 +82,8 @@ public class ProfessionalUserService {
                 processMonitorDto.addProcessStep("No entities to process");
                 processMonitorDto.markAsSuccess();
                 processEventTracker.trackEventCompleted(processMonitorDto);
-                log.info("Completed {}. No entities to process", processName);
-                return;
+                log.info("Completed {}. No entities to process", PROCESS4_NAME);
+                return processMonitorDto;
             }
 
             Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
@@ -102,6 +102,7 @@ public class ProfessionalUserService {
                             accessTypesMinVersion,
                             organisationRefreshQueueEntity.getLastUpdated()
                     );
+                    processMonitorDto.markAsSuccess();
 
                     return true;
                 } catch (Exception ex) {
@@ -109,6 +110,7 @@ public class ProfessionalUserService {
                                     + "%d. Rolling back.",
                             organisationIdentifier, organisationRefreshQueueEntity.getRetry());
                     processMonitorDto.addProcessStep(message);
+                    processMonitorDto.markAsFailed(ex.getMessage());
                     log.error(message, ex);
                     status.setRollbackOnly();
                     return false;
@@ -130,10 +132,10 @@ public class ProfessionalUserService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw e;
         }
-        processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
 
-        log.info("Completed {}", processName);
+        log.info("Completed {}", PROCESS4_NAME);
+        return processMonitorDto;
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
