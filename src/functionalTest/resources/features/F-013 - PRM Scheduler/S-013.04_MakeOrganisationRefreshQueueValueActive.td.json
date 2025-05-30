@@ -5,13 +5,10 @@
   "specs": [
     "to make the ORGANISATION refresh queue value active"
   ],
-  
-  "organisationRefreshQueue": {
-    "_extends_": "OrganisationRefreshQueue_AA1"
-  },
+
   "request": {
     "queryParams": {
-      "organisationId": "AA1"
+      "organisationId": "AKHH9RZ"
     }
   }
 
