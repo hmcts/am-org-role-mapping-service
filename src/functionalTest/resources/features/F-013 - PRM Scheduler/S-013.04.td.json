@@ -13,10 +13,13 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "__fileInBody__" : {
-        "fullPath" : "[[ANY_STRING_NOT_NULLABLE]]",
-        "size" : "[[ANY_INTEGER_NOT_NULLABLE]]",
-        "contentHash" : "[[ANY_STRING_NOT_NULLABLE]]"
+      "arrayInMap": [{
+          "processType": "PRM Process 4 - Find Users with Stale Organisations",
+          "id": "[[ANYTHING_PRESENT]]",
+          "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+          "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+          "endStatus": "SUCCESS",
+          "processSteps": "[[ANYTHING_PRESENT]]"
       }
     }
   }
