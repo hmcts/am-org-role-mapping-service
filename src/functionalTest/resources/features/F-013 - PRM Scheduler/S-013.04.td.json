@@ -20,7 +20,7 @@
           "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
           "endStatus": "SUCCESS",
           "processSteps": "[[ANYTHING_PRESENT]]"
-      }
+      }]
     }
   }
 }
