@@ -156,8 +156,13 @@ public class PrmSchedulerController {
         @Parameter(description = "OrganisationId: ")
         @RequestParam(required = false) String organisationId) {
         List<ProcessMonitorDto> processMonitorDtos = new ArrayList<>();
-        processMonitorDtos.add(professionalUserService
-            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId));
+        if (organisationId == null || organisationId.isEmpty()) {
+            processMonitorDtos.addAll(scheduler
+                .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess());
+        } else {
+            processMonitorDtos.add(professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId));
+        }
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDtos);
     }
 

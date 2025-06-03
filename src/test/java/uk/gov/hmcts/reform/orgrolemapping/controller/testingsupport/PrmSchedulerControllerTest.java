@@ -104,6 +104,22 @@ class PrmSchedulerControllerTest {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process4");
         List<ProcessMonitorDto> processMonitorDtos = new ArrayList<>();
         processMonitorDtos.add(processMonitorDto);
+
+        ResponseEntity<Object> response =
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDtos);
+
+        when(scheduler
+            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess())
+            .thenReturn(processMonitorDtos);
+
+        assertEquals(response, controller.findUsersWithStaleOrganisations(null));
+    }
+
+    @Test
+    void process4TestById() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process4");
+        List<ProcessMonitorDto> processMonitorDtos = new ArrayList<>();
+        processMonitorDtos.add(processMonitorDto);
         String organisationId = "1";
 
         ResponseEntity<Object> response =
