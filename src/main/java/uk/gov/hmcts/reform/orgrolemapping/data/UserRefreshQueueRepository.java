@@ -53,18 +53,19 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                 + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then "
                 + "excluded.organisation_profile_ids else user_refresh_queue.organisation_profile_ids end";
 
-        MapSqlParameterSource[] params = rows.stream().map(r -> {
-            MapSqlParameterSource paramValues = new MapSqlParameterSource();
-            paramValues.addValue(USER_ID, r.getUserId());
-            paramValues.addValue(USER_LAST_UPDATED, r.getUserLastUpdated());
-            paramValues.addValue(ACCESS_TYPES_MIN_VERSION, accessTypeMinVersion);
-            paramValues.addValue(DELETED, r.getDeleted());
-            paramValues.addValue(ACCESS_TYPES, r.getAccessTypes());
-            paramValues.addValue(ORGANISATION_ID, r.getOrganisationId());
-            paramValues.addValue(ORGANISATION_STATUS, r.getOrganisationStatus());
-            paramValues.addValue(ORGANISATION_PROFILE_IDS, r.getOrganisationProfileIds());
-            return paramValues;
-        }).toArray(MapSqlParameterSource[]::new);
+        MapSqlParameterSource[] params = rows.stream().filter(r -> r.getUserId() !=  null)
+            .map(r -> {
+                MapSqlParameterSource paramValues = new MapSqlParameterSource();
+                paramValues.addValue(USER_ID, r.getUserId());
+                paramValues.addValue(USER_LAST_UPDATED, r.getUserLastUpdated());
+                paramValues.addValue(ACCESS_TYPES_MIN_VERSION, accessTypeMinVersion);
+                paramValues.addValue(DELETED, r.getDeleted());
+                paramValues.addValue(ACCESS_TYPES, r.getAccessTypes());
+                paramValues.addValue(ORGANISATION_ID, r.getOrganisationId());
+                paramValues.addValue(ORGANISATION_STATUS, r.getOrganisationStatus());
+                paramValues.addValue(ORGANISATION_PROFILE_IDS, r.getOrganisationProfileIds());
+                return paramValues;
+            }).toArray(MapSqlParameterSource[]::new);
 
         jdbcTemplate.batchUpdate(sql, params);
     }

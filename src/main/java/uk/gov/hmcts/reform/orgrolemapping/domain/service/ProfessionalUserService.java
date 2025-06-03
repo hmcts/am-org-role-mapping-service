@@ -187,13 +187,11 @@ public class ProfessionalUserService {
         List<ProfessionalUserData> professionalUserData = new ArrayList<>();
 
         for (UsersOrganisationInfo organisationInfo : response.getOrganisationInfo()) {
-            if (!organisationInfo.getUsers().isEmpty()) {
-                List<ProfessionalUserData> professionalUsers = organisationInfo.getUsers().stream()
-                    .map(user -> fromProfessionalUserAndOrganisationInfo(user, organisationInfo))
-                    .toList();
+            List<ProfessionalUserData> professionalUsers = organisationInfo.getUsers().stream()
+                .map(user -> fromProfessionalUserAndOrganisationInfo(user, organisationInfo))
+                .toList();
 
-                professionalUserData.addAll(professionalUsers);
-            }
+            professionalUserData.addAll(professionalUsers);
         }
 
         return professionalUserData;
