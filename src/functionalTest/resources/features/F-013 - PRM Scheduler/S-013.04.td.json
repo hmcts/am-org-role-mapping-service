@@ -9,6 +9,11 @@
   "uri": "/am/testing-support/prm/findUsersWithStaleOrganisations",
   "productName": "Organisation Role Mapping",
   "operationName": "Find Users with Stale Organisations",
+  "request": {
+    "queryParams": {
+      "organisationId": "AKHH9RZ"
+    }
+  },
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
