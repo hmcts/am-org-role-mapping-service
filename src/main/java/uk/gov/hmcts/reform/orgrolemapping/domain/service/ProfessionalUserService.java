@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -71,6 +72,17 @@ public class ProfessionalUserService {
 
     public OrganisationRefreshQueueEntity findAndLockSingleActiveOrganisationRecord() {
         return organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
+    }
+
+    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(
+        String organisationId) {
+        Optional<OrganisationRefreshQueueEntity> organisationRefreshQueueEntity =
+            organisationRefreshQueueRepository.findById(organisationId);
+        if (organisationRefreshQueueEntity.isPresent()) {
+            return findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
+                organisationRefreshQueueEntity.get());
+        }
+        return null;
     }
 
     public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(

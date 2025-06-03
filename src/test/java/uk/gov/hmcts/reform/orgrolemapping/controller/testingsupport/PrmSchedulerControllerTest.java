@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.Scheduler;
 
@@ -30,11 +31,14 @@ class PrmSchedulerControllerTest {
     private OrganisationService organisationService;
 
     @Mock
+    private ProfessionalUserService professionalUserService;
+
+    @Mock
     private BatchLastRunTimestampEntity batchLastRunTimestampEntity;
 
     @InjectMocks
     private final PrmSchedulerController controller = new PrmSchedulerController(scheduler,
-        batchLastRunTimestampRepository, organisationService);
+        batchLastRunTimestampRepository, organisationService, professionalUserService);
 
     @BeforeEach
     public void setUp() {
@@ -99,13 +103,16 @@ class PrmSchedulerControllerTest {
     void process4Test() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process4");
         List<ProcessMonitorDto> processMonitorDtos = new ArrayList<>();
+        processMonitorDtos.add(processMonitorDto);
+        String organisationId = "1";
 
         ResponseEntity<Object> response =
             ResponseEntity.status(HttpStatus.OK).body(processMonitorDtos);
 
-        when(scheduler.findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess())
-            .thenReturn(processMonitorDtos);
+        when(professionalUserService
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId))
+            .thenReturn(processMonitorDto);
 
-        assertEquals(response, controller.findUsersWithStaleOrganisations());
+        assertEquals(response, controller.findUsersWithStaleOrganisations(organisationId));
     }
 }

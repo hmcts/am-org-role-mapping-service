@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.Scheduler;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
@@ -40,15 +42,17 @@ public class PrmSchedulerController {
     private Scheduler scheduler;
     private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
     private OrganisationService organisationService;
+    private ProfessionalUserService professionalUserService;
 
 
     @Autowired
     public PrmSchedulerController(Scheduler scheduler,
         BatchLastRunTimestampRepository batchLastRunTimestampRepository,
-        OrganisationService organisationService) {
+        OrganisationService organisationService, ProfessionalUserService professionalUserService) {
         this.scheduler = scheduler;
         this.batchLastRunTimestampRepository = batchLastRunTimestampRepository;
         this.organisationService = organisationService;
+        this.professionalUserService = professionalUserService;
     }
 
     @GetMapping(
@@ -148,9 +152,12 @@ public class PrmSchedulerController {
         description = "OK",
         content = @Content(array = @ArraySchema(schema = @Schema(implementation = Object.class)))
     )
-    public ResponseEntity<Object> findUsersWithStaleOrganisations() {
-        List<ProcessMonitorDto> processMonitorDtos = scheduler
-            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
+    public ResponseEntity<Object> findUsersWithStaleOrganisations(
+        @Parameter(description = "OrganisationId: ")
+        @RequestParam(required = false) String organisationId) {
+        List<ProcessMonitorDto> processMonitorDtos = new ArrayList<>();
+        processMonitorDtos.add(professionalUserService
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId));
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDtos);
     }
 
