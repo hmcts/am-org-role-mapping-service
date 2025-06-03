@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -78,11 +79,9 @@ public class ProfessionalUserServiceTest {
                 .thenReturn(ResponseEntity.ok(response));
 
         ProcessMonitorDto processMonitorDto = professionalUserService
-            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(organisationRefreshQueueEntity);
 
         assertNotNull(processMonitorDto);
-        verify(organisationRefreshQueueRepository, times(1))
-                .findAndLockSingleActiveOrganisationRecord();
         verify(userRefreshQueueRepository, times(1))
                 .upsertToUserRefreshQueue(any(), any(), any());
         verify(organisationRefreshQueueRepository, times(1))
@@ -92,14 +91,26 @@ public class ProfessionalUserServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
     }
+    
+    @Test
+    void findAndLockSingleActiveOrganisationRecordTest() {
+        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+            = buildOrganisationRefreshQueueEntity("1", 1, true);
+
+        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
+            .thenReturn(organisationRefreshQueueEntity);
+
+        OrganisationRefreshQueueEntity result = professionalUserService
+            .findAndLockSingleActiveOrganisationRecord();
+
+        assertNotNull(result);
+        assertEquals(organisationRefreshQueueEntity, result);
+    }
 
     @Test
     void findAndInsertStaleOrganisationsIntoRefreshQueue_WithPaginationTest() {
         OrganisationRefreshQueueEntity organisationRefreshQueueEntity
                 = buildOrganisationRefreshQueueEntity("1", 1, true);
-
-        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
-                .thenReturn(organisationRefreshQueueEntity);
 
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(1, List.of(professionalUser));
@@ -117,10 +128,9 @@ public class ProfessionalUserServiceTest {
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenReturn(ResponseEntity.ok(page2));
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
+            organisationRefreshQueueEntity);
 
-        verify(organisationRefreshQueueRepository, times(1))
-                .findAndLockSingleActiveOrganisationRecord();
         verify(userRefreshQueueRepository, times(2))
                 .upsertToUserRefreshQueue(any(), any(), any());
         verify(organisationRefreshQueueRepository, times(1))
@@ -136,10 +146,9 @@ public class ProfessionalUserServiceTest {
         when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
                 .thenReturn(null);
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
-
-        verify(organisationRefreshQueueRepository, times(1))
-                .findAndLockSingleActiveOrganisationRecord();
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
+            null);
+        
         verify(userRefreshQueueRepository, times(0))
                 .upsertToUserRefreshQueue(any(), any(), any());
         verify(organisationRefreshQueueRepository, times(0))

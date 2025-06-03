@@ -69,15 +69,17 @@ public class ProfessionalUserService {
         this.processEventTracker = processEventTracker;
     }
 
-    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
+    public OrganisationRefreshQueueEntity findAndLockSingleActiveOrganisationRecord() {
+        return organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
+    }
+
+    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
+        OrganisationRefreshQueueEntity organisationRefreshQueueEntity) {
         log.info("Starting {}", PROCESS4_NAME);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS4_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
 
         try {
-            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
-                    = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
-
             if (organisationRefreshQueueEntity == null) {
                 processMonitorDto.addProcessStep("No entities to process");
                 processMonitorDto.markAsSuccess();
