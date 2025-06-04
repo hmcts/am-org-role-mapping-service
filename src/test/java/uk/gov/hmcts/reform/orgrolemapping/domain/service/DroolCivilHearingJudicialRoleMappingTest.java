@@ -150,7 +150,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                 Arguments.of("",
                         "Salaried",
                         false,
-                        List.of("Designated Civil Online Judge"),
+                        List.of("Lead and Deputy Online Judge"),
                         List.of("judge", "leadership-judge", "hmcts-judiciary", "hearing-viewer"))
         );
     }
@@ -229,7 +229,7 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                                    + "intermediate_track_decision_making_work",
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
-                    if (assignedRoles.contains("Designated Civil Online Judge")) {
+                    if (assignedRoles.contains("Lead and Deputy Online Judge")) {
                         assertNull(r.getAttributes().get("region")); // NB: no region required for this JOH
                     } else {
                         assertEquals("LDN", r.getAttributes().get("region").asText());
