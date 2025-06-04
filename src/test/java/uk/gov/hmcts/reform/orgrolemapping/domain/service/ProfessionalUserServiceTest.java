@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -86,8 +88,11 @@ public class ProfessionalUserServiceTest {
         when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
 
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+        ProcessMonitorDto processMonitorDto =
+            professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
         verify(userRefreshQueueRepository, times(1))
                 .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
@@ -124,8 +129,11 @@ public class ProfessionalUserServiceTest {
         when(prdService.retrieveUsers(any(), any(), any(String.class)))
                 .thenReturn(ResponseEntity.ok(response2));
 
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+        ProcessMonitorDto processMonitorDto =
+            professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
         verify(userRefreshQueueRepository, times(2))
                 .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));

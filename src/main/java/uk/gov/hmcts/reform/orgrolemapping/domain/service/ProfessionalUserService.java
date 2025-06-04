@@ -63,7 +63,7 @@ public class ProfessionalUserService {
     }
 
     @Transactional
-    public void findUserChangesAndInsertIntoUserRefreshQueue() {
+    public ProcessMonitorDto findUserChangesAndInsertIntoUserRefreshQueue() {
         log.info("findUserChangesAndInsertIntoUserRefreshQueue started..");
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 5 - Find User Changes");
         processEventTracker.trackEventStarted(processMonitorDto);
@@ -131,6 +131,7 @@ public class ProfessionalUserService {
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         log.info("..findUserChangesAndInsertIntoUserRefreshQueue finished");
+        return processMonitorDto;
     }
 
     private void writeAllToUserRefreshQueue(GetRefreshUserResponse usersResponse, Integer accessTypeMinVersion,

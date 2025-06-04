@@ -74,4 +74,17 @@ class SchedulerTest {
         verify(organisationService, times(1)).findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
     }
 
+    @Test
+    void findUserChangesAndInsertIntoUserRefreshQueueTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        when(professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler
+            .findUserChangesAndInsertIntoUserRefreshQueue();
+        assertNotNull(returnedProcessMonitorDto);
+        verify(professionalUserService, times(1)).findUserChangesAndInsertIntoUserRefreshQueue();
+    }
+
 }

@@ -43,7 +43,9 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUserChanges.cron}")
-    void findUserChangesAndInsertIntoUserRefreshQueue() {
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+    public ProcessMonitorDto findUserChangesAndInsertIntoUserRefreshQueue() {
+        ProcessMonitorDto processMonitorDto = professionalUserService
+            .findUserChangesAndInsertIntoUserRefreshQueue();
+        return processMonitorDto;
     }
 }
