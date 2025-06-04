@@ -33,3 +33,12 @@ Feature: F-013 : PRM Scheduler
     And it is submitted to call the [Find Organisation Changes] operation of [Organisation Role Mapping],
     Then a positive response is received,
     And the response has all other details as expected.
+
+  @S-013.05
+  @FeatureToggle(EV:PRM_FTA_ENABLED=on)
+  Scenario: trigger PRM scheduler process 5 - Find User Changes
+    Given a user with [an active IDAM profile with full permissions],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Find User Changes] operation of [Organisation Role Mapping],
+    Then a positive response is received,
+    And the response has all other details as expected.

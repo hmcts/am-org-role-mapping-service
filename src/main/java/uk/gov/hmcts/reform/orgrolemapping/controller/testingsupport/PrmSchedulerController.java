@@ -131,4 +131,25 @@ public class PrmSchedulerController {
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 
+    @GetMapping(
+        path = "/am/testing-support/prm/findUserChanges"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "PRM Process 5 findUserChanges",
+        security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> findUserChanges() {
+        ProcessMonitorDto processMonitorDto = scheduler
+            .findUserChangesAndInsertIntoUserRefreshQueue();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
+
 }
