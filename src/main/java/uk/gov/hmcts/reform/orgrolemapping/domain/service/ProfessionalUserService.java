@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,6 +29,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.
 @Slf4j
 public class ProfessionalUserService {
 
+    public static final String PROCESS4_NAME = "PRM Process 4 - Find Users with Stale Organisations";
     private final PrdService prdService;
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
@@ -68,22 +70,34 @@ public class ProfessionalUserService {
         this.processEventTracker = processEventTracker;
     }
 
-    public void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
-        String processName = "PRM Process 4 - Find Users with Stale Organisations";
-        log.info("Starting {}", processName);
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
+    public OrganisationRefreshQueueEntity findAndLockSingleActiveOrganisationRecord() {
+        return organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
+    }
+
+    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(
+        String organisationId) {
+        Optional<OrganisationRefreshQueueEntity> organisationRefreshQueueEntity =
+            organisationRefreshQueueRepository.findById(organisationId);
+        if (organisationRefreshQueueEntity.isPresent()) {
+            return findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
+                organisationRefreshQueueEntity.get());
+        }
+        return null;
+    }
+
+    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
+        OrganisationRefreshQueueEntity organisationRefreshQueueEntity) {
+        log.info("Starting {}", PROCESS4_NAME);
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS4_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
 
         try {
-            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
-                    = organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
-
             if (organisationRefreshQueueEntity == null) {
                 processMonitorDto.addProcessStep("No entities to process");
                 processMonitorDto.markAsSuccess();
                 processEventTracker.trackEventCompleted(processMonitorDto);
-                log.info("Completed {}. No entities to process", processName);
-                return;
+                log.info("Completed {}. No entities to process", PROCESS4_NAME);
+                return processMonitorDto;
             }
 
             Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
@@ -102,6 +116,7 @@ public class ProfessionalUserService {
                             accessTypesMinVersion,
                             organisationRefreshQueueEntity.getLastUpdated()
                     );
+                    processMonitorDto.markAsSuccess();
 
                     return true;
                 } catch (Exception ex) {
@@ -109,6 +124,7 @@ public class ProfessionalUserService {
                                     + "%d. Rolling back.",
                             organisationIdentifier, organisationRefreshQueueEntity.getRetry());
                     processMonitorDto.addProcessStep(message);
+                    processMonitorDto.markAsFailed(ex.getMessage());
                     log.error(message, ex);
                     status.setRollbackOnly();
                     return false;
@@ -130,10 +146,10 @@ public class ProfessionalUserService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw e;
         }
-        processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
 
-        log.info("Completed {}", processName);
+        log.info("Completed {}", PROCESS4_NAME);
+        return processMonitorDto;
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
@@ -186,8 +202,8 @@ public class ProfessionalUserService {
 
         for (UsersOrganisationInfo organisationInfo : response.getOrganisationInfo()) {
             List<ProfessionalUserData> professionalUsers = organisationInfo.getUsers().stream()
-                    .map(user -> fromProfessionalUserAndOrganisationInfo(user, organisationInfo))
-                    .toList();
+                .map(user -> fromProfessionalUserAndOrganisationInfo(user, organisationInfo))
+                .toList();
 
             professionalUserData.addAll(professionalUsers);
         }
