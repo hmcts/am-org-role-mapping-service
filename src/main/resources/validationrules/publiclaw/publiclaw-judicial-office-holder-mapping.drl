@@ -603,7 +603,7 @@ end;
 /*
  * 14b: "PUBLICLAW Acting Designated Family Judge - Salaried" business role mapping to JOH.
  */
-rule "v2.0_publiclaw_acting_designated_family_judge_salaried_joh"
+rule "v2_0_publiclaw_acting_designated_family_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_2_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
@@ -625,7 +625,7 @@ then
       .primaryLocation($jap.getPrimaryLocationId())
       .contractType($jap.getAppointmentType())
       .build());
-      logMsg("Rule : v2.0_publiclaw_acting_designated_family_judge_salaried_joh");
+      logMsg("Rule : v2_0_publiclaw_acting_designated_family_judge_salaried_joh");
 end;
 
 /*
