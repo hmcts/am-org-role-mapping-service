@@ -43,7 +43,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ProfessionalUserServiceTest {
+class ProfessionalUserServiceTest {
 
     private final PrdService prdService = mock(PrdService.class);
     private final UserRefreshQueueRepository userRefreshQueueRepository =

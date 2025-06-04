@@ -35,7 +35,7 @@ class PrmSchedulerControllerTest {
         batchLastRunTimestampRepository, organisationService);
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 

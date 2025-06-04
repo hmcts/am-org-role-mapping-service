@@ -25,27 +25,23 @@ public class Scheduler {
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findAndUpdateCaseDefinitionChanges.cron}")
     public ProcessMonitorDto findAndUpdateCaseDefinitionChanges() {
-        ProcessMonitorDto processMonitorDto = caseDefinitionService.findAndUpdateCaseDefinitionChanges();
-        return processMonitorDto;
+        return caseDefinitionService.findAndUpdateCaseDefinitionChanges();
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.cron}")
     public ProcessMonitorDto findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess() {
-        ProcessMonitorDto processMonitorDto = organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
-        return processMonitorDto;
+        return organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationChanges.cron}")
     public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess() {
-        ProcessMonitorDto processMonitorDto = organisationService
+        return organisationService
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
-        return processMonitorDto;
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUserChanges.cron}")
     public ProcessMonitorDto findUserChangesAndInsertIntoUserRefreshQueue() {
-        ProcessMonitorDto processMonitorDto = professionalUserService
+        return professionalUserService
             .findUserChangesAndInsertIntoUserRefreshQueue();
-        return processMonitorDto;
     }
 }
