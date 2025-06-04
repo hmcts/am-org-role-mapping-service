@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 @Slf4j
@@ -13,11 +14,13 @@ public class Scheduler {
 
     private final CaseDefinitionService caseDefinitionService;
     private final OrganisationService organisationService;
+    private final ProfessionalUserService professionalUserService;
 
     public Scheduler(CaseDefinitionService caseDefinitionService,
-        OrganisationService organisationService) {
+        OrganisationService organisationService, ProfessionalUserService professionalUserService) {
         this.caseDefinitionService = caseDefinitionService;
         this.organisationService = organisationService;
+        this.professionalUserService = professionalUserService;
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findAndUpdateCaseDefinitionChanges.cron}")
@@ -37,5 +40,10 @@ public class Scheduler {
         ProcessMonitorDto processMonitorDto = organisationService
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
         return processMonitorDto;
+    }
+
+    @Scheduled(cron = "${professional.role.mapping.scheduling.findUserChanges.cron}")
+    void findUserChangesAndInsertIntoUserRefreshQueue() {
+        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
     }
 }
