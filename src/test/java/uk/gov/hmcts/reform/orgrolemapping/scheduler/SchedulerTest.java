@@ -106,6 +106,7 @@ class SchedulerTest {
         ProcessMonitorDto returnedProcessMonitorDto = scheduler
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
         assertNotNull(returnedProcessMonitorDto);
+        verify(organisationService, times(1)).findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
     }
 
 }
