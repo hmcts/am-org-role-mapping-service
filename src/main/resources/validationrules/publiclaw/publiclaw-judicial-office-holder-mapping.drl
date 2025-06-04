@@ -601,6 +601,34 @@ then
 end;
 
 /*
+ * 14b: "PUBLICLAW Acting Designated Family Judge - Salaried" business role mapping to JOH.
+ */
+rule "v2.0_publiclaw_acting_designated_family_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_2_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (roles != null && roles.contains("Acting Designated Family Judge")),
+                               validateAuthorisation(authorisations, "ABA3"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PUBLICLAW Acting Designated Family Judge - Salaried")
+      .jurisdiction("PUBLICLAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v2.0_publiclaw_acting_designated_family_judge_salaried_joh");
+end;
+
+/*
  * 15: "PUBLICLAW Magistrate - Voluntary" business role mapping to JOH.
  */
 rule "publiclaw_magistrate_voluntary_joh"
