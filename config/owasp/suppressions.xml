@@ -9,7 +9,15 @@
         <cve>CVE-2022-4245</cve>
     </suppress>
     <suppress>
-        <notes>https://tools.hmcts.net/jira/browse/DTSAM-88 azure</notes>
-        <cve>CVE-2023-36052</cve>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-602 spring</notes>
+        <cve>CVE-2024-38820</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-867</notes>
+        <cve>CVE-2025-31650</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-868</notes>
+        <cve>CVE-2025-31651</cve>
     </suppress>
 </suppressions>

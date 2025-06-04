@@ -37,7 +37,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
-    {
+    static {
         expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
         expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "routine_work,hearing_work,applications");
         expectedRoleNameWorkTypesMap.put("hmcts-ctsc", null);
@@ -72,7 +72,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
                 r.getRoleName())) {
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
-            assertEquals(null, r.getAttributes().get("jurisdiction"));
+            assertNull(r.getAttributes().get("jurisdiction"));
             assertTrue(r.isReadOnly());
             assertNull(primaryLocation);
             assertNull(r.getAttributes().get("region"));
@@ -102,12 +102,14 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "10,ABA5,'ctsc,hmcts-ctsc',N,N,CTSC",
+        "10,ABA5,'ctsc,hmcts-ctsc,case-allocator',N,Y,CTSC",
         "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N,CTSC",
         "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,case-allocator,"
                 + "specific-access-approver-ctsc',Y,Y,CTSC",
         "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,case-allocator,specific-access-approver-ctsc',N,Y,CTSC",
         "9,ABA5,'ctsc-team-leader,ctsc,hmcts-ctsc,task-supervisor,specific-access-approver-ctsc',Y,N,CTSC",
         "4,ABA5,'hearing-centre-admin,hmcts-admin',N,N,ADMIN",
+        "4,ABA5,'hearing-centre-admin,hmcts-admin,case-allocator',N,Y,ADMIN",
         "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,"
                 + "specific-access-approver-admin',N,N,ADMIN",
         "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,"
@@ -117,6 +119,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         "3,ABA5,'hearing-centre-team-leader,hearing-centre-admin,hmcts-admin,task-supervisor,case-allocator,"
                 + "specific-access-approver-admin',Y,Y,ADMIN",
         "2,ABA5,'tribunal-caseworker,hmcts-legal-operations',N,N,LEGAL_OPERATIONS",
+        "2,ABA5,'tribunal-caseworker,hmcts-legal-operations,case-allocator',N,Y,LEGAL_OPERATIONS",
         "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,specific-access-approver-legal-ops',N,N,"
                 + "LEGAL_OPERATIONS",
         "1,ABA5,'senior-tribunal-caseworker,hmcts-legal-operations,task-supervisor,"
@@ -145,7 +148,7 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         allProfiles.add(cap);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(true));
 
 
         //assertion
@@ -174,19 +177,14 @@ class DroolPrivateLawStaffOrgRolesTest extends DroolBase {
         allProfiles.add(cap);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(false).build(),
-                                FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(false).build())
-                );
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(false));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
 
-
-    List<FeatureFlag> getFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("privatelaw_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("privatelaw_wa_1_1").status(true).build());
+    List<FeatureFlag> getFeatureFlags(Boolean status) {
+        return getAllFeatureFlagsToggleByJurisdiction("PRIVATELAW", status);
     }
+
 }
