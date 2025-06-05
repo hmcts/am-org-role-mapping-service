@@ -55,16 +55,11 @@ public class RequestMappingService<T> {
     public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
     public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
 
-    @Autowired
-    private PersistenceService persistenceService;
-    @Autowired
-    private EnvironmentConfiguration environmentConfiguration;
-    @Autowired
-    private RoleAssignmentService roleAssignmentService;
-    @Autowired
-    private StatelessKieSession kieSession;
-    @Autowired
-    private SecurityUtils securityUtils;
+    private final PersistenceService persistenceService;
+    private final EnvironmentConfiguration environmentConfiguration;
+    private final RoleAssignmentService roleAssignmentService;
+    private final StatelessKieSession kieSession;
+    private final SecurityUtils securityUtils;
 
     @Autowired
     public RequestMappingService(PersistenceService persistenceService,
@@ -92,7 +87,7 @@ public class RequestMappingService<T> {
      * For each caseworker represented in the map, determine what the role assignments should be,
      * and update them in the role assignment service.
      */
-    public ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles,
+    private ResponseEntity<Object> createAssignments(Map<String, Set<T>> usersAccessProfiles,
                                                      List<JudicialBooking> judicialBookings,
                                                      UserType userType) {
         var startTime = System.currentTimeMillis();
