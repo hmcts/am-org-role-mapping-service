@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
@@ -231,7 +232,7 @@ public class IntTestDataBuilder {
     public static OrganisationInfo buildOrganisationInfo(int i) {
         return OrganisationInfo.builder()
                 .organisationIdentifier("" + i)
-                .status("ACTIVE")
+                .status(OrganisationStatus.ACTIVE)
                 .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
                 .build();

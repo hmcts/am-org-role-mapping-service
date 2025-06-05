@@ -2,6 +2,9 @@ package uk.gov.hmcts.reform.orgrolemapping.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,6 +17,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
@@ -87,4 +91,14 @@ class JacksonUtilsTest {
         JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
         assertNotNull(JacksonUtils.convertInJudicialBooking(judicialBooking));
     }
+
+    @Test
+    void convertUserAccessTypes() throws IOException {
+
+        String exampleRequest = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/userAccessType.json")));
+        List<UserAccessType> userAccessTypes = JacksonUtils.convertUserAccessTypes(exampleRequest);
+        assertNotNull(userAccessTypes);
+    }
+
 }

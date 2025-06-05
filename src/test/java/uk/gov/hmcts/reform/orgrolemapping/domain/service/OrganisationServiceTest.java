@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
@@ -353,7 +354,7 @@ class OrganisationServiceTest {
     private OrganisationInfo buildOrganisationInfo(int i) {
         return OrganisationInfo.builder()
                 .organisationIdentifier("orgIdentifier" + i)
-                .status("ACTIVE")
+                .status(OrganisationStatus.ACTIVE)
                 .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
                 .build();

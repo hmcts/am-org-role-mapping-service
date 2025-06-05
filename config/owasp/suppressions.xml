@@ -20,4 +20,8 @@
         <notes>https://tools.hmcts.net/jira/browse/DTSAM-868</notes>
         <cve>CVE-2025-31651</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-185 postgresql_jdbc_driver</notes>
+        <cve>CVE-2024-1597</cve>
+    </suppress>
 </suppressions>
