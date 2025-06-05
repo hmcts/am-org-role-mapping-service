@@ -3,14 +3,18 @@ package uk.gov.hmcts.reform.orgrolemapping.servicebus;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import com.azure.core.amqp.exception.AmqpErrorCondition;
+import com.azure.core.amqp.exception.AmqpException;
 import com.azure.core.util.BinaryData;
 import com.azure.messaging.servicebus.ServiceBusErrorContext;
+import com.azure.messaging.servicebus.ServiceBusErrorSource;
 import com.azure.messaging.servicebus.ServiceBusException;
-import com.azure.messaging.servicebus.ServiceBusFailureReason;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessage;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.LoggerFactory;
@@ -37,9 +41,6 @@ class TopicConsumerTest {
 
     @Mock
     ServiceBusErrorContext serviceBusErrorContext;
-
-    @Mock
-    ServiceBusException serviceBusException;
 
     @Mock
     ServiceBusReceivedMessageContext messageContext;
@@ -82,17 +83,21 @@ class TopicConsumerTest {
     void processErrorNonServiceBusException() {
         when(serviceBusErrorContext.getException()).thenReturn(new RuntimeException("Some Runtime Exception"));
 
-        sut.processError(serviceBusErrorContext);
+        TopicConsumer.processError(serviceBusErrorContext);
 
         assertEquals("Non-ServiceBusException occurred: {}", logsList.get(1).getMessage());
     }
 
-    @Test
-    void processErrorUnrecoverableError() {
-        when(serviceBusException.getReason()).thenReturn(ServiceBusFailureReason.MESSAGING_ENTITY_DISABLED);
+    @ParameterizedTest
+    @EnumSource(value = AmqpErrorCondition.class, names = {"ENTITY_DISABLED_ERROR", "NOT_FOUND", "UNAUTHORIZED_ACCESS"})
+    void processErrorUnrecoverableError(AmqpErrorCondition condition) {
+        ServiceBusException serviceBusException = new ServiceBusException(
+                createAmqpException(condition),
+                ServiceBusErrorSource.UNKNOWN
+        );
         when(serviceBusErrorContext.getException()).thenReturn(serviceBusException);
 
-        sut.processError(serviceBusErrorContext);
+        TopicConsumer.processError(serviceBusErrorContext);
 
         assertEquals("An unrecoverable error occurred. Stopping processing with reason {}: {}",
                 logsList.get(1).getMessage());
@@ -100,20 +105,39 @@ class TopicConsumerTest {
 
     @Test
     void processErrorMessageLock() {
-        when(serviceBusException.getReason()).thenReturn(ServiceBusFailureReason.MESSAGE_LOCK_LOST);
+        ServiceBusException serviceBusException = new ServiceBusException(
+                createAmqpException(AmqpErrorCondition.MESSAGE_LOCK_LOST),
+                ServiceBusErrorSource.UNKNOWN
+        );
         when(serviceBusErrorContext.getException()).thenReturn(serviceBusException);
 
-        sut.processError(serviceBusErrorContext);
+        TopicConsumer.processError(serviceBusErrorContext);
 
         assertEquals("Message lock lost for message: {}", logsList.get(1).getMessage());
     }
 
     @Test
-    void processErrorGeneralError() {
-        when(serviceBusException.getReason()).thenReturn(ServiceBusFailureReason.GENERAL_ERROR);
+    void processErrorServiceBusy() {
+        ServiceBusException serviceBusException = new ServiceBusException(
+                createAmqpException(AmqpErrorCondition.SERVER_BUSY_ERROR),
+                ServiceBusErrorSource.UNKNOWN
+        );
         when(serviceBusErrorContext.getException()).thenReturn(serviceBusException);
 
-        sut.processError(serviceBusErrorContext);
+        TopicConsumer.processError(serviceBusErrorContext);
+
+        assertEquals("Service Busy error", logsList.get(1).getMessage());
+    }
+
+    @Test
+    void processErrorGeneralError() {
+        ServiceBusException serviceBusException = new ServiceBusException(
+                createAmqpException(AmqpErrorCondition.INTERNAL_ERROR),
+                ServiceBusErrorSource.UNKNOWN
+        );
+        when(serviceBusErrorContext.getException()).thenReturn(serviceBusException);
+
+        TopicConsumer.processError(serviceBusErrorContext);
 
         assertEquals("Error source {}, reason {}, message: {}", logsList.get(1).getMessage());
     }
@@ -132,4 +156,9 @@ class TopicConsumerTest {
         verify(ormDeserializer).deserializeBytes("some bytes".getBytes());
         verify(bulkAssignmentOrchestrator).createBulkAssignmentsRequest(userRequest, userType);
     }
+
+    private AmqpException createAmqpException(AmqpErrorCondition errorCondition) {
+        return new AmqpException(true, errorCondition, "AMQP test Error", null);
+    }
+
 }

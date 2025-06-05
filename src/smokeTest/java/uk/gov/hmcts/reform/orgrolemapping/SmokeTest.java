@@ -12,15 +12,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Tag;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
@@ -28,22 +29,16 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 @WithTags({@WithTag("testType:Smoke")})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SmokeTest {
-    @Value("${launchdarkly.sdk.environment}")
-    private String environment;
-
-    @Value("${launchdarkly.sdk.user}")
-    private String userName;
-
-    @Value("${launchdarkly.sdk.key}")
-    private String sdkKey;
+    @Autowired
+    private EnvironmentConfiguration environmentConfiguration;
 
     UserTokenProviderConfig config;
 
     @MockBean
-    private CRDTopicConsumer crdTopicConsumer;
+    private CRDTopicConsumerNew crdTopicConsumerNew;
 
     @MockBean
-    private JRDTopicConsumer jrdTopicConsumer;
+    private JRDTopicConsumerNew jrdTopicConsumerNew;
 
     @MockBean
     private CRDTopicPublisher crdTopicPublisher;
@@ -69,7 +64,6 @@ public class SmokeTest {
 
     @Tag("smoke")
     @Test
-    @FeatureFlagToggle("orm-base-flag")
     public void should_receive_response_for_welcomeAPI() {
 
         var targetInstance = config.getOrgRoleMappingUrl();
@@ -85,14 +79,7 @@ public class SmokeTest {
     }
 
     public String getEnvironment() {
-        return environment;
+        return environmentConfiguration.getEnvironment();
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getSdkKey() {
-        return sdkKey;
-    }
 }

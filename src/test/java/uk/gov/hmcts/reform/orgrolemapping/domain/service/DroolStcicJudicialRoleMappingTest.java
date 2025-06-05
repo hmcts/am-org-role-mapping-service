@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -29,40 +28,36 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DroolStcicJudicialRoleMappingTest extends DroolBase {
+class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
-    {
+    static {
+        expectedRoleNameWorkTypesMap.put("leadership-judge", null);
         expectedRoleNameWorkTypesMap.put("senior-judge", null);
-        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,"
-                + "applications,priority");
+        expectedRoleNameWorkTypesMap.put("judge", "decision_making_work");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", null);
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        expectedRoleNameWorkTypesMap.put("leadership-judge", null);
-        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
-        expectedRoleNameWorkTypesMap.put("medical", "hearing_work,decision_making_work,"
-                + "routine_work,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-medical", "hearing_work,decision_making_work,"
-                + "routine_work,applications,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-disability", "hearing_work,priority");
-        expectedRoleNameWorkTypesMap.put("fee-paid-financial", "hearing_work,priority");
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", null);
+        expectedRoleNameWorkTypesMap.put("magistrate", null);
+        expectedRoleNameWorkTypesMap.put("medical", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-medical", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-disability", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-financial", null);
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(TestDataBuilder.id_2, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
-        if (!r.getRoleName().equals("fee-paid-judge")) {
-            assertNull(r.getAttributes().get("bookable"));
-        } else {
+        if (r.getRoleName().equals("fee-paid-judge")) {
             assertTrue(r.getAttributes().get("bookable").asBoolean());
+        } else {
+            assertNull(r.getAttributes().get("bookable"));
         }
 
         String primaryLocation = null;
@@ -86,15 +81,6 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
         //region assertions
         assertNull(r.getAttributes().get("region"));
 
-        //work types assertions
-        if (office.equals("ST_CIC Tribunal Member-Fee Paid")
-                && r.getRoleName().equals("fee-paid-tribunal-member")) {
-            expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member",
-                    "hearing_work,decision_making_work,routine_work,applications,priority");
-        } else if (office.equals("ST_CIC Tribunal Member Lay-Fee Paid")
-                && r.getRoleName().equals("fee-paid-tribunal-member")) {
-            expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "hearing_work,priority");
-        }
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
         String actualWorkTypes = null;
         if (r.getAttributes().get("workTypes") != null) {
@@ -105,11 +91,17 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "ST_CIC President of Tribunal-Salaried,'senior-judge,judge,case-allocator,task-supervisor,"
+        "ST_CIC President of Tribunal-Salaried,'leadership-judge,senior-judge,judge,case-allocator,task-supervisor,"
                 + "hmcts-judiciary,specific-access-approver-judiciary'",
         "ST_CIC Principal Judge-Salaried,'leadership-judge,senior-judge,judge,case-allocator,task-supervisor,"
                 + "hmcts-judiciary,specific-access-approver-judiciary'",
-        "ST_CIC Tribunal Judge-Salaried,'judge,case-allocator,task-supervisor,hmcts-judiciary,"
+        "ST_CIC Tribunal Judge-Salaried,'judge,hmcts-judiciary,case-allocator,"
+                + "specific-access-approver-judiciary'",
+        "ST_CIC Judge of the First-tier Tribunal-Salaried,'judge,hmcts-judiciary,case-allocator,"
+                + "specific-access-approver-judiciary'",
+        "ST_CIC Circuit Judge-Salaried,'judge,hmcts-judiciary,case-allocator,"
+                + "specific-access-approver-judiciary'",
+        "ST_CIC Regional Tribunal Judge-Salaried,'judge,hmcts-judiciary,case-allocator,"
                 + "specific-access-approver-judiciary'",
         "ST_CIC Tribunal Member Medical-Salaried,'medical,hmcts-judiciary'"
     })
@@ -119,78 +111,111 @@ public class DroolStcicJudicialRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("ST_CIC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
     @ParameterizedTest
     @CsvSource({
         "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
-        "ST_CIC Tribunal Member-Fee Paid,'fee-paid-tribunal-member'",
-        "ST_CIC Tribunal Member Medical-Fee Paid,'fee-paid-medical'",
-        "ST_CIC Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member'",
-        "ST_CIC Tribunal Member Disability-Fee Paid,'fee-paid-disability'",
-        "ST_CIC Tribunal Member Financially Qualified-Fee Paid,'fee-paid-financial'"
+        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
+        "ST_CIC Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
+        "ST_CIC Recorder-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
+        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary'",
+        "ST_CIC Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "ST_CIC Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary'",
+        "ST_CIC Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary'",
+        "ST_CIC Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary'",
+        "ST_CIC Tribunal Member Disability-Fee Paid,'fee-paid-disability,fee-paid-tribunal-member,hmcts-judiciary'",
+        "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid,'fee-paid-disability,"
+                + "fee-paid-tribunal-member,hmcts-judiciary'",
+        "ST_CIC Tribunal Member Financially Qualified-Fee Paid,'fee-paid-financial,hmcts-judiciary'"
     })
-    void shouldReturnFeePaidRoles(String setOffice, String expectedRoles) {
+    void verifyFeePaidRolesWithoutBooking(String setOffice, String expectedRoles) throws IOException {
+        shouldReturnFeePaidRoles(setOffice, expectedRoles, false);
+    }
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+    @ParameterizedTest
+    @CsvSource({
+        "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
+        "ST_CIC Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,'fee-paid-judge,"
+                + "hmcts-judiciary,judge'",
+        "ST_CIC Chairman-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
+        "ST_CIC Recorder-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'",
+        "ST_CIC Deputy Upper Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'"
+    })
+    void verifyFeePaidRolesWithBooking(String setOffice, String expectedRoles) throws IOException {
+        shouldReturnFeePaidRoles(setOffice, expectedRoles, true);
+    }
+
+    void shouldReturnFeePaidRoles(String setOffice, String expectedRoles,
+                                  boolean withBooking) throws IOException {
+
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(setOffice);
+            joh.setTicketCodes(List.of("328"));
+        });
+
+        if (withBooking) {
+            JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
+            judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
+                    .orElse(JudicialOfficeHolder.builder().build()).getUserId());
+            judicialBooking.setLocationId("2");
+            judicialBookings = Set.of(judicialBooking);
+        }
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("ST_CIC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
 
     @ParameterizedTest
     @CsvSource({
-        "ST_CIC Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary,judge'"
+        "ST_CIC Advisory Committee Member - Magistrate-Voluntary,'magistrate'",
+        "ST_CIC Magistrate-Voluntary,'magistrate'"
     })
-    void shouldReturnFeePaidRolesWithBooking(String setOffice, String expectedRoles) throws IOException {
+    void shouldReturnVoluntaryRoles(String setOffice, String expectedRoles) {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
-        JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
-        judicialBooking.setUserId(judicialOfficeHolders.stream().findFirst()
-                .orElse(JudicialOfficeHolder.builder().build()).getUserId());
-        judicialBooking.setLocationId("2");
-        judicialBookings = Set.of(judicialBooking);
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(setOffice);
+            joh.setTicketCodes(List.of(""));
+        });
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("st_cic_wa_1_0", true));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("ST_CIC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-            assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+            assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
+            assertCommonRoleAssignmentAttributes(r);
         });
     }
+
 }

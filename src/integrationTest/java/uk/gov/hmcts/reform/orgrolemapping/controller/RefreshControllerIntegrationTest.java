@@ -26,11 +26,11 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -42,7 +42,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import javax.inject.Inject;
@@ -63,6 +62,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_RARB;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_XUI;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
 
 @TestPropertySource(properties = {
     "refresh.Job.authorisedServices=am_org_role_mapping_service,am_role_assignment_refresh_batch",
@@ -77,7 +79,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
-    private static final String PROFESSIONAL_REFRESH_URL = "/am/role-mapping/professional/refresh";
     private MockMvc mockMvc;
 
     @Inject
@@ -100,9 +101,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
     private RequestMappingService requestMappingService;
 
     @MockBean
-    private FeatureConditionEvaluator featureConditionEvaluation;
-
-    @MockBean
     private SecurityUtils securityUtils;
 
     @Mock
@@ -122,7 +120,6 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
-        doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
     }
@@ -137,7 +134,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                 .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                         .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is(200))
@@ -158,7 +155,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is(422))
@@ -179,7 +176,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().isOk())
@@ -202,7 +199,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         MvcResult result = mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is2xxSuccessful())
@@ -222,7 +219,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
 
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder()
                                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build())))
                 .andExpect(status().is4xxClientError())
@@ -236,7 +233,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         logger.info(" Refresh request rejected with empty request");
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(JudicialRefreshRequest.builder().build())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorDescription")
@@ -251,7 +248,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .refreshRequest(UserRequest.builder().userIds(Collections.emptyList()).build()).build();
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorDescription")
@@ -268,7 +265,7 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .refreshRequest(UserRequest.builder().userIds(List.of("abc-123$")).build()).build();
         mockMvc.perform(post(JUDICIAL_REFRESH_URL)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders())
+                        .headers(getHttpHeaders(S2S_XUI))
                         .content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorDescription")
@@ -289,13 +286,13 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
         return new ResponseEntity<>(new JudicialBookingResponse(bookings), headers, HttpStatus.OK);
     }
 
-    private ResponseEntity<List<JudicialProfile>> buildJudicialProfilesResponse(String... userIds) {
+    private ResponseEntity<List<JudicialProfileV2>> buildJudicialProfilesResponse(String... userIds) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("total_records", "" + userIds.length);
-        List<JudicialProfile> bookings = new ArrayList<>();
+        List<JudicialProfileV2> bookings = new ArrayList<>();
         for (var userId:userIds) {
-            bookings.add(JudicialProfile.builder().sidamId(userId)
-                    .appointments(List.of(Appointment.builder().appointment("Tribunal Judge")
+            bookings.add(JudicialProfileV2.builder().sidamId(userId)
+                    .appointments(List.of(AppointmentV2.builder().appointment("Tribunal Judge")
                             .appointmentType("Fee Paid").build())).build());
         }
         return new ResponseEntity<>(bookings, headers, HttpStatus.OK);
@@ -320,13 +317,4 @@ public class RefreshControllerIntegrationTest extends BaseTestIntegration {
                 .when(requestMappingService).createAssignments(any(), any(), any());
     }
 
-    @NotNull
-    private HttpHeaders getHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, "Bearer user1");
-        var s2SToken = MockUtils.generateDummyS2SToken(AUTHORISED_SERVICE);
-        headers.add("ServiceAuthorization", "Bearer " + s2SToken);
-        headers.add(Constants.CORRELATION_ID_HEADER_NAME, "38a90097-434e-47ee-8ea1-9ea2a267f51d");
-        return headers;
-    }
 }

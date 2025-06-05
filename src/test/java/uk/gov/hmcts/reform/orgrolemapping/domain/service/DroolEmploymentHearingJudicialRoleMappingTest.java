@@ -104,6 +104,34 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("Employment Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
                         null),
+                Arguments.of("Employment Judge (sitting in retirement)",
+                        "Fee Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
+                Arguments.of("Recorder",
+                        "Fee Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
+                Arguments.of("Regional Tribunal Judge",
+                        "Fee Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
+                Arguments.of("Tribunal Judge",
+                        "Fee Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
                 //Tribunal Member and Lay should get roles tribunal-member,hearing-viewer when baseLocationId = 1036
                 // or 1037
                 Arguments.of("Tribunal Member",
@@ -148,7 +176,15 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         true,
                         List.of("Tribunal Member Lay"),
                         new ArrayList<>(),
-                        "1")
+                        "1"),
+                Arguments.of("",
+                        "Salaried",
+                        false,
+                        true,
+                        List.of("Acting Regional Employment Judge"),
+                        List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
+                                "specific-access-approver-judiciary", "hearing-viewer"),
+                        null)
         );
     }
 
@@ -189,14 +225,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         );
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("employment_wa_1_1").status(true).build(),
-                                FeatureFlag.builder().flagName("employment_wa_1_2").status(true).build(),
-                                FeatureFlag.builder().flagName("employment_wa_1_3").status(true).build(),
-                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
-                );
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(hearingFlag));
 
         List<String> roleNameResults =
                 roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
@@ -246,5 +275,18 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
             actualWorkTypes = r.getAttributes().get("workTypes").asText();
         }
         assertEquals(expectedWorkTypes, actualWorkTypes);
+    }
+
+    private List<FeatureFlag> setFeatureFlags(boolean hearingFlag) {
+        List<FeatureFlag> featureFlags = new ArrayList<>(getAllFeatureFlagsToggleByJurisdiction("EMPLOYMENT", true));
+
+        featureFlags.add(
+                FeatureFlag.builder()
+                        .flagName("sscs_hearing_1_0")
+                        .status(hearingFlag)
+                        .build()
+        );
+
+        return featureFlags;
     }
 }

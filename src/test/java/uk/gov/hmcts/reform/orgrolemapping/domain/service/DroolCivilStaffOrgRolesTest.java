@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -20,7 +21,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -32,20 +32,22 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 @RunWith(MockitoJUnitRunner.class)
 class DroolCivilStaffOrgRolesTest extends DroolBase {
 
-    static final String SERVICE_CODE = "AAA6";
+    static final String SERVICE_CODE_1 = "AAA6";
+    static final String SERVICE_CODE_2 = "AAA7";
     static final String REGION_ID = "region1";
     static final String JURISDICTION = "CIVIL";
     static final String ROLE_TYPE = "ORGANISATION";
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
-    {
+    static {
         expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
-        expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "hearing_work,access_requests");
+        expectedRoleNameWorkTypesMap.put("hearing-centre-team-leader", "hearing_work,access_requests,query_work");
         expectedRoleNameWorkTypesMap.put("hmcts-ctsc", null);
-        expectedRoleNameWorkTypesMap.put("ctsc", "routine_work");
-        expectedRoleNameWorkTypesMap.put("ctsc-team-leader", "routine_work,access_requests");
-        expectedRoleNameWorkTypesMap.put("hearing-centre-admin", "hearing_work");
+        expectedRoleNameWorkTypesMap.put("ctsc", "routine_work,query_work");
+        expectedRoleNameWorkTypesMap.put("ctsc-team-leader", "routine_work,access_requests,query_work");
+        expectedRoleNameWorkTypesMap.put("hearing-centre-admin",
+                "hearing_work,multi_track_hearing_work,intermediate_track_hearing_work,routine_work,query_work");
         expectedRoleNameWorkTypesMap.put("senior-tribunal-caseworker", "decision_making_work,access_requests");
         expectedRoleNameWorkTypesMap.put("tribunal-caseworker", "decision_making_work");
         expectedRoleNameWorkTypesMap.put("hmcts-legal-operations", null);
@@ -53,6 +55,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("national-business-centre", "routine_work");
         expectedRoleNameWorkTypesMap.put("task-supervisor", "routine_work,hearing_work,access_requests");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("wlu-admin", "routine_work,query_work,welsh_translation_work");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String roleId,
@@ -71,7 +74,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 r.getRoleName())) {
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
-            assertEquals(null, r.getAttributes().get("jurisdiction"));
+            assertNull(r.getAttributes().get("jurisdiction"));
             assertTrue(r.isReadOnly());
             assertNull(primaryLocation);
             assertNull(r.getAttributes().get("region"));
@@ -92,6 +95,8 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         String expectedWorkTypes;
         if (roleId.equals("1") && r.getRoleName().equals("task-supervisor")) {
             expectedWorkTypes = "decision_making_work,access_requests";
+        } else if (roleId.equals("20") && r.getRoleName().equals("task-supervisor")) {
+            expectedWorkTypes = "routine_work,query_work,welsh_translation_work";
         } else {
             expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
         }
@@ -104,7 +109,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
     }
 
     /* test parameters
-     * roleId,expectedRoleNames,expectedRoleCount,expectedRoleCategory,taskSupervisorFlag,taskAllocatorFlag
+     * roleId,expectedRoleNames,expectedRoleCount,expectedRoleCategory,taskSupervisorFlag,caseAllocatorFlag
      */
     static Stream<Arguments> generateDatav14() {
         return Stream.of(
@@ -123,6 +128,8 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 "hearing-centre-team-leader"), 3, RoleCategory.ADMIN, "N", "N"),
             Arguments.of("3", Arrays.asList("hearing-centre-admin", "hmcts-admin",
                 "hearing-centre-team-leader", "task-supervisor"), 4, RoleCategory.ADMIN, "Y", "N"),
+            Arguments.of("3", Arrays.asList("hearing-centre-admin", "hmcts-admin",
+                "hearing-centre-team-leader", "case-allocator"), 4, RoleCategory.ADMIN, "N", "Y"),
             Arguments.of("4", Arrays.asList("hmcts-admin", "hearing-centre-admin"), 2, RoleCategory.ADMIN,
                 "N", "N"),
             Arguments.of("2", Arrays.asList("tribunal-caseworker", "hmcts-legal-operations"), 2,
@@ -131,7 +138,11 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 "hmcts-legal-operations"), 3, RoleCategory.LEGAL_OPERATIONS, "N", "N"),
             Arguments.of("1", Arrays.asList("tribunal-caseworker", "senior-tribunal-caseworker",
                 "hmcts-legal-operations", "task-supervisor", "case-allocator"), 5, RoleCategory.LEGAL_OPERATIONS, "Y",
-                "Y")
+                "Y"),
+            Arguments.of("20", Collections.singletonList("wlu-admin"), 1, RoleCategory.ADMIN,
+                "N", "N"),
+            Arguments.of("20", Arrays.asList("wlu-admin", "task-supervisor"), 2, RoleCategory.ADMIN,
+                    "Y", "N")
         );
     }
 
@@ -142,7 +153,22 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                                             int roleCount,
                                             RoleCategory expectedRoleCategory,
                                             String taskSupervisorFlag,
-                                            String taskAllocatorFlag) {
+                                            String caseAllocatorFlag) {
+        // As CIVIL has 2 service codes AAA6 and AAA7 and the CaseWorkerAccessProfile has one service code we run
+        // the test method twice, once with each service code
+        shouldReturnCivilAdminMappings_v14(roleId, roleNames, roleCount, expectedRoleCategory, taskSupervisorFlag,
+                caseAllocatorFlag, SERVICE_CODE_1);
+        shouldReturnCivilAdminMappings_v14(roleId, roleNames, roleCount, expectedRoleCategory, taskSupervisorFlag,
+                caseAllocatorFlag, SERVICE_CODE_2);
+    }
+
+    void shouldReturnCivilAdminMappings_v14(String roleId,
+                                            List<String> roleNames,
+                                            int roleCount,
+                                            RoleCategory expectedRoleCategory,
+                                            String taskSupervisorFlag,
+                                            String caseAllocatorFlag,
+                                            String serviceCode) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -150,22 +176,18 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId3();
         List<String> skillCodes = List.of("civil", "test", "ctsc");
         cap.setRoleId(roleId);
-        cap.setServiceCode(SERVICE_CODE);
+        cap.setServiceCode(serviceCode);
         cap.setSuspended(false);
         cap.setRegionId(REGION_ID);
         cap.setSkillCodes(skillCodes);
         cap.setTaskSupervisorFlag(taskSupervisorFlag);
-        cap.setCaseAllocatorFlag(taskAllocatorFlag);
+        cap.setCaseAllocatorFlag(caseAllocatorFlag);
 
         allProfiles.add(cap);
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(List.of(FeatureFlag.builder().flagName("civil_wa_1_0").status(true).build(),
-                        FeatureFlag.builder().flagName("civil_wa_1_1").status(true).build(),
-                        FeatureFlag.builder().flagName("civil_wa_1_2").status(true).build(),
-                        FeatureFlag.builder().flagName("civil_wa_1_3").status(true).build(),
-                        FeatureFlag.builder().flagName("civil_wa_1_4").status(true).build()));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("CIVIL", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
