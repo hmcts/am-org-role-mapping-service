@@ -24,9 +24,11 @@ rule "publiclaw_salaried_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW District Judge - Salaried",
-  "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried", "PUBLICLAW Designated Family Judge - Salaried",
+  "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",
+  "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW Acting Designated Family Judge - Salaried",
   "PUBLICLAW District Judge (MC) - Salaried", "PUBLICLAW Specialist Circuit Judge - Salaried",
-  "PUBLICLAW Senior Circuit Judge - Salaried", "PUBLICLAW Tribunal Judge - Salaried", "PUBLICLAW Employment Judge - Salaried"))
+  "PUBLICLAW Senior Circuit Judge - Salaried", "PUBLICLAW Tribunal Judge - Salaried",
+  "PUBLICLAW Employment Judge - Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -135,7 +137,8 @@ when
   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
   "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
-  "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid", "PUBLICLAW Designated Family Judge - Salaried",
+  "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
+  "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW Acting Designated Family Judge - Salaried",
   "PUBLICLAW Deputy Circuit Judge - Fee Paid","PUBLICLAW District Judge (MC) - Salaried",
   "PUBLICLAW Recorder - Fee Paid", "PUBLICLAW Tribunal Judge - Salaried", "PUBLICLAW Employment Judge - Salaried",
   "PUBLICLAW Specialist Circuit Judge - Salaried", "PUBLICLAW Senior Circuit Judge - Salaried",
@@ -171,7 +174,8 @@ end;
 rule "publiclaw_leadership_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried"))
+  $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried",
+                                            "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -203,7 +207,8 @@ end;
 rule "publiclaw_task_supervisor_judicial_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried"))
+  $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried",
+                                            "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -235,7 +240,8 @@ end;
 rule "publiclaw_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried"))
+  $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried",
+                                            "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -266,7 +272,8 @@ end;
 rule "publiclaw_specific_access_approver_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-  $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried"))
+  $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried",
+                                            "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));

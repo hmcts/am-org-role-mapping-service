@@ -1,0 +1,55 @@
+
+{
+  "organisationIdentifier": "1",
+  "status": "ACTIVE",
+  "organisationProfileIds": [
+    "SOLICITOR_PROFILE"
+  ],
+  "users": [
+    {
+      "userIdentifier": "38f6b38f-98e6-452e-af38-1cdf79856310",
+      "firstName": "User1",
+      "lastName": "admin",
+      "email": "user1.admin@hmcts.net",
+      "lastUpdated": "2023-09-19T15:36:33.653",
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "civil-cases-1",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "userIdentifier": "2f8b8d49-1991-4334-b95f-19c0ebbb8ee4",
+      "firstName": "User2",
+      "lastName": "admin",
+      "email": "user2.admin@hmcts.net",
+      "lastUpdated": "2023-09-19T15:36:33.653",
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "civil-cases-1",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "userIdentifier": "4ef54304-b6b9-44d9-b452-3c19a9b23053",
+      "firstName": "User3",
+      "lastName": "admin",
+      "email": "user3.admin@hmcts.net",
+      "lastUpdated": "2023-09-19T15:36:33.653",
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "civil-cases-1",
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}
