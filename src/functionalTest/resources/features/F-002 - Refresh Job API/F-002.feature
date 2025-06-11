@@ -44,7 +44,7 @@ Feature: F-002 : Refresh Role Assignments for CRD and JRD users
   @FeatureToggle(EV:REFRESH_FTA_ENABLED=on)
   Scenario: must reject refresh job request from non-approved S2S service
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to insert new job in ORM DB to initiate Refresh process]  as in [S-013_InsertJobForRefreshAPI],
+    And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [S-013_InsertJobForRefreshAPI],
     And the request [contains an existing job details],
     And the request [uses the xui_webapp S2S token, which is an authorised service for ORM but not for Refresh Job endpoint],
     When a request is prepared with appropriate values,
