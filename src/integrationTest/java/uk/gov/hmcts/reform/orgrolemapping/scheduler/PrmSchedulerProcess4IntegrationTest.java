@@ -5,11 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
@@ -75,16 +73,16 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
             .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
 
         // THEN
-//        if (!fileNames.isEmpty()) {
-//            verifySingleCallToPrd();
-//        }
+        //        if (!fileNames.isEmpty()) {
+        //            verifySingleCallToPrd();
+        //        }
         logAfterStatus(processMonitorDtos);
 
         // verify that the process monitor reports success
-//        processMonitorDtos.forEach(processMonitorDto -> {
-//            assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus(),
-//                "Invalid process monitor end status");
-//        });
+        //        processMonitorDtos.forEach(processMonitorDto -> {
+        //            assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus(),
+        //                "Invalid process monitor end status");
+        //        });
     }
 
     //#region Assertion Helpers: DB Checks
@@ -120,20 +118,20 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         logObject("organisationRefreshQueueRepository: BEFORE", organisationRefreshQueueRepository.findAll());
     }
 
-//    private void verifySingleCallToPrd() {
-//        var allCallEvents = logWiremockPostCalls(STUB_ID_PRD_RETRIEVE_ORGANISATIONS);
-//        // verify single call
-//        assertEquals(1, allCallEvents.size(),
-//            "Unexpected number of calls to PRD service");
-//        var event = allCallEvents.get(0);
-//        // verify response status
-//        assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
-//            "Response pageSize mismatch");
-//        // verify response status
-//        assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
-//            "Response status mismatch");
-//        assertEquals("false",  event.getResponse().getHeaders().getHeader(MORE_AVAILABLE).firstValue(),
-//            "Response moreAvilable mismatch");
-//    }
+    //    private void verifySingleCallToPrd() {
+    //        var allCallEvents = logWiremockPostCalls(STUB_ID_PRD_RETRIEVE_ORGANISATIONS);
+    //        // verify single call
+    //        assertEquals(1, allCallEvents.size(),
+    //            "Unexpected number of calls to PRD service");
+    //        var event = allCallEvents.get(0);
+    //        // verify response status
+    //        assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
+    //            "Response pageSize mismatch");
+    //        // verify response status
+    //        assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
+    //            "Response status mismatch");
+    //        assertEquals("false",  event.getResponse().getHeaders().getHeader(MORE_AVAILABLE).firstValue(),
+    //            "Response moreAvilable mismatch");
+    //    }
 
 }
