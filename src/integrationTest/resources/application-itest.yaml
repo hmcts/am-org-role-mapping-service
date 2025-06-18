@@ -14,8 +14,18 @@ idam:
 feign:
   client:
     config:
+      crdclient:
+        url: http://localhost:${wiremock.server.port:8095}
       roleAssignmentApp:
         url: http://localhost:${wiremock.server.port:4096}
+      jrdClient:
+        url: http://localhost:${wiremock.server.port:8091}
+      jbsClient:
+        url: http://localhost:${wiremock.server.port:4097}
+      prdClient:
+        url: http://localhost:${wiremock.server.port:8090}
+      ccdClient:
+        url: http://localhost:${wiremock.server.port:4451}
 
 professional:
   role:
