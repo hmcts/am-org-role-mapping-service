@@ -34,7 +34,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of());
 
         // verify that the OrganisationRefreshQueue remains empty
-        assertTotalOrganisationRefreshQueueEntitiesInDb(0);
+        assertTotalOrganisationRefreshQueueEntitiesInDb(0, 0);
 
         // Verify active users in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(0, 0);
@@ -48,7 +48,9 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_user1organisation1.sql"
+        "classpath:sql/prm/user_refresh_queue/insert_user1organisation1.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user2organisation1.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user3organisation1.sql"
     })
     void testStaleOrg() {
 
@@ -56,10 +58,10 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json"));
 
         // verify that the OrganisationRefreshQueue contains 1 record
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1);
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 1); // TODO - check active orgs
 
-        // Verify active users in the refresh queue
-        assertTotalUserRefreshQueueEntitiesInDb(1, 0);
+        // Verify 3 active users in the refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(3, 0);
     }
 
     private void runTest(List<String> fileNames) {
@@ -87,10 +89,18 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
     //#region Assertion Helpers: DB Checks
 
-    private void assertTotalOrganisationRefreshQueueEntitiesInDb(int expectedNumberOfRecords) {
+    private void assertTotalOrganisationRefreshQueueEntitiesInDb(int expectedNumberOfRecords, int expectedActiveOrgs) {
         var organisationRefreshQueueEntities = organisationRefreshQueueRepository.findAll();
         assertEquals(expectedNumberOfRecords, organisationRefreshQueueEntities.size(),
             "OrganisationRefreshQueueEntity number of records mismatch");
+        int activeOrgs = 0;
+        for (var entity : organisationRefreshQueueEntities) {
+            if (entity.getActive()) {
+                activeOrgs++;
+            }
+        }
+        assertEquals(expectedActiveOrgs, activeOrgs,
+            "OrganisationRefreshQueueEntity active organisations count mismatch");
     }
 
     private void assertTotalUserRefreshQueueEntitiesInDb(int expectedNumberOfRecords, int expectedActiveUsers) {

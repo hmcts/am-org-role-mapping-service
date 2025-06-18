@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -188,9 +189,10 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
             .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
             .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
 
-        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching(
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
             "/refdata/internal/v2/organisations/users"))
             .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeaders(headers)
