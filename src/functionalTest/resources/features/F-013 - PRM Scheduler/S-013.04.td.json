@@ -18,14 +18,12 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "arrayInMap": [{
-          "processType": "PRM Process 4 - Find Users with Stale Organisations",
-          "id": "[[ANYTHING_PRESENT]]",
-          "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
-          "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
-          "endStatus": "SUCCESS",
-          "processSteps" : [ ]
-      }]
+      "processType": "PRM Process 4 - Find Users with Stale Organisations",
+      "id": "[[ANYTHING_PRESENT]]",
+      "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endStatus": "SUCCESS",
+      "processSteps" : [ ]
     }
   }
 }

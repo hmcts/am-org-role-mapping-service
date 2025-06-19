@@ -1,12 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
-import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
@@ -51,27 +47,10 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.cron}")
-    public List<ProcessMonitorDto> findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
-        List<ProcessMonitorDto> processMonitorDtos = new ArrayList<>();
-        try {
-            boolean anyEntitiesInQueue = true;
-            while (anyEntitiesInQueue) {
-                OrganisationRefreshQueueEntity organisationRefreshQueueEntity = organisationRefreshQueueRepository
-                    .findAndLockSingleActiveOrganisationRecord();
-                processMonitorDtos.add(professionalUserService
-                    .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(organisationRefreshQueueEntity));
-                anyEntitiesInQueue = organisationRefreshQueueEntity != null;
-            }
-        } catch (ServiceException ex) {
-            String message = String.format("Error occurred while processing organisation: %s",
-                ex.getMessage());
-            log.error(message, ex);
-            ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(professionalUserService.PROCESS4_NAME);
-            processMonitorDto.addProcessStep(message);
-            processMonitorDto.markAsFailed(ex.getMessage());
-            processMonitorDtos.add(processMonitorDto);
-        }
-        return processMonitorDtos;
+    public ProcessMonitorDto findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
+        ProcessMonitorDto processMonitorDto = professionalUserService
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        return processMonitorDto;
     }
 
 }

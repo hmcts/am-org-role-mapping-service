@@ -1,21 +1,17 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
@@ -49,27 +45,16 @@ class SchedulerTest {
 
     @Test
     void findUsersWithStaleOrganisationProcessTest() {
-        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities = new ArrayList<>();
-        organisationRefreshQueueEntities.add(mock(OrganisationRefreshQueueEntity.class));
-        organisationRefreshQueueEntities.add(mock(OrganisationRefreshQueueEntity.class));
-        List<ProcessMonitorDto> expectedProcessMonitorDtoList = new ArrayList<>();
-        expectedProcessMonitorDtoList.add(mock(ProcessMonitorDto.class));
-        expectedProcessMonitorDtoList.add(mock(ProcessMonitorDto.class));
+        ProcessMonitorDto expectedProcessMonitorDto = mock(ProcessMonitorDto.class);
 
-        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
-            .thenReturn(mock(OrganisationRefreshQueueEntity.class), mock(OrganisationRefreshQueueEntity.class), null);
-        when(professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
-            isA(OrganisationRefreshQueueEntity.class)))
-            .thenReturn(expectedProcessMonitorDtoList.get(0))
-            .thenReturn(expectedProcessMonitorDtoList.get(1));
+        when(professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
+            .thenReturn(expectedProcessMonitorDto);
 
         scheduler
             .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
 
-        verify(organisationRefreshQueueRepository, times(expectedProcessMonitorDtoList.size() + 1))
-            .findAndLockSingleActiveOrganisationRecord();
-        verify(professionalUserService, times(expectedProcessMonitorDtoList.size()))
-            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(isA(OrganisationRefreshQueueEntity.class));
+        verify(professionalUserService, times(1))
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
     }
 
     @Test
