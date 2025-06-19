@@ -7,7 +7,7 @@
   ],
   "users": [
     {
-      "userIdentifier": "38f6b38f-98e6-452e-af38-1cdf79856310",
+      "userIdentifier": "user1",
       "firstName": "User1",
       "lastName": "admin",
       "email": "user1.admin@hmcts.net",
@@ -22,7 +22,7 @@
       ]
     },
     {
-      "userIdentifier": "2f8b8d49-1991-4334-b95f-19c0ebbb8ee4",
+      "userIdentifier": "user2",
       "firstName": "User2",
       "lastName": "admin",
       "email": "user2.admin@hmcts.net",
@@ -37,7 +37,7 @@
       ]
     },
     {
-      "userIdentifier": "4ef54304-b6b9-44d9-b452-3c19a9b23053",
+      "userIdentifier": "user3",
       "firstName": "User3",
       "lastName": "admin",
       "email": "user3.admin@hmcts.net",

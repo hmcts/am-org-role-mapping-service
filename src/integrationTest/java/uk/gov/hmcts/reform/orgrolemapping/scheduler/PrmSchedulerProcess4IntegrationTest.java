@@ -58,10 +58,10 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json"));
 
         // verify that the OrganisationRefreshQueue contains 1 record
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 1); // TODO - check active orgs
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
 
         // Verify 3 active users in the refresh queue
-        assertTotalUserRefreshQueueEntitiesInDb(3, 0);
+        assertTotalUserRefreshQueueEntitiesInDb(3, 3);
     }
 
     private void runTest(List<String> fileNames) {
@@ -71,14 +71,14 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         stubPrdRetrieveUsersByOrg(fileNames, "false", null);
 
         // WHEN
-        List<ProcessMonitorDto> processMonitorDtos = prmScheduler
+        ProcessMonitorDto processMonitorDto = prmScheduler
             .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
 
         // THEN
         //        if (!fileNames.isEmpty()) {
         //            verifySingleCallToPrd();
         //        }
-        logAfterStatus(processMonitorDtos);
+        logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports success
         //        processMonitorDtos.forEach(processMonitorDto -> {
@@ -119,8 +119,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
     //#endregion
 
-    private void logAfterStatus(List<ProcessMonitorDto> processMonitorDtos) {
-        logObject("ProcessMonitorDto: AFTER", processMonitorDtos);
+    private void logAfterStatus(ProcessMonitorDto processMonitorDto) {
+        logObject("ProcessMonitorDto: AFTER", processMonitorDto);
         logObject("organisationRefreshQueueRepository: AFTER", organisationRefreshQueueRepository.findAll());
     }
 
