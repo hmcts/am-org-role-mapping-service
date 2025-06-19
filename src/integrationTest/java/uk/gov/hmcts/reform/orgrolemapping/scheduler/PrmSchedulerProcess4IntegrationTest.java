@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
@@ -31,7 +32,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     void testNoStaleOrgs() {
 
         // verify that no organisations are updated
-        runTest(List.of());
+        runTest(List.of(), EndStatus.SUCCESS);
 
         // verify that the OrganisationRefreshQueue remains empty
         assertTotalOrganisationRefreshQueueEntitiesInDb(0, 0);
@@ -55,7 +56,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     void testStaleOrg() {
 
         // verify that no organisations are updated
-        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json"));
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json"),
+            EndStatus.SUCCESS);
 
         // verify that the OrganisationRefreshQueue contains 1 record
         assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
@@ -64,7 +66,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertTotalUserRefreshQueueEntitiesInDb(3, 3);
     }
 
-    private void runTest(List<String> fileNames) {
+    private void runTest(List<String> fileNames, EndStatus endStatus) {
 
         // GIVEN
         logBeforeStatus();
@@ -80,11 +82,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         //        }
         logAfterStatus(processMonitorDto);
 
-        // verify that the process monitor reports success
-        //        processMonitorDtos.forEach(processMonitorDto -> {
-        //            assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus(),
-        //                "Invalid process monitor end status");
-        //        });
+        // verify that the process monitor reports the correct status
+        assertEquals(endStatus, processMonitorDto.getEndStatus());
     }
 
     //#region Assertion Helpers: DB Checks
