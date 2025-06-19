@@ -85,6 +85,29 @@ public class ProfessionalUserService {
         return null;
     }
 
+    public List<ProcessMonitorDto> findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
+        List<ProcessMonitorDto> processMonitorDtos = new ArrayList<>();
+        try {
+            boolean anyEntitiesInQueue = true;
+            while (anyEntitiesInQueue) {
+                OrganisationRefreshQueueEntity organisationRefreshQueueEntity = organisationRefreshQueueRepository
+                    .findAndLockSingleActiveOrganisationRecord();
+                processMonitorDtos.add(
+                    findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(organisationRefreshQueueEntity));
+                anyEntitiesInQueue = organisationRefreshQueueEntity != null;
+            }
+        } catch (ServiceException ex) {
+            String message = String.format("Error occurred while processing organisation: %s",
+                ex.getMessage());
+            log.error(message, ex);
+            ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS4_NAME);
+            processMonitorDto.addProcessStep(message);
+            processMonitorDto.markAsFailed(ex.getMessage());
+            processMonitorDtos.add(processMonitorDto);
+        }
+        return processMonitorDtos;
+    }
+
     public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
         OrganisationRefreshQueueEntity organisationRefreshQueueEntity) {
         log.info("Starting {}", PROCESS4_NAME);
