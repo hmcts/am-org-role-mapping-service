@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -75,11 +76,14 @@ public class ProfessionalUserServiceTest {
         UsersByOrganisationResponse response =
                 buildUsersByOrganisationResponse(List.of(usersOrganisationInfo), "1", "1", false);
 
+        when(organisationRefreshQueueRepository.findById(organisationRefreshQueueEntity.getOrganisationId()))
+            .thenReturn(Optional.of(organisationRefreshQueueEntity));
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
 
         ProcessMonitorDto processMonitorDto = professionalUserService
-            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(organisationRefreshQueueEntity);
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(
+                organisationRefreshQueueEntity.getOrganisationId());
 
         assertNotNull(processMonitorDto);
         verify(userRefreshQueueRepository, times(1))
@@ -125,11 +129,13 @@ public class ProfessionalUserServiceTest {
         UsersByOrganisationResponse page2 =
                 buildUsersByOrganisationResponse(List.of(usersOrganisationInfo2), "1", "1", false);
 
+        when(organisationRefreshQueueRepository.findById(organisationRefreshQueueEntity.getOrganisationId()))
+            .thenReturn(Optional.of(organisationRefreshQueueEntity));
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenReturn(ResponseEntity.ok(page2));
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
-            organisationRefreshQueueEntity);
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(
+            organisationRefreshQueueEntity.getOrganisationId());
 
         verify(userRefreshQueueRepository, times(2))
                 .upsertToUserRefreshQueue(any(), any(), any());
@@ -143,10 +149,12 @@ public class ProfessionalUserServiceTest {
 
     @Test
     void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue_NoActiveRecordsTest() {
+        when(organisationRefreshQueueRepository.findById(null))
+                .thenReturn(Optional.empty());
         when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
                 .thenReturn(null);
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(
             null);
         
         verify(userRefreshQueueRepository, times(0))
@@ -156,7 +164,7 @@ public class ProfessionalUserServiceTest {
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-                .isEqualTo(EndStatus.SUCCESS);
+                .isEqualTo(EndStatus.FAILED);
     }
 
     public static OrganisationRefreshQueueEntity buildOrganisationRefreshQueueEntity(String organisationId,

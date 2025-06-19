@@ -131,19 +131,18 @@ public class ProfessionalUserService {
             processMonitorDto.addProcessStep(message);
             processMonitorDto.markAsFailed(ex.getMessage());
         }
+        processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }
 
-    public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
+    protected ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
         OrganisationRefreshQueueEntity organisationRefreshQueueEntity) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS4_NAME);
-        processEventTracker.trackEventStarted(processMonitorDto);
 
         try {
             if (organisationRefreshQueueEntity == null) {
                 processMonitorDto.addProcessStep("No entities to process");
                 processMonitorDto.markAsSuccess();
-                processEventTracker.trackEventCompleted(processMonitorDto);
                 log.info("Completed {}. No entities to process", PROCESS4_NAME);
                 return processMonitorDto;
             }
@@ -194,7 +193,6 @@ public class ProfessionalUserService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw e;
         }
-        processEventTracker.trackEventCompleted(processMonitorDto);
 
         log.info("Completed {}", PROCESS4_NAME);
         return processMonitorDto;
