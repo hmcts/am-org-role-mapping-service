@@ -5,15 +5,12 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUT
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,20 +147,20 @@ public class PrmSchedulerController {
     @ApiResponse(
         responseCode = "200",
         description = "OK",
-        content = @Content(array = @ArraySchema(schema = @Schema(implementation = Object.class)))
+        content = @Content(schema = @Schema(implementation = Object.class))
     )
     public ResponseEntity<Object> findUsersWithStaleOrganisations(
         @Parameter(description = "OrganisationId: ")
         @RequestParam(required = false) String organisationId) {
-        List<ProcessMonitorDto> processMonitorDtos = new ArrayList<>();
+        ProcessMonitorDto processMonitorDto;
         if (organisationId == null || organisationId.isEmpty()) {
-            processMonitorDtos.addAll(scheduler
-                .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess());
+            processMonitorDto = scheduler
+                .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
         } else {
-            processMonitorDtos.add(professionalUserService
-                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId));
+            processMonitorDto = professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 
 }

@@ -6,8 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +45,10 @@ class SchedulerTest {
 
     @Test
     void findUsersWithStaleOrganisationProcessTest() {
-        List<ProcessMonitorDto> expectedProcessMonitorDtoList = new ArrayList<>();
-        expectedProcessMonitorDtoList.add(mock(ProcessMonitorDto.class));
-        expectedProcessMonitorDtoList.add(mock(ProcessMonitorDto.class));
+        ProcessMonitorDto expectedProcessMonitorDto = mock(ProcessMonitorDto.class);
 
         when(professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
-            .thenReturn(expectedProcessMonitorDtoList);
+            .thenReturn(expectedProcessMonitorDto);
 
         scheduler
             .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
