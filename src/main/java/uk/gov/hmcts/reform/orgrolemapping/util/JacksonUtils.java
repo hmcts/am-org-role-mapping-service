@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import lombok.SneakyThrows;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
@@ -99,5 +100,13 @@ public class JacksonUtils {
     public static JudicialBooking convertInJudicialBooking(Object from) {
         return MAPPER.convertValue(from, new TypeReference<>() {
         });
+    }
+
+    public static String convertObjectToString(Object from) {
+        try {
+            return MAPPER.writeValueAsString(from);
+        } catch (JsonProcessingException e) {
+            throw new ServiceException("Error occurred when serializing object");
+        }
     }
 }
