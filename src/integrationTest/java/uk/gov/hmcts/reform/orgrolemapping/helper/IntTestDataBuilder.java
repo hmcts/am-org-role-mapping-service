@@ -9,23 +9,30 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
 
 public class IntTestDataBuilder {
 
@@ -247,4 +254,48 @@ public class IntTestDataBuilder {
                 .build();
     }
 
+    public static UsersOrganisationInfo buildUsersOrganisationInfo(int i, ProfessionalUser user) {
+        return UsersOrganisationInfo.builder()
+                .organisationIdentifier("" + i)
+                .status("ACTIVE")
+                .organisationProfileIds(List.of(SOLICITOR_PROFILE))
+                .users(List.of(user))
+                .build();
+    }
+
+    public static ProfessionalUser buildProfessionalUser(int i) {
+        return ProfessionalUser.builder()
+                .userIdentifier("" + i)
+                .firstName("fName " + i)
+                .lastName("lName " + i)
+                .email("user" + i + "@mail.com")
+                .lastUpdated(LocalDateTime.now())
+                .deleted(LocalDateTime.now())
+                .userAccessTypes(Collections.emptyList())
+                .build();
+    }
+
+    public static UsersByOrganisationResponse buildUsersByOrganisationResponse(UsersOrganisationInfo organisationInfo,
+                                                                               String lastOrgInPage,
+                                                                               String lastUserInPage,
+                                                                               Boolean moreAvailable) {
+        return UsersByOrganisationResponse.builder()
+                .organisationInfo(List.of(organisationInfo))
+                .lastOrgInPage(lastOrgInPage)
+                .lastUserInPage(lastUserInPage)
+                .moreAvailable(moreAvailable)
+                .build();
+    }
+
+    public static ProfessionalUserData buildProfessionalUserData(int i) {
+        return ProfessionalUserData.builder()
+                .userId("" + i)
+                .userLastUpdated(LocalDateTime.now())
+                .deleted(LocalDateTime.now())
+                .accessTypes("{}")
+                .organisationId("org " + i)
+                .organisationStatus("ACTIVE")
+                .organisationProfileIds(SOLICITOR_PROFILE)
+                .build();
+    }
 }
