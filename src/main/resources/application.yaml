@@ -209,6 +209,11 @@ professional:
           cron: ${CRON_P2_ORGS_STALE_PROFILES:*/30 * * * * *}
         findOrganisationChanges:
           cron: ${CRON_P3_ORG_CHANGES:*/30 * * * * *}
+        findUsersWithStaleOrganisations:
+          cron: ${CRON_P4_USERS_STALE_ORGS:*/30 * * * * *}
+          retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
+          retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
+          retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
         findUserChanges:
           cron: ${CRON_P5_USER_CHANGES:*/30 * * * * *}
 
