@@ -36,7 +36,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql"
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
     })
     void testNoStaleOrgs() {
 
@@ -103,6 +104,33 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertUserRefreshQueueEntitiesInDb("user1", false);
         assertUserRefreshQueueEntitiesInDb("user2", false);
         assertUserRefreshQueueEntitiesInDb("user3", false);
+    }
+
+    /**
+     * No Change - Stale Organisation, 3 Existing Users.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user1organisation1.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user2organisation1.sql"
+    })
+    void testStaleOrg2ExistingUsersNoChange1New() {
+
+        // verify that no organisations are updated
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_02.json"),
+            EndStatus.SUCCESS);
+
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
+
+        // Verify 3 active users in the refresh queue, no changes
+        assertTotalUserRefreshQueueEntitiesInDb(3);
+        assertUserRefreshQueueEntitiesInDb("user1", false);
+        assertUserRefreshQueueEntitiesInDb("user2", false);
+        assertUserRefreshQueueEntitiesInDb("user3", true);
     }
 
     private void runTest(List<String> fileNames, EndStatus endStatus) {
