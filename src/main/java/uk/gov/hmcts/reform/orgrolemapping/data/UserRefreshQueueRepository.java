@@ -24,35 +24,35 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
     default void upsertToUserRefreshQueue(NamedParameterJdbcTemplate jdbcTemplate,
                                           List<ProfessionalUserData> rows,
                                           Integer accessTypeMinVersion) {
-        String sql =
-            "insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, "
-            + "deleted, access_types, "
-            + "organisation_id, organisation_status, organisation_profile_ids, active) "
-            + "values(:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, CAST(:accessTypes AS"
-            + " jsonb), "
-            + ":organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true) "
-            + "on conflict (user_id) do update "
-            + "set "
-            + "access_types_min_version = greatest(excluded.access_types_min_version, "
-                                                + "user_refresh_queue.access_types_min_version), "
-            + "user_last_updated = greatest(excluded.user_last_updated, user_refresh_queue.user_last_updated), "
-            + "last_updated = now(), "
-            + "active = true, "
-            + "deleted = case "
-                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.deleted "
-                + "else user_refresh_queue.deleted end, "
-            + "access_types = case "
-                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.access_types "
-                + "else user_refresh_queue.access_types end, "
-            + "organisation_id = case "
-                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.organisation_id"
-                + " else user_refresh_queue.organisation_id end, "
-            + "organisation_status = case "
-                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then "
-                + "excluded.organisation_status else user_refresh_queue.organisation_status end, "
-            + "organisation_profile_ids = case "
-                + "when excluded.user_last_updated > user_refresh_queue.user_last_updated then "
-                + "excluded.organisation_profile_ids else user_refresh_queue.organisation_profile_ids end";
+        String sql = """
+            insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted,
+                                            access_types, organisation_id, organisation_status,
+                                            organisation_profile_ids, active)
+            values (:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, CAST(:accessTypes AS jsonb),
+                    :organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true)
+            on conflict (user_id) do update
+            set
+                access_types_min_version = greatest(excluded.access_types_min_version,
+                                                    user_refresh_queue.access_types_min_version),
+                user_last_updated = greatest(excluded.user_last_updated, user_refresh_queue.user_last_updated),
+                last_updated = now(),
+                active = true,
+                deleted = case
+                    when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.deleted
+                    else user_refresh_queue.deleted end,
+                access_types = case
+                    when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.access_types
+                    else user_refresh_queue.access_types end,
+                organisation_id = case
+                    when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.organisation_id
+                    else user_refresh_queue.organisation_id end,
+                organisation_status = case
+                    when excluded.user_last_updated > user_refresh_queue.user_last_updated then
+                    excluded.organisation_status else user_refresh_queue.organisation_status end,
+                organisation_profile_ids = case
+                    when excluded.user_last_updated > user_refresh_queue.user_last_updated then
+                    excluded.organisation_profile_ids else user_refresh_queue.organisation_profile_ids end
+            """;
 
         MapSqlParameterSource[] params = rows.stream().map(r -> {
             MapSqlParameterSource paramValues = new MapSqlParameterSource();
@@ -73,21 +73,26 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
     default void insertIntoUserRefreshQueueForLastUpdated(NamedParameterJdbcTemplate jdbcTemplate,
                                                            List<RefreshUserAndOrganisation> rows,
                                                            Integer accessTypeMinVersion) {
-        String sql =
-                "insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted, "
-                    + "access_types, organisation_id, organisation_status, organisation_profile_ids, active) "
-                    + "values (:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, "
-                        + ":accessTypes, :organisationId, :organisationStatus, "
-                        + "string_to_array(:organisationProfileIds, ','), true) "
-                    + "on conflict (user_id) do update "
-                    + "set "
-                    + "access_types_min_version = greatest(excluded.access_types_min_version, "
-                    + "user_refresh_queue.access_types_min_version), user_last_updated = excluded.user_last_updated, "
-                    + "deleted = excluded.deleted, access_types = excluded.access_types, "
-                    + "organisation_id = excluded.organisation_id, organisation_status = excluded.organisation_status, "
-                    + "organisation_profile_ids  = excluded.organisation_profile_ids, "
-                    + "last_updated = now(), active = true "
-                    + "where excluded.last_updated > user_refresh_queue.last_updated";
+        String sql = """
+            insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted,
+                                            access_types, organisation_id, organisation_status,
+                                            organisation_profile_ids, active)
+            values (:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, CAST(:accessTypes AS jsonb),
+                    :organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true)
+            on conflict (user_id) do update
+            set
+                access_types_min_version = greatest(excluded.access_types_min_version,
+                                                    user_refresh_queue.access_types_min_version),
+                user_last_updated = excluded.user_last_updated,
+                last_updated = now(),
+                active = true,
+                deleted = excluded.deleted,
+                access_types = excluded.access_types,
+                organisation_id = excluded.organisation_id,
+                organisation_status = excluded.organisation_status,
+                organisation_profile_ids  = excluded.organisation_profile_ids
+            where excluded.last_updated > user_refresh_queue.last_updated
+            """;
 
         MapSqlParameterSource[] params = rows.stream().map(r -> {
             MapSqlParameterSource paramValues = new MapSqlParameterSource();
