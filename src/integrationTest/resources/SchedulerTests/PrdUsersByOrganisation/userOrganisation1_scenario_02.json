@@ -1,0 +1,55 @@
+
+{
+  "organisationIdentifier": "1",
+  "status": "ACTIVE",
+  "organisationProfileIds": [
+    "SOLICITOR_PROFILE"
+  ],
+  "users": [
+    {
+      "userIdentifier": "user1",
+      "firstName": "User1",
+      "lastName": "admin",
+      "email": "user1.admin@hmcts.net",
+      "lastUpdated": "2020-01-01T13:20:01.046",
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "civil-cases-1",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "userIdentifier": "user2",
+      "firstName": "User2",
+      "lastName": "admin",
+      "email": "user2.admin@hmcts.net",
+      "lastUpdated": "2020-01-01T13:20:01.046",
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "civil-cases-1",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "userIdentifier": "user3",
+      "firstName": "User3",
+      "lastName": "admin",
+      "email": "user3.admin@hmcts.net",
+      "lastUpdated": "2020-01-01T13:20:01.046",
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "civil-cases-1",
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}
