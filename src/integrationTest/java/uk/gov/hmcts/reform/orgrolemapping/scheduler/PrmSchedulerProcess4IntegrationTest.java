@@ -42,7 +42,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     void testNoStaleOrgs() {
 
         // verify that no organisations are updated
-        runTest(List.of(), EndStatus.SUCCESS);
+        runTest(List.of(), EndStatus.SUCCESS, 0);
 
         // verify that the OrganisationRefreshQueue remains empty
         assertTotalOrganisationRefreshQueueEntitiesInDb(0, 0);
@@ -66,7 +66,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // verify that no organisations are updated
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json"),
-            EndStatus.SUCCESS);
+            EndStatus.SUCCESS, 1);
 
         // verify that the OrganisationRefreshQueue contains 1 record, 0 active
         assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
@@ -94,7 +94,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // verify that no organisations are updated
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_02.json"),
-            EndStatus.SUCCESS);
+            EndStatus.SUCCESS, 1);
 
         // verify that the OrganisationRefreshQueue contains 1 record, 0 active
         assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
@@ -107,7 +107,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * No Change - Stale Organisation, 3 Existing Users.
+     * Update - Stale Organisation, 2 Existing Users, 1 New User.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -121,7 +121,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // verify that no organisations are updated
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_02.json"),
-            EndStatus.SUCCESS);
+            EndStatus.SUCCESS, 1);
 
         // verify that the OrganisationRefreshQueue contains 1 record, 0 active
         assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
@@ -133,7 +133,39 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertUserRefreshQueueEntitiesInDb("user3", true);
     }
 
-    private void runTest(List<String> fileNames, EndStatus endStatus) {
+    /**
+     * Update - Multiple Stale Organisations, 3 Existing Users.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation2.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user1organisation1.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user2organisation1.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user3organisation1.sql"
+    })
+    void testMultipleStaleOrgs() {
+
+        // verify that no organisations are updated
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json",
+                "/SchedulerTests/PrdUsersByOrganisation/userOrganisation2_scenario_01.json"),
+            EndStatus.SUCCESS, 2);
+
+        // verify that the OrganisationRefreshQueue contains 2 records, 0 active
+        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 0);
+
+        // Verify 3 active users in the refresh queue, no changes
+        assertTotalUserRefreshQueueEntitiesInDb(4);
+        assertUserRefreshQueueEntitiesInDb("user1", true);
+        assertUserRefreshQueueEntitiesInDb("user2", true);
+        assertUserRefreshQueueEntitiesInDb("user3", true);
+        assertUserRefreshQueueEntitiesInDb("userA", true);
+    }
+
+
+    private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
 
         // GIVEN
         logBeforeStatus();
@@ -144,9 +176,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
             .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
 
         // THEN
-        if (!fileNames.isEmpty()) {
-            verifySingleCallToPrd();
-        }
+        verifyNoOfCallsToPrd(noOfCallsToPrd);
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports the correct status
@@ -182,7 +212,9 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertTrue(userRefreshQueueEntity.get().getActive(),
             "UserRefreshQueueEntity is not active for userId: " + userId);
         if (isUpdated) {
-            assertLastUpdatedNow(userRefreshQueueEntity.get().getUserLastUpdated());
+            assertTrue(
+                assertLastUpdatedNow(userRefreshQueueEntity.get().getLastUpdated()),
+                "UserRefreshQueueEntity lastUpdated mismatch for userId: " + userId);
         } else {
             assertEquals(OLD_USER_LAST_UPDATED,
                 userRefreshQueueEntity.get().getUserLastUpdated(),
@@ -205,11 +237,14 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         logObject("organisationRefreshQueueRepository: BEFORE", organisationRefreshQueueRepository.findAll());
     }
 
-    private void verifySingleCallToPrd() {
+    private void verifyNoOfCallsToPrd(int noOfCalls) {
         var allCallEvents = logWiremockPostCalls(STUB_ID_PRD_RETRIEVE_USERSBYORG);
         // verify single call
-        assertEquals(1, allCallEvents.size(),
+        assertEquals(noOfCalls, allCallEvents.size(),
             "Unexpected number of calls to PRD service");
+        if (noOfCalls == 0) {
+            return; // no need to check further if no calls were made
+        }
         var event = allCallEvents.get(0);
         // verify response status
         assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
