@@ -52,5 +52,5 @@ public class Scheduler {
             .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
         return processMonitorDto;
     }
-
+    
 }
