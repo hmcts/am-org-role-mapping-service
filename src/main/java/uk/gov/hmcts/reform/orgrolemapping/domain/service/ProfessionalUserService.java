@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
@@ -20,7 +21,6 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
@@ -28,7 +28,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -280,14 +279,14 @@ public class ProfessionalUserService {
         String processStep = "attempting writeAllToUserRefreshQueue for ";
         processMonitorDto.addProcessStep(processStep);
 
-        List<RefreshUserAndOrganisation> serializedUsers = new ArrayList<>();
+        List<ProfessionalUserData> professionalUserData = new ArrayList<>();
         for (RefreshUser user : usersResponse.getUsers()) {
             appendLastProcessStep(processMonitorDto, "user=" + user.getUserIdentifier() + ",");
-            serializedUsers.add(ProfessionalUserBuilder.getSerializedRefreshUser(user));
+            professionalUserData.add(ProfessionalUserBuilder.fromProfessionalRefreshUser(user));
         }
 
-        userRefreshQueueRepository.insertIntoUserRefreshQueueForLastUpdated(
-                jdbcTemplate, serializedUsers, accessTypeMinVersion);
+        userRefreshQueueRepository
+            .upsertToUserRefreshQueueForLastUpdated(jdbcTemplate, professionalUserData, accessTypeMinVersion);
         appendLastProcessStep(processMonitorDto, " : COMPLETED");
     }
 

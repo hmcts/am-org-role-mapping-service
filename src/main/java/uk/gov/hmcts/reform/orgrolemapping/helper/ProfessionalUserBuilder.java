@@ -6,7 +6,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
@@ -29,12 +28,13 @@ public class ProfessionalUserBuilder {
         return userData;
     }
 
-    public static RefreshUserAndOrganisation getSerializedRefreshUser(RefreshUser user) {
-        RefreshUserAndOrganisation userData = new RefreshUserAndOrganisation();
-        userData.setUserIdentifier(user.getUserIdentifier());
+    public static ProfessionalUserData fromProfessionalRefreshUser(RefreshUser user) {
+        ProfessionalUserData userData = new ProfessionalUserData();
+        userData.setUserId(user.getUserIdentifier());
         userData.setUserLastUpdated(user.getLastUpdated());
-        userData.setUserAccessTypes(JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
-        userData.setOrganisationIdentifier(user.getOrganisationInfo().getOrganisationIdentifier());
+        userData.setDeleted(user.getDateTimeDeleted());
+        userData.setAccessTypes(JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
+        userData.setOrganisationId(user.getOrganisationInfo().getOrganisationIdentifier());
         userData.setOrganisationStatus(user.getOrganisationInfo().getStatus());
         userData.setOrganisationProfileIds(String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));
 

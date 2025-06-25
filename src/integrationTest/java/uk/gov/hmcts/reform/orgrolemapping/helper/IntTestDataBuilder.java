@@ -18,7 +18,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
@@ -291,9 +290,9 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static ProfessionalUserData buildProfessionalUserData(int i) {
+    public static ProfessionalUserData buildProfessionalUserData(String i) {
         return ProfessionalUserData.builder()
-                .userId("" + i)
+                .userId(i)
                 .userLastUpdated(LocalDateTime.now())
                 .deleted(LocalDateTime.now())
                 .accessTypes("{}")
@@ -318,17 +317,6 @@ public class IntTestDataBuilder {
                 .organisationProfileId("" + i)
                 .accessTypeId("" + i)
                 .enabled("true")
-                .build();
-    }
-
-    public static RefreshUserAndOrganisation refreshUserAndOrganisationsList(int i) {
-        return RefreshUserAndOrganisation.builder()
-                .userIdentifier("" + i)
-                .userLastUpdated(LocalDateTime.now())
-                .userAccessTypes("" + i)
-                .organisationIdentifier("" + i)
-                .organisationStatus("ACTIVE")
-                .organisationProfileIds("SOLICITOR_PROFILE")
                 .build();
     }
 

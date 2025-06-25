@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
 
 import java.util.List;
 
@@ -24,6 +23,10 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
     default void upsertToUserRefreshQueue(NamedParameterJdbcTemplate jdbcTemplate,
                                           List<ProfessionalUserData> rows,
                                           Integer accessTypeMinVersion) {
+
+        // NB: This upsert is for PRM Process 4:
+        //     on conflict it will always set active to true even when user is unchanged.
+
         String sql = """
             insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted,
                                             access_types, organisation_id, organisation_status,
@@ -54,25 +57,16 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                     excluded.organisation_profile_ids else user_refresh_queue.organisation_profile_ids end
             """;
 
-        MapSqlParameterSource[] params = rows.stream().map(r -> {
-            MapSqlParameterSource paramValues = new MapSqlParameterSource();
-            paramValues.addValue(USER_ID, r.getUserId());
-            paramValues.addValue(USER_LAST_UPDATED, r.getUserLastUpdated());
-            paramValues.addValue(ACCESS_TYPES_MIN_VERSION, accessTypeMinVersion);
-            paramValues.addValue(DELETED, r.getDeleted());
-            paramValues.addValue(ACCESS_TYPES, r.getAccessTypes());
-            paramValues.addValue(ORGANISATION_ID, r.getOrganisationId());
-            paramValues.addValue(ORGANISATION_STATUS, r.getOrganisationStatus());
-            paramValues.addValue(ORGANISATION_PROFILE_IDS, r.getOrganisationProfileIds());
-            return paramValues;
-        }).toArray(MapSqlParameterSource[]::new);
-
-        jdbcTemplate.batchUpdate(sql, params);
+        jdbcTemplate.batchUpdate(sql, getParamsFromProfessionalUserDataRows(rows, accessTypeMinVersion));
     }
 
-    default void insertIntoUserRefreshQueueForLastUpdated(NamedParameterJdbcTemplate jdbcTemplate,
-                                                           List<RefreshUserAndOrganisation> rows,
-                                                           Integer accessTypeMinVersion) {
+    default void upsertToUserRefreshQueueForLastUpdated(NamedParameterJdbcTemplate jdbcTemplate,
+                                                        List<ProfessionalUserData> rows,
+                                                        Integer accessTypeMinVersion) {
+
+        // NB: This upsert is for PRM Process 5:
+        //     on conflict it will only update record when this is a fresh update.
+
         String sql = """
             insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted,
                                             access_types, organisation_id, organisation_status,
@@ -94,20 +88,23 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
             where excluded.last_updated > user_refresh_queue.last_updated
             """;
 
-        MapSqlParameterSource[] params = rows.stream().map(r -> {
+        jdbcTemplate.batchUpdate(sql, getParamsFromProfessionalUserDataRows(rows, accessTypeMinVersion));
+    }
+
+    private MapSqlParameterSource[] getParamsFromProfessionalUserDataRows(List<ProfessionalUserData> rows,
+                                                                          Integer accessTypeMinVersion) {
+        return rows.stream().map(r -> {
             MapSqlParameterSource paramValues = new MapSqlParameterSource();
-            paramValues.addValue(USER_ID, r.getUserIdentifier());
+            paramValues.addValue(USER_ID, r.getUserId());
             paramValues.addValue(USER_LAST_UPDATED, r.getUserLastUpdated());
-            paramValues.addValue(DELETED, r.getDateTimeDeleted());
-            paramValues.addValue(ORGANISATION_ID, r.getOrganisationIdentifier());
+            paramValues.addValue(ACCESS_TYPES_MIN_VERSION, accessTypeMinVersion);
+            paramValues.addValue(DELETED, r.getDeleted());
+            paramValues.addValue(ACCESS_TYPES, r.getAccessTypes());
+            paramValues.addValue(ORGANISATION_ID, r.getOrganisationId());
             paramValues.addValue(ORGANISATION_STATUS, r.getOrganisationStatus());
             paramValues.addValue(ORGANISATION_PROFILE_IDS, r.getOrganisationProfileIds());
-            paramValues.addValue(ACCESS_TYPES, r.getUserAccessTypes());
-            paramValues.addValue(ACCESS_TYPES_MIN_VERSION, accessTypeMinVersion);
             return paramValues;
         }).toArray(MapSqlParameterSource[]::new);
-
-        jdbcTemplate.batchUpdate(sql, params);
     }
 
 }

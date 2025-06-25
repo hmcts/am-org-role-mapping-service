@@ -199,7 +199,7 @@ public class ProfessionalUserServiceTest {
         professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
         verify(userRefreshQueueRepository, times(1))
-                .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
+                .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
@@ -237,7 +237,7 @@ public class ProfessionalUserServiceTest {
         professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
         verify(userRefreshQueueRepository, times(2))
-                .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
+                .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
     }
 
@@ -325,7 +325,7 @@ public class ProfessionalUserServiceTest {
                 .thenReturn(ResponseEntity.ok(response));
 
         doThrow(new ServiceException("Insert exception")).when(userRefreshQueueRepository)
-                .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
+                .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
 
         Assertions.assertThrows(ServiceException.class, () ->
                 professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
@@ -358,7 +358,7 @@ public class ProfessionalUserServiceTest {
                 .thenReturn(ResponseEntity.ok(response2));
 
         doNothing().doThrow(new ServiceException("Insert exception")).when(userRefreshQueueRepository)
-                .insertIntoUserRefreshQueueForLastUpdated(any(), any(), any());
+                .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
 
         Assertions.assertThrows(ServiceException.class, () ->
                 professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
