@@ -13,5 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 public class UsersByOrganisationRequest {
 
+    // NB: corresponds to PRD: src/main/java/uk/gov/hmcts/reform/professionalapi/controller/request/
+    //                                               UsersInOrganisationsByOrganisationIdentifiersRequest.java
+
     private List<String> organisationIdentifiers;
+
 }
