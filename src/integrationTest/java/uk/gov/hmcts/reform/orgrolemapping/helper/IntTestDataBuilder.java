@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessTypes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
@@ -306,17 +306,17 @@ public class IntTestDataBuilder {
         return RefreshUser.builder()
                 .userIdentifier("" + i)
                 .lastUpdated(LocalDateTime.now())
-                .userAccessTypes(List.of(userAccessTypes(1)))
+                .userAccessTypes(List.of(userAccessType(1)))
                 .organisationInfo(buildOrganisationInfo(1))
                 .build();
     }
 
-    public static UserAccessTypes userAccessTypes(int i) {
-        return UserAccessTypes.builder()
+    public static UserAccessType userAccessType(int i) {
+        return UserAccessType.builder()
                 .jurisdictionId("" + i)
                 .organisationProfileId("" + i)
                 .accessTypeId("" + i)
-                .enabled("true")
+                .enabled(true)
                 .build();
     }
 
