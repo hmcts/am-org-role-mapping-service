@@ -11,7 +11,7 @@
       "firstName": "User1",
       "lastName": "admin",
       "email": "user1.admin@hmcts.net",
-      "lastUpdated": "2020-01-01T13:20:01.046",
+      "lastUpdated": "2020-01-01T13:30:01.046",
       "userAccessTypes": [
         {
           "jurisdictionId": "CIVIL",
@@ -26,7 +26,7 @@
       "firstName": "User2",
       "lastName": "admin",
       "email": "user2.admin@hmcts.net",
-      "lastUpdated": "2020-01-01T13:20:01.046",
+      "lastUpdated": "2020-01-01T13:30:01.046",
       "userAccessTypes": [
         {
           "jurisdictionId": "CIVIL",
@@ -41,7 +41,7 @@
       "firstName": "User3",
       "lastName": "admin",
       "email": "user3.admin@hmcts.net",
-      "lastUpdated": "2020-01-01T13:20:01.046",
+      "lastUpdated": "2020-01-01T13:30:01.046",
       "userAccessTypes": [
         {
           "jurisdictionId": "CIVIL",

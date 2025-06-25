@@ -21,6 +21,10 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     private static final LocalDateTime OLD_USER_LAST_UPDATED =
         LocalDateTime.parse("2020-01-01T13:30:01.046Z", DTF);
+    private static final LocalDateTime NEW_USER_LAST_UPDATED =
+        LocalDateTime.parse("2023-09-19T15:36:33.653Z", DTF);
+    private static final String ORGANISATION_ID_1 = "1";
+    private static final String ORGANISATION_ID_2 = "2";
 
     @Autowired
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
@@ -64,7 +68,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testStaleOrg2ExistingUsers1New() {
 
-        // verify that no organisations are updated
+        // verify that the organisations are updated
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json"),
             EndStatus.SUCCESS, 1);
 
@@ -73,9 +77,9 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 3 active users in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(3);
-        assertUserRefreshQueueEntitiesInDb("user1", true);
-        assertUserRefreshQueueEntitiesInDb("user2", true);
-        assertUserRefreshQueueEntitiesInDb("user3", true);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED);
     }
 
     /**
@@ -92,7 +96,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testStaleOrg3ExistingUsersNoChange() {
 
-        // verify that no organisations are updated
+        // verify that the organisations are updated
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_02.json"),
             EndStatus.SUCCESS, 1);
 
@@ -101,9 +105,9 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
-        assertUserRefreshQueueEntitiesInDb("user1", false);
-        assertUserRefreshQueueEntitiesInDb("user2", false);
-        assertUserRefreshQueueEntitiesInDb("user3", false);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED);
     }
 
     /**
@@ -119,7 +123,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testStaleOrg2ExistingUsersNoChange1New() {
 
-        // verify that no organisations are updated
+        // verify that the organisations are updated
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_02.json"),
             EndStatus.SUCCESS, 1);
 
@@ -128,9 +132,9 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
-        assertUserRefreshQueueEntitiesInDb("user1", false);
-        assertUserRefreshQueueEntitiesInDb("user2", false);
-        assertUserRefreshQueueEntitiesInDb("user3", true);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED);
     }
 
     /**
@@ -148,7 +152,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testMultipleStaleOrgs() {
 
-        // verify that no organisations are updated
+        // verify that the organisations are updated
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json",
                 "/SchedulerTests/PrdUsersByOrganisation/userOrganisation2_scenario_01.json"),
             EndStatus.SUCCESS, 2);
@@ -156,14 +160,13 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the OrganisationRefreshQueue contains 2 records, 0 active
         assertTotalOrganisationRefreshQueueEntitiesInDb(2, 0);
 
-        // Verify 3 active users in the refresh queue, no changes
+        // Verify 4 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(4);
-        assertUserRefreshQueueEntitiesInDb("user1", true);
-        assertUserRefreshQueueEntitiesInDb("user2", true);
-        assertUserRefreshQueueEntitiesInDb("user3", true);
-        assertUserRefreshQueueEntitiesInDb("userA", true);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED);
+        assertUserRefreshQueueEntitiesInDb("userA", ORGANISATION_ID_2, NEW_USER_LAST_UPDATED);
     }
-
 
     private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
 
@@ -205,21 +208,21 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
             "UserRefreshQueueEntity number of records mismatch");
     }
 
-    private void assertUserRefreshQueueEntitiesInDb(String userId, boolean isUpdated) {
+    private void assertUserRefreshQueueEntitiesInDb(String userId, String organisationId,
+        LocalDateTime userLastUpdated) {
         var userRefreshQueueEntity = userRefreshQueueRepository.findById(userId);
         assertTrue(userRefreshQueueEntity.isPresent(),
             "UserRefreshQueueEntity not found for userId: " + userId);
         assertTrue(userRefreshQueueEntity.get().getActive(),
             "UserRefreshQueueEntity is not active for userId: " + userId);
-        if (isUpdated) {
-            assertTrue(
-                assertLastUpdatedNow(userRefreshQueueEntity.get().getLastUpdated()),
-                "UserRefreshQueueEntity lastUpdated mismatch for userId: " + userId);
-        } else {
-            assertEquals(OLD_USER_LAST_UPDATED,
-                userRefreshQueueEntity.get().getUserLastUpdated(),
-                "UserRefreshQueueEntity userLastUpdated mismatch for userId: " + userId);
-        }
+        assertEquals(organisationId, userRefreshQueueEntity.get().getOrganisationId(),
+            "UserRefreshQueueEntity organisationId mismatch for userId: " + userId);
+        assertTrue(
+            assertLastUpdatedNow(userRefreshQueueEntity.get().getLastUpdated()),
+            "UserRefreshQueueEntity lastUpdated mismatch for userId: " + userId);
+        assertEquals(userLastUpdated,
+            userRefreshQueueEntity.get().getUserLastUpdated(),
+            "UserRefreshQueueEntity userLastUpdated mismatch for userId: " + userId);
     }
 
     private boolean assertLastUpdatedNow(LocalDateTime lastUpdated) {
