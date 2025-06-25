@@ -21,4 +21,8 @@
         <notes>https://tools.hmcts.net/jira/browse/DTSAM-868</notes>
         <cve>CVE-2025-31651</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-920</notes>
+        <cve>CVE-2025-48734</cve>
+    </suppress>
 </suppressions>
