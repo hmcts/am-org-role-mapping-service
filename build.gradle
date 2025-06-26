@@ -24,7 +24,7 @@ def versions = [
         junitPlatform  : '1.11.3',
         lombok         : '1.18.38',
         pitest         : '1.17.0',
-        reformLogging  : '6.1.8',
+        reformLogging  : '6.1.9',
         reformS2sClient: '5.3.0',
         serenity       : '4.2.15',
         spring         : '6.1.3',
