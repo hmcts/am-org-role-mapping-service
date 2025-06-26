@@ -281,13 +281,13 @@ public class ProfessionalUserService {
 
         List<ProfessionalUserData> professionalUserData = new ArrayList<>();
         for (RefreshUser user : usersResponse.getUsers()) {
-            appendLastProcessStep(processMonitorDto, "user=" + user.getUserIdentifier() + ",");
+            processMonitorDto.appendToLastProcessStep("user=" + user.getUserIdentifier() + ",");
             professionalUserData.add(ProfessionalUserBuilder.fromProfessionalRefreshUser(user));
         }
 
         userRefreshQueueRepository
             .upsertToUserRefreshQueueForLastUpdated(jdbcTemplate, professionalUserData, accessTypeMinVersion);
-        appendLastProcessStep(processMonitorDto, " : COMPLETED");
+        processMonitorDto.appendToLastProcessStep(" : COMPLETED");
     }
 
     private void writeAllToUserRefreshQueue(UsersByOrganisationResponse response,
@@ -312,13 +312,6 @@ public class ProfessionalUserService {
         }
 
         return professionalUserData;
-    }
-
-    private void appendLastProcessStep(ProcessMonitorDto processMonitorDto, String message) {
-        String last = processMonitorDto.getProcessSteps().get(processMonitorDto.getProcessSteps().size() - 1);
-        processMonitorDto.getProcessSteps().remove(processMonitorDto.getProcessSteps().size() - 1);
-        last = last + message;
-        processMonitorDto.getProcessSteps().add(last);
     }
 
 }

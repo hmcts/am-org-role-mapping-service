@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
@@ -12,8 +13,6 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
-
-import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -100,4 +99,5 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
         BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
         return batchLastRunTimestampEntity.getLastUserRunDatetime();
     }
+
 }
