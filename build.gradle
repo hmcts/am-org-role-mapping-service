@@ -1,65 +1,46 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("net.serenity-bdd:serenity-gradle-plugin:2.4.34")
-        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
-    }
-}
-
 plugins {
+    id 'idea'
+    id 'java'
     id 'application'
     id 'uk.gov.hmcts.java' version '0.12.65'
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.springframework.boot' version '2.7.18'
+    id 'org.springframework.boot' version '3.3.13'
     id 'info.solidsoft.pitest' version '1.15.0'
     id 'com.github.ben-manes.versions' version '0.51.0'
     id 'org.sonarqube' version '4.4.1.3373'
-    id 'au.com.dius.pact' version '4.3.12'
+    id 'au.com.dius.pact' version '4.6.16'
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
     id 'org.owasp.dependencycheck' version '10.0.3'
-    id 'org.flywaydb.flyway' version '8.5.13'
+    id 'org.flywaydb.flyway' version '9.22.3'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.16'
 }
 
-apply plugin: "info.solidsoft.pitest"
-apply plugin: 'java'
-apply plugin: 'net.serenity-bdd.aggregator'
-apply plugin: 'project-report'
-apply plugin: 'idea'
-apply plugin: 'io.spring.dependency-management'
-
-ext['snakeyaml.version'] = '2.0'
+ext['snakeyaml.version'] = '2.4'
 
 def versions = [
-        junit          : '5.9.0',
+        junit          : '5.11.3',
+        junitPlatform  : '1.11.3',
         lombok         : '1.18.38',
         pitest         : '1.17.0',
         reformLogging  : '6.1.8',
-        reformS2sClient: '4.0.2',
-        serenity       : '2.2.12',
-        springBoot     : '2.7.18',
-        spring         : '5.3.39',
-        springSecurity : '5.8.16',
-        springHystrix  : '2.1.1.RELEASE',
-        swagger2Version: '2.10.5',
-        tomcat         : '9.0.102',
+        reformS2sClient: '5.3.0',
+        serenity       : '4.2.15',
+        spring         : '6.1.3',
         pact_version   : '4.1.41',
-        rest_assured   : '3.3.0',
+        rest_assured   : '5.5.0',
         cucumber       : '5.7.0',
-        feign_jackson  : '9.7.0',
+        feign_jackson  : '13.5',
         jacksondata    : '2.18.3',
-        drools         : '7.73.0.Final',
+        drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
-        logbackVersion : '1.2.13',
-        launchDarklySdk: '5.10.9',
         netty_version  : '4.1.119.Final',
-        poi  : '5.4.0'
-
+        poi            : '5.4.0'
 ]
+
+def springBootVersion = plugins.getPlugin('org.springframework.boot').class.package.implementationVersion
+def springCloudVersion = '2023.0.5'
 
 mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
 def jarName = 'am-org-role-mapping-service.jar'
@@ -78,7 +59,7 @@ tasks.withType(JavaExec).configureEach {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -199,6 +180,7 @@ task integration(type: Test, description: 'Runs the integration tests.', group: 
 check.dependsOn integration
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
+    useJUnitPlatform()
     testClassesDirs = sourceSets.smokeTest.output.classesDirs
     classpath = sourceSets.smokeTest.runtimeClasspath
     finalizedBy aggregate
@@ -224,7 +206,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.11"
 }
 
 task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
@@ -334,62 +316,38 @@ tasks.named('integration') {
 }
 
 dependencies {
-    implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web', version: versions.springBoot) {
-        exclude group: 'org.glassfish', module: 'jakarta.el'
-    }
-    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot)
-    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot)
-    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot)
-    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot)
-    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: versions.springBoot)
-    //Added for Spring Security Implementation
-    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot)
-    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: versions.springBoot)
-    implementation(group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-client', version: versions.springBoot)
-    implementation(group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-resource-server', version: versions.springBoot)
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
+    implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web')
+    implementation(group: 'org.springframework.boot', name:'spring-boot-starter-validation')
+    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa')
+    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator')
+    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-aop')
+    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-json')
+    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc')
+    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-security')
+    implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-cache')
+    implementation(group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-client')
+    implementation(group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-resource-server')
 
-
-    implementation group: 'org.springframework.security', name: 'spring-security-core', version: versions.springSecurity
-    implementation group: 'org.springframework.security', name:'spring-security-web', version: versions.springSecurity
-    implementation group: 'org.springframework.security', name:'spring-security-config', version: versions.springSecurity
-    implementation group: 'org.springframework.security', name:'spring-security-crypto', version: versions.springSecurity
-    implementation group: 'org.springframework.security', name:'spring-security-oauth2-client', version: versions.springSecurity
-    implementation group: 'org.springframework.security', name:'spring-security-oauth2-core', version: versions.springSecurity
-    implementation group: 'org.springframework.security', name:'spring-security-oauth2-jose', version: versions.springSecurity
-    implementation group: 'org.springframework.security', name:'spring-security-oauth2-resource-server', version: versions.springSecurity
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.11'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.9'
-    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.5.6'
-    implementation group: 'org.springframework', name: 'spring-core', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-beans', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-aop', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-aspects', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-context', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-context-support', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-expression', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-jcl', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-jdbc', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-orm', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-tx', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-web', version: versions.spring
-    implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.spring
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.80'
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.80'
+    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.4.1'
 
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.8.0'
-    implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.11.0'
-    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
-    implementation group: 'org.json', name: 'json', version: '20231013'
-    implementation group: 'javax.inject', name: 'javax.inject', version: '1'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
 
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
     implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.6'
 
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
 
     // drools engine dependency
     implementation group: 'org.drools', name: 'drools-core', version: versions.drools
     implementation group: 'org.drools', name: 'drools-compiler', version: versions.drools
+    implementation group: 'org.drools', name: 'drools-xml-support', version: versions.drools
     implementation group: 'org.drools', name: 'drools-decisiontables', version: versions.drools
+    implementation group: 'org.drools', name: 'drools-mvel', version: versions.drools
     implementation(group: 'org.kie', name: 'kie-ci', version: versions.drools) {
         exclude group: 'org.jsoup', module: 'jsoup'
         exclude group: 'org.apache.ant', module: 'ant'
@@ -403,7 +361,6 @@ dependencies {
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.13'
     //Added for S2S and User Authentication
     implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: versions.reformS2sClient
-    implementation group: 'javax.inject', name: 'javax.inject', version: '1'
     implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
 
     //Azure service bus libraries
@@ -412,10 +369,8 @@ dependencies {
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.10'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.7.4'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
-    implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
     implementation group: 'com.google.guava', name: 'guava', version: '32.1.3-jre'
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.0'
-    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.5'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.48'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
@@ -424,119 +379,58 @@ dependencies {
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
     // To be cleaned up later
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.27.1'
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: versions.tomcat
-    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: versions.tomcat
-
-    implementation group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-jsr310'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksondata
-    implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.jacksondata, ext: 'pom'
+    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
 
     implementation group: 'org.apache.poi', name: 'poi', version: versions.poi
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: versions.poi
     implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: versions.poi
+    implementation group: 'io.netty', name: 'netty-all', version: versions.netty_version
 
-    //Dependent on drools Jar. Can be removed CVE-2021-26291
-    implementation group: 'org.apache.maven', name: 'maven-core', version: '3.8.7'
-
-    implementation (group: 'io.netty', name: 'netty-buffer', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec-http', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-common', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-handler', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-resolver', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-transport', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-transport-native-epoll', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-transport-native-kqueue', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-transport-native-unix-common', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec-http2', version: versions.netty_version) {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec-socks', version: versions.netty_version)  {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-handler-proxy', version: versions.netty_version)  {
-        because 'In Netty before version 4.1.60.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-codec-dns', version: versions.netty_version)  {
-        because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-resolver-dns', version: versions.netty_version)  {
-        because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation (group: 'io.netty', name: 'netty-resolver-dns-native-macos', version: versions.netty_version) {
-        because 'In Netty before version 4.1.66.Final there is a vulnerability that enables request smuggling.'
-    }
-    implementation group: 'io.netty', name: 'netty-resolver-dns-classes-macos', version: versions.netty_version
-    implementation group: 'io.netty', name: 'netty-transport-classes-epoll', version: versions.netty_version
-    implementation group: 'io.netty', name: 'netty-transport-classes-kqueue', version: versions.netty_version
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.0')
-    testImplementation('com.github.tomakehurst:wiremock-jre8-standalone:2.35.2')
-    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
 
     pitest 'org.pitest:pitest-junit5-plugin:1.2.2'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.4.0'
-    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.4.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.15.2'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
-    testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.9.2'
 
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: '1.15.0'
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
-    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:3.1.10')
-    testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test', version: versions.springBoot
-    testImplementation group: 'org.springframework.security',name:'spring-security-test', version: versions.springSecurity
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.10.RELEASE'
-    testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot) {
-        exclude group: 'junit', module: 'junit'
-    }
-    testImplementation 'com.github.hmcts:befta-fw:8.7.11'
+    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.2.0')
+    testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test'
+    testImplementation group: 'org.springframework.security',name:'spring-security-test'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.2.0'
 
-    testImplementation(group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber) {
-        exclude group: 'javascript', module: 'jquery'
-    }
-    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
+    testImplementation 'com.github.hmcts:befta-fw:9.0.2'
+
+    testImplementation group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber
     testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: versions.cucumber
+    testImplementation group: 'io.cucumber', name: 'cucumber-core', version: versions.cucumber
+    testImplementation group: 'io.cucumber', name: 'cucumber-spring', version: versions.cucumber
+    testImplementation group: 'io.cucumber', name: 'cucumber-junit-platform-engine', version: versions.cucumber
+    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
     testImplementation group: 'io.github.openfeign', name: 'feign-jackson', version: versions.feign_jackson
 
     testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-    testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+    testImplementation group: 'net.serenity-bdd', name: 'serenity-junit5', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     testImplementation 'com.github.hmcts:fortify-client:1.4.9:all'
 
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-    smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+    smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit5', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     smokeTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
     smokeTestImplementation group: 'commons-io', name: 'commons-io', version: '20030203.000550'
     // AM-467-Serenity report for Integration test
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-    integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+    integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit5', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.rest_assured
@@ -551,10 +445,14 @@ dependencies {
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     smokeTestImplementation sourceSets.main.runtimeClasspath
     smokeTestImplementation sourceSets.test.runtimeClasspath
     smokeTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     smokeTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
     contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
     contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
@@ -571,20 +469,13 @@ dependencies {
 }
 
 dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
     dependencies {
-        dependencySet(group: 'org.apache.logging.log4j', version: versions.log4JVersion) {
-            entry 'log4j-api'
-            entry 'log4j-to-slf4j'
-        }
-        dependencySet(group: 'ch.qos.logback', version: versions.logbackVersion) {
-            entry 'logback-classic'
-            entry 'logback-core'
-        }
-        dependencySet(group: 'com.fasterxml.jackson.core', version: versions.jacksondata) {
-            entry 'jackson-databind'
-            entry 'jackson-core'
-            entry 'jackson-annotations'
-        }
+        dependency("org.bouncycastle:bcprov-jdk18on:1.80")
+        dependency("org.bouncycastle:bcpkix-jdk18on:1.80")
     }
 }
 
@@ -624,6 +515,22 @@ task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test 
     systemProperty 'pact.rootDir', "pacts"
 }
 
+pact {
+    broker {
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
+    }
+    publish {
+        pactDirectory = 'pacts'
+        version = project.pacticipantVersion
+        tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
+    }
+}
+
+pactPublish {
+    pactPublish = project.pact.publish
+}
+
 runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 task runProviderPactVerification(type: Test) {
@@ -639,17 +546,6 @@ task runProviderPactVerification(type: Test) {
 }
 
 runProviderPactVerification.finalizedBy pactVerify
-
-pact {
-    broker {
-     pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
-    }
-    publish {
-        pactDirectory = 'pacts'
-        version = project.pacticipantVersion
-        tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
-    }
-}
 
 test {
     jacoco{
