@@ -9,8 +9,8 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.google.common.collect.Maps;
-import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
 import io.restassured.http.ContentType;
+import jakarta.validation.constraints.NotNull;
 import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.client.fluent.Executor;
 import org.assertj.core.api.Assertions;
@@ -30,9 +30,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-
 import java.util.Map;
+
+import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
