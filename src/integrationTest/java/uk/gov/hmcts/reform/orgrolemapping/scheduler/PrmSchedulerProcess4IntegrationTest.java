@@ -138,6 +138,37 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
+     * Update - Stale Organisation, 3 Existing Users, 1 Updated User.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation2.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user1organisation1.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user2organisation1.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user3organisation1.sql"
+    })
+    void testStaleOrg3ExistingUsersNoChange1Update() {
+
+        // verify that the organisations are updated
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_02.json",
+                "/SchedulerTests/PrdUsersByOrganisation/userOrganisation2_scenario_01.json"),
+            EndStatus.SUCCESS, 2);
+
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active
+        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 0);
+
+        // Verify 3 active users in the refresh queue, no changes
+        assertTotalUserRefreshQueueEntitiesInDb(4);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("userA", ORGANISATION_ID_2, NEW_USER_LAST_UPDATED, true, false);
+    }
+
+    /**
      * Update - Multiple Stale Organisations, 3 Existing Users.
      */
     @Test
