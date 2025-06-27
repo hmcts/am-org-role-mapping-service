@@ -46,4 +46,12 @@ class ProcessMonitorDtoTest {
         assertEquals("TestDetail", processMonitorDto.getEndDetail());
         assertNotNull(processMonitorDto.getEndTime());
     }
+
+    @Test
+    void append_to_last_process_step() {
+        processMonitorDto.addProcessStep("Initial Step");
+        processMonitorDto.appendToLastProcessStep(" - Appended");
+        assertEquals("Initial Step - Appended", processMonitorDto.getProcessSteps().get(0));
+    }
+
 }

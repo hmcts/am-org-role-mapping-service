@@ -18,8 +18,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessTypes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
@@ -36,14 +35,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
-
 public class IntTestDataBuilder {
 
     private static final String ID_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     private static final String ID_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String LONDON = "London";
+
+    public static final String SOLICITOR_PROFILE = "SOLICITOR_PROFILE";
 
     private IntTestDataBuilder() {
     }
@@ -291,9 +290,9 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static ProfessionalUserData buildProfessionalUserData(int i) {
+    public static ProfessionalUserData buildProfessionalUserData(String i) {
         return ProfessionalUserData.builder()
-                .userId("" + i)
+                .userId(i)
                 .userLastUpdated(LocalDateTime.now())
                 .deleted(LocalDateTime.now())
                 .accessTypes("{}")
@@ -307,28 +306,17 @@ public class IntTestDataBuilder {
         return RefreshUser.builder()
                 .userIdentifier("" + i)
                 .lastUpdated(LocalDateTime.now())
-                .userAccessTypes(List.of(userAccessTypes(1)))
+                .userAccessTypes(List.of(userAccessType(1)))
                 .organisationInfo(buildOrganisationInfo(1))
                 .build();
     }
 
-    public static UserAccessTypes userAccessTypes(int i) {
-        return UserAccessTypes.builder()
+    public static UserAccessType userAccessType(int i) {
+        return UserAccessType.builder()
                 .jurisdictionId("" + i)
                 .organisationProfileId("" + i)
                 .accessTypeId("" + i)
-                .enabled("true")
-                .build();
-    }
-
-    public static RefreshUserAndOrganisation refreshUserAndOrganisationsList(int i) {
-        return RefreshUserAndOrganisation.builder()
-                .userIdentifier("" + i)
-                .userLastUpdated(LocalDateTime.now())
-                .userAccessTypes("" + i)
-                .organisationIdentifier("" + i)
-                .organisationStatus("ACTIVE")
-                .organisationProfileIds("SOLICITOR_PROFILE")
+                .enabled(true)
                 .build();
     }
 

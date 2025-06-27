@@ -13,6 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 public class OrganisationsResponse {
 
+    // NB: corresponds to PRD:
+    //        src/main/java/uk/gov/hmcts/reform/professionalapi/controller/response/OrganisationsDetailResponse.java
+
     private List<OrganisationInfo> organisations;
     private Boolean moreAvailable;
+
 }

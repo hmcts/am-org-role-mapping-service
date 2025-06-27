@@ -11,10 +11,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserServiceTest.buildProfessionalUser;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserServiceTest.buildUsersOrganisationInfo;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildProfessionalUser;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUsersOrganisationInfo;
 
 @ExtendWith(MockitoExtension.class)
 class ProfessionalUserBuilderTest {
@@ -30,6 +29,7 @@ class ProfessionalUserBuilderTest {
         assertNotNull(professionalUserData.getAccessTypes());
         assertEquals("123", professionalUserData.getOrganisationId());
         assertEquals("ACTIVE", professionalUserData.getOrganisationStatus());
-        assertEquals(SOLICITOR_PROFILE, professionalUserData.getOrganisationProfileIds());
+        assertEquals("SOLICITOR_PROFILE", professionalUserData.getOrganisationProfileIds());
     }
+
 }
