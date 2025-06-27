@@ -214,6 +214,8 @@ professional:
           retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
           retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
           retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
+        findUserChanges:
+          cron: ${CRON_P5_USER_CHANGES:*/30 * * * * *}
 
 groupAccess:
   lastRunTimeTolerance: ${TOLERANCE:180}

@@ -2,18 +2,18 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
-
-import static uk.gov.hmcts.reform.orgrolemapping.helper.OrganisationBuilder.buildOrganisationProfileResponse;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.OrganisationBuilder.buildOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
+import static uk.gov.hmcts.reform.orgrolemapping.helper.OrganisationBuilder.buildOrganisationProfileResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.OrganisationBuilder.buildOrganisationResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.buildUsersByOrganisationResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.UserBuilder.buildUsersResponse;
 
 @Component
 public class PRDFeignClientFallback implements PRDFeignClient {
@@ -36,4 +36,11 @@ public class PRDFeignClientFallback implements PRDFeignClient {
                                   UsersByOrganisationRequest usersByOrganisationRequest) {
         return ResponseEntity.ok(buildUsersByOrganisationResponse("usersByOrganisationSample.json"));
     }
+
+    @Override
+    public ResponseEntity<GetRefreshUserResponse> retrieveUsers(
+            String lastUpdatedSince, Integer pageSize, String searchAfter) {
+        return ResponseEntity.ok(buildUsersResponse("userResponseSample.json"));
+    }
+
 }
