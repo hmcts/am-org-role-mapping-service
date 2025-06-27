@@ -3,14 +3,13 @@ package uk.gov.hmcts.reform.orgrolemapping;
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.annotations.PactFolder;
+import au.com.dius.pact.core.model.PactSpecVersion;
+import au.com.dius.pact.core.model.annotations.PactDirectory;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.PreDestroy;
-import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,21 +23,21 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
+import javax.sql.DataSource;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_getRoles")
-@PactFolder("pacts")
+@PactTestFor(providerName = "am_roleAssignment_getRoles", pactVersion = PactSpecVersion.V3)
+@PactDirectory("pacts")
 public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
 
     @Autowired
@@ -60,11 +59,6 @@ public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
-    }
-
-    @AfterEach
-    void teardown() {
-        Executor.closeIdleConnections();
     }
 
     @NotNull
