@@ -35,7 +35,7 @@ class PrmSchedulerControllerTest {
         batchLastRunTimestampRepository, organisationService);
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -93,4 +93,16 @@ class PrmSchedulerControllerTest {
         process3Test(null);
     }
 
+    @Test
+    void process5Test() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process5");
+
+        ResponseEntity<Object> response =
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+
+        when(scheduler.findUserChangesAndInsertIntoUserRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        assertEquals(response, controller.findUserChanges());
+    }
 }

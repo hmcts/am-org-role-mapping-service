@@ -33,5 +33,4 @@ public class OrganisationBuilder {
             throw new BadRequestException("Invalid sample json file or missing for buildOrganisationProfileResponse.");
         }
     }
-
 }
