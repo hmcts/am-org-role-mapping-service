@@ -14,11 +14,9 @@ import com.google.common.collect.Maps;
 import io.restassured.http.ContentType;
 import jakarta.validation.constraints.NotNull;
 import net.serenitybdd.rest.SerenityRest;
-import org.apache.http.client.fluent.Executor;
 import org.assertj.core.api.Assertions;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -34,10 +32,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-
 import java.util.List;
 import java.util.Map;
+
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -56,11 +54,6 @@ public class JudicialBookingQueryConsumerTest {
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
-    }
-
-    @After
-    public void teardown() {
-        Executor.closeIdleConnections();
     }
 
     private HttpHeaders getHttpHeaders() {

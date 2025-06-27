@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.befta.utils.UserTokenProviderConfig;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 
 public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomationAdapter {
 
