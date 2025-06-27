@@ -1,15 +1,16 @@
 package uk.gov.hmcts.reform.orgrolemapping.data;
 
+import java.sql.Types;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 
 @Builder(toBuilder = true)
@@ -45,8 +46,8 @@ public class UserRefreshQueueEntity {
     @Column(name = "organisation_status", nullable = false)
     private String organisationStatus;
 
-    @Column(name = "organisation_profile_ids", nullable = false)
-    @Type(type = "uk.gov.hmcts.reform.orgrolemapping.data.GenericArrayUserType")
+    @JdbcTypeCode(Types.ARRAY)
+    @Column(name = "organisation_profile_ids", columnDefinition = "text[]", nullable = false)
     private String[] organisationProfileIds;
 
     @Column(name = "active", nullable = false)
