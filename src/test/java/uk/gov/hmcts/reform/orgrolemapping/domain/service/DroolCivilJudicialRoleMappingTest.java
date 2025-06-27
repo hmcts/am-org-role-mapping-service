@@ -1,10 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -35,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolCivilJudicialRoleMappingTest extends DroolBase {
 
     // Salaried & Fee Paid Employment Judge's should have their 'judge' & 'fee-paid-judge' RAs expanded from 1-7
@@ -93,7 +94,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',5,true",
         "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',11,false",
 
-        "CIVIL Designated Civil Online Judge-Salaried,'judge,leadership-judge,hmcts-judiciary',1,false",
+        "CIVIL Lead and Deputy Online Judge-Salaried,'judge,leadership-judge,hmcts-judiciary',1,false",
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles, String region, boolean expectMultiRegion) {
 
@@ -110,7 +111,7 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
                 "judge", "leadership-judge", "task-supervisor", "case-allocator", "circuit-judge", "district-judge"
         );
 
-        if (setOffice.equals("CIVIL Designated Civil Online Judge-Salaried")) {
+        if (setOffice.equals("CIVIL Lead and Deputy Online Judge-Salaried")) {
             rolesThatRequireRegions = List.of(); // NB: no region required for this JOH
         }
 

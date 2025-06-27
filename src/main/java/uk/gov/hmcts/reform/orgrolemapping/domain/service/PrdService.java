@@ -16,6 +16,10 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
+
 @Service
 @AllArgsConstructor
 public class PrdService {
@@ -44,5 +48,15 @@ public class PrdService {
                 return ResponseEntity.of(Optional.of(emptyOrg));
             }
         }
+    }
+
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
+    public ResponseEntity<UsersByOrganisationResponse> fetchUsersByOrganisation(
+            Integer pageSize,
+            String searchAfterOrg,
+            String searchAfterUser,
+            UsersByOrganisationRequest usersByOrganisationRequest) {
+        return prdFeignClient.getUsersByOrganisation(pageSize, searchAfterOrg, searchAfterUser,
+                usersByOrganisationRequest);
     }
 }
