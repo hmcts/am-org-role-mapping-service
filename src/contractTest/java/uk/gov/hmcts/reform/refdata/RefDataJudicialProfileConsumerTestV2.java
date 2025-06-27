@@ -2,12 +2,14 @@ package uk.gov.hmcts.reform.refdata;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonRootValue;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.model.annotations.PactFolder;
+import au.com.dius.pact.core.model.annotations.PactDirectory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
@@ -37,9 +39,9 @@ import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_judicialv2", port = "8991")
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@PactDirectory("pacts")
+@PactTestFor(providerName = "referenceData_judicialv2", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
 @TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
@@ -131,7 +133,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
     }
 
     private DslPart createJrdProfilesResponse() {
-        return newJsonArray(o -> o.object(ob -> ob
+        var part = newJsonArray(o -> o.object(ob -> ob
                 .stringType("sidam_id", SIDAM_ID)
                 .stringType("full_name", "testFullName")
                 .stringType("known_as", "testKnownAs")
@@ -151,18 +153,14 @@ public class RefDataJudicialProfileConsumerTestV2 {
                         .date("end_date", "yyyy-MM-dd")
                         .stringType("appointment")
                         .stringType("appointment_type")
-                        .array("service_codes", (s) -> {
-                            s.stringType("BFA1");
-                        })
+                        .eachLike("service_codes", PactDslJsonRootValue.stringType("BFA1"))
                         .stringType("appointment_id")
                 )
                 .minArrayLike("authorisations", 1, r -> r
                         .stringType("jurisdiction")
                         .stringType("ticket_description")
                         .date("start_date", "yyyy-MM-dd")
-                        .minArrayLike("service_codes", 0, (s) -> {
-                            s.stringType("BFA1");
-                        })
+                        .eachLike("service_codes", PactDslJsonRootValue.stringType("BFA1"))
                         .stringType("ticket_code")
                         .date("end_date", "yyyy-MM-dd")
                         .stringType("appointment_id")
@@ -176,6 +174,8 @@ public class RefDataJudicialProfileConsumerTestV2 {
                         .stringType("end_date")
                 )
         )).build();
+        System.out.println(part);
+        return part;
     }
 
     @NotNull

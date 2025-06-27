@@ -5,9 +5,10 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.model.annotations.PactFolder;
+import au.com.dius.pact.core.model.annotations.PactDirectory;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import net.serenitybdd.rest.SerenityRest;
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +35,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_getAssignment")
-@PactFolder("pacts")
+@PactTestFor(providerName = "am_roleAssignment_getAssignment", pactVersion = PactSpecVersion.V3)
+@PactDirectory("pacts")
 public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract {
 
     private static final String ACTOR_ID = "23486";

@@ -4,9 +4,10 @@ import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.model.annotations.PactFolder;
+import au.com.dius.pact.core.model.annotations.PactDirectory;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -30,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_deleteAssignment")
-@PactFolder("pacts")
+@PactTestFor(providerName = "am_roleAssignment_deleteAssignment", pactVersion = PactSpecVersion.V3)
+@PactDirectory("pacts")
 public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
 
     private static final String ACTOR_ID = "704c8b1c-e89b-436a-90f6-953b1dc40157";
