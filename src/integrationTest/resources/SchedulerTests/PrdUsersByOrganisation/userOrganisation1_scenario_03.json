@@ -1,0 +1,26 @@
+
+{
+  "organisationIdentifier": "1",
+  "status": "ACTIVE",
+  "organisationProfileIds": [
+    "SOLICITOR_PROFILE"
+  ],
+  "users": [
+    {
+      "userIdentifier": "user3",
+      "firstName": "User3",
+      "lastName": "admin",
+      "email": "user1.admin@hmcts.net",
+      "deleted": "2023-09-19T15:36:33.653",
+      "lastUpdated": "2023-09-19T15:36:33.653",
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "civil-cases-1",
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}
