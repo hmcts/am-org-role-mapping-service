@@ -47,9 +47,10 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.cron}")
-    void findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
-        while (organisationRefreshQueueRepository.getActiveOrganisationRefreshQueueCount() >= 1) {
-            professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
-        }
+    public ProcessMonitorDto findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
+        ProcessMonitorDto processMonitorDto = professionalUserService
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        return processMonitorDto;
     }
+    
 }
