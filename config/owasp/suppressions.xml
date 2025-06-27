@@ -11,6 +11,7 @@
     <suppress>
         <notes>https://tools.hmcts.net/jira/browse/DTSAM-602 spring</notes>
         <cve>CVE-2024-38820</cve>
+        <cve>CVE-2023-51079</cve>
     </suppress>
     <suppress>
         <notes>https://tools.hmcts.net/jira/browse/DTSAM-867</notes>
@@ -19,5 +20,17 @@
     <suppress>
         <notes>https://tools.hmcts.net/jira/browse/DTSAM-868</notes>
         <cve>CVE-2025-31651</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-920</notes>
+        <cve>CVE-2025-48734</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-944</notes>
+        <cve>CVE-2025-46701</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-944</notes>
+        <cve>CVE-2025-48988</cve>
     </suppress>
 </suppressions>

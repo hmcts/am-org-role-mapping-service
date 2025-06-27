@@ -22,6 +22,7 @@ public enum FeatureFlagEnum {
     EMPLOYMENT_WA_1_2("employment_wa_1_2"),
     EMPLOYMENT_WA_1_3("employment_wa_1_3"),
     EMPLOYMENT_WA_1_4("employment_wa_1_4"),
+    EMPLOYMENT_WA_1_5("employment_wa_1_5"),
     PRIVATELAW_WA_1_2("privatelaw_wa_1_2"),
     ST_CIC_WA_1_0("st_cic_wa_1_0"),
     ST_CIC_WA_1_1("st_cic_wa_1_1"),
@@ -32,6 +33,8 @@ public enum FeatureFlagEnum {
     PRIVATELAW_WA_1_3("privatelaw_wa_1_3"),
     PRIVATELAW_WA_1_4("privatelaw_wa_1_4"),
     PRIVATELAW_WA_1_5("privatelaw_wa_1_5"),
+    PRIVATELAW_WA_1_6("privatelaw_wa_1_6"),
+    PRIVATELAW_WA_1_7("privatelaw_wa_1_7"),
     PUBLICLAW_WA_1_2("publiclaw_wa_1_2"),
     CIVIL_WA_1_4("civil_wa_1_4"),
     CIVIL_WA_1_5("civil_wa_1_5"),
@@ -51,6 +54,7 @@ public enum FeatureFlagEnum {
     PUBLICLAW_WA_1_7("publiclaw_wa_1_7"),
     PUBLICLAW_WA_1_8("publiclaw_wa_1_8"),
     PUBLICLAW_WA_1_9("publiclaw_wa_1_9"),
+    PUBLICLAW_WA_2_0("publiclaw_wa_2_0"),
     IAC_JRD_1_1("iac_jrd_1_1"),
     PUBLICLAW_HEARING_1_0("publiclaw_hearing_1_0");
 
