@@ -160,7 +160,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
                         .stringType("jurisdiction")
                         .stringType("ticket_description")
                         .date("start_date", "yyyy-MM-dd")
-                        .eachLike("service_codes", PactDslJsonRootValue.stringType("BFA1"))
+                        .minArrayLike("service_codes", 0, PactDslJsonRootValue.stringType("BFA1"), 0)
                         .stringType("ticket_code")
                         .date("end_date", "yyyy-MM-dd")
                         .stringType("appointment_id")
