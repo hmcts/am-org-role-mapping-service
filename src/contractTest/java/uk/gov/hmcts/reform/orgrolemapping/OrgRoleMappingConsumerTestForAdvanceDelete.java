@@ -10,9 +10,7 @@ import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
-import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
-import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -56,10 +54,6 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContrac
         Thread.sleep(2000);
     }
 
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
-    }
 
     private String createRoleAssignmentRequestAdvanceDelete() {
 

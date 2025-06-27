@@ -9,9 +9,7 @@ import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
-import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -34,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
@@ -60,11 +58,6 @@ public class RefDataCaseworkerConsumerTest {
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
-    }
-
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
     }
 
     @Pact(provider = "referenceData_caseworkerRefUsers", consumer = "accessMgmt_orgRoleMapping")

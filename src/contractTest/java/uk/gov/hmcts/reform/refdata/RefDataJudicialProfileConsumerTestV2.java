@@ -12,12 +12,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
-import org.apache.http.client.fluent.Executor;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -35,7 +33,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import java.util.Map;
 import java.util.Set;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -55,11 +53,6 @@ public class RefDataJudicialProfileConsumerTestV2 {
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
-    }
-
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
     }
 
     @Pact(provider = "referenceData_judicialv2", consumer = "accessMgmt_orgRoleMapping")

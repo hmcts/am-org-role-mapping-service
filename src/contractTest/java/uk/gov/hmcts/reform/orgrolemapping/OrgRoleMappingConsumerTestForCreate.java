@@ -12,13 +12,11 @@ import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import groovy.util.logging.Slf4j;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
-import org.apache.http.client.fluent.Executor;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -35,7 +33,7 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import java.util.Map;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -68,12 +66,6 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
     }
-
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
-    }
-
 
     @Pact(provider = "am_roleAssignment_createAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeCreateRoleAssignmentReplacingExistingFalseAndGet201(PactDslWithProvider builder) {
