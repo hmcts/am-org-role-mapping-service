@@ -11,9 +11,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserServiceTest.buildProfessionalUser;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserServiceTest.buildUsersOrganisationInfo;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildProfessionalUser;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUsersOrganisationInfo;
 
 @ExtendWith(MockitoExtension.class)
 class ProfessionalUserBuilderTest {
