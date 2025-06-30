@@ -387,7 +387,7 @@ dependencies {
 
     implementation 'net.bytebuddy:byte-buddy:1.14.19'
 
-    testImplementation('com.opentable.components:otj-pg-embedded:1.1.0')
+    testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
 
     pitest 'org.pitest:pitest-junit5-plugin:1.2.2'
 
