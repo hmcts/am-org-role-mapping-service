@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
@@ -20,7 +22,6 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUserAndOrganisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
@@ -28,7 +29,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
-import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -206,11 +206,13 @@ public class ProfessionalUserService {
 
     @Transactional
     public void findUserChangesAndInsertIntoUserRefreshQueue() {
-        log.info("findUserChangesAndInsertIntoUserRefreshQueue started..");
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 5 - Find User Changes");
+        String processName = "PRM Process 5 - Find User Changes";
+        log.info("Starting {}", processName);
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
         processEventTracker.trackEventStarted(processMonitorDto);
 
-        String lastRecordInPage = null;
+        String lastRecordInPage = null; // declare here for use in catch block
+
         try {
             final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
             List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
@@ -232,37 +234,36 @@ public class ProfessionalUserService {
 
             Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
 
+            // prep for first call to retrieveUsers
+            boolean foundUsers = false;
+            boolean moreAvailable = true;
             String processStep = "attempting first retrieveUsers";
-            processMonitorDto.addProcessStep(processStep);
-            GetRefreshUserResponse refreshUserResponse = prdService
-                    .retrieveUsers(formattedSince, Integer.valueOf(pageSize), null).getBody();
-            writeAllToUserRefreshQueue(refreshUserResponse, accessTypeMinVersion, processMonitorDto);
 
-            boolean moreAvailable;
+            while (moreAvailable) {
+                processMonitorDto.addProcessStep(processStep);
+                GetRefreshUserResponse refreshUserResponse = prdService
+                        .retrieveUsers(formattedSince, Integer.valueOf(pageSize), lastRecordInPage).getBody();
 
-            if (!refreshUserResponse.getUsers().isEmpty()) {
+                if (refreshUserResponse != null && CollectionUtils.isNotEmpty(refreshUserResponse.getUsers())) {
+                    foundUsers = true;
+                    writeAllToUserRefreshQueue(refreshUserResponse, accessTypeMinVersion, processMonitorDto);
+                } else {
+                    break;
+                }
+
+                // prep for next call to retrieveUsers
                 moreAvailable = refreshUserResponse.isMoreAvailable();
                 lastRecordInPage = refreshUserResponse.getLastRecordInPage();
+                processStep = "attempting retrieveUsers from lastRecordInPage=" + lastRecordInPage;
+            }
 
-                while (moreAvailable) {
-                    processStep = "attempting retrieveUsers from lastRecordInPage=" + lastRecordInPage;
-                    processMonitorDto.addProcessStep(processStep);
-                    refreshUserResponse = prdService
-                            .retrieveUsers(formattedSince, Integer.valueOf(pageSize), lastRecordInPage).getBody();
-
-                    if (!refreshUserResponse.getUsers().isEmpty()) {
-                        moreAvailable = refreshUserResponse.isMoreAvailable();
-                        lastRecordInPage = refreshUserResponse.getLastRecordInPage();
-
-                        writeAllToUserRefreshQueue(refreshUserResponse, accessTypeMinVersion, processMonitorDto);
-                    } else {
-                        break;
-                    }
-
-                }
+            // if process complete and users were found, update the batch last run timestamp
+            if (foundUsers) {
                 batchLastRunTimestampEntity.setLastUserRunDatetime(LocalDateTime.ofInstant(batchRunStartTime.getDate(),
                         ZoneId.systemDefault()));
                 batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
+            } else {
+                processMonitorDto.appendToLastProcessStep(" : No users found to process.");
             }
         } catch (Exception exception) {
             processMonitorDto.markAsFailed(exception.getMessage()
@@ -270,9 +271,11 @@ public class ProfessionalUserService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
+
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
-        log.info("..findUserChangesAndInsertIntoUserRefreshQueue finished");
+
+        log.info("Completed {}", processName);
     }
 
     private void writeAllToUserRefreshQueue(GetRefreshUserResponse usersResponse, Integer accessTypeMinVersion,
@@ -280,15 +283,15 @@ public class ProfessionalUserService {
         String processStep = "attempting writeAllToUserRefreshQueue for ";
         processMonitorDto.addProcessStep(processStep);
 
-        List<RefreshUserAndOrganisation> serializedUsers = new ArrayList<>();
+        List<ProfessionalUserData> professionalUserData = new ArrayList<>();
         for (RefreshUser user : usersResponse.getUsers()) {
-            appendLastProcessStep(processMonitorDto, "user=" + user.getUserIdentifier() + ",");
-            serializedUsers.add(ProfessionalUserBuilder.getSerializedRefreshUser(user));
+            processMonitorDto.appendToLastProcessStep("user=" + user.getUserIdentifier() + ",");
+            professionalUserData.add(ProfessionalUserBuilder.fromProfessionalRefreshUser(user));
         }
 
-        userRefreshQueueRepository.insertIntoUserRefreshQueueForLastUpdated(
-                jdbcTemplate, serializedUsers, accessTypeMinVersion);
-        appendLastProcessStep(processMonitorDto, " : COMPLETED");
+        userRefreshQueueRepository
+            .upsertToUserRefreshQueueForLastUpdated(jdbcTemplate, professionalUserData, accessTypeMinVersion);
+        processMonitorDto.appendToLastProcessStep(" : COMPLETED");
     }
 
     private void writeAllToUserRefreshQueue(UsersByOrganisationResponse response,
@@ -313,13 +316,6 @@ public class ProfessionalUserService {
         }
 
         return professionalUserData;
-    }
-
-    private void appendLastProcessStep(ProcessMonitorDto processMonitorDto, String message) {
-        String last = processMonitorDto.getProcessSteps().get(processMonitorDto.getProcessSteps().size() - 1);
-        processMonitorDto.getProcessSteps().remove(processMonitorDto.getProcessSteps().size() - 1);
-        last = last + message;
-        processMonitorDto.getProcessSteps().add(last);
     }
 
 }

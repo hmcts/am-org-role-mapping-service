@@ -4,13 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeRole;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileJurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,10 +19,9 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class AccessTypesBuilderTest {
 
@@ -141,7 +139,7 @@ public class AccessTypesBuilderTest {
 
     @Test
     void restructureCcdAccessTypesTest() {
-        AccessTypesResponse accessTypesResponse = AccessTypesBuilder.buildAccessTypeResponse("accessTypesSample.json");
+        AccessTypesResponse accessTypesResponse = TestDataBuilder.buildAccessTypesResponse();
         RestructuredAccessTypes restructuredAccessTypes =
                 accessTypesBuilder.restructureCcdAccessTypes(accessTypesResponse);
 
@@ -159,7 +157,7 @@ public class AccessTypesBuilderTest {
 
     @Test
     void identifyUpdatedOrgProfileIdsWhenEmptyInPrmTest() {
-        AccessTypesResponse accessTypesResponse = AccessTypesBuilder.buildAccessTypeResponse("accessTypesSample.json");
+        AccessTypesResponse accessTypesResponse = TestDataBuilder.buildAccessTypesResponse();
         RestructuredAccessTypes restructuredAccessTypes =
                 accessTypesBuilder.restructureCcdAccessTypes(accessTypesResponse);
 
@@ -244,24 +242,6 @@ public class AccessTypesBuilderTest {
                     accessTypesBuilder.identifyUpdatedOrgProfileIds(accessTypes, shuffledAccessTypes);
             assertEquals(0, orgProfiles.size());
         }
-    }
-
-    @Test
-    void buildAccessTypeResponseTest() {
-        AccessTypesResponse accessTypesResponse = AccessTypesBuilder.buildAccessTypeResponse("accessTypesSample.json");
-
-        assertNotNull(accessTypesResponse);
-        accessTypesResponse.getJurisdictions().forEach(jurisdiction -> {
-            assertNotNull(jurisdiction.getJurisdictionId());
-            assertNotNull(jurisdiction.getJurisdictionName());
-            assertNotNull(jurisdiction.getAccessTypes());
-        });
-        assertEquals(3, accessTypesResponse.getJurisdictions().size());
-    }
-
-    @Test
-    void buildAccessTypeResponseThrowsExceptionTest() {
-        assertThrows(BadRequestException.class, () -> AccessTypesBuilder.buildAccessTypeResponse("invalid.json"));
     }
 
     public static OrganisationProfile buildOrganisationProfile(String organisationProfileId,

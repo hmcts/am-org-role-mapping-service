@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeJurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
@@ -11,7 +9,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccess
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileJurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -107,14 +104,4 @@ public class AccessTypesBuilder {
                 .toList();
     }
 
-    public static AccessTypesResponse buildAccessTypeResponse(String resource) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(
-                    new File("src/main/resources/" + resource),
-                    AccessTypesResponse.class);
-        } catch (Exception e) {
-            throw new BadRequestException("Invalid sample json file or missing.");
-        }
-    }
 }
