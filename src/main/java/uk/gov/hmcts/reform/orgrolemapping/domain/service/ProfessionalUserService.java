@@ -268,7 +268,7 @@ public class ProfessionalUserService {
             processMonitorDto.markAsFailed(exception.getMessage()
                     + (lastRecordInPage == null ? "" : ", failed at lastRecordInPage=" + lastRecordInPage));
             processEventTracker.trackEventCompleted(processMonitorDto);
-            throw exception;
+            return processMonitorDto;
         }
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
