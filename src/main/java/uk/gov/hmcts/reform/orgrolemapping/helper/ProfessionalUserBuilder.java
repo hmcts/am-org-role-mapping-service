@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
@@ -30,18 +31,30 @@ public class ProfessionalUserBuilder {
     }
 
     public static RefreshUserAndOrganisation getSerializedRefreshUser(RefreshUser user) {
-        RefreshUserAndOrganisation userData = new RefreshUserAndOrganisation();
-        userData.setUserIdentifier(user.getUserIdentifier());
-        userData.setUserLastUpdated(user.getLastUpdated());
-        userData.setUserAccessTypes(JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
-        if (user.getOrganisationInfo() != null) {
+        String errorMessage = "0";
+        try {
+            RefreshUserAndOrganisation userData = new RefreshUserAndOrganisation();
+            errorMessage = "1";
+            userData.setUserIdentifier(user.getUserIdentifier());
+            errorMessage = "2";
+            userData.setUserLastUpdated(user.getLastUpdated());
+            errorMessage = "3";
+            userData.setUserAccessTypes(
+                JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
+            errorMessage = "4";
             userData.setOrganisationIdentifier(
                 user.getOrganisationInfo().getOrganisationIdentifier());
+            errorMessage = "5";
             userData.setOrganisationStatus(user.getOrganisationInfo().getStatus());
+            errorMessage = "6";
             userData.setOrganisationProfileIds(
                 String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));
+            errorMessage = "7";
+
+            return userData;
+        } catch (Exception e) {
+            throw new ServiceException(errorMessage, e);
         }
-        return userData;
     }
 
     public static UsersByOrganisationResponse buildUsersByOrganisationResponse(String resource) {
