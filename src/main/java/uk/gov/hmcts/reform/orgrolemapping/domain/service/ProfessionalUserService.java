@@ -286,6 +286,7 @@ public class ProfessionalUserService {
             appendLastProcessStep(processMonitorDto, "user=" + user.getUserIdentifier() + ",");
             serializedUsers.add(ProfessionalUserBuilder.getSerializedRefreshUser(user));
         }
+        appendLastProcessStep(processMonitorDto, " serializedUsers=" + serializedUsers.size());
 
         userRefreshQueueRepository.insertIntoUserRefreshQueueForLastUpdated(
                 jdbcTemplate, serializedUsers, accessTypeMinVersion);
