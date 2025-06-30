@@ -287,7 +287,7 @@ public class ProfessionalUserService {
                 appendLastProcessStep(processMonitorDto, "user=" + user.getUserIdentifier() + ",");
                 serializedUsers.add(ProfessionalUserBuilder.getSerializedRefreshUser(user));
             } catch (Exception e) {
-                String errorMessage = "Error serializing user: " + e.getMessage();
+                String errorMessage = "Error serializing user: " + user.getUserIdentifier();
                 log.error(errorMessage, e);
                 processMonitorDto.addProcessStep(errorMessage);
                 throw new ServiceException(errorMessage, e);
