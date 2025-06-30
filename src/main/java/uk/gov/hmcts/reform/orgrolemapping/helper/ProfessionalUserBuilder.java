@@ -46,7 +46,7 @@ public class ProfessionalUserBuilder {
                 user.getOrganisationInfo().getOrganisationIdentifier());
             errorMessage = "5";
             userData.setOrganisationStatus(user.getOrganisationInfo().getStatus());
-            errorMessage = "6";
+            errorMessage = "6 " + user.getOrganisationInfo().getOrganisationProfileIds();
             userData.setOrganisationProfileIds(
                 String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));
             errorMessage = "7";
