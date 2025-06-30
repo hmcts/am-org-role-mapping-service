@@ -381,11 +381,11 @@ public class ProfessionalUserServiceTest {
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(0))
                 .isEqualTo("attempting first retrieveUsers");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(1))
-                .isEqualTo("attempting writeAllToUserRefreshQueue for user=1, serializedUsers=1 : COMPLETED");
+                .isEqualTo("attempting writeAllToUserRefreshQueue for user=1, : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(2))
                 .isEqualTo("attempting retrieveUsers from lastRecordInPage=123");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps().get(3))
-                .isEqualTo("attempting writeAllToUserRefreshQueue for user=2,user=3, serializedUsers=2");
+                .isEqualTo("attempting writeAllToUserRefreshQueue for user=2,user=3,");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Insert exception, failed at lastRecordInPage=456");
     }

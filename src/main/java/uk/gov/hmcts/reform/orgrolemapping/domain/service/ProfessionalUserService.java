@@ -283,10 +283,17 @@ public class ProfessionalUserService {
 
         List<RefreshUserAndOrganisation> serializedUsers = new ArrayList<>();
         for (RefreshUser user : usersResponse.getUsers()) {
-            appendLastProcessStep(processMonitorDto, "user=" + user.getUserIdentifier() + ",");
-            serializedUsers.add(ProfessionalUserBuilder.getSerializedRefreshUser(user));
+            try {
+                appendLastProcessStep(processMonitorDto, "user=" + user.getUserIdentifier() + ",");
+                serializedUsers.add(ProfessionalUserBuilder.getSerializedRefreshUser(user));
+            } catch (Exception e) {
+                String errorMessage = "Error serializing user: " + user.getUserIdentifier()
+                    + ". Error: " + e.getMessage();
+                log.error(errorMessage, e);
+                processMonitorDto.addProcessStep(errorMessage);
+                throw new ServiceException(errorMessage, e);
+            }
         }
-        appendLastProcessStep(processMonitorDto, " serializedUsers=" + serializedUsers.size());
 
         userRefreshQueueRepository.insertIntoUserRefreshQueueForLastUpdated(
                 jdbcTemplate, serializedUsers, accessTypeMinVersion);
