@@ -34,10 +34,13 @@ public class ProfessionalUserBuilder {
         userData.setUserIdentifier(user.getUserIdentifier());
         userData.setUserLastUpdated(user.getLastUpdated());
         userData.setUserAccessTypes(JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
-        userData.setOrganisationIdentifier(user.getOrganisationInfo().getOrganisationIdentifier());
-        userData.setOrganisationStatus(user.getOrganisationInfo().getStatus());
-        userData.setOrganisationProfileIds(String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));
-
+        if (user.getOrganisationInfo() != null) {
+            userData.setOrganisationIdentifier(
+                user.getOrganisationInfo().getOrganisationIdentifier());
+            userData.setOrganisationStatus(user.getOrganisationInfo().getStatus());
+            userData.setOrganisationProfileIds(
+                String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));
+        }
         return userData;
     }
 
