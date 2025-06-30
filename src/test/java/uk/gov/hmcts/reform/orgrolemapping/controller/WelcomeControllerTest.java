@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.ErrorConstants;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springdoc.core.Constants.SWAGGER_UI_URL;
+import static org.springdoc.core.utils.Constants.SWAGGER_UI_URL;
 
 class WelcomeControllerTest {
 

@@ -220,13 +220,13 @@ when
                                          "CIVIL Specialist Circuit Judge-Salaried", "CIVIL Senior Circuit Judge-Salaried",
                                          "CIVIL High Court Judge-Salaried", "CIVIL District Judge-Salaried",
                                          "CIVIL Presiding Judge-Salaried", "CIVIL Resident Judge-Salaried",
-                                         "CIVIL Tribunal Judge-Salaried", "CIVIL Designated Civil Online Judge-Salaried" ))
+                                         "CIVIL Tribunal Judge-Salaried", "CIVIL Lead and Deputy Online Judge-Salaried" ))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   if (!$joh.getOffice().equalsIgnoreCase("CIVIL Designated Civil Online Judge-Salaried")) {
+   if (!$joh.getOffice().equalsIgnoreCase("CIVIL Lead and Deputy Online Judge-Salaried")) {
      attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications"));
@@ -414,13 +414,13 @@ rule "v24_civil_leadership_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_4.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL Designated Civil Judge-Salaried",
-                                         "CIVIL Designated Civil Online Judge-Salaried" ))
+                                         "CIVIL Lead and Deputy Online Judge-Salaried" ))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
-   if (!$joh.getOffice().equalsIgnoreCase("CIVIL Designated Civil Online Judge-Salaried")) {
+   if (!$joh.getOffice().equalsIgnoreCase("CIVIL Lead and Deputy Online Judge-Salaried")) {
      attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    }
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,applications," +
@@ -941,7 +941,7 @@ when
                                          "CIVIL Tribunal Judge-Salaried", "CIVIL Tribunal Judge-Fee-Paid",
                                          "CIVIL Employment Judge-Salaried", "CIVIL Employment Judge-Fee-Paid",
                                          "CIVIL Circuit Judge (sitting in retirement)-Fee-Paid",
-                                         "CIVIL Designated Civil Online Judge-Salaried" ))
+                                         "CIVIL Lead and Deputy Online Judge-Salaried" ))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if($joh.getOffice().contains("Fee-Paid")) {

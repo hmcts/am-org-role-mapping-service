@@ -1,10 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -33,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     private static final String USER_ID = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
@@ -94,6 +95,14 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer',5,true",
         "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer',7,false",
+
+        "_,'Acting Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
+                + "case-allocator,specific-access-approver-judiciary,hearing-viewer',1,true",
+        "_,'Acting Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
+                + "case-allocator,specific-access-approver-judiciary,hearing-viewer',5,true",
+        "_,'Acting Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
+                + "case-allocator,specific-access-approver-judiciary,hearing-viewer',7,false",
+
 
         "Tribunal Judge,'','judge,hmcts-judiciary,hearing-viewer',1,true",
         "Tribunal Judge,'','judge,hmcts-judiciary,hearing-viewer',5,true",
