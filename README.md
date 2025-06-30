@@ -18,7 +18,7 @@ It provisions various organisation roles for staff & judicial users based on the
 
 To run the project you will need to have the following installed:
 
-* Java 11
+* Java 21
 * Docker
 
 For information about the software versions used to build this API and a complete list of it's dependencies see build.gradle
@@ -145,5 +145,3 @@ Authorization :  Bearer copy IDAM access token
 
 Please refer to the confluence on how to run and publish PACT tests.
 https://tools.hmcts.net/confluence/display/RTRD/PACT+testing
-
-
