@@ -15,10 +15,13 @@ import java.util.List;
 @NoArgsConstructor
 public class RefreshUser {
 
+    // NB: corresponds to PRD: src/main/java/uk/gov/hmcts/reform/professionalapi/domain/RefreshUser.java
+
     private String userIdentifier;
     private LocalDateTime lastUpdated;
     private OrganisationInfo organisationInfo;
-    private List<UserAccessTypes> userAccessTypes;
+    private List<UserAccessType> userAccessTypes;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime dateTimeDeleted;
+
 }
