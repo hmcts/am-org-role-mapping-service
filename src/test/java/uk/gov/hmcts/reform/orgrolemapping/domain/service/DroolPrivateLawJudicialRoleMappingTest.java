@@ -91,6 +91,9 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals(BOOKING_LOCATION_ID, primaryLocation);
                 assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
                 assertEquals(BOOKING_LOCATION_ID, r.getAttributes().get("baseLocation").asText());
+            } else if (r.getRoleName().equals("fee-paid-judge")) {
+                assertEquals(PRIMARY_LOCATION_ID, primaryLocation);
+                assertNull(r.getAttributes().get("baseLocation"));
             } else {
                 assertEquals(PRIMARY_LOCATION_ID, primaryLocation);
                 assertEquals(REGION_ID, r.getAttributes().get("region").asText());
