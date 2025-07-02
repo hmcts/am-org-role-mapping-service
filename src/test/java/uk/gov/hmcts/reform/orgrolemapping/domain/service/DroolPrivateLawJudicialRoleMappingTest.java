@@ -125,6 +125,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             "Deputy High Court Judge",
             "High Court Judge- Sitting in Retirement",
             "Deputy Circuit Judge",
+            "Circuit Judge (sitting in retirement)",
             "District Judge (MC) (sitting in retirement)",
             "District Judge (sitting in retirement)");
 
@@ -143,6 +144,11 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                         List.of("judge", "circuit-judge", "hmcts-judiciary"),
                         "ABA5"),
                 Arguments.of("Deputy Circuit Judge",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge","circuit-judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
+                Arguments.of("Circuit Judge (sitting in retirement)",
                         "Fee Paid",
                         List.of(""),
                         List.of("judge","circuit-judge", "fee-paid-judge", "hmcts-judiciary"),
