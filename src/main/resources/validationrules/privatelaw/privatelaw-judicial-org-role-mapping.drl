@@ -395,6 +395,7 @@ rule "v1_8_privatelaw_fee_paid_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_8.getValue())
   $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy Circuit Judge-Fee-Paid",
+                                        "PRIVATELAW Circuit Judge (sitting in retirement)-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                         "PRIVATELAW Recorder-Fee-Paid",
@@ -443,6 +444,7 @@ $joh: JudicialOfficeHolder(office in ("PRIVATELAW District Judge-Salaried", "PRI
                                       "PRIVATELAW Circuit Judge-Salaried", "PRIVATELAW High Court Judge-Salaried",
                                       "PRIVATELAW District Judge (MC)-Salaried",
                                       "PRIVATELAW Deputy Circuit Judge-Fee-Paid",
+                                      "PRIVATELAW Circuit Judge (sitting in retirement)-Fee-Paid",
                                       "PRIVATELAW Deputy District Judge-Fee-Paid",
                                       "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid",
                                       "PRIVATELAW Recorder-Fee-Paid",
@@ -521,7 +523,8 @@ end;
 rule "v1_6_privatelaw_circuit_judge_org_role_for_fee_paid_judge"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
-  $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy Circuit Judge-Fee-Paid"))
+  $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy Circuit Judge-Fee-Paid",
+                            "PRIVATELAW Circuit Judge (sitting in retirement)-Fee-Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -615,6 +618,7 @@ when
                                         "PRIVATELAW Deputy High Court Judge-Fee-Paid",
                                         "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid",
                                         "PRIVATELAW Deputy Circuit Judge-Fee-Paid",
+                                        "PRIVATELAW Circuit Judge (sitting in retirement)-Fee-Paid",
                                         "PRIVATELAW District Judge (MC) (sitting in retirement)-Fee-Paid",
                                         "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid"))
   $bk: JudicialBooking(userId == $joh.userId)
