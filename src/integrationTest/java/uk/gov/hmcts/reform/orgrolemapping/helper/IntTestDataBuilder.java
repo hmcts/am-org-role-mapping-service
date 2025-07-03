@@ -9,14 +9,17 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
@@ -32,14 +35,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
-
 public class IntTestDataBuilder {
 
     private static final String ID_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     private static final String ID_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String LONDON = "London";
+
+    public static final String SOLICITOR_PROFILE = "SOLICITOR_PROFILE";
 
     private IntTestDataBuilder() {
     }
@@ -287,9 +290,9 @@ public class IntTestDataBuilder {
                 .build();
     }
 
-    public static ProfessionalUserData buildProfessionalUserData(int i) {
+    public static ProfessionalUserData buildProfessionalUserData(String i) {
         return ProfessionalUserData.builder()
-                .userId("" + i)
+                .userId(i)
                 .userLastUpdated(LocalDateTime.now())
                 .deleted(LocalDateTime.now())
                 .accessTypes("{}")
@@ -298,4 +301,33 @@ public class IntTestDataBuilder {
                 .organisationProfileIds(SOLICITOR_PROFILE)
                 .build();
     }
+
+    public static RefreshUser refreshUser(int i) {
+        return RefreshUser.builder()
+                .userIdentifier("" + i)
+                .lastUpdated(LocalDateTime.now())
+                .userAccessTypes(List.of(userAccessType(1)))
+                .organisationInfo(buildOrganisationInfo(1))
+                .build();
+    }
+
+    public static UserAccessType userAccessType(int i) {
+        return UserAccessType.builder()
+                .jurisdictionId("" + i)
+                .organisationProfileId("" + i)
+                .accessTypeId("" + i)
+                .enabled(true)
+                .build();
+    }
+
+    public static GetRefreshUserResponse buildRefreshUserResponse(RefreshUser user,
+                                                                  String lastRecord,
+                                                                  boolean moreAvailable) {
+        return GetRefreshUserResponse.builder()
+                .users(List.of(user))
+                .lastRecordInPage(lastRecord)
+                .moreAvailable(moreAvailable)
+                .build();
+    }
+
 }

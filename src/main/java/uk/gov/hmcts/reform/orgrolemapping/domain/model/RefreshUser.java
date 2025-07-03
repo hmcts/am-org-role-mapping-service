@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,17 +13,15 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfessionalUser {
+public class RefreshUser {
 
-    // NB: corresponds to PRD: src/main/java/uk/gov/hmcts/reform/professionalapi/controller/response/
-    //                                                                       OrganisationUserResponse.java
+    // NB: corresponds to PRD: src/main/java/uk/gov/hmcts/reform/professionalapi/domain/RefreshUser.java
 
     private String userIdentifier;
-    private String firstName;
-    private String lastName;
-    private String email;
     private LocalDateTime lastUpdated;
-    private LocalDateTime deleted;
+    private OrganisationInfo organisationInfo;
     private List<UserAccessType> userAccessTypes;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private LocalDateTime dateTimeDeleted;
 
 }
