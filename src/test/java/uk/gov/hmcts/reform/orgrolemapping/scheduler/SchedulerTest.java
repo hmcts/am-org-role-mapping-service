@@ -44,6 +44,20 @@ class SchedulerTest {
     }
 
     @Test
+    void findUsersWithStaleOrganisationProcessTest() {
+        ProcessMonitorDto expectedProcessMonitorDto = mock(ProcessMonitorDto.class);
+
+        when(professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
+            .thenReturn(expectedProcessMonitorDto);
+
+        scheduler
+            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
+
+        verify(professionalUserService, times(1))
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+    }
+
+    @Test
     void findAndUpdateCaseDefinitionChangesTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
 

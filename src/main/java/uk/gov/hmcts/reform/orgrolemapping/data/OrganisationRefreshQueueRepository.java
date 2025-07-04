@@ -68,13 +68,10 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                    + "active, retry, retry_after "
                    + "from organisation_refresh_queue "
                    + "where active = true "
+                   + "and retry_after < now() "
                    + "limit 1 "
                    + "for update skip locked", nativeQuery = true)
     OrganisationRefreshQueueEntity findAndLockSingleActiveOrganisationRecord();
-
-    @Query(value = "select count(*) from organisation_refresh_queue where active = true and retry_after < now()",
-            nativeQuery = true)
-    Long getActiveOrganisationRefreshQueueCount();
 
     @Modifying
     @Query(value = "update organisation_refresh_queue "
