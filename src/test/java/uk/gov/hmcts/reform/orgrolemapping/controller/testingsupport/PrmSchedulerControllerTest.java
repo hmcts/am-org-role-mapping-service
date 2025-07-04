@@ -95,7 +95,17 @@ class PrmSchedulerControllerTest {
 
     @Test
     void process5Test() {
+        process5Test("2023-10-01T13:40:03");
+    }
+
+    private void process5Test(String since) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process5");
+
+        when(organisationService.getBatchLastRunTimestampEntity()).thenReturn(batchLastRunTimestampEntity);
+
+        if (since != null) {
+            batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
+        }
 
         ResponseEntity<Object> response =
             ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
@@ -103,6 +113,11 @@ class PrmSchedulerControllerTest {
         when(scheduler.findUserChangesAndInsertIntoUserRefreshQueue())
             .thenReturn(processMonitorDto);
 
-        assertEquals(response, controller.findUserChanges());
+        assertEquals(response, controller.findUserChanges(since));
+    }
+
+    @Test
+    void process5Test_noParam() {
+        process5Test(null);
     }
 }

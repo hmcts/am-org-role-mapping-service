@@ -146,7 +146,27 @@ public class PrmSchedulerController {
         description = "OK",
         content = @Content(schema = @Schema(implementation = Object.class))
     )
-    public ResponseEntity<Object> findUserChanges() {
+    public ResponseEntity<Object> findUserChanges(
+        @Parameter(description = "Timestamp to fetch users with last updated date/time >= since, "
+            + "expected format: " + Constants.SINCE_TIMESTAMP_FORMAT)
+        @RequestParam(required = false) String since
+    ) {
+        log.info("findUserChanges called with since: {}", since);
+        // Fetch / validate the last run timestamp entity
+        BatchLastRunTimestampEntity batchLastRunTimestampEntity = organisationService.getBatchLastRunTimestampEntity();
+
+        if (since != null) {
+            // Validate the datetime format
+            ValidationUtil.validateDateTimeFormat(Constants.SINCE_TIMESTAMP_FORMAT, since);
+
+            // Set the last run timestamp
+            batchLastRunTimestampEntity.setLastUserRunDatetime(LocalDateTime.parse(since,
+                DateTimeFormatter.ofPattern(Constants.SINCE_TIMESTAMP_FORMAT)));
+
+            // Update the last run timestamp entity
+            batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
+        }
+
         ProcessMonitorDto processMonitorDto = scheduler
             .findUserChangesAndInsertIntoUserRefreshQueue();
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
