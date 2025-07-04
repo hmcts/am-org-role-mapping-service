@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,6 +38,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -232,7 +233,11 @@ class ProfessionalUserServiceTest {
             when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
 
-            professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+            ProcessMonitorDto processMonitorDto =
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+
+            assertNotNull(processMonitorDto);
+            assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
 
             verify(userRefreshQueueRepository, times(1))
                 .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
@@ -321,8 +326,11 @@ class ProfessionalUserServiceTest {
             when(prdService.retrieveUsers(any(), any(), any(String.class)))
                 .thenReturn(ResponseEntity.ok(response2));
 
-            professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+            ProcessMonitorDto processMonitorDto =
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
+            assertNotNull(processMonitorDto);
+            assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
             verify(userRefreshQueueRepository, times(2))
                 .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
             verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
@@ -342,13 +350,12 @@ class ProfessionalUserServiceTest {
             doThrow(new ServiceException("Retrieve users exception")).when(prdService)
                 .retrieveUsers(any(), any(), eq(null));
 
-            Assertions.assertThrows(ServiceException.class, () ->
-                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
-            );
+            ProcessMonitorDto processMonitorDto =
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
             verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-                .isEqualTo(EndStatus.FAILED);
+            assertNotNull(processMonitorDto);
+            assertEquals(EndStatus.FAILED, processMonitorDto.getEndStatus());
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Retrieve users exception");
         }
@@ -378,13 +385,12 @@ class ProfessionalUserServiceTest {
                 .when(batchLastRunTimestampRepository)
                 .save(any());
 
-            Assertions.assertThrows(ServiceException.class, () ->
-                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
-            );
+            ProcessMonitorDto processMonitorDto =
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
             verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-                .isEqualTo(EndStatus.FAILED);
+            assertNotNull(processMonitorDto);
+            assertEquals(EndStatus.FAILED, processMonitorDto.getEndStatus());
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
                 .isEqualTo("Batch save exception, failed at lastRecordInPage=123");
         }
@@ -410,11 +416,12 @@ class ProfessionalUserServiceTest {
             doThrow(new ServiceException("Insert exception")).when(userRefreshQueueRepository)
                 .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
 
-            Assertions.assertThrows(ServiceException.class, () ->
-                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
-            );
+            ProcessMonitorDto processMonitorDto =
+                    professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
             verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertNotNull(processMonitorDto);
+            assertEquals(EndStatus.FAILED, processMonitorDto.getEndStatus());
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
@@ -444,9 +451,8 @@ class ProfessionalUserServiceTest {
             doNothing().doThrow(new ServiceException("Insert exception")).when(userRefreshQueueRepository)
                 .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
 
-            Assertions.assertThrows(ServiceException.class, () ->
-                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
-            );
+            ProcessMonitorDto processMonitorDto =
+                    professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
             verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
@@ -485,11 +491,12 @@ class ProfessionalUserServiceTest {
             when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
 
-            Assertions.assertThrows(ServiceException.class, () ->
-                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
-            );
+            ProcessMonitorDto processMonitorDto =
+                    professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
             verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertNotNull(processMonitorDto);
+            assertEquals(EndStatus.FAILED, processMonitorDto.getEndStatus());
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())
@@ -503,11 +510,12 @@ class ProfessionalUserServiceTest {
             allAccessTypes.add(new AccessTypesEntity(2L, "some json"));
             when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
 
-            Assertions.assertThrows(ServiceException.class, () ->
-                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
-            );
+            ProcessMonitorDto processMonitorDto =
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
             verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertNotNull(processMonitorDto);
+            assertEquals(EndStatus.FAILED, processMonitorDto.getEndStatus());
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndDetail())

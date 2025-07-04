@@ -93,18 +93,19 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
 
     private MapSqlParameterSource[] getParamsFromProfessionalUserDataRows(List<ProfessionalUserData> rows,
                                                                           Integer accessTypeMinVersion) {
-        return rows.stream().map(r -> {
-            MapSqlParameterSource paramValues = new MapSqlParameterSource();
-            paramValues.addValue(USER_ID, r.getUserId());
-            paramValues.addValue(USER_LAST_UPDATED, r.getUserLastUpdated());
-            paramValues.addValue(ACCESS_TYPES_MIN_VERSION, accessTypeMinVersion);
-            paramValues.addValue(DELETED, r.getDeleted());
-            paramValues.addValue(ACCESS_TYPES, r.getAccessTypes());
-            paramValues.addValue(ORGANISATION_ID, r.getOrganisationId());
-            paramValues.addValue(ORGANISATION_STATUS, r.getOrganisationStatus());
-            paramValues.addValue(ORGANISATION_PROFILE_IDS, r.getOrganisationProfileIds());
-            return paramValues;
-        }).toArray(MapSqlParameterSource[]::new);
+        return rows.stream().filter(r -> r.getUserId() !=  null)
+            .map(r -> {
+                MapSqlParameterSource paramValues = new MapSqlParameterSource();
+                paramValues.addValue(USER_ID, r.getUserId());
+                paramValues.addValue(USER_LAST_UPDATED, r.getUserLastUpdated());
+                paramValues.addValue(ACCESS_TYPES_MIN_VERSION, accessTypeMinVersion);
+                paramValues.addValue(DELETED, r.getDeleted());
+                paramValues.addValue(ACCESS_TYPES, r.getAccessTypes());
+                paramValues.addValue(ORGANISATION_ID, r.getOrganisationId());
+                paramValues.addValue(ORGANISATION_STATUS, r.getOrganisationStatus());
+                paramValues.addValue(ORGANISATION_PROFILE_IDS, r.getOrganisationProfileIds());
+                return paramValues;
+            }).toArray(MapSqlParameterSource[]::new);
     }
 
 }

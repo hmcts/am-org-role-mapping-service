@@ -205,7 +205,7 @@ public class ProfessionalUserService {
     }
 
     @Transactional
-    public void findUserChangesAndInsertIntoUserRefreshQueue() {
+    public ProcessMonitorDto findUserChangesAndInsertIntoUserRefreshQueue() {
         String processName = "PRM Process 5 - Find User Changes";
         log.info("Starting {}", processName);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
@@ -269,13 +269,13 @@ public class ProfessionalUserService {
             processMonitorDto.markAsFailed(exception.getMessage()
                     + (lastRecordInPage == null ? "" : ", failed at lastRecordInPage=" + lastRecordInPage));
             processEventTracker.trackEventCompleted(processMonitorDto);
-            throw exception;
+            return processMonitorDto;
         }
 
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
-
         log.info("Completed {}", processName);
+        return processMonitorDto;
     }
 
     private void writeAllToUserRefreshQueue(GetRefreshUserResponse usersResponse, Integer accessTypeMinVersion,
@@ -285,8 +285,15 @@ public class ProfessionalUserService {
 
         List<ProfessionalUserData> professionalUserData = new ArrayList<>();
         for (RefreshUser user : usersResponse.getUsers()) {
-            processMonitorDto.appendToLastProcessStep("user=" + user.getUserIdentifier() + ",");
-            professionalUserData.add(ProfessionalUserBuilder.fromProfessionalRefreshUser(user));
+            try {
+                processMonitorDto.appendToLastProcessStep("user=" + user.getUserIdentifier() + ",");
+                professionalUserData.add(ProfessionalUserBuilder.fromProfessionalRefreshUser(user));
+            } catch (Exception e) {
+                String errorMessage = "Error serializing user: " + user.getUserIdentifier();
+                log.error(errorMessage, e);
+                processMonitorDto.addProcessStep(errorMessage);
+                throw new ServiceException(errorMessage, e);
+            }
         }
 
         userRefreshQueueRepository
