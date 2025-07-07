@@ -340,10 +340,13 @@ end;
 
 /*
  * PRIVATELAW "fee-paid-judge" Org role mapping.
+ * Made obsolete in DTSAM-932 - rule will be disabled when PRIVATELAW_WA_1_8 is enabled.
+ * To be removed in DTSAM-964.
  */
 rule "v1_6_privatelaw_fee_paid_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_8.getValue())
   $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy Circuit Judge-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge-Fee-Paid",
                                         "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid",
@@ -381,6 +384,52 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : v1_6_privatelaw_fee_paid_judge_org_role");
+end;
+
+/*
+ * PRIVATELAW "fee-paid-judge" Org role mapping for v1_8.
+ * The fee-paid-judge not able to make booking outside of their CFT region - Private Law
+ * see DTSAM-932
+ */
+rule "v1_8_privatelaw_fee_paid_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_8.getValue())
+  $joh: JudicialOfficeHolder(office in ("PRIVATELAW Deputy Circuit Judge-Fee-Paid",
+                                        "PRIVATELAW Deputy District Judge-Fee-Paid",
+                                        "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid",
+                                        "PRIVATELAW Recorder-Fee-Paid",
+                                        "PRIVATELAW Deputy District Judge – PRFD-Fee-Paid",
+                                        "PRIVATELAW Deputy District Judge – (MC)-Fee-Paid",
+                                        "PRIVATELAW Deputy District Judge – (MC)-Sitting in Retirement-Fee-Paid",
+                                        "PRIVATELAW Deputy High Court Judge-Fee-Paid",
+                                        "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid",
+                                        "PRIVATELAW District Judge (MC) (sitting in retirement)-Fee-Paid",
+                                        "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid"
+                                        ))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PRIVATELAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,routine_work"));
+   attribute.put("bookable", JacksonUtils.convertObjectIntoJsonNode("true"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("fee-paid-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_8_privatelaw_fee_paid_judge_org_role");
 end;
 
 /*
