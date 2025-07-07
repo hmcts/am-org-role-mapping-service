@@ -9,6 +9,11 @@
   "uri": "/am/testing-support/prm/findUserChanges",
   "productName": "Organisation Role Mapping",
   "operationName": "Find User Changes",
+  "request": {
+    "queryParams": {
+      "since": "${[scenarioContext][customValues][yesterday]}T00:00:00"
+    }
+  },
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
