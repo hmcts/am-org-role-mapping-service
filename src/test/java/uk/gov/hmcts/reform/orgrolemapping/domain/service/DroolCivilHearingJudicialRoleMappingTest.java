@@ -152,7 +152,8 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         "Salaried",
                         false,
                         List.of("Lead and Deputy Online Judge"),
-                        List.of("judge", "leadership-judge", "hmcts-judiciary", "hearing-viewer"))
+                        List.of("judge", "leadership-judge", "hmcts-judiciary", "hearing-viewer", "task-supervisor",
+                                "case-allocator"))
         );
     }
 
