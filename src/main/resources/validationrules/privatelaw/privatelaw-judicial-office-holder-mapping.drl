@@ -721,3 +721,30 @@ then
       .build());
       logMsg("Rule : v1_7_privatelaw_fl401_judge_salaried_joh");
 end;
+
+/*
+ * "PRIVATELAW Circuit Judge (sitting in retirement)-Fee-Paid" business role mapping to JOH For v1.8.
+ */
+rule "v1_8_privatelaw_circuit_judge_sitting_in_retirement_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_8.getValue())
+   $jap: JudicialAccessProfile(appointment == "Circuit Judge (sitting in retirement)",
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               validateAuthorisation(authorisations, "ABA5"))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("PRIVATELAW Circuit Judge (sitting in retirement)-Fee-Paid")
+      .jurisdiction("PRIVATELAW")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v1_8_privatelaw_circuit_judge_sitting_in_retirement_fee_paid_joh");
+end;
