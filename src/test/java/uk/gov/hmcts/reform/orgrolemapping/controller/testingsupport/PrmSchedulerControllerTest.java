@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -75,10 +77,6 @@ class PrmSchedulerControllerTest {
 
         when(organisationService.getBatchLastRunTimestampEntity()).thenReturn(batchLastRunTimestampEntity);
 
-        if (since != null) {
-            batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
-        }
-
         when(scheduler.findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess())
             .thenReturn(processMonitorDto);
 
@@ -86,6 +84,9 @@ class PrmSchedulerControllerTest {
             ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
 
         assertEquals(response, controller.findOrganisationChanges(since));
+
+        verify(batchLastRunTimestampRepository,
+            times(since != null ? 1 : 0)).save(batchLastRunTimestampEntity);
     }
 
     @Test
@@ -103,10 +104,6 @@ class PrmSchedulerControllerTest {
 
         when(organisationService.getBatchLastRunTimestampEntity()).thenReturn(batchLastRunTimestampEntity);
 
-        if (since != null) {
-            batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
-        }
-
         ResponseEntity<Object> response =
             ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
 
@@ -114,6 +111,9 @@ class PrmSchedulerControllerTest {
             .thenReturn(processMonitorDto);
 
         assertEquals(response, controller.findUserChanges(since));
+
+        verify(batchLastRunTimestampRepository,
+            times(since != null ? 1 : 0)).save(batchLastRunTimestampEntity);
     }
 
     @Test

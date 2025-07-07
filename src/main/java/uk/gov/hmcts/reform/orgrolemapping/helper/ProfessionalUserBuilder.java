@@ -39,6 +39,8 @@ public class ProfessionalUserBuilder {
             userData.setOrganisationProfileIds(
                 String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));
         } else {
+            // OrganisationProfileIds is a comma separated string of Ids,
+            // if none exist, we need to set it to an empty string.
             userData.setOrganisationProfileIds("");
         }
 
