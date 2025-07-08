@@ -63,12 +63,13 @@ public class UserRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrati
     }
 
     @Test
-    public void shouldNotUpsertToUserRefreshQueueNoOrganisationProfileIds() {
+    public void upsertToUserRefreshQueueForLastUpdated_whenNoOrganisationProfileIds() {
 
         // GIVEN
         int id = 2;
         Integer accessTypeMinVersion = 2;
-        List<ProfessionalUserData> professionalUserData = List.of(getProfessionalUserDataFromRefreshuser(id));
+        List<ProfessionalUserData> professionalUserData =
+            List.of(buildProfessionalUserDataWithNoOrganisationProfileIds(id));
 
         // WHEN
         userRefreshQueueRepository
@@ -78,7 +79,9 @@ public class UserRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrati
         assertSingleUserRefreshQueue(String.valueOf(id), accessTypeMinVersion);
     }
 
-    private ProfessionalUserData getProfessionalUserDataFromRefreshuser(int id) {
+    private ProfessionalUserData buildProfessionalUserDataWithNoOrganisationProfileIds(int id) {
+        // Use exisiting helper function to convert from `refreshUser` object
+        // so we format the empty list into a 'CSV' using the same techinque.
         RefreshUser refreshUser = refreshUser(id);
         refreshUser.getOrganisationInfo().setOrganisationProfileIds(null);
         ProfessionalUserData professionalUserData =
@@ -103,6 +106,7 @@ public class UserRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrati
         assertEquals("{}", userRefreshEntity.getAccessTypes());
         assertEquals("org " + id, userRefreshEntity.getOrganisationId());
         assertEquals("ACTIVE", userRefreshEntity.getOrganisationStatus());
+        // Id 2 has no organisation profile ids
         if ("2".equals(id)) {
             assertEquals(0, Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).size());
         } else {
