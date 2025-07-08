@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -81,7 +82,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * New Organisations (PageSize 1) - Insert organisations to an empty list.
+     * New Organisations (PageSize=1, Pages=3) - Insert organisations to an empty list.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -175,12 +176,16 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         Integer numberOfPages = (fileNames.size() + roundingOffSet) / pageSize;
         String moreAvailable;
         String lastRecordInPage;
+        String searchAfter;
         // loop the stub calls
         for (int pageNo = 1; pageNo <= numberOfPages; pageNo++) {
             moreAvailable = pageNo == numberOfPages ? "false" : "true";
             lastRecordInPage = pageNo == numberOfPages ? null : String.valueOf(pageNo);
+            // 1st page has no searchAfter
+            searchAfter = pageNo == 1 ? null : String.valueOf(pageNo - 1);
             // stub the PRD service call with response for test scenario
-            stubPrdRetrieveOrganisationsByProfile(fileNames, moreAvailable, lastRecordInPage, pageSize.toString());
+            stubPrdRetrieveOrganisationsByProfile(fileNames, moreAvailable, lastRecordInPage, pageSize.toString(),
+                searchAfter);
         }
 
         // WHEN
@@ -189,7 +194,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
 
         // THEN
         if (!fileNames.isEmpty()) {
-            verifySingleCallToPrd(pageSize);
+            verifyMultipleCallsToPrd(pageSize,numberOfPages);
         }
         logAfterStatus(processMonitorDto);
 
@@ -257,20 +262,29 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         logObject("OrganisationRefreshQueueRepository: BEFORE", organisationRefreshQueueRepository.findAll());
     }
 
-    private void verifySingleCallToPrd(Integer pageSize) {
+    private void verifyMultipleCallsToPrd(Integer pageSize, Integer noOfCalls) {
         var allCallEvents = logWiremockPostCalls(STUB_ID_PRD_RETRIEVE_ORGANISATIONS);
         // verify single call
-        assertEquals(1, allCallEvents.size(),
+        assertEquals(noOfCalls, allCallEvents.size(),
             "Unexpected number of calls to PRD service");
-        var event = allCallEvents.get(0);
-        // verify response status
-        assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
-            "Response pageSize mismatch");
-        // verify response status
-        assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
-            "Response status mismatch");
-        assertEquals("false",  event.getResponse().getHeaders().getHeader(MORE_AVAILABLE).firstValue(),
-            "Response moreAvilable mismatch");
+        ServeEvent event;
+        for (int callNo = 1; callNo <= noOfCalls; callNo++) {
+            event = allCallEvents.get(callNo - 1);
+            // verify response status
+            assertEquals(TEST_PAGE_SIZE,
+                event.getRequest().getQueryParams().get("pageSize").firstValue(),
+                "Response pageSize mismatch on call " + callNo);
+            // verify response status
+            assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
+                "Response status mismatch on call " + callNo);
+            // Calls are listed in reserve, so the first call is the last page
+            assertEquals(callNo == 1 ? "false" : "true",
+                event.getResponse().getHeaders().getHeader(MORE_AVAILABLE).firstValue(),
+                "Response moreAvilable mismatch on call " + callNo);
+            assertEquals(noOfCalls == callNo ? "" : String.valueOf(noOfCalls - callNo),
+                event.getResponse().getHeaders().getHeader(SEARCH_AFTER).firstValue(),
+                "Response searchAfter mismatch on call " + callNo);
+        }
     }
 
 }
