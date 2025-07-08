@@ -624,7 +624,7 @@ then
       .attributes(attribute)
       .authorisations($joh.getTicketCodes())
       .build());
-      logMsg("Rule : v21_civil_task_supervisor_org_role");
+      logMsg("Rule : v2_5_civil_task_supervisor_org_role");
 end;
 
 /*
