@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,12 +85,15 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         assertBatchLastRunTimestampEntity(true);
         // verify that user1 is NOT updated
         assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, INACTIVE,
+            new String[] {"SOLICITOR_PROFILE"},
             OLD_USER_LAST_UPDATED, true, false);
         // verify that user2 is updated
         assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_3, ACTIVE,
+            new String[] {"SOLICITOR_PROFILE", "ODG_PROFILE"},
             NEW_USER_LAST_UPDATED, true, false);
-        // verify that user2 is deleted
+        // verify that user3 is deleted
         assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_3, ACTIVE,
+            new String[] {"SOLICITOR_PROFILE"},
             NEW_USER_LAST_UPDATED, true, true);
     }
 
@@ -113,10 +117,9 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         // verify the last user run date time has been updated
         assertBatchLastRunTimestampEntity(true);
         assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, ACTIVE,
+            new String[] {"SOLICITOR_PROFILE"},
             NEW_USER_LAST_UPDATED, true, false);
     }
-
-
 
     private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
 
@@ -150,7 +153,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     private void assertUserRefreshQueueEntitiesInDb(String userId, String organisationId,
-        String organisationStatus,
+        String organisationStatus, String[] organisationProfileIds,
         LocalDateTime userLastUpdated, boolean isUpdated, boolean isDeleted) {
         var userRefreshQueueEntity = userRefreshQueueRepository.findById(userId);
         assertTrue(userRefreshQueueEntity.isPresent(),
@@ -171,6 +174,28 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(isDeleted,
             userRefreshQueueEntity.get().getDeleted() != null,
             "UserRefreshQueueEntity deleted mismatch for userId: " + userId);
+        assertOrganisationProfileIds(organisationProfileIds,
+            userRefreshQueueEntity.get().getOrganisationProfileIds(), userId);
+        assertAccessTypes(organisationProfileIds, userRefreshQueueEntity.get().getAccessTypes(),
+            userId);
+    }
+
+    private void assertAccessTypes(String[] expectedOrganisationProfileIds, String accessTypes,
+        String userId) {
+        Arrays.asList(expectedOrganisationProfileIds).forEach(profileId -> {
+            assertTrue(accessTypes.contains(profileId),
+                "UserRefreshQueueEntity accessTypes does not contain " + profileId
+                + " for userId: " + userId);
+        });
+    }
+
+    private void assertOrganisationProfileIds(String[] expectedOrganisationProfileIds,
+        String[] actualOrganisationProfileIds, String userId) {
+        assertEquals(expectedOrganisationProfileIds.length, actualOrganisationProfileIds.length,
+            "UserRefreshQueueEntity organisationProfileIds.length mismatch for userId: " + userId);
+        assertEquals(Arrays.asList(expectedOrganisationProfileIds),
+            Arrays.asList(actualOrganisationProfileIds),
+            "UserRefreshQueueEntity organisationProfileIds mismatch for userId: " + userId);
     }
 
     private boolean assertLastUpdatedNow(LocalDateTime lastUpdated, int minutes) {
