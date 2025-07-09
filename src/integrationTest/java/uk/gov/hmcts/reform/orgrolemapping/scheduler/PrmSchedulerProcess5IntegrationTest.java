@@ -24,7 +24,9 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         LocalDateTime.parse("2020-01-01T13:30:01.046Z", DTF);
     private static final LocalDateTime NEW_USER_LAST_UPDATED =
         LocalDateTime.parse("2023-09-19T15:36:33.653Z", DTF);
-    private static final String ORGANISATION_ID_1 = "1";
+    private static final String ACTIVE = "ACTIVE";
+    private static final String INACTIVE = "INACTIVE";
+    private static final String ORGANISATION_ID_3 = "3";
     private static final Integer TOLERANCE_MINUTES = 1;
 
     @Autowired
@@ -57,6 +59,41 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
+     * No Change / Update - No Change 1 user. Update 1 Existing User.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user1organisation3.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user2organisation3.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user3organisation3.sql"
+    })
+    void testExistingUsers() {
+
+        // verify that a user is updated
+        runTest(List.of("/SchedulerTests/PrdRetrieveUsers/user1_scenario_02.json",
+                "/SchedulerTests/PrdRetrieveUsers/user2_scenario_01.json",
+                "/SchedulerTests/PrdRetrieveUsers/user3_scenario_01.json"),
+            EndStatus.SUCCESS, 1);
+
+        // Verify no active users in the refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(3);
+
+        // verify the last user run date time has been updated
+        assertBatchLastRunTimestampEntity(true);
+        // verify that user1 is NOT updated
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, INACTIVE,
+            OLD_USER_LAST_UPDATED, true, false);
+        // verify that user2 is updated
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_3, ACTIVE,
+            NEW_USER_LAST_UPDATED, true, false);
+        // verify that user2 is deleted
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_3, ACTIVE,
+            NEW_USER_LAST_UPDATED, true, true);
+    }
+
+    /**
      * Update - New User.
      */
     @Test
@@ -75,8 +112,11 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
 
         // verify the last user run date time has been updated
         assertBatchLastRunTimestampEntity(true);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, ACTIVE,
+            NEW_USER_LAST_UPDATED, true, false);
     }
+
+
 
     private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
 
@@ -110,6 +150,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     private void assertUserRefreshQueueEntitiesInDb(String userId, String organisationId,
+        String organisationStatus,
         LocalDateTime userLastUpdated, boolean isUpdated, boolean isDeleted) {
         var userRefreshQueueEntity = userRefreshQueueRepository.findById(userId);
         assertTrue(userRefreshQueueEntity.isPresent(),
@@ -118,6 +159,8 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
             "UserRefreshQueueEntity is not active for userId: " + userId);
         assertEquals(organisationId, userRefreshQueueEntity.get().getOrganisationId(),
             "UserRefreshQueueEntity organisationId mismatch for userId: " + userId);
+        assertEquals(organisationStatus, userRefreshQueueEntity.get().getOrganisationStatus(),
+            "UserRefreshQueueEntity oragnisationStatus mismatch for userId: " + userId);
         assertEquals(isUpdated,
             assertLastUpdatedNow(userRefreshQueueEntity.get().getLastUpdated(), TOLERANCE_MINUTES),
             "UserRefreshQueueEntity lastUpdated mismatch for userId: " + userId + ", "
