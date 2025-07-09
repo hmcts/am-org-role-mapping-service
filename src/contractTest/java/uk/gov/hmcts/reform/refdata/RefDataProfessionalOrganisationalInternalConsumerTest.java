@@ -38,8 +38,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
 @PactTestFor(providerName = "referenceData_organisationalInternal", port = "8090")
-@ContextConfiguration(classes = {RefDataProfessionalConsumerApplication.class})
-@TestPropertySource(properties = {"feign.client.config.prdClient.url=http://localhost:8090"})
+@ContextConfiguration(classes = {RefDataConsumerApplication.class})
+@TestPropertySource(properties = {
+    "feign.client.config.crdclient.url=http://localhost:8991",
+    "feign.client.config.prdClient.url=http://localhost:8090"
+})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataProfessionalOrganisationalInternalConsumerTest {
 
