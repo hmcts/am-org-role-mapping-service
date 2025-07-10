@@ -45,6 +45,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
+        "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
     })
     void testNoUsers() {
@@ -60,11 +61,12 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * No Change / Update - No Change 1 user. Update 1 Existing User.
+     * 1 x No Change / 1 x Update / 1 x Delete.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
+        "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_user1organisation3.sql",
         "classpath:sql/prm/user_refresh_queue/insert_user2organisation3.sql",
@@ -85,15 +87,15 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         assertBatchLastRunTimestampEntity(true);
         // verify that user1 is NOT updated
         assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, INACTIVE,
-            new String[] {"SOLICITOR_PROFILE"},
+            new String[] {"SOLICITOR_PROFILE"}, 2,
             OLD_USER_LAST_UPDATED, true, false);
         // verify that user2 is updated
         assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_3, ACTIVE,
-            new String[] {"SOLICITOR_PROFILE", "ODG_PROFILE"},
+            new String[] {"SOLICITOR_PROFILE", "ODG_PROFILE"}, 2,
             NEW_USER_LAST_UPDATED, true, false);
         // verify that user3 is deleted
         assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_3, ACTIVE,
-            new String[] {"SOLICITOR_PROFILE"},
+            new String[] {"SOLICITOR_PROFILE"}, 2,
             NEW_USER_LAST_UPDATED, true, true);
     }
 
@@ -103,6 +105,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
+        "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
     })
     void testNewUser() {
@@ -117,7 +120,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         // verify the last user run date time has been updated
         assertBatchLastRunTimestampEntity(true);
         assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, ACTIVE,
-            new String[] {"SOLICITOR_PROFILE"},
+            new String[] {"SOLICITOR_PROFILE"}, 1,
             NEW_USER_LAST_UPDATED, true, false);
     }
 
@@ -153,7 +156,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     private void assertUserRefreshQueueEntitiesInDb(String userId, String organisationId,
-        String organisationStatus, String[] organisationProfileIds,
+        String organisationStatus, String[] organisationProfileIds, Integer accessTypeMinVersion,
         LocalDateTime userLastUpdated, boolean isUpdated, boolean isDeleted) {
         var userRefreshQueueEntity = userRefreshQueueRepository.findById(userId);
         assertTrue(userRefreshQueueEntity.isPresent(),
@@ -164,6 +167,8 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
             "UserRefreshQueueEntity organisationId mismatch for userId: " + userId);
         assertEquals(organisationStatus, userRefreshQueueEntity.get().getOrganisationStatus(),
             "UserRefreshQueueEntity oragnisationStatus mismatch for userId: " + userId);
+        assertEquals(accessTypeMinVersion, userRefreshQueueEntity.get().getAccessTypesMinVersion(),
+            "UserRefreshQueueEntity accessTypesMinVersio mismatch for userId: " + userId);
         assertEquals(isUpdated,
             assertLastUpdatedNow(userRefreshQueueEntity.get().getLastUpdated(), TOLERANCE_MINUTES),
             "UserRefreshQueueEntity lastUpdated mismatch for userId: " + userId + ", "
