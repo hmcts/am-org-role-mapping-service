@@ -94,7 +94,8 @@ class DroolCivilJudicialRoleMappingTest extends DroolBase {
         "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',5,true",
         "CIVIL High Court Judge-Salaried,'judge,circuit-judge,hmcts-judiciary',11,false",
 
-        "CIVIL Lead and Deputy Online Judge-Salaried,'judge,leadership-judge,hmcts-judiciary',1,false",
+        "CIVIL Lead and Deputy Online Judge-Salaried,'judge,leadership-judge,hmcts-judiciary,"
+                + "task-supervisor,case-allocator',1,false",
     })
     void shouldReturnSalariedRoles(String setOffice, String expectedRoles, String region, boolean expectMultiRegion) {
 
