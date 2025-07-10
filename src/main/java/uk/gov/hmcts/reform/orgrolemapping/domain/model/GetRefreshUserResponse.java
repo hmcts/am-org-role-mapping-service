@@ -11,12 +11,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganisationsResponse {
+public class GetRefreshUserResponse {
 
     // NB: corresponds to PRD:
-    //        src/main/java/uk/gov/hmcts/reform/professionalapi/controller/response/OrganisationsDetailResponse.java
+    //         src/main/java/uk/gov/hmcts/reform/professionalapi/controller/response/GetRefreshUsersResponse.java
 
-    private List<OrganisationInfo> organisations;
-    private Boolean moreAvailable;
+    private List<RefreshUser> users;
+    private String lastRecordInPage;
+    private boolean moreAvailable;
 
 }

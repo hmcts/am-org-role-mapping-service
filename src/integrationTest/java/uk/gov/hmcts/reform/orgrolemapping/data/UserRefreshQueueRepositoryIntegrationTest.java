@@ -9,11 +9,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.SOLICITOR_PROFILE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildProfessionalUserData;
 
 @Transactional
@@ -27,22 +28,56 @@ public class UserRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrati
 
     @Test
     public void shouldUpsertToUserRefreshQueue() {
-        List<ProfessionalUserData> professionalUserData = List.of(buildProfessionalUserData(1));
 
-        userRefreshQueueRepository.upsertToUserRefreshQueue(jdbcTemplate, professionalUserData, 1);
+        // GIVEN
+        String id = "1";
+        Integer accessTypeMinVersion = 1;
+        List<ProfessionalUserData> professionalUserData = List.of(buildProfessionalUserData(id));
 
-        List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
-        UserRefreshQueueEntity userRefreshEntity = userRefreshQueueEntities.get(0);
+        // WHEN
+        userRefreshQueueRepository.upsertToUserRefreshQueue(jdbcTemplate, professionalUserData, accessTypeMinVersion);
 
-        assertEquals("1", userRefreshEntity.getUserId());
+        // THEN
+        assertSingleUserRefreshQueue(id, accessTypeMinVersion);
+    }
+
+    @Test
+    public void shouldUpsertToUserRefreshQueueForLastUpdated() {
+
+        // GIVEN
+        String id = "123";
+        Integer accessTypeMinVersion = 2;
+        List<ProfessionalUserData> professionalUserData = List.of(buildProfessionalUserData(id));
+
+        // WHEN
+        userRefreshQueueRepository
+            .upsertToUserRefreshQueueForLastUpdated(jdbcTemplate, professionalUserData, accessTypeMinVersion);
+
+        // THEN
+        assertSingleUserRefreshQueue(id, accessTypeMinVersion);
+
+    }
+
+    private void assertSingleUserRefreshQueue(String id, Integer expectedAccessTypeMinVersion) {
+
+        Optional<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findById(id);
+        assertTrue(userRefreshQueueEntities.isPresent(), "UserRefreshQueueEntity should be present");
+        UserRefreshQueueEntity userRefreshEntity = userRefreshQueueEntities.get();
+
+        // the following comparison is based on `IntTestDataBuilder.buildProfessionalUserData(id)`
+        assertEquals(id, userRefreshEntity.getUserId());
         assertNotNull(userRefreshEntity.getLastUpdated());
         assertNotNull(userRefreshEntity.getUserLastUpdated());
         assertNotNull(userRefreshEntity.getDeleted());
         assertEquals("{}", userRefreshEntity.getAccessTypes());
-        assertEquals("org 1", userRefreshEntity.getOrganisationId());
+        assertEquals("org " + id, userRefreshEntity.getOrganisationId());
         assertEquals("ACTIVE", userRefreshEntity.getOrganisationStatus());
         assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
         assertEquals(0, userRefreshEntity.getRetry());
         assertNotNull(userRefreshEntity.getRetryAfter());
+
+        // also verify
+        assertEquals(expectedAccessTypeMinVersion, userRefreshEntity.getAccessTypesMinVersion());
     }
+
 }
