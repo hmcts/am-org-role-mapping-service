@@ -46,6 +46,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
         "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
     })
     void testNoUsers() {
@@ -67,6 +68,8 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
         "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation3.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_user1organisation3.sql",
         "classpath:sql/prm/user_refresh_queue/insert_user2organisation3.sql",
@@ -105,7 +108,9 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/batch_last_run_timestamp/init_batch_last_run_timestamp.sql",
-        "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
+        "classpath:sql/prm/access_types/insert_highversion_access_type.sql",
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation3.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
     })
     void testNewUser() {
@@ -120,7 +125,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         // verify the last user run date time has been updated
         assertBatchLastRunTimestampEntity(true);
         assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, ACTIVE,
-            new String[] {"SOLICITOR_PROFILE"}, 1,
+            new String[] {"SOLICITOR_PROFILE"}, 50,
             NEW_USER_LAST_UPDATED, true, false);
     }
 
