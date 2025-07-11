@@ -35,7 +35,14 @@ public class ProfessionalUserBuilder {
         userData.setAccessTypes(JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
         userData.setOrganisationId(user.getOrganisationInfo().getOrganisationIdentifier());
         userData.setOrganisationStatus(user.getOrganisationInfo().getStatus());
-        userData.setOrganisationProfileIds(String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));
+        if (user.getOrganisationInfo().getOrganisationProfileIds() != null) {
+            userData.setOrganisationProfileIds(
+                String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));
+        } else {
+            // OrganisationProfileIds is a comma separated string of Ids,
+            // if none exist, we need to set it to an empty string.
+            userData.setOrganisationProfileIds("");
+        }
 
         return userData;
     }
