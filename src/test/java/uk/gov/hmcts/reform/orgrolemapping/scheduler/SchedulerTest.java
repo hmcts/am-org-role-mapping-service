@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
@@ -30,17 +29,12 @@ class SchedulerTest {
     @Mock
     private ProfessionalUserService professionalUserService = mock(ProfessionalUserService.class);
 
-    @Mock
-    private OrganisationRefreshQueueRepository organisationRefreshQueueRepository =
-        mock(OrganisationRefreshQueueRepository.class);
-
     private Scheduler scheduler;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        scheduler = new Scheduler(caseDefinitionService, organisationService, professionalUserService,
-            organisationRefreshQueueRepository);
+        scheduler = new Scheduler(caseDefinitionService, organisationService, professionalUserService);
     }
 
     @Test
@@ -92,6 +86,19 @@ class SchedulerTest {
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
         assertNotNull(returnedProcessMonitorDto);
         verify(organisationService, times(1)).findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
+    }
+
+    @Test
+    void findUserChangesAndInsertIntoUserRefreshQueueTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        when(professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler
+            .findUserChangesAndInsertIntoUserRefreshQueue();
+        assertNotNull(returnedProcessMonitorDto);
+        verify(professionalUserService, times(1)).findUserChangesAndInsertIntoUserRefreshQueue();
     }
 
 }

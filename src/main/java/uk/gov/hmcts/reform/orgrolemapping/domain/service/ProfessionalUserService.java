@@ -2,28 +2,42 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
+import uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ISO_DATE_TIME_FORMATTER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
 
 @Service
@@ -32,9 +46,14 @@ public class ProfessionalUserService {
 
     public static final String PROCESS4_NAME = "PRM Process 4 - Find Users with Stale Organisations";
     private final PrdService prdService;
+
+    private final AccessTypesRepository accessTypesRepository;
+    private final BatchLastRunTimestampRepository batchLastRunTimestampRepository;
+    private final DatabaseDateTimeRepository databaseDateTimeRepository;
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final String pageSize;
+    private final String tolerance;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final TransactionTemplate transactionTemplate;
     private final String retryOneIntervalMin;
@@ -45,6 +64,9 @@ public class ProfessionalUserService {
 
     public ProfessionalUserService(
             PrdService prdService,
+            AccessTypesRepository accessTypesRepository,
+            BatchLastRunTimestampRepository batchLastRunTimestampRepository,
+            DatabaseDateTimeRepository databaseDateTimeRepository,
             OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
             UserRefreshQueueRepository userRefreshQueueRepository,
             NamedParameterJdbcTemplate jdbcTemplate,
@@ -57,11 +79,18 @@ public class ProfessionalUserService {
             String retryThreeIntervalMin,
             @Value("${professional.refdata.pageSize}")
             String pageSize,
+            @Value("${groupAccess.lastRunTimeTolerance}")
+            String tolerance,
             ProcessEventTracker processEventTracker) {
         this.prdService = prdService;
+
+        this.accessTypesRepository = accessTypesRepository;
+        this.batchLastRunTimestampRepository = batchLastRunTimestampRepository;
+        this.databaseDateTimeRepository = databaseDateTimeRepository;
         this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.pageSize = pageSize;
+        this.tolerance = tolerance;
         this.jdbcTemplate = jdbcTemplate;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
@@ -233,13 +262,111 @@ public class ProfessionalUserService {
         }
     }
 
+    @Transactional
+    public ProcessMonitorDto findUserChangesAndInsertIntoUserRefreshQueue() {
+        String processName = "PRM Process 5 - Find User Changes";
+        log.info("Starting {}", processName);
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
+        processEventTracker.trackEventStarted(processMonitorDto);
+
+        String lastRecordInPage = null; // declare here for use in catch block
+
+        try {
+            final DatabaseDateTime batchRunStartTime = databaseDateTimeRepository.getCurrentTimeStamp();
+            List<AccessTypesEntity> allAccessTypes = accessTypesRepository.findAll();
+            AccessTypesEntity accessTypesEntity = allAccessTypes.get(0);
+            if (allAccessTypes.size() != 1) {
+                throw new ServiceException("Single AccessTypesEntity not found");
+            }
+            List<BatchLastRunTimestampEntity> allBatchLastRunTimestampEntities = batchLastRunTimestampRepository
+                    .findAll();
+            if (allBatchLastRunTimestampEntities.size() != 1) {
+                throw new ServiceException("Single BatchLastRunTimestampEntity not found");
+            }
+            BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
+            LocalDateTime orgLastBatchRunTime = batchLastRunTimestampEntity.getLastUserRunDatetime();
+
+            int toleranceSeconds = Integer.parseInt(tolerance);
+            LocalDateTime sinceTime = orgLastBatchRunTime.minusSeconds(toleranceSeconds);
+            String formattedSince = ISO_DATE_TIME_FORMATTER.format(sinceTime);
+
+            Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
+
+            // prep for first call to retrieveUsers
+            boolean foundUsers = false;
+            boolean moreAvailable = true;
+            String processStep = "attempting first retrieveUsers";
+
+            while (moreAvailable) {
+                processMonitorDto.addProcessStep(processStep);
+                GetRefreshUserResponse refreshUserResponse = prdService
+                        .retrieveUsers(formattedSince, Integer.valueOf(pageSize), lastRecordInPage).getBody();
+
+                if (refreshUserResponse != null && CollectionUtils.isNotEmpty(refreshUserResponse.getUsers())) {
+                    foundUsers = true;
+                    writeAllToUserRefreshQueue(refreshUserResponse, accessTypeMinVersion, processMonitorDto);
+                } else {
+                    break;
+                }
+
+                // prep for next call to retrieveUsers
+                moreAvailable = refreshUserResponse.isMoreAvailable();
+                lastRecordInPage = refreshUserResponse.getLastRecordInPage();
+                processStep = "attempting retrieveUsers from lastRecordInPage=" + lastRecordInPage;
+            }
+
+            // if process complete and users were found, update the batch last run timestamp
+            if (foundUsers) {
+                batchLastRunTimestampEntity.setLastUserRunDatetime(LocalDateTime.ofInstant(batchRunStartTime.getDate(),
+                        ZoneId.systemDefault()));
+                batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
+            } else {
+                processMonitorDto.appendToLastProcessStep(" : No users found to process.");
+            }
+        } catch (Exception exception) {
+            processMonitorDto.markAsFailed(exception.getMessage()
+                    + (lastRecordInPage == null ? "" : ", failed at lastRecordInPage=" + lastRecordInPage));
+            processEventTracker.trackEventCompleted(processMonitorDto);
+            throw exception;
+        }
+
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
+
+        log.info("Completed {}", processName);
+        return processMonitorDto;
+    }
+
+    private void writeAllToUserRefreshQueue(GetRefreshUserResponse usersResponse, Integer accessTypeMinVersion,
+                                            ProcessMonitorDto processMonitorDto) {
+        String processStep = "attempting writeAllToUserRefreshQueue for ";
+        processMonitorDto.addProcessStep(processStep);
+
+        List<ProfessionalUserData> professionalUserData = new ArrayList<>();
+        for (RefreshUser user : usersResponse.getUsers()) {
+            try {
+                processMonitorDto.appendToLastProcessStep("user=" + user.getUserIdentifier() + ",");
+                professionalUserData.add(ProfessionalUserBuilder.fromProfessionalRefreshUser(user));
+            } catch (Exception e) {
+                String errorMessage = "Error serializing user: " + user.getUserIdentifier();
+                log.error(errorMessage, e);
+                processMonitorDto.addProcessStep(errorMessage);
+                throw new ServiceException(errorMessage, e);
+            }
+        }
+
+        userRefreshQueueRepository
+            .upsertToUserRefreshQueueForLastUpdated(jdbcTemplate, professionalUserData, accessTypeMinVersion);
+        processMonitorDto.appendToLastProcessStep(" : COMPLETED");
+    }
+
     private void writeAllToUserRefreshQueue(UsersByOrganisationResponse response,
-                                            Integer accessTypesMinVersion) {
+        Integer accessTypesMinVersion) {
         List<ProfessionalUserData> professionalUserData = getProfessionalUserData(response);
 
         if (!professionalUserData.isEmpty()) {
             userRefreshQueueRepository
-                    .upsertToUserRefreshQueue(jdbcTemplate, professionalUserData, accessTypesMinVersion);
+                .upsertToUserRefreshQueue(jdbcTemplate, professionalUserData, accessTypesMinVersion);
         }
     }
 

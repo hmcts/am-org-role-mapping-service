@@ -13,7 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 public class AccessTypeJurisdiction {
 
+    // NB: corresponds to CCD-Def-Store:
+    //  repository/src/main/java/uk/gov/hmcts/ccd/definition/store/repository/model/AccessTypeJurisdictionResult.java
+
+
     private String jurisdictionId;
     private String jurisdictionName;
     private List<AccessType> accessTypes;
+
 }
