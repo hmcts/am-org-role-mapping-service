@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +37,7 @@ class PrmSchedulerControllerTest {
         batchLastRunTimestampRepository, organisationService);
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -75,10 +77,6 @@ class PrmSchedulerControllerTest {
 
         when(organisationService.getBatchLastRunTimestampEntity()).thenReturn(batchLastRunTimestampEntity);
 
-        if (since != null) {
-            batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
-        }
-
         when(scheduler.findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess())
             .thenReturn(processMonitorDto);
 
@@ -86,6 +84,9 @@ class PrmSchedulerControllerTest {
             ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
 
         assertEquals(response, controller.findOrganisationChanges(since));
+
+        verify(batchLastRunTimestampRepository,
+            times(since != null ? 1 : 0)).save(batchLastRunTimestampEntity);
     }
 
     @Test
@@ -93,4 +94,30 @@ class PrmSchedulerControllerTest {
         process3Test(null);
     }
 
+    @Test
+    void process5Test() {
+        process5Test("2023-10-01T13:40:03");
+    }
+
+    private void process5Test(String since) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process5");
+
+        when(organisationService.getBatchLastRunTimestampEntity()).thenReturn(batchLastRunTimestampEntity);
+
+        ResponseEntity<Object> response =
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+
+        when(scheduler.findUserChangesAndInsertIntoUserRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        assertEquals(response, controller.findUserChanges(since));
+
+        verify(batchLastRunTimestampRepository,
+            times(since != null ? 1 : 0)).save(batchLastRunTimestampEntity);
+    }
+
+    @Test
+    void process5Test_noParam() {
+        process5Test(null);
+    }
 }
