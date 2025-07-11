@@ -85,7 +85,7 @@ class ProfessionalRefreshOrchestratorTest {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
 
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
@@ -126,7 +126,7 @@ class ProfessionalRefreshOrchestratorTest {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
         userRefreshQueueEntity.setDeleted(LocalDateTime.now());
 
         doReturn(userRefreshQueueEntity)
@@ -168,7 +168,7 @@ class ProfessionalRefreshOrchestratorTest {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
         userRefreshQueueEntity.setDeleted(null);
         userRefreshQueueEntity.setOrganisationStatus("abcdefg");
         //TODO this should be non ACTIVE status
@@ -211,7 +211,7 @@ class ProfessionalRefreshOrchestratorTest {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
         userRefreshQueueEntity.setDeleted(null);
         userRefreshQueueEntity.setOrganisationStatus("abcdefg");
         //TODO this should be non ACTIVE status
