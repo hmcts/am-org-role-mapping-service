@@ -14,7 +14,7 @@ plugins {
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
     id 'org.owasp.dependencycheck' version '10.0.4'
     id 'org.flywaydb.flyway' version '9.22.3'
-    id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.33'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.34'
 }
 
 ext['snakeyaml.version'] = '2.4'
