@@ -638,7 +638,7 @@ public class TestDataBuilder {
     public static Object buildUserRefreshQueueEntity(String userId) {
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
         userRefreshQueueEntity.setDeleted(null);
         userRefreshQueueEntity.setOrganisationStatus("abc");
         userRefreshQueueEntity.setOrganisationId("OrgId");

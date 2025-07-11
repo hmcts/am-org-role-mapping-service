@@ -32,7 +32,7 @@ public class UserRefreshQueueEntity {
     private LocalDateTime lastUpdated;
 
     @Column(name = "access_types_min_version", nullable = false)
-    private Long accessTypesMinVersion;
+    private Integer accessTypesMinVersion;
 
     @Column(name = "deleted")
     private LocalDateTime deleted;

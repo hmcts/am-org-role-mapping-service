@@ -62,7 +62,7 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
     show-sql: false
     properties:

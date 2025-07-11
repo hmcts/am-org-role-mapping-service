@@ -1,4 +1,6 @@
 spring:
+  cache:
+    type: none
   security:
     oauth2:
       client:
