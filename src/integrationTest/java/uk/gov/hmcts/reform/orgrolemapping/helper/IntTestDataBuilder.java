@@ -9,18 +9,26 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +42,8 @@ public class IntTestDataBuilder {
     private static final String ID_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
     private static final String LONDON = "London";
+
+    public static final String SOLICITOR_PROFILE = "SOLICITOR_PROFILE";
 
     private IntTestDataBuilder() {
     }
@@ -243,6 +253,79 @@ public class IntTestDataBuilder {
                                                                                          boolean moreAvailable) {
         return OrganisationByProfileIdsResponse.builder()
                 .organisationInfo(List.of(orgInfo))
+                .lastRecordInPage(lastRecord)
+                .moreAvailable(moreAvailable)
+                .build();
+    }
+
+    public static UsersOrganisationInfo buildUsersOrganisationInfo(int i, ProfessionalUser user) {
+        return UsersOrganisationInfo.builder()
+                .organisationIdentifier("" + i)
+                .status("ACTIVE")
+                .organisationProfileIds(List.of(SOLICITOR_PROFILE))
+                .users(List.of(user))
+                .build();
+    }
+
+    public static ProfessionalUser buildProfessionalUser(int i) {
+        return ProfessionalUser.builder()
+                .userIdentifier("" + i)
+                .firstName("fName " + i)
+                .lastName("lName " + i)
+                .email("user" + i + "@mail.com")
+                .lastUpdated(LocalDateTime.now())
+                .deleted(LocalDateTime.now())
+                .userAccessTypes(Collections.emptyList())
+                .build();
+    }
+
+    public static UsersByOrganisationResponse buildUsersByOrganisationResponse(UsersOrganisationInfo organisationInfo,
+                                                                               String lastOrgInPage,
+                                                                               String lastUserInPage,
+                                                                               Boolean moreAvailable) {
+        return UsersByOrganisationResponse.builder()
+                .organisationInfo(List.of(organisationInfo))
+                .lastOrgInPage(lastOrgInPage)
+                .lastUserInPage(lastUserInPage)
+                .moreAvailable(moreAvailable)
+                .build();
+    }
+
+    public static ProfessionalUserData buildProfessionalUserData(String i) {
+        return ProfessionalUserData.builder()
+                .userId(i)
+                .userLastUpdated(LocalDateTime.now())
+                .deleted(LocalDateTime.now())
+                .accessTypes("{}")
+                .organisationId("org " + i)
+                .organisationStatus("ACTIVE")
+                .organisationProfileIds(SOLICITOR_PROFILE)
+                .build();
+    }
+
+    public static RefreshUser refreshUser(int i) {
+        return RefreshUser.builder()
+                .userIdentifier("" + i)
+                .lastUpdated(LocalDateTime.now())
+                .userAccessTypes(List.of(userAccessType(1)))
+                .organisationInfo(buildOrganisationInfo(1))
+                .build();
+    }
+
+    public static UserAccessType userAccessType(int i) {
+        return UserAccessType.builder()
+                .jurisdictionId("" + i)
+                .organisationProfileId("" + i)
+                .accessTypeId("" + i)
+                .enabled(true)
+                .build();
+    }
+
+    public static GetRefreshUserResponse buildRefreshUserResponse(RefreshUser user,
+                                                                  String lastRecord,
+                                                                  boolean moreAvailable) {
+        return GetRefreshUserResponse.builder()
+                .users(List.of(user))
                 .lastRecordInPage(lastRecord)
                 .moreAvailable(moreAvailable)
                 .build();

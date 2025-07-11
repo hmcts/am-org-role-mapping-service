@@ -15,7 +15,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
     CRDFeignClient.class,
     PRDFeignClient.class
 })
-public class RefDataCaseworkerConsumerApplication {
+public class RefDataConsumerApplication {
 
     @MockBean
     IdamClient idamClient;
