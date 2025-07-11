@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         LocalDateTime.parse("2020-01-01T13:30:01.046Z", DTF);
     private static final LocalDateTime NEW_USER_LAST_UPDATED =
         LocalDateTime.parse("2023-09-19T15:36:33.653Z", DTF);
+    private static final String SINCE = "1999-12-31T23:57:00";
     private static final String ACTIVE = "ACTIVE";
     private static final String INACTIVE = "INACTIVE";
     private static final String ORGANISATION_ID_3 = "3";
@@ -52,7 +54,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
     void testNoUsers() {
 
         // verify that no users are updated
-        runTest(List.of(), EndStatus.SUCCESS, 1);
+        runTest(List.of(), 1);
 
         // Verify no active users in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(0);
@@ -81,7 +83,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of("/SchedulerTests/PrdRetrieveUsers/user1_scenario_02.json",
                 "/SchedulerTests/PrdRetrieveUsers/user2_scenario_01.json",
                 "/SchedulerTests/PrdRetrieveUsers/user3_scenario_01.json"),
-            EndStatus.SUCCESS, 1);
+            1);
 
         // Verify no active users in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(3);
@@ -117,7 +119,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
 
         // verify that a user is updated
         runTest(List.of("/SchedulerTests/PrdRetrieveUsers/user1_scenario_01.json"),
-            EndStatus.SUCCESS, 1);
+            1);
 
         // Verify no active users in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(1);
@@ -129,22 +131,39 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
             NEW_USER_LAST_UPDATED, true, false);
     }
 
-    private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
+    private void runTest(List<String> fileNames, Integer pageSize) {
 
         // GIVEN
         logBeforeStatus();
-        stubPrdRetrieveUsers(fileNames, "false");
+        int roundingOffSet = pageSize - 1;
+        Integer numberOfPages = fileNames.size() == 0 ? 1 :
+            (fileNames.size() + roundingOffSet) / pageSize;
+        String moreAvailable;
+        String lastRecordInPage;
+        String searchAfter;
+        // loop the stub calls
+        for (int pageNo = 1; pageNo <= numberOfPages; pageNo++) {
+            moreAvailable = pageNo == numberOfPages ? "false" : "true";
+            lastRecordInPage = pageNo == numberOfPages ? null : String.valueOf(pageNo);
+            // 1st page has no searchAfter
+            searchAfter = pageNo == 1 ? null : String.valueOf(pageNo - 1);
+            // stub the PRD service call with response for test scenario
+            stubPrdRetrieveUsers(fileNames, moreAvailable, lastRecordInPage, pageSize.toString(),
+                searchAfter);
+        }
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler
             .findUserChangesAndInsertIntoUserRefreshQueue();
 
         // THEN
-        verifyNoOfCallsToPrd(noOfCallsToPrd);
+        if (!fileNames.isEmpty()) {
+            verifyNoOfCallsToPrd(numberOfPages);
+        }
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports the correct status
-        assertEquals(endStatus, processMonitorDto.getEndStatus());
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
     }
 
     //#region Assertion Helpers: DB Checks
@@ -234,18 +253,27 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         // verify number of calls
         assertEquals(noOfCalls, allCallEvents.size(),
             "Unexpected number of calls to PRD service");
-        if (noOfCalls == 0) {
-            return; // no need to check further if no calls were made
+        ServeEvent event;
+        for (int callNo = 1; callNo <= noOfCalls; callNo++) {
+            event = allCallEvents.get(callNo - 1);
+            // verify response status
+            assertEquals(TEST_PAGE_SIZE,
+                event.getRequest().getQueryParams().get("pageSize").firstValue(),
+                "Response pageSize mismatch on call " + callNo);
+            // verify response since
+            assertEquals(SINCE, event.getRequest().getQueryParams().get("since").firstValue(),
+                "Response since mismatch on call " + callNo);
+            // verify response status
+            assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
+                "Response status mismatch on call " + callNo);
+            // Calls are listed in reserve, so the first call is the last page
+            assertEquals(callNo == 1 ? "false" : "true",
+                event.getResponse().getHeaders().getHeader(MORE_AVAILABLE).firstValue(),
+                "Response moreAvilable mismatch on call " + callNo);
+            assertEquals(noOfCalls == callNo ? "" : String.valueOf(noOfCalls - callNo),
+                event.getResponse().getHeaders().getHeader(SEARCH_AFTER).firstValue(),
+                "Response searchAfter mismatch on call " + callNo);
         }
-        var event = allCallEvents.get(0);
-        // verify response status
-        assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
-            "Response pageSize mismatch");
-        // verify response status
-        assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
-            "Response status mismatch");
-        assertEquals("false",  event.getResponse().getHeaders().getHeader(MORE_AVAILABLE).firstValue(),
-            "Response moreAvailable mismatch");
     }
 
 }
