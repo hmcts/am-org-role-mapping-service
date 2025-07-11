@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
@@ -35,14 +38,16 @@ public class RefreshController {
 
     @Autowired
     public RefreshController(RefreshOrchestrator refreshOrchestrator,
-                             JudicialRefreshOrchestrator judicialRefreshOrchestrator) {
+                             JudicialRefreshOrchestrator judicialRefreshOrchestrator,
+                             ProfessionalRefreshOrchestrator professionalRefreshOrchestrator) {
         this.refreshOrchestrator = refreshOrchestrator;
         this.judicialRefreshOrchestrator = judicialRefreshOrchestrator;
+        this.professionalRefreshOrchestrator = professionalRefreshOrchestrator;
     }
 
     RefreshOrchestrator refreshOrchestrator;
-
     JudicialRefreshOrchestrator judicialRefreshOrchestrator;
+    ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 
     @PostMapping(
             path = "/am/role-mapping/refresh",
@@ -83,6 +88,7 @@ public class RefreshController {
             description = V1.Error.UNPROCESSABLE_ENTITY_REQUEST_REJECTED,
             content = @Content()
     )
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
         refreshOrchestrator.validate(jobId, userRequest);
@@ -127,4 +133,33 @@ public class RefreshController {
         return judicialRefreshOrchestrator.judicialRefresh(judicialRefreshRequest.getRefreshRequest());
     }
 
+    @PostMapping(
+        path = "/am/role-mapping/professional/refresh",
+        produces = V1.MediaType.REFRESH_PROFESSIONAL_ASSIGNMENTS
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "refreshes professional role assignments",
+        security =
+            {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+        responseCode = "200",
+        description = "Successful",
+        content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    @ApiResponse(
+        responseCode = "400",
+        description = V1.Error.INVALID_REQUEST,
+        content = @Content()
+    )
+    @ApiResponse(
+        responseCode = "404",
+        description = V1.Error.INVALID_REQUEST,
+        content = @Content()
+    )
+    public ResponseEntity<Object> professionalRefresh(@RequestParam String userId) {
+        return professionalRefreshOrchestrator.refreshProfessionalUser(userId);
+    }
 }

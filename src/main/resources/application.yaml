@@ -62,7 +62,7 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     open-in-view: false
     show-sql: false
     properties:
@@ -136,7 +136,7 @@ feign:
         url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
-      prdClient:
+      prdclient:
         url: ${PROFESSIONAL_REF_APP_URL:http://localhost:8090}
       ccdClient:
         url: ${CCD_DEF_STORE_APP_URL:http://localhost:4451}

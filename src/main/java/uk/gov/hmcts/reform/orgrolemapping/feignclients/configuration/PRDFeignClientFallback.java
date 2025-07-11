@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
@@ -14,14 +15,27 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuild
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_ORGANISATIONS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_USERS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.USERS_BY_ORGANISATION_SAMPLE;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildOrganisationsResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildOrganisationByProfileIdsResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildOrganisationsResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildRefreshUserResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildUsersByOrganisationResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalRefreshUserBuilder.buildGetRefreshUsersResponse;
 
 @Component
 public class PRDFeignClientFallback implements PRDFeignClient {
 
+    public static final String PRD_API_NOT_AVAILABLE = "The PRD API Service is not available";
+
+    @Override
+    public String getServiceStatus() {
+        return PRD_API_NOT_AVAILABLE;
+    }
+
+    @Override
+    public ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(String userId) {
+        return buildGetRefreshUsersResponse("prdRefreshUserSample138.json", userId);
+    }
+    
     @Override
     public ResponseEntity<OrganisationByProfileIdsResponse> getOrganisationsByProfileIds(
             Integer pageSize, String searchAfter, OrganisationByProfileIdsRequest organisationByProfileIdsRequest) {
