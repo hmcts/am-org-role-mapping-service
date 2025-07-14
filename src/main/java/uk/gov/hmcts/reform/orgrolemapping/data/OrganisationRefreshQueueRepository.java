@@ -83,7 +83,7 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                       where organisation_id = :organisationId 
                       and access_types_min_version <= :accessTypeMinVersion 
                       and last_updated <= :lastUpdated""", nativeQuery = true)
-    void clearOganisationRefreshRecord(String organisationId, Integer accessTypeMinVersion, LocalDateTime lastUpdated);
+    void clearOrganisationRefreshRecord(String organisationId, Integer accessTypeMinVersion, LocalDateTime lastUpdated);
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Modifying
