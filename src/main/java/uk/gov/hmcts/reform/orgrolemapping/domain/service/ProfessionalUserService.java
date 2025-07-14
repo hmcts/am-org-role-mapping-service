@@ -187,7 +187,7 @@ public class ProfessionalUserService {
                 try {
                     retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
 
-                    organisationRefreshQueueRepository.setActiveFalse(
+                    organisationRefreshQueueRepository.clearOganisationRefreshRecord(
                             organisationIdentifier,
                             accessTypesMinVersion,
                             organisationRefreshQueueEntity.getLastUpdated()
