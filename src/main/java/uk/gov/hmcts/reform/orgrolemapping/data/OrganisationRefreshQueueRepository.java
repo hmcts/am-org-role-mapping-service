@@ -68,18 +68,22 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                    + "active, retry, retry_after "
                    + "from organisation_refresh_queue "
                    + "where active = true "
+                   + "and retry < 4 "
                    + "and (retry_after < now() or retry_after is null)"
                    + "limit 1 "
                    + "for update skip locked", nativeQuery = true)
     OrganisationRefreshQueueEntity findAndLockSingleActiveOrganisationRecord();
 
     @Modifying
-    @Query(value = "update organisation_refresh_queue "
-                   + "set active = false "
-                   + "where organisation_id = :organisationId "
-                   + "and access_types_min_version <= :accessTypeMinVersion "
-                   + "and last_updated <= :lastUpdated", nativeQuery = true)
-    void setActiveFalse(String organisationId, Integer accessTypeMinVersion, LocalDateTime lastUpdated);
+    @Query(value = """
+          update organisation_refresh_queue 
+                      set active = false ,
+                      retry = 0,
+                      retry_after = null
+                      where organisation_id = :organisationId 
+                      and access_types_min_version <= :accessTypeMinVersion 
+                      and last_updated <= :lastUpdated""", nativeQuery = true)
+    void clearOganisationRefreshRecord(String organisationId, Integer accessTypeMinVersion, LocalDateTime lastUpdated);
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Modifying

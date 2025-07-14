@@ -122,7 +122,7 @@ class ProfessionalUserServiceTest {
         verify(userRefreshQueueRepository, times(1))
                 .upsertToUserRefreshQueue(any(), any(), any());
         verify(organisationRefreshQueueRepository, times(1))
-                .setActiveFalse(any(), any(), any());
+                .clearOganisationRefreshRecord(any(), any(), any());
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
@@ -173,7 +173,7 @@ class ProfessionalUserServiceTest {
         verify(userRefreshQueueRepository, times(2))
                 .upsertToUserRefreshQueue(any(), any(), any());
         verify(organisationRefreshQueueRepository, times(1))
-                .setActiveFalse(any(), any(), any());
+                .clearOganisationRefreshRecord(any(), any(), any());
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
@@ -193,7 +193,7 @@ class ProfessionalUserServiceTest {
         verify(userRefreshQueueRepository, times(0))
                 .upsertToUserRefreshQueue(any(), any(), any());
         verify(organisationRefreshQueueRepository, times(0))
-                .setActiveFalse(any(), any(), any());
+                .clearOganisationRefreshRecord(any(), any(), any());
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
