@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
@@ -17,7 +16,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRespon
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +34,7 @@ class PrdServiceTest {
     PrdService sut = new PrdService(prdFeignClient);
 
     @Test
-    void fetchOrganisationsByProfileIds() throws IOException {
+    void fetchOrganisationsByProfileIds() {
         OrganisationByProfileIdsResponse response = TestDataBuilder.buildOrganisationByProfileIdsResponse();
         OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(List.of("SOLICITOR_PROFILE"));
 
@@ -50,7 +48,7 @@ class PrdServiceTest {
     }
 
     @Test
-    void fetchOrganisationsResponse() throws IOException {
+    void fetchOrganisationsResponse() {
         OrganisationsResponse response = TestDataBuilder.buildOrganisationsResponse();
 
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
@@ -87,7 +85,7 @@ class PrdServiceTest {
     }
 
     @Test
-    void fetchUsersByOrganisation() throws IOException {
+    void fetchUsersByOrganisation() {
         UsersByOrganisationResponse response = TestDataBuilder.buildUsersByOrganisationResponse();
         UsersByOrganisationRequest request = new UsersByOrganisationRequest(List.of("1"));
 
@@ -101,7 +99,7 @@ class PrdServiceTest {
     }
 
     @Test
-    void fetchRefreshUserResponse() throws IOException {
+    void fetchRefreshUserResponse() {
         GetRefreshUserResponse response = TestDataBuilder.buildRefreshUserResponse();
 
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
@@ -114,11 +112,11 @@ class PrdServiceTest {
     }
 
     @Test
-    void getRefreshUser() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+    void getRefreshUser() {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdFeignClient).getRefreshUsers(any());
 
-        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser("ID");
+        ResponseEntity<GetRefreshUserResponse> responseEntity = sut.getRefreshUser("ID");
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }

@@ -10,7 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceExc
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class ProfessionalRefreshOrchestrator {
                 "PRM Process 6 - Refresh User - Single User Mode");
         processEventTracker.trackEventStarted(processMonitorDto);
         log.info("Single User refreshProfessionalUser for {}", userId);
-        GetRefreshUsersResponse getRefreshUsersResponse;
+        GetRefreshUserResponse getRefreshUsersResponse;
         try {
             getRefreshUsersResponse = Objects.requireNonNull(prdService.getRefreshUser(userId).getBody());
         } catch (FeignException.NotFound feignClientException) {

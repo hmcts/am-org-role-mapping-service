@@ -7,7 +7,6 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
@@ -67,7 +66,7 @@ public class PrdService {
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
-    public ResponseEntity<GetRefreshUsersResponse> getRefreshUser(String userId) {
+    public ResponseEntity<GetRefreshUserResponse> getRefreshUser(String userId) {
         return prdFeignClient.getRefreshUsers(userId);
     }
 

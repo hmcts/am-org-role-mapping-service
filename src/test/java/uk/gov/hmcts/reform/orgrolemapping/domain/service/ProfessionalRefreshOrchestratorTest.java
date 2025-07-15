@@ -50,14 +50,14 @@ class ProfessionalRefreshOrchestratorTest {
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitStep1() throws IOException {
 
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
@@ -98,7 +98,7 @@ class ProfessionalRefreshOrchestratorTest {
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitStep2() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
@@ -140,7 +140,7 @@ class ProfessionalRefreshOrchestratorTest {
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitStep3() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
@@ -183,7 +183,7 @@ class ProfessionalRefreshOrchestratorTest {
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitStep4() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
@@ -226,7 +226,7 @@ class ProfessionalRefreshOrchestratorTest {
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitNormalProcess() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))

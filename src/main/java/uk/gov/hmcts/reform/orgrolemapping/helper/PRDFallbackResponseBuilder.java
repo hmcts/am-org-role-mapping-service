@@ -12,6 +12,7 @@ import java.io.File;
 
 public class PRDFallbackResponseBuilder {
 
+    public static final String GET_REFRESH_USERS_SAMPLE_SINGLE_USER = "getRefreshUsersSample_singleUser.json";
     public static final String ORGANISATIONS_BY_PROFILE_IDS_SAMPLE = "organisationsByProfileIdsSample.json";
     public static final String RETRIEVE_ORGANISATIONS_SAMPLE = "retrieveOrganisationsSample.json";
     public static final String RETRIEVE_USERS_SAMPLE = "retrieveUsersSample.json";
@@ -48,6 +49,12 @@ public class PRDFallbackResponseBuilder {
         } catch (Exception e) {
             throw new BadRequestException("Invalid sample json file or missing for buildOrganisationsResponse.");
         }
+    }
+
+    public static GetRefreshUserResponse buildGetRefreshUsersResponse(String resource, String userId) {
+        GetRefreshUserResponse getRefreshUsersResponse = buildRefreshUserResponse(resource);
+        getRefreshUsersResponse.getUsers().get(0).setUserIdentifier(userId);
+        return getRefreshUsersResponse;
     }
 
     public static GetRefreshUserResponse buildRefreshUserResponse(String resource) {

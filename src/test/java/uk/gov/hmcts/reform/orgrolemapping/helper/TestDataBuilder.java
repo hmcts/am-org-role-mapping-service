@@ -23,7 +23,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
@@ -66,6 +65,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.CDDFallbackResponseBuilder.ACCESS_TYPES_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_SINGLE_USER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.ORGANISATIONS_BY_PROFILE_IDS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_ORGANISATIONS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_USERS_SAMPLE;
@@ -663,16 +663,6 @@ public class TestDataBuilder {
         }
     }
 
-    public static GetRefreshUsersResponse buildRefreshUsersResponse(String userId) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        GetRefreshUsersResponse getRefreshUsersResponse = objectMapper.readValue(
-            new File("src/main/resources/prdRefreshUserSample.json"),
-            GetRefreshUsersResponse.class);
-        getRefreshUsersResponse.getUsers().get(0).setUserIdentifier(userId);
-        return getRefreshUsersResponse;
-    }
-
     public static AccessTypesResponse buildAccessTypesResponse() {
         return CDDFallbackResponseBuilder.buildAccessTypesResponse(ACCESS_TYPES_SAMPLE);
     }
@@ -687,6 +677,10 @@ public class TestDataBuilder {
 
     public static GetRefreshUserResponse buildRefreshUserResponse() {
         return PRDFallbackResponseBuilder.buildRefreshUserResponse(RETRIEVE_USERS_SAMPLE);
+    }
+
+    public static GetRefreshUserResponse buildGetRefreshUsersResponse(String userId) {
+        return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId);
     }
 
     public static UsersByOrganisationResponse buildUsersByOrganisationResponse() {

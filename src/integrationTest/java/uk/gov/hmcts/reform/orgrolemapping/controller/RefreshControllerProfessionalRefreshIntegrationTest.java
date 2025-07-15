@@ -24,7 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNo
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
@@ -112,7 +112,7 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
         scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
     public void shouldProcessProfessionalRefreshRequest() throws Exception {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("1234")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("1234")))
             .when(prdFeignClient).getRefreshUsers(any());
 
         mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
@@ -136,7 +136,7 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
         scripts = {"classpath:sql/delete_user_refresh_queue.sql"})
     public void shouldErrorProfessionalRefreshRequest_whenNoAccessTypesInDB() throws Exception {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("1234")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("1234")))
             .when(prdFeignClient).getRefreshUsers(any());
         MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
                 .contentType(JSON_CONTENT_TYPE)
@@ -164,7 +164,7 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
 
     @Test
     public void shouldErrorProfessionalRefreshRequest_whenMultipleUsersReturnedFromPRD() throws Exception {
-        GetRefreshUsersResponse getRefreshUsersResponse = TestDataBuilder.buildRefreshUsersResponse("1234");
+        GetRefreshUserResponse getRefreshUsersResponse = TestDataBuilder.buildGetRefreshUsersResponse("1234");
         getRefreshUsersResponse.getUsers().add(new RefreshUser());
         doReturn(ResponseEntity.status(HttpStatus.OK).body(getRefreshUsersResponse))
             .when(prdFeignClient).getRefreshUsers(any());

@@ -30,7 +30,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -80,8 +79,8 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
     @Nested
     class RefreshProfessionalUser {
         @BeforeEach
-        void setUp() throws IOException {
-            doReturn(ResponseEntity.ok(TestDataBuilder.buildRefreshUsersResponse(USER_ID)))
+        void setUp() {
+            doReturn(ResponseEntity.ok(TestDataBuilder.buildGetRefreshUsersResponse(USER_ID)))
                 .when(prdFeignClient).getRefreshUsers(any());
             when(rasFeignClient.createRoleAssignment(assignmentRequestArgumentCaptor.capture(), any()))
                     .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"));
