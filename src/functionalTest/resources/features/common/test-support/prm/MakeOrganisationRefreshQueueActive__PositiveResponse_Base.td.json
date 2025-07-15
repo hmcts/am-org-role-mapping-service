@@ -17,7 +17,7 @@
       "accessTypesMinVersion": "[[ANY_INTEGER_NOT_NULLABLE]]",
       "active": true,
       "retry": "[[ANY_INTEGER_NOT_NULLABLE]]",
-      "retryAfter": "[[ANY_TIMESTAMP_NOT_NULLABLE]]"
+      "retryAfter": "[[ANY_TIMESTAMP_NULLABLE]]"
     }
   }
 
