@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
@@ -31,6 +31,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
@@ -667,20 +668,30 @@ public class TestDataBuilder {
         return CDDFallbackResponseBuilder.buildAccessTypesResponse(ACCESS_TYPES_SAMPLE);
     }
 
+    public static GetRefreshUsersResponse buildGetRefreshUsersResponse() {
+        return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(RETRIEVE_USERS_SAMPLE);
+    }
+
+    public static GetRefreshUsersResponse buildGetRefreshUsersResponse(String userId) {
+        return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId);
+    }
+
+    public static GetRefreshUsersResponse buildGetRefreshUsersResponse(List<RefreshUser> users,
+                                                                        String lastRecord,
+                                                                        boolean moreAvailable) {
+        return GetRefreshUsersResponse.builder()
+            .users(users)
+            .lastRecordInPage(lastRecord)
+            .moreAvailable(moreAvailable)
+            .build();
+    }
+
     public static OrganisationByProfileIdsResponse buildOrganisationByProfileIdsResponse() {
         return PRDFallbackResponseBuilder.buildOrganisationByProfileIdsResponse(ORGANISATIONS_BY_PROFILE_IDS_SAMPLE);
     }
 
     public static OrganisationsResponse buildOrganisationsResponse() {
         return PRDFallbackResponseBuilder.buildOrganisationsResponse(RETRIEVE_ORGANISATIONS_SAMPLE);
-    }
-
-    public static GetRefreshUserResponse buildRefreshUserResponse() {
-        return PRDFallbackResponseBuilder.buildRefreshUserResponse(RETRIEVE_USERS_SAMPLE);
-    }
-
-    public static GetRefreshUserResponse buildGetRefreshUsersResponse(String userId) {
-        return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId);
     }
 
     public static UsersByOrganisationResponse buildUsersByOrganisationResponse() {

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
@@ -100,12 +100,12 @@ class PrdServiceTest {
 
     @Test
     void fetchRefreshUserResponse() {
-        GetRefreshUserResponse response = TestDataBuilder.buildRefreshUserResponse();
+        GetRefreshUsersResponse response = TestDataBuilder.buildGetRefreshUsersResponse();
 
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
                 .when(prdFeignClient).retrieveUsers("2023-11-20T15:51:33.046Z", 1, null);
 
-        ResponseEntity<GetRefreshUserResponse> responseEntity =
+        ResponseEntity<GetRefreshUsersResponse> responseEntity =
                 sut.retrieveUsers("2023-11-20T15:51:33.046Z", 1, null);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -116,7 +116,7 @@ class PrdServiceTest {
         doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdFeignClient).getRefreshUsers(any());
 
-        ResponseEntity<GetRefreshUserResponse> responseEntity = sut.getRefreshUser("ID");
+        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser("ID");
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }

@@ -9,7 +9,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
@@ -318,16 +317,6 @@ public class IntTestDataBuilder {
                 .organisationProfileId("" + i)
                 .accessTypeId("" + i)
                 .enabled(true)
-                .build();
-    }
-
-    public static GetRefreshUserResponse buildRefreshUserResponse(RefreshUser user,
-                                                                  String lastRecord,
-                                                                  boolean moreAvailable) {
-        return GetRefreshUserResponse.builder()
-                .users(List.of(user))
-                .lastRecordInPage(lastRecord)
-                .moreAvailable(moreAvailable)
                 .build();
     }
 

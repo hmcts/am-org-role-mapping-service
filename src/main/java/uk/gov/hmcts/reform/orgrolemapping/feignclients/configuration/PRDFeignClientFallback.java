@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
@@ -18,7 +18,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuild
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildGetRefreshUsersResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildOrganisationByProfileIdsResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildOrganisationsResponse;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildRefreshUserResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildUsersByOrganisationResponse;
 
 @Component
@@ -32,7 +31,7 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<GetRefreshUserResponse> getRefreshUsers(String userId) {
+    public ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(String userId) {
         return ResponseEntity.ok(buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId));
     }
 
@@ -56,9 +55,9 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<GetRefreshUserResponse> retrieveUsers(
+    public ResponseEntity<GetRefreshUsersResponse> retrieveUsers(
             String lastUpdatedSince, Integer pageSize, String searchAfter) {
-        return ResponseEntity.ok(buildRefreshUserResponse(RETRIEVE_USERS_SAMPLE));
+        return ResponseEntity.ok(buildGetRefreshUsersResponse(RETRIEVE_USERS_SAMPLE));
     }
 
 }

@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
@@ -51,6 +51,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildGetRefreshUsersResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildProfessionalUser;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUsersOrganisationInfo;
 
@@ -229,8 +230,7 @@ class ProfessionalUserServiceTest {
             when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
             RefreshUser refreshUser = buildRefreshUser(1);
-            GetRefreshUserResponse response =
-                buildRefreshUserResponse(List.of(refreshUser), "123", false);
+            GetRefreshUsersResponse response = buildGetRefreshUsersResponse(List.of(refreshUser), "123", false);
 
             when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
@@ -262,8 +262,7 @@ class ProfessionalUserServiceTest {
                 LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
             when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
-            GetRefreshUserResponse response =
-                buildRefreshUserResponse(Collections.emptyList(), null, false);
+            GetRefreshUsersResponse response = buildGetRefreshUsersResponse(Collections.emptyList(), null, false);
 
             when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
@@ -315,15 +314,13 @@ class ProfessionalUserServiceTest {
             when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
             RefreshUser refreshUser1 = buildRefreshUser(1);
-            GetRefreshUserResponse response1 =
-                buildRefreshUserResponse(List.of(refreshUser1), "123", true);
+            GetRefreshUsersResponse response1 = buildGetRefreshUsersResponse(List.of(refreshUser1), "123", true);
 
             when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response1));
 
             RefreshUser refreshUser2 = buildRefreshUser(2);
-            GetRefreshUserResponse response2 =
-                buildRefreshUserResponse(List.of(refreshUser2), "456", false);
+            GetRefreshUsersResponse response2 = buildGetRefreshUsersResponse(List.of(refreshUser2), "456", false);
 
             when(prdService.retrieveUsers(any(), any(), any(String.class)))
                 .thenReturn(ResponseEntity.ok(response2));
@@ -378,8 +375,7 @@ class ProfessionalUserServiceTest {
             when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
             RefreshUser refreshUser = buildRefreshUser(1);
-            GetRefreshUserResponse response =
-                buildRefreshUserResponse(List.of(refreshUser), "123", false);
+            GetRefreshUsersResponse response = buildGetRefreshUsersResponse(List.of(refreshUser), "123", false);
 
             when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
@@ -411,8 +407,7 @@ class ProfessionalUserServiceTest {
             when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
             RefreshUser refreshUser = buildRefreshUser(1);
-            GetRefreshUserResponse response =
-                buildRefreshUserResponse(List.of(refreshUser), "123", false);
+            GetRefreshUsersResponse response = buildGetRefreshUsersResponse(List.of(refreshUser), "123", false);
 
             when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
@@ -442,12 +437,12 @@ class ProfessionalUserServiceTest {
                 LocalDateTime.of(2023, 12, 31, 12, 34, 56, 789)));
             when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
-            GetRefreshUserResponse response =
-                buildRefreshUserResponse(List.of(buildRefreshUser(1)), "123", true);
-            GetRefreshUserResponse response2 =
-                buildRefreshUserResponse(List.of(buildRefreshUser(2), buildRefreshUser(3)), "456", false);
+            GetRefreshUsersResponse response1 =
+                buildGetRefreshUsersResponse(List.of(buildRefreshUser(1)), "123", true);
+            GetRefreshUsersResponse response2 =
+                buildGetRefreshUsersResponse(List.of(buildRefreshUser(2), buildRefreshUser(3)), "456", false);
             when(prdService.retrieveUsers(any(), any(), eq(null)))
-                .thenReturn(ResponseEntity.ok(response));
+                .thenReturn(ResponseEntity.ok(response1));
             when(prdService.retrieveUsers(any(), any(), eq("123")))
                 .thenReturn(ResponseEntity.ok(response2));
 
@@ -489,8 +484,7 @@ class ProfessionalUserServiceTest {
             when(batchLastRunTimestampRepository.findAll()).thenReturn(allBatches);
 
             RefreshUser refreshUser = buildRefreshUser(1);
-            GetRefreshUserResponse response =
-                buildRefreshUserResponse(List.of(refreshUser), "123", false);
+            GetRefreshUsersResponse response = buildGetRefreshUsersResponse(List.of(refreshUser), "123", false);
 
             when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
@@ -538,16 +532,6 @@ class ProfessionalUserServiceTest {
                 .status(OrganisationStatus.ACTIVE)
                 .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
-                .build();
-        }
-
-        private GetRefreshUserResponse buildRefreshUserResponse(List<RefreshUser> users,
-                                                                String lastRecord,
-                                                                boolean moreAvailable) {
-            return GetRefreshUserResponse.builder()
-                .users(users)
-                .lastRecordInPage(lastRecord)
-                .moreAvailable(moreAvailable)
                 .build();
         }
 

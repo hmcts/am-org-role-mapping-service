@@ -24,7 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNo
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
@@ -164,7 +164,7 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
 
     @Test
     public void shouldErrorProfessionalRefreshRequest_whenMultipleUsersReturnedFromPRD() throws Exception {
-        GetRefreshUserResponse getRefreshUsersResponse = TestDataBuilder.buildGetRefreshUsersResponse("1234");
+        GetRefreshUsersResponse getRefreshUsersResponse = TestDataBuilder.buildGetRefreshUsersResponse("1234");
         getRefreshUsersResponse.getUsers().add(new RefreshUser());
         doReturn(ResponseEntity.status(HttpStatus.OK).body(getRefreshUsersResponse))
             .when(prdFeignClient).getRefreshUsers(any());
