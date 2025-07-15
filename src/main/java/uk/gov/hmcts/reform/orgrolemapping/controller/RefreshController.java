@@ -72,11 +72,6 @@ public class RefreshController {
             content = @Content()
     )
     @ApiResponse(
-            responseCode = "400",
-            description = V1.Error.INVALID_REQUEST,
-            content = @Content()
-    )
-    @ApiResponse(
             responseCode = "403",
             description = V1.Error.UNAUTHORIZED_SERVICE,
             content = @Content()
@@ -153,7 +148,7 @@ public class RefreshController {
     )
     @ApiResponse(
         responseCode = "404",
-        description = V1.Error.INVALID_REQUEST,
+        description = Constants.RESOURCE_NOT_FOUND + " " + ProfessionalRefreshOrchestrator.PRD_USER_NOT_FOUND,
         content = @Content()
     )
     public ResponseEntity<Object> professionalRefresh(@RequestParam String userId) {
