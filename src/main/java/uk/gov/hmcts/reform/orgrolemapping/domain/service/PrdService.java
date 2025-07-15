@@ -62,12 +62,12 @@ public class PrdService {
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<GetRefreshUsersResponse> retrieveUsers(
             String lastUpdatedSince, Integer pageSize, String searchAfter) {
-        return prdFeignClient.retrieveUsers(lastUpdatedSince, pageSize, searchAfter);
+        return prdFeignClient.getRefreshUsers(null, lastUpdatedSince, pageSize, searchAfter);
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<GetRefreshUsersResponse> getRefreshUser(String userId) {
-        return prdFeignClient.getRefreshUsers(userId);
+        return prdFeignClient.getRefreshUsers(userId, null, null, null);
     }
 
 }

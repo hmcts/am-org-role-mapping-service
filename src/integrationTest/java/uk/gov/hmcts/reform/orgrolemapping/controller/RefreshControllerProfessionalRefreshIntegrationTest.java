@@ -41,7 +41,6 @@ import java.util.HashMap;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,6 +57,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefr
     "refresh.Job.authorisedServices=" + S2S_XUI
 })
 class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegration {
+
+    private static final String USER_ID = "1234";
 
     private static final String AUTHORISED_SERVICE = S2S_RARB;
 
@@ -112,10 +113,13 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
         scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
     public void shouldProcessProfessionalRefreshRequest() throws Exception {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("1234")))
-            .when(prdFeignClient).getRefreshUsers(any());
 
-        mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
+        // GIVEN
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse(USER_ID)))
+            .when(prdFeignClient).getRefreshUsers(USER_ID, null, null, null);
+
+        // WHEN / THEN
+        mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=" + USER_ID)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders(AUTHORISED_SERVICE)))
             .andExpect(status().isOk())
@@ -136,45 +140,63 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
         scripts = {"classpath:sql/delete_user_refresh_queue.sql"})
     public void shouldErrorProfessionalRefreshRequest_whenNoAccessTypesInDB() throws Exception {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("1234")))
-            .when(prdFeignClient).getRefreshUsers(any());
-        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
+
+        // GIVEN
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse(USER_ID)))
+            .when(prdFeignClient).getRefreshUsers(USER_ID, null, null, null);
+
+        // WHEN
+        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=" + USER_ID)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders(AUTHORISED_SERVICE)))
             .andExpect(status().isInternalServerError())
             .andReturn();
+
+        // THEN
         assertTrue(result.getResolvedException() instanceof ServiceException);
         assertEquals(NO_ACCESS_TYPES_FOUND, result.getResolvedException().getMessage());
     }
 
     @Test
     public void shouldErrorProfessionalRefreshRequest_whenNoPRDUserFound() throws Exception {
+
+        // GIVEN
         Request request = Request.create(Request.HttpMethod.GET, "url", new HashMap<>(), null, new RequestTemplate());
         doThrow(new FeignException.NotFound("Not Found", request, null, null))
-            .when(prdFeignClient).getRefreshUsers(any());
-        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
+            .when(prdFeignClient).getRefreshUsers(USER_ID, null, null, null);
+
+        // WHEN
+        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=" + USER_ID)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders(AUTHORISED_SERVICE)))
             .andExpect(status().isNotFound())
             .andReturn();
+
+        // THEN
         assertTrue(result.getResolvedException() instanceof ResourceNotFoundException);
-        assertEquals(String.format(Constants.RESOURCE_NOT_FOUND + " " + PRD_USER_NOT_FOUND, "1234"),
+        assertEquals(String.format(Constants.RESOURCE_NOT_FOUND + " " + PRD_USER_NOT_FOUND, USER_ID),
             result.getResolvedException().getMessage());
     }
 
     @Test
     public void shouldErrorProfessionalRefreshRequest_whenMultipleUsersReturnedFromPRD() throws Exception {
-        GetRefreshUsersResponse getRefreshUsersResponse = TestDataBuilder.buildGetRefreshUsersResponse("1234");
+
+        // GIVEN
+        GetRefreshUsersResponse getRefreshUsersResponse = TestDataBuilder.buildGetRefreshUsersResponse(USER_ID);
         getRefreshUsersResponse.getUsers().add(new RefreshUser());
         doReturn(ResponseEntity.status(HttpStatus.OK).body(getRefreshUsersResponse))
-            .when(prdFeignClient).getRefreshUsers(any());
-        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
+            .when(prdFeignClient).getRefreshUsers(USER_ID, null, null, null);
+
+        // WHEN
+        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=" + USER_ID)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders(AUTHORISED_SERVICE)))
             .andExpect(status().isInternalServerError())
             .andReturn();
+
+        // THEN
         assertTrue(result.getResolvedException() instanceof ServiceException);
-        assertEquals(String.format(EXPECTED_SINGLE_PRD_USER, "1234", "2"), result.getResolvedException().getMessage());
+        assertEquals(String.format(EXPECTED_SINGLE_PRD_USER, USER_ID, "2"), result.getResolvedException().getMessage());
     }
 
 }

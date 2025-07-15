@@ -81,7 +81,7 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
         @BeforeEach
         void setUp() {
             doReturn(ResponseEntity.ok(TestDataBuilder.buildGetRefreshUsersResponse(USER_ID)))
-                .when(prdFeignClient).getRefreshUsers(any());
+                .when(prdFeignClient).getRefreshUsers(USER_ID, null, null, null);
             when(rasFeignClient.createRoleAssignment(assignmentRequestArgumentCaptor.capture(), any()))
                     .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"));
         }
@@ -159,4 +159,5 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
             verify(userRefreshQueueRepository, times(1)).findFirstByActiveTrue();
         }
     }
+
 }

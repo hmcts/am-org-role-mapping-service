@@ -25,14 +25,19 @@ public interface PRDFeignClient {
     @GetMapping(value = "/")
     String getServiceStatus();
 
-    @GetMapping(value = "/refdata/internal/v1/organisations/users")
-    ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(@RequestParam(value = "userId") String userId);
-
     @PostMapping(value = "/refdata/internal/v1/organisations/getOrganisationsByProfile")
     ResponseEntity<OrganisationByProfileIdsResponse> getOrganisationsByProfileIds(
             @RequestParam(name = "pageSize") Integer pageSize,
             @RequestParam(name = "searchAfter") String searchAfter,
             @RequestBody OrganisationByProfileIdsRequest organisationByProfileIdsRequest
+    );
+
+    @GetMapping(value = "/refdata/internal/v1/organisations/users")
+    ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(
+            @RequestParam(name = "userId") String userId,
+            @RequestParam(name = "since") String lastUpdatedSince,
+            @RequestParam(name = "pageSize") Integer pageSize,
+            @RequestParam(name = "searchAfter") String searchAfter
     );
 
     @GetMapping(value = "/refdata/internal/v1/organisations")
@@ -50,13 +55,6 @@ public interface PRDFeignClient {
             @RequestParam(name = "searchAfterOrg") String searchAfterOrg,
             @RequestParam(name = "searchAfterUser") String searchAfterUser,
             @RequestBody UsersByOrganisationRequest usersByOrganisationRequest
-    );
-
-    @GetMapping(value = "/refdata/internal/v1/organisations/users")
-    ResponseEntity<GetRefreshUsersResponse> retrieveUsers(
-            @RequestParam(name = "since") String lastUpdatedSince,
-            @RequestParam(name = "pageSize") Integer pageSize,
-            @RequestParam(name = "searchAfter") String searchAfter
     );
 
 }

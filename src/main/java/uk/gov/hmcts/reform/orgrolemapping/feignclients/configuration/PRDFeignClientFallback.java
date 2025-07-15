@@ -10,10 +10,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationReques
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_MULTI_USER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_SINGLE_USER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.ORGANISATIONS_BY_PROFILE_IDS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_ORGANISATIONS_SAMPLE;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_USERS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.USERS_BY_ORGANISATION_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildGetRefreshUsersResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildOrganisationByProfileIdsResponse;
@@ -31,14 +31,20 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(String userId) {
-        return ResponseEntity.ok(buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId));
-    }
-
-    @Override
     public ResponseEntity<OrganisationByProfileIdsResponse> getOrganisationsByProfileIds(
             Integer pageSize, String searchAfter, OrganisationByProfileIdsRequest organisationByProfileIdsRequest) {
         return ResponseEntity.ok(buildOrganisationByProfileIdsResponse(ORGANISATIONS_BY_PROFILE_IDS_SAMPLE));
+    }
+
+    @Override
+    public ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(String userId,
+                                                                   String lastUpdatedSince,
+                                                                   Integer pageSize,
+                                                                   String searchAfter) {
+        if (userId != null) {
+            return ResponseEntity.ok(buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId));
+        }
+        return ResponseEntity.ok(buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_MULTI_USER));
     }
 
     @Override
@@ -52,12 +58,6 @@ public class PRDFeignClientFallback implements PRDFeignClient {
                                   String searchAfterOrg, String searchAfterUser,
                                   UsersByOrganisationRequest usersByOrganisationRequest) {
         return ResponseEntity.ok(buildUsersByOrganisationResponse(USERS_BY_ORGANISATION_SAMPLE));
-    }
-
-    @Override
-    public ResponseEntity<GetRefreshUsersResponse> retrieveUsers(
-            String lastUpdatedSince, Integer pageSize, String searchAfter) {
-        return ResponseEntity.ok(buildGetRefreshUsersResponse(RETRIEVE_USERS_SAMPLE));
     }
 
 }

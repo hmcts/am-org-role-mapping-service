@@ -15,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_MULTI_USER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_SINGLE_USER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.ORGANISATIONS_BY_PROFILE_IDS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_ORGANISATIONS_SAMPLE;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_USERS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.USERS_BY_ORGANISATION_SAMPLE;
 
 class PRDFallbackResponseBuilderTest {
@@ -29,7 +29,7 @@ class PRDFallbackResponseBuilderTest {
     @Test
     void buildGetRefreshUsersResponseTest() {
         GetRefreshUsersResponse getRefreshUsersResponse = PRDFallbackResponseBuilder
-            .buildGetRefreshUsersResponse(RETRIEVE_USERS_SAMPLE);
+            .buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_MULTI_USER);
 
         assertNotNull(getRefreshUsersResponse);
         getRefreshUsersResponse.getUsers().forEach(user -> {

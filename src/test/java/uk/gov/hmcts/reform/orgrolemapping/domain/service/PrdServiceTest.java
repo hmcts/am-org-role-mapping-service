@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -99,26 +100,38 @@ class PrdServiceTest {
     }
 
     @Test
-    void fetchRefreshUserResponse() {
+    void fetchRetrieveUsers() {
+
+        // GIVEN
         GetRefreshUsersResponse response = TestDataBuilder.buildGetRefreshUsersResponse();
 
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
-                .when(prdFeignClient).retrieveUsers("2023-11-20T15:51:33.046Z", 1, null);
+                .when(prdFeignClient).getRefreshUsers(null, "2023-11-20T15:51:33.046Z", 1, null);
 
+        // WHEN
         ResponseEntity<GetRefreshUsersResponse> responseEntity =
                 sut.retrieveUsers("2023-11-20T15:51:33.046Z", 1, null);
 
+        // THEN
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
     }
 
     @Test
-    void getRefreshUser() {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
-                .when(prdFeignClient).getRefreshUsers(any());
+    void fetchRefreshUser() {
 
-        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser("ID");
+        // GIVEN
+        String userId = "ID";
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse(userId)))
+                .when(prdFeignClient).getRefreshUsers(userId, null, null, null);
 
+        // WHEN
+        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser(userId);
+
+        // THEN
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertEquals(userId, responseEntity.getBody().getUsers().get(0).getUserIdentifier());
     }
 
 }

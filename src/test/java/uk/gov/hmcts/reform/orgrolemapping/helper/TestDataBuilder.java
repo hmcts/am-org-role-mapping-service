@@ -66,10 +66,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.CDDFallbackResponseBuilder.ACCESS_TYPES_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_MULTI_USER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_SINGLE_USER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.ORGANISATIONS_BY_PROFILE_IDS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_ORGANISATIONS_SAMPLE;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_USERS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.USERS_BY_ORGANISATION_SAMPLE;
 
 @Setter
@@ -669,7 +669,7 @@ public class TestDataBuilder {
     }
 
     public static GetRefreshUsersResponse buildGetRefreshUsersResponse() {
-        return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(RETRIEVE_USERS_SAMPLE);
+        return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_MULTI_USER);
     }
 
     public static GetRefreshUsersResponse buildGetRefreshUsersResponse(String userId) {
@@ -677,8 +677,8 @@ public class TestDataBuilder {
     }
 
     public static GetRefreshUsersResponse buildGetRefreshUsersResponse(List<RefreshUser> users,
-                                                                        String lastRecord,
-                                                                        boolean moreAvailable) {
+                                                                       String lastRecord,
+                                                                       boolean moreAvailable) {
         return GetRefreshUsersResponse.builder()
             .users(users)
             .lastRecordInPage(lastRecord)
