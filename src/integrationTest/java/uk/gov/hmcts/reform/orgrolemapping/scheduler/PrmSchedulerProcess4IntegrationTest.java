@@ -25,6 +25,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         LocalDateTime.parse("2023-09-19T15:36:33.653Z", DTF);
     private static final String ORGANISATION_ID_1 = "1";
     private static final String ORGANISATION_ID_2 = "2";
+    private static final String ORGANISATION_ID_4 = "4";
 
     @Autowired
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
@@ -256,6 +257,29 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, true);
     }
 
+    /**
+     * Retry.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation4.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
+    })
+    void testRetrySuccess() {
+
+        // verify that the organisations are updated
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
+            EndStatus.SUCCESS, 1);
+
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
+
+        // Verify 1 active user in the refresh queue, all updated
+        assertTotalUserRefreshQueueEntitiesInDb(1);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_4, NEW_USER_LAST_UPDATED, true, false);
+    }
+
     private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
 
         // GIVEN
@@ -281,13 +305,17 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(expectedNumberOfRecords, organisationRefreshQueueEntities.size(),
             "OrganisationRefreshQueueEntity number of records mismatch");
         int activeOrgs = 0;
+        int retries = 0;
         for (var entity : organisationRefreshQueueEntities) {
             if (entity.getActive()) {
                 activeOrgs++;
             }
+            retries += entity.getRetry() != null ? entity.getRetry() : 0;
         }
         assertEquals(expectedActiveOrgs, activeOrgs,
             "OrganisationRefreshQueueEntity active organisations count mismatch");
+        assertEquals(0, retries,
+            "OrganisationRefreshQueueEntity retries count mismatch");
     }
 
     private void assertTotalUserRefreshQueueEntitiesInDb(int expectedNumberOfRecords) {
