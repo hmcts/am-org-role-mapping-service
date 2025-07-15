@@ -50,7 +50,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of(), EndStatus.SUCCESS, 0);
 
         // verify that the OrganisationRefreshQueue remains empty
-        assertTotalOrganisationRefreshQueueEntitiesInDb(0, 0);
+        assertTotalOrganisationRefreshQueueEntitiesInDb(0, 0, 0);
 
         // Verify no active users in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(0);
@@ -73,8 +73,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json"),
             EndStatus.SUCCESS, 1);
 
-        // verify that the OrganisationRefreshQueue contains 1 record, 0 active
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active, 0 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0, 0);
 
         // Verify 3 active users in the refresh queue, all updated
         assertTotalUserRefreshQueueEntitiesInDb(3);
@@ -101,8 +101,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_02.json"),
             EndStatus.SUCCESS, 1);
 
-        // verify that the OrganisationRefreshQueue contains 1 record, 0 active
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active, 0 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0, 0);
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
@@ -128,8 +128,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_02.json"),
             EndStatus.SUCCESS, 1);
 
-        // verify that the OrganisationRefreshQueue contains 1 record, 0 active
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active, 0 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0, 0);
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
@@ -158,8 +158,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
                 "/SchedulerTests/PrdUsersByOrganisation/userOrganisation2_scenario_01.json"),
             EndStatus.SUCCESS, 2);
 
-        // verify that the OrganisationRefreshQueue contains 1 record, 0 active
-        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 0);
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active, 0 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 0, 0);
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(4);
@@ -189,8 +189,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
                 "/SchedulerTests/PrdUsersByOrganisation/userOrganisation2_scenario_01.json"),
             EndStatus.SUCCESS, 2);
 
-        // verify that the OrganisationRefreshQueue contains 2 records, 0 active
-        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 0);
+        // verify that the OrganisationRefreshQueue contains 2 records, 0 active, 0 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 0, 0);
 
         // Verify 4 active users in the refresh queue, nall updated
         assertTotalUserRefreshQueueEntitiesInDb(4);
@@ -218,8 +218,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_03.json"),
             EndStatus.SUCCESS, 1);
 
-        // verify that the OrganisationRefreshQueue contains 1 records, 0 active
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active, 0 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0, 0);
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
@@ -247,8 +247,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
                 "/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json"),
             EndStatus.SUCCESS, 1);
 
-        // verify that the OrganisationRefreshQueue contains 1 records, 0 active
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active, 0 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0, 0);
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
@@ -272,26 +272,48 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
             EndStatus.SUCCESS, 1);
 
-        // verify that the OrganisationRefreshQueue contains 1 record, 0 active
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0);
+        // verify that the OrganisationRefreshQueue contains 1 record, 0 active, 0 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0, 0);
 
         // Verify 1 active user in the refresh queue, all updated
         assertTotalUserRefreshQueueEntitiesInDb(1);
         assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_4, NEW_USER_LAST_UPDATED, true, false);
     }
 
+    /**
+     * Retry - Failed.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation4.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
+    })
+    void testRetryFailed() {
+
+        // verify that the organisations are attempted to be updated 3 times
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
+            EndStatus.FAILED, 3);
+
+        // verify that the OrganisationRefreshQueue contains 1 record, 1 active, 4 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 1, 4);
+
+        // Verify no active users in the refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(0);
+    }
+
     private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
 
         // GIVEN
         logBeforeStatus();
-        stubPrdRetrieveUsersByOrg(fileNames, "false", null);
+        stubPrdRetrieveUsersByOrg(fileNames, "false", null, endStatus);
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler
             .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
 
         // THEN
-        verifyNoOfCallsToPrd(noOfCallsToPrd);
+        verifyNoOfCallsToPrd(noOfCallsToPrd, endStatus);
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports the correct status
@@ -300,7 +322,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
     //#region Assertion Helpers: DB Checks
 
-    private void assertTotalOrganisationRefreshQueueEntitiesInDb(int expectedNumberOfRecords, int expectedActiveOrgs) {
+    private void assertTotalOrganisationRefreshQueueEntitiesInDb(int expectedNumberOfRecords, int expectedActiveOrgs,
+        int expectedRetries) {
         var organisationRefreshQueueEntities = organisationRefreshQueueRepository.findAll();
         assertEquals(expectedNumberOfRecords, organisationRefreshQueueEntities.size(),
             "OrganisationRefreshQueueEntity number of records mismatch");
@@ -314,7 +337,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         }
         assertEquals(expectedActiveOrgs, activeOrgs,
             "OrganisationRefreshQueueEntity active organisations count mismatch");
-        assertEquals(0, retries,
+        assertEquals(expectedRetries, retries,
             "OrganisationRefreshQueueEntity retries count mismatch");
     }
 
@@ -360,7 +383,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         logObject("organisationRefreshQueueRepository: BEFORE", organisationRefreshQueueRepository.findAll());
     }
 
-    private void verifyNoOfCallsToPrd(int noOfCalls) {
+    private void verifyNoOfCallsToPrd(int noOfCalls, EndStatus endStatus) {
         var allCallEvents = logWiremockPostCalls(STUB_ID_PRD_RETRIEVE_USERSBYORG);
         // verify single call
         assertEquals(noOfCalls, allCallEvents.size(),
@@ -373,7 +396,9 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
             "Response pageSize mismatch");
         // verify response status
-        assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
+        int httpStatus = EndStatus.FAILED.equals(endStatus)
+            ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
+        assertEquals(httpStatus, event.getResponse().getStatus(),
             "Response status mismatch");
         assertEquals("false",  event.getResponse().getHeaders().getHeader(MORE_AVAILABLE).firstValue(),
             "Response moreAvailable mismatch");

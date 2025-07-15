@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.helper.JsonHelper;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -177,24 +178,29 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     }
 
     protected void stubPrdRetrieveUsersByOrg(List<String> fileNames,
-        String moreAvailable, String lastRecordInPage) {
+        String moreAvailable, String lastRecordInPage, EndStatus endStatus) {
         stubPrdRetrieveUsersByOrg(
             "{ \"organisationInfo\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
-                + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable
+                + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable,
+            endStatus
         );
     }
 
-    protected void stubPrdRetrieveUsersByOrg(String body, String moreAvailable) {
+    protected void stubPrdRetrieveUsersByOrg(String body, String moreAvailable,
+        EndStatus endStatus) {
         HttpHeaders headers = new HttpHeaders()
             .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
             .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
+
+        int httpStatus = EndStatus.FAILED.equals(endStatus)
+            ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
 
         WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
             "/refdata/internal/v2/organisations/users"))
             .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
             .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
             .willReturn(aResponse()
-                .withStatus(HttpStatus.OK.value())
+                .withStatus(httpStatus)
                 .withHeaders(headers)
                 .withBody(body)));
     }
