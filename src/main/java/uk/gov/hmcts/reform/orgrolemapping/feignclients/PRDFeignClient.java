@@ -6,12 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
@@ -47,4 +45,12 @@ public interface PRDFeignClient {
             @RequestParam(name = "searchAfterUser") String searchAfterUser,
             @RequestBody UsersByOrganisationRequest usersByOrganisationRequest
     );
+
+    @GetMapping(value = "/refdata/internal/v1/organisations/users")
+    ResponseEntity<GetRefreshUserResponse> retrieveUsers(
+            @RequestParam(name = "since") String lastUpdatedSince,
+            @RequestParam(name = "pageSize") Integer pageSize,
+            @RequestParam(name = "searchAfter") String searchAfter
+    );
+
 }

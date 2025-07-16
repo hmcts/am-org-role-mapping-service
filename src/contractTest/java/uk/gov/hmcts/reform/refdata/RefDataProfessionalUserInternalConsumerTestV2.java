@@ -31,15 +31,17 @@ import java.util.List;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.SOLICITOR_PROFILE;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
 @PactTestFor(providerName = "referenceData_professionalInternalUsersV2", port = "8090")
-@ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
-@TestPropertySource(properties = {"feign.client.config.prdClient.url=http://localhost:8090"})
+@ContextConfiguration(classes = {RefDataConsumerApplication.class})
+@TestPropertySource(properties = {
+    "feign.client.config.crdclient.url=http://localhost:8991",
+    "feign.client.config.prdClient.url=http://localhost:8090"
+})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataProfessionalUserInternalConsumerTestV2 {
 
@@ -137,7 +139,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
             o.minArrayLike("organisationInfo", 1, orgInfo -> orgInfo
                     .stringType("organisationIdentifier", "0Z64OR3")
                     .stringType("status", "PENDING")
-                    .array("organisationProfileIds", arr -> arr.stringType(SOLICITOR_PROFILE))
+                    .array("organisationProfileIds", arr -> arr.stringType("SOLICITOR_PROFILE"))
                     .minArrayLike("users", 1, user -> user
                             .stringType("userIdentifier", "0Z64OR3")
                             .stringType("firstName", "John")
@@ -155,4 +157,5 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
             o.booleanType("moreAvailable", false);
         }).build();
     }
+
 }

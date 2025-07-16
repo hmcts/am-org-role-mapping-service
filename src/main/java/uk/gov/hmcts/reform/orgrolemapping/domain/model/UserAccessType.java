@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserAccessType {
 
+    // NB: corresponds to PRD: src/main/java/uk/gov/hmcts/reform/professionalapi/domain/UserAccessType.java
+
     private String jurisdictionId;
     private String organisationProfileId;
     private String accessTypeId;
-    private boolean enabled;
+    private Boolean enabled;
+
 }
