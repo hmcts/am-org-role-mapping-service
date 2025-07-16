@@ -13,6 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 public class AccessType {
 
+    // NB: corresponds to CCD-Def-Store:
+    //            repository/src/main/java/uk/gov/hmcts/ccd/definition/store/repository/model/AccessTypeResult.java
+
     private String organisationProfileId;
     private String accessTypeId;
     private boolean accessMandatory;
@@ -22,4 +25,5 @@ public class AccessType {
     private String hint;
     private Integer displayOrder;
     private List<AccessTypeRole> roles;
+
 }
