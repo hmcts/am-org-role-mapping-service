@@ -1,18 +1,23 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import java.util.List;
-import java.util.UUID;
 
-@Setter
-@Getter
-@NoArgsConstructor
+import java.util.List;
+
+@Data
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class GetRefreshUsersResponse {
+
+    // NB: corresponds to PRD:
+    //         src/main/java/uk/gov/hmcts/reform/professionalapi/controller/response/GetRefreshUsersResponse.java
+
     private List<RefreshUser> users;
-    private UUID lastRecordInPage;
+    private String lastRecordInPage;
     private boolean moreAvailable;
+
 }

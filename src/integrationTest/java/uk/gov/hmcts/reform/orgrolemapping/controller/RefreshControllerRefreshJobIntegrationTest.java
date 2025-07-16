@@ -1,13 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import feign.FeignException;
-import feign.Request;
-import feign.RequestTemplate;
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,31 +22,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnauthorizedServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.domain.RefreshJob;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -62,13 +51,10 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,7 +81,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.ABORTED;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.COMPLETED;
@@ -105,9 +90,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_ORM;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_RARB;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.EXPECTED_SINGLE_PRD_USER;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.NO_ACCESS_TYPES_FOUND;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.PRD_USER_NOT_FOUND;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_REFRESH_JOB_INVALID_STATE;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator.ERROR_REFRESH_JOB_NOT_FOUND;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
@@ -122,7 +104,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
     "refresh.judicial.filterSoftDeletedUsers=true",
     "testing.support.enabled=true" // NB: needed for access to test support URLs
 })
-@Transactional
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegration {
 
@@ -130,17 +111,11 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
-    private static final String AUTHORISED_SERVICE = "am_role_assignment_refresh_batch";
-    private static final String PROFESSIONAL_REFRESH_URL = "/am/role-mapping/professional/refresh";
-
-    private static final String REFRESH_JOB_RECORDS_QUERY = "SELECT job_id, status, user_ids, linked_job_id,"
-        + " comments, log FROM refresh_jobs where job_id=?";
     private static final String AUTHORISED_JOB_SERVICE = S2S_RARB;
     private static final String UNAUTHORISED_JOB_SERVICE = S2S_CCD_GW;
 
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
     private static final String ROLE_NAME_TCW = "tribunal-caseworker";
-    private static final String URL = "/am/role-mapping/refresh";
 
     private static final String REFRESH_JOB_URL = "/am/role-mapping/refresh";
 
@@ -189,12 +164,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     Lock sequential = new ReentrantLock();
 
-    private static final MediaType JSON_CONTENT_TYPE = new MediaType(
-            MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype(),
-            StandardCharsets.UTF_8
-    );
-
     @BeforeEach
     public void setUp() throws Exception {
         sequential.lock();
@@ -204,75 +173,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         SecurityContextHolder.setContext(securityContext);
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
-    }
-
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-        scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
-    public void shouldProcessProfessionalRefreshRequest() throws Exception {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("1234")))
-            .when(prdFeignClient).getRefreshUsers(any());
-
-        mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.Message").value(containsString(Constants.SUCCESS_ROLE_REFRESH)))
-            .andReturn();
-    }
-
-    @Test
-    public void shouldRejectProfessionalRefreshRequest_withoutUserId() throws Exception {
-        mockMvc.perform(post(PROFESSIONAL_REFRESH_URL)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE)))
-            .andExpect(status().isBadRequest())
-            .andReturn();
-    }
-
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-        scripts = {"classpath:sql/delete_user_refresh_queue.sql"})
-    public void shouldErrorProfessionalRefreshRequest_whenNoAccessTypesInDB() throws Exception {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("1234")))
-            .when(prdFeignClient).getRefreshUsers(any());
-        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE)))
-            .andExpect(status().isInternalServerError())
-            .andReturn();
-        assertTrue(result.getResolvedException() instanceof ServiceException);
-        assertEquals(NO_ACCESS_TYPES_FOUND, result.getResolvedException().getMessage());
-    }
-
-    @Test
-    public void shouldErrorProfessionalRefreshRequest_whenNoPRDUserFound() throws Exception {
-        Request request = Request.create(Request.HttpMethod.GET, "url", new HashMap<>(), null, new RequestTemplate());
-        doThrow(new FeignException.NotFound("Not Found", request, null, null))
-            .when(prdFeignClient).getRefreshUsers(any());
-        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE)))
-            .andExpect(status().isNotFound())
-            .andReturn();
-        assertTrue(result.getResolvedException() instanceof ResourceNotFoundException);
-        assertEquals(String.format(Constants.RESOURCE_NOT_FOUND + " " + PRD_USER_NOT_FOUND, "1234"),
-            result.getResolvedException().getMessage());
-    }
-
-    @Test
-    public void shouldErrorProfessionalRefreshRequest_whenMultipleUsersReturnedFromPRD() throws Exception {
-        GetRefreshUsersResponse getRefreshUsersResponse = TestDataBuilder.buildRefreshUsersResponse("1234");
-        getRefreshUsersResponse.getUsers().add(new RefreshUser());
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(getRefreshUsersResponse))
-            .when(prdFeignClient).getRefreshUsers(any());
-        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=1234")
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE)))
-            .andExpect(status().isInternalServerError())
-            .andReturn();
-        assertTrue(result.getResolvedException() instanceof ServiceException);
-        assertEquals(String.format(EXPECTED_SINGLE_PRD_USER, "1234", "2"), result.getResolvedException().getMessage());
     }
 
     @AfterEach

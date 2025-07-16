@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
@@ -241,19 +241,19 @@ public class ProfessionalUserService {
 
             while (moreAvailable) {
                 processMonitorDto.addProcessStep(processStep);
-                GetRefreshUserResponse refreshUserResponse = prdService
+                GetRefreshUsersResponse getRefreshUsersResponse = prdService
                         .retrieveUsers(formattedSince, Integer.valueOf(pageSize), lastRecordInPage).getBody();
 
-                if (refreshUserResponse != null && CollectionUtils.isNotEmpty(refreshUserResponse.getUsers())) {
+                if (getRefreshUsersResponse != null && CollectionUtils.isNotEmpty(getRefreshUsersResponse.getUsers())) {
                     foundUsers = true;
-                    writeAllToUserRefreshQueue(refreshUserResponse, accessTypeMinVersion, processMonitorDto);
+                    writeAllToUserRefreshQueue(getRefreshUsersResponse, accessTypeMinVersion, processMonitorDto);
                 } else {
                     break;
                 }
 
                 // prep for next call to retrieveUsers
-                moreAvailable = refreshUserResponse.isMoreAvailable();
-                lastRecordInPage = refreshUserResponse.getLastRecordInPage();
+                moreAvailable = getRefreshUsersResponse.isMoreAvailable();
+                lastRecordInPage = getRefreshUsersResponse.getLastRecordInPage();
                 processStep = "attempting retrieveUsers from lastRecordInPage=" + lastRecordInPage;
             }
 
@@ -279,13 +279,14 @@ public class ProfessionalUserService {
         return processMonitorDto;
     }
 
-    private void writeAllToUserRefreshQueue(GetRefreshUserResponse usersResponse, Integer accessTypeMinVersion,
+    private void writeAllToUserRefreshQueue(GetRefreshUsersResponse getRefreshUsersResponse,
+                                            Integer accessTypeMinVersion,
                                             ProcessMonitorDto processMonitorDto) {
         String processStep = "attempting writeAllToUserRefreshQueue for ";
         processMonitorDto.addProcessStep(processStep);
 
         List<ProfessionalUserData> professionalUserData = new ArrayList<>();
-        for (RefreshUser user : usersResponse.getUsers()) {
+        for (RefreshUser user : getRefreshUsersResponse.getUsers()) {
             try {
                 processMonitorDto.appendToLastProcessStep("user=" + user.getUserIdentifier() + ",");
                 professionalUserData.add(ProfessionalUserBuilder.fromProfessionalRefreshUser(user));

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
@@ -17,10 +16,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRespon
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -36,7 +35,7 @@ class PrdServiceTest {
     PrdService sut = new PrdService(prdFeignClient);
 
     @Test
-    void fetchOrganisationsByProfileIds() throws IOException {
+    void fetchOrganisationsByProfileIds() {
         OrganisationByProfileIdsResponse response = TestDataBuilder.buildOrganisationByProfileIdsResponse();
         OrganisationByProfileIdsRequest request = new OrganisationByProfileIdsRequest(List.of("SOLICITOR_PROFILE"));
 
@@ -50,7 +49,7 @@ class PrdServiceTest {
     }
 
     @Test
-    void fetchOrganisationsResponse() throws IOException {
+    void fetchOrganisationsResponse() {
         OrganisationsResponse response = TestDataBuilder.buildOrganisationsResponse();
 
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
@@ -87,7 +86,7 @@ class PrdServiceTest {
     }
 
     @Test
-    void fetchUsersByOrganisation() throws IOException {
+    void fetchUsersByOrganisation() {
         UsersByOrganisationResponse response = TestDataBuilder.buildUsersByOrganisationResponse();
         UsersByOrganisationRequest request = new UsersByOrganisationRequest(List.of("1"));
 
@@ -101,26 +100,38 @@ class PrdServiceTest {
     }
 
     @Test
-    void fetchRefreshUserResponse() throws IOException {
-        GetRefreshUserResponse response = TestDataBuilder.buildRefreshUserResponse();
+    void fetchRetrieveUsers() {
+
+        // GIVEN
+        GetRefreshUsersResponse response = TestDataBuilder.buildGetRefreshUsersResponse();
 
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
-                .when(prdFeignClient).retrieveUsers("2023-11-20T15:51:33.046Z", 1, null);
+                .when(prdFeignClient).getRefreshUsers(null, "2023-11-20T15:51:33.046Z", 1, null);
 
-        ResponseEntity<GetRefreshUserResponse> responseEntity =
+        // WHEN
+        ResponseEntity<GetRefreshUsersResponse> responseEntity =
                 sut.retrieveUsers("2023-11-20T15:51:33.046Z", 1, null);
 
+        // THEN
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
     }
 
     @Test
-    void getRefreshUser() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
-                .when(prdFeignClient).getRefreshUsers(any());
+    void fetchRefreshUser() {
 
-        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser("ID");
+        // GIVEN
+        String userId = "ID";
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse(userId)))
+                .when(prdFeignClient).getRefreshUsers(userId, null, null, null);
 
+        // WHEN
+        ResponseEntity<GetRefreshUsersResponse> responseEntity = sut.getRefreshUser(userId);
+
+        // THEN
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertEquals(userId, responseEntity.getBody().getUsers().get(0).getUserIdentifier());
     }
 
 }

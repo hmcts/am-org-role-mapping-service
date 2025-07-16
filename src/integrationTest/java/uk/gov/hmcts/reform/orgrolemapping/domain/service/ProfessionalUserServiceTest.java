@@ -10,9 +10,8 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
-import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +24,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.refreshUser;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildGetRefreshUsersResponse;
 
 @Transactional
 public class ProfessionalUserServiceTest extends BaseTestIntegration {
@@ -48,7 +48,7 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
                        "classpath:sql/insert_user_refresh_queue.sql"})
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithoutPagination() {
         RefreshUser refreshUser = refreshUser(1);
-        GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser, "123", false);
+        GetRefreshUsersResponse response1 = buildGetRefreshUsersResponse(List.of(refreshUser), "123", false);
 
         when(prdService.retrieveUsers(any(), anyInt(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response1));
@@ -66,14 +66,14 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithPagination() {
         final LocalDateTime preTestLastBatchRunTime = getLastUserRunDatetime();
 
-        RefreshUser refreshUser = refreshUser(1);
-        GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser, "123", true);
+        RefreshUser refreshUser1 = refreshUser(1);
+        GetRefreshUsersResponse response1 = buildGetRefreshUsersResponse(List.of(refreshUser1), "123", true);
 
         when(prdService.retrieveUsers(any(), anyInt(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response1));
 
         RefreshUser refreshUser2 = refreshUser(2);
-        GetRefreshUserResponse response2 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser2, "456", false);
+        GetRefreshUsersResponse response2 = buildGetRefreshUsersResponse(List.of(refreshUser2), "456", false);
 
         when(prdService.retrieveUsers(any(), anyInt(), any(String.class)))
                 .thenReturn(ResponseEntity.ok(response2));
