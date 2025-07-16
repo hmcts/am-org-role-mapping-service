@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +28,23 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     private static final String ORGANISATION_ID_1 = "1";
     private static final String ORGANISATION_ID_2 = "2";
     private static final String ORGANISATION_ID_4 = "4";
+    private static final String EMPTY_ACCESS_TYPES = "[]";
+    private static final String SOLICITOR_ACCESS_TYPE = """
+        { 
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "civil-cases-1",
+          "enabled": true
+        }
+        """;
+    private static final String OGD_ACCESS_TYPE = """
+        { 
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "OGD_PROFILE",
+          "accessTypeId": "ogd-1",
+          "enabled": true
+        }
+        """;
 
     @Autowired
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
@@ -80,9 +97,12 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 3 active users in the refresh queue, all updated
         assertTotalUserRefreshQueueEntitiesInDb(3);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
     }
 
     /**
@@ -108,9 +128,12 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, true, false);
     }
 
     /**
@@ -135,9 +158,12 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            OLD_USER_LAST_UPDATED, true, false);
     }
 
     /**
@@ -165,10 +191,14 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(4);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("userA", ORGANISATION_ID_2, NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("userA", ORGANISATION_ID_2, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
     }
 
     /**
@@ -196,10 +226,14 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 4 active users in the refresh queue, nall updated
         assertTotalUserRefreshQueueEntitiesInDb(4);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("userA", ORGANISATION_ID_2, NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("userA", ORGANISATION_ID_2, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
     }
 
     /**
@@ -225,9 +259,12 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, false, false);
-        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, OLD_USER_LAST_UPDATED, false, false);
-        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, true);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, false, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, EMPTY_ACCESS_TYPES,
+            OLD_USER_LAST_UPDATED, false, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, true);
     }
 
     /**
@@ -254,9 +291,12 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
         // Verify 3 active users in the refresh queue, no changes
         assertTotalUserRefreshQueueEntitiesInDb(3);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, NEW_USER_LAST_UPDATED, true, true);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, true);
     }
 
     /**
@@ -266,7 +306,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
         "classpath:sql/prm/organisation_refresh_queue/insert_organisation4.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user2organisation4.sql"
     })
     void testRetrySuccess() {
 
@@ -277,9 +318,12 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         // verify that the OrganisationRefreshQueue contains 1 record, 0 active, 0 retries
         assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0, 0);
 
-        // Verify 1 active user in the refresh queue, all updated
-        assertTotalUserRefreshQueueEntitiesInDb(1);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_4, NEW_USER_LAST_UPDATED, true, false);
+        // Verify 2 active users in the refresh queue, all updated
+        assertTotalUserRefreshQueueEntitiesInDb(2);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_4, SOLICITOR_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_4, OGD_ACCESS_TYPE,
+            NEW_USER_LAST_UPDATED, true, false);
     }
 
     /**
@@ -366,6 +410,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     private void assertUserRefreshQueueEntitiesInDb(String userId, String organisationId,
+        String expectedAccessTypes,
         LocalDateTime userLastUpdated, boolean isUpdated, boolean isDeleted) {
         var userRefreshQueueEntity = userRefreshQueueRepository.findById(userId);
         assertTrue(userRefreshQueueEntity.isPresent(),
@@ -384,15 +429,25 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(isDeleted,
             userRefreshQueueEntity.get().getDeleted() != null,
             "UserRefreshQueueEntity deleted mismatch for userId: " + userId);
-        assertAccessTypes(new String[] {}, userRefreshQueueEntity.get().getAccessTypes(),
+        assertAccessTypes(expectedAccessTypes,
+            userRefreshQueueEntity.get().getAccessTypes(),
             userId);
     }
 
-    private void assertAccessTypes(String[] expectedOrganisationProfileIds, String accessTypes,
+    private void assertAccessTypes(String expectedAccessTypes, String actualAccessTypes,
         String userId) {
-        Arrays.asList(expectedOrganisationProfileIds).forEach(profileId -> {
-            assertTrue(accessTypes.contains(profileId),
-                "UserRefreshQueueEntity accessTypes does not contain " + profileId
+        Map<String, String> expectedAccessTypesMap = getAccessTypesMap(expectedAccessTypes);
+        Map<String, String> actualAccessTypesMap = getAccessTypesMap(actualAccessTypes);
+        assertEquals(expectedAccessTypesMap.size(),
+            getAccessTypesMap(actualAccessTypes).size(),
+            "UserRefreshQueueEntity accessTypes.size mismatch for userId: " + userId);
+        expectedAccessTypesMap.forEach((key, value) -> {
+            assertTrue(actualAccessTypesMap.containsKey(key),
+                "UserRefreshQueueEntity accessTypes does not contain key " + key
+                    + " for userId: " + userId);
+            assertEquals(value, actualAccessTypesMap.get(key),
+                "UserRefreshQueueEntity accessTypes does not contain value " + value
+                    + " for key " + key
                     + " for userId: " + userId);
         });
     }

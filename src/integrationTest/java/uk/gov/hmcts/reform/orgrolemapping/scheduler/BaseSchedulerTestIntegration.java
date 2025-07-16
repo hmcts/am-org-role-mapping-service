@@ -7,6 +7,8 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.LoggedResponse;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -205,4 +207,21 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                 .withBody(body)));
     }
 
+    protected Map<String,String> getAccessTypesMap(String accessTypes) {
+        Map<String,String> map = new HashMap<>();
+        if (accessTypes != null && !accessTypes.isEmpty()) {
+            String[] keyValuePairs = accessTypes
+                .replace("{", "").replace("}", "")
+                .replace("[", "").replace("]", "")
+                .replace("\n","").replace("\r","")
+                .split(",");
+            if (keyValuePairs.length > 1) {
+                for (String pair : keyValuePairs) {
+                    String[] entry = pair.split(":");
+                    map.put(entry[0].trim(), entry[1].trim());
+                }
+            }
+        }
+        return map;
+    }
 }

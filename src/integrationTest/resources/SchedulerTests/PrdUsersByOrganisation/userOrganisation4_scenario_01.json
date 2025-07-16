@@ -20,6 +20,21 @@
           "enabled": true
         }
       ]
+    },
+    {
+      "userIdentifier": "user2",
+      "firstName": "User2",
+      "lastName": "admin",
+      "email": "user1.admin@hmcts.net",
+      "lastUpdated": "2023-09-19T15:36:33.653",
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "OGD_PROFILE",
+          "accessTypeId": "ogd-1",
+          "enabled": true
+        }
+      ]
     }
   ]
 }
