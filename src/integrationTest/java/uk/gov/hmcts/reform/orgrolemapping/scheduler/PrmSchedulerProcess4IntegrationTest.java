@@ -1,10 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -334,11 +336,27 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
                 activeOrgs++;
             }
             retries += entity.getRetry() != null ? entity.getRetry() : 0;
+            assertRetryAfter(entity.getOrganisationId(), entity.getRetry(), entity.getRetryAfter());
         }
         assertEquals(expectedActiveOrgs, activeOrgs,
             "OrganisationRefreshQueueEntity active organisations count mismatch");
         assertEquals(expectedRetries, retries,
             "OrganisationRefreshQueueEntity retries count mismatch");
+    }
+
+    private void assertRetryAfter(String organisationId, Integer retry, LocalDateTime retryAfter) {
+        // Successful retry or retry limit exceeded
+        if (retry == 0 || retry >= 3) {
+            assertNull(retryAfter,
+                "OrganisationRefreshQueueEntity retryAfter not NULL for organisationId: "
+                    + organisationId);
+        } else {
+            assertTrue(retryAfter != null
+                    && assertLastUpdatedNow(retryAfter),
+                "UserRefreshQueueEntity retryAfter mismatch for organisationId: "
+                    + organisationId + ", " + retry + ", "
+                    + retryAfter);
+        }
     }
 
     private void assertTotalUserRefreshQueueEntitiesInDb(int expectedNumberOfRecords) {
@@ -366,6 +384,17 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(isDeleted,
             userRefreshQueueEntity.get().getDeleted() != null,
             "UserRefreshQueueEntity deleted mismatch for userId: " + userId);
+        assertAccessTypes(new String[] {}, userRefreshQueueEntity.get().getAccessTypes(),
+            userId);
+    }
+
+    private void assertAccessTypes(String[] expectedOrganisationProfileIds, String accessTypes,
+        String userId) {
+        Arrays.asList(expectedOrganisationProfileIds).forEach(profileId -> {
+            assertTrue(accessTypes.contains(profileId),
+                "UserRefreshQueueEntity accessTypes does not contain " + profileId
+                    + " for userId: " + userId);
+        });
     }
 
     private boolean assertLastUpdatedNow(LocalDateTime lastUpdated) {
