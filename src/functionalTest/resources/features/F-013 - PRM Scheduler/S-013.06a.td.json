@@ -9,6 +9,11 @@
   "uri": "/am/role-mapping/professional/refresh",
   "productName": "Organisation Role Mapping",
   "operationName": " Refresh User - Single User Mode",
+  "request": {
+    "queryParams": {
+      "userId": "bb7e41c2-db88-4009-9689-d4220ebb1737"
+    }
+  },
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
