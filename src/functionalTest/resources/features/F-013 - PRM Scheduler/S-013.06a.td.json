@@ -1,24 +1,19 @@
 {
   "_guid_": "S-013.06a",
-  "title": "trigger PRM scheduler process 6 - Refresh Caseworkers",
+  "title": "trigger PRM scheduler process 6 - Refresh User - Single User Mode",
   "_extends_": "F-013-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
   ],
   "method": "GET",
-  "uri": "/am/testing-support/prm/findUserChanges",
+  "uri": "/am/role-mapping/professional/refresh",
   "productName": "Organisation Role Mapping",
-  "operationName": "Find User Changes",
-  "request": {
-    "queryParams": {
-      "since": "${[scenarioContext][customValues][yesterday]}T00:00:00"
-    }
-  },
+  "operationName": " Refresh User - Single User Mode",
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "processType": "PRM Process 6 - Refresh Caseworkers",
+      "processType": "PRM Process 6 - Refresh User - Single User Mode",
       "id": "[[ANYTHING_PRESENT]]",
       "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
       "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
