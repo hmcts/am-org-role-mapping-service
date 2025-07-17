@@ -5,11 +5,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -35,8 +33,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUT
 
 @RestController
 @Slf4j
-@NoArgsConstructor
-@ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
 public class RefreshController {
 
     @Autowired
