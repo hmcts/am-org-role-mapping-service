@@ -6,14 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import java.sql.Types;
 import java.time.ZonedDateTime;
 
 @Builder(toBuilder = true)
@@ -24,7 +25,6 @@ import java.time.ZonedDateTime;
 @SequenceGenerator(name = "job_id_seq", sequenceName = "job_id_seq", allocationSize = 1)
 @Entity(name = "refresh_jobs")
 public class RefreshJobEntity {
-
 
     @Id
     @Column(name = "job_id")
@@ -43,8 +43,8 @@ public class RefreshJobEntity {
     @Column(name = "comments")
     private String comments;
 
-    @Column(name = "user_ids")
-    @Type(type = "uk.gov.hmcts.reform.orgrolemapping.data.GenericArrayUserType")
+    @JdbcTypeCode(Types.ARRAY)
+    @Column(name = "user_ids", columnDefinition = "text[]")
     private String[] userIds;
 
     @Column(name = "log")
@@ -56,5 +56,4 @@ public class RefreshJobEntity {
     @CreationTimestamp
     @Column(name = "created", nullable = false)
     private ZonedDateTime created;
-
 }
