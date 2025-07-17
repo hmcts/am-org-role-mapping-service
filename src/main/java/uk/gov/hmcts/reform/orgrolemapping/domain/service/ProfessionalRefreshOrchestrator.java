@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
@@ -13,10 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
-import java.util.Map;
 import java.util.Objects;
-
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
 
 @Service
 @Slf4j
@@ -45,7 +41,7 @@ public class ProfessionalRefreshOrchestrator {
     }
 
     @Transactional
-    public ResponseEntity<Object> refreshProfessionalUser(String userId) {
+    public ProcessMonitorDto refreshProfessionalUser(String userId) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
                 "PRM Process 6 - Refresh User - Single User Mode");
         processEventTracker.trackEventStarted(processMonitorDto);
@@ -69,7 +65,7 @@ public class ProfessionalRefreshOrchestrator {
 
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
-        return ResponseEntity.ok().body(Map.of("Message", SUCCESS_ROLE_REFRESH));
+        return processMonitorDto;
     }
 
     @Transactional

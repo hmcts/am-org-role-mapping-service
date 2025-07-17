@@ -17,6 +17,8 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import java.io.IOException;
@@ -90,10 +92,10 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
+        ProcessMonitorDto processMonitorDto = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
     }
 
     @Test
@@ -132,10 +134,10 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
+        ProcessMonitorDto processMonitorDto = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
     }
 
     @Test
@@ -175,10 +177,10 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
+        ProcessMonitorDto processMonitorDto = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
     }
 
     @Test
@@ -218,10 +220,10 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
+        ProcessMonitorDto processMonitorDto = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
     }
 
     @Test
@@ -249,9 +251,9 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(TestDataBuilder.buildUserRefreshQueueEntity(userId))
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
+        ProcessMonitorDto processMonitorDto = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
     }
 }

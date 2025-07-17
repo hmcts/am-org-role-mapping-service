@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.util.Map;
 import java.util.UUID;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -118,9 +119,10 @@ class RefreshControllerTest {
 
     @Test
     void refreshProfessionalRoleAssignments() {
-        ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.OK).body(Map.of("Message",
-            "Role assignments have been refreshed successfully"));
-        Mockito.when(professionalRefreshOrchestrator.refreshProfessionalUser(any())).thenReturn(response);
+        ProcessMonitorDto processMonitorDto =
+            new ProcessMonitorDto("PRM Process 6 - Refresh User - Single User Mode");
+        ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+        Mockito.when(professionalRefreshOrchestrator.refreshProfessionalUser(any())).thenReturn(processMonitorDto);
 
         assertEquals(response, sut.professionalRefresh(UUID.randomUUID().toString()));
         Mockito.verify(professionalRefreshOrchestrator, Mockito.times(1))
