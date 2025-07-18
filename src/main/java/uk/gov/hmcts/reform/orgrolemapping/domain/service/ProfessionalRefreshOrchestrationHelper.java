@@ -35,7 +35,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -197,28 +199,36 @@ public class ProfessionalRefreshOrchestrationHelper {
                                                                         UserRefreshQueueEntity userRefreshQueue) {
         return jurisdiction.getAccessTypes().stream()
                 .flatMap(accessType -> accessType.getRoles().stream())
-                .map(role -> createRoleAssignmentForRole(role, jurisdiction, userRefreshQueue));
+                .map(role -> createRoleAssignmentsForRole(role, jurisdiction, userRefreshQueue))
+                .flatMap(Collection::stream);
     }
 
-    private RoleAssignment createRoleAssignmentForRole(AccessTypeRole role,
-                                                       OrganisationProfileJurisdiction jurisdiction,
-                                                       UserRefreshQueueEntity userRefreshQueue) {
+    private List<RoleAssignment> createRoleAssignmentsForRole(AccessTypeRole role,
+                                                              OrganisationProfileJurisdiction jurisdiction,
+                                                              UserRefreshQueueEntity userRefreshQueue) {
+        List<RoleAssignment> roleAssignments =  new ArrayList<>();
+
+        // if contains OrganisationalRole config
         String organisationalRoleName = role.getOrganisationalRoleName();
         if (StringUtils.isNotBlank(organisationalRoleName)) {
-            return createRoleAssignment(organisationalRoleName, userRefreshQueue.getUserId(),
-                    jurisdiction.getJurisdictionId(), role.getCaseTypeId(), null);
+            roleAssignments.add(createRoleAssignment(organisationalRoleName, userRefreshQueue.getUserId(),
+                    jurisdiction.getJurisdictionId(), role.getCaseTypeId(), null));
         }
+
+        // if contains GroupRole config (and is GA enabled)
+        String groupRoleName = role.getGroupRoleName();
+        String caseGroupIdTemplate = role.getCaseGroupIdTemplate();
         if (role.isGroupAccessEnabled()
-            && StringUtils.isNotBlank(role.getGroupRoleName())
-            && StringUtils.isNotBlank(role.getCaseGroupIdTemplate())) {
-            String roleName = role.getGroupRoleName();
+            && StringUtils.isNotBlank(groupRoleName)
+            && StringUtils.isNotBlank(caseGroupIdTemplate)) {
+
             String caseAccessGroupId =
-                    generateCaseAccessGroupId(role.getCaseGroupIdTemplate(),
-                            userRefreshQueue.getOrganisationId());
-            return createRoleAssignment(roleName, userRefreshQueue.getUserId(), jurisdiction.getJurisdictionId(),
-                    role.getCaseTypeId(), caseAccessGroupId);
+                    generateCaseAccessGroupId(caseGroupIdTemplate, userRefreshQueue.getOrganisationId());
+            roleAssignments.add(createRoleAssignment(groupRoleName, userRefreshQueue.getUserId(),
+                    jurisdiction.getJurisdictionId(), role.getCaseTypeId(), caseAccessGroupId));
         }
-        return null;
+
+        return roleAssignments;
     }
 
     private Set<OrganisationProfile> extractOrganisationProfiles(Set<OrganisationProfile> organisationProfiles,
@@ -339,4 +349,5 @@ public class ProfessionalRefreshOrchestrationHelper {
     private boolean isOrganisationStatusActive(String organisationStatus) {
         return OrganisationStatus.valueOf(organisationStatus).isActive();
     }
+
 }
