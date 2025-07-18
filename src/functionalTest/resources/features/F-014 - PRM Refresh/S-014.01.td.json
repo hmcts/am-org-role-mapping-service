@@ -8,7 +8,7 @@
   "method": "POST",
   "uri": "/am/role-mapping/professional/refresh",
   "productName": "Organisation Role Mapping",
-  "operationName": " Refresh User - Single User Mode",
+  "operationName": "Refresh User - Single User Mode",
   "request": {
     "queryParams": {
       "userId": "5acd22ee-bb79-4f1f-8c7d-f8755a2f966f"
