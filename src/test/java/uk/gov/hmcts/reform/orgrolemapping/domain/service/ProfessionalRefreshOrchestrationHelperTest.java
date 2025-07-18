@@ -27,9 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -116,7 +114,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     @Test
-    void shouldProcessActiveUserRefreshQueueWithGroupAndOrgAccess() throws IOException {
+    void shouldProcessActiveUserRefreshQueueWithGroupAndOrgAccess() {
         AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
                 .version(1L)
                 .accessTypes(getGroupAndOrgAccessTypes(true))
@@ -142,15 +140,11 @@ class ProfessionalRefreshOrchestrationHelperTest {
         professionalRefreshOrchestrationHelper.processActiveUserRefreshQueue(accessTypesEntity);
 
         verify(roleAssignmentService).createRoleAssignment(assignmentRequestArgumentCaptor.capture());
-        assertEquals(2, assignmentRequestArgumentCaptor.getValue().getRequestedRoles().size());
-        ArrayList<RoleAssignment> requestedRoles = new ArrayList<>();
-        requestedRoles.addAll(assignmentRequestArgumentCaptor.getValue().getRequestedRoles());
-        Collections.sort(requestedRoles, new Comparator<RoleAssignment>() {
-            @Override
-            public int compare(RoleAssignment t1, RoleAssignment t2) {
-                return t1.getRoleName().compareTo(t2.getRoleName());
-            }
-        });
+        ArrayList<RoleAssignment> requestedRoles = new ArrayList<>(
+            assignmentRequestArgumentCaptor.getValue().getRequestedRoles()
+        );
+        assertEquals(2, requestedRoles.size());
+        requestedRoles.sort(Comparator.comparing(RoleAssignment::getRoleName));
         RoleAssignment roleAssignment = requestedRoles.get(0);
         assertEquals("Uid1", roleAssignment.getActorId());
         assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
@@ -177,7 +171,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     @Test
-    void shouldProcessActiveUserRefreshQueueWithOnlyGroupAccess() throws IOException {
+    void shouldProcessActiveUserRefreshQueueWithOnlyGroupAccess() {
         AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
                 .version(1L)
                 .accessTypes(getGroupAccessTypes(true))
@@ -204,9 +198,10 @@ class ProfessionalRefreshOrchestrationHelperTest {
         professionalRefreshOrchestrationHelper.processActiveUserRefreshQueue(accessTypesEntity);
 
         verify(roleAssignmentService).createRoleAssignment(assignmentRequestArgumentCaptor.capture());
-        assertEquals(1, assignmentRequestArgumentCaptor.getValue().getRequestedRoles().size());
-        ArrayList<RoleAssignment> requestedRoles = new ArrayList<>();
-        requestedRoles.addAll(assignmentRequestArgumentCaptor.getValue().getRequestedRoles());
+        ArrayList<RoleAssignment> requestedRoles = new ArrayList<>(
+            assignmentRequestArgumentCaptor.getValue().getRequestedRoles()
+        );
+        assertEquals(1, requestedRoles.size());
         RoleAssignment roleAssignment = requestedRoles.get(0);
         assertEquals("Uid1", roleAssignment.getActorId());
         assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
@@ -222,7 +217,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     @Test
-    void shouldProcessActiveUserRefreshQueueWithOnlyOrgAccess() throws IOException {
+    void shouldProcessActiveUserRefreshQueueWithOnlyOrgAccess() {
         AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
                 .version(1L)
                 .accessTypes(getOrganisationalAccessTypes())
@@ -249,9 +244,10 @@ class ProfessionalRefreshOrchestrationHelperTest {
         professionalRefreshOrchestrationHelper.processActiveUserRefreshQueue(accessTypesEntity);
 
         verify(roleAssignmentService).createRoleAssignment(assignmentRequestArgumentCaptor.capture());
-        assertEquals(1, assignmentRequestArgumentCaptor.getValue().getRequestedRoles().size());
-        ArrayList<RoleAssignment> requestedRoles = new ArrayList<>();
-        requestedRoles.addAll(assignmentRequestArgumentCaptor.getValue().getRequestedRoles());
+        ArrayList<RoleAssignment> requestedRoles = new ArrayList<>(
+            assignmentRequestArgumentCaptor.getValue().getRequestedRoles()
+        );
+        assertEquals(1, requestedRoles.size());
         RoleAssignment roleAssignment = requestedRoles.get(0);
         assertEquals("Uid1", roleAssignment.getActorId());
         assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
@@ -265,7 +261,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     @Test
-    void shouldProcessActiveUserRefreshQueueWithGroupAccessDisabled() throws IOException {
+    void shouldProcessActiveUserRefreshQueueWithGroupAccessDisabled() {
         AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
                 .version(1L)
                 .accessTypes(getGroupAccessTypes(false))
@@ -295,7 +291,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     @Test
-    void shouldRefreshSingleUser() throws IOException {
+    void shouldRefreshSingleUser() {
         AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
                 .version(1L)
                 .accessTypes(getGroupAccessTypes(true))
@@ -321,20 +317,22 @@ class ProfessionalRefreshOrchestrationHelperTest {
         professionalRefreshOrchestrationHelper.refreshSingleUser(userRefreshQueueEntity, accessTypesEntity);
 
         verify(roleAssignmentService).createRoleAssignment(assignmentRequestArgumentCaptor.capture());
+
+        ArrayList<RoleAssignment> requestedRoles = new ArrayList<>(
+            assignmentRequestArgumentCaptor.getValue().getRequestedRoles()
+        );
+        assertEquals(1, requestedRoles.size());
         assertEquals(1, assignmentRequestArgumentCaptor.getValue().getRequestedRoles().size());
-        Iterator<RoleAssignment> it = assignmentRequestArgumentCaptor.getValue().getRequestedRoles().iterator();
-        while (it.hasNext()) {
-            RoleAssignment roleAssignment = it.next();
-            assertEquals("Uid1", roleAssignment.getActorId());
-            assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
-            assertEquals("CIVIL_Group_Role1", roleAssignment.getRoleName());
-            assertEquals("RESTRICTED", roleAssignment.getClassification().name());
-            assertEquals("STANDARD", roleAssignment.getGrantType().name());
-            assertEquals("PROFESSIONAL", roleAssignment.getRoleCategory().name());
-            assertEquals("CREATE_REQUESTED", roleAssignment.getStatus().name());
-            assertEquals("CIVIL", roleAssignment.getAttributes().get("jurisdiction").asText());
-            assertEquals("CIVIL_Case_TYPE", roleAssignment.getAttributes().get("caseType").asText());
-        }
+        RoleAssignment roleAssignment = requestedRoles.get(0);
+        assertEquals("Uid1", roleAssignment.getActorId());
+        assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
+        assertEquals("CIVIL_Group_Role1", roleAssignment.getRoleName());
+        assertEquals("RESTRICTED", roleAssignment.getClassification().name());
+        assertEquals("STANDARD", roleAssignment.getGrantType().name());
+        assertEquals("PROFESSIONAL", roleAssignment.getRoleCategory().name());
+        assertEquals("CREATE_REQUESTED", roleAssignment.getStatus().name());
+        assertEquals("CIVIL", roleAssignment.getAttributes().get("jurisdiction").asText());
+        assertEquals("CIVIL_Case_TYPE", roleAssignment.getAttributes().get("caseType").asText());
     }
 
     private String getUserAccessTypes() {
@@ -398,4 +396,5 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 + "\"jurisdictionId\": \"CIVIL\"}], "
                 + "\"organisationProfileId\": \"SOLICITOR_PROFILE\"}]}";
     }
+
 }
