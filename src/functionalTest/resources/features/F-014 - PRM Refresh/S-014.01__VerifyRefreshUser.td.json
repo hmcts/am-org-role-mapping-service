@@ -1,0 +1,16 @@
+{
+  "_guid_": "S-014.01__VerifyRefreshUser",
+  "_extends_": "GetRefreshUsers__PositiveResponse_Base",
+
+  "specs": [
+    "to verify professional refresh user"
+  ],
+
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
+      ]
+    }
+  }
+}
