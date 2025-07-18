@@ -71,6 +71,9 @@ class ProfessionalUserServiceTest {
     private final UserRefreshQueueRepository userRefreshQueueRepository =
             Mockito.mock(UserRefreshQueueRepository.class);
 
+    private final ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper =
+            Mockito.mock(ProfessionalRefreshOrchestrationHelper.class);
+
     private final NamedParameterJdbcTemplate jdbcTemplate =
             Mockito.mock(NamedParameterJdbcTemplate.class);
     private final PlatformTransactionManager transactionManager =
@@ -88,12 +91,17 @@ class ProfessionalUserServiceTest {
             databaseDateTimeRepository,
             organisationRefreshQueueRepository,
             userRefreshQueueRepository,
+            professionalRefreshOrchestrationHelper,
             jdbcTemplate,
             transactionManager,
             processEventTracker,
             "2",
             "15",
             "60",
+            "2",
+            "15",
+            "60",
+            "10",
             "1",
             "10"
     );
