@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-010.10a",
+  "title": "must successfully create org role mapping for CTSC Administrator + Task Supervisor",
+  "_extends_": "S-010.10",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Administrator role + Task Supervisor"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "12c4a02b-221f-4130-adb2-c0ca17120eb6"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "EMPLOYMENT",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.monitoring.models;
 
 import lombok.Getter;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,5 +57,5 @@ public class ProcessMonitorDto {
         this.endStatus = endStatus;
         this.endDetail = endDetail;
     }
-}
 
+}

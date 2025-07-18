@@ -11,6 +11,7 @@
   "initials": "some initials",
   "retirement_date": "2040-01-01",
   "active_flag": "true",
+  "deleted_flag": "false",
   "appointments": [
     {
       "base_location_id": "1351",

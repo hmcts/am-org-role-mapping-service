@@ -50,14 +50,14 @@ class ProfessionalRefreshOrchestratorTest {
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitStep1() throws IOException {
 
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
@@ -85,7 +85,7 @@ class ProfessionalRefreshOrchestratorTest {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
 
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
@@ -98,7 +98,7 @@ class ProfessionalRefreshOrchestratorTest {
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitStep2() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
@@ -126,7 +126,7 @@ class ProfessionalRefreshOrchestratorTest {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
         userRefreshQueueEntity.setDeleted(LocalDateTime.now());
 
         doReturn(userRefreshQueueEntity)
@@ -140,7 +140,7 @@ class ProfessionalRefreshOrchestratorTest {
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitStep3() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
@@ -168,7 +168,7 @@ class ProfessionalRefreshOrchestratorTest {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
         userRefreshQueueEntity.setDeleted(null);
         userRefreshQueueEntity.setOrganisationStatus("abcdefg");
         //TODO this should be non ACTIVE status
@@ -183,7 +183,7 @@ class ProfessionalRefreshOrchestratorTest {
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitStep4() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
@@ -211,7 +211,7 @@ class ProfessionalRefreshOrchestratorTest {
         String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
         userRefreshQueueEntity.setDeleted(null);
         userRefreshQueueEntity.setOrganisationStatus("abcdefg");
         //TODO this should be non ACTIVE status
@@ -226,7 +226,7 @@ class ProfessionalRefreshOrchestratorTest {
 
     @Test
     void refreshProfessionalRoleAssignmentRecordsExitNormalProcess() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildRefreshUsersResponse("ID")))
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
                 .when(prdService).getRefreshUser(any());
 
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))

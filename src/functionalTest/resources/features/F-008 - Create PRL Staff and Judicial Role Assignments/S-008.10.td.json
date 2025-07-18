@@ -1,0 +1,93 @@
+{
+  "_guid_": "S-008.10",
+  "title": "must successfully create org role mapping for CTSC Admin",
+  "_extends_": "F-008_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Admin role"
+  ],
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "713b68ff-6fd2-4001-8ad1-01f8a887c103"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-ctsc",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "CTSC",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "ctsc",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "workTypes": "routine_work,hearing_work,applications"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hearing-viewer",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "CTSC",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "PRIVATELAW"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -60,7 +60,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
 
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -74,7 +74,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
 
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId("Uid1");
-        userRefreshQueueEntity.setAccessTypesMinVersion(1L);
+        userRefreshQueueEntity.setAccessTypesMinVersion(1);
 
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
@@ -125,7 +125,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         String[] orgProfileIds = {"SOLICITOR_PROFILE"};
         UserRefreshQueueEntity userRefreshQueueEntity = UserRefreshQueueEntity.builder()
                 .userId("Uid1")
-                .accessTypesMinVersion(1L)
+                .accessTypesMinVersion(1)
                 .organisationStatus("ACTIVE")
                 .organisationProfileIds(orgProfileIds)
                 .accessTypes(getUserAccessTypes())
@@ -186,7 +186,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         String[] orgProfileIds = {"SOLICITOR_PROFILE"};
         UserRefreshQueueEntity userRefreshQueueEntity = UserRefreshQueueEntity.builder()
                 .userId("Uid1")
-                .accessTypesMinVersion(1L)
+                .accessTypesMinVersion(1)
                 .organisationStatus("ACTIVE")
                 .organisationId("AA123BB")
                 .organisationProfileIds(orgProfileIds)
@@ -231,7 +231,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         String[] orgProfileIds = {"SOLICITOR_PROFILE"};
         UserRefreshQueueEntity userRefreshQueueEntity = UserRefreshQueueEntity.builder()
                 .userId("Uid1")
-                .accessTypesMinVersion(1L)
+                .accessTypesMinVersion(1)
                 .organisationStatus("ACTIVE")
                 .organisationId("AA123BB")
                 .organisationProfileIds(orgProfileIds)
@@ -274,7 +274,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         String[] orgProfileIds = {"SOLICITOR_PROFILE"};
         UserRefreshQueueEntity userRefreshQueueEntity = UserRefreshQueueEntity.builder()
                 .userId("Uid1")
-                .accessTypesMinVersion(1L)
+                .accessTypesMinVersion(1)
                 .organisationStatus("ACTIVE")
                 .organisationId("AA123BB")
                 .organisationProfileIds(orgProfileIds)
@@ -304,7 +304,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         String[] orgProfileIds = {"SOLICITOR_PROFILE"};
         UserRefreshQueueEntity userRefreshQueueEntity = UserRefreshQueueEntity.builder()
                 .userId("Uid1")
-                .accessTypesMinVersion(1L)
+                .accessTypesMinVersion(1)
                 .organisationStatus("ACTIVE")
                 .organisationId("AA123BB")
                 .organisationProfileIds(orgProfileIds)

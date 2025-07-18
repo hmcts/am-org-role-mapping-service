@@ -1,0 +1,19 @@
+{
+  "_guid_": "S-016_InsertJobForRefreshAPI",
+  "_extends_": "S-011_InsertJobForRefreshAPI",
+
+  "specs": [
+    "to insert a COMPLETED refresh job in ORM DB"
+  ],
+
+  "request": {
+    "queryParams": {
+      "status" : "COMPLETED"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "status" : "COMPLETED"
+    }
+  }
+}

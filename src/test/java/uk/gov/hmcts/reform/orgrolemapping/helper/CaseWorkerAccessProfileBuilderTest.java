@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
@@ -66,17 +65,6 @@ class CaseWorkerAccessProfileBuilderTest {
     }
 
     @Test
-    void buildJudicialProfilesTest() {
-        List<JudicialProfile> judicialProfiles =
-                UserAccessProfileBuilder.buildJudicialProfile(TestDataBuilder.buildRefreshRoleRequest(),
-                        "judicialProfileSample.json");
-        assertNotNull(judicialProfiles);
-        assertEquals(2, judicialProfiles.size());
-        assertThat(judicialProfiles.stream().map(JudicialProfile::getSidamId).collect(Collectors.toList()),
-                containsInAnyOrder(id_1, id_2));
-    }
-
-    @Test
     void buildJudicialProfilesTestV2() {
         List<JudicialProfileV2> judicialProfiles =
                 UserAccessProfileBuilder.buildJudicialProfileV2(TestDataBuilder.buildRefreshRoleRequest(),
@@ -85,13 +73,6 @@ class CaseWorkerAccessProfileBuilderTest {
         assertEquals(2, judicialProfiles.size());
         assertThat(judicialProfiles.stream().map(JudicialProfileV2::getSidamId).collect(Collectors.toList()),
                 containsInAnyOrder(id_1, id_2));
-    }
-
-    @Test
-    void buildJudicialProfiles_BadRequest() {
-        JRDUserRequest userRequest = TestDataBuilder.buildRefreshRoleRequest();
-        assertThrows(BadRequestException.class, () -> UserAccessProfileBuilder
-                .buildJudicialProfile(userRequest, ""));
     }
 
     @Test

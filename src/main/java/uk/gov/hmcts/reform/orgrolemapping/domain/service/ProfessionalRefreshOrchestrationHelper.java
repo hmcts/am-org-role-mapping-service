@@ -2,10 +2,10 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -117,7 +117,7 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private void generateRoleAssignments(UserRefreshQueueEntity userRefreshQueue, AccessTypesEntity accessTypes) {
-        if (userRefreshQueue.getAccessTypesMinVersion() > accessTypes.getVersion()) {
+        if (userRefreshQueue.getAccessTypesMinVersion() > accessTypes.getVersion().intValue()) {
             return;
         }
         AssignmentRequest assignmentRequest =
@@ -194,7 +194,7 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private Stream<RoleAssignment> createRoleAssignmentsForJurisdiction(OrganisationProfileJurisdiction jurisdiction,
-                                                                        UserRefreshQueueEntity userRefreshQueue                                                                   ) {
+                                                                        UserRefreshQueueEntity userRefreshQueue) {
         return jurisdiction.getAccessTypes().stream()
                 .flatMap(accessType -> accessType.getRoles().stream())
                 .map(role -> createRoleAssignmentForRole(role, jurisdiction, userRefreshQueue));

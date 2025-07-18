@@ -9,10 +9,14 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,15 +43,33 @@ public class PrdService {
             if (feignException.status() != 404) {
                 throw feignException;
             } else {
+                List<OrganisationInfo> organisations = new ArrayList<>();
                 OrganisationsResponse emptyOrg = new OrganisationsResponse(
-                        new ArrayList<>(), false);
+                    organisations, false);
                 return ResponseEntity.of(Optional.of(emptyOrg));
             }
         }
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
-    public ResponseEntity<GetRefreshUsersResponse> getRefreshUser(String userId) {
-        return prdFeignClient.getRefreshUsers(userId);
+    public ResponseEntity<UsersByOrganisationResponse> fetchUsersByOrganisation(
+            Integer pageSize,
+            String searchAfterOrg,
+            String searchAfterUser,
+            UsersByOrganisationRequest usersByOrganisationRequest) {
+        return prdFeignClient.getUsersByOrganisation(pageSize, searchAfterOrg, searchAfterUser,
+                usersByOrganisationRequest);
     }
+
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
+    public ResponseEntity<GetRefreshUsersResponse> retrieveUsers(
+            String lastUpdatedSince, Integer pageSize, String searchAfter) {
+        return prdFeignClient.getRefreshUsers(null, lastUpdatedSince, pageSize, searchAfter);
+    }
+
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
+    public ResponseEntity<GetRefreshUsersResponse> getRefreshUser(String userId) {
+        return prdFeignClient.getRefreshUsers(userId, null, null, null);
+    }
+
 }

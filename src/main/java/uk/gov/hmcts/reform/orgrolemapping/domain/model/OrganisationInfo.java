@@ -19,9 +19,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrganisationInfo {
+
+    // NB: corresponds to PRD:
+    //   * src/main/java/uk/gov/hmcts/reform/professionalapi/controller/response/OrganisationByProfileResponse.java
+    // and
+    //   * src/main/java/uk/gov/hmcts/reform/professionalapi/domain/OrganisationInfo.java
+    // and also part of
+    //   src/main/java/uk/gov/hmcts/reform/professionalapi/controller/response/OrganisationsDetailResponse.java
+
     private String organisationIdentifier;
     private OrganisationStatus status;
     @JsonProperty("lastUpdated")
     private LocalDateTime organisationLastUpdated;
     private List<String> organisationProfileIds;
+
 }

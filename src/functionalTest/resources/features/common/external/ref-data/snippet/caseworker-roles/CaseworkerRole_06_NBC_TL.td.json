@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_06_NBC_TL",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "6",
+  "role": "National Business Centre Team Leader"
+}

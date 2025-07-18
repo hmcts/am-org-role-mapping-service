@@ -1,0 +1,10 @@
+{
+  "_guid_": "S-013_DeleteJobFromORMDB",
+  "_extends_": "S-011_DeleteJobFromORMDB",
+
+  "request": {
+    "pathVariables": {
+      "jobId": "${[scenarioContext][parentContext][childContexts][S-013_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+    }
+  }
+}

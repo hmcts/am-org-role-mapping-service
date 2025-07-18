@@ -3,32 +3,35 @@ package uk.gov.hmcts.reform.orgrolemapping.provider;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.PrdService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.ParseRequestService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.PrdService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrationHelper;
-
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ParseRequestService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 @TestConfiguration
 public class ProviderTestConfiguration {
@@ -62,20 +65,28 @@ public class ProviderTestConfiguration {
     @Bean
     @Primary
     public RetrieveDataService getRetrieveDataService() {
-        return new RetrieveDataService(getParseRequestService(), crdService, jrdService, false, false);
+        return new RetrieveDataService(getParseRequestService(), crdService, jrdService, true);
     }
 
     @Bean
     @Primary
     public RequestMappingService<UserAccessProfile> getRequestMappingService() {
-        return new RequestMappingService<>(
-                "pr", persistenceService, roleAssignmentService, getStatelessKieSession(), securityUtils);
+        return new RequestMappingService<>(persistenceService, getEnvironmentConfiguration(), roleAssignmentService,
+                getStatelessKieSession(), securityUtils);
     }
 
     @Bean
     @Primary
     public ParseRequestService getParseRequestService() {
         return new ParseRequestService();
+    }
+
+    @Bean
+    @Primary
+    public EnvironmentConfiguration getEnvironmentConfiguration() {
+        EnvironmentConfiguration environmentConfiguration = Mockito.mock(EnvironmentConfiguration.class);
+        when(environmentConfiguration.getEnvironment()).thenReturn("pr");
+        return environmentConfiguration;
     }
 
     @Bean
@@ -88,10 +99,12 @@ public class ProviderTestConfiguration {
                 crdService,
                 persistenceService,
                 securityUtils,
+                judicialBookingService,
                 "1",
                 "descending",
                 "1",
-                List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch")
+                List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch"),
+                true
         );
     }
 
@@ -106,7 +119,7 @@ public class ProviderTestConfiguration {
     @Primary
     public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator() {
         return new ProfessionalRefreshOrchestrator(accessTypesRepository, userRefreshQueueRepository,
-                prdService, professionalRefreshOrchestrationHelper, processEventTracker);
+            prdService, professionalRefreshOrchestrationHelper, processEventTracker);
     }
 
     @Bean

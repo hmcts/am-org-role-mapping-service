@@ -1,2 +1,2 @@
 enable_schema_ownership = true
-kv_subscription = "DCD-CNP-DEV"
+kv_subscription         = "DCD-CNP-DEV"

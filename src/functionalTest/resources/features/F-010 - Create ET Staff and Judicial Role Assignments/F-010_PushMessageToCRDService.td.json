@@ -1,0 +1,11 @@
+{
+  "_guid_": "F-010_PushMessageToCRDService",
+  "_extends_": "PushMessageToCRDProfileProcess",
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}"
+      ]
+    }
+  }
+}

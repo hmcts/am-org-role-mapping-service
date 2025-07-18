@@ -17,39 +17,6 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 
 /*
  * CIVIL staff "senior tribunal-caseworker" Org role mapping.
- * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
- * To be removed in DTSAM-139.
- */
-
-rule "civil_senior_tribunal_caseworker_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_1_4.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "1", serviceCode in ("AAA6", "AAA7"), !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,access_requests"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("senior-tribunal-caseworker")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
-      .build());
-      logMsg("Rule : civil_senior_tribunal_caseworker_org_role");
-end;
-
-/*
- * CIVIL staff "senior tribunal-caseworker" Org role mapping.
  */
 
 rule "v1_4_civil_senior_tribunal_caseworker_org_role"
@@ -75,72 +42,6 @@ then
       .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : v1_4_civil_senior_tribunal_caseworker_org_role");
-end;
-
-/*
- * CIVIL staff "tribunal-caseworker" Org role mapping.
- * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
- * To be removed in DTSAM-139.
- */
-
-rule "civil_tribunal_caseworker_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_1_4.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "2", serviceCode in ("AAA6", "AAA7"), !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("tribunal-caseworker")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
-      .build());
-      logMsg("Rule : civil_tribunal_caseworker_org_role");
-end;
-
-/*
- * CIVIL staff "tribunal-caseworker" v11 Org role mapping.
- * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
- * To be removed in DTSAM-139.
- */
-
-rule "v11_civil_tribunal_caseworker_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_1.getValue())
-  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_1_4.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "1", serviceCode in ("AAA6", "AAA7"), !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("tribunal-caseworker")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
-      .build());
-      logMsg("Rule : v11_civil_tribunal_caseworker_org_role");
 end;
 
 /*
@@ -199,39 +100,6 @@ end;
 
 /*
  * CIVIL staff "task-supervisor" Org role mapping.
-  * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
-  * To be removed in DTSAM-139.
- */
-rule "civil_task_supervisor_staff_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_1_4.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "1", serviceCode in ("AAA6", "AAA7"),
-                                !suspended, taskSupervisorFlag == "Y")
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work,access_requests"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("task-supervisor")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
-      .build());
-      logMsg("Rule : civil_task_supervisor_admin_org_role");
-end;
-
-/*
- * CIVIL staff "task-supervisor" Org role mapping.
  */
 rule "v1_4_civil_task_supervisor_staff_org_role"
 when
@@ -257,39 +125,6 @@ then
       .authorisations($cap.getSkillCodes())
       .build());
       logMsg("Rule : v1_4_civil_task_supervisor_admin_org_role");
-end;
-
-/*
- * CIVIL staff "case-allocator" Org role mapping.
- * Made obsolete in DTSAM-131 by CIVIL_WA_1_4.
- * To be removed in DTSAM-139.
- */
-
-rule "civil_case_allocator_staff_org_role"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_1_0.getValue())
-  $f2: FeatureFlag(status == false, flagName == FeatureFlagEnum.CIVIL_WA_1_4.getValue())
-  $cap: CaseWorkerAccessProfile(roleId == "1", serviceCode in ("AAA6", "AAA7"),
-                                !suspended, caseAllocatorFlag == "Y")
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("CIVIL"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($cap.getId())
-      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("case-allocator")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .authorisations($cap.getSkillCodes())
-      .build());
-      logMsg("Rule : civil_case_allocator_staff_org_role");
 end;
 
 /*

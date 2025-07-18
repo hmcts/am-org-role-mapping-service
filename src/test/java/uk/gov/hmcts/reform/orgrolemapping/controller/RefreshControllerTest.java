@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 
 class RefreshControllerTest {
@@ -39,24 +40,26 @@ class RefreshControllerTest {
         new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator);
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void refreshRoleAssignmentRecords() {
+
+        // GIVEN
+        long jobId = 1L;
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
-        ResponseEntity<Object> response =
-                ResponseEntity.status(HttpStatus.CREATED).body(userRequest);
+        // WHEN
+        ResponseEntity<Object> response = sut.refresh(jobId, userRequest);
 
-        Mockito.when(refreshOrchestrator.refresh(any(),any()))
-                .thenReturn(response);
+        // THEN
+        assertNotNull(response);
+        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
 
-        assertEquals(response, sut.refresh(1L, UserRequest.builder().build()));
-
-        Mockito.verify(refreshOrchestrator, Mockito.times(1))
-                .validate(any(), any());
+        Mockito.verify(refreshOrchestrator, Mockito.times(1)).validate(jobId, userRequest);
+        Mockito.verify(refreshOrchestrator, Mockito.times(1)).refreshAsync(jobId, userRequest);
     }
 
     @Test

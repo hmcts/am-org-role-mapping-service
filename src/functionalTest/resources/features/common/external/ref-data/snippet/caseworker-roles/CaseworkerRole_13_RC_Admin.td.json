@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_13_RC_Admin",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "13",
+  "role": "Regional Centre Administrator"
+}

@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-012",
+  "title": "must successfully refresh judicial user org roles for a job",
+  "_extends_": "F-002_Test_Data_Base",
+
+  "specs": [
+    "contains an existing job details"
+  ],
+  "request": {
+    "queryParams": {
+      "jobId": "${[scenarioContext][childContexts][S-012_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+    },
+    "body": {
+      "userIds" : ["1667515b-36f4-4577-8a41-3fb49244276a"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_202_Response",
+    "body" : null
+  }
+}

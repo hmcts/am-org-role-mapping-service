@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,9 +20,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -38,6 +40,12 @@ public abstract class BaseTestIntegration extends BaseTest {
     @MockBean
     @Qualifier("jrdPublisher")
     ServiceBusSenderClient serviceBusSenderClientJrd;
+
+    static final MediaType JSON_CONTENT_TYPE = new MediaType(
+        MediaType.APPLICATION_JSON.getType(),
+        MediaType.APPLICATION_JSON.getSubtype(),
+        StandardCharsets.UTF_8
+    );
 
     @TestConfiguration
     static class Configuration {

@@ -3,54 +3,49 @@ package uk.gov.hmcts.reform.orgrolemapping;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lombok.NoArgsConstructor;
-import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.serenitybdd.annotations.WithTag;
+import net.serenitybdd.annotations.WithTags;
+import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.serenitybdd.rest.SerenityRest;
-import net.thucydides.core.annotations.WithTag;
-import net.thucydides.core.annotations.WithTags;
-import org.junit.Before;
+
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
-@RunWith(SpringIntegrationSerenityRunner.class)
+@ExtendWith(SerenityJUnit5Extension.class)
 @NoArgsConstructor
 @WithTags({@WithTag("testType:Smoke")})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SmokeTest {
-    @Value("${launchdarkly.sdk.environment}")
-    private String environment;
-
-    @Value("${launchdarkly.sdk.user}")
-    private String userName;
-
-    @Value("${launchdarkly.sdk.key}")
-    private String sdkKey;
+class SmokeTest {
+    @Autowired
+    private EnvironmentConfiguration environmentConfiguration;
 
     UserTokenProviderConfig config;
 
     @MockBean
-    private CRDTopicConsumer crdTopicConsumer;
+    private CRDTopicConsumerNew crdTopicConsumerNew;
 
     @MockBean
-    private JRDTopicConsumer jrdTopicConsumer;
+    private JRDTopicConsumerNew jrdTopicConsumerNew;
 
     @MockBean
     private CRDTopicPublisher crdTopicPublisher;
 
     @MockBean
     private JRDTopicPublisher jrdTopicPublisher;
-
 
     @MockBean
     private CRDMessagingConfiguration crdMessagingConfiguration;
@@ -61,17 +56,14 @@ public class SmokeTest {
     @Rule
     public FeatureFlagToggleEvaluator featureFlagToggleEvaluator = new FeatureFlagToggleEvaluator(this);
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         config = new UserTokenProviderConfig();
     }
 
-
     @Tag("smoke")
     @Test
-    @FeatureFlagToggle("orm-base-flag")
-    public void should_receive_response_for_welcomeAPI() {
-
+    void should_receive_response_for_welcomeAPI() {
         var targetInstance = config.getOrgRoleMappingUrl();
         RestAssured.useRelaxedHTTPSValidation();
 
@@ -85,14 +77,6 @@ public class SmokeTest {
     }
 
     public String getEnvironment() {
-        return environment;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getSdkKey() {
-        return sdkKey;
+        return environmentConfiguration.getEnvironment();
     }
 }
