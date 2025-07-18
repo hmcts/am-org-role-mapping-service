@@ -1,11 +1,11 @@
 {
-  "_guid_": "S-013.06a",
+  "_guid_": "S-014.01",
   "title": "trigger PRM scheduler process 6 - Refresh User - Single User Mode",
-  "_extends_": "F-013-Base-Root",
+  "_extends_": "F-014-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
   ],
-  "method": "GET",
+  "method": "POST",
   "uri": "/am/role-mapping/professional/refresh",
   "productName": "Organisation Role Mapping",
   "operationName": " Refresh User - Single User Mode",
