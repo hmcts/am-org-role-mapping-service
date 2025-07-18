@@ -8,9 +8,7 @@
 
   "request": {
     "body": {
-      "userIds": [
-        "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
-      ]
+      "userId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
     }
   }
 }
