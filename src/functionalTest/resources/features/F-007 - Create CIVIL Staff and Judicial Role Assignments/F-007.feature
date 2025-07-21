@@ -573,11 +573,6 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
-
-
-
-
-
   @S-007.21_AAA6
   @FeatureToggle(DB:civil_wa_2_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for WLU Team Leader (AAA6)
@@ -633,13 +628,6 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     Then a positive response is received,
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
-
-
-
-
-
-
-
 
   @S-007.21b_AAA6
   @FeatureToggle(DB:civil_wa_2_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
