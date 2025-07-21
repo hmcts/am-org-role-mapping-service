@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_20_WLU_Team_Leader",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "21",
+  "role": "WLU Team Leader"
+}

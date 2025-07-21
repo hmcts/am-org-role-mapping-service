@@ -573,28 +573,96 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
-  @S-007.20a_AAA6
+
+
+
+
+
+  @S-007.21_AAA6
   @FeatureToggle(DB:civil_wa_2_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for WLU Administrator + Task Supervisor (AAA6)
+  Scenario: must successfully create org role mapping for WLU Team Leader (AAA6)
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for WLU Administrator + Task Supervisor (AAA6 Civil)] as in [S-007.20a_AAA6__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for WLU Team Leader (AAA6 Civil)] as in [S-007.21_AAA6__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
-    And the request [contains the actorId of the user just published who has WLU Administrator role + Task Supervisor (AAA6)],
+    And the request [contains the actorId of the user just published who has WLU Team Leader role (AAA6)],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
-  @S-007.20a_AAA7
+  @S-007.21_AAA7
   @FeatureToggle(DB:civil_wa_2_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for WLU Administrator + Task Supervisor (AAA7)
+  Scenario: must successfully create org role mapping for WLU Team Leader (AAA7)
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for WLU Administrator + Task Supervisor (AAA7 Civil)] as in [S-007.20a_AAA7__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for WLU Team Leader (AAA7 Civil)] as in [S-007.21_AAA7__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
-    And the request [contains the actorId of the user just published who has WLU Administrator role + Task Supervisor (AAA7)],
+    And the request [contains the actorId of the user just published who has WLU Team Leader role (AAA7)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-007.21a_AAA6
+  @FeatureToggle(DB:civil_wa_2_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for WLU Team Leader and WLU Administrator (AAA6)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for WLU Team Leader and WLU Administrator (AAA6 Civil)] as in [S-007.21a_AAA6__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has WLU Team Leader and WLU Administrator role (AAA6)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-007.21a_AAA7
+  @FeatureToggle(DB:civil_wa_2_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for WLU Team Leader and WLU Administrator (AAA7)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for WLU Team Leader and WLU Administrator (AAA7 Civil)] as in [S-007.21a_AAA7__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has WLU Team Leader and WLU Administrator role (AAA7)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+
+
+
+
+
+
+
+  @S-007.21b_AAA6
+  @FeatureToggle(DB:civil_wa_2_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for WLU Team Leader + Task Supervisor (AAA6)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for WLU Team Leader + Task Supervisor (AAA6 Civil)] as in [S-007.21b_AAA6__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has WLU Team Leader role + Task Supervisor (AAA6)],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
+
+  @S-007.21b_AAA7
+  @FeatureToggle(DB:civil_wa_2_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for WLU Team Leader + Task Supervisor (AAA7)
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify caseworker details for WLU Team Leader + Task Supervisor (AAA7 Civil)] as in [S-007.21b_AAA7__VerifyCaseworkerDetails],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-007_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has WLU Team Leader role + Task Supervisor (AAA7)],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,

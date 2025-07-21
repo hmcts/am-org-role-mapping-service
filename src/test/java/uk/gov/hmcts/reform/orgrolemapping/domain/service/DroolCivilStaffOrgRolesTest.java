@@ -57,6 +57,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("task-supervisor", "routine_work,hearing_work,access_requests");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("wlu-admin", "routine_work,query_work,welsh_translation_work");
+        expectedRoleNameWorkTypesMap.put("wlu-team-leader", "routine_work,query_work,welsh_translation_work");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String roleId,
@@ -96,7 +97,7 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
         String expectedWorkTypes;
         if (roleId.equals("1") && r.getRoleName().equals("task-supervisor")) {
             expectedWorkTypes = "decision_making_work,access_requests";
-        } else if (roleId.equals("20") && r.getRoleName().equals("task-supervisor")) {
+        } else if (roleId.equals("21") && r.getRoleName().equals("task-supervisor")) {
             expectedWorkTypes = "routine_work,query_work,welsh_translation_work";
         } else {
             expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
@@ -142,7 +143,11 @@ class DroolCivilStaffOrgRolesTest extends DroolBase {
                 "Y"),
             Arguments.of("20", Collections.singletonList("wlu-admin"), 1, RoleCategory.ADMIN,
                 "N", "N"),
-            Arguments.of("20", Arrays.asList("wlu-admin", "task-supervisor"), 2, RoleCategory.ADMIN,
+            Arguments.of("21", Collections.singletonList("wlu-team-leader"), 1, RoleCategory.ADMIN,
+                "N", "N"),
+            Arguments.of("21", Collections.singletonList("wlu-admin"), 1, RoleCategory.ADMIN,
+                "N", "N"),
+            Arguments.of("21", Arrays.asList("wlu-team-leader", "task-supervisor"), 2, RoleCategory.ADMIN,
                     "Y", "N")
         );
     }

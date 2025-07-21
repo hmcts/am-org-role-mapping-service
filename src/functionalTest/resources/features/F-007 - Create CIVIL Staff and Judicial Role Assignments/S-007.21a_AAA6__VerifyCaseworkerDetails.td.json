@@ -1,9 +1,9 @@
 {
-  "_guid_": "S-007.20a_AAA6__VerifyCaseworkerDetails",
+  "_guid_": "S-007.21a_AAA6__VerifyCaseworkerDetails",
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for WLU Administrator + Task Supervisor (AAA6 Civil)"
+    "to verify caseworker details for WLU Team Leader and WLU Administrator (AAA6 Civil)"
   ],
 
   "request": {
@@ -23,11 +23,11 @@
           "id": "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}",
 
           "case_allocator": "N",
-          "task_supervisor": "Y",
+          "task_supervisor": "N",
 
           "role": [
             {
-              "_extends_": "CaseworkerRole_20_WLU_Admin"
+              "_extends_": "CaseworkerRole_21_WLU_Leader"
             }
           ],
 
