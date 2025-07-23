@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -22,9 +22,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,6 +33,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -41,12 +42,13 @@ class ProfessionalRefreshOrchestrationHelperTest {
 
     @Mock
     private UserRefreshQueueRepository userRefreshQueueRepository;
+
     @Mock
     private AccessTypesRepository accessTypesRepository;
-    @Mock
-    private ObjectMapper objectMapper;
+
     @Mock
     private RoleAssignmentService roleAssignmentService;
+
     @Mock
     private SecurityUtils securityUtils;
 
@@ -63,54 +65,55 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     @Test
-    void shouldUpsertUserRefreshQueue() throws IOException {
+    void shouldUpsertUserRefreshQueue() throws JsonProcessingException {
 
+        // GIVEN
+        long accessTypesMinVersion = 1L;
         Optional<AccessTypesEntity> accessTypesEntity = Optional.of(new AccessTypesEntity());
-        accessTypesEntity.get().setVersion(1L);
+        accessTypesEntity.get().setVersion(accessTypesMinVersion);
         doReturn(accessTypesEntity)
                 .when(accessTypesRepository).findFirstByOrderByVersionDesc();
 
-        UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
-        userRefreshQueueEntity.setUserId("Uid1");
-        userRefreshQueueEntity.setAccessTypesMinVersion(1);
-
-        doReturn(userRefreshQueueEntity)
-                .when(userRefreshQueueRepository).findByUserId(any());
-
         List<UserAccessType> userAccessTypes = new ArrayList<>();
         UserAccessType userAccessType1 = UserAccessType.builder()
-                .accessTypeId("1")
+                .accessTypeId("accessType1")
                 .enabled(true)
                 .jurisdictionId("jur1")
                 .organisationProfileId("orgProf1")
                 .build();
         userAccessTypes.add(userAccessType1);
 
-        String userAccessTypesString = " [ { \"jurisdictionId\": \"jur1\", \"organisationProfileId\": \"orgProf1\", "
-                + "\"accessTypeId\": \"1\", \"enabled\": true } ]";
-
-        doReturn(userAccessTypesString)
-                .when(objectMapper).writeValueAsString(userAccessTypes);
-
-        LocalDateTime updated = LocalDateTime.now();
+        String orgId = "orgId1";
+        String orgProfileId = "profileId1";
+        OrganisationStatus orgStatus = OrganisationStatus.ACTIVE;
         OrganisationInfo org1 = OrganisationInfo.builder()
-                .status(OrganisationStatus.ACTIVE)
-                .organisationProfileIds(List.of("profileId1"))
-                .organisationIdentifier("orgId1")
+                .status(orgStatus)
+                .organisationProfileIds(List.of(orgProfileId))
+                .organisationIdentifier(orgId)
                 .build();
-        LocalDateTime deleted = LocalDateTime.now();
-        RefreshUser user = RefreshUser.builder()
+
+        String userId = "uid1";
+        LocalDateTime updated = LocalDateTime.now().minusDays(1L);
+        LocalDateTime deleted = LocalDateTime.now().minusDays(2L);
+        RefreshUser refreshUser = RefreshUser.builder()
                 .userAccessTypes(userAccessTypes)
                 .lastUpdated(updated)
-                .userIdentifier("uid1")
+                .userIdentifier(userId)
                 .organisationInfo(org1)
                 .dateTimeDeleted(deleted)
                 .build();
 
-        professionalRefreshOrchestrationHelper.upsertUserRefreshQueue(user);
+        // WHEN
+        professionalRefreshOrchestrationHelper.upsertUserRefreshQueue(refreshUser);
 
-        verify(userRefreshQueueRepository).upsert("uid1", updated, 1L, deleted, userAccessTypesString,
-                "orgId1", "ACTIVE", "profileId1");
+        // THEN
+        ArgumentCaptor<String> userAccessTypesStringCaptor = ArgumentCaptor.forClass(String.class);
+        verify(userRefreshQueueRepository).upsert(
+            eq(userId), eq(updated), eq(accessTypesMinVersion), eq(deleted),
+            userAccessTypesStringCaptor.capture(),
+            eq(orgId), eq(orgStatus.name()), eq(orgProfileId));
+
+        assertEquals(userAccessTypes, JacksonUtils.convertUserAccessTypes(userAccessTypesStringCaptor.getValue()));
     }
 
     @Test

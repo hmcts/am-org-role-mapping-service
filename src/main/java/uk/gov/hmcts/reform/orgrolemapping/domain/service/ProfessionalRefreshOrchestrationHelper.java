@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileJurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
@@ -32,6 +32,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -64,32 +65,24 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private final AccessTypesRepository accessTypesRepository;
 
-    private final ObjectMapper objectMapper;
-
     private final RoleAssignmentService roleAssignmentService;
 
     private final SecurityUtils securityUtils;
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void upsertUserRefreshQueue(RefreshUser prdUser) {
-        String userAccessTypes;
-        try {
-            userAccessTypes = objectMapper.writeValueAsString(prdUser.getUserAccessTypes());
-        } catch (JsonProcessingException e) {
-            throw new ServiceException(String.format("Unable to serialize user access types for PRD user %s",
-                    prdUser.getUserIdentifier()), e);
-        }
+    public void upsertUserRefreshQueue(RefreshUser refreshUser) {
+        ProfessionalUserData professionalUserData = ProfessionalUserBuilder.fromProfessionalRefreshUser(refreshUser);
 
         userRefreshQueueRepository.upsert(
-                prdUser.getUserIdentifier(),
-                prdUser.getLastUpdated(),
-                getLatestAccessTypes().getVersion(),
-                prdUser.getDateTimeDeleted(),
-                userAccessTypes,
-                prdUser.getOrganisationInfo().getOrganisationIdentifier(),
-                prdUser.getOrganisationInfo().getStatus().toString(),
-                String.join(",", prdUser.getOrganisationInfo().getOrganisationProfileIds())
+            professionalUserData.getUserId(),
+            professionalUserData.getUserLastUpdated(),
+            getLatestAccessTypes().getVersion(),
+            professionalUserData.getDeleted(),
+            professionalUserData.getAccessTypes(),
+            professionalUserData.getOrganisationId(),
+            professionalUserData.getOrganisationStatus(),
+            professionalUserData.getOrganisationProfileIds()
         );
     }
 
