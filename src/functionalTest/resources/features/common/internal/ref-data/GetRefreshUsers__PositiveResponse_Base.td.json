@@ -1,0 +1,23 @@
+{
+  "_guid_": "GetRefreshUsers__PositiveResponse_Base",
+  "_extends_": "GetRefreshUsers__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "arrayInMap": [
+        {
+          "__ordering__": "unordered",
+          "__elementId__": "id"
+        }
+      ]
+    }
+  }
+
+}
