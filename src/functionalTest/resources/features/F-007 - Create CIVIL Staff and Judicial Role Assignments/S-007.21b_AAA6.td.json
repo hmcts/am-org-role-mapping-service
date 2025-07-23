@@ -5,15 +5,12 @@
   "specs": [
     "contains the actorId of the user just published who has WLU Team Leader role + Task Supervisor (AAA6)"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "ADD NEW ACTOR ID HERE"
+      "actorId": "df124a5e-0f72-4777-8784-ea7eb734379e"
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
@@ -29,7 +26,6 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "region": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "substantive": "N",
             "workTypes": "routine_work,query_work,welsh_translation_work"

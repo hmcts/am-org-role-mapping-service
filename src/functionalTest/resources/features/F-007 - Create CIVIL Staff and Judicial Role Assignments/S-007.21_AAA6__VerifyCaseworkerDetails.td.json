@@ -27,7 +27,7 @@
 
           "role": [
             {
-              "_extends_": "CaseworkerRole_21_WLU_Leader"
+              "_extends_": "CaseworkerRole_21_WLU_Team_Leader"
             }
           ],
 
