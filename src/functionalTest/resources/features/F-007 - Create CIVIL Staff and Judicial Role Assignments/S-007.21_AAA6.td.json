@@ -9,7 +9,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "INSERT ACTOR ID HERE"
+      "actorId": "488edb53-5377-4c58-aa5e-30a1d7207f33"
     }
   },
   "expectedResponse": {
@@ -33,7 +33,28 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "substantive": "Y",
+            "workTypes": "routine_work,query_work,welsh_translation_work"
+          },
+          "authorisations": [
+            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "wlu-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "CIVIL",
             "substantive": "Y",
             "workTypes": "routine_work,query_work,welsh_translation_work"
