@@ -1,9 +1,9 @@
 {
-  "_guid_": "S-014.01__VerifyRefreshUser",
-  "_extends_": "GetRefreshUsers__PositiveResponse_Base",
+  "_guid_": "S-014.01__VerifyProfessionalUser",
+  "_extends_": "FetchProfessionalUsersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify professional refresh user"
+    "to verify professional user"
   ],
 
   "request": {

@@ -1,6 +1,6 @@
 {
-  "_guid_": "GetRefreshUsers__PositiveResponse_Base",
-  "_extends_": "GetRefreshUsers__Base",
+  "_guid_": "FetchProfessionalUsersById__PositiveResponse_Base",
+  "_extends_": "FetchProfessionalUsersById__Base",
 
   "users": {
     "invokingUser": {

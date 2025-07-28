@@ -1,5 +1,5 @@
 {
-  "_guid_": "GetRefreshUsers__Base",
+  "_guid_": "FetchProfessionalUsersById__Base",
 
   "productName": "RefreshUsers Reference Data",
   "operationName": "Get Refresh Users",
@@ -7,7 +7,7 @@
   "specs": [],
 
   "method": "GET",
-  "uri": "/refdata/internal/v1/organisations/users",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations/users",
 
   "request": {
     "headers": {
