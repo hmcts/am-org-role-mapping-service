@@ -1,11 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -31,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
 
     static final String REGION_ID = "LDN";
@@ -90,6 +91,10 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals(BOOKING_LOCATION_ID, primaryLocation);
                 assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
                 assertEquals(BOOKING_LOCATION_ID, r.getAttributes().get("baseLocation").asText());
+            } else if (r.getRoleName().equals("fee-paid-judge")) {
+                assertEquals(PRIMARY_LOCATION_ID, primaryLocation);
+                assertNull(r.getAttributes().get("baseLocation"));
+                assertNull(r.getAttributes().get("region"));
             } else {
                 assertEquals(PRIMARY_LOCATION_ID, primaryLocation);
                 assertEquals(REGION_ID, r.getAttributes().get("region").asText());
@@ -120,6 +125,7 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             "Deputy High Court Judge",
             "High Court Judge- Sitting in Retirement",
             "Deputy Circuit Judge",
+            "Circuit Judge (sitting in retirement)",
             "District Judge (MC) (sitting in retirement)",
             "District Judge (sitting in retirement)");
 
@@ -138,6 +144,11 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
                         List.of("judge", "circuit-judge", "hmcts-judiciary"),
                         "ABA5"),
                 Arguments.of("Deputy Circuit Judge",
+                        "Fee Paid",
+                        List.of(""),
+                        List.of("judge","circuit-judge", "fee-paid-judge", "hmcts-judiciary"),
+                        "ABA5"),
+                Arguments.of("Circuit Judge (sitting in retirement)",
                         "Fee Paid",
                         List.of(""),
                         List.of("judge","circuit-judge", "fee-paid-judge", "hmcts-judiciary"),
