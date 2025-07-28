@@ -7,7 +7,7 @@
   ],
 
   "request": {
-    "body": {
+    "queryParams": {
       "userId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
     }
   }
