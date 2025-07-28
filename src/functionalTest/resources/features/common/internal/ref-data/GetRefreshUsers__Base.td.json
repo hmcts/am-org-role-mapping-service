@@ -14,10 +14,7 @@
       "_extends_": "Common_Request_Headers"
     },
     "queryParams": {
-      "userId": "OVERRIDE",
-      "since": "",
-      "pageSize": 3,
-      "searchAfter": ""
+      "userId": "OVERRIDE"
     }
   }
 }
