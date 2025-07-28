@@ -13,8 +13,8 @@
     "headers": {
       "_extends_": "Common_Request_Headers"
     },
-    "body": {
-      "userId": "",
+    "queryParams": {
+      "userId": "OVERRIDE",
       "since": "",
       "pageSize": 3,
       "searchAfter": ""
