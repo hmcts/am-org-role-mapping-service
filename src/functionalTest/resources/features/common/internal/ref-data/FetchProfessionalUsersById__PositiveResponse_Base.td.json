@@ -13,6 +13,8 @@
     "body": {
       "users": [
         {
+          "__ordering__": "unordered",
+          "__elementId__": "id",
           "userIdentifier": "[[ANYTHING_PRESENT]]",
           "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
           "organisationInfo": {
