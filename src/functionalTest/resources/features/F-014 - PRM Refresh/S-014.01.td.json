@@ -1,6 +1,6 @@
 {
   "_guid_": "S-014.01",
-  "title": "trigger PRM scheduler process 6 - Refresh User - Single User Mode",
+  "title": "successful refresh of professional user - single user",
   "_extends_": "F-014-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
