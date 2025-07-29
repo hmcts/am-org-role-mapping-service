@@ -16,7 +16,12 @@
   },
 
   "expectedResponse": {
-    "_extends_": "Common_404_Response",
+    "_extends_": "Common_Response",
+    "responseCode" : 404,
+    "responseMessage" : "Not Found",
+    "headers": {
+      "_extends_": "Common_404_Response_Headers"
+    },
     "body" : {
       "errorCode" : 4,
       "errorMessage" : "Resource not found",
