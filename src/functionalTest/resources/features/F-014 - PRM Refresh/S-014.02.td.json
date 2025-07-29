@@ -21,7 +21,7 @@
       "errorCode" : 4,
       "errorMessage" : "Resource not found",
       "errorDescription" : "Resource not found User with ID xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx not found in PRD",
-      "timeStamp" : "[[ANY_TIMESTAMP_NOT_NULLABLE]]"
+      "timeStamp": "[[ANYTHING_PRESENT]]"
     }
   }
 }
