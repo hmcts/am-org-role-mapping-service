@@ -1,0 +1,14 @@
+{
+  "_guid_": "S-014.01__VerifyProfessionalUser",
+  "_extends_": "FetchProfessionalUsersById__PositiveResponse_Base",
+
+  "specs": [
+    "to verify professional user"
+  ],
+
+  "request": {
+    "queryParams": {
+      "userId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
+    }
+  }
+}
