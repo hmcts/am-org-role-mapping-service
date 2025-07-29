@@ -54,13 +54,8 @@ public class ProfessionalRefreshOrchestrator {
         }
 
         if (getRefreshUsersResponse.getUsers().size() > 1) {
-            String message = String.format(EXPECTED_SINGLE_PRD_USER, userId,
-                getRefreshUsersResponse.getUsers().size());
-            //throw new ServiceException(message);
-            processMonitorDto.addProcessStep(message);
-            processMonitorDto.markAsSuccess();
-            processEventTracker.trackEventCompleted(processMonitorDto);
-            return processMonitorDto;
+            throw new ServiceException(String.format(EXPECTED_SINGLE_PRD_USER, userId,
+                getRefreshUsersResponse.getUsers().size()));
         }
 
         professionalRefreshOrchestrationHelper.upsertUserRefreshQueue(getRefreshUsersResponse.getUsers().get(0));
