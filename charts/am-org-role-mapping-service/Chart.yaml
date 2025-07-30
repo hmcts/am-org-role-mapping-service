@@ -3,7 +3,7 @@ appVersion: "1.0"
 description: A Helm chart for AM Organisation Role Mapping Service
 name: am-org-role-mapping-service
 home: https://github.com/hmcts/am-org-role-mapping-service
-version: 0.0.72
+version: 0.0.73
 maintainers:
   - name: Access Management Team
 dependencies:
@@ -11,7 +11,7 @@ dependencies:
     version: 5.3.0
     repository: 'oci://hmctspublic.azurecr.io/helm'
   - name: servicebus
-    version: 1.1.0
+    version: 1.2.1
     repository: 'oci://hmctspublic.azurecr.io/helm'
     condition: orm.servicebus.enabled
   - name: am-role-assignment-service
