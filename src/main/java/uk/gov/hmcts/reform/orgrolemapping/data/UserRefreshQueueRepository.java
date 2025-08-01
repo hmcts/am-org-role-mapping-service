@@ -178,7 +178,8 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
     void updateRetry(String userId, String retryOneIntervalMin,
                      String retryTwoIntervalMin, String retryThreeIntervalMin);
 
-    @Query(value = "select count(*) from user_refresh_queue where active = true and retry_after < now()",
+    @Query(value = "select count(*) from user_refresh_queue where active = true and (retry_after < now()"
+            + "or retry_after is null)",
             nativeQuery = true)
     Long getActiveUserRefreshQueueCount();
 
