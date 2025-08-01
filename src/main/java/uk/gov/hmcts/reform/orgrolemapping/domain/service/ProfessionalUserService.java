@@ -329,7 +329,7 @@ public class ProfessionalUserService {
         }
 
         markProcessStatus(processMonitorDto,
-            successfulJobCount > 0 || successfulJobCount == 0 && failedJobCount == 0,
+            successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0),
             failedJobCount > 0,
             errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
