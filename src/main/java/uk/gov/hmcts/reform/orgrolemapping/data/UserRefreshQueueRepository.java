@@ -141,7 +141,7 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                organisation_status, organisation_profile_ids, active, retry, retry_after
         from user_refresh_queue
         where active and retry < 4
-        and retry_after < now()
+        and (retry_after < now() or retry_after is null)
         limit 1
         for update skip locked""", nativeQuery = true)
     UserRefreshQueueEntity retrieveSingleActiveRecord();
@@ -177,7 +177,7 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
             + "where user_id = :userId", nativeQuery = true)
     void updateRetry(String userId, String retryOneIntervalMin,
                      String retryTwoIntervalMin, String retryThreeIntervalMin);
-    
+
     @Query(value = "select count(*) from user_refresh_queue where active = true and (retry_after < now()"
             + "or retry_after is null)",
             nativeQuery = true)
