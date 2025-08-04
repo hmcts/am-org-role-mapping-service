@@ -13,7 +13,14 @@
   },
 
   "expectedResponse": {
-    "_extends_": "Common_200_Response"
+    "_extends_": "Common_200_Response",
+    "body": {
+      "users": [
+        {
+          "_extends_": "ProfessionalUser"
+        }
+      ]
+    }
   }
 
 }

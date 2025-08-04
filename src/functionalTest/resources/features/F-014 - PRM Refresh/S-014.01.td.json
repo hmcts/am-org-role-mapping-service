@@ -16,12 +16,9 @@
   },
 
   "expectedResponse": {
-    "body": {
-      "users": [
-        {
-          "_extends_": "ProfessionalUser"
-        }
-      ]
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "Message" : "Role assignments have been refreshed successfully"
     }
   }
 }
