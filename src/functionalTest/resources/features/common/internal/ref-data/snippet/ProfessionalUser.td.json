@@ -6,7 +6,7 @@
     "organisationIdentifier": "[[ANYTHING_PRESENT]]",
     "status": "ACTIVE",
     "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
-    "organisationProfileIds": null
+    "organisationProfileIds": "[[ANYTHING_PRESENT]]"
   },
-  "userAccessTypes": []
+  "userAccessTypes": "[[ANYTHING_PRESENT]]"
 }
