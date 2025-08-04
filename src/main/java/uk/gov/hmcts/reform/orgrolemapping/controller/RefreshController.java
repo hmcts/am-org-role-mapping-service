@@ -24,7 +24,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
@@ -84,7 +83,6 @@ public class RefreshController {
     )
     public ResponseEntity<Object> refresh(@RequestParam Long jobId,
                                           @RequestBody(required = false) UserRequest userRequest) {
-
         refreshOrchestrator.validate(jobId, userRequest);
         refreshOrchestrator.refreshAsync(jobId, userRequest);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
@@ -154,8 +152,7 @@ public class RefreshController {
         content = @Content()
     )
     public ResponseEntity<Object> professionalRefresh(@RequestParam String userId) {
-        ProcessMonitorDto processMonitorDto = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+        return professionalRefreshOrchestrator.refreshProfessionalUser(userId);
     }
 
 }
