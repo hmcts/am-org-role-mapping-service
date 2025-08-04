@@ -1,5 +1,5 @@
 {
-  "_guid_": "FindUserRefreshQueue__PositiveResponse_Base",x
+  "_guid_": "FindUserRefreshQueue__PositiveResponse_Base",
   "_extends_": "FindUserRefreshQueue__Base",
 
   "users": {

@@ -1,5 +1,5 @@
 {
-  "_guid_": "MakeUserRefreshQueueActive__PositiveResponse_Base",x
+  "_guid_": "MakeUserRefreshQueueActive__PositiveResponse_Base",
   "_extends_": "MakeUserRefreshQueueActive__Base",
 
   "users": {

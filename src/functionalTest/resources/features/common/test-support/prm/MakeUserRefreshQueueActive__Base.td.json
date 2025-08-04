@@ -1,5 +1,5 @@
 {
-  "_guid_": "MakeUserRefreshQueueActive__Base",x
+  "_guid_": "MakeUserRefreshQueueActive__Base",
 
   "productName": "User Role Mapping",
   "operationName": "PRM User Refresh Queue makeUserRefreshQueueActive",
