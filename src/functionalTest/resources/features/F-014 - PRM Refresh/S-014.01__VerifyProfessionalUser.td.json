@@ -10,5 +10,10 @@
     "queryParams": {
       "userId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
     }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response"
   }
+
 }

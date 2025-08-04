@@ -14,16 +14,7 @@
       "users": [
         {
           "__ordering__": "unordered",
-          "__elementId__": "id",
-          "userIdentifier": "[[ANYTHING_PRESENT]]",
-          "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
-          "organisationInfo": {
-            "organisationIdentifier": "[[ANYTHING_PRESENT]]",
-            "status": "ACTIVE",
-            "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
-            "organisationProfileIds": null
-          },
-          "userAccessTypes": []
+          "__elementId__": "userIdentifier"
         }
       ],
       "lastRecordInPage": "[[ANYTHING_PRESENT]]",
