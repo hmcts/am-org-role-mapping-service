@@ -34,17 +34,17 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.HashMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_RARB;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_XUI;
@@ -119,13 +119,12 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
             .when(prdFeignClient).getRefreshUsers(USER_ID, null, null, null);
 
         // WHEN / THEN
-        MvcResult result = mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=" + USER_ID)
+        mockMvc.perform(post(PROFESSIONAL_REFRESH_URL + "?userId=" + USER_ID)
                 .contentType(JSON_CONTENT_TYPE)
                 .headers(getHttpHeaders(AUTHORISED_SERVICE)))
             .andExpect(status().isOk())
+            .andExpect(jsonPath("$.Message").value(containsString(Constants.SUCCESS_ROLE_REFRESH)))
             .andReturn();
-
-        assertThat(result.getResponse().getContentAsString().contains(EndStatus.SUCCESS.toString()));
     }
 
     @Test

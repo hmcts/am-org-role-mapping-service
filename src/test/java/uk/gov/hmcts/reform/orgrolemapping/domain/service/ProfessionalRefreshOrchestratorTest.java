@@ -100,10 +100,7 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> actualResponse =
-            professionalRefreshOrchestrator.refreshProfessionalUser(userId);
-
-        assertResponse(actualResponse);
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
     }
 
     @Test
