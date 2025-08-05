@@ -10,6 +10,12 @@
     "queryParams": {
       "userId": "f42e777b-a55f-47c9-b173-46c21f437042"
     }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "active" : true
+    }
   }
 
 }
