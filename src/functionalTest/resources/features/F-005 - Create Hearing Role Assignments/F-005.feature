@@ -29,7 +29,7 @@ Feature: F-005 : Create Role Assignments for Hearing Roles
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-042_DeleteDataForRoleAssignments].
 
   @S-043
-  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on) @Ignore
+  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create organisational role mapping for admin and legal operation role assignments
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-043_DeleteDataForRoleAssignments]
