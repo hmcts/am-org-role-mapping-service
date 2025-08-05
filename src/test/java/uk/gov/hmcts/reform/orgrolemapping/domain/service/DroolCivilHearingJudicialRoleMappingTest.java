@@ -11,11 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -24,7 +25,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
 
     String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
@@ -146,7 +147,13 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                         "Fee Paid",
                         true,
                         List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer", "circuit-judge"))
+                        List.of("judge", "fee-paid-judge", "hmcts-judiciary", "hearing-viewer", "circuit-judge")),
+                Arguments.of("",
+                        "Salaried",
+                        false,
+                        List.of("Lead and Deputy Online Judge"),
+                        List.of("judge", "leadership-judge", "hmcts-judiciary", "hearing-viewer", "task-supervisor",
+                                "case-allocator"))
         );
     }
 
@@ -224,7 +231,11 @@ class DroolCivilHearingJudicialRoleMappingTest extends DroolBase {
                                    + "intermediate_track_decision_making_work",
                             r.getAttributes().get("workTypes").asText());
                 } else if (r.getRoleName().contains("leadership-judge")) {
-                    assertEquals("LDN", r.getAttributes().get("region").asText());
+                    if (assignedRoles.contains("Lead and Deputy Online Judge")) {
+                        assertNull(r.getAttributes().get("region")); // NB: no region required for this JOH
+                    } else {
+                        assertEquals("LDN", r.getAttributes().get("region").asText());
+                    }
                     assertEquals("decision_making_work,applications,access_requests,"
                             + "multi_track_decision_making_work,intermediate_track_decision_making_work",
                             r.getAttributes().get("workTypes").asText());
