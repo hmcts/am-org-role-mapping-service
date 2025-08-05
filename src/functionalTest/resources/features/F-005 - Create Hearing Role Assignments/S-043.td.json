@@ -88,7 +88,7 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "N",
-            "primaryLocation" : "271588",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "SSCS"
           }
         },
@@ -105,7 +105,7 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS"
           }
         },
@@ -122,7 +122,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS"
           }
         },
@@ -169,7 +169,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "2",
             "workTypes": "pre_hearing,post_hearing,decision_making_work,applications,hearing_work,routine_work,priority"
@@ -188,7 +188,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "2"
           }
@@ -206,7 +206,7 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "2",
             "workTypes": "access_requests"
@@ -225,7 +225,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS"
           }
         },
@@ -242,7 +242,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "2"
           }
