@@ -194,25 +194,6 @@
           }
         },
         {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "registrar",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "271588",
-            "jurisdiction": "SSCS",
-            "region" : "2",
-            "workTypes": "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
-          }
-        },
-        {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
