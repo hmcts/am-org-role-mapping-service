@@ -4,14 +4,16 @@ import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.model.annotations.PactFolder;
+import au.com.dius.pact.core.model.annotations.PactDirectory;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.fluent.Executor;
-import org.apache.http.client.fluent.Request;
-import org.junit.After;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -29,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_deleteAssignment")
-@PactFolder("pacts")
+@PactTestFor(providerName = "am_roleAssignment_deleteAssignment", pactVersion = PactSpecVersion.V3)
+@PactDirectory("pacts")
 public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
 
     private static final String ACTOR_ID = "704c8b1c-e89b-436a-90f6-953b1dc40157";
@@ -57,11 +59,6 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
         Thread.sleep(2000);
     }
 
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
-    }
-
     @Pact(provider = "am_roleAssignment_deleteAssignment", consumer = "accessMgmt_orgRoleMapping")
     public RequestResponsePact executeDeleteActorByPrAndGet204(PactDslWithProvider builder) {
 
@@ -79,9 +76,15 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     @Test
     @PactTestFor(pactMethod = "executeDeleteActorByPrAndGet204")
     void deleteActorByPrAndGet204Test(MockServer mockServer) throws IOException {
-        HttpResponse httpResponse =
-                Request.Delete(mockServer.getUrl() + RAS_DELETE_ACTOR_BY_PR).execute().returnResponse();
-        assertEquals(204, httpResponse.getStatusLine().getStatusCode());
+        String url = mockServer.getUrl() + RAS_DELETE_ACTOR_BY_PR;
+        HttpDelete request = new HttpDelete(url);
+
+        try (CloseableHttpClient client = HttpClients.createDefault();
+             ClassicHttpResponse response = client.executeOpen(null, request, null)) {
+
+            assertEquals(204, response.getCode());
+            EntityUtils.consume(response.getEntity());
+        }
     }
 
     @Pact(provider = "am_roleAssignment_deleteAssignment", consumer = "accessMgmt_orgRoleMapping")
@@ -100,8 +103,14 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     @Test
     @PactTestFor(pactMethod = "executeDeleteActorByIdAndGet204")
     void deleteActorByIdAndGet204Test(MockServer mockServer) throws IOException {
-        HttpResponse httpResponse =
-                Request.Delete(mockServer.getUrl() + RAS_DELETE_ACTOR_BY_ID).execute().returnResponse();
-        assertEquals(204, httpResponse.getStatusLine().getStatusCode());
+        String url = mockServer.getUrl() + RAS_DELETE_ACTOR_BY_ID;
+        HttpDelete request = new HttpDelete(url);
+
+        try (CloseableHttpClient client = HttpClients.createDefault();
+             ClassicHttpResponse response = client.executeOpen(null, request, null)) {
+
+            assertEquals(204, response.getCode());
+            EntityUtils.consume(response.getEntity());
+        }
     }
 }
