@@ -71,8 +71,7 @@ class OrganisationServiceTest {
             "1",
             jdbcTemplate,
             accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository,
-            processEventTracker, "10"
-    );
+            processEventTracker, "10");
 
     @Test
     void findAndInsertStaleOrganisationsIntoRefreshQueue_Test() {
