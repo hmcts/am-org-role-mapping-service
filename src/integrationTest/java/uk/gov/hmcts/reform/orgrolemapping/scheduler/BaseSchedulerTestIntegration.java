@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery;
+import com.github.tomakehurst.wiremock.http.HttpHeader;
+import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.LoggedResponse;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
@@ -11,6 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
@@ -20,13 +23,19 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.helper.JsonHelper;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.doReturn;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.scheduler.BaseSchedulerTestIntegration.TEST_ENVIRONMENT;
@@ -53,12 +62,15 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     static final String DUMMY_AUTH_TOKEN = "DUMMY_AUTH_TOKEN";
     static final String DUMMY_S2S_TOKEN = "DUMMY_S2S_TOKEN";
 
-    public static final UUID STUB_ID_PRD_RETRIEVE_USERS
-        = UUID.fromString("47f05020-f89c-46ea-93f4-063f09ba96c0");
+    public static final UUID STUB_ID_RAS_CREATE_ROLEASSIGNMENTS
+        = UUID.fromString("0bfabe25-fd57-4f8a-9882-911b53857258");
 
     protected static final String MORE_AVAILABLE = "moreAvailable";
     protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
     protected static final String SEARCH_AFTER = "searchAfter";
+
+    public static final UUID STUB_ID_PRD_RETRIEVE_USERSBYORG
+        = UUID.fromString("8468dbb3-14b9-4fd2-b9d8-0620a8fc1e94");
 
     protected final JsonHelper jsonHelper = new JsonHelper();
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
@@ -159,4 +171,28 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         log.info("-----------------------------------------------------");
     }
 
+    protected void stubRasCreateRoleAssignment(List<String> fileNames,
+        EndStatus endStatus) {
+        stubRasCreateRoleAssignment(
+            "{}",
+            endStatus
+        );
+    }
+
+    protected void stubRasCreateRoleAssignment(String body,
+        EndStatus endStatus) {
+        HttpHeaders headers = new HttpHeaders()
+            .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE));
+
+        int httpStatus = EndStatus.FAILED.equals(endStatus)
+            ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+            "/am/role-assignments"))
+            .withId(STUB_ID_RAS_CREATE_ROLEASSIGNMENTS)
+            .willReturn(aResponse()
+                .withStatus(httpStatus)
+                .withHeaders(headers)
+                .withBody(body)));
+    }
 }

@@ -1,36 +1,59 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doReturn;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.inject.Inject;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
 class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegration {
-
-    private static final DateTimeFormatter DTF =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-    private static final LocalDateTime OLD_USER_LAST_UPDATED =
-        LocalDateTime.parse("2020-01-01T13:30:01.046Z", DTF);
-    private static final LocalDateTime NEW_USER_LAST_UPDATED =
-        LocalDateTime.parse("2023-09-19T15:36:33.653Z", DTF);
-    private static final String SINCE = "1999-12-31T23:57:00";
-    private static final String ACTIVE = "ACTIVE";
-    private static final String INACTIVE = "INACTIVE";
-    private static final String ORGANISATION_ID_3 = "3";
-    private static final Integer TOLERANCE_MINUTES = 1;
 
     @Autowired
     private UserRefreshQueueRepository userRefreshQueueRepository;
 
     @Autowired
     private Scheduler prmScheduler;
+
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
+
+    @Inject
+    private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        doReturn(authentication).when(securityContext).getAuthentication();
+        SecurityContextHolder.setContext(securityContext);
+        UserInfo userInfo = UserInfo.builder()
+            .uid("6b36bfc6-bb21-11ea-b3de-0242ac130006")
+            .sub("emailId@a.com")
+            .build();
+        ReflectionTestUtils.setField(
+            jwtGrantedAuthoritiesConverter,
+            "userInfo", userInfo
+        );
+        MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
+        wiremockFixtures.resetRequests();
+    }
 
     /**
      * No Change - Empty User List.
@@ -42,16 +65,35 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     void testNoUsers() {
 
         // verify that no users are updated
-        runTest(List.of());
+        runTest();
 
-        // Verify no active users in the refresh queue
+        // Verify no records in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(0);
     }
 
-    private void runTest(List<String> fileNames) {
+    /**
+     * Update - User updated with an Organisational Role.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_org.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testUpdateUserWithOrganisationalRole() throws JsonProcessingException {
+
+        // verify that no users are updated
+        runTest();
+
+        // Verify 1 record in the refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(1);
+    }
+
+    private void runTest() {
 
         // GIVEN
         logBeforeStatus();
+        stubRasCreateRoleAssignment(List.of(), EndStatus.SUCCESS);
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler.processUserRefreshQueue();
