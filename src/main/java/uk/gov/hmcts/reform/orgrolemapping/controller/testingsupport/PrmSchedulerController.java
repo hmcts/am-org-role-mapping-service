@@ -171,5 +171,25 @@ public class PrmSchedulerController {
             .findUserChangesAndInsertIntoUserRefreshQueue();
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
+    
+    @GetMapping(
+        path = "/am/testing-support/prm/processUserRefreshQueue"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "PRM Process 6 processUserRefreshQueue",
+        security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> processUserRefreshQueue() {
+        ProcessMonitorDto processMonitorDto = scheduler.processUserRefreshQueue();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
 
 }
