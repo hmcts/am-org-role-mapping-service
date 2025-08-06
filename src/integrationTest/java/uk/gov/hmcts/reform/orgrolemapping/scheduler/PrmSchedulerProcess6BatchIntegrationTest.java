@@ -65,7 +65,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     void testNoUsers() {
 
         // verify that no users are updated
-        runTest();
+        runTest(List.of());
 
         // Verify no records in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(0);
@@ -83,17 +83,36 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     void testUpdateUserWithOrganisationalRole() throws JsonProcessingException {
 
         // verify that no users are updated
-        runTest();
+        runTest(List.of("/SchedulerTests/role_assignments/senior_tribunal_caseworker.json"));
 
         // Verify 1 record in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(1);
     }
 
-    private void runTest() {
+    /**
+     * Update - User updated with an Organisational Role.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_org.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testUpdateUserWithMultipleOrganisationalRoles() throws JsonProcessingException {
+
+        // verify that no users are updated
+        runTest(List.of("/SchedulerTests/role_assignments/senior_tribunal_caseworker.json",
+            "/SchedulerTests/role_assignments/case_allocator.json"));
+
+        // Verify 1 record in the refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(1);
+    }
+
+    private void runTest(List<String> filenames) {
 
         // GIVEN
         logBeforeStatus();
-        stubRasCreateRoleAssignment(List.of(), EndStatus.SUCCESS);
+        stubRasCreateRoleAssignment(filenames, EndStatus.SUCCESS);
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler.processUserRefreshQueue();
