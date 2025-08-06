@@ -36,7 +36,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "2"
           }
@@ -54,7 +54,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS"
           }
         },
@@ -71,7 +71,7 @@
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "271588",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS"
           }
         },
