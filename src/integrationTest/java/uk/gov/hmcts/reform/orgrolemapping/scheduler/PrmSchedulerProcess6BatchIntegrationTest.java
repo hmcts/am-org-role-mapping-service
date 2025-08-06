@@ -111,6 +111,9 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
         assertEquals(expectedNumberOfRecords, userRefreshQueueEntities.size(),
             "UserRefreshQueueEntity number of records mismatch");
+        assertEquals(0, userRefreshQueueEntities.stream()
+                .filter(entity -> entity.getActive()).count(),
+            "UserRefreshQueueEntity number of active records mismatch");
     }
 
     //#endregion
