@@ -1,7 +1,10 @@
 {
   "_guid_": "S-045",
-  "title": "must successfully create organisational role mapping for hearing-viewer",
+  "title": "must successfully create organisational role mapping for SSCS judicial role assignments (hearing-viewer)",
   "_extends_": "F-005_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published for judicial role assignments"
+  ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
@@ -11,13 +14,16 @@
     },
     "body": {
       "actorId": "${[scenarioContext][childContexts][S-045_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "roleName": ["hearing-viewer"]
+      "roleName": ["hearing-viewer", "hearing-manager", "listed-hearing-viewer"]
     }
   },
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body" : {
       "roleAssignmentResponse" : [
+        {
+          "__elementId__": "roleName"
+        },
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
