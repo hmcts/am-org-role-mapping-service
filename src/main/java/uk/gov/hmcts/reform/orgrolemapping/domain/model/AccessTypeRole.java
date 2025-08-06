@@ -21,3 +21,4 @@ public class AccessTypeRole {
     private boolean groupAccessEnabled;
 
 }
+
