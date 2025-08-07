@@ -1,6 +1,6 @@
 {
   "_guid_": "S-045",
-  "title": "must successfully create organisational role mapping for SSCS judicial role assignments (hearing-viewer)",
+  "title": "must successfully create organisational role mapping for SSCS judicial role assignments (Tribunal Judge -> hearing-viewer)",
   "_extends_": "F-005_Test_Data_Base",
   "specs": [
     "contains the actorId of the user just published for judicial role assignments"
