@@ -24,7 +24,7 @@
     },
     "body": {
       "userIds": [
-        "cbb51593-aaca-4da3-ab67-7200d8d31af6"
+        "${[scenarioContext][parentContext][testData][request][body][actorId][0]}}"
       ]
     }
   },

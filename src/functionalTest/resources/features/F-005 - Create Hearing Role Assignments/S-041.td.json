@@ -13,7 +13,7 @@
       "direction": "ASC"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-041_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+      "actorId": ["33d7a938-69d7-4316-9c54-b989d06838aa"],
       "roleName": ["hearing-viewer", "hearing-manager", "listed-hearing-viewer"]
     }
   },
