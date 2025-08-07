@@ -20,12 +20,7 @@
     },
     "pathVariables": {
       "process": "staff-organisational-role-mapping",
-      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
-    },
-    "body": {
-      "userIds": [
-        "33d7a938-69d7-4316-9c54-b989d06838aa"
-      ]
+      "reference": "${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
     }
   },
 
