@@ -9,7 +9,7 @@
   "request": {
     "body": {
       "userIds": [
-        "${[scenarioContext][parentContext][testData][request][body][actorId][0]}}"
+        "${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
       ]
     }
   },
