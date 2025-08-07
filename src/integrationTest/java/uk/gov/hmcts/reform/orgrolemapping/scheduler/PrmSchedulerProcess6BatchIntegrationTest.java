@@ -56,13 +56,13 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * No Change - Empty User List.
+     * No Change - Empty User Roles List.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
     })
-    void testNoUsers() {
+    void testNoUserRoles() {
 
         // verify that no users are updated
         runTest(List.of());
@@ -72,16 +72,123 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Update - User updated with an Organisational Role.
+     * 1. user - accessDefault= N, accessMandatory= N, groupAccessEnabled= N
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_org.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_nnn.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
     })
-    void testUpdateUserWithOrganisationalRole() throws JsonProcessingException {
+    void testCreateRole_User_nnn() throws JsonProcessingException {
+        testSingleRole();
+    }
 
+    /**
+     * 2. user - accessDefault = Y, accessMandatory= N, groupAccessEnabled= N
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_ynn.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testCreateRole_User_ynn() throws JsonProcessingException {
+        testSingleRole();
+    }
+
+    /**
+     * 3. user - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yyn.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testCreateRole_User_yyn() throws JsonProcessingException {
+        testSingleRole();
+    }
+
+    /**
+     * 4. org - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yyn.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testCreateRole_Org_yyn() throws JsonProcessingException {
+        testSingleRole();
+    }
+
+    /**
+     * 5. org - accessDefault = N, accessMandatory = Y, groupAccessEnabled = N
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_nyn.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testCreateRole_Org_nyn() throws JsonProcessingException {
+        testSingleRole();
+    }
+
+    /**
+     * 6. org - accessDefault = N, accessMandatory = Y, groupAccessEnabled = Y
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_nyy.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testCreateRole_Org_nyy() throws JsonProcessingException {
+        testSingleRole();
+    }
+
+    /**
+     * 7. user - accessDefault = N, accessMandatory = N, groupAccessEnabled = Y
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_nny.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testCreateRole_User_nny() throws JsonProcessingException {
+        testSingleRole();
+    }
+
+    /**
+     * 8. org - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testCreateRole_Org_yyy() throws JsonProcessingException {
+        testSingleRole();
+    }
+
+    /**
+     * 9. user - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
+    })
+    void testCreateRole_User_yyy() throws JsonProcessingException {
+        testSingleRole();
+    }
+
+    private void testSingleRole() {
         // verify that no users are updated
         runTest(List.of("/SchedulerTests/role_assignments/senior_tribunal_caseworker.json"));
 
@@ -90,16 +197,15 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Update - User updated with an Organisational Role.
+     * Create multiple roles test
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_org.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userx_orgprofile1.sql"
     })
-    void testUpdateUserWithMultipleOrganisationalRoles() throws JsonProcessingException {
-
+    void testMultipleRoles() throws JsonProcessingException {
         // verify that no users are updated
         runTest(List.of("/SchedulerTests/role_assignments/senior_tribunal_caseworker.json",
             "/SchedulerTests/role_assignments/case_allocator.json"));
