@@ -20,7 +20,7 @@
         {
           "_extends_": "CaseworkerDetails",
 
-          "id": "${[scenarioContext][parentContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds]}[0]}",
+          "id": "${[scenarioContext][parentContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
 
           "case_allocator": "N",
           "task_supervisor": "N",
@@ -35,16 +35,7 @@
             {
               "_extends_": "WorkArea_BBA3_SSCS"
             }
-          ],
-          "base_location": [
-            {
-              "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
-              "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
-              "location_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
-              "location": "[[ANYTHING_PRESENT]]",
-              "is_primary": false
-            }
-          ]
+            ]
         }
       ]
     }
