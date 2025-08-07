@@ -23,7 +23,7 @@
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-legal-operations",
           "classification": "PRIVATE",

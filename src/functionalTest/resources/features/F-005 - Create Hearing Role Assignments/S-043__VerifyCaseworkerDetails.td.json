@@ -1,0 +1,44 @@
+{
+  "_guid_": "S-043__VerifyCaseworkerDetails",
+  "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
+
+  "specs": [
+    "to verify caseworker details for Regional Centre Team Leader"
+  ],
+
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][childContexts][S-043_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "arrayInMap": [
+        {
+          "_extends_": "CaseworkerDetails",
+
+          "id": "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}",
+
+          "case_allocator": "Y",
+          "task_supervisor": "Y",
+
+          "role": [
+            {
+              "_extends_": "CaseworkerRole_12_RC_TL"
+            }
+          ],
+
+          "work_area": [
+            {
+              "_extends_": "WorkArea_BBA3_SSCS"
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+}
