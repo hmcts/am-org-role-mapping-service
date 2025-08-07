@@ -20,7 +20,7 @@
         {
           "_extends_": "CaseworkerDetails",
 
-          "id": "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}",
+          "id": "${[scenarioContext][parentContext][testData][request][body][actorId][0]}",
 
           "case_allocator": "N",
           "task_supervisor": "N",
