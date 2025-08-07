@@ -72,7 +72,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * User - accessDefault = N, accessMandatory = N, groupAccessEnabled = N
+     * User - accessDefault = N, accessMandatory = N, groupAccessEnabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -85,7 +85,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Org - accessDefault = N, accessMandatory = N, groupAccessEnabled = N
+     * Org - accessDefault = N, accessMandatory = N, groupAccessEnabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -98,7 +98,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * User - accessDefault = Y, accessMandatory = N, groupAccessEnabled = N
+     * User - accessDefault = Y, accessMandatory = N, groupAccessEnabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -111,7 +111,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Org - accessDefault = Y, accessMandatory = N, groupAccessEnabled = N
+     * Org - accessDefault = Y, accessMandatory = N, groupAccessEnabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -124,7 +124,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * User - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N
+     * User - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -137,7 +137,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Org - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N
+     * Org - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -150,7 +150,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * User - accessDefault = N, accessMandatory = Y, groupAccessEnabled = N
+     * User - accessDefault = N, accessMandatory = Y, groupAccessEnabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -163,7 +163,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Org - accessDefault = N, accessMandatory = Y, groupAccessEnabled = N
+     * Org - accessDefault = N, accessMandatory = Y, groupAccessEnabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -176,7 +176,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * User - accessDefault = N, accessMandatory = Y, groupAccessEnabled = Y
+     * User - accessDefault = N, accessMandatory = Y, groupAccessEnabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -189,7 +189,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Org - accessDefault = N, accessMandatory = Y, groupAccessEnabled = Y
+     * Org - accessDefault = N, accessMandatory = Y, groupAccessEnabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -202,7 +202,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * User - accessDefault = N, accessMandatory = N, groupAccessEnabled = Y
+     * User - accessDefault = N, accessMandatory = N, groupAccessEnabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -215,7 +215,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Org - accessDefault = N, accessMandatory = N, groupAccessEnabled = Y
+     * Org - accessDefault = N, accessMandatory = N, groupAccessEnabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -228,7 +228,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * User - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y
+     * User - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -241,7 +241,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Org - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y
+     * Org - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -254,7 +254,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * User - accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y
+     * User - accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -267,7 +267,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Org - accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y
+     * Org - accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -288,7 +288,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
-     * Create multiple roles test
+     * Create multiple roles test.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
