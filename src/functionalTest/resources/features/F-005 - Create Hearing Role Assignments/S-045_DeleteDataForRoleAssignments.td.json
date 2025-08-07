@@ -20,12 +20,7 @@
     },
     "pathVariables": {
       "process": "judicial-organisational-role-mapping",
-      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
-    },
-    "body": {
-      "userIds": [
-        "${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
-      ]
+      "reference": "${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
     }
   },
 
