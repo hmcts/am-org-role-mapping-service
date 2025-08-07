@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Legal Caseworker"
+    "to verify caseworker details for CTSC Administrator"
   ],
 
   "request": {
@@ -23,11 +23,11 @@
           "id": "${[scenarioContext][parentContext][testData][request][body][actorId][0]}",
 
           "case_allocator": "N",
-          "task_supervisor": "Y",
+          "task_supervisor": "N",
 
           "role": [
             {
-              "_extends_": "CaseworkerRole_02_LC"
+              "_extends_": "CaseworkerRole_10_CTSC_Admin"
             }
           ],
 

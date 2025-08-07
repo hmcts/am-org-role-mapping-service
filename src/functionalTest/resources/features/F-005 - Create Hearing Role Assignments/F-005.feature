@@ -50,7 +50,7 @@ Feature: F-005 : Create SSCS Role Assignments for Hearing Roles
   @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create organisational role mapping for SSCS CTSC role assignments (hearing-viewer, hearing-manager)
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Legal Caseworker] as in [S-044__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for CTSC Administrator] as in [S-044__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-044_DeleteDataForRoleAssignments],
     And a successful call [to post create organisational role mapping request on ORM] as in [S-044_PostCreateRequestToORM],
     When a request is prepared with appropriate values,
