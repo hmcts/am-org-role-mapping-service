@@ -20,7 +20,7 @@
         {
           "_extends_": "CaseworkerDetails",
 
-          "id": "${[scenarioContext][parentContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds]}[0]",
+          "id": "${[scenarioContext][parentContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds]}[0]}",
 
           "case_allocator": "N",
           "task_supervisor": "N",
