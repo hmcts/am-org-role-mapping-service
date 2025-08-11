@@ -40,7 +40,7 @@ def versions = [
 ]
 
 def springBootVersion = plugins.getPlugin('org.springframework.boot').class.package.implementationVersion
-def springCloudVersion = '2023.0.5'
+def springCloudVersion = '2023.0.6'
 
 mainClassName = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
 def jarName = 'am-org-role-mapping-service.jar'
@@ -399,10 +399,10 @@ dependencies {
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: '1.15.0'
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
-    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.2.0')
+    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.3.0')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test'
     testImplementation group: 'org.springframework.security',name:'spring-security-test'
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.2.0'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.3.0'
 
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
