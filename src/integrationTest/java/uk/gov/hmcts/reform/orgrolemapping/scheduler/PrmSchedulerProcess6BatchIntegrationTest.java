@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -288,6 +289,19 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
     }
 
     /**
+     * Create roles retry test.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retry.sql"
+    })
+    void testRetry() throws JsonProcessingException {
+        testSingleRole();
+    }
+
+    /**
      * Create multiple roles test.
      */
     @Test
@@ -305,16 +319,19 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         assertTotalUserRefreshQueueEntitiesInDb(1);
     }
 
-    private void runTest(List<String> filenames) {
+    private void runTest(List<String> fileNames) {
 
         // GIVEN
         logBeforeStatus();
-        stubRasCreateRoleAssignment(filenames, EndStatus.SUCCESS);
+        stubRasCreateRoleAssignment(fileNames, EndStatus.SUCCESS);
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler.processUserRefreshQueue();
 
         // THEN
+        if (!fileNames.isEmpty()) {
+            verifyNoOfCallsToRas(1);
+        }
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports the correct status
@@ -341,5 +358,19 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
 
     private void logBeforeStatus() {
         logObject("userRefreshQueueRepository: BEFORE", userRefreshQueueRepository.findAll());
+    }
+
+    private void verifyNoOfCallsToRas(int noOfCalls) {
+        var allCallEvents = logWiremockPostCalls(STUB_ID_RAS_CREATE_ROLEASSIGNMENTS);
+        // verify single call
+        assertEquals(noOfCalls, allCallEvents.size(),
+            "Unexpected number of calls to RAS service");
+        if (noOfCalls == 0) {
+            return; // no need to check further if no calls were made
+        }
+        var event = allCallEvents.get(0);
+        // verify response status
+        assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
+            "Response status mismatch");
     }
 }

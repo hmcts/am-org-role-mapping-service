@@ -69,7 +69,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
     protected static final String SEARCH_AFTER = "searchAfter";
 
-    public static final UUID STUB_ID_PRD_RETRIEVE_USERSBYORG
+    public static final UUID STUB_ID_RAS_RETRIEVE_USERSBYORG
         = UUID.fromString("8468dbb3-14b9-4fd2-b9d8-0620a8fc1e94");
 
     protected final JsonHelper jsonHelper = new JsonHelper();
@@ -192,9 +192,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                         "created": "2020-11-19T11:42:13.454994",
                         "log": "Request has been Approved"
                     },
-                    "requestedRoles": [
-                        """ + jsonHelper.readJsonArrayFromFiles(fileNames) + """
-                    ]
+                    "requestedRoles": """ + jsonHelper.readJsonArrayFromFiles(fileNames) + """
                 }
             }""",
             endStatus
