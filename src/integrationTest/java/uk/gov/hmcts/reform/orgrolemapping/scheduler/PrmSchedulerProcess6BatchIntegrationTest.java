@@ -1,8 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doReturn;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -22,6 +19,10 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
 
 class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegration {
 
@@ -82,7 +83,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_User_nnn() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(true);
     }
 
     /**
@@ -95,7 +96,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_Org_nnn() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(false);
     }
 
     /**
@@ -108,7 +109,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_User_ynn() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(true);
     }
 
     /**
@@ -121,7 +122,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_Org_ynn() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(false);
     }
 
     /**
@@ -134,7 +135,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_User_yyn() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(true);
     }
 
     /**
@@ -147,7 +148,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_Org_yyn() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(false);
     }
 
     /**
@@ -160,7 +161,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_User_nyn() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(true);
     }
 
     /**
@@ -173,7 +174,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_Org_nyn() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(false);
     }
 
     /**
@@ -186,7 +187,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_User_nyy() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(true);
     }
 
     /**
@@ -199,7 +200,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_Org_nyy() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(false);
     }
 
     /**
@@ -212,7 +213,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_User_nny() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(true);
     }
 
     /**
@@ -225,7 +226,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_Org_nny() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(false);
     }
 
     /**
@@ -238,7 +239,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_User_yyy() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(true);
     }
 
     /**
@@ -251,7 +252,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_Org_yyy() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(false);
     }
 
     /**
@@ -264,7 +265,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_User_yny() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(true);
     }
 
     /**
@@ -277,15 +278,16 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_Org_yny() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(false);
     }
 
-    private void testSingleRole() {
+    private void testSingleRole(boolean user) {
         // verify that no users are updated
         runTest(List.of("/SchedulerTests/role_assignments/senior_tribunal_caseworker.json"));
 
         // Verify 1 record in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(1);
+        assertAccessTypes("BEFTA_ACCESSTYPE_1", user);
     }
 
     /**
@@ -298,7 +300,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retry.sql"
     })
     void testRetry() throws JsonProcessingException {
-        testSingleRole();
+        testSingleRole(false);
     }
 
     /**
@@ -347,6 +349,16 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         assertEquals(0, userRefreshQueueEntities.stream()
                 .filter(entity -> entity.getActive()).count(),
             "UserRefreshQueueEntity number of active records mismatch");
+    }
+
+    private void assertAccessTypes(String accessTypeId, boolean user) {
+        var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
+        var userRefreshQueueEntity = userRefreshQueueEntities.getFirst();
+        String accessTypes = userRefreshQueueEntity.getAccessTypes();
+        assertTrue(accessTypes.contains(accessTypeId),
+            "UserRefreshQueueEntity " + accessTypeId + " not found");
+        assertTrue(accessTypes.contains("\"enabled\": " + (user ? "true" : "false")),
+            "UserRefreshQueueEntity " + accessTypeId + ".enabled mismatch");
     }
 
     //#endregion
