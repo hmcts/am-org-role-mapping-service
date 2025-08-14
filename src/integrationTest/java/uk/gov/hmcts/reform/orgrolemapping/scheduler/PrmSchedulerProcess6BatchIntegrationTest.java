@@ -359,6 +359,8 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
             "UserRefreshQueueEntity " + accessTypeId + " not found");
         assertTrue(accessTypes.contains("\"enabled\": " + (user ? "true" : "false")),
             "UserRefreshQueueEntity " + accessTypeId + ".enabled mismatch");
+        assertTrue(accessTypes.contains("\"organisationProfileId\": " + (user ? "" : "\"ORGPROFILE1\"")),
+            "UserRefreshQueueEntity " + accessTypeId + ".organisationIds mismatch");
     }
 
     //#endregion
