@@ -287,7 +287,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
 
         // Verify 1 record in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(1);
-        assertAccessTypes("BEFTA_ACCESSTYPE_1", user);
+        assertAccessTypes(user ? "BEFTA_ACCESSTYPE_1" : "BEFTA_ACCESSTYPE_2", user);
     }
 
     /**
@@ -300,7 +300,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retry.sql"
     })
     void testRetry() throws JsonProcessingException {
-        testSingleRole(false);
+        testSingleRole(true);
     }
 
     /**
