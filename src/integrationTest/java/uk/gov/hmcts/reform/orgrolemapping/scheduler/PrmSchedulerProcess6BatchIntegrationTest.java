@@ -287,7 +287,8 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
 
         // Verify 1 record in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(1);
-        assertAccessTypes(user ? "BEFTA_ACCESSTYPE_1" : "BEFTA_ACCESSTYPE_2", user);
+        assertAccessTypes(user ? "BEFTA_ACCESSTYPE_1" : "BEFTA_ACCESSTYPE_2",
+            user ? "" : "\"ORGPROFILE1\"", "\"BEFTA_JURISDICTION_1\"", user);
     }
 
     /**
@@ -351,16 +352,19 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
             "UserRefreshQueueEntity number of active records mismatch");
     }
 
-    private void assertAccessTypes(String accessTypeId, boolean user) {
+    private void assertAccessTypes(String accessTypeId, String organisationProfileId,
+        String jurisdictionId, boolean enabled) {
         var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
         var userRefreshQueueEntity = userRefreshQueueEntities.getFirst();
         String accessTypes = userRefreshQueueEntity.getAccessTypes();
         assertTrue(accessTypes.contains(accessTypeId),
             "UserRefreshQueueEntity " + accessTypeId + " not found");
-        assertTrue(accessTypes.contains("\"enabled\": " + (user ? "true" : "false")),
+        assertTrue(accessTypes.contains("\"enabled\": " + (enabled ? "true" : "false")),
             "UserRefreshQueueEntity " + accessTypeId + ".enabled mismatch");
-        assertTrue(accessTypes.contains("\"organisationProfileId\": " + (user ? "" : "\"ORGPROFILE1\"")),
-            "UserRefreshQueueEntity " + accessTypeId + ".organisationIds mismatch");
+        assertTrue(accessTypes.contains("\"organisationProfileId\": " + organisationProfileId),
+            "UserRefreshQueueEntity " + accessTypeId + ".organisationProfileId mismatch");
+      assertTrue(accessTypes.contains("\"jurisdictionId\": " + jurisdictionId),
+          "UserRefreshQueueEntity " + accessTypeId + ".jurisdictionId mismatch");
     }
 
     //#endregion
