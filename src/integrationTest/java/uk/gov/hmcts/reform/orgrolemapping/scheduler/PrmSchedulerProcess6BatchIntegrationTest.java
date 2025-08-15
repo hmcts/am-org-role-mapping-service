@@ -363,8 +363,8 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
             "UserRefreshQueueEntity " + accessTypeId + ".enabled mismatch");
         assertTrue(accessTypes.contains("\"organisationProfileId\": " + organisationProfileId),
             "UserRefreshQueueEntity " + accessTypeId + ".organisationProfileId mismatch");
-      assertTrue(accessTypes.contains("\"jurisdictionId\": " + jurisdictionId),
-          "UserRefreshQueueEntity " + accessTypeId + ".jurisdictionId mismatch");
+        assertTrue(accessTypes.contains("\"jurisdictionId\": " + jurisdictionId),
+            "UserRefreshQueueEntity " + accessTypeId + ".jurisdictionId mismatch");
     }
 
     //#endregion
