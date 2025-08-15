@@ -53,3 +53,4 @@ Feature: F-013 : PRM Scheduler
     Then a positive response is received,
     And the response has all other details as expected,
     And a successful call [to verify the USER exists in the refresh queue and is not active] as in [S-013.06_VerifyUserRefreshQueueValueIsNotActive]
+    And a successful call [to make the USER refresh queue value active] as in [S-013.06_MakeUserRefreshQueueValueActive]
