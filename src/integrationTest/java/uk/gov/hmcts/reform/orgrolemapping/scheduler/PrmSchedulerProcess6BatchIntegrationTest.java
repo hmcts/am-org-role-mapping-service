@@ -350,9 +350,9 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         assertEquals(0, userRefreshQueueEntities.stream()
                 .filter(entity -> entity.getActive()).count(),
             "UserRefreshQueueEntity number of active records mismatch");
-      assertEquals(0, userRefreshQueueEntities.stream()
-              .filter(entity -> entity.getRetryAfter() != null).count(),
-          "UserRefreshQueueEntity number of retryAfter records mismatch");
+        assertEquals(0, userRefreshQueueEntities.stream()
+                .filter(entity -> entity.getRetryAfter() != null).count(),
+            "UserRefreshQueueEntity number of retryAfter records mismatch");
     }
 
     private void assertAccessTypes(String accessTypeId, String organisationProfileId,
