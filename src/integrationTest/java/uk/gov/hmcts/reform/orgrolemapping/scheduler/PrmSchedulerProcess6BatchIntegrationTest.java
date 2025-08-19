@@ -62,6 +62,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/init_access_types.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
     })
     void testNoUserRoles() {
