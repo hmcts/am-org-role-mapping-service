@@ -283,12 +283,8 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
 
     private void testSingleRole(boolean user) {
         // verify that no users are updated
-        runTest(List.of("/SchedulerTests/role_assignments/senior_tribunal_caseworker.json"));
-
-        // Verify 1 record in the refresh queue
-        assertTotalUserRefreshQueueEntitiesInDb(1);
-        assertAccessTypes(user ? "BEFTA_ACCESSTYPE_1" : "BEFTA_ACCESSTYPE_2",
-            user ? "" : "\"ORGPROFILE1\"", "\"BEFTA_JURISDICTION_1\"", user);
+        testCreateRole(List.of("/SchedulerTests/role_assignments/senior_tribunal_caseworker.json"),
+            1, user);
     }
 
     /**
@@ -314,12 +310,20 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseSchedulerTestIntegrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testMultipleRoles() throws JsonProcessingException {
-        // verify that no users are updated
-        runTest(List.of("/SchedulerTests/role_assignments/senior_tribunal_caseworker.json",
-            "/SchedulerTests/role_assignments/case_allocator.json"));
+        testCreateRole(List.of("/SchedulerTests/role_assignments/senior_tribunal_caseworker.json",
+            "/SchedulerTests/role_assignments/case_allocator.json"), 1, true);
+    }
 
-        // Verify 1 record in the refresh queue
-        assertTotalUserRefreshQueueEntitiesInDb(1);
+    private void testCreateRole(List<String> fileNames, int expectedNumberOfRecords, boolean user) {
+        // verify that no users are updated
+        runTest(fileNames);
+
+        // Verify the number of records in the user refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(expectedNumberOfRecords);
+
+        // Verify the access types against the user record
+        assertAccessTypes(user ? "BEFTA_ACCESSTYPE_1" : "BEFTA_ACCESSTYPE_2",
+            user ? "" : "\"ORGPROFILE1\"", "\"BEFTA_JURISDICTION_1\"", user);
     }
 
     private void runTest(List<String> fileNames) {
