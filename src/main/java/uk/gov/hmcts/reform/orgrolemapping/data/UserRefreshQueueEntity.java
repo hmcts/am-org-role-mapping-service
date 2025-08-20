@@ -12,6 +12,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import org.hibernate.type.SqlTypes;
 
 @Builder(toBuilder = true)
 @Getter
@@ -37,6 +38,7 @@ public class UserRefreshQueueEntity {
     @Column(name = "deleted")
     private LocalDateTime deleted;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "access_types", nullable = false)
     private String accessTypes;
 
