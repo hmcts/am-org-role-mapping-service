@@ -205,8 +205,13 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
             "UserRefreshQueueEntity deleted mismatch for userId: " + userId);
         assertOrganisationProfileIds(organisationProfileIds,
             userRefreshQueueEntity.get().getOrganisationProfileIds(), userId);
-        assertAccessTypes(isUpdated ? organisationProfileIds : new String[] {},
-            userRefreshQueueEntity.get().getAccessTypes(), userId);
+        if (isUpdated) {
+            assertAccessTypes(organisationProfileIds, userRefreshQueueEntity.get().getAccessTypes(),
+                userId);
+        } else {
+            assertEquals("[]", userRefreshQueueEntity.get().getAccessTypes(),
+                "UserRefreshQueueEntity accessTYpes mismatch for userId: " + userId);
+        }
     }
 
     private void assertAccessTypes(String[] expectedOrganisationProfileIds, String accessTypes,
