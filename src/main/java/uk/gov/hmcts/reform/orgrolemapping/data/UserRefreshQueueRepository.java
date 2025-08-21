@@ -23,6 +23,10 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
     default void upsertToUserRefreshQueue(NamedParameterJdbcTemplate jdbcTemplate,
                                           List<ProfessionalUserData> rows,
                                           Integer accessTypeMinVersion) {
+
+        // NB: This upsert is for PRM Process 4:
+        //     on conflict it will always set active to true even when user is unchanged.
+
         String sql = """
             insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted,
                                             access_types, organisation_id, organisation_status,
