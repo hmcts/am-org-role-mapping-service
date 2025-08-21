@@ -31,11 +31,13 @@ public class PrmOrganisationRefreshQueueController {
     protected static final String MAKE_ORGANISATION_REFRESH_QUEUE_ACTIVE
         = "/am/testing-support/prm/makeOrganisationRefreshQueueActive";
 
-    private final OrganisationRefreshQueueRepository oranisationRefreshQueueRepository;
+    private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
 
     @Autowired
-    public PrmOrganisationRefreshQueueController(OrganisationRefreshQueueRepository oranisationRefreshQueueRepository) {
-        this.oranisationRefreshQueueRepository = oranisationRefreshQueueRepository;
+    public PrmOrganisationRefreshQueueController(
+        OrganisationRefreshQueueRepository organisationRefreshQueueRepository
+    ) {
+        this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
     }
 
 
@@ -65,7 +67,7 @@ public class PrmOrganisationRefreshQueueController {
     public ResponseEntity<OrganisationRefreshQueueValue> findOrganisationRefreshQueue(
         @RequestParam() String organisationId
     ) {
-        return oranisationRefreshQueueRepository.findById(organisationId)
+        return organisationRefreshQueueRepository.findById(organisationId)
             .map(organisationRefreshQueueEntity ->
                 ResponseEntity.ok(convertToOrganisationRefreshQueueValue(organisationRefreshQueueEntity))
             )
@@ -99,7 +101,7 @@ public class PrmOrganisationRefreshQueueController {
     public ResponseEntity<OrganisationRefreshQueueValue> makeOrganisationRefreshQueueActive(
         @RequestParam() String organisationId
     ) {
-        var organisationRefreshQueueEntityOptional = oranisationRefreshQueueRepository
+        var organisationRefreshQueueEntityOptional = organisationRefreshQueueRepository
             .findById(organisationId);
         if (organisationRefreshQueueEntityOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -110,7 +112,7 @@ public class PrmOrganisationRefreshQueueController {
         // if not active then activate
         if (Boolean.FALSE.equals(organisationRefreshQueueEntity.getActive())) {
             organisationRefreshQueueEntity.setActive(true);
-            oranisationRefreshQueueRepository.save(organisationRefreshQueueEntity);
+            organisationRefreshQueueRepository.save(organisationRefreshQueueEntity);
         }
 
         return ResponseEntity.ok(convertToOrganisationRefreshQueueValue(organisationRefreshQueueEntity));

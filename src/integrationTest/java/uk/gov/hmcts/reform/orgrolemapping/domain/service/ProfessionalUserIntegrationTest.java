@@ -65,8 +65,7 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
-            professionalUserService.findAndLockSingleActiveOrganisationRecord());
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
         assertEquals(1, userRefreshQueueRepository.findAll().size());
 
@@ -105,8 +104,7 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
-            professionalUserService.findAndLockSingleActiveOrganisationRecord());
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
         assertEquals(0, userRefreshQueueRepository.findAll().size());
 
@@ -134,8 +132,7 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
                 .thenThrow(ServiceException.class);
 
         ServiceException exception = assertThrows(ServiceException.class, () ->
-                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue(
-                    professionalUserService.findAndLockSingleActiveOrganisationRecord())
+            professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
         );
 
         assertEquals("Retry limit reached", exception.getMessage());
