@@ -206,7 +206,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         assertOrganisationProfileIds(organisationProfileIds,
             userRefreshQueueEntity.get().getOrganisationProfileIds(), userId);
         if (isUpdated) {
-          assertAccessTypes(organisationProfileIds, userRefreshQueueEntity.get().getAccessTypes(),
+            assertAccessTypes(organisationProfileIds, userRefreshQueueEntity.get().getAccessTypes(),
                 userId);
         }
     }
