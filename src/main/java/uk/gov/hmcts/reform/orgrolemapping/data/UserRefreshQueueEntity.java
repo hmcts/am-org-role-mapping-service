@@ -1,18 +1,18 @@
 package uk.gov.hmcts.reform.orgrolemapping.data;
 
-import java.sql.Types;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import java.time.LocalDateTime;
 import org.hibernate.type.SqlTypes;
+
+import java.sql.Types;
+import java.time.LocalDateTime;
 
 @Builder(toBuilder = true)
 @Getter
