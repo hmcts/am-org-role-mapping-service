@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -37,20 +38,7 @@ class SchedulerTest {
         scheduler = new Scheduler(caseDefinitionService, organisationService, professionalUserService);
     }
 
-    @Test
-    void findUsersWithStaleOrganisationProcessTest() {
-        ProcessMonitorDto expectedProcessMonitorDto = mock(ProcessMonitorDto.class);
-
-        when(professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
-            .thenReturn(expectedProcessMonitorDto);
-
-        scheduler
-            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
-
-        verify(professionalUserService, times(1))
-            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
-    }
-
+    // PRM Process 1
     @Test
     void findAndUpdateCaseDefinitionChangesTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
@@ -58,10 +46,12 @@ class SchedulerTest {
         when(caseDefinitionService.findAndUpdateCaseDefinitionChanges()).thenReturn(processMonitorDto);
 
         ProcessMonitorDto returnedProcessMonitorDto = scheduler.findAndUpdateCaseDefinitionChanges();
+
         assertNotNull(returnedProcessMonitorDto);
         verify(caseDefinitionService, times(1)).findAndUpdateCaseDefinitionChanges();
     }
 
+    // PRM Process 2
     @Test
     void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcessTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
@@ -71,10 +61,13 @@ class SchedulerTest {
 
         ProcessMonitorDto returnedProcessMonitorDto = scheduler
             .findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess();
+
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(organisationService, times(1)).findAndInsertStaleOrganisationsIntoRefreshQueue();
     }
 
+    // PRM Process 3
     @Test
     void findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcessTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
@@ -84,10 +77,30 @@ class SchedulerTest {
 
         ProcessMonitorDto returnedProcessMonitorDto = scheduler
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
+
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(organisationService, times(1)).findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
     }
 
+    // PRM Process 4
+    @Test
+    void findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcessTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        when(professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler
+            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
+
+        assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
+        verify(professionalUserService, times(1))
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+    }
+
+    // PRM Process 5
     @Test
     void findUserChangesAndInsertIntoUserRefreshQueueTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
@@ -97,7 +110,9 @@ class SchedulerTest {
 
         ProcessMonitorDto returnedProcessMonitorDto = scheduler
             .findUserChangesAndInsertIntoUserRefreshQueue();
+
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(professionalUserService, times(1)).findUserChangesAndInsertIntoUserRefreshQueue();
     }
 
