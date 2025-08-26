@@ -42,8 +42,11 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
 @PactTestFor(providerName = "referenceData_judicialv2", port = "8991")
-@ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
-@TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
+@ContextConfiguration(classes = {RefDataConsumerApplication.class})
+@TestPropertySource(properties = {
+    "feign.client.config.crdclient.url=http://localhost:8991",
+    "feign.client.config.prdClient.url=http://localhost:8090"
+})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataJudicialProfileConsumerTestV2 {
 

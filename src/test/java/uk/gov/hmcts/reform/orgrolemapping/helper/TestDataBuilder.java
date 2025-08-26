@@ -12,6 +12,7 @@ import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
@@ -19,16 +20,22 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -54,6 +61,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import static uk.gov.hmcts.reform.orgrolemapping.helper.CDDFallbackResponseBuilder.ACCESS_TYPES_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.ORGANISATIONS_BY_PROFILE_IDS_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_ORGANISATIONS_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_USERS_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.USERS_BY_ORGANISATION_SAMPLE;
 
 @Setter
 public class TestDataBuilder {
@@ -616,4 +629,45 @@ public class TestDataBuilder {
                     .toArray(String[]::new);
         }
     }
+
+    public static AccessTypesResponse buildAccessTypesResponse() {
+        return CDDFallbackResponseBuilder.buildAccessTypesResponse(ACCESS_TYPES_SAMPLE);
+    }
+
+    public static OrganisationByProfileIdsResponse buildOrganisationByProfileIdsResponse() {
+        return PRDFallbackResponseBuilder.buildOrganisationByProfileIdsResponse(ORGANISATIONS_BY_PROFILE_IDS_SAMPLE);
+    }
+
+    public static OrganisationsResponse buildOrganisationsResponse() {
+        return PRDFallbackResponseBuilder.buildOrganisationsResponse(RETRIEVE_ORGANISATIONS_SAMPLE);
+    }
+
+    public static GetRefreshUserResponse buildRefreshUserResponse() {
+        return PRDFallbackResponseBuilder.buildRefreshUserResponse(RETRIEVE_USERS_SAMPLE);
+    }
+
+    public static UsersByOrganisationResponse buildUsersByOrganisationResponse() {
+        return PRDFallbackResponseBuilder.buildUsersByOrganisationResponse(USERS_BY_ORGANISATION_SAMPLE);
+    }
+
+    public static UsersOrganisationInfo buildUsersOrganisationInfo(int i, List<ProfessionalUser> users) {
+        return UsersOrganisationInfo.builder()
+            .organisationIdentifier("" + i)
+            .status("ACTIVE")
+            .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
+            .users(users)
+            .build();
+    }
+
+    public static ProfessionalUser buildProfessionalUser(int i) {
+        return ProfessionalUser.builder()
+            .userIdentifier("" + i)
+            .firstName("fName " + i)
+            .lastName("lName " + i)
+            .email("user" + i + "@mail.com")
+            .lastUpdated(LocalDateTime.now())
+            .deleted(LocalDateTime.now())
+            .build();
+    }
+
 }

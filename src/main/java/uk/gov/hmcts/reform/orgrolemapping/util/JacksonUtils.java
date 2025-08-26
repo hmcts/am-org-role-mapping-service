@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
+import lombok.SneakyThrows;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
@@ -39,6 +41,11 @@ public class JacksonUtils {
             .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build()
             .registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    @SneakyThrows
+    public static String writeValueAsPrettyJson(Object input) {
+        return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
+    }
 
     public static Map<String, JsonNode> convertValue(Object from) {
         return MAPPER.convertValue(from, new TypeReference<HashMap<String, JsonNode>>() {
@@ -93,5 +100,13 @@ public class JacksonUtils {
     public static JudicialBooking convertInJudicialBooking(Object from) {
         return MAPPER.convertValue(from, new TypeReference<>() {
         });
+    }
+
+    public static String convertObjectToString(Object from) {
+        try {
+            return MAPPER.writeValueAsString(from);
+        } catch (JsonProcessingException e) {
+            throw new ServiceException("Error occurred when serializing object");
+        }
     }
 }
