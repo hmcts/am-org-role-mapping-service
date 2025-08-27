@@ -1,0 +1,2 @@
+INSERT INTO user_refresh_queue (user_id, organisation_id, access_types_min_version, active, organisation_profile_ids, organisation_status, last_updated, user_last_updated, access_types)
+SELECT 'USERX', 'ORG1', 2, true, '{ORGPROFILE1}', 'ACTIVE', '2020-01-01T13:20:01.046Z', '2020-01-01T13:30:01.046Z', '[{"accessTypeId": "BEFTA_ACCESSTYPE_2", "organisationProfileId": "ORGPROFILE1", "jurisdictionId": "BEFTA_JURISDICTION_1", "enabled": false}]';

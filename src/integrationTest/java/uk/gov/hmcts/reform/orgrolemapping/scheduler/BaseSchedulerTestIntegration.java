@@ -23,16 +23,18 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.helper.JsonHelper;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.List;
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -63,6 +65,8 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     static final String DUMMY_AUTH_TOKEN = "DUMMY_AUTH_TOKEN";
     static final String DUMMY_S2S_TOKEN = "DUMMY_S2S_TOKEN";
 
+    public static final UUID STUB_ID_RAS_CREATE_ROLEASSIGNMENTS
+            = UUID.fromString("0bfabe25-fd57-4f8a-9882-911b53857258");
     public static final UUID STUB_ID_PRD_REFRESH_USER
             = UUID.fromString("491482e1-a8ec-4170-b986-177259e152cd");
 
@@ -188,6 +192,52 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                 .withQueryParam("searchAfter", absent())
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
+                        .withHeaders(headers)
+                        .withBody(body)));
+    }
+
+
+    protected void stubRasCreateRoleAssignment(List<String> fileNames,
+                                               EndStatus endStatus) {
+        stubRasCreateRoleAssignment(
+                fileNames.size() == 0 ? "{}" :
+                        """
+                        {
+                            "links": [],
+                            "roleAssignmentResponse": {
+                                "roleRequest": {
+                                    "id": "2fe5b5fb-fb01-4398-85ce-bbe34b7f374c",
+                                    "authenticatedUserId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b9",
+                                    "correlationId": "01f6e7e2-c66c-44a0-a7e4-73c1507c92b7",
+                                    "assignerId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b9",
+                                    "requestType": "CREATE",
+                                    "process": "businessProcess1",
+                                    "reference": "50b143cb-5644-4103-b37f-ee7005ca24d6",
+                                    "replaceExisting": true,
+                                    "status": "APPROVED",
+                                    "created": "2020-11-19T11:42:13.454994",
+                                    "log": "Request has been Approved"
+                                },
+                                "requestedRoles": """ + jsonHelper.readJsonArrayFromFiles(fileNames) + """
+                }
+            }""",
+                endStatus
+        );
+    }
+
+    protected void stubRasCreateRoleAssignment(String body,
+                                               EndStatus endStatus) {
+        HttpHeaders headers = new HttpHeaders()
+                .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE));
+
+        int httpStatus = EndStatus.FAILED.equals(endStatus)
+                ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                "/am/role-assignments"))
+                .withId(STUB_ID_RAS_CREATE_ROLEASSIGNMENTS)
+                .willReturn(aResponse()
+                        .withStatus(httpStatus)
                         .withHeaders(headers)
                         .withBody(body)));
     }

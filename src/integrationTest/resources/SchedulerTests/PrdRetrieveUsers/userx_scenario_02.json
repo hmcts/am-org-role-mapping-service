@@ -12,9 +12,9 @@
   [
     {
       "jurisdictionId": "BEFTA_JURISDICTION_1",
-      "organisationProfileId": "SOLICITOR_PROFILE",
-      "accessTypeId": "BEFTA_ACCESSTYPE_1",
-      "enabled": true
+      "organisationProfileId": "ORGPROFILE1",
+      "accessTypeId": "BEFTA_ACCESSTYPE_2",
+      "enabled": false
     }
   ]
 }
