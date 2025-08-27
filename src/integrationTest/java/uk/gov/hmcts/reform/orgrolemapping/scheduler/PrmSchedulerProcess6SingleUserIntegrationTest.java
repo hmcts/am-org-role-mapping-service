@@ -8,8 +8,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,8 +22,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,12 +36,6 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseSchedulerTestInt
 
     @Autowired
     private UserRefreshQueueRepository userRefreshQueueRepository;
-
-    @Mock
-    private ProcessEventTracker processEventTracker;
-
-    @Captor
-    private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
 
     @Inject
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
@@ -334,9 +324,6 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseSchedulerTestInt
         assertNotNull(actualResponse);
         assertNotNull(actualResponse.getBody());
         assertEquals(actualResponse.getBody(), Map.of("Message", SUCCESS_ROLE_REFRESH));
-        //verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-        //assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-        //    .isEqualTo(EndStatus.SUCCESS);
     }
 
     private void assertTotalUserRefreshQueueEntitiesInDb(int expectedNumberOfRecords) {
