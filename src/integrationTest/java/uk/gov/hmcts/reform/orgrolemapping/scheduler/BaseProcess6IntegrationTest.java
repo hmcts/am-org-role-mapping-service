@@ -303,7 +303,7 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     //#endregion
 
-    protected void logAfterStatus(ResponseEntity<Object> response) {
+    protected void logAfterStatus(Object response) {
         logObject("ProcessMonitorDto: AFTER", response);
         logObject("userRefreshQueueRepository: AFTER", userRefreshQueueRepository.findAll());
     }
