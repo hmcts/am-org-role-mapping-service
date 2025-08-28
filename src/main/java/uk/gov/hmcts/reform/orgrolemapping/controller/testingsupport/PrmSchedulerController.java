@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.Scheduler;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
@@ -38,15 +40,17 @@ public class PrmSchedulerController {
     private Scheduler scheduler;
     private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
     private OrganisationService organisationService;
+    private ProfessionalUserService professionalUserService;
 
 
     @Autowired
     public PrmSchedulerController(Scheduler scheduler,
         BatchLastRunTimestampRepository batchLastRunTimestampRepository,
-        OrganisationService organisationService) {
+        OrganisationService organisationService, ProfessionalUserService professionalUserService) {
         this.scheduler = scheduler;
         this.batchLastRunTimestampRepository = batchLastRunTimestampRepository;
         this.organisationService = organisationService;
+        this.professionalUserService = professionalUserService;
     }
 
     @GetMapping(
@@ -128,6 +132,35 @@ public class PrmSchedulerController {
 
         ProcessMonitorDto processMonitorDto = scheduler
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
+
+    @GetMapping(
+        path = "/am/testing-support/prm/findUsersWithStaleOrganisations"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "PRM Process 4 findUsersWithStaleOrganisations",
+            security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> findUsersWithStaleOrganisations(
+        @Parameter(description = "OrganisationId: ")
+        @RequestParam(required = false) String organisationId) {
+        ProcessMonitorDto processMonitorDto;
+        if (StringUtils.isEmpty(organisationId)) {
+            processMonitorDto = scheduler
+                .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
+        } else {
+            processMonitorDto = professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 

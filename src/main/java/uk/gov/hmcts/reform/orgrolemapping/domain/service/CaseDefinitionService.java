@@ -25,6 +25,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
 @Service
 public class CaseDefinitionService {
 
+    public static final String PROCESS_1_NAME = "PRM Process 1 - Find Case Definition Changes";
+
     private final CCDService ccdService;
     private final AccessTypesRepository accessTypesRepository;
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository;
@@ -48,8 +50,7 @@ public class CaseDefinitionService {
     @Transactional
     public ProcessMonitorDto findAndUpdateCaseDefinitionChanges() {
 
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
-                "PRM Process 1 - Find Case Definition Changes");
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_1_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
 
         try {

@@ -39,6 +39,7 @@ class PrmProfileRefreshQueueControllerTest {
     @Captor
     private ArgumentCaptor<ProfileRefreshQueueEntity> profileRefreshQueueEntityCaptor;
 
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -88,17 +89,16 @@ class PrmProfileRefreshQueueControllerTest {
     void makeProfileRefreshQueueActiveTest_notFound() {
 
         // GIVEN
-        String organisationProfileId = "test-id";
-        when(profileRefreshQueueRepository.findById(organisationProfileId))
+        when(profileRefreshQueueRepository.findById(TEST_ORGANISATION_PROFILE_ID))
             .thenReturn(Optional.empty());
 
         // WHEN
-        var response = controller.makeProfileRefreshQueueActive(organisationProfileId);
+        var response = controller.makeProfileRefreshQueueActive(TEST_ORGANISATION_PROFILE_ID);
 
         // THEN
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
-        verify(profileRefreshQueueRepository, times(1)).findById(organisationProfileId);
+        verify(profileRefreshQueueRepository, times(1)).findById(TEST_ORGANISATION_PROFILE_ID);
 
     }
 
