@@ -329,15 +329,16 @@ public class ProfessionalUserService {
         }
 
         markProcessStatus(processMonitorDto,
-            successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0),
-            failedJobCount > 0,
+            successfulJobCount, failedJobCount,
             errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }
 
-    private void markProcessStatus(ProcessMonitorDto processMonitorDto, boolean hasSuccessfulStep,
-        boolean hasFailedAStep, String errorMessage) {
+    protected void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
+                                   int failedJobCount, String errorMessage) {
+        boolean hasSuccessfulStep = successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0);
+        boolean hasFailedAStep = failedJobCount > 0;
         if (!hasSuccessfulStep && hasFailedAStep) {
             processMonitorDto.markAsFailed(errorMessage);
         }
