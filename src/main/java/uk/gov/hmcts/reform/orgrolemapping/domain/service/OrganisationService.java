@@ -36,6 +36,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConst
 @Service
 public class OrganisationService {
 
+    public static final String PROCESS_2_NAME = "PRM Process 2 - Find Organisations with Stale Profiles";
+    public static final String PROCESS_3_NAME = "PRM Process 3 - Find organisation changes";
+
     private final PrdService prdService;
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository;
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
@@ -75,7 +78,7 @@ public class OrganisationService {
     @Transactional
     public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
         log.info("findOrganisationChangesAndInsertIntoOrganisationRefreshQueue started...");
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Process 3 - Find organisation changes");
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_3_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
 
         int page = 0;
@@ -124,8 +127,7 @@ public class OrganisationService {
 
     @Transactional
     public ProcessMonitorDto findAndInsertStaleOrganisationsIntoRefreshQueue() {
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
-                "PRM Process 2 - Find Organisations with Stale Profiles");
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_2_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
 
         try {
