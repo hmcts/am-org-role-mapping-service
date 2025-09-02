@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
@@ -19,7 +18,6 @@ public class Scheduler {
     private final OrganisationService organisationService;
     private final ProfessionalUserService professionalUserService;
 
-    private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
 
     private final ProcessEventTracker processEventTracker;
@@ -27,42 +25,44 @@ public class Scheduler {
     public Scheduler(CaseDefinitionService caseDefinitionService,
                      OrganisationService organisationService,
                      ProfessionalUserService professionalUserService,
-                     OrganisationRefreshQueueRepository organisationRefreshQueueRepository,
                      UserRefreshQueueRepository userRefreshQueueRepository,
                      ProcessEventTracker processEventTracker) {
         this.caseDefinitionService = caseDefinitionService;
         this.organisationService = organisationService;
         this.professionalUserService = professionalUserService;
 
-        this.organisationRefreshQueueRepository = organisationRefreshQueueRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
 
         this.processEventTracker = processEventTracker;
     }
 
+    // PRM Process 1
     @Scheduled(cron = "${professional.role.mapping.scheduling.findAndUpdateCaseDefinitionChanges.cron}")
     public ProcessMonitorDto findAndUpdateCaseDefinitionChanges() {
         return caseDefinitionService.findAndUpdateCaseDefinitionChanges();
     }
 
+    // PRM Process 2
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.cron}")
     public ProcessMonitorDto findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess() {
         return organisationService.findAndInsertStaleOrganisationsIntoRefreshQueue();
     }
 
+    // PRM Process 3
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationChanges.cron}")
     public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess() {
         return organisationService
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
     }
 
+    // PRM Process 4
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.cron}")
-    void findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
-        while (organisationRefreshQueueRepository.getActiveOrganisationRefreshQueueCount() >= 1) {
-            professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
-        }
+    public ProcessMonitorDto findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
+        return professionalUserService
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
     }
 
+    // PRM Process 5
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUserChanges.cron}")
     public ProcessMonitorDto findUserChangesAndInsertIntoUserRefreshQueue() {
         return professionalUserService

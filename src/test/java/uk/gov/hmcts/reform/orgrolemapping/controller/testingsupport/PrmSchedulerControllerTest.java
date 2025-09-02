@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.Scheduler;
 
@@ -30,11 +31,14 @@ class PrmSchedulerControllerTest {
     private OrganisationService organisationService;
 
     @Mock
+    private ProfessionalUserService professionalUserService;
+
+    @Mock
     private BatchLastRunTimestampEntity batchLastRunTimestampEntity;
 
     @InjectMocks
     private final PrmSchedulerController controller = new PrmSchedulerController(scheduler,
-        batchLastRunTimestampRepository, organisationService);
+        batchLastRunTimestampRepository, organisationService, professionalUserService);
 
     @BeforeEach
     void setUp() {
@@ -92,6 +96,35 @@ class PrmSchedulerControllerTest {
     @Test
     void process3Test_noParam() {
         process3Test(null);
+    }
+
+    @Test
+    void process4Test() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process4");
+
+        ResponseEntity<Object> response =
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+
+        when(scheduler
+            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess())
+            .thenReturn(processMonitorDto);
+
+        assertEquals(response, controller.findUsersWithStaleOrganisations(null));
+    }
+
+    @Test
+    void process4TestById() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process4");
+        String organisationId = "1";
+
+        ResponseEntity<Object> response =
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+
+        when(professionalUserService
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId))
+            .thenReturn(processMonitorDto);
+
+        assertEquals(response, controller.findUsersWithStaleOrganisations(organisationId));
     }
 
     @Test
