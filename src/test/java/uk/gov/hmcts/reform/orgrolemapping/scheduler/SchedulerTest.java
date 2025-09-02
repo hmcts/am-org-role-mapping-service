@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.when;
 class SchedulerTest {
 
     @Mock
-    private CaseDefinitionService caseDefinitionService = mock(CaseDefinitionService.class);
+    private CaseDefinitionService caseDefinitionService;
 
     @Mock
     private OrganisationService organisationService;
@@ -34,20 +33,15 @@ class SchedulerTest {
     @Mock
     private ProfessionalUserService professionalUserService;
 
-    @Mock
-    private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
-
     @InjectMocks
     private Scheduler scheduler;
-
-    @Captor
-    private ArgumentCaptor<ProcessEventTracker> processEventTrackerArgumentCaptor;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    // PRM Process 1
     @Test
     void findAndUpdateCaseDefinitionChangesTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
@@ -55,10 +49,13 @@ class SchedulerTest {
         when(caseDefinitionService.findAndUpdateCaseDefinitionChanges()).thenReturn(processMonitorDto);
 
         ProcessMonitorDto returnedProcessMonitorDto = scheduler.findAndUpdateCaseDefinitionChanges();
+
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(caseDefinitionService, times(1)).findAndUpdateCaseDefinitionChanges();
     }
 
+    // PRM Process 2
     @Test
     void findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcessTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
@@ -68,10 +65,13 @@ class SchedulerTest {
 
         ProcessMonitorDto returnedProcessMonitorDto = scheduler
             .findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess();
+
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(organisationService, times(1)).findAndInsertStaleOrganisationsIntoRefreshQueue();
     }
 
+    // PRM Process 3
     @Test
     void findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcessTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
@@ -81,10 +81,30 @@ class SchedulerTest {
 
         ProcessMonitorDto returnedProcessMonitorDto = scheduler
             .findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
+
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(organisationService, times(1)).findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
     }
 
+    // PRM Process 4
+    @Test
+    void findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcessTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        when(professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler
+            .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
+
+        assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
+        verify(professionalUserService, times(1))
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+    }
+
+    // PRM Process 5
     @Test
     void findUserChangesAndInsertIntoUserRefreshQueueTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
@@ -94,10 +114,13 @@ class SchedulerTest {
 
         ProcessMonitorDto returnedProcessMonitorDto = scheduler
             .findUserChangesAndInsertIntoUserRefreshQueue();
+
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(professionalUserService, times(1)).findUserChangesAndInsertIntoUserRefreshQueue();
     }
 
+    // PRM Process 6
     @Test
     void processUserRefreshQueueTest() {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
@@ -110,6 +133,7 @@ class SchedulerTest {
 
         // assert
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(professionalUserService, times(1)).refreshUsersBatchMode();
     }
 
