@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
+import feign.Request;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
@@ -26,6 +29,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
@@ -37,6 +41,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,6 +55,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService.PROCESS_4_NAME;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService.PROCESS_5_NAME;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildProfessionalUser;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUsersOrganisationInfo;
 
@@ -68,7 +75,6 @@ class ProfessionalUserServiceTest {
             Mockito.mock(OrganisationRefreshQueueRepository.class);
     private final UserRefreshQueueRepository userRefreshQueueRepository =
             Mockito.mock(UserRefreshQueueRepository.class);
-
     private final NamedParameterJdbcTemplate jdbcTemplate =
             Mockito.mock(NamedParameterJdbcTemplate.class);
     private final PlatformTransactionManager transactionManager =
@@ -79,6 +85,10 @@ class ProfessionalUserServiceTest {
 
     private final ProcessEventTracker processEventTracker = Mockito.mock(ProcessEventTracker.class);
 
+    private static final String RETRY_ONE_INTERVAL = "2";
+    private static final String RETRY_TWO_INTERVAL = "15";
+    private static final String RETRY_THREE_INTERVAL = "60";
+
     ProfessionalUserService professionalUserService = new ProfessionalUserService(
             prdService,
             accessTypesRepository,
@@ -88,129 +98,328 @@ class ProfessionalUserServiceTest {
             userRefreshQueueRepository,
             jdbcTemplate,
             transactionManager,
-            processEventTracker,
-            "2",
-            "15",
-            "60",
+            RETRY_ONE_INTERVAL,
+            RETRY_TWO_INTERVAL,
+            RETRY_THREE_INTERVAL,
             "1",
-            "10"
+            "10",
+            processEventTracker
     );
 
-    @Test
-    void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
-        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+    @Nested
+    @DisplayName(PROCESS_4_NAME)
+    class FindAndInsertUsersWithStaleOrganisationsIntoRefreshQueue {
+
+        @Test
+        void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue_SingleOrgEntity() {
+
+            // GIVEN
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
                 = buildOrganisationRefreshQueueEntity("1", 1, true);
 
-        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
-                .thenReturn(organisationRefreshQueueEntity);
+            when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
+                .thenReturn(organisationRefreshQueueEntity)
+                .thenReturn(null); // i.e. no more to process
 
-        ProfessionalUser professionalUser = buildProfessionalUser(1);
-        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(1, List.of(professionalUser));
-        UsersByOrganisationResponse response =
+            ProfessionalUser professionalUser = buildProfessionalUser(1);
+            UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(1, List.of(professionalUser));
+            UsersByOrganisationResponse response =
                 buildUsersByOrganisationResponse(List.of(usersOrganisationInfo), "1", "1", false);
 
-        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+            when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+            // WHEN
+            ProcessMonitorDto processMonitorDto = professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
-        verify(organisationRefreshQueueRepository, times(1))
-                .findAndLockSingleActiveOrganisationRecord();
-        verify(userRefreshQueueRepository, times(1))
+            // THEN
+            assertNotNull(processMonitorDto);
+            verify(userRefreshQueueRepository, times(1))
                 .upsertToUserRefreshQueue(any(), any(), any());
-        verify(organisationRefreshQueueRepository, times(1))
-                .setActiveFalse(any(), any(), any());
+            verify(organisationRefreshQueueRepository, times(1))
+                .clearOrganisationRefreshRecord(any(), any(), any());
 
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
-    }
+        }
 
-    @Test
-    void findAndInsertStaleOrganisationsIntoRefreshQueue_WithPaginationTest() {
-        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
-                = buildOrganisationRefreshQueueEntity("2", 2, true);
+        @Test
+        void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue_MultipleOrgEntity() {
 
-        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
-                .thenReturn(organisationRefreshQueueEntity);
+            // GIVEN
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity1
+                = buildOrganisationRefreshQueueEntity("1", 1, true);
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity2
+                = buildOrganisationRefreshQueueEntity("2", 1, true);
 
-        ProfessionalUser professionalUser = buildProfessionalUser(1);
-        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(1, List.of(professionalUser));
-        UsersByOrganisationResponse page1 =
-                buildUsersByOrganisationResponse(List.of(usersOrganisationInfo), "1", "1", true);
+            when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
+                .thenReturn(organisationRefreshQueueEntity1)
+                .thenReturn(organisationRefreshQueueEntity2)
+                .thenReturn(null); // i.e. no more to process
 
-        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
-                .thenReturn(ResponseEntity.ok(page1));
+            // mock first org search
+            ProfessionalUser professionalUserOrg1 = buildProfessionalUser(1);
+            UsersOrganisationInfo usersOrganisationInfo1 = buildUsersOrganisationInfo(1, List.of(professionalUserOrg1));
+            UsersByOrganisationRequest usersByOrganisationRequestOrg1 = new UsersByOrganisationRequest(List.of("1"));
+            UsersByOrganisationResponse responseOrg1 =
+                buildUsersByOrganisationResponse(List.of(usersOrganisationInfo1), "1", "1", false);
 
-        ProfessionalUser professionalUser2 = buildProfessionalUser(2);
-        UsersOrganisationInfo usersOrganisationInfo2 = buildUsersOrganisationInfo(2, List.of(professionalUser2));
-        UsersByOrganisationResponse page2 =
+            when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), eq(usersByOrganisationRequestOrg1)))
+                .thenReturn(ResponseEntity.ok(responseOrg1));
+
+            // mock second org search
+            ProfessionalUser professionalUserOrg2 = buildProfessionalUser(2);
+            UsersOrganisationInfo usersOrganisationInfo2 = buildUsersOrganisationInfo(2, List.of(professionalUserOrg2));
+            UsersByOrganisationRequest usersByOrganisationRequestOrg2 = new UsersByOrganisationRequest(List.of("2"));
+            UsersByOrganisationResponse responseOrg2 =
                 buildUsersByOrganisationResponse(List.of(usersOrganisationInfo2), "2", "2", false);
 
-        when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
+            when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), eq(usersByOrganisationRequestOrg2)))
+                .thenReturn(ResponseEntity.ok(responseOrg2));
+
+            // WHEN
+            ProcessMonitorDto processMonitorDto = professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
+            // THEN
+            assertNotNull(processMonitorDto);
+            verify(userRefreshQueueRepository, times(2)) // i.e. 2 orgs with 1 page each
+                .upsertToUserRefreshQueue(any(), any(), any());
+            verify(organisationRefreshQueueRepository, times(2)) // i.e. 2 orgs
+                .clearOrganisationRefreshRecord(any(), any(), any());
+
+            verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
+        }
+
+        @Test
+        void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue_WithPaginationTest() {
+
+            // GIVEN
+            String orgId = "1";
+            int accessTypesMinVersion = 2;
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+                = buildOrganisationRefreshQueueEntity(orgId, accessTypesMinVersion, true);
+
+            when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
+                .thenReturn(organisationRefreshQueueEntity)
+                .thenReturn(null); // i.e. no more to process
+
+            // mock org page 1 search
+            ProfessionalUser professionalUser1 = buildProfessionalUser(1);
+            UsersOrganisationInfo usersOrganisationInfo1 = buildUsersOrganisationInfo(1, List.of(professionalUser1));
+            UsersByOrganisationResponse page1 = buildUsersByOrganisationResponse(
+                List.of(usersOrganisationInfo1),
+                orgId, // NB: to be used in page 2 search
+                professionalUser1.getUserIdentifier(), // NB: to be used in page 2 search
+                true
+            );
+
+            when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+                .thenReturn(ResponseEntity.ok(page1));
+
+            // mock org page 2 search
+            ProfessionalUser professionalUser2 = buildProfessionalUser(2);
+            UsersOrganisationInfo usersOrganisationInfo2 = buildUsersOrganisationInfo(2, List.of(professionalUser2));
+            UsersByOrganisationResponse page2 = buildUsersByOrganisationResponse(
+                List.of(usersOrganisationInfo2),
+                orgId, // NB: to be used in page 3 search
+                professionalUser2.getUserIdentifier(), // NB: to be used in page 3 search
+                true
+            );
+
+            when(prdService
+                .fetchUsersByOrganisation(any(), eq(orgId), eq(professionalUser1.getUserIdentifier()), any()))
                 .thenReturn(ResponseEntity.ok(page2));
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+            // mock org page 3 search
+            ProfessionalUser professionalUser3 = buildProfessionalUser(3);
+            UsersOrganisationInfo usersOrganisationInfo3 = buildUsersOrganisationInfo(2, List.of(professionalUser2));
+            UsersByOrganisationResponse page3 = buildUsersByOrganisationResponse(
+                List.of(usersOrganisationInfo3),
+                orgId,
+                professionalUser3.getUserIdentifier(),
+                false // i.e. last page
+            );
 
-        verify(organisationRefreshQueueRepository, times(1))
-                .findAndLockSingleActiveOrganisationRecord();
-        verify(userRefreshQueueRepository, times(2))
-                .upsertToUserRefreshQueue(any(), any(), any());
-        verify(organisationRefreshQueueRepository, times(1))
-                .setActiveFalse(any(), any(), any());
+            when(prdService
+                .fetchUsersByOrganisation(any(), eq(orgId), eq(professionalUser2.getUserIdentifier()), any()))
+                .thenReturn(ResponseEntity.ok(page3));
 
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            // WHEN
+            ProcessMonitorDto processMonitorDto = professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
+            // THEN
+            assertNotNull(processMonitorDto);
+            verify(userRefreshQueueRepository, times(3)) // i.e. 1 org with 3 pages
+                .upsertToUserRefreshQueue(any(), any(), eq(accessTypesMinVersion));
+            verify(organisationRefreshQueueRepository, times(1)) // i.e. 1 org
+                .clearOrganisationRefreshRecord(eq(orgId), eq(accessTypesMinVersion), any());
+
+            verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
-    }
+        }
 
-    @Test
-    void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue_NoActiveRecordsTest() {
-        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
-                .thenReturn(null);
+        @Test
+        void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue_FailureMarkForRetry() {
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+            // GIVEN
+            String orgId = "1";
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+                = buildOrganisationRefreshQueueEntity(orgId, 1, true);
 
-        verify(organisationRefreshQueueRepository, times(1))
-                .findAndLockSingleActiveOrganisationRecord();
-        verify(userRefreshQueueRepository, times(0))
+            when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
+                .thenReturn(organisationRefreshQueueEntity)
+                .thenReturn(null); // i.e. no more to process
+
+            when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+                .thenThrow(new FeignException.InternalServerError(
+                    "Fetch users failed", Mockito.mock(Request.class), null, null)
+                );
+
+            TransactionStatus transactionStatus = Mockito.mock(TransactionStatus.class);
+            when(transactionManager.getTransaction(any()))
+                .thenReturn(transactionStatus);
+
+            // WHEN
+            ProcessMonitorDto processMonitorDto = professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
+            // THEN
+            assertNotNull(processMonitorDto);
+            verify(userRefreshQueueRepository, times(0))
                 .upsertToUserRefreshQueue(any(), any(), any());
-        verify(organisationRefreshQueueRepository, times(0))
-                .setActiveFalse(any(), any(), any());
+            verify(organisationRefreshQueueRepository, times(0))
+                .clearOrganisationRefreshRecord(any(), any(), any());
 
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            verify(organisationRefreshQueueRepository, times(1))
+                .updateRetry(orgId, RETRY_ONE_INTERVAL, RETRY_TWO_INTERVAL, RETRY_THREE_INTERVAL);
+
+            verify(transactionStatus, times(1)).setRollbackOnly();
+
+            verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
+        }
+
+        @Test
+        void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue_NoActiveRecordsTest() {
+
+            // GIVEN
+            when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
+                .thenReturn(null); // i.e. none to process
+
+            // WHEN
+            ProcessMonitorDto processMonitorDto = professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
+            // THEN
+            assertNotNull(processMonitorDto);
+            verify(userRefreshQueueRepository, times(0))
+                .upsertToUserRefreshQueue(any(), any(), any());
+            verify(organisationRefreshQueueRepository, times(0))
+                .clearOrganisationRefreshRecord(any(), any(), any());
+
+            verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
-    }
+        }
 
-    @SuppressWarnings({"SameParameterValue"})
-    private static OrganisationRefreshQueueEntity buildOrganisationRefreshQueueEntity(String organisationId,
-                                                                                      Integer accessTypesMinVersion,
-                                                                                      boolean active) {
-        return OrganisationRefreshQueueEntity.builder()
-            .organisationId(organisationId)
-            .lastUpdated(LocalDateTime.now())
-            .accessTypesMinVersion(accessTypesMinVersion)
-            .active(active)
-            .build();
-    }
+        @Test
+        void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById_Found() {
 
-    private static UsersByOrganisationResponse buildUsersByOrganisationResponse(
-        List<UsersOrganisationInfo> organisationInfoList,
-        String lastOrgInPage,
-        String lastUserInPage,
-        Boolean moreAvailable) {
+            // GIVEN
+            String orgId = "Org1";
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+                = buildOrganisationRefreshQueueEntity(orgId, 1, true);
 
-        return UsersByOrganisationResponse.builder()
-            .organisationInfo(organisationInfoList)
-            .lastOrgInPage(lastOrgInPage)
-            .lastUserInPage(lastUserInPage)
-            .moreAvailable(moreAvailable)
-            .build();
+            when(organisationRefreshQueueRepository.findById(orgId))
+                .thenReturn(Optional.of(organisationRefreshQueueEntity));
+
+            ProfessionalUser professionalUser = buildProfessionalUser(1);
+            UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(1, List.of(professionalUser));
+            UsersByOrganisationResponse response =
+                buildUsersByOrganisationResponse(List.of(usersOrganisationInfo), "1", "1", false);
+
+            when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+                .thenReturn(ResponseEntity.ok(response));
+
+            // WHEN
+            ProcessMonitorDto processMonitorDto = professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(orgId);
+
+            // THEN
+            assertNotNull(processMonitorDto);
+            verify(userRefreshQueueRepository, times(1))
+                .upsertToUserRefreshQueue(any(), any(), any());
+            verify(organisationRefreshQueueRepository, times(1))
+                .clearOrganisationRefreshRecord(any(), any(), any());
+
+            verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
+        }
+
+        @Test
+        void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById_NotFound() {
+
+            // GIVEN
+            String orgId = "Org1";
+            when(organisationRefreshQueueRepository.findById(orgId))
+                .thenReturn(Optional.empty());
+
+            // WHEN
+            ProcessMonitorDto processMonitorDto = professionalUserService
+                .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(orgId);
+
+            // THEN
+            assertNotNull(processMonitorDto);
+            verify(userRefreshQueueRepository, times(0))
+                .upsertToUserRefreshQueue(any(), any(), any());
+            verify(organisationRefreshQueueRepository, times(0))
+                .clearOrganisationRefreshRecord(any(), any(), any());
+
+            verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
+        }
+
+        @SuppressWarnings({"SameParameterValue"})
+        private static OrganisationRefreshQueueEntity buildOrganisationRefreshQueueEntity(String organisationId,
+                                                                                          Integer accessTypesMinVersion,
+                                                                                          boolean active) {
+            return OrganisationRefreshQueueEntity.builder()
+                .organisationId(organisationId)
+                .lastUpdated(LocalDateTime.now())
+                .accessTypesMinVersion(accessTypesMinVersion)
+                .active(active)
+                .retry(0)
+                .build();
+        }
+
+        private static UsersByOrganisationResponse buildUsersByOrganisationResponse(
+            List<UsersOrganisationInfo> organisationInfoList,
+            String lastOrgInPage,
+            String lastUserInPage,
+            Boolean moreAvailable) {
+
+            return UsersByOrganisationResponse.builder()
+                .organisationInfo(organisationInfoList)
+                .lastOrgInPage(lastOrgInPage)
+                .lastUserInPage(lastUserInPage)
+                .moreAvailable(moreAvailable)
+                .build();
+        }
+
     }
 
     @Nested
-    @DisplayName("PRM Process 5 - Find User Changes")
+    @DisplayName(PROCESS_5_NAME)
     class FindUserChangesAndInsertIntoUserRefreshQueue {
 
         @Test
