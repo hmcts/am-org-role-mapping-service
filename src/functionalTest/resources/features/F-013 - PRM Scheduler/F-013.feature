@@ -11,7 +11,7 @@ Feature: F-013 : PRM Scheduler
     When a request is prepared with appropriate values,
     And it is submitted to call the [Find And Update Case Definition Changes] operation of [Organisation Role Mapping],
     Then a positive response is received,
-    And the response has all other details as expected.
+    And the response has all other details as expected,
     And a successful call [to verify the SOLICITOR_PROFILE exists in the refresh queue] as in [S-013.01_VerifySolicitorProfileRefreshQueueValueExists]
 
   @S-013.02
@@ -22,7 +22,7 @@ Feature: F-013 : PRM Scheduler
     When a request is prepared with appropriate values,
     And it is submitted to call the [Find Organisations with Stale Profiles] operation of [Organisation Role Mapping],
     Then a positive response is received,
-    And the response has all other details as expected.
+    And the response has all other details as expected,
     And a successful call [to verify the SOLICITOR_PROFILE exists in the refresh queue and is not active] as in [S-013.02_VerifySolicitorProfileRefreshQueueValueIsNotActive]
 
   @S-013.03
@@ -33,6 +33,17 @@ Feature: F-013 : PRM Scheduler
     And it is submitted to call the [Find Organisation Changes] operation of [Organisation Role Mapping],
     Then a positive response is received,
     And the response has all other details as expected.
+
+  @S-013.04
+  @FeatureToggle(EV:PRM_FTA_ENABLED=on)
+  Scenario: trigger PRM scheduler process 4 - Find Users With Stale Organisations
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to make the ORGANISATION refresh queue value active] as in [S-013.04_MakeOrganisationRefreshQueueValueActive]
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Find Users with Stale Organisations] operation of [Organisation Role Mapping],
+    Then a positive response is received,
+    And the response has all other details as expected,
+    And a successful call [to verify the ORGANISATION exists in the refresh queue and is not active] as in [S-013.04_VerifyOrganisationRefreshQueueValueIsNotActive]
 
   @S-013.05
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
