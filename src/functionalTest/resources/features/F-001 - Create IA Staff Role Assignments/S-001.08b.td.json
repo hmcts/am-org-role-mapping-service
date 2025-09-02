@@ -1,0 +1,38 @@
+{
+  "_guid_": "S-001.08b",
+  "title": "must successfully create org role mapping for National Business Centre Payments Team + Case allocator",
+  "_extends_": "S-001.08",
+  "specs": [
+    "contains the actorId of the user just published who has National Business Centre Payments Team role + Case allocator"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "e7011ddc-ce86-4257-9722-777c02b603f3"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PUBLICLAW",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "routine_work",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
