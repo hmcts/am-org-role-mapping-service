@@ -3,8 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -13,8 +11,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
