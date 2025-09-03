@@ -141,6 +141,7 @@ public class ProfessionalUserService {
                 findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(organisationRefreshQueueEntity.get());
         } else {
             errorMessage = String.format("Organisation with ID %s not found in the refresh queue", organisationId);
+            processMonitorDto.addProcessStep(errorMessage);
         }
         markProcessStatus(processMonitorDto,
             errorMessage.isEmpty() ? 1 : 0,
@@ -176,6 +177,10 @@ public class ProfessionalUserService {
                     }
                 }
                 anyEntitiesInQueue = organisationRefreshQueueEntity != null;
+            }
+            if (successfulJobCount == 0 && failedJobCount == 0) {
+                processMonitorDto.addProcessStep("No entities to process");
+                log.info("Completed {}. No entities to process", PROCESS_4_NAME);
             }
         } catch (ServiceException ex) {
             String message = String.format("Error occurred while processing organisation: %s",
