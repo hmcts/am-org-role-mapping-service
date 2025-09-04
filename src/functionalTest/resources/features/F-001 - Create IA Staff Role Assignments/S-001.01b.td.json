@@ -3,7 +3,7 @@
   "title": "must successfully create org role mapping for Senior Tribunal Case Worker + Case allocator",
   "_extends_": "S-001.01",
   "specs": [
-    "contains the actorId of the user just published who has Senior Legal Caseworker role + Case allocator"
+    "contains the actorId of the user just published who has Senior Tribunal Case Worker role + Case allocator"
   ],
   "request": {
     "pathVariables": {
