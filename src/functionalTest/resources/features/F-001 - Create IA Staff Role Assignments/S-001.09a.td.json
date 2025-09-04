@@ -26,9 +26,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PUBLICLAW",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "access_requests",
+            "jurisdiction": "IA",
             "substantive": "N"
           }
         }

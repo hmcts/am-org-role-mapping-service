@@ -26,9 +26,7 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PUBLICLAW",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work",
+            "jurisdiction": "IA",
             "substantive": "N"
           }
         }
