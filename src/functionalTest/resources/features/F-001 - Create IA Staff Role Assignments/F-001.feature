@@ -149,7 +149,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
    @FeatureToggle(DB:iac_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
    Scenario: must successfully create org role mapping for Tribunal Case Worker + Case allocator
      Given a user with [an active IDAM profile with full permissions],
-     And a successful call [to verify caseworker details for Senior Tribunal Case Worker + Case allocator (BFA1 IA)] as in [S-001.02b__VerifyCaseworkerDetails],
+     And a successful call [to verify caseworker details for Tribunal Case Worker + Case allocator (BFA1 IA)] as in [S-001.02b__VerifyCaseworkerDetails],
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
      And a successful call [to publish existing CRD user ids to endpoint] as in [F-001_PushMessageToCRDService],
      And the request [contains the actorId of the user just published who has Tribunal Case Worker role + Case allocator],
