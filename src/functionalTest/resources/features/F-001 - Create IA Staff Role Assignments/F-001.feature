@@ -152,7 +152,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
      And a successful call [to verify caseworker details for Senior Tribunal Case Worker + Case allocator (BFA1 IA)] as in [S-001.02b__VerifyCaseworkerDetails],
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
      And a successful call [to publish existing CRD user ids to endpoint] as in [F-001_PushMessageToCRDService],
-     And the request [contains the actorId of the user just published who has Senior Tribunal Case Worker role + Case allocator],
+     And the request [contains the actorId of the user just published who has Tribunal Case Worker role + Case allocator],
      When a request is prepared with appropriate values,
      And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
      Then a positive response is received,
