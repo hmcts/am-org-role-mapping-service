@@ -4,7 +4,7 @@
   "_extends_": "F-006_Test_Data_Base",
   "specs": [
     "contains the actorId of the user just published",
-    "conatins multiple roles due to SSCSS multi-region expanion for Wales and South West"
+    "contains multiple roles due to SSCS multi-region expanion for Wales and South West"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
@@ -29,6 +29,9 @@
     "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
+        {
+          "__ordering__": "ORDERED"
+        },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
