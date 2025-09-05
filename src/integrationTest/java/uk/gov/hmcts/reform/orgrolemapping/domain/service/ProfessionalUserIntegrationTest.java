@@ -132,7 +132,7 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
                 .thenThrow(ServiceException.class);
 
         ServiceException exception = assertThrows(ServiceException.class, () ->
-                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
+            professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
         );
 
         assertEquals("Retry limit reached", exception.getMessage());
