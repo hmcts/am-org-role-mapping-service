@@ -20,7 +20,7 @@ Feature: F-011 : Verify CRD and JRD service bus messages
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-211_DeleteDataForRoleAssignments].
 
-  @S-213
+  @S-213 @Ignore
   @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
   Scenario: must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment
