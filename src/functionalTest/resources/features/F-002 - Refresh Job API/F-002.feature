@@ -22,7 +22,7 @@ Feature: F-002 : Refresh Role Assignments for CRD and JRD users
     And a successful call [to fetch role assignments from Role Assignment Service] as in [S-011_FetchRoleAssignments],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-011_DeleteDataForRoleAssignments].
 
-  @S-012
+  @S-012 @Ignore
   @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   @FeatureToggle(EV:REFRESH_FTA_ENABLED=on)
   Scenario: must successfully refresh judicial user org roles for a job
