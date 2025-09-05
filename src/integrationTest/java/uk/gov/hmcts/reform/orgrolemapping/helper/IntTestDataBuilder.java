@@ -9,7 +9,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
@@ -22,6 +21,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 
 import java.time.LocalDateTime;
@@ -241,7 +241,7 @@ public class IntTestDataBuilder {
     public static OrganisationInfo buildOrganisationInfo(int i) {
         return OrganisationInfo.builder()
                 .organisationIdentifier("" + i)
-                .status("ACTIVE")
+                .status(OrganisationStatus.ACTIVE)
                 .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
                 .build();
@@ -317,16 +317,6 @@ public class IntTestDataBuilder {
                 .organisationProfileId("" + i)
                 .accessTypeId("" + i)
                 .enabled(true)
-                .build();
-    }
-
-    public static GetRefreshUserResponse buildRefreshUserResponse(RefreshUser user,
-                                                                  String lastRecord,
-                                                                  boolean moreAvailable) {
-        return GetRefreshUserResponse.builder()
-                .users(List.of(user))
-                .lastRecordInPage(lastRecord)
-                .moreAvailable(moreAvailable)
                 .build();
     }
 

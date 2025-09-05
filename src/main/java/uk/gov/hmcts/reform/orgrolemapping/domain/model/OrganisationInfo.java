@@ -1,18 +1,22 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class OrganisationInfo {
 
     // NB: corresponds to PRD:
@@ -23,7 +27,7 @@ public class OrganisationInfo {
     //   src/main/java/uk/gov/hmcts/reform/professionalapi/controller/response/OrganisationsDetailResponse.java
 
     private String organisationIdentifier;
-    private String status;
+    private OrganisationStatus status;
     @JsonProperty("lastUpdated")
     private LocalDateTime organisationLastUpdated;
     private List<String> organisationProfileIds;
