@@ -97,19 +97,9 @@ class ProfessionalUserServiceTest {
     private static final String RETRY_THREE_INTERVAL = "60";
 
     private static final ProfessionalUserServiceConfig professionalUserServiceConfig =
-            new ProfessionalUserServiceConfig() {
-                {
-                    this.retryOneIntervalMin = RETRY_ONE_INTERVAL;
-                    this.retryTwoIntervalMin = RETRY_TWO_INTERVAL;
-                    this.retryThreeIntervalMin = RETRY_THREE_INTERVAL;
-                    this.userRetryOneIntervalMin = RETRY_ONE_INTERVAL;
-                    this.userRetryTwoIntervalMin = RETRY_TWO_INTERVAL;
-                    this.userRetryThreeIntervalMin = RETRY_THREE_INTERVAL;
-                    this.activeUserRefreshDays = "10";
-                    this.pageSize = "1";
-                    this.tolerance = "10";
-                }
-            };
+            new ProfessionalUserServiceConfig(RETRY_ONE_INTERVAL, RETRY_TWO_INTERVAL,
+                    RETRY_THREE_INTERVAL, RETRY_ONE_INTERVAL, RETRY_TWO_INTERVAL,
+                    RETRY_THREE_INTERVAL, "10", "1", "10");
 
     ProfessionalUserService professionalUserService = new ProfessionalUserService(
             prdService,

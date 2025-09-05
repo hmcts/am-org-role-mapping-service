@@ -1,38 +1,61 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+@Getter
 @Named
 @Singleton
 public class ProfessionalUserServiceConfig {
 
-    @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryOneIntervalMin}")
-    public String retryOneIntervalMin;
+    private final String orgRetryOneIntervalMin;
     
-    @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryTwoIntervalMin}")
-    public String retryTwoIntervalMin;
+    private final String orgRetryTwoIntervalMin;
     
-    @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryThreeIntervalMin}")
-    public String retryThreeIntervalMin;
+    private final String orgRetryThreeIntervalMin;
 
-    @Value("${professional.role.mapping.scheduling.userRefresh.retryOneIntervalMin}")
-    public String userRetryOneIntervalMin;
+    private final String userRetryOneIntervalMin;
 
-    @Value("${professional.role.mapping.scheduling.userRefresh.retryTwoIntervalMin}")
-    public String userRetryTwoIntervalMin;
+    private final String userRetryTwoIntervalMin;
 
-    @Value("${professional.role.mapping.scheduling.userRefresh.retryThreeIntervalMin}")
-    public String userRetryThreeIntervalMin;
+    private final String userRetryThreeIntervalMin;
 
-    @Value("${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}")
-    public String activeUserRefreshDays;
+    private final String activeUserRefreshDays;
 
-    @Value("${professional.refdata.pageSize}")
-    public String pageSize;
+    private final String pageSize;
 
-    @Value("${groupAccess.lastRunTimeTolerance}")
-    public String tolerance;
+    private final String tolerance;
+
+    public ProfessionalUserServiceConfig(
+            @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryOneIntervalMin}")
+            String orgRetryOneIntervalMin,
+            @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryTwoIntervalMin}")
+            String orgRetryTwoIntervalMin,
+            @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryThreeIntervalMin}")
+            String orgRetryThreeIntervalMin,
+            @Value("${professional.role.mapping.scheduling.userRefresh.retryOneIntervalMin}")
+            String userRetryOneIntervalMin,
+            @Value("${professional.role.mapping.scheduling.userRefresh.retryTwoIntervalMin}")
+            String userRetryTwoIntervalMin,
+            @Value("${professional.role.mapping.scheduling.userRefresh.retryThreeIntervalMin}")
+            String userRetryThreeIntervalMin,
+            @Value("${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}")
+            String activeUserRefreshDays,
+            @Value("${professional.refdata.pageSize}")
+            String pageSize,
+            @Value("${groupAccess.lastRunTimeTolerance}")
+            String tolerance) {
+        this.orgRetryOneIntervalMin = orgRetryOneIntervalMin;
+        this.orgRetryTwoIntervalMin = orgRetryTwoIntervalMin;
+        this.orgRetryThreeIntervalMin = orgRetryThreeIntervalMin;
+        this.userRetryOneIntervalMin = userRetryOneIntervalMin;
+        this.userRetryTwoIntervalMin = userRetryTwoIntervalMin;
+        this.userRetryThreeIntervalMin = userRetryThreeIntervalMin;
+        this.activeUserRefreshDays = activeUserRefreshDays;
+        this.pageSize = pageSize;
+        this.tolerance = tolerance;
+    }
 }

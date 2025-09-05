@@ -100,17 +100,17 @@ public class ProfessionalUserService {
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
         this.processEventTracker = processEventTracker;
 
-        this.retryOneIntervalMin = professionalUserServiceConfig.retryOneIntervalMin;
-        this.retryTwoIntervalMin = professionalUserServiceConfig.retryTwoIntervalMin;
-        this.retryThreeIntervalMin = professionalUserServiceConfig.retryThreeIntervalMin;
+        this.retryOneIntervalMin = professionalUserServiceConfig.getOrgRetryOneIntervalMin();
+        this.retryTwoIntervalMin = professionalUserServiceConfig.getOrgRetryTwoIntervalMin();
+        this.retryThreeIntervalMin = professionalUserServiceConfig.getOrgRetryThreeIntervalMin();
 
-        this.userRetryOneIntervalMin = professionalUserServiceConfig.userRetryOneIntervalMin;
-        this.userRetryTwoIntervalMin = professionalUserServiceConfig.userRetryTwoIntervalMin;
-        this.userRetryThreeIntervalMin = professionalUserServiceConfig.userRetryThreeIntervalMin;
+        this.userRetryOneIntervalMin = professionalUserServiceConfig.getUserRetryOneIntervalMin();
+        this.userRetryTwoIntervalMin = professionalUserServiceConfig.getUserRetryTwoIntervalMin();
+        this.userRetryThreeIntervalMin = professionalUserServiceConfig.getUserRetryThreeIntervalMin();
 
-        this.activeUserRefreshDays = professionalUserServiceConfig.activeUserRefreshDays;
-        this.pageSize = professionalUserServiceConfig.pageSize;
-        this.tolerance = professionalUserServiceConfig.tolerance;
+        this.activeUserRefreshDays = professionalUserServiceConfig.getActiveUserRefreshDays();
+        this.pageSize = professionalUserServiceConfig.getPageSize();
+        this.tolerance = professionalUserServiceConfig.getTolerance();
     }
 
     public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(String organisationId) {
