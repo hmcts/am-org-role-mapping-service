@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-006.13a",
+  "title": "must successfully create org role mapping for Regional Centre Administrator + Task Supervisor (BBA3)",
+  "_extends_": "S-006.13",
+  "specs": [
+    "contains the actorId of the user just published who has Regional Centre Administrator role + Task Supervisor (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "7f82b042-fef9-4a02-ab3b-1a9265fad579"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
