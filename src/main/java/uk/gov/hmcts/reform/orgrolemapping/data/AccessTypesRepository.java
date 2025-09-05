@@ -18,4 +18,5 @@ public interface AccessTypesRepository extends JpaRepository<AccessTypesEntity, 
            + "returning version, CAST(access_types AS TEXT) AS access_types",
             nativeQuery = true)
     AccessTypesEntity updateAccessTypesEntity(String accessTypes);
+
 }
