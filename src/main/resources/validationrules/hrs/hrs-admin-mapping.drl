@@ -1,0 +1,105 @@
+package validationrules.stcic;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import java.util.ArrayList;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+
+/*
+ * 1: HRS admin "HRS Sharer" role mapping.
+ */
+
+rule "hrs_hmcts_admin_sharer_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("24"), serviceCode == "HRS", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("HRS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hrs-sharer")
+      .grantType(GrantType.STANDARD)
+      .authorisations($cap.getSkillCodes())
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : hrs_hmcts_admin_sharer_role");
+end;
+
+/*
+ * 2: HRS admin "HRS Listener" role mapping.
+ */
+
+rule "hrs_hmcts_admin_listener_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("23"), serviceCode == "HRS", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("HRS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hrs-listener")
+      .grantType(GrantType.STANDARD)
+      .authorisations($cap.getSkillCodes())
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : hrs_hmcts_admin_listener_role");
+end;
+
+/*
+ * 3: HRS admin "HRS Team Leader" role mapping.
+ */
+
+rule "hrs_hmcts_admin_teamLeader_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("22","23","24"), serviceCode == "HRS", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("HRS"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hrs-team-leader")
+      .grantType(GrantType.STANDARD)
+      .authorisations($cap.getSkillCodes())
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : hrs_hmcts_admin_teamLeader_role");
+end;
