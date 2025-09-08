@@ -23,7 +23,7 @@
       "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
     },
     "body": {
-      "_extends_": "S-094_JRDCircuitJudgeFeePaidUser"
+      "_extends_": "S-094_JRDDeputyDistrictJudgeFeePaidUser"
     }
   },
 
