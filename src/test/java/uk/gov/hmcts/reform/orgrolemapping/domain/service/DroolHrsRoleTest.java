@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
