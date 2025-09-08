@@ -8,10 +8,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
@@ -337,9 +340,11 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testRetryFailed() {
 
-        // verify that the organisations are attempted to be updated 3 times
-        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
-            EndStatus.FAILED, 3);
+        Assertions.assertThrows(ServiceException.class, () ->
+            // verify that the organisations are attempted to be updated 3 times
+            runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
+                EndStatus.FAILED, 3)
+        );
 
         // verify that the OrganisationRefreshQueue contains 1 record, 1 active, 4 retries
         assertTotalOrganisationRefreshQueueEntitiesInDb(1, 1, 4);
