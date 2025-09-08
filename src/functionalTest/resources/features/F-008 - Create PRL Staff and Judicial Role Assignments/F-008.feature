@@ -36,7 +36,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
 
   @S-073
   @FeatureToggle(DB:privatelaw_wa_1_8=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping for Deputy Circuit Judge - fee-paid appointment
+  Scenario: must successfully create judicial role mapping for Deputy District Judge - fee-paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-073_DeleteDataForRoleAssignments],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-073_PushMessageToJRDService],
