@@ -362,7 +362,7 @@ dependencies {
 
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
-    implementation group: 'com.azure', name: 'azure-core', version: '1.56.0'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.56.1'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.14'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.7.9'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.10.0'
