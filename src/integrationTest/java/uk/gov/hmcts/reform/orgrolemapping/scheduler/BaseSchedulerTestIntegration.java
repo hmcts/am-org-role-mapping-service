@@ -31,6 +31,8 @@ import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.absent;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.doReturn;
@@ -76,6 +78,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
 
     protected static final String MORE_AVAILABLE = "moreAvailable";
     protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
+    protected static final String SEARCH_AFTER = "searchAfter";
 
     protected final JsonHelper jsonHelper = new JsonHelper();
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
@@ -208,6 +211,36 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         WIRE_MOCK_SERVER.stubFor(get(urlPathMatching(
             "/refdata/internal/v1/organisations"))
             .withId(STUB_ID_PRD_RETRIEVE_ORGANISATIONS)
+            .willReturn(aResponse()
+                    .withStatus(HttpStatus.OK.value())
+                    .withHeaders(headers)
+                    .withBody(body)));
+    }
+
+    protected void stubPrdRetrieveOrganisationsByProfile(List<String> fileNames,
+        String moreAvailable, String lastRecordInPage, String pageSize, String searchAfter) {
+        stubPrdRetrieveOrganisationsByProfile(
+            "{ \"organisationInfo\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                + ", \"moreAvailable\": " + moreAvailable
+                + ", \"lastRecordInPage\": " + lastRecordInPage
+                + " }", moreAvailable, lastRecordInPage,
+            pageSize, searchAfter
+        );
+    }
+
+    protected void stubPrdRetrieveOrganisationsByProfile(String body, String moreAvailable,
+        String lastRecordInPage, String pageSize, String searchAfter) {
+        HttpHeaders headers = new HttpHeaders()
+            .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+            .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable))
+            .plus(new HttpHeader(SEARCH_AFTER, searchAfter != null ? searchAfter : ""))
+            .plus(new HttpHeader(LAST_RECORD_IN_PAGE, lastRecordInPage != null ? lastRecordInPage : ""));
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+            "/refdata/internal/v1/organisations/getOrganisationsByProfile"))
+            .withId(STUB_ID_PRD_RETRIEVE_ORGANISATIONS)
+            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+            .withQueryParam("searchAfter", searchAfter != null ? equalTo(searchAfter) : absent())
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeaders(headers)
