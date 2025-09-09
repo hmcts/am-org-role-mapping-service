@@ -33,6 +33,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -69,6 +70,14 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     protected static final String MORE_AVAILABLE = "moreAvailable";
     protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
     protected static final String SEARCH_AFTER = "searchAfter";
+    public static final String JURISDICTION_ID_CIVIL = "CIVIL";
+    public static final String JURISDICTION_ID_PUBLICLAW = "PUBLICLAW";
+
+    public static final String SOLICITOR_PROFILE = "SOLICITOR_PROFILE";
+    public static final String OGD_PROFILE = "OGD_PROFILE";
+
+    public static final UUID STUB_ID_CCD_RETRIEVE_ACCESS_TYPES
+        = UUID.fromString("72134798-eba8-4840-b769-6435bd2afb1c");
 
     protected final JsonHelper jsonHelper = new JsonHelper();
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
@@ -168,7 +177,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         log.info("   Body: {}", loggedResponse.getBodyAsString());
         log.info("-----------------------------------------------------");
     }
-
+    
     protected void stubPrdRetrieveUsers(List<String> fileNames,
         String moreAvailable, String lastRecordInPage, String pageSize, String searchAfter) {
         stubPrdRetrieveUsers(
@@ -196,6 +205,22 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeaders(headers)
+                .withBody(body)));
+    }
+
+    protected void stubCcdRetrieveAccessTypes(List<String> jurisdictionFileNames) {
+        stubCcdRetrieveAccessTypes(
+            "{ \"jurisdictions\": " + jsonHelper.readJsonArrayFromFiles(jurisdictionFileNames) + " }"
+        );
+    }
+
+    protected void stubCcdRetrieveAccessTypes(String body) {
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/retrieve-access-types"))
+            .withId(STUB_ID_CCD_RETRIEVE_ACCESS_TYPES)
+            .withName("CCD Retrieve Access Types")
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .withBody(body)));
     }
 
