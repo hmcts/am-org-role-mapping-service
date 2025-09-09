@@ -224,4 +224,21 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         }
         return map;
     }
+
+    protected void stubCcdRetrieveAccessTypes(List<String> jurisdictionFileNames) {
+        stubCcdRetrieveAccessTypes(
+            "{ \"jurisdictions\": " + jsonHelper.readJsonArrayFromFiles(jurisdictionFileNames) + " }"
+        );
+    }
+
+    protected void stubCcdRetrieveAccessTypes(String body) {
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/retrieve-access-types"))
+            .withId(STUB_ID_CCD_RETRIEVE_ACCESS_TYPES)
+            .withName("CCD Retrieve Access Types")
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .withBody(body)));
+    }
+
 }
