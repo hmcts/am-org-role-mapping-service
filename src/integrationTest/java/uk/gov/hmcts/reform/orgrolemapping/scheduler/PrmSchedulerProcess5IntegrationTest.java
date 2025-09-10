@@ -92,15 +92,15 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         assertBatchLastRunTimestampEntity(true);
         // verify that user1 is NOT updated
         assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, INACTIVE,
-            new String[] {"SOLICITOR_PROFILE"}, 2,
+            new String[] {"SOLICITOR_PROFILE"}, 1,
             OLD_USER_LAST_UPDATED, false, false);
         // verify that user2 is updated
         assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_3, ACTIVE,
-            new String[] {"SOLICITOR_PROFILE", "ODG_PROFILE"}, 2,
+            new String[] {"SOLICITOR_PROFILE", "ODG_PROFILE"}, 1,
             NEW_USER_LAST_UPDATED, true, false);
         // verify that user3 is deleted
         assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_3, ACTIVE,
-            new String[] {"SOLICITOR_PROFILE"}, 2,
+            new String[] {"SOLICITOR_PROFILE"}, 1,
             NEW_USER_LAST_UPDATED, true, true);
     }
 
