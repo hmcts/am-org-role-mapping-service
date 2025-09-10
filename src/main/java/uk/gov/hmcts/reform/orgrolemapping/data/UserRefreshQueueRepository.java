@@ -79,6 +79,8 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                                                     user_refresh_queue.access_types_min_version),
                 user_last_updated = excluded.user_last_updated,
                 last_updated = now(),
+                retry = 0,
+                retry_after = now(),
                 active = true,
                 deleted = excluded.deleted,
                 access_types = excluded.access_types,

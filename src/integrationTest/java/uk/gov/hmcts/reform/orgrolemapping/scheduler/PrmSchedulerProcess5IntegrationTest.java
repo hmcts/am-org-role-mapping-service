@@ -208,6 +208,13 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         if (isUpdated) {
             assertAccessTypes(organisationProfileIds, userRefreshQueueEntity.get().getAccessTypes(),
                 userId);
+            assertEquals(0,
+                userRefreshQueueEntity.get().getRetry(),
+                "UserRefreshQueueEntity retry mismatch for userId: " + userId);
+            assertTrue(
+                assertLastUpdatedNow(userRefreshQueueEntity.get().getRetryAfter(), TOLERANCE_MINUTES),
+                "UserRefreshQueueEntity retryAfter mismatch for userId: " + userId + ", "
+                    + userRefreshQueueEntity.get().getRetryAfter());
         } else {
             assertEquals("[]", userRefreshQueueEntity.get().getAccessTypes(),
                 "UserRefreshQueueEntity accessTYpes mismatch for userId: " + userId);
