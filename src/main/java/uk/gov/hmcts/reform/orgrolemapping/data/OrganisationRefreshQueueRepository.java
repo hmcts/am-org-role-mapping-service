@@ -35,6 +35,8 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                 organisation_last_updated = greatest(excluded.organisation_last_updated, 
                 organisation_refresh_queue.organisation_last_updated), 
                 last_updated = now(), 
+                retry = 0,
+                retry_after = now(),
                 active = true 
                 where excluded.access_types_min_version > organisation_refresh_queue.access_types_min_version
                 """;
@@ -66,6 +68,8 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                     organisation_refresh_queue.access_types_min_version), 
                     organisation_last_updated = excluded.organisation_last_updated, 
                     last_updated = now(), 
+                    retry = 0,
+                    retry_after = now(),
                     active = true 
                     where excluded.organisation_last_updated > organisation_refresh_queue.organisation_last_updated
                     """;
