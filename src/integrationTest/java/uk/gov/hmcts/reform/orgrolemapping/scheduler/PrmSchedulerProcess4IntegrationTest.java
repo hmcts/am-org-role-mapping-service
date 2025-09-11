@@ -271,7 +271,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     /**
-     * Delete - Stale Organisations, 2 Existing Users no change, 1 Deleted.
+     * Delete - Stale Organisations, 2 Existing Users updated, 1 Deleted.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
