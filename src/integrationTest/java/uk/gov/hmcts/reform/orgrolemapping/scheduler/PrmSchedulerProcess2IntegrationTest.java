@@ -243,6 +243,16 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
             "OrganisationRefreshQueueEntity.OrganisationLastUpdated mismatch");
         assertEquals(lastUpdatedNow, assertLastUpdatedNow(profileRefreshQueueEntity.get().getLastUpdated()),
             "OrganisationRefreshQueueEntity.LastUpdated mismatch");
+        assertEquals(0, profileRefreshQueueEntity.get().getRetry(),
+                "OrganisationRefreshQueueEntity.retry mismatch");
+        if (lastUpdatedNow) {
+            assertTrue(assertLastUpdatedNow(profileRefreshQueueEntity.get().getRetryAfter()),
+                    "OrganisationRefreshQueueEntity.retryAfter mismatch");
+        } else {
+            assertEquals(OLD_ORGANISATION_LAST_UPDATED,
+                    profileRefreshQueueEntity.get().getRetryAfter(),
+                    "OrganisationRefreshQueueEntity.retryAfter mismatch");
+        }
     }
 
     private boolean assertLastUpdatedNow(LocalDateTime lastUpdated) {
