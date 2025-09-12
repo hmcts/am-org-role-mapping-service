@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetRefreshUsersResponse {
+public class GetRefreshUserResponse {
 
     // NB: corresponds to PRD:
     //         src/main/java/uk/gov/hmcts/reform/professionalapi/controller/response/GetRefreshUsersResponse.java
