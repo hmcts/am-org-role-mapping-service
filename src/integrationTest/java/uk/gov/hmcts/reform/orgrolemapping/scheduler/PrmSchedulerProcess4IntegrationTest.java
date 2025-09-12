@@ -405,6 +405,12 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertAccessTypes(expectedAccessTypes,
             userRefreshQueueEntity.get().getAccessTypes(),
             userId);
+        assertEquals(0, userRefreshQueueEntity.get().getRetry(),
+                "UserRefreshQueueEntity organisationId mismatch for userId: " + userId);
+        assertEquals(isUpdated,
+                assertLastUpdatedNow(userRefreshQueueEntity.get().getRetryAfter()),
+                "UserRefreshQueueEntity retryAfter mismatch for userId: " + userId + ", "
+                        + userRefreshQueueEntity.get().getRetryAfter());
     }
 
     private void assertAccessTypes(String expectedAccessTypes, String actualAccessTypes,
