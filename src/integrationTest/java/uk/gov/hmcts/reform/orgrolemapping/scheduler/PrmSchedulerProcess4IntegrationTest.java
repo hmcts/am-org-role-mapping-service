@@ -363,7 +363,8 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
 
     private void assertRetryAfter(String organisationId, Integer retry, LocalDateTime retryAfter) {
         // Successful retry or retry limit exceeded
-        if (retry == 0 || retry >= 4) {
+        // NOTE: If retry = 0 then retryAfter is always set to now() on update,  4 is NULL
+        if (retry >= 4) {
             assertNull(retryAfter,
                 "OrganisationRefreshQueueEntity retryAfter not NULL for organisationId: "
                     + organisationId);

@@ -83,7 +83,7 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
           update organisation_refresh_queue 
                       set active = false ,
                       retry = 0,
-                      retry_after = null
+                      retry_after = now()
                       where organisation_id = :organisationId 
                       and access_types_min_version <= :accessTypeMinVersion 
                       and last_updated <= :lastUpdated""", nativeQuery = true)
