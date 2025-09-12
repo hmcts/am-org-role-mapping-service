@@ -10,7 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceExc
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import java.util.Map;
@@ -50,19 +50,19 @@ public class ProfessionalRefreshOrchestrator {
                 "PRM Process 6 - Refresh User - Single User Mode");
         processEventTracker.trackEventStarted(processMonitorDto);
         log.info("Single User refreshProfessionalUser for {}", userId);
-        GetRefreshUsersResponse getRefreshUsersResponse;
+        GetRefreshUserResponse getRefreshUserResponse;
         try {
-            getRefreshUsersResponse = Objects.requireNonNull(prdService.getRefreshUser(userId).getBody());
+            getRefreshUserResponse = Objects.requireNonNull(prdService.getRefreshUser(userId).getBody());
         } catch (FeignException.NotFound feignClientException) {
             throw new ResourceNotFoundException(String.format(PRD_USER_NOT_FOUND, userId));
         }
 
-        if (getRefreshUsersResponse.getUsers().size() > 1) {
+        if (getRefreshUserResponse.getUsers().size() > 1) {
             throw new ServiceException(String.format(EXPECTED_SINGLE_PRD_USER, userId,
-                getRefreshUsersResponse.getUsers().size()));
+                getRefreshUserResponse.getUsers().size()));
         }
 
-        professionalRefreshOrchestrationHelper.upsertUserRefreshQueue(getRefreshUsersResponse.getUsers().get(0));
+        professionalRefreshOrchestrationHelper.upsertUserRefreshQueue(getRefreshUserResponse.getUsers().get(0));
 
         professionalRefreshOrchestrationHelper.refreshSingleUser(userRefreshQueueRepository.findByUserId(userId),
                 getLatestAccessTypes());

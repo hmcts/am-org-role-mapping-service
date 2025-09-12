@@ -5,7 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
@@ -28,18 +28,18 @@ class PRDFallbackResponseBuilderTest {
 
     @Test
     void buildGetRefreshUsersResponseTest() {
-        GetRefreshUsersResponse getRefreshUsersResponse = PRDFallbackResponseBuilder
+        GetRefreshUserResponse getRefreshUserResponse = PRDFallbackResponseBuilder
             .buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_MULTI_USER);
 
-        assertNotNull(getRefreshUsersResponse);
-        getRefreshUsersResponse.getUsers().forEach(user -> {
+        assertNotNull(getRefreshUserResponse);
+        getRefreshUserResponse.getUsers().forEach(user -> {
             assertNotNull(user.getUserIdentifier());
             assertNotNull(user.getLastUpdated());
             assertNotNull(user.getOrganisationInfo());
             assertFalse(CollectionUtils.isEmpty(user.getUserAccessTypes()));
         });
-        assertNotNull(getRefreshUsersResponse.getLastRecordInPage());
-        assertFalse(getRefreshUsersResponse.isMoreAvailable());
+        assertNotNull(getRefreshUserResponse.getLastRecordInPage());
+        assertFalse(getRefreshUserResponse.isMoreAvailable());
     }
 
     @Test
@@ -52,20 +52,20 @@ class PRDFallbackResponseBuilderTest {
     @ParameterizedTest
     @ValueSource(strings = {"123", "456"})
     void buildGetRefreshUsersResponseTest_withUserId(String userId) {
-        GetRefreshUsersResponse getRefreshUsersResponse = PRDFallbackResponseBuilder
+        GetRefreshUserResponse getRefreshUserResponse = PRDFallbackResponseBuilder
             .buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId);
 
-        assertNotNull(getRefreshUsersResponse);
-        assertEquals(1, getRefreshUsersResponse.getUsers().size());
+        assertNotNull(getRefreshUserResponse);
+        assertEquals(1, getRefreshUserResponse.getUsers().size());
 
-        RefreshUser refreshUser = getRefreshUsersResponse.getUsers().get(0);
+        RefreshUser refreshUser = getRefreshUserResponse.getUsers().get(0);
         assertEquals(userId, refreshUser.getUserIdentifier());
         assertNotNull(refreshUser.getLastUpdated());
         assertNotNull(refreshUser.getOrganisationInfo());
         assertFalse(CollectionUtils.isEmpty(refreshUser.getUserAccessTypes()));
 
-        assertNotNull(getRefreshUsersResponse.getLastRecordInPage());
-        assertFalse(getRefreshUsersResponse.isMoreAvailable());
+        assertNotNull(getRefreshUserResponse.getLastRecordInPage());
+        assertFalse(getRefreshUserResponse.isMoreAvailable());
     }
 
     @Test

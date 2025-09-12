@@ -225,9 +225,13 @@ public class OrganisationService {
                 .stream().map(o -> o.getOrganisationIdentifier() + ",").collect(Collectors.joining());
         processMonitorDto.addProcessStep(processStep);
 
-        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(
-                jdbcTemplate, organisationInfo, accessTypeMinVersion, process
-        );
+        if (process.equals(P2)) {
+            organisationRefreshQueueRepository.upsertToOrganisationRefreshQueue(
+                    jdbcTemplate, organisationInfo, accessTypeMinVersion);
+        } else {
+            organisationRefreshQueueRepository.upsertToOrganisationRefreshQueueForLastUpdated(
+                    jdbcTemplate, organisationInfo, accessTypeMinVersion);
+        }
 
         processMonitorDto.getProcessSteps().remove(processMonitorDto.getProcessSteps().size() - 1);
         processMonitorDto.addProcessStep(processStep + " : COMPLETED");
