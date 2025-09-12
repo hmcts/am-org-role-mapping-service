@@ -79,8 +79,8 @@ public abstract class BaseTestIntegration extends BaseTest {
         public void initialize(@NonNull ConfigurableApplicationContext applicationContext) {
 
             TestPropertySourceUtils.addInlinedPropertiesToEnvironment(
-                    applicationContext,
-                    "wiremock.server.port=" + WIRE_MOCK_SERVER.port()
+                applicationContext,
+                "wiremock.server.port=" + WIRE_MOCK_SERVER.port()
             );
 
             try {

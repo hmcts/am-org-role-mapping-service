@@ -7,6 +7,8 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.LoggedResponse;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,6 +25,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.helper.JsonHelper;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -73,12 +76,15 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     public static final UUID STUB_ID_CCD_RETRIEVE_ACCESS_TYPES
         = UUID.fromString("72134798-eba8-4840-b769-6435bd2afb1c");
 
-    public static final UUID STUB_ID_PRD_RETRIEVE_ORGANISATIONS
-        = UUID.fromString("f4f89a01-39fb-48ca-9c2a-a49f749d07af");
+    public static final UUID STUB_ID_PRD_RETRIEVE_USERSBYORG
+        = UUID.fromString("8468dbb3-14b9-4fd2-b9d8-0620a8fc1e94");
 
     protected static final String MORE_AVAILABLE = "moreAvailable";
     protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
     protected static final String SEARCH_AFTER = "searchAfter";
+
+    public static final UUID STUB_ID_PRD_RETRIEVE_ORGANISATIONS
+        = UUID.fromString("f4f89a01-39fb-48ca-9c2a-a49f749d07af");
 
     protected final JsonHelper jsonHelper = new JsonHelper();
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
@@ -177,6 +183,52 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         log.info("   Status: {}", loggedResponse.getStatus());
         log.info("   Body: {}", loggedResponse.getBodyAsString());
         log.info("-----------------------------------------------------");
+    }
+
+    protected void stubPrdRetrieveUsersByOrg(List<String> fileNames,
+        String moreAvailable, String lastRecordInPage, EndStatus endStatus) {
+        stubPrdRetrieveUsersByOrg(
+            "{ \"organisationInfo\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable,
+            endStatus
+        );
+    }
+
+    protected void stubPrdRetrieveUsersByOrg(String body, String moreAvailable,
+        EndStatus endStatus) {
+        HttpHeaders headers = new HttpHeaders()
+            .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+            .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
+
+        int httpStatus = EndStatus.FAILED.equals(endStatus)
+            ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+            "/refdata/internal/v2/organisations/users"))
+            .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+            .willReturn(aResponse()
+                .withStatus(httpStatus)
+                .withHeaders(headers)
+                .withBody(body)));
+    }
+
+    protected Map<String,String> getAccessTypesMap(String accessTypes) {
+        Map<String,String> map = new HashMap<>();
+        if (accessTypes != null && !accessTypes.isEmpty()) {
+            String[] keyValuePairs = accessTypes
+                .replace("{", "").replace("}", "")
+                .replace("[", "").replace("]", "")
+                .replace("\n","").replace("\r","")
+                .split(",");
+            if (keyValuePairs.length > 1) {
+                for (String pair : keyValuePairs) {
+                    String[] entry = pair.split(":");
+                    map.put(entry[0].trim(), entry[1].trim());
+                }
+            }
+        }
+        return map;
     }
 
     protected void stubCcdRetrieveAccessTypes(List<String> jurisdictionFileNames) {

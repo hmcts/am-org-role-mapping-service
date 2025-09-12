@@ -89,7 +89,7 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                    + "active, retry, retry_after "
                    + "from organisation_refresh_queue "
                    + "where active = true "
-                   + "and retry < 4 "
+                   + "and retry <= 4 "
                    + "and (retry_after < now() or retry_after is null)"
                    + "limit 1 "
                    + "for update skip locked", nativeQuery = true)
@@ -100,7 +100,7 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
           update organisation_refresh_queue 
                       set active = false ,
                       retry = 0,
-                      retry_after = null
+                      retry_after = now()
                       where organisation_id = :organisationId 
                       and access_types_min_version <= :accessTypeMinVersion 
                       and last_updated <= :lastUpdated""", nativeQuery = true)
@@ -117,9 +117,9 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                    + "else 4 "
                    + "end, "
                    + "retry_after = case "
-                   + "when retry = 0 then now() + (interval '1' Minute) * :retryOneIntervalMin "
-                   + "when retry = 1 then now() + (interval '1' Minute) * :retryTwoIntervalMin "
-                   + "when retry = 2 then now() + (interval '1' Minute) * :retryThreeIntervalMin "
+                   + "when retry = 0 then now() + (interval '1' Minute) * CAST(:retryOneIntervalMin AS INTEGER) "
+                   + "when retry = 1 then now() + (interval '1' Minute) * CAST(:retryTwoIntervalMin AS INTEGER) "
+                   + "when retry = 2 then now() + (interval '1' Minute) * CAST(:retryThreeIntervalMin AS INTEGER) "
                    + "else NULL "
                    + "end "
                    + "where organisation_id = :organisationId", nativeQuery = true)
