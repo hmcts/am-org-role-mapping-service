@@ -40,12 +40,12 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -232,7 +232,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138_retry_3.sql"})
     void shouldRollback_AndUpdateRetryToFourAndRetryAfterToNullOnException() {
-        doThrow(ServiceException.class).when(mockUserRefreshQueueRepository).clearUserRefreshRecord(any(), any(), any());
+        doThrow(ServiceException.class).when(mockUserRefreshQueueRepository)
+                .clearUserRefreshRecord(any(), any(), any());
 
         professionalUserService.refreshUsers(processMonitorDto);
 
@@ -260,7 +261,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        ServiceException exception = org.junit.Assert.assertThrows(ServiceException.class, () ->
+        ServiceException exception = assertThrows(ServiceException.class, () ->
                 professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
         );
 
@@ -332,7 +333,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         accessTypesRepository.deleteAll();
 
         // act
-        Exception exception = org.junit.Assert.assertThrows(ServiceException.class, () ->
+        Exception exception = assertThrows(ServiceException.class, () ->
                 professionalUserService.refreshUsers(processMonitorDto));
 
         // assert

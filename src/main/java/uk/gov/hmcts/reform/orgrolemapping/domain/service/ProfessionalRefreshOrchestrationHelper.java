@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileJurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
@@ -32,10 +32,13 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,32 +65,24 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private final AccessTypesRepository accessTypesRepository;
 
-    private final ObjectMapper objectMapper;
-
     private final RoleAssignmentService roleAssignmentService;
 
     private final SecurityUtils securityUtils;
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void upsertUserRefreshQueue(RefreshUser prdUser) {
-        String userAccessTypes;
-        try {
-            userAccessTypes = objectMapper.writeValueAsString(prdUser.getUserAccessTypes());
-        } catch (JsonProcessingException e) {
-            throw new ServiceException(String.format("Unable to serialize user access types for PRD user %s",
-                    prdUser.getUserIdentifier()), e);
-        }
+    public void upsertUserRefreshQueue(RefreshUser refreshUser) {
+        ProfessionalUserData professionalUserData = ProfessionalUserBuilder.fromProfessionalRefreshUser(refreshUser);
 
         userRefreshQueueRepository.upsert(
-                prdUser.getUserIdentifier(),
-                prdUser.getLastUpdated(),
-                getLatestAccessTypes().getVersion(),
-                prdUser.getDateTimeDeleted(),
-                userAccessTypes,
-                prdUser.getOrganisationInfo().getOrganisationIdentifier(),
-                prdUser.getOrganisationInfo().getStatus().toString(),
-                String.join(",", prdUser.getOrganisationInfo().getOrganisationProfileIds())
+            professionalUserData.getUserId(),
+            professionalUserData.getUserLastUpdated(),
+            getLatestAccessTypes().getVersion(),
+            professionalUserData.getDeleted(),
+            professionalUserData.getAccessTypes(),
+            professionalUserData.getOrganisationId(),
+            professionalUserData.getOrganisationStatus(),
+            professionalUserData.getOrganisationProfileIds()
         );
     }
 
@@ -197,28 +192,36 @@ public class ProfessionalRefreshOrchestrationHelper {
                                                                         UserRefreshQueueEntity userRefreshQueue) {
         return jurisdiction.getAccessTypes().stream()
                 .flatMap(accessType -> accessType.getRoles().stream())
-                .map(role -> createRoleAssignmentForRole(role, jurisdiction, userRefreshQueue));
+                .map(role -> createRoleAssignmentsForRole(role, jurisdiction, userRefreshQueue))
+                .flatMap(Collection::stream);
     }
 
-    private RoleAssignment createRoleAssignmentForRole(AccessTypeRole role,
-                                                       OrganisationProfileJurisdiction jurisdiction,
-                                                       UserRefreshQueueEntity userRefreshQueue) {
+    private List<RoleAssignment> createRoleAssignmentsForRole(AccessTypeRole role,
+                                                              OrganisationProfileJurisdiction jurisdiction,
+                                                              UserRefreshQueueEntity userRefreshQueue) {
+        List<RoleAssignment> roleAssignments =  new ArrayList<>();
+
+        // if contains OrganisationalRole config
         String organisationalRoleName = role.getOrganisationalRoleName();
         if (StringUtils.isNotBlank(organisationalRoleName)) {
-            return createRoleAssignment(organisationalRoleName, userRefreshQueue.getUserId(),
-                    jurisdiction.getJurisdictionId(), role.getCaseTypeId(), null);
+            roleAssignments.add(createRoleAssignment(organisationalRoleName, userRefreshQueue.getUserId(),
+                    jurisdiction.getJurisdictionId(), role.getCaseTypeId(), null));
         }
+
+        // if contains GroupRole config (and is GA enabled)
+        String groupRoleName = role.getGroupRoleName();
+        String caseGroupIdTemplate = role.getCaseGroupIdTemplate();
         if (role.isGroupAccessEnabled()
-            && StringUtils.isNotBlank(role.getGroupRoleName())
-            && StringUtils.isNotBlank(role.getCaseGroupIdTemplate())) {
-            String roleName = role.getGroupRoleName();
+            && StringUtils.isNotBlank(groupRoleName)
+            && StringUtils.isNotBlank(caseGroupIdTemplate)) {
+
             String caseAccessGroupId =
-                    generateCaseAccessGroupId(role.getCaseGroupIdTemplate(),
-                            userRefreshQueue.getOrganisationId());
-            return createRoleAssignment(roleName, userRefreshQueue.getUserId(), jurisdiction.getJurisdictionId(),
-                    role.getCaseTypeId(), caseAccessGroupId);
+                    generateCaseAccessGroupId(caseGroupIdTemplate, userRefreshQueue.getOrganisationId());
+            roleAssignments.add(createRoleAssignment(groupRoleName, userRefreshQueue.getUserId(),
+                    jurisdiction.getJurisdictionId(), role.getCaseTypeId(), caseAccessGroupId));
         }
-        return null;
+
+        return roleAssignments;
     }
 
     private Set<OrganisationProfile> extractOrganisationProfiles(Set<OrganisationProfile> organisationProfiles,
@@ -339,4 +342,5 @@ public class ProfessionalRefreshOrchestrationHelper {
     private boolean isOrganisationStatusActive(String organisationStatus) {
         return OrganisationStatus.valueOf(organisationStatus).isActive();
     }
+
 }
