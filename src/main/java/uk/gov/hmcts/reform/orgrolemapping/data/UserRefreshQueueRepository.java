@@ -84,6 +84,8 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                                                     user_refresh_queue.access_types_min_version),
                 user_last_updated = greatest(excluded.user_last_updated, user_refresh_queue.user_last_updated),
                 last_updated = now(),
+                retry = 0,
+                retry_after = now(),
                 active = true,
                 deleted = case
                     when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.deleted
@@ -124,6 +126,8 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                                                     user_refresh_queue.access_types_min_version),
                 user_last_updated = excluded.user_last_updated,
                 last_updated = now(),
+                retry = 0,
+                retry_after = now(),
                 active = true,
                 deleted = excluded.deleted,
                 access_types = excluded.access_types,

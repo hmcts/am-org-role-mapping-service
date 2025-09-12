@@ -10,7 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 
 import java.time.LocalDateTime;
@@ -48,7 +48,7 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
                        "classpath:sql/insert_user_refresh_queue.sql"})
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithoutPagination() {
         RefreshUser refreshUser = refreshUser(1);
-        GetRefreshUsersResponse response1 = buildGetRefreshUsersResponse(List.of(refreshUser), "123", false);
+        GetRefreshUserResponse response1 = buildGetRefreshUsersResponse(List.of(refreshUser), "123", false);
 
         when(prdService.retrieveUsers(any(), anyInt(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response1));
@@ -67,13 +67,13 @@ public class ProfessionalUserServiceTest extends BaseTestIntegration {
         final LocalDateTime preTestLastBatchRunTime = getLastUserRunDatetime();
 
         RefreshUser refreshUser1 = refreshUser(1);
-        GetRefreshUsersResponse response1 = buildGetRefreshUsersResponse(List.of(refreshUser1), "123", true);
+        GetRefreshUserResponse response1 = buildGetRefreshUsersResponse(List.of(refreshUser1), "123", true);
 
         when(prdService.retrieveUsers(any(), anyInt(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response1));
 
         RefreshUser refreshUser2 = refreshUser(2);
-        GetRefreshUsersResponse response2 = buildGetRefreshUsersResponse(List.of(refreshUser2), "456", false);
+        GetRefreshUserResponse response2 = buildGetRefreshUsersResponse(List.of(refreshUser2), "456", false);
 
         when(prdService.retrieveUsers(any(), anyInt(), any(String.class)))
                 .thenReturn(ResponseEntity.ok(response2));

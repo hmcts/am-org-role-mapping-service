@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
@@ -668,18 +668,18 @@ public class TestDataBuilder {
         return CDDFallbackResponseBuilder.buildAccessTypesResponse(ACCESS_TYPES_SAMPLE);
     }
 
-    public static GetRefreshUsersResponse buildGetRefreshUsersResponse() {
+    public static GetRefreshUserResponse buildGetRefreshUsersResponse() {
         return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_MULTI_USER);
     }
 
-    public static GetRefreshUsersResponse buildGetRefreshUsersResponse(String userId) {
+    public static GetRefreshUserResponse buildGetRefreshUsersResponse(String userId) {
         return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId);
     }
 
-    public static GetRefreshUsersResponse buildGetRefreshUsersResponse(List<RefreshUser> users,
-                                                                       String lastRecord,
-                                                                       boolean moreAvailable) {
-        return GetRefreshUsersResponse.builder()
+    public static GetRefreshUserResponse buildGetRefreshUsersResponse(List<RefreshUser> users,
+                                                                      String lastRecord,
+                                                                      boolean moreAvailable) {
+        return GetRefreshUserResponse.builder()
             .users(users)
             .lastRecordInPage(lastRecord)
             .moreAvailable(moreAvailable)
