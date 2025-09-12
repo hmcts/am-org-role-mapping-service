@@ -117,7 +117,7 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_organisation_profiles_retry_3.sql"})
+            scripts = {"classpath:sql/prm/organisation_refresh_queue/insert_organisation_profiles_retry_3.sql"})
     void shouldRollback_AndUpdateRetryToFourAndRetryAfterToNullOnException() {
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
@@ -132,7 +132,7 @@ public class ProfessionalUserIntegrationTest extends BaseTestIntegration {
                 .thenThrow(ServiceException.class);
 
         ServiceException exception = assertThrows(ServiceException.class, () ->
-            professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
+                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
         );
 
         assertEquals("Retry limit reached", exception.getMessage());
