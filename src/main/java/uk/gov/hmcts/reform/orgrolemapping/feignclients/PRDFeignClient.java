@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
@@ -33,7 +33,7 @@ public interface PRDFeignClient {
     );
 
     @GetMapping(value = "/refdata/internal/v1/organisations/users")
-    ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(
+    ResponseEntity<GetRefreshUserResponse> getRefreshUsers(
             @RequestParam(name = "userId") String userId,
             @RequestParam(name = "since") String lastUpdatedSince,
             @RequestParam(name = "pageSize") Integer pageSize,
