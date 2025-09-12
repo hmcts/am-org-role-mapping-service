@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -244,6 +245,28 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                 .withStatus(HttpStatus.OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .withBody(body)));
+    }
+
+    protected void stubPrdRetrieveOrganisations(List<String> fileNames,
+        String moreAvailable, String lastRecordInPage) {
+        stubPrdRetrieveOrganisations(
+            "{ \"organisations\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable
+        );
+    }
+
+    protected void stubPrdRetrieveOrganisations(String body, String moreAvailable) {
+        HttpHeaders headers = new HttpHeaders()
+            .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+            .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching(
+            "/refdata/internal/v1/organisations"))
+            .withId(STUB_ID_PRD_RETRIEVE_ORGANISATIONS)
+            .willReturn(aResponse()
+                    .withStatus(HttpStatus.OK.value())
+                    .withHeaders(headers)
+                    .withBody(body)));
     }
 
     protected void stubPrdRetrieveOrganisationsByProfile(List<String> fileNames,
