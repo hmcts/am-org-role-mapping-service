@@ -6,6 +6,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 @ExtendWith(MockitoExtension.class)
 class JacksonUtilsTest {
@@ -31,6 +33,15 @@ class JacksonUtilsTest {
         assertNotNull(jsonNodeMap);
         assertEquals("123456",jsonNodeMap.get("primaryLocation").asText());
         assertEquals("IA",jsonNodeMap.get("jurisdiction").asText());
+    }
+
+    @Test
+    void writeValueAsPrettyJson() {
+        String processType = "Test ProcessMonitorDto";
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processType);
+        String prettyJson = JacksonUtils.writeValueAsPrettyJson(processMonitorDto);
+        assertNotNull(prettyJson);
+        assertTrue(prettyJson.contains("\"processType\" : \"" + processType + "\",\n"));
     }
 
     @Test
