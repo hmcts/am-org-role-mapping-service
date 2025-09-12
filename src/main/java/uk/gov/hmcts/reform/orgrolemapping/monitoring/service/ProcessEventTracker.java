@@ -25,6 +25,8 @@ public class ProcessEventTracker {
     public void trackEventStarted(ProcessMonitorDto processMonitorDto) {
         Map<String, String> properties = createPropertiesMap(processMonitorDto);
         String message = createMessage(processMonitorDto, "Started");
+        log.debug("trackEventStarted - {} {}", message,
+                JacksonUtils.writeValueAsPrettyJson(processMonitorDto));
 
         telemetryClient.trackEvent(message, properties, null);
     }
