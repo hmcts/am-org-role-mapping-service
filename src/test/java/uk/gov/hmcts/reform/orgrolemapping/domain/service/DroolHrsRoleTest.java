@@ -25,9 +25,9 @@ class DroolHrsRoleTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "22,HRS,'hrs-team-leader'",
-        "23,HRS,'hrs-listener,hrs-team-leader'",
-        "24,HRS,'hrs-sharer,hrs-team-leader'"
+        "22,HRS,'hrs-team-leader,hrs-listener,hrs-sharer'",
+        "23,HRS,'hrs-listener",
+        "24,HRS,'hrs-sharer"
     })
     void shouldReturnHrsAdminMappings(String roleId, String serviceCode, String expectedRoles) {
 
@@ -62,6 +62,8 @@ class DroolHrsRoleTest extends DroolBase {
             assertNotNull(r.getAttributes().get("jurisdiction"));
             assertNotNull(r.getAttributes().get("primaryLocation"));
 
+            //assert jurisdiction
+            assertEquals(r.getAttributes().get("jurisdiction").toString(), "HRS");
             //assert region
             assertNull(r.getAttributes().get("region"));
             //assert work types

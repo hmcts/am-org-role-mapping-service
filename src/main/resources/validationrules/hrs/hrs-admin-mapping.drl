@@ -1,4 +1,4 @@
-package validationrules.stcic;
+package validationrules.hrs;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
@@ -24,7 +24,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "hrs_hmcts_admin_sharer_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("24"), serviceCode == "HRS", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("22","24"), serviceCode == "HRS", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("HRS"));
@@ -53,7 +53,7 @@ end;
 rule "hrs_hmcts_admin_listener_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("23"), serviceCode == "HRS", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("22","23"), serviceCode == "HRS", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("HRS"));
@@ -82,7 +82,7 @@ end;
 rule "hrs_hmcts_admin_teamLeader_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
-  $cap: CaseWorkerAccessProfile(roleId in ("22","23","24"), serviceCode == "HRS", !suspended)
+  $cap: CaseWorkerAccessProfile(roleId in ("22"), serviceCode == "HRS", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("HRS"));
