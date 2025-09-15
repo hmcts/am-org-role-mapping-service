@@ -35,6 +35,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ISO_DATE_TIME_FORMATTER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
@@ -131,6 +132,7 @@ public class ProfessionalUserService {
         StringBuilder errorMessageBuilder = new StringBuilder();
         int successfulJobCount = 0;
         int failedJobCount = 0;
+        List<String> organisationInfo = new ArrayList<>();
         String errorMessage;
         try {
             boolean anyEntitiesInQueue = true;
@@ -138,6 +140,7 @@ public class ProfessionalUserService {
                 OrganisationRefreshQueueEntity organisationRefreshQueueEntity =
                         organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
                 if (organisationRefreshQueueEntity != null) {
+                    organisationInfo.add(organisationRefreshQueueEntity.getOrganisationId());
                     errorMessage =
                             findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
                                     organisationRefreshQueueEntity);
@@ -154,6 +157,12 @@ public class ProfessionalUserService {
             if (successfulJobCount == 0 && failedJobCount == 0) {
                 processMonitorDto.addProcessStep("No entities to process");
                 log.info("Completed {}. No entities to process", PROCESS_4_NAME);
+            } else {
+                String processStep = "attempting upsertToUserRefreshQueue for " +
+                        organisationInfo.size() + " organisations";
+                processStep = processStep + "=" + organisationInfo
+                        .stream().map(o -> o + ",").collect(Collectors.joining());
+                processMonitorDto.addProcessStep(processStep);
             }
         } catch (ServiceException ex) {
             String message = String.format("Error occurred while processing organisation: %s",
