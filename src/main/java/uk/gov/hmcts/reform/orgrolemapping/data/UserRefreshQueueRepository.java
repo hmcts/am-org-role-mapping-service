@@ -88,6 +88,8 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                                                     user_refresh_queue.access_types_min_version),
                 user_last_updated = greatest(excluded.user_last_updated, user_refresh_queue.user_last_updated),
                 last_updated = now(),
+                retry = 0,
+                retry_after = now(),
                 active = true,
                 deleted = case
                     when excluded.user_last_updated > user_refresh_queue.user_last_updated then excluded.deleted
@@ -112,9 +114,11 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
     default void upsertToUserRefreshQueueForLastUpdated(NamedParameterJdbcTemplate jdbcTemplate,
                                                         List<ProfessionalUserData> rows,
                                                         Integer accessTypeMinVersion) {
+        // NB: This upsert is for PRM Process 5:
+        //     on conflict it will only update record when this is a fresh update.
         jdbcTemplate.batchUpdate(
-            UPSERT_SQL_WHEN_LAST_UPDATED,
-            getParamsFromProfessionalUserDataRows(rows, accessTypeMinVersion)
+                UPSERT_SQL_WHEN_LAST_UPDATED,
+                getParamsFromProfessionalUserDataRows(rows, accessTypeMinVersion)
         );
     }
 
