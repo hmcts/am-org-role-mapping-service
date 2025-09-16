@@ -90,8 +90,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository =
         Mockito.mock(OrganisationRefreshQueueRepository.class);
 
-   // @Autowired
-   // private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
+    //@Autowired
+    //private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
 
     @Autowired
     private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
@@ -158,25 +158,39 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertFalse(refreshedUser.getActive());
     }
 
+
+
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_organisation_profiles.sql"})
     void shouldInsertOneUserIntoUserRefreshQueue_AndClearOrganisationRefreshQueue() {
+        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+            = buildOrganisationRefreshQueueEntity("1", 1, true);
+
+        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
+            .thenReturn(organisationRefreshQueueEntity)
+            .thenReturn(null);
         ProfessionalUser professionalUser = buildProfessionalUser(1);
-        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
+        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(1, professionalUser);
         UsersByOrganisationResponse response =
                 buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
 
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
-
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        // WHEN
+        ProcessMonitorDto processMonitorDto =
+            professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        // THEN
+        assertNotNull(processMonitorDto);
+        verify(userRefreshQueueRepository, times(1))
+            .upsertToUserRefreshQueue(any(), any(), any());
+        verify(organisationRefreshQueueRepository, times(1))
+            .clearOrganisationRefreshRecord(any(), any(), any());
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            .isEqualTo(EndStatus.SUCCESS);
 
         assertEquals(1, userRefreshQueueRepository.findAll().size());
-
-        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
-                = organisationRefreshQueueRepository.findAll();
-        assertFalse(organisationRefreshQueueEntities.get(0).getActive());
 
         List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
         UserRefreshQueueEntity userRefreshEntity = userRefreshQueueEntities.get(0);
@@ -186,11 +200,12 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertNotNull(userRefreshEntity.getUserLastUpdated());
         assertNotNull(userRefreshEntity.getDeleted());
         assertEquals("[]", userRefreshEntity.getAccessTypes());
-        assertEquals("123", userRefreshEntity.getOrganisationId());
+        assertEquals("1", userRefreshEntity.getOrganisationId());
         assertEquals("ACTIVE", userRefreshEntity.getOrganisationStatus());
         assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
         assertEquals(0, userRefreshEntity.getRetry());
         assertNotNull(userRefreshEntity.getRetryAfter());
+
     }
 
     @Test
@@ -212,13 +227,6 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_organisation_profiles.sql"})
     void shouldRollback_AndUpdateRetryToOneOnException2() {
-        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
-            = buildOrganisationRefreshQueueEntity("1", 1, true);
-
-        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
-            .thenReturn(organisationRefreshQueueEntity)
-            .thenReturn(null);
-
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
         UsersByOrganisationResponse page1 =
@@ -231,19 +239,12 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        ProcessMonitorDto processMonitorDto = professionalUserService.
-            findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
-        assertNotNull(processMonitorDto);
-        verify(userRefreshQueueRepository, times(1))
-            .upsertToUserRefreshQueue(any(), any(), any());
-        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-            .isEqualTo(EndStatus.SUCCESS);
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
         assertEquals(0, userRefreshQueueRepository.findAll().size());
+
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
                 = organisationRefreshQueueRepository.findAll();
-        verify(organisationRefreshQueueRepository, times(1))
-            .clearOrganisationRefreshRecord(any(), any(), any());
         assertTrue(organisationRefreshQueueEntities.get(0).getActive());
         assertEquals(1, organisationRefreshQueueEntities.get(0).getRetry());
         assertTrue(organisationRefreshQueueEntities.get(0).getRetryAfter().isAfter(LocalDateTime.now()));
