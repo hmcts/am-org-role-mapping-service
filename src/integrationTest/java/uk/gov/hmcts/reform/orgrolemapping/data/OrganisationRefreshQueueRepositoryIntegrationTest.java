@@ -21,6 +21,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
     private static final String RETRY_INTERVAL_1 = "100";
     private static final String RETRY_INTERVAL_2 = "200";
     private static final String RETRY_INTERVAL_3 = "300";
+    private static final Long RETRY_INTERVAL_TEST_TOLERANCE_SECONDS = 20L;
 
     @Autowired
     private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
@@ -105,13 +106,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         // THEN
         OrganisationRefreshQueueEntity updatedEntity = organisationRefreshQueueRepository.findById(orgId).orElseThrow();
         assertEquals(1, updatedEntity.getRetry());
-        // check retry time between now and interval 2 (i.e. because it is now at retry 1)
-        assertTrue(
-            updatedEntity.getRetryAfter().isAfter(LocalDateTime.now())
-        );
-        assertTrue(
-            updatedEntity.getRetryAfter().isBefore(LocalDateTime.now().plusMinutes(Long.parseLong(RETRY_INTERVAL_2)))
-        );
+        assertRetryAfterWithinIntervalTolerance(updatedEntity, RETRY_INTERVAL_1);
     }
 
     @Test
@@ -130,13 +125,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         // THEN
         OrganisationRefreshQueueEntity updatedEntity = organisationRefreshQueueRepository.findById(orgId).orElseThrow();
         assertEquals(2, updatedEntity.getRetry());
-        // check retry time between interval 1 and interval 3 (i.e. because it is now at retry 2)
-        assertTrue(
-            updatedEntity.getRetryAfter().isAfter(LocalDateTime.now().plusMinutes(Long.parseLong(RETRY_INTERVAL_1)))
-        );
-        assertTrue(
-            updatedEntity.getRetryAfter().isBefore(LocalDateTime.now().plusMinutes(Long.parseLong(RETRY_INTERVAL_3)))
-        );
+        assertRetryAfterWithinIntervalTolerance(updatedEntity, RETRY_INTERVAL_2);
     }
 
     @Test
@@ -155,13 +144,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         // THEN
         OrganisationRefreshQueueEntity updatedEntity = organisationRefreshQueueRepository.findById(orgId).orElseThrow();
         assertEquals(3, updatedEntity.getRetry());
-        // check retry time between interval 2 and 400 minutes (i.e. because it is now at retry 3)
-        assertTrue(
-            updatedEntity.getRetryAfter().isAfter(LocalDateTime.now().plusMinutes(Long.parseLong(RETRY_INTERVAL_2)))
-        );
-        assertTrue(
-            updatedEntity.getRetryAfter().isBefore(LocalDateTime.now().plusMinutes(400L))
-        );
+        assertRetryAfterWithinIntervalTolerance(updatedEntity, RETRY_INTERVAL_3);
     }
 
     @Test
@@ -183,6 +166,17 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
         assertEquals(4, updatedEntity.getRetry());
         // check retry time cleared (i.e. because it is now at retry 4)
         assertNull(updatedEntity.getRetryAfter());
+    }
+
+    private void assertRetryAfterWithinIntervalTolerance(OrganisationRefreshQueueEntity entity,
+                                                         String expectedInterval) {
+        LocalDateTime expectedRetryAfterValue = LocalDateTime.now().plusMinutes(Long.parseLong(expectedInterval));
+        assertTrue(
+            entity.getRetryAfter().isAfter(expectedRetryAfterValue.minusSeconds(RETRY_INTERVAL_TEST_TOLERANCE_SECONDS))
+        );
+        assertTrue(
+            entity.getRetryAfter().isBefore(expectedRetryAfterValue.plusSeconds(RETRY_INTERVAL_TEST_TOLERANCE_SECONDS))
+        );
     }
 
 }
