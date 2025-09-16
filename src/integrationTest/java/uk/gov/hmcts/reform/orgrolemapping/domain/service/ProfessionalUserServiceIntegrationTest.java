@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,14 +27,17 @@ import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
@@ -59,6 +63,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.SOLICITOR_PROFILE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildOrganisationInfo;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildProfessionalUser;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUsersByOrganisationResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUsersOrganisationInfo;
@@ -87,11 +92,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Autowired
     private UserRefreshQueueRepository userRefreshQueueRepository;
 
-    private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository =
-        Mockito.mock(OrganisationRefreshQueueRepository.class);
-
-    //@Autowired
-    //private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
+    @Autowired
+    private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
 
     @Autowired
     private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
@@ -101,9 +103,14 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @MockBean
     private ProcessEventTracker processEventTracker;
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Captor
     private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
+
+    private final OrganisationRefreshQueueRepository mockOrganisationRefreshQueueRepository =
+        Mockito.mock(OrganisationRefreshQueueRepository.class);
 
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
@@ -163,17 +170,13 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_organisation_profiles.sql"})
-    void shouldInsertOneUserIntoUserRefreshQueue_AndClearOrganisationRefreshQueue() {
-        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
-            = buildOrganisationRefreshQueueEntity("1", 1, true);
+    void shouldInsertOneUserIntoUserRefreshQueue_AndClearOrganisationRefreshQueue_SingleOrgEntity() {
 
-        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
-            .thenReturn(organisationRefreshQueueEntity)
-            .thenReturn(null);
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(1, professionalUser);
         UsersByOrganisationResponse response =
-                buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
+                buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1",
+                    false);
 
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
@@ -181,11 +184,12 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         ProcessMonitorDto processMonitorDto =
             professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
         // THEN
+        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
+                = organisationRefreshQueueRepository.findAll();
+        assertFalse(organisationRefreshQueueEntities.get(0).getActive());
         assertNotNull(processMonitorDto);
         verify(userRefreshQueueRepository, times(1))
             .upsertToUserRefreshQueue(any(), any(), any());
-        verify(organisationRefreshQueueRepository, times(1))
-            .clearOrganisationRefreshRecord(any(), any(), any());
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
             .isEqualTo(EndStatus.SUCCESS);
@@ -207,6 +211,70 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertNotNull(userRefreshEntity.getRetryAfter());
 
     }
+
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        scripts = {"classpath:sql/insert_organisation_profiles.sql"})
+    void shouldInsertOneUserIntoUserRefreshQueue_AndClearOrganisationRefreshQueue_MultipleOrgEntity() {
+
+        List<OrganisationInfo> organisationInfoList = List.of(buildOrganisationInfo(2));
+        organisationRefreshQueueRepository.upsertToOrganisationRefreshQueueForLastUpdated(
+            jdbcTemplate, organisationInfoList, 2);
+
+
+        ProfessionalUser professionalUser1 = buildProfessionalUser(1);
+        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser1);
+        UsersByOrganisationResponse response1 =
+            buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1",
+                false);
+        UsersByOrganisationRequest usersByOrganisationRequestOrg1 = new UsersByOrganisationRequest(List.of("123"));
+        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null),   eq(usersByOrganisationRequestOrg1)))
+            .thenReturn(ResponseEntity.ok(response1));
+
+        // mock second org search
+        ProfessionalUser professionalUserOrg2 = TestDataBuilder.buildProfessionalUser(2);
+        UsersOrganisationInfo usersOrganisationInfo2 = TestDataBuilder.buildUsersOrganisationInfo(
+            2, List.of(professionalUserOrg2));
+        UsersByOrganisationResponse responseOrg2 =
+            buildUsersByOrganisationResponse(usersOrganisationInfo2, "2",
+                "2", false);
+        UsersByOrganisationRequest usersByOrganisationRequestOrg2 = new UsersByOrganisationRequest(List.of("2"));
+        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null),  eq(usersByOrganisationRequestOrg2)))
+            .thenReturn(ResponseEntity.ok(responseOrg2));
+
+        // WHEN
+        ProcessMonitorDto processMonitorDto =
+            professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        // THEN
+        assertNotNull(processMonitorDto);
+        verify(userRefreshQueueRepository, times(2))
+            .upsertToUserRefreshQueue(any(), any(), any());
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            .isEqualTo(EndStatus.SUCCESS);
+
+        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
+            = organisationRefreshQueueRepository.findAll();
+        assertFalse(organisationRefreshQueueEntities.get(0).getActive());
+
+        assertEquals(2, userRefreshQueueRepository.findAll().size());
+
+        List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
+        UserRefreshQueueEntity userRefreshEntity = userRefreshQueueEntities.get(1);
+
+        assertEquals("2", userRefreshEntity.getUserId());
+        assertNotNull(userRefreshEntity.getLastUpdated());
+        assertNotNull(userRefreshEntity.getUserLastUpdated());
+        assertNotNull(userRefreshEntity.getDeleted());
+        assertEquals("2", userRefreshEntity.getOrganisationId());
+        assertEquals("ACTIVE", userRefreshEntity.getOrganisationStatus());
+        assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
+        assertEquals(0, userRefreshEntity.getRetry());
+        assertNotNull(userRefreshEntity.getRetryAfter());
+
+    }
+
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
@@ -274,7 +342,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
         UsersByOrganisationResponse page1 =
-                buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", true);
+                buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1",
+                    true);
 
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(page1));
@@ -337,7 +406,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithoutPagination() {
         userRefreshQueueRepository.deleteAll();
         RefreshUser refreshUser = refreshUser(1);
-        GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser, "123", false);
+        GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser,
+            "123", false);
 
         when(prdService.retrieveUsers(any(), anyInt(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response1));
@@ -372,13 +442,15 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         final LocalDateTime preTestLastBatchRunTime = getLastUserRunDatetime();
 
         RefreshUser refreshUser = refreshUser(1);
-        GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser, "123", true);
+        GetRefreshUserResponse response1 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser,
+            "123", true);
 
         when(prdService.retrieveUsers(any(), anyInt(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response1));
 
         RefreshUser refreshUser2 = refreshUser(2);
-        GetRefreshUserResponse response2 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser2, "456", false);
+        GetRefreshUserResponse response2 = IntTestDataBuilder.buildRefreshUserResponse(refreshUser2,
+            "456", false);
 
         when(prdService.retrieveUsers(any(), anyInt(), any(String.class)))
                 .thenReturn(ResponseEntity.ok(response2));
