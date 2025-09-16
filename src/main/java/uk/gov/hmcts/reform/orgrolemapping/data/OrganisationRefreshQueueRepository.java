@@ -20,37 +20,58 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConst
 @Repository
 public interface OrganisationRefreshQueueRepository extends JpaRepository<OrganisationRefreshQueueEntity, String> {
 
+    // NB: This upsert is for PRM Process 2:
     default void upsertToOrganisationRefreshQueue(NamedParameterJdbcTemplate jdbcTemplate,
                                                   List<OrganisationInfo> rows,
-                                                  Integer accessTypeMinVersion,
-                                                  String process) {
-        String sql;
+                                                  Integer accessTypeMinVersion) {
+        String sql = """
+                insert into organisation_refresh_queue 
+                (organisation_id, organisation_last_updated, access_types_min_version, active) 
+                values (:organisationId, :organisationLastUpdated, :accessTypesMinVersion, true) 
+                on conflict (organisation_id) do update 
+                set 
+                access_types_min_version = excluded.access_types_min_version, 
+                organisation_last_updated = greatest(excluded.organisation_last_updated, 
+                organisation_refresh_queue.organisation_last_updated), 
+                last_updated = now(), 
+                retry = 0,
+                retry_after = now(),
+                active = true 
+                where excluded.access_types_min_version > organisation_refresh_queue.access_types_min_version
+                """;
 
-        if (process.equals("P2")) {
-            sql = "insert into organisation_refresh_queue "
-                + "(organisation_id, organisation_last_updated, access_types_min_version, active) "
-                + "values (:organisationId, :organisationLastUpdated, :accessTypesMinVersion, true) "
-                + "on conflict (organisation_id) do update "
-                + "set "
-                + "access_types_min_version = excluded.access_types_min_version, "
-                + "organisation_last_updated = greatest(excluded.organisation_last_updated, "
-                + "organisation_refresh_queue.organisation_last_updated), "
-                + "last_updated = now(), "
-                + "active = true "
-                + "where excluded.access_types_min_version > organisation_refresh_queue.access_types_min_version";
-        } else {
-            sql = "insert into organisation_refresh_queue "
-                + "(organisation_id, organisation_last_updated, access_types_min_version, active) "
-                + "values (:organisationId, :organisationLastUpdated, :accessTypesMinVersion, true) "
-                + "on conflict (organisation_id) do update "
-                + "set "
-                + "access_types_min_version = greatest(excluded.access_types_min_version, "
-                + "organisation_refresh_queue.access_types_min_version), "
-                + "organisation_last_updated = excluded.organisation_last_updated, "
-                + "last_updated = now(), "
-                + "active = true "
-                + "where excluded.organisation_last_updated > organisation_refresh_queue.organisation_last_updated";
-        }
+        MapSqlParameterSource[] params = rows.stream().map(r -> {
+            MapSqlParameterSource paramValues = new MapSqlParameterSource();
+            paramValues.addValue(ORGANISATION_ID, r.getOrganisationIdentifier());
+            paramValues.addValue(ORGANISATION_LAST_UPDATED, r.getOrganisationLastUpdated());
+            paramValues.addValue(ACCESS_TYPES_MIN_VERSION, accessTypeMinVersion);
+            return paramValues;
+        }).toArray(MapSqlParameterSource[]::new);
+
+        jdbcTemplate.batchUpdate(sql, params);
+    }
+
+
+    // NB: This upsert is for PRM Process 3:
+    default void upsertToOrganisationRefreshQueueForLastUpdated(
+            NamedParameterJdbcTemplate jdbcTemplate,
+            List<OrganisationInfo> rows,
+            Integer accessTypeMinVersion) {
+        String sql = """
+                    insert into organisation_refresh_queue 
+                    (organisation_id, organisation_last_updated, access_types_min_version, active) 
+                    values (:organisationId, :organisationLastUpdated, :accessTypesMinVersion, true) 
+                    on conflict (organisation_id) do update 
+                    set 
+                    access_types_min_version = greatest(excluded.access_types_min_version, 
+                    organisation_refresh_queue.access_types_min_version), 
+                    organisation_last_updated = excluded.organisation_last_updated, 
+                    last_updated = now(), 
+                    retry = 0,
+                    retry_after = now(),
+                    active = true 
+                    where excluded.organisation_last_updated > organisation_refresh_queue.organisation_last_updated
+                    """;
 
         MapSqlParameterSource[] params = rows.stream().map(r -> {
             MapSqlParameterSource paramValues = new MapSqlParameterSource();
@@ -106,7 +127,7 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
           update organisation_refresh_queue 
                       set active = false ,
                       retry = 0,
-                      retry_after = null
+                      retry_after = now()
                       where organisation_id = :organisationId 
                       and access_types_min_version <= :accessTypeMinVersion 
                       and last_updated <= :lastUpdated""", nativeQuery = true)

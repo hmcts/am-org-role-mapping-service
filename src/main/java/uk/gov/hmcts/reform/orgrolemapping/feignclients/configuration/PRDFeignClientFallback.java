@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUsersResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
@@ -37,10 +37,10 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<GetRefreshUsersResponse> getRefreshUsers(String userId,
-                                                                   String lastUpdatedSince,
-                                                                   Integer pageSize,
-                                                                   String searchAfter) {
+    public ResponseEntity<GetRefreshUserResponse> getRefreshUsers(String userId,
+                                                                  String lastUpdatedSince,
+                                                                  Integer pageSize,
+                                                                  String searchAfter) {
         if (userId != null) {
             return ResponseEntity.ok(buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId));
         }
