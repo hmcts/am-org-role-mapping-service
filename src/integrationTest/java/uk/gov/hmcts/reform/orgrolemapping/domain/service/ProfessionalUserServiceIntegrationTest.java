@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -33,6 +34,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
@@ -40,6 +42,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,6 +55,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.SOLICITOR_PROFILE;
@@ -83,8 +87,11 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Autowired
     private UserRefreshQueueRepository userRefreshQueueRepository;
 
-    @Autowired
-    private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
+    private final OrganisationRefreshQueueRepository organisationRefreshQueueRepository =
+        Mockito.mock(OrganisationRefreshQueueRepository.class);
+
+   // @Autowired
+   // private OrganisationRefreshQueueRepository organisationRefreshQueueRepository;
 
     @Autowired
     private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
@@ -205,6 +212,13 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_organisation_profiles.sql"})
     void shouldRollback_AndUpdateRetryToOneOnException2() {
+        OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+            = buildOrganisationRefreshQueueEntity("1", 1, true);
+
+        when(organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord())
+            .thenReturn(organisationRefreshQueueEntity)
+            .thenReturn(null);
+
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
         UsersByOrganisationResponse page1 =
@@ -217,12 +231,19 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
-
+        ProcessMonitorDto processMonitorDto = professionalUserService.
+            findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        assertNotNull(processMonitorDto);
+        verify(userRefreshQueueRepository, times(1))
+            .upsertToUserRefreshQueue(any(), any(), any());
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            .isEqualTo(EndStatus.SUCCESS);
         assertEquals(0, userRefreshQueueRepository.findAll().size());
-
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
                 = organisationRefreshQueueRepository.findAll();
+        verify(organisationRefreshQueueRepository, times(1))
+            .clearOrganisationRefreshRecord(any(), any(), any());
         assertTrue(organisationRefreshQueueEntities.get(0).getActive());
         assertEquals(1, organisationRefreshQueueEntities.get(0).getRetry());
         assertTrue(organisationRefreshQueueEntities.get(0).getRetryAfter().isAfter(LocalDateTime.now()));
@@ -381,5 +402,18 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
                 .findAll();
         BatchLastRunTimestampEntity batchLastRunTimestampEntity = allBatchLastRunTimestampEntities.get(0);
         return batchLastRunTimestampEntity.getLastUserRunDatetime();
+    }
+
+    @SuppressWarnings({"SameParameterValue"})
+    private static OrganisationRefreshQueueEntity buildOrganisationRefreshQueueEntity(String organisationId,
+                                                                                      Integer accessTypesMinVersion,
+                                                                                      boolean active) {
+        return OrganisationRefreshQueueEntity.builder()
+            .organisationId(organisationId)
+            .lastUpdated(LocalDateTime.now())
+            .accessTypesMinVersion(accessTypesMinVersion)
+            .active(active)
+            .retry(0)
+            .build();
     }
 }
