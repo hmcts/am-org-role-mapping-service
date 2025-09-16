@@ -113,6 +113,10 @@ public class ProfessionalUserService {
             errorMessage =
                     findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
                             organisationRefreshQueueEntity.get());
+            if (errorMessage.isEmpty()) {
+                addProcess4Steps(processMonitorDto,
+                        List.of(organisationRefreshQueueEntity.get().getOrganisationId()));
+            }
         } else {
             errorMessage = String.format("Organisation with ID %s not found in the refresh queue", organisationId);
             processMonitorDto.addProcessStep(errorMessage);
@@ -158,11 +162,7 @@ public class ProfessionalUserService {
                 processMonitorDto.addProcessStep("No entities to process");
                 log.info("Completed {}. No entities to process", PROCESS_4_NAME);
             } else {
-                processMonitorDto.addProcessStep("attempting upsertToUserRefreshQueue for "
-                        + organisationInfo.size() + " organisations");
-                String processStep = "=" + organisationInfo
-                        .stream().map(o -> o + ",").collect(Collectors.joining());
-                processMonitorDto.appendToLastProcessStep(processStep);
+                addProcess4Steps(processMonitorDto, organisationInfo);
             }
         } catch (ServiceException ex) {
             String message = String.format("Error occurred while processing organisation: %s",
@@ -178,6 +178,14 @@ public class ProfessionalUserService {
                 errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
+    }
+
+    private void addProcess4Steps(ProcessMonitorDto processMonitorDto, List<String> organisationInfo) {
+        processMonitorDto.addProcessStep("attempting upsertToUserRefreshQueue for "
+                + organisationInfo.size() + " organisations");
+        String processStep = "=" + organisationInfo
+                .stream().map(o -> o + ",").collect(Collectors.joining());
+        processMonitorDto.appendToLastProcessStep(processStep);
     }
 
     private String findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(

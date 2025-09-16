@@ -146,6 +146,41 @@ class ProfessionalUserServiceTest {
         }
 
         @Test
+        void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById_SingleOrgEntity() {
+
+            // GIVEN
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+                    = buildOrganisationRefreshQueueEntity("1", 1, true);
+
+            when(organisationRefreshQueueRepository.findById(
+                    organisationRefreshQueueEntity.getOrganisationId()))
+                    .thenReturn(Optional.of(organisationRefreshQueueEntity));
+
+            ProfessionalUser professionalUser = buildProfessionalUser(1);
+            UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(1, List.of(professionalUser));
+            UsersByOrganisationResponse response =
+                    buildUsersByOrganisationResponse(List.of(usersOrganisationInfo), "1", "1", false);
+
+            when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+                    .thenReturn(ResponseEntity.ok(response));
+
+            // WHEN
+            ProcessMonitorDto processMonitorDto = professionalUserService
+                    .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById("1");
+
+            // THEN
+            assertNotNull(processMonitorDto);
+            verify(userRefreshQueueRepository, times(1))
+                    .upsertToUserRefreshQueue(any(), any(), any());
+            verify(organisationRefreshQueueRepository, times(1))
+                    .clearOrganisationRefreshRecord(any(), any(), any());
+
+            verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                    .isEqualTo(EndStatus.SUCCESS);
+        }
+
+        @Test
         void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue_MultipleOrgEntity() {
 
             // GIVEN
