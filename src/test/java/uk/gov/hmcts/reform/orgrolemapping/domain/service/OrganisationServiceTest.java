@@ -93,7 +93,7 @@ class OrganisationServiceTest {
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(1))
-                .upsertToOrganisationRefreshQueue(any(), any(), any(), eq("P2"));
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(profileRefreshQueueRepository, times(1))
                 .setActiveFalse(any(), any());
     }
@@ -124,7 +124,7 @@ class OrganisationServiceTest {
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(2))
-                .upsertToOrganisationRefreshQueue(any(), any(), any(), eq("P2"));
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(profileRefreshQueueRepository, times(1))
                 .setActiveFalse(any(), any());
     }
@@ -138,7 +138,7 @@ class OrganisationServiceTest {
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(0))
-                .upsertToOrganisationRefreshQueue(any(), any(), any(), eq("P2"));
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(profileRefreshQueueRepository, times(0))
                 .setActiveFalse(any(), any());
     }
@@ -178,7 +178,7 @@ class OrganisationServiceTest {
         organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue();
 
         verify(organisationRefreshQueueRepository, times(2))
-                .upsertToOrganisationRefreshQueue(any(), any(), any(), eq("P3"));
+                .upsertToOrganisationRefreshQueueForLastUpdated(any(), any(), any());
         verify(batchLastRunTimestampRepository, times(1)).save(any(BatchLastRunTimestampEntity.class));
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getProcessSteps()).hasSize(2);
@@ -222,7 +222,7 @@ class OrganisationServiceTest {
                 .thenReturn(organisationsResponse1, organisationsResponse2);
 
         doThrow(new ServiceException("Insert exception")).when(organisationRefreshQueueRepository)
-                .upsertToOrganisationRefreshQueue(any(), any(), any(), eq("P3"));
+                .upsertToOrganisationRefreshQueueForLastUpdated(any(), any(), any());
 
         Assertions.assertThrows(ServiceException.class, () ->
             organisationService.findOrganisationChangesAndInsertIntoOrganisationRefreshQueue()
@@ -346,7 +346,7 @@ class OrganisationServiceTest {
         verify(profileRefreshQueueRepository, times(1))
                 .getActiveProfileEntities();
         verify(organisationRefreshQueueRepository, times(0))
-                .upsertToOrganisationRefreshQueue(any(), any(), any(), eq("P2"));
+                .upsertToOrganisationRefreshQueue(any(), any(), any());
         verify(profileRefreshQueueRepository, times(1))
                 .setActiveFalse(any(), any());
     }

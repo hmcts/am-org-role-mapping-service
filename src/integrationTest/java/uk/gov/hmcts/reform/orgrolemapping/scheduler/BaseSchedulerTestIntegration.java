@@ -7,6 +7,8 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.LoggedResponse;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -70,6 +72,25 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     public static final UUID STUB_ID_PRD_REFRESH_USER
             = UUID.fromString("491482e1-a8ec-4170-b986-177259e152cd");
 
+    public static final String JURISDICTION_ID_CIVIL = "CIVIL";
+    public static final String JURISDICTION_ID_PUBLICLAW = "PUBLICLAW";
+
+    public static final String SOLICITOR_PROFILE = "SOLICITOR_PROFILE";
+    public static final String OGD_PROFILE = "OGD_PROFILE";
+
+    public static final UUID STUB_ID_CCD_RETRIEVE_ACCESS_TYPES
+        = UUID.fromString("72134798-eba8-4840-b769-6435bd2afb1c");
+
+    public static final UUID STUB_ID_PRD_RETRIEVE_USERSBYORG
+        = UUID.fromString("8468dbb3-14b9-4fd2-b9d8-0620a8fc1e94");
+
+    protected static final String MORE_AVAILABLE = "moreAvailable";
+    protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
+    protected static final String SEARCH_AFTER = "searchAfter";
+
+    public static final UUID STUB_ID_PRD_RETRIEVE_ORGANISATIONS
+        = UUID.fromString("f4f89a01-39fb-48ca-9c2a-a49f749d07af");
+
     protected final JsonHelper jsonHelper = new JsonHelper();
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
@@ -112,8 +133,8 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
             for (OrganisationProfile orgProfile: accessTypes.getOrganisationProfiles()) {
                 log.info("-----------------------------------------------------");
                 log.info("OrganisationProfileId = {}: {}",
-                        orgProfile.getOrganisationProfileId(),
-                        writeValueAsPrettyJson(orgProfile)
+                    orgProfile.getOrganisationProfileId(),
+                    writeValueAsPrettyJson(orgProfile)
                 );
                 log.info("-----------------------------------------------------");
             }
@@ -145,10 +166,10 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
 
         log.info("   Headers: ");
         List<String> headersToLog = List.of(
-                AUTHORIZATION,
-                SERVICE_AUTHORIZATION,
-                "Content-Type",
-                "Accept"
+            AUTHORIZATION,
+            SERVICE_AUTHORIZATION,
+            "Content-Type",
+            "Accept"
         );
         for (String header : headersToLog) {
             log.info("      {}: {}", header, loggedRequest.getHeaders().getHeader(header));
@@ -166,6 +187,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
 
         log.info("   Status: {}", loggedResponse.getStatus());
         log.info("   Body: {}", loggedResponse.getBodyAsString());
+        log.info("-----------------------------------------------------");
     }
 
     protected void stubPrdRefreshUser(List<String> fileNames, String userId,
@@ -240,6 +262,120 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                         .withStatus(httpStatus)
                         .withHeaders(headers)
                         .withBody(body)));
+    }
+
+    protected void stubPrdRetrieveUsersByOrg(List<String> fileNames,
+        String moreAvailable, String lastRecordInPage, EndStatus endStatus) {
+        stubPrdRetrieveUsersByOrg(
+            "{ \"organisationInfo\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable,
+            endStatus
+        );
+    }
+
+    protected void stubPrdRetrieveUsersByOrg(String body, String moreAvailable,
+        EndStatus endStatus) {
+        HttpHeaders headers = new HttpHeaders()
+            .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+            .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
+
+        int httpStatus = EndStatus.FAILED.equals(endStatus)
+            ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+            "/refdata/internal/v2/organisations/users"))
+            .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+            .willReturn(aResponse()
+                .withStatus(httpStatus)
+                .withHeaders(headers)
+                .withBody(body)));
+    }
+
+    protected Map<String,String> getAccessTypesMap(String accessTypes) {
+        Map<String,String> map = new HashMap<>();
+        if (accessTypes != null && !accessTypes.isEmpty()) {
+            String[] keyValuePairs = accessTypes
+                .replace("{", "").replace("}", "")
+                .replace("[", "").replace("]", "")
+                .replace("\n","").replace("\r","")
+                .split(",");
+            if (keyValuePairs.length > 1) {
+                for (String pair : keyValuePairs) {
+                    String[] entry = pair.split(":");
+                    map.put(entry[0].trim(), entry[1].trim());
+                }
+            }
+        }
+        return map;
+    }
+
+    protected void stubCcdRetrieveAccessTypes(List<String> jurisdictionFileNames) {
+        stubCcdRetrieveAccessTypes(
+            "{ \"jurisdictions\": " + jsonHelper.readJsonArrayFromFiles(jurisdictionFileNames) + " }"
+        );
+    }
+
+    protected void stubCcdRetrieveAccessTypes(String body) {
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/retrieve-access-types"))
+            .withId(STUB_ID_CCD_RETRIEVE_ACCESS_TYPES)
+            .withName("CCD Retrieve Access Types")
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .withBody(body)));
+    }
+
+    protected void stubPrdRetrieveOrganisations(List<String> fileNames,
+        String moreAvailable, String lastRecordInPage) {
+        stubPrdRetrieveOrganisations(
+            "{ \"organisations\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                + ", \"moreAvailable\": " + moreAvailable + " }", moreAvailable
+        );
+    }
+
+    protected void stubPrdRetrieveOrganisations(String body, String moreAvailable) {
+        HttpHeaders headers = new HttpHeaders()
+            .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+            .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching(
+            "/refdata/internal/v1/organisations"))
+            .withId(STUB_ID_PRD_RETRIEVE_ORGANISATIONS)
+            .willReturn(aResponse()
+                    .withStatus(HttpStatus.OK.value())
+                    .withHeaders(headers)
+                    .withBody(body)));
+    }
+
+    protected void stubPrdRetrieveOrganisationsByProfile(List<String> fileNames,
+        String moreAvailable, String lastRecordInPage, String pageSize, String searchAfter) {
+        stubPrdRetrieveOrganisationsByProfile(
+            "{ \"organisationInfo\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                + ", \"moreAvailable\": " + moreAvailable
+                + ", \"lastRecordInPage\": " + lastRecordInPage
+                + " }", moreAvailable, lastRecordInPage,
+            pageSize, searchAfter
+        );
+    }
+
+    protected void stubPrdRetrieveOrganisationsByProfile(String body, String moreAvailable,
+        String lastRecordInPage, String pageSize, String searchAfter) {
+        HttpHeaders headers = new HttpHeaders()
+            .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+            .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable))
+            .plus(new HttpHeader(SEARCH_AFTER, searchAfter != null ? searchAfter : ""))
+            .plus(new HttpHeader(LAST_RECORD_IN_PAGE, lastRecordInPage != null ? lastRecordInPage : ""));
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+            "/refdata/internal/v1/organisations/getOrganisationsByProfile"))
+            .withId(STUB_ID_PRD_RETRIEVE_ORGANISATIONS)
+            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+            .withQueryParam("searchAfter", searchAfter != null ? equalTo(searchAfter) : absent())
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeaders(headers)
+                .withBody(body)));
     }
 
 }
