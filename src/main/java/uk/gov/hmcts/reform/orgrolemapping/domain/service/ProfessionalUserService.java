@@ -158,11 +158,11 @@ public class ProfessionalUserService {
                 processMonitorDto.addProcessStep("No entities to process");
                 log.info("Completed {}. No entities to process", PROCESS_4_NAME);
             } else {
-                String processStep = "attempting upsertToUserRefreshQueue for "
-                        + organisationInfo.size() + " organisations";
-                processStep = processStep + "=" + organisationInfo
+                processMonitorDto.addProcessStep("attempting upsertToUserRefreshQueue for "
+                        + organisationInfo.size() + " organisations");
+                String processStep = "=" + organisationInfo
                         .stream().map(o -> o + ",").collect(Collectors.joining());
-                processMonitorDto.addProcessStep(processStep);
+                processMonitorDto.appendToLastProcessStep(processStep);
             }
         } catch (ServiceException ex) {
             String message = String.format("Error occurred while processing organisation: %s",
