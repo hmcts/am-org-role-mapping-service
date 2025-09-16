@@ -202,20 +202,20 @@ professional:
   role:
     mapping:
       scheduling:
-        enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
+        enabled: true
         findAndUpdateCaseDefinitionChanges:
-          cron: ${CRON_P1_FIND_CASE_DEFINITION_CHANGES:*/30 * * * * *}
+          cron: ${CRON_P1_FIND_CASE_DEFINITION_CHANGES:*/30 * * * 1 *}
         findOrganisationsWithStaleProfiles:
-          cron: ${CRON_P2_ORGS_STALE_PROFILES:*/30 * * * * *}
+          cron: ${CRON_P2_ORGS_STALE_PROFILES:*/30 * * * 1 *}
         findOrganisationChanges:
-          cron: ${CRON_P3_ORG_CHANGES:*/30 * * * * *}
+          cron: ${CRON_P3_ORG_CHANGES:*/30 * * * 1 *}
         findUsersWithStaleOrganisations:
-          cron: ${CRON_P4_USERS_STALE_ORGS:*/30 * * * * *}
+          cron: ${CRON_P4_USERS_STALE_ORGS:* */5 * * * *}
           retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
           retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
           retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
         findUserChanges:
-          cron: ${CRON_P5_USER_CHANGES:*/30 * * * * *}
+          cron: ${CRON_P5_USER_CHANGES:*/30 * * * 1 *}
 
 groupAccess:
   lastRunTimeTolerance: ${TOLERANCE:180}
