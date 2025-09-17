@@ -221,7 +221,6 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertFalse(organisationRefreshQueueEntities.get(1).getActive());
         List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
         UserRefreshQueueEntity userRefreshEntity1 = userRefreshQueueEntities.get(0);
-        UserRefreshQueueEntity userRefreshEntity2 = userRefreshQueueEntities.get(1);
 
         assertEquals("1", userRefreshEntity1.getUserId());
         assertNotNull(userRefreshEntity1.getLastUpdated());
@@ -234,6 +233,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertEquals(0, userRefreshEntity1.getRetry());
         assertNotNull(userRefreshEntity1.getRetryAfter());
 
+        UserRefreshQueueEntity userRefreshEntity2 = userRefreshQueueEntities.get(1);
         assertEquals("2", userRefreshEntity2.getUserId());
         assertNotNull(userRefreshEntity2.getLastUpdated());
         assertNotNull(userRefreshEntity2.getUserLastUpdated());
