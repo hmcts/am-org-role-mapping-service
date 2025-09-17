@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ISO_DATE_TIME_FORMATTER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
@@ -138,7 +139,12 @@ public class ProfessionalUserService {
         String errorMessage;
         if (organisationRefreshQueueEntity.isPresent()) {
             errorMessage =
-                findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(organisationRefreshQueueEntity.get());
+                findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
+                        organisationRefreshQueueEntity.get());
+            if (errorMessage.isEmpty()) {
+                addProcess4Steps(processMonitorDto,
+                        List.of(organisationRefreshQueueEntity.get().getOrganisationId()));
+            }
         } else {
             errorMessage = String.format("Organisation with ID %s not found in the refresh queue", organisationId);
             processMonitorDto.addProcessStep(errorMessage);
@@ -158,6 +164,7 @@ public class ProfessionalUserService {
         StringBuilder errorMessageBuilder = new StringBuilder();
         int successfulJobCount = 0;
         int failedJobCount = 0;
+        List<String> organisationInfo = new ArrayList<>();
         String errorMessage;
         try {
             boolean anyEntitiesInQueue = true;
@@ -165,6 +172,7 @@ public class ProfessionalUserService {
                 OrganisationRefreshQueueEntity organisationRefreshQueueEntity =
                         organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
                 if (organisationRefreshQueueEntity != null) {
+                    organisationInfo.add(organisationRefreshQueueEntity.getOrganisationId());
                     errorMessage =
                             findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
                                     organisationRefreshQueueEntity);
@@ -181,6 +189,8 @@ public class ProfessionalUserService {
             if (successfulJobCount == 0 && failedJobCount == 0) {
                 processMonitorDto.addProcessStep("No entities to process");
                 log.info("Completed {}. No entities to process", PROCESS_4_NAME);
+            } else {
+                addProcess4Steps(processMonitorDto, organisationInfo);
             }
         } catch (ServiceException ex) {
             String message = String.format("Error occurred while processing organisation: %s",
@@ -196,6 +206,14 @@ public class ProfessionalUserService {
             errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
+    }
+
+    private void addProcess4Steps(ProcessMonitorDto processMonitorDto, List<String> organisationInfo) {
+        processMonitorDto.addProcessStep("attempting upsertToUserRefreshQueue for "
+                + organisationInfo.size() + " organisations");
+        String processStep = "=" + organisationInfo
+                .stream().map(o -> o + ",").collect(Collectors.joining());
+        processMonitorDto.appendToLastProcessStep(processStep);
     }
 
     private String findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
