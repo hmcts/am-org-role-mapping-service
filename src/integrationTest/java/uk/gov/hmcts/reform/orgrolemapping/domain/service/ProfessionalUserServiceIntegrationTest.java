@@ -18,9 +18,11 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.BatchLastRunTimestampRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTime;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
@@ -34,13 +36,17 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,6 +59,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.SOLICITOR_PROFILE;
@@ -60,6 +68,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.build
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUsersByOrganisationResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildUsersOrganisationInfo;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.refreshUser;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildGetRefreshUsersResponse;
 
 public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration {
 
@@ -281,6 +290,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     }
 
 
+
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
@@ -418,6 +428,10 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
         assertEquals(1, userRefreshQueueRepository.findAll().size());
+        assertEquals(1, batchLastRunTimestampRepository.findAll().size());
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
