@@ -20,12 +20,12 @@ import uk.gov.hmcts.reform.orgrolemapping.data.DatabaseDateTimeRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
@@ -305,19 +305,19 @@ public class ProfessionalUserService {
 
             while (moreAvailable) {
                 processMonitorDto.addProcessStep(processStep);
-                GetRefreshUserResponse refreshUserResponse = prdService
+                GetRefreshUserResponse getRefreshUserResponse = prdService
                         .retrieveUsers(formattedSince, Integer.valueOf(pageSize), lastRecordInPage).getBody();
 
-                if (refreshUserResponse != null && CollectionUtils.isNotEmpty(refreshUserResponse.getUsers())) {
+                if (getRefreshUserResponse != null && CollectionUtils.isNotEmpty(getRefreshUserResponse.getUsers())) {
                     foundUsers = true;
-                    writeAllToUserRefreshQueue(refreshUserResponse, accessTypeMinVersion, processMonitorDto);
+                    writeAllToUserRefreshQueue(getRefreshUserResponse, accessTypeMinVersion, processMonitorDto);
                 } else {
                     break;
                 }
 
                 // prep for next call to retrieveUsers
-                moreAvailable = refreshUserResponse.isMoreAvailable();
-                lastRecordInPage = refreshUserResponse.getLastRecordInPage();
+                moreAvailable = getRefreshUserResponse.isMoreAvailable();
+                lastRecordInPage = getRefreshUserResponse.getLastRecordInPage();
                 processStep = "attempting retrieveUsers from lastRecordInPage=" + lastRecordInPage;
             }
 
@@ -360,13 +360,14 @@ public class ProfessionalUserService {
         }
     }
 
-    private void writeAllToUserRefreshQueue(GetRefreshUserResponse usersResponse, Integer accessTypeMinVersion,
+    private void writeAllToUserRefreshQueue(GetRefreshUserResponse getRefreshUserResponse,
+                                            Integer accessTypeMinVersion,
                                             ProcessMonitorDto processMonitorDto) {
         String processStep = "attempting writeAllToUserRefreshQueue for ";
         processMonitorDto.addProcessStep(processStep);
 
         List<ProfessionalUserData> professionalUserData = new ArrayList<>();
-        for (RefreshUser user : usersResponse.getUsers()) {
+        for (RefreshUser user : getRefreshUserResponse.getUsers()) {
             try {
                 processMonitorDto.appendToLastProcessStep("user=" + user.getUserIdentifier() + ",");
                 professionalUserData.add(ProfessionalUserBuilder.fromProfessionalRefreshUser(user));

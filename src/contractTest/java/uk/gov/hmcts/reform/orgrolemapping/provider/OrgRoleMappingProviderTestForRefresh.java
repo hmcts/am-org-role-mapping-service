@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -63,6 +64,9 @@ public class OrgRoleMappingProviderTestForRefresh {
     private JudicialRefreshOrchestrator judicialRefreshOrchestrator;
 
     @Autowired
+    private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
+
+    @Autowired
     JudicialBookingService judicialBookingService;
 
     @Autowired
@@ -83,7 +87,7 @@ public class OrgRoleMappingProviderTestForRefresh {
         //uncomment to force publishing of pacts results to central server
         //System.getProperties().setProperty("pact.verifier.publishResults", "true");
         testTarget.setControllers(new RefreshController(
-                refreshOrchestrator, judicialRefreshOrchestrator
+                refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator
         ));
         if (context != null) {
             context.setTarget(testTarget);
