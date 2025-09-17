@@ -245,6 +245,41 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     }
 
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        scripts = {"classpath:sql/insert_organisation_profiles.sql"})
+    void shouldInsertOneUserIntoUserRefreshQueue_ById() {
+        ProfessionalUser professionalUser = buildProfessionalUser(1);
+        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
+        UsersByOrganisationResponse response =
+            buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
+
+        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+            .thenReturn(ResponseEntity.ok(response));
+
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById("123");
+
+        assertEquals(1, userRefreshQueueRepository.findAll().size());
+
+        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
+            = organisationRefreshQueueRepository.findAll();
+        assertFalse(organisationRefreshQueueEntities.get(0).getActive());
+
+        List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
+        UserRefreshQueueEntity userRefreshEntity = userRefreshQueueEntities.get(0);
+
+        assertEquals("1", userRefreshEntity.getUserId());
+        assertNotNull(userRefreshEntity.getLastUpdated());
+        assertNotNull(userRefreshEntity.getUserLastUpdated());
+        assertNotNull(userRefreshEntity.getDeleted());
+        assertEquals("[]", userRefreshEntity.getAccessTypes());
+        assertEquals("123", userRefreshEntity.getOrganisationId());
+        assertEquals("ACTIVE", userRefreshEntity.getOrganisationStatus());
+        assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
+        assertEquals(0, userRefreshEntity.getRetry());
+        assertNotNull(userRefreshEntity.getRetryAfter());
+    }
+
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
