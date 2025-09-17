@@ -400,6 +400,32 @@ class ProfessionalUserServiceTest {
                 .isEqualTo(EndStatus.FAILED);
         }
 
+        @Test
+        void markProcessStatusSuccessTest() {
+            markProcessStatusTest(2, 0, null, EndStatus.SUCCESS);
+        }
+
+        @Test
+        void markProcessStatusPartialSuccessTest() {
+            markProcessStatusTest(1, 1, "Error-msg", EndStatus.PARTIAL_SUCCESS);
+        }
+
+        @Test
+        void markProcessStatusFailedTest() {
+            markProcessStatusTest(0, 1, "Error-msg", EndStatus.FAILED);
+        }
+
+        private void markProcessStatusTest(int successfulJobCount,
+                                           int failedJobCount, String errorMessage, EndStatus endStatus) {
+            ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("test-process");
+            professionalUserService.markProcessStatus(processMonitorDto, successfulJobCount,
+                    failedJobCount, errorMessage);
+
+            assertEquals(endStatus, processMonitorDto.getEndStatus());
+            assertEquals(errorMessage, processMonitorDto.getEndDetail());
+            assertNotNull(processMonitorDto.getEndTime());
+        }
+
         @SuppressWarnings({"SameParameterValue"})
         private static OrganisationRefreshQueueEntity buildOrganisationRefreshQueueEntity(String organisationId,
                                                                                           Integer accessTypesMinVersion,
