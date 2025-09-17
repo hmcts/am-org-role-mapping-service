@@ -132,7 +132,7 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                 organisation_id = excluded.organisation_id,
                 organisation_status = excluded.organisation_status,
                 organisation_profile_ids  = excluded.organisation_profile_ids
-            where excluded.last_updated > user_refresh_queue.last_updated
+            where excluded.user_last_updated > user_refresh_queue.user_last_updated
             """;
 
         jdbcTemplate.batchUpdate(sql, getParamsFromProfessionalUserDataRows(rows, accessTypeMinVersion));
