@@ -134,7 +134,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_organisation_profiles_retry_3.sql"})
+            scripts = {"classpath:sql/prm/organisation_refresh_queue/insert_organisation_profiles_retry_3.sql"})
     void shouldRollback_AndUpdateRetryToFourAndRetryAfterToNullOnException() {
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
