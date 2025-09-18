@@ -41,6 +41,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -236,7 +237,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138_retry_3.sql"})
     void shouldRollback_AndUpdateRetryToFourAndRetryAfterToNullOnException() {
-        doThrow(ServiceException.class).when(mockUserRefreshQueueRepository).clearUserRefreshRecord(any(), any(), any());
+        doThrow(ServiceException.class).when(mockUserRefreshQueueRepository)
+                .clearUserRefreshRecord(any(), any(), any());
 
         professionalUserService.refreshUsers(processMonitorDto);
 
@@ -264,7 +266,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        ServiceException exception = org.junit.Assert.assertThrows(ServiceException.class, () ->
+        ServiceException exception = assertThrows(ServiceException.class, () ->
                 professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
         );
 
@@ -289,7 +291,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
                 = userRefreshQueueRepository.findAll();
         assertFalse(userRefreshQueueEntities.get(0).getActive());
         assertEquals(0, userRefreshQueueEntities.get(0).getRetry());
-        assertNull(userRefreshQueueEntities.get(0).getRetryAfter());
+        assertTrue(userRefreshQueueEntities.get(0).getRetryAfter()
+                .isAfter(LocalDateTime.now().minusMinutes(3)));
     }
 
     @Test
@@ -338,7 +341,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         accessTypesRepository.deleteAll();
 
         // act
-        Exception exception = org.junit.Assert.assertThrows(ServiceException.class, () ->
+        Exception exception = assertThrows(ServiceException.class, () ->
                 professionalUserService.refreshUsers(processMonitorDto));
 
         // assert

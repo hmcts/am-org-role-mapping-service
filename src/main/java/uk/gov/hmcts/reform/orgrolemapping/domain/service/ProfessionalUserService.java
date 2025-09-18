@@ -2,13 +2,13 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+import uk.gov.hmcts.reform.orgrolemapping.config.ProfessionalUserServiceConfig;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
@@ -84,24 +84,7 @@ public class ProfessionalUserService {
             NamedParameterJdbcTemplate jdbcTemplate,
             PlatformTransactionManager transactionManager,
             ProcessEventTracker processEventTracker,
-            @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryOneIntervalMin}")
-            String retryOneIntervalMin,
-            @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryTwoIntervalMin}")
-            String retryTwoIntervalMin,
-            @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryThreeIntervalMin}")
-            String retryThreeIntervalMin,
-            @Value("${professional.role.mapping.scheduling.userRefresh.retryOneIntervalMin}")
-            String userRetryOneIntervalMin,
-            @Value("${professional.role.mapping.scheduling.userRefresh.retryTwoIntervalMin}")
-            String userRetryTwoIntervalMin,
-            @Value("${professional.role.mapping.scheduling.userRefresh.retryThreeIntervalMin}")
-            String userRetryThreeIntervalMin,
-            @Value("${professional.role.mapping.scheduling.userRefreshCleanup.activeUserRefreshDays}")
-            String activeUserRefreshDays,
-            @Value("${professional.refdata.pageSize}")
-            String pageSize,
-            @Value("${groupAccess.lastRunTimeTolerance}")
-            String tolerance) {
+            ProfessionalUserServiceConfig professionalUserServiceConfig) {
         this.prdService = prdService;
 
         this.accessTypesRepository = accessTypesRepository;
@@ -117,17 +100,17 @@ public class ProfessionalUserService {
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
         this.processEventTracker = processEventTracker;
 
-        this.retryOneIntervalMin = retryOneIntervalMin;
-        this.retryTwoIntervalMin = retryTwoIntervalMin;
-        this.retryThreeIntervalMin = retryThreeIntervalMin;
+        this.retryOneIntervalMin = professionalUserServiceConfig.getOrgRetryOneIntervalMin();
+        this.retryTwoIntervalMin = professionalUserServiceConfig.getOrgRetryTwoIntervalMin();
+        this.retryThreeIntervalMin = professionalUserServiceConfig.getOrgRetryThreeIntervalMin();
 
-        this.userRetryOneIntervalMin = userRetryOneIntervalMin;
-        this.userRetryTwoIntervalMin = userRetryTwoIntervalMin;
-        this.userRetryThreeIntervalMin = userRetryThreeIntervalMin;
+        this.userRetryOneIntervalMin = professionalUserServiceConfig.getUserRetryOneIntervalMin();
+        this.userRetryTwoIntervalMin = professionalUserServiceConfig.getUserRetryTwoIntervalMin();
+        this.userRetryThreeIntervalMin = professionalUserServiceConfig.getUserRetryThreeIntervalMin();
 
-        this.activeUserRefreshDays = activeUserRefreshDays;
-        this.pageSize = pageSize;
-        this.tolerance = tolerance;
+        this.activeUserRefreshDays = professionalUserServiceConfig.getActiveUserRefreshDays();
+        this.pageSize = professionalUserServiceConfig.getPageSize();
+        this.tolerance = professionalUserServiceConfig.getTolerance();
     }
 
     public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(String organisationId) {
@@ -139,8 +122,8 @@ public class ProfessionalUserService {
         String errorMessage;
         if (organisationRefreshQueueEntity.isPresent()) {
             errorMessage =
-                    findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
-                            organisationRefreshQueueEntity.get());
+                findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
+                        organisationRefreshQueueEntity.get());
             if (errorMessage.isEmpty()) {
                 addProcess4Steps(processMonitorDto,
                         List.of(organisationRefreshQueueEntity.get().getOrganisationId()));
@@ -150,9 +133,9 @@ public class ProfessionalUserService {
             processMonitorDto.addProcessStep(errorMessage);
         }
         markProcessStatus(processMonitorDto,
-                errorMessage.isEmpty() ? 1 : 0,
-                errorMessage.isEmpty() ? 0 : 1,
-                errorMessage);
+            errorMessage.isEmpty() ? 1 : 0,
+            errorMessage.isEmpty() ? 0 : 1,
+            errorMessage);
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }
@@ -202,8 +185,8 @@ public class ProfessionalUserService {
             throw ex;
         }
         markProcessStatus(processMonitorDto,
-                successfulJobCount, failedJobCount,
-                errorMessageBuilder.toString());
+            successfulJobCount, failedJobCount,
+            errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }
@@ -371,6 +354,54 @@ public class ProfessionalUserService {
         return processMonitorDto;
     }
 
+    public ProcessMonitorDto refreshUsersBatchMode() {
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        int successfulJobCount = 0;
+        int failedJobCount = 0;
+        String processName = "PRM Process 6 - Refresh users - Batch mode";
+        log.info("Starting {}", processName);
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
+        processEventTracker.trackEventStarted(processMonitorDto);
+
+        while (userRefreshQueueRepository.getActiveUserRefreshQueueCount() >= 1) {
+            try {
+                boolean success = refreshUsers(processMonitorDto);
+                if (success) {
+                    successfulJobCount++;
+                } else {
+                    failedJobCount++;
+                }
+            } catch (Exception e) {
+                errorMessageBuilder.append(e.getMessage());
+                failedJobCount++;
+                log.error("Error occurred while processing user refresh queue", e);
+            }
+        }
+
+        markProcessStatus(processMonitorDto,
+            successfulJobCount, failedJobCount,
+            errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
+    protected void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
+                                   int failedJobCount, String errorMessage) {
+        boolean hasSuccessfulStep = successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0);
+        boolean hasFailedAStep = failedJobCount > 0;
+        if (!hasSuccessfulStep && hasFailedAStep) {
+            processMonitorDto.markAsFailed(errorMessage);
+        }
+
+        if (hasSuccessfulStep && hasFailedAStep) {
+            processMonitorDto.markAsPartialSuccess(errorMessage);
+        }
+
+        if (hasSuccessfulStep && !hasFailedAStep) {
+            processMonitorDto.markAsSuccess();
+        }
+    }
+
     public boolean refreshUsers(ProcessMonitorDto processMonitorDto) throws ServiceException {
 
         UserRefreshQueueEntity userRefreshQueueEntity
@@ -422,23 +453,6 @@ public class ProfessionalUserService {
         }
 
         return isSuccess;
-    }
-
-    protected void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
-                                     int failedJobCount, String errorMessage) {
-        boolean hasSuccessfulStep = successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0);
-        boolean hasFailedAStep = failedJobCount > 0;
-        if (!hasSuccessfulStep && hasFailedAStep) {
-            processMonitorDto.markAsFailed(errorMessage);
-        }
-
-        if (hasSuccessfulStep && hasFailedAStep) {
-            processMonitorDto.markAsPartialSuccess(errorMessage);
-        }
-
-        if (hasSuccessfulStep && !hasFailedAStep) {
-            processMonitorDto.markAsSuccess();
-        }
     }
 
     private void writeAllToUserRefreshQueue(GetRefreshUserResponse getRefreshUserResponse,
