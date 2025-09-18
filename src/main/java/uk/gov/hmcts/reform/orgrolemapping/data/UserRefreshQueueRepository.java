@@ -146,7 +146,7 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                access_types, organisation_id,
                organisation_status, organisation_profile_ids, active, retry, retry_after
         from user_refresh_queue
-        where active and retry < 4
+        where active and retry <= 4
         and retry_after < now()
         limit 1
         for update skip locked""", nativeQuery = true)
@@ -157,7 +157,7 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
         update user_refresh_queue
                               set active = false,
                               retry = 0,
-                              retry_after = null
+                              retry_after = now()
                               where user_id = :userId
                               and last_updated <= :lastUpdated
                               and access_types_min_version <= :accessTypesMinVersion""", nativeQuery = true)
