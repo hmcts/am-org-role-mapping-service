@@ -27,7 +27,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationReques
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
@@ -37,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ISO_DATE_TIME_FORMATTER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.ProfessionalUserBuilder.fromProfessionalUserAndOrganisationInfo;
@@ -136,46 +136,61 @@ public class ProfessionalUserService {
         processEventTracker.trackEventStarted(processMonitorDto);
         Optional<OrganisationRefreshQueueEntity> organisationRefreshQueueEntity =
             organisationRefreshQueueRepository.findById(organisationId);
+        String errorMessage;
         if (organisationRefreshQueueEntity.isPresent()) {
-            collateChildProcessMonitorDtos(processMonitorDto,
-                findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(organisationRefreshQueueEntity.get()));
-
+            errorMessage =
+                findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
+                        organisationRefreshQueueEntity.get());
+            if (errorMessage.isEmpty()) {
+                addProcess4Steps(processMonitorDto,
+                        List.of(organisationRefreshQueueEntity.get().getOrganisationId()));
+            }
         } else {
-            String message = String.format("Organisation with ID %s not found in the refresh queue", organisationId);
-            processMonitorDto.addProcessStep(message);
-            processMonitorDto.markAsFailed(message);
+            errorMessage = String.format("Organisation with ID %s not found in the refresh queue", organisationId);
+            processMonitorDto.addProcessStep(errorMessage);
         }
+        markProcessStatus(processMonitorDto,
+            errorMessage.isEmpty() ? 1 : 0,
+            errorMessage.isEmpty() ? 0 : 1,
+            errorMessage);
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
-    }
-
-    private void collateChildProcessMonitorDtos(
-        ProcessMonitorDto mainProcessMonitorDto,
-        ProcessMonitorDto childProcessMonitorDto) {
-        childProcessMonitorDto.getProcessSteps().forEach(mainProcessMonitorDto::addProcessStep);
-        // Only update the main process monitor if it has not already failed.
-        if (!EndStatus.FAILED.equals(mainProcessMonitorDto.getEndStatus())) {
-            // If the child process is successful, mark the main process as successful.
-            if (EndStatus.SUCCESS.equals(childProcessMonitorDto.getEndStatus())) {
-                mainProcessMonitorDto.markAsSuccess();
-            } else {
-                mainProcessMonitorDto.markAsFailed(childProcessMonitorDto.getEndDetail());
-            }
-        }
     }
 
     public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
         log.info("Starting {}", PROCESS_4_NAME);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_4_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        int successfulJobCount = 0;
+        int failedJobCount = 0;
+        List<String> organisationInfo = new ArrayList<>();
+        String errorMessage;
         try {
             boolean anyEntitiesInQueue = true;
             while (anyEntitiesInQueue) {
-                OrganisationRefreshQueueEntity organisationRefreshQueueEntity = organisationRefreshQueueRepository
-                    .findAndLockSingleActiveOrganisationRecord();
-                collateChildProcessMonitorDtos(processMonitorDto,
-                    findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(organisationRefreshQueueEntity));
+                OrganisationRefreshQueueEntity organisationRefreshQueueEntity =
+                        organisationRefreshQueueRepository.findAndLockSingleActiveOrganisationRecord();
+                if (organisationRefreshQueueEntity != null) {
+                    organisationInfo.add(organisationRefreshQueueEntity.getOrganisationId());
+                    errorMessage =
+                            findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
+                                    organisationRefreshQueueEntity);
+                    boolean isSuccess = errorMessage.isEmpty();
+                    if (isSuccess) {
+                        successfulJobCount++;
+                    } else {
+                        failedJobCount++;
+                        errorMessageBuilder.append(errorMessage);
+                    }
+                }
                 anyEntitiesInQueue = organisationRefreshQueueEntity != null;
+            }
+            if (successfulJobCount == 0 && failedJobCount == 0) {
+                processMonitorDto.addProcessStep("No entities to process");
+                log.info("Completed {}. No entities to process", PROCESS_4_NAME);
+            } else {
+                addProcess4Steps(processMonitorDto, organisationInfo);
             }
         } catch (ServiceException ex) {
             String message = String.format("Error occurred while processing organisation: %s",
@@ -186,73 +201,65 @@ public class ProfessionalUserService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw ex;
         }
+        markProcessStatus(processMonitorDto,
+            successfulJobCount, failedJobCount,
+            errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }
 
-    private ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
+    private void addProcess4Steps(ProcessMonitorDto processMonitorDto, List<String> organisationInfo) {
+        processMonitorDto.addProcessStep("attempting upsertToUserRefreshQueue for "
+                + organisationInfo.size() + " organisations");
+        String processStep = "=" + organisationInfo
+                .stream().map(o -> o + ",").collect(Collectors.joining());
+        processMonitorDto.appendToLastProcessStep(processStep);
+    }
+
+    private String findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueByEntity(
         OrganisationRefreshQueueEntity organisationRefreshQueueEntity
     ) {
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
+        String organisationIdentifier = organisationRefreshQueueEntity.getOrganisationId();
 
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_4_NAME);
+        UsersByOrganisationRequest request = new UsersByOrganisationRequest(
+                List.of(organisationIdentifier)
+        );
 
-        try {
-            if (organisationRefreshQueueEntity == null) {
-                processMonitorDto.addProcessStep("No entities to process");
-                processMonitorDto.markAsSuccess();
-                log.info("Completed {}. No entities to process", PROCESS_4_NAME);
-                return processMonitorDto;
-            }
+        boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+            try {
+                retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
 
-            Integer accessTypesMinVersion = organisationRefreshQueueEntity.getAccessTypesMinVersion();
-            String organisationIdentifier = organisationRefreshQueueEntity.getOrganisationId();
-
-            UsersByOrganisationRequest request = new UsersByOrganisationRequest(
-                    List.of(organisationIdentifier)
-            );
-
-            boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
-                try {
-                    retrieveUsersByOrganisationAndUpsert(request, accessTypesMinVersion);
-
-                    organisationRefreshQueueRepository.clearOrganisationRefreshRecord(
-                            organisationIdentifier,
-                            accessTypesMinVersion,
-                            organisationRefreshQueueEntity.getLastUpdated()
-                    );
-                    processMonitorDto.markAsSuccess();
-
-                    return true;
-                } catch (Exception ex) {
-                    String message = String.format("Error occurred while processing organisation: %s. Retry attempt "
-                                    + "%d. Rolling back.",
-                            organisationIdentifier, organisationRefreshQueueEntity.getRetry());
-                    processMonitorDto.addProcessStep(message);
-                    processMonitorDto.markAsFailed(ex.getMessage());
-                    log.error(message, ex);
-                    status.setRollbackOnly();
-                    return false;
-                }
-            }));
-
-            if (!isSuccess) {
-                organisationRefreshQueueRepository.updateRetry(
-                        organisationIdentifier, retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin
+                organisationRefreshQueueRepository.clearOrganisationRefreshRecord(
+                        organisationIdentifier,
+                        accessTypesMinVersion,
+                        organisationRefreshQueueEntity.getLastUpdated()
                 );
 
-                // to avoid another round trip to the database, use the current retry attempt.
-                if (organisationRefreshQueueEntity.getRetry() == 3) {
-                    throw new ServiceException("Retry limit reached");
-                }
+                return true;
+            } catch (Exception ex) {
+                String message = String.format("Error occurred while processing organisation: %s. Retry attempt "
+                                + "%d. Rolling back.",
+                        organisationIdentifier, organisationRefreshQueueEntity.getRetry());
+                errorMessageBuilder.append(ex.getMessage());
+                log.error(message, ex);
+                status.setRollbackOnly();
+                return false;
             }
-        } catch (Exception e) {
-            processMonitorDto.markAsFailed(e.getMessage());
-            processEventTracker.trackEventCompleted(processMonitorDto);
-            throw e;
-        }
+        }));
 
-        log.info("Completed {}", PROCESS_4_NAME);
-        return processMonitorDto;
+        if (!isSuccess) {
+            organisationRefreshQueueRepository.updateRetry(
+                    organisationIdentifier, retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin
+            );
+
+            // to avoid another round trip to the database, use the current retry attempt.
+            if (organisationRefreshQueueEntity.getRetry() == 3) {
+                throw new ServiceException("Retry limit reached");
+            }
+        }
+        return errorMessageBuilder.toString();
     }
 
     private void retrieveUsersByOrganisationAndUpsert(UsersByOrganisationRequest request,
@@ -389,15 +396,16 @@ public class ProfessionalUserService {
         }
 
         markProcessStatus(processMonitorDto,
-            successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0),
-            failedJobCount > 0,
+            successfulJobCount, failedJobCount,
             errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }
 
-    private void markProcessStatus(ProcessMonitorDto processMonitorDto, boolean hasSuccessfulStep,
-        boolean hasFailedAStep, String errorMessage) {
+    protected void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
+                                   int failedJobCount, String errorMessage) {
+        boolean hasSuccessfulStep = successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0);
+        boolean hasFailedAStep = failedJobCount > 0;
         if (!hasSuccessfulStep && hasFailedAStep) {
             processMonitorDto.markAsFailed(errorMessage);
         }
