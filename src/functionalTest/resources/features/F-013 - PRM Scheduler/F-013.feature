@@ -54,7 +54,6 @@ Feature: F-013 : PRM Scheduler
     Then a positive response is received,
     And the response has all other details as expected.
 
-
   @Ignore
   @S-013.06
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)

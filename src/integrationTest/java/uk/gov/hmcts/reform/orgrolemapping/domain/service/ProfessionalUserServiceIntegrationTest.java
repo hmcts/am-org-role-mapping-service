@@ -35,6 +35,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -163,8 +164,10 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
                 .thenReturn(ResponseEntity.ok(response));
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        ProcessMonitorDto processMonitorDto =
+                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
         assertEquals(1, userRefreshQueueRepository.findAll().size());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
@@ -217,8 +220,10 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+        ProcessMonitorDto processMonitorDto =
+                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
+        assertEquals(EndStatus.FAILED, processMonitorDto.getEndStatus());
         assertEquals(0, userRefreshQueueRepository.findAll().size());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
@@ -320,8 +325,10 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.retrieveUsers(any(), anyInt(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response1));
 
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+        ProcessMonitorDto processMonitorDto =
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
         assertEquals(1, userRefreshQueueRepository.findAll().size());
     }
 
@@ -361,8 +368,10 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.retrieveUsers(any(), anyInt(), any(String.class)))
                 .thenReturn(ResponseEntity.ok(response2));
 
-        professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
+        ProcessMonitorDto processMonitorDto =
+                professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue();
 
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
         assertEquals(2, userRefreshQueueRepository.findAll().size());
 
         LocalDateTime postTestLastBatchRunTime = getLastUserRunDatetime();

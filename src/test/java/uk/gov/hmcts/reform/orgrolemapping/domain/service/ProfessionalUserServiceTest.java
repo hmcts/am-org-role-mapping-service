@@ -155,6 +155,41 @@ class ProfessionalUserServiceTest {
         }
 
         @Test
+        void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById_SingleOrgEntity() {
+
+            // GIVEN
+            OrganisationRefreshQueueEntity organisationRefreshQueueEntity
+                    = buildOrganisationRefreshQueueEntity("1", 1, true);
+
+            when(organisationRefreshQueueRepository.findById(
+                    organisationRefreshQueueEntity.getOrganisationId()))
+                    .thenReturn(Optional.of(organisationRefreshQueueEntity));
+
+            ProfessionalUser professionalUser = buildProfessionalUser(1);
+            UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(1, List.of(professionalUser));
+            UsersByOrganisationResponse response =
+                    buildUsersByOrganisationResponse(List.of(usersOrganisationInfo), "1", "1", false);
+
+            when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+                    .thenReturn(ResponseEntity.ok(response));
+
+            // WHEN
+            ProcessMonitorDto processMonitorDto = professionalUserService
+                    .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById("1");
+
+            // THEN
+            assertNotNull(processMonitorDto);
+            verify(userRefreshQueueRepository, times(1))
+                    .upsertToUserRefreshQueue(any(), any(), any());
+            verify(organisationRefreshQueueRepository, times(1))
+                    .clearOrganisationRefreshRecord(any(), any(), any());
+
+            verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+            assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                    .isEqualTo(EndStatus.SUCCESS);
+        }
+
+        @Test
         void findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue_MultipleOrgEntity() {
 
             // GIVEN
@@ -396,6 +431,32 @@ class ProfessionalUserServiceTest {
             verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
+        }
+
+        @Test
+        void markProcessStatusSuccessTest() {
+            markProcessStatusTest(2, 0, null, EndStatus.SUCCESS);
+        }
+
+        @Test
+        void markProcessStatusPartialSuccessTest() {
+            markProcessStatusTest(1, 1, "Error-msg", EndStatus.PARTIAL_SUCCESS);
+        }
+
+        @Test
+        void markProcessStatusFailedTest() {
+            markProcessStatusTest(0, 1, "Error-msg", EndStatus.FAILED);
+        }
+
+        private void markProcessStatusTest(int successfulJobCount,
+                                           int failedJobCount, String errorMessage, EndStatus endStatus) {
+            ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("test-process");
+            professionalUserService.markProcessStatus(processMonitorDto, successfulJobCount,
+                    failedJobCount, errorMessage);
+
+            assertEquals(endStatus, processMonitorDto.getEndStatus());
+            assertEquals(errorMessage, processMonitorDto.getEndDetail());
+            assertNotNull(processMonitorDto.getEndTime());
         }
 
         @SuppressWarnings({"SameParameterValue"})
