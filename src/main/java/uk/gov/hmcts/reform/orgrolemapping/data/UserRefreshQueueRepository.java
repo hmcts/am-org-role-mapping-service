@@ -175,9 +175,9 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
             + "else 4 "
             + "end, "
             + "retry_after = case "
-            + "when retry = 0 then now() + (interval '1' Minute) * :retryOneIntervalMin "
-            + "when retry = 1 then now() + (interval '1' Minute) * :retryTwoIntervalMin "
-            + "when retry = 2 then now() + (interval '1' Minute) * :retryThreeIntervalMin "
+            + "when retry = 0 then now() + (interval '1' Minute) * CAST(:retryOneIntervalMin AS INTEGER) "
+            + "when retry = 1 then now() + (interval '1' Minute) * CAST(:retryTwoIntervalMin AS INTEGER) "
+            + "when retry = 2 then now() + (interval '1' Minute) * CAST(:retryThreeIntervalMin AS INTEGER) "
             + "else NULL "
             + "end "
             + "where user_id = :userId", nativeQuery = true)
