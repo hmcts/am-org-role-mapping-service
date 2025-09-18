@@ -291,7 +291,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
                 = userRefreshQueueRepository.findAll();
         assertFalse(userRefreshQueueEntities.get(0).getActive());
         assertEquals(0, userRefreshQueueEntities.get(0).getRetry());
-        assertNull(userRefreshQueueEntities.get(0).getRetryAfter());
+        assertTrue(userRefreshQueueEntities.get(0).getRetryAfter()
+                .isAfter(LocalDateTime.now().minusMinutes(3)));
     }
 
     @Test
