@@ -136,7 +136,7 @@ feign:
         url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
-      prdclient:
+      prdClient:
         url: ${PROFESSIONAL_REF_APP_URL:http://localhost:8090}
       ccdClient:
         url: ${CCD_DEF_STORE_APP_URL:http://localhost:4451}

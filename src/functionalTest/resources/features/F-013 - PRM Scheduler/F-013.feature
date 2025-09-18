@@ -53,3 +53,16 @@ Feature: F-013 : PRM Scheduler
     And it is submitted to call the [Find User Changes] operation of [Organisation Role Mapping],
     Then a positive response is received,
     And the response has all other details as expected.
+
+  @Ignore
+  @S-013.06
+  @FeatureToggle(EV:PRM_FTA_ENABLED=on)
+  Scenario: trigger PRM scheduler process 6 - Process User Refresh Queue
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to make the USER refresh queue value active] as in [S-013.06_MakeUserRefreshQueueValueActive]
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Process User Refresh Queue] operation of [Organisation Role Mapping],
+    Then a positive response is received,
+    And the response has all other details as expected,
+    And a successful call [to verify the USER exists in the refresh queue and is not active] as in [S-013.06_VerifyUserRefreshQueueValueIsNotActive]
+    And a successful call [to make the USER refresh queue value active] as in [S-013.06_MakeUserRefreshQueueValueActive]

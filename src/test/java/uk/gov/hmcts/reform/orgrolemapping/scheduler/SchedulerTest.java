@@ -3,26 +3,17 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
-import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CaseDefinitionService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,7 +23,7 @@ import static org.mockito.Mockito.when;
 class SchedulerTest {
 
     @Mock
-    private CaseDefinitionService caseDefinitionService = mock(CaseDefinitionService.class);
+    private CaseDefinitionService caseDefinitionService;
 
     @Mock
     private OrganisationService organisationService;
@@ -40,20 +31,8 @@ class SchedulerTest {
     @Mock
     private ProfessionalUserService professionalUserService;
 
-    @Mock
-    private UserRefreshQueueRepository userRefreshQueueRepository;
-
-    @Mock
-    private ProcessEventTracker processEventTracker;
-
     @InjectMocks
     private Scheduler scheduler;
-
-    @Captor
-    private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
-
-    @Captor
-    private ArgumentCaptor<ProcessEventTracker> processEventTrackerArgumentCaptor;
 
     @BeforeEach
     void setUp() {
@@ -70,6 +49,7 @@ class SchedulerTest {
         ProcessMonitorDto returnedProcessMonitorDto = scheduler.findAndUpdateCaseDefinitionChanges();
 
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(caseDefinitionService, times(1)).findAndUpdateCaseDefinitionChanges();
     }
 
@@ -138,74 +118,21 @@ class SchedulerTest {
         verify(professionalUserService, times(1)).findUserChangesAndInsertIntoUserRefreshQueue();
     }
 
-
+    // PRM Process 6
     @Test
-    void processUserRefreshQueue_start_and_mark_success_and_completed_when_all_entities_are_succesful() {
+    void processUserRefreshQueueTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
         // arrange
-        when(userRefreshQueueRepository.getActiveUserRefreshQueueCount()).thenReturn(1L).thenReturn(0L);
-        when(professionalUserService.refreshUsers(any())).thenReturn(true);
+        when(professionalUserService.refreshUsersBatchMode()).thenReturn(processMonitorDto);
 
         // act
-        scheduler.processUserRefreshQueue();
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler.processUserRefreshQueue();
 
         // assert
-        verify(processEventTracker, times(1)).trackEventStarted(processMonitorDtoArgumentCaptor.capture());
-        verify(processEventTracker, times(1)).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-
-        List<ProcessMonitorDto> capturedArguments = processMonitorDtoArgumentCaptor.getAllValues();
-        assertEquals(EndStatus.SUCCESS, capturedArguments.get(0).getEndStatus());
-    }
-
-    @Test
-    void processUserRefreshQueue_start_and_mark_failure_and_completed_when_no_entities_are_successful() {
-        // arrange
-        when(userRefreshQueueRepository.getActiveUserRefreshQueueCount()).thenReturn(1L).thenReturn(0L);
-        when(professionalUserService.refreshUsers(any())).thenReturn(false);
-
-        // act
-        scheduler.processUserRefreshQueue();
-
-        // assert
-        verify(processEventTracker, times(1)).trackEventStarted(processMonitorDtoArgumentCaptor.capture());
-        verify(processEventTracker, times(1)).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-
-        List<ProcessMonitorDto> capturedArguments = processMonitorDtoArgumentCaptor.getAllValues();
-        assertEquals(EndStatus.FAILED, capturedArguments.get(0).getEndStatus());
-    }
-
-    @Test
-    void processUserRefreshQueue_start_and_mark_partial_success_and_completed_when_some_entities_are_successful() {
-        // arrange
-        when(userRefreshQueueRepository.getActiveUserRefreshQueueCount()).thenReturn(2L).thenReturn(1L).thenReturn(0L);
-        when(professionalUserService.refreshUsers(any())).thenReturn(true).thenReturn(false);
-
-        // act
-        scheduler.processUserRefreshQueue();
-
-        // assert
-        verify(processEventTracker, times(1)).trackEventStarted(processMonitorDtoArgumentCaptor.capture());
-        verify(processEventTracker, times(1)).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-
-        List<ProcessMonitorDto> capturedArguments = processMonitorDtoArgumentCaptor.getAllValues();
-        assertEquals(EndStatus.PARTIAL_SUCCESS, capturedArguments.get(0).getEndStatus());
-    }
-
-    @Test
-    void processUserRefreshQueue_treatAnExceptionAsFailedStep() {
-        // arrange
-        when(userRefreshQueueRepository.getActiveUserRefreshQueueCount()).thenReturn(1L).thenReturn(0L);
-        when(professionalUserService.refreshUsers(any()))
-                .thenThrow(new ServiceException("Single AccessTypesEntity not found"));
-
-        // act
-        scheduler.processUserRefreshQueue();
-
-        // assert
-        verify(processEventTracker, times(1)).trackEventStarted(processMonitorDtoArgumentCaptor.capture());
-        verify(processEventTracker, times(1)).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
-
-        List<ProcessMonitorDto> capturedArguments = processMonitorDtoArgumentCaptor.getAllValues();
-        assertEquals(EndStatus.FAILED, capturedArguments.get(0).getEndStatus());
+        assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
+        verify(professionalUserService, times(1)).refreshUsersBatchMode();
     }
 
 }
