@@ -67,12 +67,19 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     static final String DUMMY_AUTH_TOKEN = "DUMMY_AUTH_TOKEN";
     static final String DUMMY_S2S_TOKEN = "DUMMY_S2S_TOKEN";
 
+    public static final UUID STUB_ID_RAS_CREATE_ROLEASSIGNMENTS
+        = UUID.fromString("0bfabe25-fd57-4f8a-9882-911b53857258");
+
     public static final UUID STUB_ID_PRD_RETRIEVE_USERS
         = UUID.fromString("47f05020-f89c-46ea-93f4-063f09ba96c0");
 
     protected static final String MORE_AVAILABLE = "moreAvailable";
     protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
     protected static final String SEARCH_AFTER = "searchAfter";
+
+    public static final UUID STUB_ID_RAS_RETRIEVE_USERSBYORG
+            = UUID.fromString("8468dbb3-14b9-4fd2-b9d8-0620a8fc1e94");
+
     public static final String JURISDICTION_ID_CIVIL = "CIVIL";
     public static final String JURISDICTION_ID_PUBLICLAW = "PUBLICLAW";
 
@@ -186,7 +193,52 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         log.info("   Body: {}", loggedResponse.getBodyAsString());
         log.info("-----------------------------------------------------");
     }
-    
+
+    protected void stubRasCreateRoleAssignment(List<String> fileNames,
+                                               EndStatus endStatus) {
+        stubRasCreateRoleAssignment(
+                fileNames.size() == 0 ? "{}" :
+                        """
+                        {
+                            "links": [],
+                            "roleAssignmentResponse": {
+                                "roleRequest": {
+                                    "id": "2fe5b5fb-fb01-4398-85ce-bbe34b7f374c",
+                                    "authenticatedUserId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b9",
+                                    "correlationId": "01f6e7e2-c66c-44a0-a7e4-73c1507c92b7",
+                                    "assignerId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b9",
+                                    "requestType": "CREATE",
+                                    "process": "businessProcess1",
+                                    "reference": "50b143cb-5644-4103-b37f-ee7005ca24d6",
+                                    "replaceExisting": true,
+                                    "status": "APPROVED",
+                                    "created": "2020-11-19T11:42:13.454994",
+                                    "log": "Request has been Approved"
+                                },
+                                "requestedRoles": """ + jsonHelper.readJsonArrayFromFiles(fileNames) + """
+                }
+            }""",
+                endStatus
+        );
+    }
+
+    protected void stubRasCreateRoleAssignment(String body,
+                                               EndStatus endStatus) {
+        HttpHeaders headers = new HttpHeaders()
+                .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE));
+
+        int httpStatus = EndStatus.FAILED.equals(endStatus)
+                ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                "/am/role-assignments"))
+                .withId(STUB_ID_RAS_CREATE_ROLEASSIGNMENTS)
+                .willReturn(aResponse()
+                        .withStatus(httpStatus)
+                        .withHeaders(headers)
+                        .withBody(body)));
+    }
+
     protected void stubPrdRetrieveUsers(List<String> fileNames,
         String moreAvailable, String lastRecordInPage, String pageSize, String searchAfter) {
         stubPrdRetrieveUsers(
