@@ -194,36 +194,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         log.info("-----------------------------------------------------");
     }
 
-    protected void stubRasCreateRoleAssignment(List<String> fileNames,
-                                               EndStatus endStatus) {
-        stubRasCreateRoleAssignment(
-                fileNames.size() == 0 ? "{}" :
-                        """
-                        {
-                            "links": [],
-                            "roleAssignmentResponse": {
-                                "roleRequest": {
-                                    "id": "2fe5b5fb-fb01-4398-85ce-bbe34b7f374c",
-                                    "authenticatedUserId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b9",
-                                    "correlationId": "01f6e7e2-c66c-44a0-a7e4-73c1507c92b7",
-                                    "assignerId": "5ff9f67c-8605-428d-96b8-9ea7ac8e99b9",
-                                    "requestType": "CREATE",
-                                    "process": "businessProcess1",
-                                    "reference": "50b143cb-5644-4103-b37f-ee7005ca24d6",
-                                    "replaceExisting": true,
-                                    "status": "APPROVED",
-                                    "created": "2020-11-19T11:42:13.454994",
-                                    "log": "Request has been Approved"
-                                },
-                                "requestedRoles": """ + jsonHelper.readJsonArrayFromFiles(fileNames) + """
-                }
-            }""",
-                endStatus
-        );
-    }
-
-    protected void stubRasCreateRoleAssignment(String body,
-                                               EndStatus endStatus) {
+    protected void stubRasCreateRoleAssignment(EndStatus endStatus) {
         HttpHeaders headers = new HttpHeaders()
                 .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE));
 
@@ -236,7 +207,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                 .willReturn(aResponse()
                         .withStatus(httpStatus)
                         .withHeaders(headers)
-                        .withBody(body)));
+                        .withBody("{}")));
     }
 
     protected void stubPrdRetrieveUsers(List<String> fileNames,
