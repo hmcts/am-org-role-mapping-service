@@ -16,8 +16,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,22 +61,10 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
     }
+    
 
     /**
-     * User - accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = Y.
-     */
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_nnn.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
-    })
-    void testCreateRole_User_nnn() throws JsonProcessingException {
-        testSingleRole(true);
-    }
-
-    /**
-     * Org - accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
+     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -80,25 +72,25 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_Org_nnn() throws JsonProcessingException {
-        testSingleRole(false);
+    void testCreateRole_nnnn() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
     }
 
     /**
-     * User - accessDefault = Y, accessMandatory = N, groupAccessEnabled = N, PRDenabled = Y.
+     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_ynn.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+            "classpath:sql/prm/access_types/insert_accesstypes_nnn.sql",
+            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_User_ynn() throws JsonProcessingException {
-        testSingleRole(true);
+    void testCreateRole_nnny() throws JsonProcessingException {
+        testCreateRoleAssignment(true, false);
     }
 
     /**
-     * Org - accessDefault = Y, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
+     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -106,12 +98,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_Org_ynn() throws JsonProcessingException {
-        testSingleRole(false);
+    void testCreateRole_ynnn() throws JsonProcessingException {
+        testCreateRoleAssignment(true, false);
     }
 
     /**
-     * User - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = Y.
+     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -119,12 +111,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_User_yyn() throws JsonProcessingException {
-        testSingleRole(true);
+    void testCreateRole_yyny() throws JsonProcessingException {
+        testCreateRoleAssignment(true, false);
     }
 
     /**
-     * Org - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = N.
+     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -132,12 +124,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_Org_yyn() throws JsonProcessingException {
-        testSingleRole(false);
+    void testCreateRole_yynn() throws JsonProcessingException {
+        testCreateRoleAssignment(true, false);
     }
 
     /**
-     * User - accessDefault = N, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = Y.
+     *  accessDefault = N, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -145,12 +137,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_User_nyn() throws JsonProcessingException {
-        testSingleRole(true);
+    void testCreateRole_nyny() throws JsonProcessingException {
+        testCreateRoleAssignment(true, false);
     }
 
     /**
-     * Org - accessDefault = N, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = N.
+     *  accessDefault = N, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -158,12 +150,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_Org_nyn() throws JsonProcessingException {
-        testSingleRole(false);
+    void testCreateRole_nynn() throws JsonProcessingException {
+        testCreateRoleAssignment(true, false);
     }
 
     /**
-     * User - accessDefault = N, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Y.
+     *  accessDefault = N, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -171,12 +163,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_User_nyy() throws JsonProcessingException {
-        testSingleRole(true);
+    void testCreateRole_nyyy() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
     /**
-     * Org - accessDefault = N, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = N.
+     *  accessDefault = N, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -184,12 +176,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_Org_nyy() throws JsonProcessingException {
-        testSingleRole(false);
+    void testCreateRole_nyyn() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
     /**
-     * User - accessDefault = N, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = Y.
+     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -197,25 +189,26 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_User_nny() throws JsonProcessingException {
-        testSingleRole(true);
+    void testCreateRole_nnyy() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
     /**
-     * Org - accessDefault = N, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = N.
+     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_nny.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+            "classpath:sql/prm/access_types/insert_accesstypes_nny.sql",
+            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_Org_nny() throws JsonProcessingException {
-        testSingleRole(false);
+    void testCreateRole_nnyn() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
     }
+    
 
     /**
-     * User - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Y.
+     * accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -223,12 +216,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_User_yyy() throws JsonProcessingException {
-        testSingleRole(true);
+    void testCreateRole_yyyy() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
     /**
-     * Org - accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = N.
+     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -236,12 +229,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_Org_yyy() throws JsonProcessingException {
-        testSingleRole(false);
+    void testCreateRole_yyyn() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
     /**
-     * User - accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = Y.
+     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -249,12 +242,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_User_yny() throws JsonProcessingException {
-        testSingleRole(true);
+    void testCreateRole_ynyy() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
     /**
-     * Org - accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = N.
+     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -262,11 +255,12 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_Org_yny() throws JsonProcessingException {
-        testSingleRole(false);
+    void testCreateRole_ynyn() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
-    abstract void testSingleRole(boolean user);
+    abstract void testCreateRoleAssignment(boolean orgRole, boolean groupRole);
+
 
     //#region Assertion Helpers: DB Checks
 
@@ -324,4 +318,39 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
                 "Response status mismatch");
     }
+
+    protected void assertAssignmentRequest(boolean expectedOrganisationRole, boolean expectedGroupRole) {
+        AssignmentRequest assignmentRequest = getAssignmentRequest();
+        assertNotNull(assignmentRequest, "No AssignmentRequest found");
+        int noOfRoles = (expectedOrganisationRole ? 1 : 0) + (expectedGroupRole ? 1 : 0);
+        assertEquals(noOfRoles, assignmentRequest.getRequestedRoles().size(),
+                "Unexpected number of requestedRoles in AssignmentRequest");
+        boolean actualOrganisation = false;
+        boolean actualGroup = false;
+        for (RoleAssignment roleAssignment : assignmentRequest.getRequestedRoles()) {
+            if (isGroupRole(roleAssignment)) {
+                actualGroup = true;
+            } else {
+                actualOrganisation = true;
+            }
+        }
+        assertEquals(expectedOrganisationRole, actualOrganisation, "Organisation role missing");
+        assertEquals(expectedGroupRole, actualGroup, "Group role missing");
+    }
+
+    private boolean isGroupRole(RoleAssignment roleAssignment) {
+        return roleAssignment.getAttributes().containsKey("caseAccessGroupId");
+    }
+
+    private AssignmentRequest getAssignmentRequest() {
+        Map<String, AssignmentRequest> mapOfRequests;
+        try {
+            mapOfRequests = RoleAssignmentAssertIntegrationHelper.getMapOfRasRequests();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        assertEquals(1, mapOfRequests.size(), "Unexpected number of requests to RAS");
+        return mapOfRequests.values().stream().findFirst().orElseThrow();
+    }
+
 }
