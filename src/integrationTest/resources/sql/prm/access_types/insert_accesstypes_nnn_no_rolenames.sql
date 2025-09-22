@@ -1,0 +1,5 @@
+DELETE FROM access_types;
+
+-- accessDefault=false, accessMandatory=false, groupAccessEnabled=false
+INSERT INTO public.access_types (version, access_types)
+VALUES (50, '{"organisationProfiles": [{"jurisdictions": [{"accessTypes": [{"roles": [{"caseTypeId": "CaseAccessGroups_Casetype", "groupRoleName": "", "groupAccessEnabled": false, "caseGroupIdTemplate": "BEFTA_JURISDICTION_1:$ORGID$", "organisationalRoleName": ""}, {"caseTypeId": "CaseAccessGroups_Casetype", "groupAccessEnabled": false, "organisationalRoleName": ""}], "accessTypeId": "BEFTA_ACCESSTYPE_1", "accessDefault": false, "accessMandatory": false}], "jurisdictionId": "BEFTA_JURISDICTION_1"}, {"accessTypes": [{"roles": [{"caseTypeId": "FT_CaseAccessGroups", "groupRoleName": "", "groupAccessEnabled": false, "caseGroupIdTemplate": "BEFTA_MASTER:$ORGID$", "organisationalRoleName": ""}, {"caseTypeId": "FT_CaseAccessGroups", "groupAccessEnabled": false, "organisationalRoleName": ""}], "accessTypeId": "BEFTA_ACCESSTYPE_2", "accessDefault": false, "accessMandatory": false}], "jurisdictionId": "BEFTA_JURISDICTION_2"}], "organisationProfileId": "ORGPROFILE1"}]}');
