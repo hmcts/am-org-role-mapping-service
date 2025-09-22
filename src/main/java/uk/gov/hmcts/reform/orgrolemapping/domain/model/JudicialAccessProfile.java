@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -30,4 +32,20 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
     private List<Authorisation> authorisations;
     private List<String> roles;
     private String status;
+
+    @JsonIgnore
+    public boolean isFeePaid() {
+        return AppointmentType.isFeePaid(appointmentType);
+    }
+
+    @JsonIgnore
+    public boolean isSalaried() {
+        return AppointmentType.isSalaried(appointmentType);
+    }
+
+    @JsonIgnore
+    public boolean isVoluntary() {
+        return AppointmentType.isVoluntary(appointmentType);
+    }
+
 }
