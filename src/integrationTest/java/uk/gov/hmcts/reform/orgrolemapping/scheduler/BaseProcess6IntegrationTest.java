@@ -100,9 +100,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_nnn_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_nnn_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_nnny_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
@@ -123,9 +123,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_ynn_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_ynn_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_ynnn_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
@@ -146,9 +146,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_yyn_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_yyn_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_yyny_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
@@ -192,9 +192,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_nyn_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_nyn_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_nyny_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
@@ -215,9 +215,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_nyn_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_nyn_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_nynn_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
@@ -238,9 +238,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_nyy_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_nyy_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_nyyy_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
@@ -261,9 +261,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_nyy_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_nyy_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_nyyn_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
@@ -284,9 +284,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_nny_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_nny_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_nnyy_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
@@ -321,9 +321,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_yyy_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_yyy_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_yyyy_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
@@ -357,9 +357,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_yny_no_rolenames.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_yny_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_ynyy_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
