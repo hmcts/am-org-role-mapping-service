@@ -235,8 +235,12 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private boolean isAccessEnabled(OrganisationProfileAccessType accessType, List<UserAccessType> userAccessTypes) {
         return accessType.isAccessMandatory()
-               || accessType.isAccessDefault() && userAccessTypes == null
-               || userAccessTypes != null && userAccessTypes.stream()
+               || accessType.isAccessDefault() && !isActiveAccessTypes(userAccessTypes)
+               || isActiveAccessTypes(userAccessTypes);
+    }
+
+    private boolean isActiveAccessTypes(List<UserAccessType> accessTypes) {
+        return accessTypes != null && accessTypes.stream()
                 .anyMatch(userAccessType -> Boolean.TRUE.equals(userAccessType.getEnabled()));
     }
 
