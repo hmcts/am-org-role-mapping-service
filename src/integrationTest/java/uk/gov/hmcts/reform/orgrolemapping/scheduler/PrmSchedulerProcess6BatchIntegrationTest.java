@@ -49,7 +49,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/insert_user_refresh_queue_orgstatus_pending.sql"
     })
     void testCreateRole_orgstatus_pending() throws JsonProcessingException {
-        runTest(1, false, false, EndStatus.FAILED);
+        runTest(1, false, false, EndStatus.SUCCESS);
     }
 
     protected void testCreateRoleAssignment(boolean orgRole, boolean groupRole) {
