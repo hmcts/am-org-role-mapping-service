@@ -113,7 +113,14 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private void generateRoleAssignments(UserRefreshQueueEntity userRefreshQueue, AccessTypesEntity accessTypes) {
         if (userRefreshQueue.getAccessTypesMinVersion() > accessTypes.getVersion().intValue()) {
-            return;
+            String errorMessage = String.format(
+                    "User %s has access types version %d which is higher than the latest version %d",
+                    userRefreshQueue.getUserId(),
+                    userRefreshQueue.getAccessTypesMinVersion(),
+                    accessTypes.getVersion().intValue()
+            );
+            log.error(errorMessage);
+            throw new ServiceException(errorMessage);
         }
         AssignmentRequest assignmentRequest =
                 createAssignmentRequest(userRefreshQueue, accessTypes);

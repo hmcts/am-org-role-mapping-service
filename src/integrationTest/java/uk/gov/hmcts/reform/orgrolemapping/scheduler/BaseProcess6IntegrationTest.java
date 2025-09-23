@@ -24,12 +24,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.IOException;
 import java.util.Map;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -70,7 +70,7 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
     }
-    
+
 
     /**
      *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
@@ -378,6 +378,16 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         testCreateRoleAssignment(true, true);
     }
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yny_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+    })
+    void testCreateRole_ynyn_no_rolenames() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
+    }
+
     abstract void testCreateRoleAssignment(boolean orgRole, boolean groupRole);
 
 
@@ -389,11 +399,13 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         assertEquals(actualResponse.getBody(), Map.of("Message", SUCCESS_ROLE_REFRESH));
     }
 
-    protected void assertTotalUserRefreshQueueEntitiesInDb(int expectedNumberOfRecords) {
+    protected void assertTotalUserRefreshQueueEntitiesInDb(int expectedNumberOfRecords,
+                                                           EndStatus endStatus) {
         var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
         assertEquals(expectedNumberOfRecords, userRefreshQueueEntities.size(),
                 "UserRefreshQueueEntity number of records mismatch");
-        assertEquals(0, userRefreshQueueEntities.stream()
+        assertEquals(EndStatus.SUCCESS.equals(endStatus) ? 0 : expectedNumberOfRecords,
+                userRefreshQueueEntities.stream()
                         .filter(entity -> entity.getActive()).count(),
                 "UserRefreshQueueEntity number of active records mismatch");
     }
