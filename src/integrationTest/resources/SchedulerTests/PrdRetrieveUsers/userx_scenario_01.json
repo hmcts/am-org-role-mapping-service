@@ -6,14 +6,14 @@
     "organisationIdentifier": "ORG1",
     "status": "ACTIVE",
     "lastUpdated": "2023-09-20T16:36:33.653",
-    "organisationProfileIds": ["SOLICITOR_PROFILE"]
+    "organisationProfileIds": ["ORGPROFILE1"]
   },
   "userAccessTypes":
   [
     {
-      "jurisdictionId": "BEFTA_JURISDICTION_1",
-      "organisationProfileId": "SOLICITOR_PROFILE",
-      "accessTypeId": "BEFTA_ACCESSTYPE_1",
+      "jurisdictionId": "BEFTA_JURISDICTION_2",
+      "organisationProfileId": "ORGPROFILE1",
+      "accessTypeId": "BEFTA_ACCESSTYPE_2",
       "enabled": true
     }
   ]

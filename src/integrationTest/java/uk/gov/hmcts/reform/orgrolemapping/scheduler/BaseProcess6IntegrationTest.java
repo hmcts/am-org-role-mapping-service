@@ -18,24 +18,24 @@ import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
-//import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-//import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
-//import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
-//import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
-//import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
-//import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
-//import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.IOException;
 import java.util.Map;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-//import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
@@ -453,67 +453,67 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
     protected void assertAssignmentRequest(boolean expectedOrganisationRole, boolean expectedGroupRole) {
         AssignmentRequest assignmentRequest = getAssignmentRequest();
         assertNotNull(assignmentRequest, "No AssignmentRequest found");
-        //int noOfRoles = (expectedOrganisationRole ? 1 : 0) + (expectedGroupRole ? 1 : 0);
-        //assertEquals(noOfRoles, assignmentRequest.getRequestedRoles().size(),
-        //        "Unexpected number of requestedRoles in AssignmentRequest");
-        //boolean actualOrganisation = false;
-        //boolean actualGroup = false;
-        //for (RoleAssignment roleAssignment : assignmentRequest.getRequestedRoles()) {
-        //    if (isGroupRole(roleAssignment)) {
-        //        actualGroup = true;
-        //        assertRoleAssignment(roleAssignment, true);
-        //    } else {
-        //        actualOrganisation = true;
-        //        assertRoleAssignment(roleAssignment, false);
+        int noOfRoles = (expectedOrganisationRole ? 1 : 0) + (expectedGroupRole ? 1 : 0);
+        assertEquals(noOfRoles, assignmentRequest.getRequestedRoles().size(),
+                "Unexpected number of requestedRoles in AssignmentRequest");
+        boolean actualOrganisation = false;
+        boolean actualGroup = false;
+        for (RoleAssignment roleAssignment : assignmentRequest.getRequestedRoles()) {
+            if (isGroupRole(roleAssignment)) {
+                actualGroup = true;
+                assertRoleAssignment(roleAssignment, true);
+            } else {
+                actualOrganisation = true;
+                assertRoleAssignment(roleAssignment, false);
 
-        //    }
-        //}
-        //assertEquals(expectedOrganisationRole, actualOrganisation, "Organisation role missing");
-        //assertEquals(expectedGroupRole, actualGroup, "Group role missing");
+            }
+        }
+        assertEquals(expectedOrganisationRole, actualOrganisation, "Organisation role missing");
+        assertEquals(expectedGroupRole, actualGroup, "Group role missing");
     }
 
-    //private void assertRoleAssignment(RoleAssignment roleAssignment, boolean isGroupRole) {
-    //    String prefix = isGroupRole ? "Group" : "Operational";
-    //    assertEquals(ActorIdType.IDAM, roleAssignment.getActorIdType(),
-    //            prefix + " actor type mismatch");
-    //    assertEquals("USERX", roleAssignment.getActorId(),
-    //            prefix + " actorId mismatch");
-    //    assertEquals(isGroupRole ? "GroupRole1" : "OrgRole1", roleAssignment.getRoleName(),
-    //            prefix + " role name mismatch");
-    //    assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType(),
-    //            prefix + " role type mismatch");
-    //    assertEquals(RoleCategory.PROFESSIONAL, roleAssignment.getRoleCategory(),
-    //            prefix + " role category mismatch");
-    //    assertEquals(Classification.RESTRICTED, roleAssignment.getClassification(),
-    //            prefix + " classification mismatch");
-    //    assertEquals(GrantType.STANDARD, roleAssignment.getGrantType(),
-    //            prefix + " grant type mismatch");
-    //    assertEquals(0, roleAssignment.getAuthorisations().size(),
-    //            prefix + " authorisations mismatch");
-    //    assertFalse(roleAssignment.isReadOnly(),
-    //            prefix + " readOnly mismatch");
-    //    assertNull(roleAssignment.getBeginTime(),
-    //            prefix + " beginTime mismatch");
-    //    assertNull(roleAssignment.getEndTime(),
-    //            prefix + " enddTime mismatch");
-    //    assertNull(roleAssignment.getNotes(),
-    //            prefix + " notes mismatch");
-    //    assertEquals(JacksonUtils.convertObjectIntoJsonNode("BEFTA_JURISDICTION_2"),
-    //            roleAssignment.getAttributes().get("jurisdiction"),
-    //            prefix + " jurisdiction mismatch");
-    //    assertEquals(JacksonUtils.convertObjectIntoJsonNode("FT_CaseAccessGroups"),
-    //            roleAssignment.getAttributes().get("caseType"),
-    //            prefix + " caseType mismatch");
-    //    if (isGroupRole) {
-    //        assertEquals(JacksonUtils.convertObjectIntoJsonNode("BEFTA_MASTER:ORG1"),
-    //                roleAssignment.getAttributes().get("caseAccessGroupId"),
-    //                prefix + " caseAccessGroupId mismatch");
-    //    }
-    //}
+    private void assertRoleAssignment(RoleAssignment roleAssignment, boolean isGroupRole) {
+        String prefix = isGroupRole ? "Group" : "Operational";
+        assertEquals(ActorIdType.IDAM, roleAssignment.getActorIdType(),
+                prefix + " actor type mismatch");
+        assertEquals("USERX", roleAssignment.getActorId(),
+                prefix + " actorId mismatch");
+        assertEquals(isGroupRole ? "GroupRole1" : "OrgRole1", roleAssignment.getRoleName(),
+                prefix + " role name mismatch");
+        assertEquals(RoleType.ORGANISATION, roleAssignment.getRoleType(),
+                prefix + " role type mismatch");
+        assertEquals(RoleCategory.PROFESSIONAL, roleAssignment.getRoleCategory(),
+                prefix + " role category mismatch");
+        assertEquals(Classification.RESTRICTED, roleAssignment.getClassification(),
+                prefix + " classification mismatch");
+        assertEquals(GrantType.STANDARD, roleAssignment.getGrantType(),
+                prefix + " grant type mismatch");
+        assertEquals(0, roleAssignment.getAuthorisations().size(),
+                prefix + " authorisations mismatch");
+        assertFalse(roleAssignment.isReadOnly(),
+                prefix + " readOnly mismatch");
+        assertNull(roleAssignment.getBeginTime(),
+                prefix + " beginTime mismatch");
+        assertNull(roleAssignment.getEndTime(),
+                prefix + " enddTime mismatch");
+        assertNull(roleAssignment.getNotes(),
+                prefix + " notes mismatch");
+        assertEquals(JacksonUtils.convertObjectIntoJsonNode("BEFTA_JURISDICTION_2"),
+                roleAssignment.getAttributes().get("jurisdiction"),
+                prefix + " jurisdiction mismatch");
+        assertEquals(JacksonUtils.convertObjectIntoJsonNode("FT_CaseAccessGroups"),
+                roleAssignment.getAttributes().get("caseType"),
+                prefix + " caseType mismatch");
+        if (isGroupRole) {
+            assertEquals(JacksonUtils.convertObjectIntoJsonNode("BEFTA_MASTER:ORG1"),
+                    roleAssignment.getAttributes().get("caseAccessGroupId"),
+                    prefix + " caseAccessGroupId mismatch");
+        }
+    }
 
-    //private boolean isGroupRole(RoleAssignment roleAssignment) {
-    //    return roleAssignment.getAttributes().containsKey("caseAccessGroupId");
-    //}
+    private boolean isGroupRole(RoleAssignment roleAssignment) {
+        return roleAssignment.getAttributes().containsKey("caseAccessGroupId");
+    }
 
     private AssignmentRequest getAssignmentRequest() {
         Map<String, AssignmentRequest> mapOfRequests;
