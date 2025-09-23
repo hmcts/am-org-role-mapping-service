@@ -6,10 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.List;
+
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation;
 
 @Builder
 @Data
@@ -46,6 +49,12 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
     @JsonIgnore
     public boolean isVoluntary() {
         return AppointmentType.isVoluntary(appointmentType);
+    }
+
+    @JsonIgnore
+    public boolean hasValidAuthorisation(Jurisdiction jurisdiction) {
+        return jurisdiction.getServiceCodes().stream()
+            .anyMatch(testServiceCode -> validateAuthorisation(authorisations, testServiceCode));
     }
 
     @JsonIgnore
