@@ -48,4 +48,9 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
         return AppointmentType.isVoluntary(appointmentType);
     }
 
+    @JsonIgnore
+    public boolean hasValidEndDate() {
+        return (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0);
+    }
+
 }
