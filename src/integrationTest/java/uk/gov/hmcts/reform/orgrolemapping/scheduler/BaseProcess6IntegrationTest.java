@@ -388,8 +388,22 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         testCreateRoleAssignment(false, false);
     }
 
+    /**
+     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = N.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
+        "classpath:sql/insert_user_refresh_queue_orgstatus_pending.sql",
+        "classpath:sql/delete_user_refresh_queue.sql"
+    })
+    void testCreateRole_orgstatus_pending() throws JsonProcessingException {
+        testNoUserRoles();
+    }
+
     abstract void testCreateRoleAssignment(boolean orgRole, boolean groupRole);
 
+    abstract void testNoUserRoles();
 
     //#region Assertion Helpers: DB Checks
 
