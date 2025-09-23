@@ -39,5 +39,9 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
 
         // verify the response
         assertResponse(response);
+
+        if (expectedNumberOfRecords != 0) {
+            assertAssignmentRequest(organisation, group);
+        }
     }
 }
