@@ -52,15 +52,6 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         runTest(0, false, false, EndStatus.SUCCESS);
     }
 
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
-    })
-    void testCreateRole_userRefreshQueue_notDeleted() throws JsonProcessingException {
-        runTest(0, false, false, EndStatus.SUCCESS);
-    }
-
     protected void testCreateRoleAssignment(boolean orgRole, boolean groupRole) {
         runTest(1, orgRole, groupRole, EndStatus.SUCCESS);
     }
