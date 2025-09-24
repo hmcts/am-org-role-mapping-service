@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,6 +17,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,7 +31,9 @@ import java.util.stream.Stream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
 
@@ -49,9 +55,36 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         employmentExpectedRoleNameWorkTypesMap.put("tribunal-member", "hearing_work");
     }
 
+    // NB: to be retired after DTSAM-970
+    private enum LegacyAppointment implements AppointmentEnum {
+
+        ANY_OTHER_APPOINTMENT("Any Other Appointment", List.of(987654)),
+        EMPLOYMENT_JUDGE("Employment Judge", List.of(48)),
+        EMPLOYMENT_JUDGE_SITTING_IN_RETIREMENT("Employment Judge (sitting in retirement)", List.of(48, 215)),
+        RECORDER("Recorder", List.of(67)),
+        REGIONAL_TRIBUNAL_JUDGE("Regional Tribunal Judge", List.of(74)),
+        TRIBUNAL_JUDGE("Tribunal Judge", List.of(84));
+
+        private final String name;
+        private final List<Integer> codes;
+
+        LegacyAppointment(String name, List<Integer> codes) {
+            this.name = name;
+            this.codes = codes;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<Integer> getCodes() {
+            return codes;
+        }
+    }
+
     static Stream<Arguments> endToEndData() {
         return Stream.of(
-                Arguments.of("President of Tribunal",
+                Arguments.of(Appointment.PRESIDENT_OF_TRIBUNAL,
                         "Salaried",
                         false,
                         true,
@@ -59,7 +92,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                                 "specific-access-approver-judiciary", "hearing-viewer"),
                         null),
-                Arguments.of("Vice President",
+                Arguments.of(Appointment.VICE_PRESIDENT,
                         "Salaried",
                         false,
                         true,
@@ -67,7 +100,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                                 "specific-access-approver-judiciary", "hearing-viewer"),
                         null),
-                Arguments.of("Vice-President, Employment Tribunal (Scotland)",
+                Arguments.of(Appointment.VICE_PRESIDENT_ET_SCOTLAND,
                         "Salaried",
                         false,
                         true,
@@ -75,7 +108,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                                 "specific-access-approver-judiciary", "hearing-viewer"),
                         null),
-                Arguments.of("Regional Employment Judge",
+                Arguments.of(Appointment.REGIONAL_EMPLOYMENT_JUDGE,
                         "Salaried",
                         false,
                         true,
@@ -83,49 +116,42 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                                 "specific-access-approver-judiciary", "hearing-viewer"),
                         null),
-                Arguments.of("Employment Judge",
+                Arguments.of(LegacyAppointment.EMPLOYMENT_JUDGE,
                         "Salaried",
                         false,
                         true,
                         List.of("Employment Judge"),
                         List.of("judge", "hmcts-judiciary", "hearing-viewer", "case-allocator"),
                         null),
-                Arguments.of("Employment Judge",
+                Arguments.of(LegacyAppointment.EMPLOYMENT_JUDGE,
                         "Fee Paid",
                         false,
                         true,
                         List.of("Employment Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
                         null),
-                Arguments.of("Employment Judge (Sitting in Retirement)",
+                Arguments.of(LegacyAppointment.EMPLOYMENT_JUDGE_SITTING_IN_RETIREMENT,
                         "Fee Paid",
                         false,
                         true,
                         List.of("Employment Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
                         null),
-                Arguments.of("Employment Judge (sitting in retirement)",
+                Arguments.of(LegacyAppointment.RECORDER,
                         "Fee Paid",
                         false,
                         true,
                         List.of("Employment Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
                         null),
-                Arguments.of("Recorder",
+                Arguments.of(LegacyAppointment.REGIONAL_TRIBUNAL_JUDGE,
                         "Fee Paid",
                         false,
                         true,
                         List.of("Employment Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
                         null),
-                Arguments.of("Regional Tribunal Judge",
-                        "Fee Paid",
-                        false,
-                        true,
-                        List.of("Employment Judge"),
-                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
-                        null),
-                Arguments.of("Tribunal Judge",
+                Arguments.of(LegacyAppointment.TRIBUNAL_JUDGE,
                         "Fee Paid",
                         false,
                         true,
@@ -134,28 +160,28 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         null),
                 //Tribunal Member and Lay should get roles tribunal-member,hearing-viewer when baseLocationId = 1036
                 // or 1037
-                Arguments.of("Tribunal Member",
+                Arguments.of(Appointment.TRIBUNAL_MEMBER,
                         "Fee Paid",
                         false,
                         true,
                         List.of("Tribunal Member"),
                         List.of("tribunal-member", "hmcts-judiciary", "hearing-viewer"),
                         "1036"),
-                Arguments.of("Tribunal Member Lay",
+                Arguments.of(Appointment.TRIBUNAL_MEMBER_LAY,
                         "Fee Paid",
                         false,
                         true,
                         List.of("Tribunal Member Lay"),
                         List.of("tribunal-member", "hmcts-judiciary", "hearing-viewer"),
                         "1036"),
-                Arguments.of("Tribunal Member",
+                Arguments.of(Appointment.TRIBUNAL_MEMBER,
                         "Fee Paid",
                         false,
                         true,
                         List.of("Tribunal Member"),
                         List.of("tribunal-member", "hmcts-judiciary", "hearing-viewer"),
                         "1037"),
-                Arguments.of("Tribunal Member Lay",
+                Arguments.of(Appointment.TRIBUNAL_MEMBER_LAY,
                         "Fee Paid",
                         false,
                         true,
@@ -163,21 +189,21 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("tribunal-member", "hmcts-judiciary", "hearing-viewer"),
                         "1037"),
                 //Tribunal Member and Lay should NOT get roles when baseLocationId != 1036 or 1037
-                Arguments.of("Tribunal Member",
+                Arguments.of(Appointment.TRIBUNAL_MEMBER,
                         "Fee Paid",
                         false,
                         true,
                         List.of("Tribunal Member"),
                         new ArrayList<>(),
                         "1"),
-                Arguments.of("Tribunal Member Lay",
+                Arguments.of(Appointment.TRIBUNAL_MEMBER_LAY,
                         "Fee Paid",
                         false,
                         true,
                         List.of("Tribunal Member Lay"),
                         new ArrayList<>(),
                         "1"),
-                Arguments.of("",
+                Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
                         "Salaried",
                         false,
                         true,
@@ -191,8 +217,32 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
     @ParameterizedTest
     @MethodSource("endToEndData")
     void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
-            String appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
+        AppointmentEnum appointment, String appointmentType, boolean addBooking, boolean hearingFlag,
+        List<String> assignedRoles, List<String> expectedRoleNames, String baseLocationId) {
+
+        assertFalse(CollectionUtils.isEmpty(appointment.getCodes()), "Appointment has no codes defined");
+
+        appointment.getCodes().forEach(code ->
+            shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
+                appointment.getName(),
+                code.toString(),
+                appointmentType,
+                addBooking,
+                hearingFlag,
+                assignedRoles,
+                expectedRoleNames,
+                baseLocationId
+            )
+        );
+
+    }
+
+    void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
+            String appointment, String appointmentCode, String appointmentType, boolean addBooking, boolean hearingFlag,
             List<String> assignedRoles, List<String> expectedRoleNames, String baseLocationId) {
+
+        log.info("Running JudicialAccessProfile -> RoleAssignments test for: "
+            + " appointment: '" + appointment + "', with code: " + appointmentCode);
 
         allProfiles.clear();
         judicialAccessProfiles.clear();
@@ -207,6 +257,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(
                 JudicialAccessProfile.builder()
                         .appointment(appointment)
+                        .roleId(appointmentCode)
                         .appointmentType(appointmentType)
                         .userId(userId)
                         .roles(assignedRoles)
@@ -289,4 +340,5 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
 
         return featureFlags;
     }
+
 }
