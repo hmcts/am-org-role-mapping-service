@@ -7,8 +7,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
+import uk.gov.hmcts.reform.orgrolemapping.controller.RefreshController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
-import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6IntegrationTest {
 
     @Inject
-    private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
+    private RefreshController refreshController;
 
     /**
      *  No Update - UserRefreshQueue.accessTypeVersion >  PRM Access Version.
@@ -76,8 +76,8 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
 
         try {
             // WHEN
-            ResponseEntity<Object> response = professionalRefreshOrchestrator
-                    .refreshProfessionalUser(USERID);
+            ResponseEntity<Object> response = refreshController
+                    .professionalRefresh(USERID);
 
             // THEN
             if (expectedNumberOfRecords != 0) {
