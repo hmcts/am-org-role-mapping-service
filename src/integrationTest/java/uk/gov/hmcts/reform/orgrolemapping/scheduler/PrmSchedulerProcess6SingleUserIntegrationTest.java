@@ -32,6 +32,20 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
                 1, false, false, EndStatus.FAILED);
     }
 
+    /**
+     *  Delete Role Assignment.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_deleted.sql"
+    })
+    void testDeleteRole() throws JsonProcessingException {
+        runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_03.json"),
+                1, false, false, EndStatus.SUCCESS);
+    }
+
     protected void testCreateRoleAssignment(boolean organisation, boolean group) {
         runTest(organisation ? List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json")
                 : List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_02.json"),

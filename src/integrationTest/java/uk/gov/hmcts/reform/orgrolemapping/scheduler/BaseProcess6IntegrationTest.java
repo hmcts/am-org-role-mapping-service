@@ -379,6 +379,16 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         testCreateRoleAssignment(true, true);
     }
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yny_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+    })
+    void testCreateRole_ynyn_no_rolenames() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
+    }
+
     abstract void testCreateRoleAssignment(boolean orgRole, boolean groupRole);
 
 
