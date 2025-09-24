@@ -59,7 +59,7 @@ class JudicialAccessProfileTest {
         // happy path tests - matching code
         appointment.getCodes().forEach(code ->
             assertAppointmentCodeChecker(
-                code.toString(),
+                code,
                 appointment,
                 true,
                 "should match on valid code: " + code
@@ -99,7 +99,7 @@ class JudicialAccessProfileTest {
         appointmentGroup.getMembers().forEach(appointment ->
             appointment.getCodes().forEach(code ->
                 assertAppointmentCodeChecker(
-                    code.toString(),
+                    code,
                     appointmentGroup,
                     true,
                     "should match on valid code: " + code + " (from: '" + appointment.getName() + "')"

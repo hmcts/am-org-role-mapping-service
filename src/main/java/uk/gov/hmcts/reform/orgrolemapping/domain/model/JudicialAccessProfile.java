@@ -54,7 +54,7 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
 
     @JsonIgnore
     public boolean hasAppointmentCode(AppointmentEnum appointment) {
-        return appointment.getCodes().stream().anyMatch(appointmentCode -> appointmentCode.toString().equals(roleId));
+        return roleId != null && appointment.getCodes().contains(roleId);
     }
 
     @JsonIgnore

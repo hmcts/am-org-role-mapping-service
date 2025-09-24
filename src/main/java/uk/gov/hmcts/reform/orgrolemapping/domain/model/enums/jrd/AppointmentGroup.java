@@ -24,7 +24,7 @@ public enum AppointmentGroup implements AppointmentEnum {
 
 
     private final String name;
-    private final List<Integer> codes;
+    private final List<String> codes;
     private final List<Appointment> members;
 
     AppointmentGroup(String name, List<Appointment> appointments) {
@@ -37,7 +37,7 @@ public enum AppointmentGroup implements AppointmentEnum {
         return name;
     }
 
-    public List<Integer> getCodes() {
+    public List<String> getCodes() {
         return codes;
     }
 

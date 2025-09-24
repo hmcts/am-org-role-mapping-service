@@ -6,6 +6,6 @@ public interface AppointmentEnum {
 
     String getName();
 
-    List<Integer> getCodes();
+    List<String> getCodes();
 
 }
