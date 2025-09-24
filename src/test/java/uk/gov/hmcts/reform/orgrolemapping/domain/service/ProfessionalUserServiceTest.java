@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import uk.gov.hmcts.reform.orgrolemapping.config.ProfessionalUserServiceConfig;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
@@ -95,6 +96,11 @@ class ProfessionalUserServiceTest {
     private static final String RETRY_TWO_INTERVAL = "15";
     private static final String RETRY_THREE_INTERVAL = "60";
 
+    private static final ProfessionalUserServiceConfig professionalUserServiceConfig =
+            new ProfessionalUserServiceConfig(RETRY_ONE_INTERVAL, RETRY_TWO_INTERVAL,
+                    RETRY_THREE_INTERVAL, RETRY_ONE_INTERVAL, RETRY_TWO_INTERVAL,
+                    RETRY_THREE_INTERVAL, "10", "1", "10");
+
     ProfessionalUserService professionalUserService = new ProfessionalUserService(
             prdService,
             accessTypesRepository,
@@ -106,15 +112,7 @@ class ProfessionalUserServiceTest {
             jdbcTemplate,
             transactionManager,
             processEventTracker,
-            RETRY_ONE_INTERVAL,
-            RETRY_TWO_INTERVAL,
-            RETRY_THREE_INTERVAL,
-            RETRY_ONE_INTERVAL,
-            RETRY_TWO_INTERVAL,
-            RETRY_THREE_INTERVAL,
-            "10",
-            "1",
-            "10"
+            professionalUserServiceConfig
     );
 
     @Nested
@@ -433,6 +431,32 @@ class ProfessionalUserServiceTest {
             verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
             assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.FAILED);
+        }
+
+        @Test
+        void markProcessStatusSuccessTest() {
+            markProcessStatusTest(2, 0, null, EndStatus.SUCCESS);
+        }
+
+        @Test
+        void markProcessStatusPartialSuccessTest() {
+            markProcessStatusTest(1, 1, "Error-msg", EndStatus.PARTIAL_SUCCESS);
+        }
+
+        @Test
+        void markProcessStatusFailedTest() {
+            markProcessStatusTest(0, 1, "Error-msg", EndStatus.FAILED);
+        }
+
+        private void markProcessStatusTest(int successfulJobCount,
+                                           int failedJobCount, String errorMessage, EndStatus endStatus) {
+            ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("test-process");
+            professionalUserService.markProcessStatus(processMonitorDto, successfulJobCount,
+                    failedJobCount, errorMessage);
+
+            assertEquals(endStatus, processMonitorDto.getEndStatus());
+            assertEquals(errorMessage, processMonitorDto.getEndDetail());
+            assertNotNull(processMonitorDto.getEndTime());
         }
 
         @SuppressWarnings({"SameParameterValue"})
