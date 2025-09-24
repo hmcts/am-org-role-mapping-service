@@ -190,7 +190,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(organisationId, userRefreshQueueEntity.get().getOrganisationId(),
             "UserRefreshQueueEntity organisationId mismatch for userId: " + userId);
         assertEquals(organisationStatus, userRefreshQueueEntity.get().getOrganisationStatus(),
-            "UserRefreshQueueEntity oragnisationStatus mismatch for userId: " + userId);
+            "UserRefreshQueueEntity organisationStatus mismatch for userId: " + userId);
         assertEquals(accessTypeMinVersion, userRefreshQueueEntity.get().getAccessTypesMinVersion(),
             "UserRefreshQueueEntity accessTypesMinVersio mismatch for userId: " + userId);
         assertEquals(isUpdated,

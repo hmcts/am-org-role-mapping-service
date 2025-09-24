@@ -136,7 +136,7 @@ feign:
         url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
-      prdclient:
+      prdClient:
         url: ${PROFESSIONAL_REF_APP_URL:http://localhost:8090}
       ccdClient:
         url: ${CCD_DEF_STORE_APP_URL:http://localhost:4451}
@@ -216,6 +216,14 @@ professional:
           retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
         findUserChanges:
           cron: ${CRON_P5_USER_CHANGES:*/30 * * * * *}
+        userRefresh:
+          cron: ${USER_REFRESH_CRON:*/5 * * * * *}
+          retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
+          retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
+          retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
+        userRefreshCleanup:
+          cron: ${USER_REFRESH_CLEANUP_CRON:0 * * * * *}
+          activeUserRefreshDays: ${USER_REFRESH_CLEANUP_DAYS:90}
 
 groupAccess:
   lastRunTimeTolerance: ${TOLERANCE:180}
