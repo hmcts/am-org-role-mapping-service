@@ -1,17 +1,23 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentGroup;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.FEE_PAID;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SPTW;
@@ -42,6 +48,85 @@ class JudicialAccessProfileTest {
         assertEndDateChecker(ZonedDateTime.now().plusDays(1), true, "future end date");
 
         assertEndDateChecker(ZonedDateTime.now().minusDays(1), false, "expired end date");
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Appointment.class)
+    void testHasAppointmentCode_appointments(Appointment appointment) {
+
+        assertFalse(CollectionUtils.isEmpty(appointment.getCodes()), "Appointment has no codes defined");
+
+        // happy path tests - matching code
+        appointment.getCodes().forEach(code ->
+            assertAppointmentCodeChecker(
+                code.toString(),
+                appointment,
+                true,
+                "should match on valid code: " + code
+            )
+        );
+
+        // negative tests - non-matching code
+
+        assertAppointmentCodeChecker(
+            null,
+            appointment,
+            false,
+            "should fail to match on null code"
+        );
+        assertAppointmentCodeChecker(
+            "",
+            appointment,
+            false,
+            "should fail to match on empty code"
+        );
+        assertAppointmentCodeChecker(
+            "wrong",
+            appointment,
+            false,
+            "should fail to match on wrong code"
+        );
+
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = AppointmentGroup.class)
+    void testHasAppointmentCode_appointmentGroups(AppointmentGroup appointmentGroup) {
+
+        assertFalse(CollectionUtils.isEmpty(appointmentGroup.getCodes()), "Appointment Group has no codes defined");
+
+        // happy path tests - matching code
+        appointmentGroup.getMembers().forEach(appointment ->
+            appointment.getCodes().forEach(code ->
+                assertAppointmentCodeChecker(
+                    code.toString(),
+                    appointmentGroup,
+                    true,
+                    "should match on valid code: " + code + " (from: '" + appointment.getName() + "')"
+                )
+            )
+        );
+
+        // negative tests - non-matching code
+        assertAppointmentCodeChecker(
+            null,
+            appointmentGroup,
+            false,
+            "should fail to match on null code"
+        );
+        assertAppointmentCodeChecker(
+            "",
+            appointmentGroup,
+            false,
+            "should fail to match on empty code"
+        );
+        assertAppointmentCodeChecker(
+            "wrong",
+            appointmentGroup,
+            false,
+            "should fail to match on wrong code"
+        );
+
     }
 
     @ParameterizedTest
@@ -120,6 +205,26 @@ class JudicialAccessProfileTest {
 
     }
 
+    private void assertAppointmentCodeChecker(String japRoleId,
+                                              AppointmentEnum testAppointment,
+                                              boolean expectedHasAppointmentCode,
+                                              String testDescription) {
+
+        // GIVEN
+        JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder()
+            .roleId(japRoleId)
+            .build();
+
+        // WHEN / THEN
+        log.info("Running hasAppointmentCode(" + testAppointment.getName() + ") test: " + testDescription);
+        assertEquals(
+            expectedHasAppointmentCode,
+            judicialAccessProfile.hasAppointmentCode(testAppointment),
+            "hasAppointmentCode() check failed for: " + testDescription
+        );
+
+    }
+
     private void assertAppointmentTypeCheckers(String appointmentType,
                                                boolean expectedIsFeePaid,
                                                boolean expectedIsSalaried,
@@ -140,14 +245,14 @@ class JudicialAccessProfileTest {
     private void assertEndDateChecker(ZonedDateTime dateTime, boolean expectedHasValidEndDate, String testDescription) {
 
         // GIVEN
-        JudicialAccessProfile profileWithNoEndDate = JudicialAccessProfile.builder()
+        JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder()
             .endTime(dateTime)
             .build();
 
         // WHEN / THEN
         assertEquals(
             expectedHasValidEndDate,
-            profileWithNoEndDate.hasValidEndDate(),
+            judicialAccessProfile.hasValidEndDate(),
             "hasValidEndDate() check failed for: " + testDescription
         );
 

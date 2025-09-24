@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -21,7 +22,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 public class JudicialAccessProfile implements Serializable, UserAccessProfile {
 
     private String userId;
-    private String roleId;
+    private String roleId; // appointment code
     private ZonedDateTime beginTime;
     private ZonedDateTime endTime;
     private List<String> ticketCodes;
@@ -49,6 +50,11 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
     @JsonIgnore
     public boolean isVoluntary() {
         return AppointmentType.isVoluntary(appointmentType);
+    }
+
+    @JsonIgnore
+    public boolean hasAppointmentCode(AppointmentEnum appointment) {
+        return appointment.getCodes().stream().anyMatch(appointmentCode -> appointmentCode.toString().equals(roleId));
     }
 
     @JsonIgnore
