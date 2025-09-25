@@ -25,12 +25,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.IOException;
 import java.util.Map;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -391,7 +391,6 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     abstract void testCreateRoleAssignment(boolean orgRole, boolean groupRole);
 
-
     //#region Assertion Helpers: DB Checks
 
     protected void assertResponse(ResponseEntity<Object> actualResponse) {
@@ -400,11 +399,14 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         assertEquals(actualResponse.getBody(), Map.of("Message", SUCCESS_ROLE_REFRESH));
     }
 
-    protected void assertTotalUserRefreshQueueEntitiesInDb(int expectedNumberOfRecords) {
+    protected void assertTotalUserRefreshQueueEntitiesInDb(int expectedNumberOfRecords,
+                                                           EndStatus endStatus) {
         var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
         assertEquals(expectedNumberOfRecords, userRefreshQueueEntities.size(),
                 "UserRefreshQueueEntity number of records mismatch");
-        assertEquals(0, userRefreshQueueEntities.stream()
+        assertEquals(EndStatus.SUCCESS.equals(endStatus) ? 0 :
+                        EndStatus.PARTIAL_SUCCESS.equals(endStatus) ? 1 : expectedNumberOfRecords,
+                userRefreshQueueEntities.stream()
                         .filter(entity -> entity.getActive()).count(),
                 "UserRefreshQueueEntity number of active records mismatch");
     }

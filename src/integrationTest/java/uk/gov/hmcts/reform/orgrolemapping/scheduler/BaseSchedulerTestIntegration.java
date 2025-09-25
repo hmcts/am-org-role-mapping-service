@@ -192,7 +192,23 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         log.info("   Body: {}", loggedResponse.getBodyAsString());
         log.info("-----------------------------------------------------");
     }
-    
+
+    protected void stubRasCreateRoleAssignment(EndStatus endStatus) {
+        HttpHeaders headers = new HttpHeaders()
+                .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE));
+
+        int httpStatus = EndStatus.FAILED.equals(endStatus)
+                ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                "/am/role-assignments"))
+                .withId(STUB_ID_RAS_CREATE_ROLEASSIGNMENTS)
+                .willReturn(aResponse()
+                        .withStatus(httpStatus)
+                        .withHeaders(headers)
+                        .withBody("{}")));
+    }
+
     protected void stubPrdRetrieveUsers(List<String> fileNames,
         String moreAvailable, String lastRecordInPage, String pageSize, String searchAfter) {
         stubPrdRetrieveUsers(
@@ -251,23 +267,6 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                         .withBody(body)));
     }
 
-
-    protected void stubRasCreateRoleAssignment(EndStatus endStatus) {
-        HttpHeaders headers = new HttpHeaders()
-                .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE));
-
-        int httpStatus = EndStatus.FAILED.equals(endStatus)
-                ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
-
-        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
-                "/am/role-assignments"))
-                .withId(STUB_ID_RAS_CREATE_ROLEASSIGNMENTS)
-                .willReturn(aResponse()
-                        .withStatus(httpStatus)
-                        .withHeaders(headers)
-                        .withBody("{}")));
-    }
-
     protected void stubPrdRetrieveUsersByOrg(List<String> fileNames,
         String moreAvailable, String lastRecordInPage, EndStatus endStatus) {
         stubPrdRetrieveUsersByOrg(
@@ -290,6 +289,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
             "/refdata/internal/v2/organisations/users"))
             .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
             .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+            .inScenario("once")
             .willReturn(aResponse()
                 .withStatus(httpStatus)
                 .withHeaders(headers)
