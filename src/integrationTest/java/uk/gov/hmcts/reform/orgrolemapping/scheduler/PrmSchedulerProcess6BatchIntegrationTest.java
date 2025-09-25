@@ -65,6 +65,20 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         testCreateRoleAssignment(false, false);
     }
 
+    /**
+     *  Partial Success (1 record - correct version, 1 record - version number too high.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_version1.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_version1.sql"
+    })
+    void testCreateRole_partialSuccess() throws JsonProcessingException {
+        runTest(2, true, true, EndStatus.PARTIAL_SUCCESS);
+    }
+
     protected void testCreateRoleAssignment(boolean orgRole, boolean groupRole) {
         runTest(1, orgRole, groupRole, EndStatus.SUCCESS);
     }
@@ -80,7 +94,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         ProcessMonitorDto processMonitorDto = prmScheduler.processUserRefreshQueue();
 
         // THEN
-        if (expectedNumberOfRecords != 0 && EndStatus.SUCCESS.equals(endStatus)) {
+        if (expectedNumberOfRecords != 0 && !EndStatus.FAILED.equals(endStatus)) {
             verifyNoOfCallsToRas(1);
         }
         logAfterStatus(processMonitorDto);
@@ -91,7 +105,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         // Verify the number of records in the user refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(expectedNumberOfRecords, endStatus);
 
-        if (expectedNumberOfRecords != 0 && EndStatus.SUCCESS.equals(endStatus)) {
+        if (expectedNumberOfRecords != 0 && !EndStatus.FAILED.equals(endStatus)) {
             assertAssignmentRequest(organisation, group);
         }
     }

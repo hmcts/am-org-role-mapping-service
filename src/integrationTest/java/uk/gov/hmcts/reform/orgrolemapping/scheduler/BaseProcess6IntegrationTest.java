@@ -403,7 +403,8 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
         assertEquals(expectedNumberOfRecords, userRefreshQueueEntities.size(),
                 "UserRefreshQueueEntity number of records mismatch");
-        assertEquals(EndStatus.SUCCESS.equals(endStatus) ? 0 : expectedNumberOfRecords,
+        assertEquals(EndStatus.SUCCESS.equals(endStatus) ? 0 :
+                        EndStatus.PARTIAL_SUCCESS.equals(endStatus) ? 1 : expectedNumberOfRecords,
                 userRefreshQueueEntities.stream()
                         .filter(entity -> entity.getActive()).count(),
                 "UserRefreshQueueEntity number of active records mismatch");
@@ -475,7 +476,8 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         String prefix = isGroupRole ? "Group" : "Operational";
         assertEquals(ActorIdType.IDAM, roleAssignment.getActorIdType(),
                 prefix + " actor type mismatch");
-        assertEquals("USERX", roleAssignment.getActorId(),
+        assertTrue(roleAssignment.getActorId().contains("USERX")
+                || roleAssignment.getActorId().contains("USERY"),
                 prefix + " actorId mismatch");
         assertEquals(isGroupRole ? "GroupRole1" : "OrgRole1", roleAssignment.getRoleName(),
                 prefix + " role name mismatch");
