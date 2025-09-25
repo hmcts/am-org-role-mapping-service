@@ -363,6 +363,7 @@ public class ProfessionalUserService {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_6_BATCH_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
         try {
+            processMonitorDto.addProcessStep("attempting first retrieveUsers");
             while (userRefreshQueueRepository.getActiveUserRefreshQueueCount() >= 1) {
                 boolean success = refreshUsers(processMonitorDto);
                 if (success) {
