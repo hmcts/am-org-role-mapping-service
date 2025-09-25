@@ -7,12 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAdditionalRole;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation;
 
 @Builder
@@ -35,6 +37,7 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
     private String primaryLocationId;
     private List<Authorisation> authorisations;
     private List<String> roles;
+    private List<RoleV2> additionalRoles;
     private String status;
 
     @JsonIgnore
@@ -55,6 +58,12 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
     @JsonIgnore
     public boolean hasAppointmentCode(AppointmentEnum appointment) {
         return roleId != null && appointment.getCodes().contains(roleId);
+    }
+
+    @JsonIgnore
+    public boolean hasValidAdditionalRole(AdditionalRoleEnum additionalRole) {
+        return additionalRole.getCodes().stream()
+            .anyMatch(additionalRoleCode -> validateAdditionalRole(additionalRoles, additionalRoleCode));
     }
 
     @JsonIgnore
