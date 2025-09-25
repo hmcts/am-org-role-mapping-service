@@ -52,8 +52,8 @@ import java.util.stream.Stream;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status.CREATE_REQUESTED;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.NO_ACCESS_TYPES_FOUND;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.PROFESSIONAL_ORGANISATIONAL_ROLE_MAPPING;
-import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInRestructuredAccessTypes;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertValue;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.getRestructuredAccessTypes;
 
 @Service
 @Slf4j
@@ -188,7 +188,7 @@ public class ProfessionalRefreshOrchestrationHelper {
         }
 
         RestructuredAccessTypes prmRestructuredAccessTypes =
-                convertInRestructuredAccessTypes(accessTypes.getAccessTypes());
+                getRestructuredAccessTypes(accessTypes.getAccessTypes());
 
         Set<OrganisationProfile> organisationProfiles = prmRestructuredAccessTypes.getOrganisationProfiles();
 
