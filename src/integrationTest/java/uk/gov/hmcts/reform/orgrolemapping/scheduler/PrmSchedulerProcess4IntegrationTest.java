@@ -290,10 +290,10 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0, 0);
 
         // Verify 2 active users in the refresh queue, all updated
-        assertTotalUserRefreshQueueEntitiesInDb(2);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_4, SOLICITOR_ACCESS_TYPE,
+        assertTotalUserRefreshQueueEntitiesInDb(3);
+        assertUserRefreshQueueEntitiesInDb("user11", ORGANISATION_ID_4, SOLICITOR_ACCESS_TYPE,
             NEW_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_4, OGD_ACCESS_TYPE,
+        assertUserRefreshQueueEntitiesInDb("user12", ORGANISATION_ID_4, OGD_ACCESS_TYPE,
             NEW_USER_LAST_UPDATED, true, false);
     }
 
@@ -321,11 +321,45 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertTotalUserRefreshQueueEntitiesInDb(0);
     }
 
+    /**
+     * Partial Success - Failed.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation4.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user1organisation1.sql"
+    })
+    void testRetryPartialSuccess() {
+
+        Assertions.assertThrows(ServiceException.class, () ->
+                // verify that the organisations are attempted to be updated 3 times
+                runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json",
+                                "/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
+                        EndStatus.PARTIAL_SUCCESS, 2)
+        );
+
+        // verify that the OrganisationRefreshQueue contains 2 records, 2 active, 4 retries
+        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 2, 5);
+
+        // Verify 1 active user in the refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(1);
+    }
+
     private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
 
         // GIVEN
         logBeforeStatus();
-        stubPrdRetrieveUsersByOrg(fileNames, "false", null, endStatus);
+        if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {
+            // Initial call that succeeds
+            stubPrdRetrieveUsersByOrg(fileNames, "false", null, EndStatus.SUCCESS);
+            // Add a second call that fails
+            stubPrdRetrieveUsersByOrg(fileNames, "false", null, EndStatus.FAILED);
+        } else {
+            stubPrdRetrieveUsersByOrg(fileNames, "false", null, endStatus);
+        }
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler

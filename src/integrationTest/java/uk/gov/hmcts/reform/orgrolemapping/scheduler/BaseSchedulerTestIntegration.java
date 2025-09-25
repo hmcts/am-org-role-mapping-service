@@ -262,6 +262,7 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
             "/refdata/internal/v2/organisations/users"))
             .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
             .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+            .inScenario("once")
             .willReturn(aResponse()
                 .withStatus(httpStatus)
                 .withHeaders(headers)
